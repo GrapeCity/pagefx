@@ -1,0 +1,1 @@
+StaticCtors.py > StaticCtors.cs

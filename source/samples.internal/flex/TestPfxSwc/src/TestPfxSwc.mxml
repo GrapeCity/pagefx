@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+	<mx:Button label="Test" click="test()"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			private function test():void
+			{
+				var p:Person = new Person();
+				p.Name = "AAA";
+				
+				Alert.show(p.Name);
+			}
+		]]>
+	</mx:Script>
+</mx:Application>

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!-- To make data available to SWF files in different domains, use a cross-domain policy file. -->
+<cross-domain-policy>
+   <allow-access-from domain="*" />
+</cross-domain-policy>

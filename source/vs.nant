@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="PageFX" default="local">
+
+  <!-- Global Properties -->
+  <property name="project.name" value="PageFX" />
+  
+  <property name="project.dir"
+            value="${project::get-base-directory()}"
+            unless="${property::exists('project.dir')}"/>
+
+  <fail unless="${directory::exists(project.dir)}"
+        message="Project directory ${project.dir} does not exist"/>
+
+  <property name="dir.src" value="${project.dir}\Source"/>
+  <if test="${file::exists(project.dir + '\\build.sln')}">
+    <property name="dir.src" value="${project.dir}"/>
+  </if>
+
+  <!-- Flex 3 SDK dirs in source-->
+  <property name="flex.sdkdir" value="${dir.src}\sdks\flex.3.0"/>
+  <property name="flex.dlldir" value="${flex.sdkdir}\dll"/>
+  <property name="flex.localedir" value="${flex.sdkdir}\locale"/>
+  <property name="flex.rslsdir" value="${flex.sdkdir}\rsls"/>
+
+  <!-- PageFX directories -->
+  <property name="pfx.home" value="c:\pfx"/>
+  <property name="pfx.bindir" value="${pfx.home}\bin"/>
+  <property name="pfx.frameworkdir" value="${pfx.home}\framework"/>
+  <property name="pfx.flexsdkdir" value="${pfx.home}\flexsdk"/>
+  <property name="pfx.testdir" value="${pfx.home}\tests"/>
+  <property name="pfx.toolsdir" value="${pfx.home}\tools"/>
+  
+  <property name="qa.rootdir" value="c:\QA\PageFX"/>
+  <property name="qa.bindir" value="${pfx.home}\qa\bin"/>
+
+  <!--<property name="dir.build" value="c:\builds\PageFX\build"/>-->
+
+  <property name="dir.pfx_templates" value="${dir.src}/VSIntegration/Templates"/>
+  <property name="vs.version" value="9.0"/>
+
+  <property name="vs.mydocs" value="Visual Studio 2008"/>
+  <if test="${vs.version == '8.0'}">
+    <property name="vs.mydocs" value="Visual Studio 2005"/>
+  </if>
+
+  <readregistry hive="LocalMachine" key="SOFTWARE\Microsoft\VisualStudio\${vs.version}\InstallDir" property="dir.vs" failonerror="false"/>
+  <if test="${not property::exists('dir.vs')}">
+    <property name="dir.vs" value="C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE"/>
+  </if>
+  
+  <property name="dir.user_templates_root" value="${environment::get-folder-path('MyDocuments')}/${vs.mydocs}/Templates"/>
+  <property name="dir.user_project_templates" value="${dir.user_templates_root}/ProjectTemplates/Visual C#"/>
+  <property name="dir.user_item_templates" value="${dir.user_templates_root}/ItemTemplates/Visual C#"/>
+  
+  <property name="dir.vs_project_templates" value="${dir.vs}/ProjectTemplates/CSharp"/>
+  <property name="dir.vs_item_templates" value="${dir.vs}/ItemTemplates/CSharp"/>
+
+  <property name="pfx.home.vstemplates" value="${pfx.home}/Visual Studio/templates"/>
+  
+  <!-- Zips PageFX templates to specified zip.dir -->
+  <target name="zip.templates">
+
+    <fail unless="${property::exists('dir.templates')}"/>
+
+    <if test="${directory::exists(dir.templates)}">
+      <property name="zip.dir" value="${directory::get-current-directory()}" unless="${property::exists('zip.dir')}"/>
+      <property name="status" value="no templates"/>
+
+      <foreach item="Folder" in="${dir.templates}" property="dir">
+        <mkdir dir="${zip.dir}"/>
+        <zip zipfile="${zip.dir}/${path::get-file-name(dir)}.zip">
+          <fileset basedir="${dir}">
+            <include name="*.*"/>
+          </fileset>
+        </zip>
+        <property name="status" value="ok"/>
+      </foreach>
+    </if>
+
+  </target>
+
+  <!-- Installs PageFX templates to VS User Templates directory -->
+  <target name="install.templates.user" description="Installs VS templates to VS user templates directory">
+
+    <fail unless="${directory::exists(dir.user_project_templates)}" message="no install dir"/>
+    <fail unless="${directory::exists(dir.user_item_templates)}" message="no install dir"/>
+
+    <property name="dir.templates" value="${dir.pfx_templates}/ProjectTemplates"/>
+    <property name="zip.dir" value="${dir.user_project_templates}/PageFX"/>
+    <call target="zip.templates"/>
+
+    <property name="dir.templates" value="${dir.pfx_templates}/ItemTemplates"/>
+    <property name="zip.dir" value="${dir.user_item_templates}/PageFX"/>
+    <call target="zip.templates"/>
+
+  </target>
+
+  <!-- Installs PageFX templates to VS directories -->
+  <target name="install.templates.vs" description="Installs VS templates to VS dir">
+
+    <fail unless="${directory::exists(dir.vs_project_templates)}" message="no install dir"/>
+    <fail unless="${directory::exists(dir.vs_item_templates)}" message="no install dir"/>
+
+    <property name="dir.templates" value="${dir.pfx_templates}/ProjectTemplates"/>
+    <property name="zip.dir" value="${dir.vs_project_templates}/PageFX/1033"/>
+    <call target="zip.templates"/>
+
+    <property name="should_setup_vs" value="no"/>
+    <if test="${status == 'ok'}">
+      <copy file="${dir.pfx_templates}/PageFX.VSTDIR" todir="${dir.vs_project_templates}/PageFX"/>
+      <property name="should_setup_vs" value="yes"/>
+    </if>
+
+    <property name="dir.templates" value="${dir.pfx_templates}/ItemTemplates"/>
+    <property name="zip.dir" value="${dir.vs_item_templates}/PageFX/1033"/>
+    <call target="zip.templates"/>
+
+    <if test="${status == 'ok'}">
+      <copy file="${dir.pfx_templates}/PageFX.VSTDIR" todir="${dir.vs_item_templates}/PageFX"/>
+      <property name="should_setup_vs" value="yes"/>
+    </if>
+
+    <if test="${should_setup_vs == 'yes'}">
+      <call target="devenv.setup"/>
+    </if>
+
+  </target>
+
+  <!-- Uninstalls PageFX templates from VS directories -->
+  
+  <target name="uninstall.templates.vs" description="Uninstalls VS templates to VS dir">
+
+    <property name="should_setup_vs" value="no"/>
+    
+    <property name="dir.toremove" value="${dir.vs_project_templates}/PageFX"/>
+    <if test="${directory::exists(dir.toremove)}">
+      <delete dir="${dir.toremove}" includeemptydirs="true"/>
+      <property name="should_setup_vs" value="yes"/>
+    </if>
+
+    <property name="dir.toremove" value="${dir.vs_item_templates}/PageFX"/>
+    <if test="${directory::exists(dir.toremove)}">
+      <delete dir="${dir.toremove}" includeemptydirs="true"/>
+      <property name="should_setup_vs" value="yes"/>
+    </if>
+
+    <if test="${should_setup_vs == 'yes'}">
+      <call target="devenv.setup"/>
+    </if>
+    
+  </target>
+
+  <!-- Setup Visual Studio. Used to register PageFX templates -->
+  <target name="devenv.setup">
+    <exec basedir="${dir.vs}" program="devenv.exe" verbose="true">
+      <arg value="/setup"/>
+    </exec>
+  </target>
+
+  <!-- Clears Visual Studio Cache -->
+  <target name="devenv.clear_cache">
+    <exec basedir="${dir.vs}" program="devenv.exe" verbose="true">
+      <arg value="/ClearCache"/>
+    </exec>
+  </target>
+
+</project>

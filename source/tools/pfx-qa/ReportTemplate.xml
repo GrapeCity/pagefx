@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+
+    <title>PageFX Tests</title>
+
+    <link rel="stylesheet" href="treeview.css" />
+    <link rel="stylesheet" href="screen.css" />
+
+    <script src="lib/jquery.js" type="text/javascript"></script>
+    <script src="lib/jquery.cookie.js" type="text/javascript"></script>
+    <script src="lib/jquery.treeview.js" type="text/javascript"></script>
+
+    <script src="report.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+
+    <table style="width: 100%">
+      <tr>
+        <th>Assemblies (API Tree)</th>
+        <th>Tests for Selected Node</th>
+      </tr>
+      <tr>
+        <td style="height: 400px">
+          <div class="fixed">
+            $APITREE
+          </div>
+        </td>
+        <td style="height: 400px">
+          <div class="fixed" id="content">
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <table style="width: 100%">
+      <tr>
+        <th>Mono Tests</th>
+        <th>Legend</th>
+      </tr>
+      <tr>
+        <td style="width: 50%; height: 400px">
+          <div class="fixed">
+            $TESTTREE
+          </div>      
+        </td>
+        <td style="width: 50%; height: 400px">
+          <div class="fixed">
+            <ul id="legend">
+              <li>
+                <b>Tested/Passed Method</b>: method for which all tests in which given method was called are passed on all runtimes (FP10 and AVM+).
+              </li>
+              <li>
+                <span>
+                  <img src="images/fp.png"/>: Denotes Flash Player 10 Runtime
+                </span>
+              </li>
+              <li>
+                <span>
+                  <img src="images/avmplus.png"/>: Denotes AVM+ Shell Runtime
+                </span>
+              </li>
+              <li>
+                <span>
+                  <img src="images/success.png"/>: meaning depends on context
+                </span>
+                <ul>
+                  <li>For API Node: denotes number of tested methods</li>
+                  <li>For Method Node: denotes number of passed tests</li>
+                  <li>For Test Node: denotes number of passed tests</li>
+                </ul>
+              </li>
+              <li>
+                <span>
+                  <img src="images/failed.png"/>: opposite of <img src="images/success.png"/>.
+                </span>
+              </li>
+              <li>
+                <span>
+                  <img src="images/time.png"/>: meaning depends on context
+                </span>
+                <ul>
+                  <li>For Test Node: duration of test</li>
+                  <li>For Other Nodes: total duration of all child nodes</li>
+                </ul>
+              </li>
+            </ul>  
+          </div>
+        </td>
+      </tr>
+    </table>
+
+  </body>
+  
+</html>

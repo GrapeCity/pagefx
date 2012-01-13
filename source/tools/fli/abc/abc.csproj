@@ -1,0 +1,102 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{19D836C7-4C04-406A-A820-155AB14A797D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>abc</RootNamespace>
+    <AssemblyName>abc</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>c:\pfx\tools\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\tools\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="DumpTask.cs" />
+    <Compile Include="DumpForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DumpForm.Designer.cs">
+      <DependentUpon>DumpForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ListTask.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="WrapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WrapForm.Designer.cs">
+      <DependentUpon>WrapForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\DataDynamics.PageFX.CLI\DataDynamics.PageFX.CLI.csproj">
+      <Project>{3C215B55-8587-4A60-8CAA-91FE412B9013}</Project>
+      <Name>DataDynamics.PageFX.CLI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.CodeModel.csproj">
+      <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
+      <Name>DataDynamics.PageFX.CodeModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\libs\DataDynamics.PageFX.FLI\DataDynamics.PageFX.FLI.csproj">
+      <Project>{A54D800D-621B-491A-BE70-59D46BA70523}</Project>
+      <Name>DataDynamics.PageFX.FLI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\libs\DataDynamics.PageFX.Shared\DataDynamics.PageFX.Shared.csproj">
+      <Project>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</Project>
+      <Name>DataDynamics.PageFX.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DumpForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DumpForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WrapForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>WrapForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

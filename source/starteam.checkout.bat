@@ -1,0 +1,1 @@
+nant -buildfile:starteam.nant starteam.checkout

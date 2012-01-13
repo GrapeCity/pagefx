@@ -1,0 +1,4 @@
+﻿(fdb) Breakpoint 2: file App.cs, line 28
+(fdb) (fdb) Breakpoint 1, App() at App.cs:18
+ 18        	minus = true;
+(fdb) $1 = 1 (0x1)

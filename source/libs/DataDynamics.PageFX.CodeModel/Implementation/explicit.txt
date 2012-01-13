@@ -1,0 +1,19 @@
+#Explicit numeric conversion is used to convert any numeric type to any other numeric type, 
+#for which there is no implicit conversion, by using a cast expression.
+#The following table shows these conversions.
+
+#---------------------------------------------------------------------------------
+#From			To  
+#---------------------------------------------------------------------------------
+sbyte			byte, ushort, uint, ulong, or char
+byte			sbyte or char
+short			sbyte, byte, ushort, uint, ulong, or char
+ushort			sbyte, byte, short, or char
+int				sbyte, byte, short, ushort, uint, ulong, or char
+uint			sbyte, byte, short, ushort, int, or char
+long			sbyte, byte, short, ushort, int, uint, ulong, or char
+ulong			sbyte, byte, short, ushort, int, uint, long, or char
+char			sbyte, byte, or short
+float			sbyte, byte, short, ushort, int, uint, long, ulong, char, or decimal
+double			sbyte, byte, short, ushort, int, uint, long, ulong, char, float, or decimal
+decimal			sbyte, byte, short, ushort, int, uint, long, ulong, char, float, or double

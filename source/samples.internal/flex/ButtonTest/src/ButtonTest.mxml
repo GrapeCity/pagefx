@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+	<mx:Button x="38" y="37" label="Test" id="btnTest"
+		click='mx.controls.Alert.show("Test")'
+		 icon="@Embed('../assets/center.png')"
+		/>
+</mx:Application>

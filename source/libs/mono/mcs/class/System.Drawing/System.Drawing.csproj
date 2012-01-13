@@ -1,0 +1,211 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1DD33CA2-3476-42E0-A49B-7B68D3720204}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Drawing</RootNamespace>
+    <AssemblyName>System.Drawing</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <PublishUrl>http://localhost/System.Drawing/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_2_0;INSIDE_CORLIB;PFX;PTR32;AVM</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;NET_2_0;INSIDE_CORLIB;PFX;PTR32;AVM</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\..\..\DataDynamics.PageFX.Shared\Graphics\PathRendering.cs">
+      <Link>System.Drawing\PathRendering.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\Consts.cs">
+      <Link>Assembly\Consts.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\Locale.cs">
+      <Link>Assembly\Locale.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\MonoTODOAttribute.cs">
+      <Link>Assembly\MonoTODOAttribute.cs</Link>
+    </Compile>
+    <Compile Include="Assembly\AssemblyInfo.cs" />
+    <Compile Include="System.Drawing.Flash\Const.cs" />
+    <Compile Include="System.Drawing.Flash\CurveMath.cs" />
+    <Compile Include="System.Drawing.Flash\DashedLine.cs" />
+    <Compile Include="System.Drawing.Flash\FlashPathRender.cs" />
+    <Compile Include="System.Drawing.Flash\FloatHelper.cs" />
+    <Compile Include="System.Drawing.Flash\FlashDrawingAdapter.cs" />
+    <Compile Include="System.Drawing.Flash\ColorHelper.cs" />
+    <Compile Include="System.Drawing.Flash\DisplayHelper.cs" />
+    <Compile Include="System.Drawing.Drawing2D\Blend.cs" />
+    <Compile Include="System.Drawing.Drawing2D\ColorBlend.cs" />
+    <Compile Include="System.Drawing.Drawing2D\CombineMode.cs" />
+    <Compile Include="System.Drawing.Drawing2D\CompostingMode.cs" />
+    <Compile Include="System.Drawing.Drawing2D\CompostingQuality.cs" />
+    <Compile Include="System.Drawing.Drawing2D\CoordinateSpace.cs" />
+    <Compile Include="System.Drawing.Drawing2D\CustomLineCap.jvm.cs" />
+    <Compile Include="System.Drawing.Drawing2D\DashCap.cs" />
+    <Compile Include="System.Drawing.Drawing2D\DashStyle.cs" />
+    <Compile Include="System.Drawing.Drawing2D\FillMode.cs" />
+    <Compile Include="System.Drawing.Drawing2D\FlushIntention.cs" />
+    <Compile Include="System.Drawing.Drawing2D\GraphicsContainer.jvm.cs" />
+    <Compile Include="System.Drawing.Drawing2D\GraphicsPath.pfx.cs" />
+    <Compile Include="System.Drawing.Drawing2D\GraphicsState.pfx.cs" />
+    <Compile Include="System.Drawing.Drawing2D\HatchBrush.pfx.cs" />
+    <Compile Include="System.Drawing.Drawing2D\HatchStyle.cs" />
+    <Compile Include="System.Drawing.Drawing2D\InterpolationMode.cs" />
+    <Compile Include="System.Drawing.Drawing2D\LinearGradientBrush.pfx.cs" />
+    <Compile Include="System.Drawing.Drawing2D\LinearGradientMode.cs" />
+    <Compile Include="System.Drawing.Drawing2D\LineCap.cs" />
+    <Compile Include="System.Drawing.Drawing2D\LineJoin.cs" />
+    <Compile Include="System.Drawing.Drawing2D\Matrix.pfx.cs" />
+    <Compile Include="System.Drawing.Drawing2D\MatrixOrder.cs" />
+    <Compile Include="System.Drawing.Drawing2D\PathData.cs" />
+    <Compile Include="System.Drawing.Drawing2D\PathPointType.cs" />
+    <Compile Include="System.Drawing.Drawing2D\PenAlignment.cs" />
+    <Compile Include="System.Drawing.Drawing2D\PenType.cs" />
+    <Compile Include="System.Drawing.Drawing2D\PixelOffsetMode.cs" />
+    <Compile Include="System.Drawing.Drawing2D\QualityMode.cs" />
+    <Compile Include="System.Drawing.Drawing2D\RegionData.cs" />
+    <Compile Include="System.Drawing.Drawing2D\SmoothingMode.cs" />
+    <Compile Include="System.Drawing.Drawing2D\WarpMode.cs" />
+    <Compile Include="System.Drawing.Drawing2D\WrapMode.cs" />
+    <Compile Include="System.Drawing.Imaging\ColorAdjustType.cs" />
+    <Compile Include="System.Drawing.Imaging\ColorChannelFlag.cs" />
+    <Compile Include="System.Drawing.Imaging\ColorMap.cs" />
+    <Compile Include="System.Drawing.Imaging\ColorMapType.cs" />
+    <Compile Include="System.Drawing.Imaging\ColorMatrix.cs" />
+    <Compile Include="System.Drawing.Imaging\ColorMatrixFlag.cs" />
+    <Compile Include="System.Drawing.Imaging\ColorMode.cs" />
+    <Compile Include="System.Drawing.Imaging\ColorPalette.cs" />
+    <Compile Include="System.Drawing.Imaging\FrameDimension.cs" />
+    <Compile Include="System.Drawing.Imaging\ImageAttributes.jvm.cs" />
+    <Compile Include="System.Drawing.Imaging\ImageFormat.cs" />
+    <Compile Include="System.Drawing.Imaging\Metafile.pfx.cs" />
+    <Compile Include="System.Drawing.Imaging\PaletteFlags.cs" />
+    <Compile Include="System.Drawing.Imaging\PixelFormat.cs" />
+    <Compile Include="System.Drawing.Text\FontCollection.pfx.cs" />
+    <Compile Include="System.Drawing.Text\GenericFontFamilies.cs" />
+    <Compile Include="System.Drawing.Text\HotkeyPrefix.cs" />
+    <Compile Include="System.Drawing.Text\InstalledFontCollection.pfx.cs" />
+    <Compile Include="System.Drawing.Text\PrivateFontCollection.pfx.cs" />
+    <Compile Include="System.Drawing.Text\TextRenderingHint.cs" />
+    <Compile Include="System.Drawing\Bitmap.pfx.cs" />
+    <Compile Include="System.Drawing\Brush.pfx.cs" />
+    <Compile Include="System.Drawing\Brushes.cs" />
+    <Compile Include="System.Drawing\CharacterRange.cs" />
+    <Compile Include="System.Drawing\Color.cs" />
+    <Compile Include="System.Drawing\ColorTranslator.cs" />
+    <Compile Include="System.Drawing\ContentAlignment.cs" />
+    <Compile Include="System.Drawing\CopyPixelOperation.cs" />
+    <Compile Include="System.Drawing\Font.pfx.cs" />
+    <Compile Include="System.Drawing\FontFamily.pfx.cs" />
+    <Compile Include="System.Drawing\FontStyle.cs" />
+    <Compile Include="System.Drawing\Graphics.pfx.cs" />
+    <Compile Include="System.Drawing\GraphicsUnit.cs" />
+    <Compile Include="System.Drawing\Icon.pfx.cs" />
+    <Compile Include="System.Drawing\Image.pfx.cs" />
+    <Compile Include="System.Drawing\KnownColor.cs" />
+    <Compile Include="System.Drawing\KnownColors.cs" />
+    <Compile Include="System.Drawing\Pen.pfx.cs" />
+    <Compile Include="System.Drawing\Pens.cs" />
+    <Compile Include="System.Drawing\Point.cs" />
+    <Compile Include="System.Drawing\PointF.cs" />
+    <Compile Include="System.Drawing\Rectangle.cs" />
+    <Compile Include="System.Drawing\RectangleF.cs" />
+    <Compile Include="System.Drawing\Region.pfx.cs" />
+    <Compile Include="System.Drawing\RotateFlipType.cs" />
+    <Compile Include="System.Drawing\Size.cs" />
+    <Compile Include="System.Drawing\SizeF.cs" />
+    <Compile Include="System.Drawing\SolidBrush.pfx.cs" />
+    <Compile Include="System.Drawing\SRDescriptionAttribute.cs" />
+    <Compile Include="System.Drawing\StringAligment.cs" />
+    <Compile Include="System.Drawing\StringDigitSubstitute.cs" />
+    <Compile Include="System.Drawing\StringFormat.pfx.cs" />
+    <Compile Include="System.Drawing\StringFormatFlags.cs" />
+    <Compile Include="System.Drawing\StringTrimming.cs" />
+    <Compile Include="System.Drawing\StringUnit.cs" />
+    <Compile Include="System.Drawing\SystemBrushes.cs" />
+    <Compile Include="System.Drawing\SystemColors.cs" />
+    <Compile Include="System.Drawing\SystemFonts.cs" />
+    <Compile Include="System.Drawing\SystemIcons.cs" />
+    <Compile Include="System.Drawing\SystemPens.cs" />
+    <Compile Include="System.Drawing\TextRenderer.cs" />
+    <Compile Include="System.Drawing\TextureBrush.pfx.cs" />
+    <Compile Include="System.Drawing\ToolboxBitmapAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\corlib\mscorlib.csproj">
+      <Project>{C9A6CF06-1E1F-4196-8339-B060F0B5714C}</Project>
+      <Name>mscorlib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\System\System.csproj">
+      <Project>{D2D26DF4-6214-4F24-82E3-9190819D9C50}</Project>
+      <Name>System</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>

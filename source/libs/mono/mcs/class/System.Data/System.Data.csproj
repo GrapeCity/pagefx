@@ -1,0 +1,245 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CA8A893C-BE5C-4773-8429-CA6F63DB3074}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Data</RootNamespace>
+    <AssemblyName>System.Data</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_1_1;INSIDE_CORLIB;PFX;AVM;NET_2_0;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;NET_1_1;INSIDE_CORLIB;PFX;AVM;NET_2_0;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\build\common\Consts.cs">
+      <Link>Assembly\Consts.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\Locale.cs">
+      <Link>Assembly\Locale.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\MonoTODOAttribute.cs">
+      <Link>Assembly\MonoTODOAttribute.cs</Link>
+    </Compile>
+    <Compile Include="Assembly\AssemblyInfo.cs" />
+    <Compile Include="System.Data.Common\ComparerFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\DataColumnMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\DataColumnMappingCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\DataContainer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\DbDataPermissionAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\DbException.cs" />
+    <Compile Include="System.Data.Common\DbTypes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\ExceptionHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\FieldNameLookup.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\GroupByBehavior.cs" />
+    <Compile Include="System.Data.Common\RecordCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\SchemaInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data.Common\SchemaTableColumn.cs" />
+    <Compile Include="System.Data.Common\SchemaTableOptionalColumn.cs" />
+    <Compile Include="System.Data.Common\SupportedJoinOperators.cs" />
+    <Compile Include="System.Data\AcceptRejectRule.cs" />
+    <Compile Include="System.Data\Constraint.cs" />
+    <Compile Include="System.Data\ConstraintCollection.cs" />
+    <Compile Include="System.Data\ConstraintException.cs" />
+    <Compile Include="System.Data\DataCategoryAttribute.cs" />
+    <Compile Include="System.Data\DataColumn.cs" />
+    <Compile Include="System.Data\DataColumnChangeEventArgs.cs" />
+    <Compile Include="System.Data\DataColumnChangeEventHandler.cs" />
+    <Compile Include="System.Data\DataColumnCollection.cs" />
+    <Compile Include="System.Data\DataException.cs" />
+    <Compile Include="System.Data\DataRelation.cs" />
+    <Compile Include="System.Data\DataRelationCollection.cs" />
+    <Compile Include="System.Data\DataRow.cs" />
+    <Compile Include="System.Data\DataRowAction.cs" />
+    <Compile Include="System.Data\DataRowBuilder.cs" />
+    <Compile Include="System.Data\DataRowChangeEventArgs.cs" />
+    <Compile Include="System.Data\DataRowChangeEventHandler.cs" />
+    <Compile Include="System.Data\DataRowCollection.cs" />
+    <Compile Include="System.Data\DataRowState.cs" />
+    <Compile Include="System.Data\DataRowVersion.cs" />
+    <Compile Include="System.Data\DataSet.cs" />
+    <Compile Include="System.Data\DataSetDateTime.cs" />
+    <Compile Include="System.Data\DataSysDescriptionAttribute.cs" />
+    <Compile Include="System.Data\DataTable.cs" />
+    <Compile Include="System.Data\DataTableClearEventArgs.cs" />
+    <Compile Include="System.Data\DataTableClearEventHandler.cs" />
+    <Compile Include="System.Data\DataTableCollection.cs" />
+    <Compile Include="System.Data\DataTableNewRowEventArgs.cs" />
+    <Compile Include="System.Data\DataTableNewRowEventHandler.cs" />
+    <Compile Include="System.Data\DataViewRowState.cs" />
+    <Compile Include="System.Data\DBConcurrencyException.cs" />
+    <Compile Include="System.Data\DbType.cs" />
+    <Compile Include="System.Data\DeletedRowInaccessibleException.cs" />
+    <Compile Include="System.Data\DuplicateNameException.cs" />
+    <Compile Include="System.Data\EvaluateException.cs" />
+    <Compile Include="System.Data\FillErrorEventArgs.cs" />
+    <Compile Include="System.Data\FillErrorEventHandler.cs" />
+    <Compile Include="System.Data\ForeignKeyConstraint.cs" />
+    <Compile Include="System.Data\IColumnMapping.cs" />
+    <Compile Include="System.Data\IColumnMappingCollection.cs" />
+    <Compile Include="System.Data\IDataRecord.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data\InRowChangingEventException.cs" />
+    <Compile Include="System.Data\InternalDataCollectionBase.cs" />
+    <Compile Include="System.Data\InvalidConstraintException.cs" />
+    <Compile Include="System.Data\InvalidExpressionException.cs" />
+    <Compile Include="System.Data\ISafeDataRecord.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Data\IsolationLevel.cs" />
+    <Compile Include="System.Data\KeyRestrictionBehavior.cs" />
+    <Compile Include="System.Data\LoadOption.cs" />
+    <Compile Include="System.Data\MappingType.cs" />
+    <Compile Include="System.Data\MergeFailedEventArgs.cs" />
+    <Compile Include="System.Data\MergeFailedEventHandler.cs" />
+    <Compile Include="System.Data\MissingMappingAction.cs" />
+    <Compile Include="System.Data\MissingPrimaryKeyException.cs" />
+    <Compile Include="System.Data\MissingSchemaAction.cs" />
+    <Compile Include="System.Data\Node.cs" />
+    <Compile Include="System.Data\NoNullAllowedException.cs" />
+    <Compile Include="System.Data\OperationAbortedException.cs" />
+    <Compile Include="System.Data\ParameterDirection.cs" />
+    <Compile Include="System.Data\PropertyAttributes.cs" />
+    <Compile Include="System.Data\PropertyCollection.cs" />
+    <Compile Include="System.Data\ReadOnlyException.cs" />
+    <Compile Include="System.Data\ResDescriptionAttribute.cs" />
+    <Compile Include="System.Data\RowNotInTableException.cs" />
+    <Compile Include="System.Data\Rule.cs" />
+    <Compile Include="System.Data\SchemaSerializationMode.cs" />
+    <Compile Include="System.Data\SchemaType.cs" />
+    <Compile Include="System.Data\SerializationFormat.cs" />
+    <Compile Include="System.Data\SqlDbType.cs" />
+    <Compile Include="System.Data\StatementCompletedEventArgs.cs" />
+    <Compile Include="System.Data\StatementCompletedEventHandler.cs" />
+    <Compile Include="System.Data\StatementType.cs" />
+    <Compile Include="System.Data\StrongTypingException.cs" />
+    <Compile Include="System.Data\SyntaxErrorException.cs" />
+    <Compile Include="System.Data\TypeDataSetGeneratorException.cs" />
+    <Compile Include="System.Data\UniqueConstraint.cs" />
+    <Compile Include="System.Data\UpdateRowSource.cs" />
+    <Compile Include="System.Data\UpdateStatus.cs" />
+    <Compile Include="System.Data\VersionNotFoundException.cs" />
+    <Compile Include="System.Data\XmlConstants.cs" />
+    <Compile Include="System.Data\XmlDataInferenceLoader.cs" />
+    <Compile Include="System.Data\XmlDataLoader.cs" />
+    <Compile Include="System.Data\XmlDataReader.cs" />
+    <Compile Include="System.Data\XmlDiffLoader.cs" />
+    <Compile Include="System.Data\XmlHelper.cs" />
+    <Compile Include="System.Data\XmlReadMode.cs" />
+    <Compile Include="System.Data\XmlSchemaWriter.cs" />
+    <Compile Include="System.Data\XmlTableWriter.cs" />
+    <Compile Include="System.Data\XmlWriteMode.cs" />
+    <Compile Include="System.Xml\EntityHandling.cs" />
+    <Compile Include="System.Xml\IHasXmlChildNode.cs" />
+    <Compile Include="System.Xml\IHasXmlParserContext.cs" />
+    <Compile Include="System.Xml\XmlAttribute.cs" />
+    <Compile Include="System.Xml\XmlAttributeCollection.cs" />
+    <Compile Include="System.Xml\XmlCDataSection.cs" />
+    <Compile Include="System.Xml\XmlChar.cs" />
+    <Compile Include="System.Xml\XmlCharacterData.cs" />
+    <Compile Include="System.Xml\XmlComment.cs" />
+    <Compile Include="System.Xml\XmlConvert.cs" />
+    <Compile Include="System.Xml\XmlDeclaration.cs" />
+    <Compile Include="System.Xml\XmlDocument.cs" />
+    <Compile Include="System.Xml\XmlDocumentFragment.cs" />
+    <Compile Include="System.Xml\XmlDocumentType.cs" />
+    <Compile Include="System.Xml\XmlElement.cs" />
+    <Compile Include="System.Xml\XmlEntity.cs" />
+    <Compile Include="System.Xml\XmlEntityReference.cs" />
+    <Compile Include="System.Xml\XmlImplementation.cs" />
+    <Compile Include="System.Xml\XmlLinkedNode.cs" />
+    <Compile Include="System.Xml\XmlNamedNodeMap.cs" />
+    <Compile Include="System.Xml\XmlNameEntry.cs" />
+    <Compile Include="System.Xml\XmlNameEntryCache.cs" />
+    <Compile Include="System.Xml\XmlNamespaceManager.cs" />
+    <Compile Include="System.Xml\XmlNode.cs" />
+    <Compile Include="System.Xml\XmlNodeArrayList.cs" />
+    <Compile Include="System.Xml\XmlNodeChangedAction.cs" />
+    <Compile Include="System.Xml\XmlNodeChangedEventArgs.cs" />
+    <Compile Include="System.Xml\XmlNodeChangedEventHandler.cs" />
+    <Compile Include="System.Xml\XmlNodeList.cs" />
+    <Compile Include="System.Xml\XmlNodeListChildren.cs" />
+    <Compile Include="System.Xml\XmlNodeOrder.cs" />
+    <Compile Include="System.Xml\XmlNodeReader2.cs" />
+    <Compile Include="System.Xml\XmlNodeReaderImpl.cs" />
+    <Compile Include="System.Xml\XmlProcessingInstruction.cs" />
+    <Compile Include="System.Xml\XmlSignificantWhitespace.cs" />
+    <Compile Include="System.Xml\XmlText.cs" />
+    <Compile Include="System.Xml\XmlTextWriter2.cs" />
+    <Compile Include="System.Xml\XmlUrlResolver.cs" />
+    <Compile Include="System.Xml\XmlWhitespace.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\corlib\mscorlib.csproj">
+      <Project>{C9A6CF06-1E1F-4196-8339-B060F0B5714C}</Project>
+      <Name>mscorlib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\System.XML\System.Xml.csproj">
+      <Project>{43285385-BB7C-43C4-9262-6F4D3AE9B654}</Project>
+      <Name>System.Xml</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\System\System.csproj">
+      <Project>{D2D26DF4-6214-4F24-82E3-9190819D9C50}</Project>
+      <Name>System</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="System.Xml.XPath\" />
+  </ItemGroup>
+</Project>

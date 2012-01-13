@@ -1,0 +1,10 @@
+﻿run app.swf
+break 18
+continue
+next 9
+info locals
+step
+print quality
+quit
+y
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flexLibProperties version="1">
+<includeClasses>
+<classEntry path="DataDynamics.UI.TestPanel"/>
+<classEntry path="DataDynamics.UI.TestToolbar"/>
+</includeClasses>
+<includeResources>
+<resourceEntry destPath="locale/en_US/R.properties" sourcePath="locale/en_US/R.properties"/>
+</includeResources>
+<namespaceManifests/>
+</flexLibProperties>

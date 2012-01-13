@@ -1,0 +1,1 @@
+resourceModuleURLs=fr_FR_RM.swf&localeChain=fr_FR

@@ -1,0 +1,1 @@
+nant -buildfile:build.nant -logfile:build.nightly.log local-nightly

@@ -1,0 +1,16 @@
+<project name="clean" default="clean">
+    <target name="clean">
+        <delete>
+            <fileset>
+                <include name="**/bin/**" />
+                <include name="**/obj/**" />
+                <include name="**/_ReSharper.*/**" />
+                <include name="**/*.suo" />
+                <include name="**/*.user" />
+                <include name="**/*.projdata" />
+                <include name="**/*.ncb" />
+                <include name="**/*.resharper*" />
+            </fileset>
+        </delete>
+    </target>
+</project>

@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+<project xmlns="http://nant.sf.net" name="StarTeam Targets">
+  <description>
+    Contains the source code control (SCC) tasks.
+    The main tasks are:  scc.updatestatus, scc.clean, scc.checkout
+    The	main properties are: project, view, vault.folder, local.folder, username, passwordfile
+  </description>
+
+  <property name="starteam.cmdclient" value="stcmd.exe" unless="${property::exists('starteam.cmdclient')}"/>
+
+  <property name="starteam.basedir1" value="C:\Program Files\Borland\StarTeam 2005 R2" />
+  <property name="starteam.basedir2" value="C:\Program Files\Starbase\StarTeam 5.2" />
+
+  <if test="${not property::exists('starteam.basedir')}">
+    <property name="starteam.basedir" value="${starteam.basedir1}" if="${directory::exists(property::get-value('starteam.basedir1'))}"/>
+    <property name="starteam.basedir" value="${starteam.basedir2}" if="${directory::exists(property::get-value('starteam.basedir2'))}"/>
+  </if>
+
+  <property name="server" value="lifestar.datadynamics.com" unless="${property::exists('server')}"/>  
+  <property name="vault.folder" value="Source" unless="${property::exists('vault.folder')}"/>
+  <property name="local.folder" value="${project::get-base-directory()}" unless="${property::exists('local.folder')}"/>
+
+  <property name="username" value="builder" unless="${property::exists('username')}"/>
+  <property name="passwordfile" value="-pwdfile &quot;C:\stpwd.bin&quot;" unless="${property::exists('passwordfile')}"/>
+  <property name="starteam.arg.recurse" value="-is" />
+  <property name="starteam.arg.batchmode" value="-x" />
+  <!-- Executes in batch mode (no waiting for user response) -->
+  <property name="starteam.arg.stoponerror" value="-stop" />
+  <!-- stops execution on first error -->
+  <property name="starteam.arg.quiet" value="-q" />
+  <!-- stops excessive progress reporting-->
+  <property name="starteam.arg.overidefoldersworkingfolder" value="-fp &quot;${local.folder}&quot;" />
+  <!-- argument to specify a vault fodler's working folder to checkout to-->
+
+  <!-- commandline: -p "Builder:test@%STSERVER%:49201/stryker/stryker/Source/" -->
+  <property name="starteam.arg.project"
+		value="-p &quot;${username}:usepasswordfile@${server}:49201/PageFX/v0.5/${vault.folder}&quot;" />
+
+  <target name="starteam.updatestatus">
+
+    <exec program="${starteam.cmdclient}"
+			basedir="${starteam.basedir}"
+			verbose="true"
+		>
+      <arg value="update-status" />
+      <arg value="-nologo" />
+      <arg value="${starteam.arg.project}" />
+      <arg value="${passwordfile}" />
+      <arg value="${starteam.arg.recurse}" />
+      <arg value="${starteam.arg.quiet}" />
+      <arg value="${starteam.arg.batchmode}" />
+      <arg value="${starteam.arg.stoponerror}" />
+      <arg value="${starteam.arg.overidefoldersworkingfolder}" />
+
+      <arg value="&quot;*&quot;" />
+    </exec>
+  </target>
+
+  <target name="starteam.clean" depends="starteam.updatestatus">
+    <exec program="${starteam.cmdclient}"
+			basedir="${starteam.basedir}"
+			failonerror="true"
+			verbose="true"
+		>
+      <arg value="delete-local" />
+      <arg value="${starteam.arg.project}" />
+      <arg value="${passwordfile}" />
+      <arg value="${starteam.arg.recurse}" />
+      <arg value="-filter &quot;GMNU&quot;" />
+      <!-- filter: merge, modified, not in view, unknown-->
+      <arg value="${starteam.arg.quiet}" />
+      <arg value="${starteam.arg.batchmode}" />
+      <arg value="${starteam.arg.stoponerror}" />
+      <arg value="${starteam.arg.overidefoldersworkingfolder}" />
+      <arg value="-nologo" />
+      <arg value="&quot;*&quot;" />
+    </exec>
+  </target>
+
+  <target name="starteam.checkout" depends="starteam.updatestatus, starteam.clean">
+    <exec program="${starteam.cmdclient}"
+			basedir="${starteam.basedir}"
+		>
+      <arg value="co" />
+      <arg value="-o" />
+      <arg value="${starteam.arg.project}" />
+      <arg value="${passwordfile}" />
+      <arg value="${starteam.arg.recurse}" />
+      <arg value="-filter &quot;MONIGU&quot;" />
+      <!-- filter: merge, missing, modified, out of date, unkown-->
+      <arg value="${starteam.arg.batchmode}" />
+      <arg value="${starteam.arg.stoponerror}" />
+      <arg value="${starteam.arg.overidefoldersworkingfolder}" />
+      <arg value="-nologo" />
+      <arg value="${starteam.arg.quiet}" />
+      <arg value="&quot;*&quot;" />
+    </exec>
+  </target>
+</project>

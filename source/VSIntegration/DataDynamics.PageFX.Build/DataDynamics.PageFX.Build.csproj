@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EA4DDA5B-D108-4CBC-918A-86E36198FDFF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataDynamics.PageFX.Build</RootNamespace>
+    <AssemblyName>DataDynamics.PageFX.Build</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>c:\pfx\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities" />
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\Algorithms.cs">
+      <Link>Algorithms.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\ConvertedEnumerator.cs">
+      <Link>ConvertedEnumerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\FunctorComparer.cs">
+      <Link>FunctorComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\MergedEnumerator.cs">
+      <Link>MergedEnumerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\SimpleList.cs">
+      <Link>SimpleList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\CompilerException.cs">
+      <Link>CompilerException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\CompilerReport.cs">
+      <Link>CompilerReport.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\Error.cs">
+      <Link>Error.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\Errors.cs">
+      <Link>Errors.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\GlobalSettings.cs">
+      <Link>GlobalSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\PFCOptions.cs">
+      <Link>PFCOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\Warnings.cs">
+      <Link>Warnings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\System\TextFormatter.cs">
+      <Link>TextFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CLOption.cs">
+      <Link>CLOption.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CommandLine.cs">
+      <Link>CommandLine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CommandPromt.cs">
+      <Link>CommandPromt.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CompilerConsole.cs">
+      <Link>CompilerConsole.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Delegates.cs">
+      <Link>Delegates.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\FormatAttribute.cs">
+      <Link>FormatAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\FrameworkInfo.cs">
+      <Link>FrameworkInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\ReflectionHelper.cs">
+      <Link>ReflectionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\str.cs">
+      <Link>str.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\StringAttribute.cs">
+      <Link>StringAttribute.cs</Link>
+    </Compile>
+    <Compile Include="Pfc.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PageFX.targets">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

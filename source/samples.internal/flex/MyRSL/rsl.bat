@@ -1,0 +1,1 @@
+mxmlc -o=MyRSL.swf -file-specs=src\dd\Test.as -source-path=src

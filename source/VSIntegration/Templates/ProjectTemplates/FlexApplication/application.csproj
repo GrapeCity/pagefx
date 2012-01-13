@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<ProductVersion>8.0.30703</ProductVersion>
+		<SchemaVersion>2.0</SchemaVersion>
+		<ProjectGuid>$guid1$</ProjectGuid>
+		<OutputType>Library</OutputType>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<RootNamespace>$safeprojectname$</RootNamespace>
+		<AssemblyName>$safeprojectname$</AssemblyName>
+		<TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+		<FileAlignment>512</FileAlignment>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>bin\Debug\</OutputPath>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<NoStdLib>true</NoStdLib>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>pdbonly</DebugType>
+ 		<Optimize>true</Optimize>
+		<OutputPath>bin\Release\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<NoStdLib>true</NoStdLib>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      			<SpecificVersion>False</SpecificVersion>
+      			<HintPath>$(PFXHOME)\framework\mscorlib.dll</HintPath>
+      			<Private>False</Private>
+    		</Reference>
+    		<Reference Include="System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      			<SpecificVersion>False</SpecificVersion>
+      			<HintPath>$(PFXHOME)\framework\System.dll</HintPath>
+    		</Reference>
+    		<Reference Include="flex3, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      			<SpecificVersion>False</SpecificVersion>
+      			<HintPath>$(PFXHOME)\flexsdk\flex3.dll</HintPath>
+      			<Private>False</Private>
+    		</Reference>
+    		<Reference Include="flex3.rpc, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      			<SpecificVersion>False</SpecificVersion>
+      			<HintPath>($PFXHOME)\flexsdk\flex3.rpc.dll</HintPath>
+      			<Private>False</Private>
+    		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="Application.cs" />
+
+		<Compile Include="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
+	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+	<Import Project="$(PFXHOME)\bin\PageFX.targets" />
+  	<Target Name="BeforeBuild">
+  	</Target>
+  	<Target Name="AfterBuild">
+  		<CallTarget Targets="RunPfc"/>
+  	</Target>
+ </Project>

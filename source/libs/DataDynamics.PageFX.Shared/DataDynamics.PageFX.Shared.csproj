@@ -1,0 +1,182 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataDynamics.PageFX.Shared</RootNamespace>
+    <AssemblyName>DataDynamics.PageFX.Shared</AssemblyName>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_2_0</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NET_2_0</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Compression\Zip.cs" />
+    <Compile Include="Compression\Zip\Checksums\Adler32.cs" />
+    <Compile Include="Compression\Zip\Checksums\CRC32.cs" />
+    <Compile Include="Compression\Zip\Checksums\IChecksum.cs" />
+    <Compile Include="Compression\Zip\Checksums\StrangeCRC.cs" />
+    <Compile Include="Compression\Zip\Compression\Deflater.cs" />
+    <Compile Include="Compression\Zip\Compression\DeflaterConstants.cs" />
+    <Compile Include="Compression\Zip\Compression\DeflaterEngine.cs" />
+    <Compile Include="Compression\Zip\Compression\DeflaterHuffman.cs" />
+    <Compile Include="Compression\Zip\Compression\DeflaterPending.cs" />
+    <Compile Include="Compression\Zip\Compression\Inflater.cs" />
+    <Compile Include="Compression\Zip\Compression\InflaterDynHeader.cs" />
+    <Compile Include="Compression\Zip\Compression\InflaterHuffmanTree.cs" />
+    <Compile Include="Compression\Zip\Compression\PendingBuffer.cs" />
+    <Compile Include="Compression\Zip\Compression\Streams\DeflaterOutputStream.cs" />
+    <Compile Include="Compression\Zip\Compression\Streams\InflaterInputStream.cs" />
+    <Compile Include="Compression\Zip\Compression\Streams\OutputWindow.cs" />
+    <Compile Include="Compression\Zip\Compression\Streams\StreamManipulator.cs" />
+    <Compile Include="Compression\Zip\Compression\Tests\InflaterDeflaterTests.cs" />
+    <Compile Include="Compression\Zip\ZipConstants.cs" />
+    <Compile Include="Compression\Zip\ZipEntry.cs" />
+    <Compile Include="Compression\Zip\ZipException.cs" />
+    <Compile Include="Compression\Zip\ZipFile.cs" />
+    <Compile Include="Compression\Zip\ZipInputStream.cs" />
+    <Compile Include="Compression\Zip\ZipOutputStream.cs" />
+    <Compile Include="Compression\ZLib\Adler32.cs" />
+    <Compile Include="Compression\ZLib\Deflate.cs" />
+    <Compile Include="Compression\ZLib\InfBlocks.cs" />
+    <Compile Include="Compression\ZLib\InfCodes.cs" />
+    <Compile Include="Compression\ZLib\Inflate.cs" />
+    <Compile Include="Compression\ZLib\InfTree.cs" />
+    <Compile Include="Compression\ZLib\StaticTree.cs" />
+    <Compile Include="Compression\ZLib\Tree.cs" />
+    <Compile Include="Compression\ZLib\ZByteArray.cs" />
+    <Compile Include="Compression\ZLib\Zlib.cs" />
+    <Compile Include="Compression\ZLib\ZStream.cs" />
+    <Compile Include="DataStructures\Algorithms.cs" />
+    <Compile Include="DataStructures\ConvertedEnumerator.cs" />
+    <Compile Include="DataStructures\DeepEnumerator.cs" />
+    <Compile Include="DataStructures\EmptyEnumerator.cs" />
+    <Compile Include="DataStructures\FilteredEnumerator.cs" />
+    <Compile Include="DataStructures\FunctorComparer.cs" />
+    <Compile Include="DataStructures\LinkedList.cs" />
+    <Compile Include="DataStructures\Logic.cs" />
+    <Compile Include="DataStructures\MergedEnumerator.cs" />
+    <Compile Include="DataStructures\ReadOnlyList.cs" />
+    <Compile Include="DataStructures\SimpleList.cs" />
+    <Compile Include="DataStructures\Pair.cs" />
+    <Compile Include="Graphics\ColorHelper.cs" />
+    <Compile Include="Graphics\Enums.cs" />
+    <Compile Include="Graphics\GPBuilder.cs" />
+    <Compile Include="Graphics\KnownPathes.cs" />
+    <Compile Include="Graphics\SvgPathRender.cs" />
+    <Compile Include="PageFX.Tools\FlashPlayer.cs" />
+    <Compile Include="PageFX\CompilerException.cs" />
+    <Compile Include="PageFX\CompilerReport.cs" />
+    <Compile Include="PageFX\Error.cs" />
+    <Compile Include="PageFX\Errors.cs" />
+    <Compile Include="PageFX\GlobalSettings.cs" />
+    <Compile Include="PageFX\PfxConfig.cs" />
+    <Compile Include="PageFX\PFCOptions.cs" />
+    <Compile Include="PageFX\Warnings.cs" />
+    <Compile Include="Utils\CodeTextWriter.cs" />
+    <Compile Include="Utils\Filters.cs" />
+    <Compile Include="Utils\FormatExpression.cs" />
+    <Compile Include="Utils\Converters.cs" />
+    <Compile Include="Utils\SimpleConfig.cs" />
+    <Compile Include="System\Tricks.cs" />
+    <Compile Include="Utils\CLOption.cs" />
+    <Compile Include="Utils\Compiler.cs" />
+    <Compile Include="Utils\Delegates.cs" />
+    <Compile Include="Utils\DirectoryHelper.cs" />
+    <Compile Include="Graphics\FastBitmap.cs" />
+    <Compile Include="Utils\FloatHelper.cs" />
+    <Compile Include="Graphics\PathRendering.cs" />
+    <Compile Include="Utils\FormatAttribute.cs" />
+    <Compile Include="Utils\Hex.cs" />
+    <Compile Include="Utils\IEEEFloat.cs" />
+    <Compile Include="Graphics\ImageIterator.cs" />
+    <Compile Include="Graphics\ImageHelper.cs" />
+    <Compile Include="Utils\LazyValue.cs" />
+    <Compile Include="Utils\LogWriter.cs" />
+    <Compile Include="Utils\Angle.cs" />
+    <Compile Include="Utils\NameAttribute.cs" />
+    <Compile Include="Utils\FdbProcessHost.cs" />
+    <Compile Include="PageFX\PfxCompiler.cs" />
+    <Compile Include="Utils\Range.cs" />
+    <Compile Include="System.IO\DebugWriter.cs" />
+    <Compile Include="Utils\PathHelper.cs" />
+    <Compile Include="Tools\Dot.cs" />
+    <Compile Include="Utils\ActionSelector.cs" />
+    <Compile Include="Utils\CommandLine.cs" />
+    <Compile Include="Utils\CommandPromt.cs" />
+    <Compile Include="Utils\TODOAttribute.cs" />
+    <Compile Include="Utils\CommonExceptions.cs" />
+    <Compile Include="Utils\CompilerConsole.cs" />
+    <Compile Include="Utils\Escaper.cs" />
+    <Compile Include="Utils\FrameworkInfo.cs" />
+    <Compile Include="Utils\Indent.cs" />
+    <Compile Include="Utils\ISupportXmlDump.cs" />
+    <Compile Include="Utils\NameHelper.cs" />
+    <Compile Include="Utils\ParseHelper.cs" />
+    <Compile Include="Utils\ReflectionHelper.cs" />
+    <Compile Include="Utils\ResourceHelper.cs" />
+    <Compile Include="Utils\StringAttribute.cs" />
+    <Compile Include="Utils\TextTemplateEngine.cs" />
+    <Compile Include="Utils\xml.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DataStructures\EmptyList.cs" />
+    <Compile Include="DataStructures\HashedList.cs" />
+    <Compile Include="DataStructures\IKeyProvider.cs" />
+    <Compile Include="System.IO\BitReader.cs" />
+    <Compile Include="System.IO\BitHelper.cs" />
+    <Compile Include="System.IO\BitWriter.cs" />
+    <Compile Include="System.IO\BufferedBinaryReader.cs" />
+    <Compile Include="System.IO\PathResolver.cs" />
+    <Compile Include="System.IO\Stream2.cs" />
+    <Compile Include="System\Object2.cs" />
+    <Compile Include="Utils\str.cs" />
+    <Compile Include="System\TextFormatter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tools\dot.zip" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

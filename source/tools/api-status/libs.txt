@@ -1,0 +1,5 @@
+#format: <silverlight lib>;<pfx lib> 
+mscorlib;mscorlib
+System;System
+System.Core;System.Core
+System.Xml;System.Xml

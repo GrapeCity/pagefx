@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" default="main">
+
+  <property name="cd" value="${project::get-base-directory()}"/>
+  <property name="pfx.tools" value="c:\pfx\tools"/>
+
+  <target name="main">
+    <foreach item="File" property="file">
+      <in>
+        <items basedir="${cd}">
+          <include name="*.vb"/>
+        </items>
+      </in>
+      <do>
+        <echo message="${file}"/>
+        <exec basedir="${pfx.tools}" program="mono-test-adaptor.exe" workingdir="${cd}"
+              commandline='/vb "${file}"'/>
+      </do>
+    </foreach>
+  </target>
+
+</project>

@@ -1,0 +1,1891 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C9A6CF06-1E1F-4196-8339-B060F0B5714C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System</RootNamespace>
+    <AssemblyName>mscorlib</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <PublishUrl>http://localhost/corlib/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_1_1;INSIDE_CORLIB;PFX;PTR32;AVM;NET_2_0;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;NET_1_1;INSIDE_CORLIB;PFX;PTR32;AVM;NET_2_0;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|.NET 1.1' ">
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <Optimize>true</Optimize>
+    <DefineConstants>NET_1_1;INSIDE_CORLIB;PFX;PTR32;AVM;NET_2_0;</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|.NET 1.1' ">
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <Optimize>true</Optimize>
+    <DefineConstants>NET_1_1;INSIDE_CORLIB;PFX;PTR32;AVM;NET_2_0;</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\build\common\Consts.cs">
+      <Link>Assembly\Consts.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\Locale.cs">
+      <Link>Assembly\Locale.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\MonoTODOAttribute.cs">
+      <Link>Assembly\MonoTODOAttribute.cs</Link>
+    </Compile>
+    <Compile Include="Assembly\AssemblyInfo.cs" />
+    <Compile Include="Mono.Security\BitConverterLE.cs" />
+    <Compile Include="PageFX\Core\abc.cs" />
+    <Compile Include="PageFX\Core\avm.cs" />
+    <Compile Include="PageFX\Core\AvmErrors.cs" />
+    <Compile Include="PageFX\Core\FP10\adobe.utils\CustomActions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\adobe.utils\Global.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\adobe.utils\ProductManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\adobe.utils\XMLUI.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\ArgumentError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Array.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Boolean.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Class.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Date.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\DefinitionError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Error.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\EvalError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Function.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Global.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Int.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Math.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Namespace.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Number.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\Object.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\QName.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\RangeError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\ReferenceError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\RegExp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\SecurityError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\String.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\SyntaxError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\TypeError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\UInt.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\UninitializedError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\URIError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\VerifyError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\XML.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\Avm\XMLList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.accessibility\Accessibility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.accessibility\AccessibilityImplementation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.accessibility\AccessibilityProperties.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.debugger\Global.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.desktop\Clipboard.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.desktop\ClipboardFormats.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.desktop\ClipboardTransferMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\ActionScriptVersion.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\AVM1Movie.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\Bitmap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\BitmapData.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\BitmapDataChannel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\BlendMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\CapsStyle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\DisplayObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\DisplayObjectContainer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\FrameLabel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GradientType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\Graphics.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsBitmapFill.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsEndFill.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsGradientFill.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsPath.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsPathCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsPathWinding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsShaderFill.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsSolidFill.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsStroke.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsTrianglePath.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\IBitmapDrawable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\IGraphicsData.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\IGraphicsFill.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\IGraphicsPath.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\IGraphicsStroke.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\InteractiveObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\InterpolationMethod.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\JointStyle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\LineScaleMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\Loader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\LoaderInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\MorphShape.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\MovieClip.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\PixelSnapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\Scene.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\Shader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\ShaderData.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\ShaderInput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\ShaderJob.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\ShaderParameter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\ShaderParameterType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\ShaderPrecision.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\Shape.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\SimpleButton.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\SpreadMethod.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\Sprite.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\Stage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\StageAlign.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\StageColorCorrectionMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\StageDisplayState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\StageQuality.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\StageScaleMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\SWFVersion.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.display\TriangleCulling.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.errors\EOFError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.errors\IllegalOperationError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.errors\InvalidSWFError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.errors\IOError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.errors\MemoryError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.errors\ScriptTimeoutError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.errors\StackOverflowError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ActivityEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ActivityEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\AsyncErrorEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\AsyncErrorEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ContextMenuEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ContextMenuEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\DataEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\DataEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ErrorEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ErrorEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\Event.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\EventDispatcher.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\EventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\EventPhase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\FocusEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\FocusEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\FullScreenEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\FullScreenEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\HTTPStatusEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\HTTPStatusEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\IEventDispatcher.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\IMEEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\IMEEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\IOErrorEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\IOErrorEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\KeyboardEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\KeyboardEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\MouseEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\MouseEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\NetFilterEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\NetStatusEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\NetStatusEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ProgressEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ProgressEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\SampleDataEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\SampleDataEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\SecurityErrorEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\SecurityErrorEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ShaderEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\ShaderEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\StatusEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\StatusEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\SyncEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\SyncEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\TextEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\TextEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\TimerEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.events\TimerEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.external\ExternalInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\BevelFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\BitmapFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\BitmapFilterQuality.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\BitmapFilterType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\BlurFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\ColorMatrixFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\ConvolutionFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\DisplacementMapFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\DisplacementMapFilterMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\DropShadowFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\GlowFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\GradientBevelFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\GradientGlowFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.filters\ShaderFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\ColorTransform.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\Matrix.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\Matrix3D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\Orientation3D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\PerspectiveProjection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\Point.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\Rectangle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\Transform.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\Utils3D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.geom\Vector3D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\Camera.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\ID3Info.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\Microphone.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\Sound.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\SoundChannel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\SoundCodec.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\SoundLoaderContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\SoundMixer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\SoundTransform.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.media\Video.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\FileFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\FileReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\FileReferenceList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\Global.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\IDynamicPropertyOutput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\IDynamicPropertyWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\LocalConnection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\NetConnection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\NetStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\NetStreamInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\NetStreamPlayOptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\NetStreamPlayTransitions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\ObjectEncoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\Responder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\SharedObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\SharedObjectFlushStatus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\Socket.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\URLLoader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\URLLoaderDataFormat.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\URLRequest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\URLRequestHeader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\URLRequestMethod.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\URLStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\URLVariables.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.net\XMLSocket.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.printing\PrintJob.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.printing\PrintJobOptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.printing\PrintJobOrientation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.profiler\Global.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.sampler\DeleteObjectSample.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.sampler\Global.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.sampler\NewObjectSample.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.sampler\Sample.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.sampler\StackFrame.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\ApplicationDomain.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\Capabilities.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\Global.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\IME.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\IMEConversionMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\JPEGLoaderContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\LoaderContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\Security.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\SecurityDomain.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\SecurityPanel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.system\System.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\BreakOpportunity.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\CFFHinting.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\ContentElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\DigitCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\DigitWidth.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\EastAsianJustifier.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\ElementFormat.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontLookup.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontMetrics.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontPosture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontWeight.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\GraphicElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\GroupElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\JustificationStyle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\Kerning.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\LigatureLevel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\LineJustification.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\RenderingMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\SpaceJustifier.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TabAlignment.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TabStop.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextBaseline.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextBlock.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextJustifier.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextLine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextLineCreationResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextLineMirrorRegion.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextLineValidity.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextRotation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text.engine\TypographicCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\AntiAliasType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\CSMSettings.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\Font.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\FontStyle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\FontType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\GridFitType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\StaticText.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\StyleSheet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextColorType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextDisplayMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextExtent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextField.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextFieldAutoSize.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextFieldType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextFormat.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextFormatAlign.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextFormatDisplay.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextLineMetrics.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextRenderer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextRun.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.text\TextSnapshot.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.trace\Trace.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.ui\ContextMenu.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.ui\ContextMenuBuiltInItems.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.ui\ContextMenuClipboardItems.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.ui\ContextMenuItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.ui\Keyboard.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.ui\KeyLocation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.ui\Mouse.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.ui\MouseCursor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.utils\ByteArray.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.utils\Dictionary.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.utils\Endian.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.utils\Global.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.utils\IDataInput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.utils\IDataOutput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.utils\IExternalizable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.utils\Proxy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.utils\Timer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.xml\XMLDocument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.xml\XMLNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\flash.xml\XMLNodeType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector_double.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector_int.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector_object.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector_uint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PageFX\Core\CompilerUtils.cs" />
+    <Compile Include="PageFX\Core\Vector.cs" />
+    <Compile Include="PageFX\System\ConsoleWriter.cs" />
+    <Compile Include="PageFX\System\PfxIO.cs" />
+    <Compile Include="System.Collections\ArrayList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\BitArray.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\CaseInsensitiveComparer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\CaseInsensitiveHashCodeProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\CollectionBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\Comparer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\DictionaryBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\DictionaryEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\Hashtable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\IHashCodeProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\Queue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\ReadOnlyCollectionBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\SortedList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\Stack.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics\DebuggerTypeProxyAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\CultureInfo.auto.cs" />
+    <Compile Include="System.Globalization\DateTimeFormatInfo.auto.cs" />
+    <Compile Include="System.Globalization\DaylightTime.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\NumberFormatInfo.auto.cs" />
+    <Compile Include="System.Globalization\RegionInfo.auto.cs" />
+    <Compile Include="System.Globalization\TextInfo.auto.cs" />
+    <Compile Include="System.IO\CheckPermission.cs" />
+    <Compile Include="System.IO\DirectoryNotFoundException.cs" />
+    <Compile Include="System.IO\FileNotFoundException.cs" />
+    <Compile Include="System.Reflection\Assembly.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyNameFlags.cs" />
+    <Compile Include="System.Reflection\Binder.cs" />
+    <Compile Include="System.Reflection\CustomAttributeProvider.cs" />
+    <Compile Include="System.Reflection\IReflect.cs" />
+    <Compile Include="System.Reflection\Missing.cs" />
+    <Compile Include="System.Resources\NeutralResourcesLanguageAttribute.cs" />
+    <Compile Include="System.Resources\UltimateResourceFallbackLocation.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsConst.cs" />
+    <Compile Include="System.Runtime.InteropServices\BStrWrapper.cs" />
+    <Compile Include="System.Runtime.InteropServices\ClassInterfaceAttribute.cs" />
+    <Compile Include="System.Runtime.InteropServices\ClassInterfaceType.cs" />
+    <Compile Include="System.Runtime.InteropServices\ComVisible.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.InteropServices\DispIdAttribute.cs" />
+    <Compile Include="System.Runtime.InteropServices\ExternalException.cs" />
+    <Compile Include="System.Runtime.InteropServices\MarshalDirectiveException.cs" />
+    <Compile Include="System.Runtime.InteropServices\SEHException.cs" />
+    <Compile Include="System.Runtime.Serialization\ISerializable.cs" />
+    <Compile Include="System.Runtime.Serialization\SerializationException.cs" />
+    <Compile Include="System.Runtime.Serialization\SerializationInfo.cs" />
+    <Compile Include="System.Runtime.Serialization\StreamingContext.cs" />
+    <Compile Include="System.Runtime.Serialization\StreamingContextStates.cs" />
+    <Compile Include="System.Security.Cryptography\Base64Constants.cs" />
+    <Compile Include="System.Security.Cryptography\ToBase64Transform.cs" />
+    <Compile Include="System.Security.Permissions\CodeAccessSecurityAttribute.cs" />
+    <Compile Include="System.Security.Permissions\KeyContainerPermissionAttribute.cs" />
+    <Compile Include="System.Security.Permissions\KeyContainerPermissionFlags.cs" />
+    <Compile Include="System.Security.Permissions\SecurityAction.cs" />
+    <Compile Include="System.Security.Permissions\SecurityAttribute.cs" />
+    <Compile Include="System.Security.Permissions\SecurityPermissionAttribute.cs" />
+    <Compile Include="System.Security.Permissions\SecurityPermissionFlag.cs" />
+    <Compile Include="System.Security\AllowPartiallyTrustedCallersAttribute.cs" />
+    <Compile Include="System.Text\ASCIIEncoding.cs" />
+    <Compile Include="System.Text\UTF7Encoding.cs" />
+    <Compile Include="System.Text\UTF8Encoding.cs" />
+    <Compile Include="System.Collections.Generic\Comparer.cs" />
+    <Compile Include="System.Collections.Generic\Dictionary.cs" />
+    <Compile Include="System.Collections.Generic\EqualityComparer.cs" />
+    <Compile Include="System.Collections.Generic\ICollection.cs" />
+    <Compile Include="System.Collections.Generic\IComparer.cs" />
+    <Compile Include="System.Collections.Generic\IDictionary.cs" />
+    <Compile Include="System.Collections.Generic\IEnumerable.cs" />
+    <Compile Include="System.Collections.Generic\IEnumerator.cs" />
+    <Compile Include="System.Collections.Generic\IEqualityComparer.cs" />
+    <Compile Include="System.Collections.Generic\IList.cs" />
+    <Compile Include="System.Collections.Generic\KeyNotFoundException.cs" />
+    <Compile Include="System.Collections.Generic\KeyValuePair.cs" />
+    <Compile Include="System.Collections.Generic\List.cs" />
+    <Compile Include="System.Collections.ObjectModel\Collection.cs" />
+    <Compile Include="System.Collections.ObjectModel\KeyedCollection.cs" />
+    <Compile Include="System.Collections.ObjectModel\ReadOnlyCollection.cs" />
+    <Compile Include="System.Collections\ICollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\IComparer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\IDictionary.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\IDictionaryEnumerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\IEnumerable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\IEnumerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections\IEqualityComparer.cs" />
+    <Compile Include="System.Collections\IList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Configuration.Assemblies\AssemblyHashAlgorithm.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Configuration.Assemblies\AssemblyVersionCompatibility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics.CodeAnalysis\SuppressMessageAttribute.cs" />
+    <Compile Include="System.Diagnostics\ConditionalAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics\DebuggableAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics\Debugger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics\DebuggerBrowsableAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics\DebuggerBrowsableState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics\DebuggerDisplayAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics\DebuggerHiddenAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics\DebuggerNonUserCodeAttribute.cs" />
+    <Compile Include="System.Diagnostics\DebuggerStepperBoundaryAttribute.cs" />
+    <Compile Include="System.Diagnostics\DebuggerStepThroughAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\Calendar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\CalendarWeekRule.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\CalendricalCalculations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\CharUnicodeInfo.cs" />
+    <Compile Include="System.Globalization\CodePageDataItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\CompareInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\CompareOptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\CultureInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\CultureTypes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\DateTimeFormatInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\DateTimeStyles.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\GregorianCalendar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\GregorianCalendarTypes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\HebrewCalendar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\HijriCalendar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\JapaneseCalendar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\KoreanCalendar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\NumberFormatInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\NumberStyles.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\RegionInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\StringInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\TaiwanCalendar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\TextElementEnumerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\TextInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\ThaiBuddhistCalendar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Globalization\UmAlQuraCalendar.cs" />
+    <Compile Include="System.Globalization\UnicodeCategory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.IO\BinaryReader.cs" />
+    <Compile Include="System.IO\BinaryWriter.cs" />
+    <Compile Include="System.IO\BufferedStream.cs" />
+    <Compile Include="System.IO\CheckArgument.cs" />
+    <Compile Include="System.IO\EndOfStreamException.cs" />
+    <Compile Include="System.IO\IOException.cs" />
+    <Compile Include="System.IO\MemoryStream.cs" />
+    <Compile Include="System.IO\Path.cs" />
+    <Compile Include="System.IO\PathTooLongException.cs" />
+    <Compile Include="System.IO\SearchPattern.cs" />
+    <Compile Include="System.IO\SeekOrigin.cs" />
+    <Compile Include="System.IO\Stream.cs" />
+    <Compile Include="System.IO\StreamReader.cs" />
+    <Compile Include="System.IO\StreamWriter.cs" />
+    <Compile Include="System.IO\StringReader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.IO\StringWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.IO\TextReader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.IO\TextWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AmbiguousMatchException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyAlgorithmIdAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyCompanyAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyConfigurationAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyCopyrightAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyCultureAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyDefaultAliasAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyDelaySignAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyDescriptionAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyFileVersionAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyFlagsAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyInformationalVersionAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyKeyFileAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyKeyNameAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyProductAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyTitleAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyTradeMarkAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\AssemblyVersionAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\BindingFlags.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\CallingConventions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\ConstructorInfo.cs" />
+    <Compile Include="System.Reflection\CustomAttributeFormatException.cs" />
+    <Compile Include="System.Reflection\CustomAttributeNamedArgument.cs" />
+    <Compile Include="System.Reflection\CustomAttributeTypedArgument.cs" />
+    <Compile Include="System.Reflection\DefaultMemberAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\EventAttributes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\EventInfo.cs" />
+    <Compile Include="System.Reflection\ExceptionHandlingClause.cs" />
+    <Compile Include="System.Reflection\ExceptionHandlingClauseOptions.cs" />
+    <Compile Include="System.Reflection\FieldAttributes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\FieldInfo.cs" />
+    <Compile Include="System.Reflection\GenericParameterAttributes.cs" />
+    <Compile Include="System.Reflection\ICustomAttributeProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\ImageFileMachine.cs" />
+    <Compile Include="System.Reflection\MemberFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\MemberInfo.cs" />
+    <Compile Include="System.Reflection\MemberTypes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\MethodAttributes.cs" />
+    <Compile Include="System.Reflection\MethodBase.cs" />
+    <Compile Include="System.Reflection\MethodImplAttributes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Reflection\MethodInfo.cs" />
+    <Compile Include="System.Reflection\ObfuscateAssemblyAttribute.cs" />
+    <Compile Include="System.Reflection\ObfuscationAttribute.cs" />
+    <Compile Include="System.Reflection\ParameterAttributes.cs" />
+    <Compile Include="System.Reflection\ParameterInfo.cs" />
+    <Compile Include="System.Reflection\ParameterModifier.cs" />
+    <Compile Include="System.Reflection\PortableExecutableKinds.cs" />
+    <Compile Include="System.Reflection\ProcessorArchitecture.cs" />
+    <Compile Include="System.Reflection\PropertyAttributes.cs" />
+    <Compile Include="System.Reflection\PropertyInfo.cs" />
+    <Compile Include="System.Reflection\ReflectionTypeLoadException.cs" />
+    <Compile Include="System.Reflection\ResourceAttributes.cs" />
+    <Compile Include="System.Reflection\ResourceLocation.cs" />
+    <Compile Include="System.Reflection\TargetException.cs" />
+    <Compile Include="System.Reflection\TargetInvocationException.cs" />
+    <Compile Include="System.Reflection\TargetParameterCountException.cs" />
+    <Compile Include="System.Reflection\TypeAttributes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.CompilerServices\AccessedThroughPropertyAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\CompilationRelaxations.cs" />
+    <Compile Include="System.Runtime.CompilerServices\CompilationRelaxationsAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\CompilerGeneratedAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\CompilerMarshalOverride.cs" />
+    <Compile Include="System.Runtime.CompilerServices\CustomConstantAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\DateTimeConstantAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\DecimalConstantAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\DefaultDependencyAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\DependencyAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\FixedAddressValueTypeAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\FixedBufferAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\HasCopySemanticsAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IndexerNameAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.CompilerServices\InternalsVisibleToAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsBoxed.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsByValue.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsCopyConstructed.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsExplicitlyDereferenced.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsImplicitlyDereferenced.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsJitIntrinsic.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsLong.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsPinned.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsSignUnspecifiedByte.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsUdtReturn.cs" />
+    <Compile Include="System.Runtime.CompilerServices\IsVolatile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.CompilerServices\LoadHint.cs" />
+    <Compile Include="System.Runtime.CompilerServices\MethodCodeType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.CompilerServices\MethodImplAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.CompilerServices\MethodImplOptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.CompilerServices\NativeCppClassAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\RuntimeCompatibilityAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\RuntimeHelpers.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.CompilerServices\RuntimeWrappedException.cs" />
+    <Compile Include="System.Runtime.CompilerServices\ScopelessEnumAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\SpecialNameAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\StringFreezingAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\SuppressIldasmAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\TypeForwardedToAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\UnsafeValueTypeAttribute.cs" />
+    <Compile Include="System.Runtime.InteropServices\CallingConvention.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.InteropServices\CharSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.InteropServices\DefaultCharSetAttribute.cs" />
+    <Compile Include="System.Runtime.InteropServices\DllImportAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.InteropServices\FieldOffsetAttribute.cs" />
+    <Compile Include="System.Runtime.InteropServices\GuidAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.InteropServices\InAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.InteropServices\LayoutKind.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.InteropServices\MarshalAsAttribute.cs" />
+    <Compile Include="System.Runtime.InteropServices\OptionalAttribute.cs" />
+    <Compile Include="System.Runtime.InteropServices\OutAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.InteropServices\PreserveSigAttribute.cs" />
+    <Compile Include="System.Runtime.InteropServices\StructLayoutAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Runtime.InteropServices\UnmanagedType.cs" />
+    <Compile Include="System.Text\Decoder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Text\DecoderExceptionFallback.cs" />
+    <Compile Include="System.Text\DecoderExceptionFallbackBuffer.cs" />
+    <Compile Include="System.Text\DecoderFallback.cs" />
+    <Compile Include="System.Text\DecoderFallbackBuffer.cs" />
+    <Compile Include="System.Text\DecoderFallbackException.cs" />
+    <Compile Include="System.Text\DecoderReplacementFallback.cs" />
+    <Compile Include="System.Text\DecoderReplacementFallbackBuffer.cs" />
+    <Compile Include="System.Text\Encoder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Text\EncoderExceptionFallback.cs" />
+    <Compile Include="System.Text\EncoderExceptionFallbackBuffer.cs" />
+    <Compile Include="System.Text\EncoderFallback.cs" />
+    <Compile Include="System.Text\EncoderFallbackBuffer.cs" />
+    <Compile Include="System.Text\EncoderFallbackException.cs" />
+    <Compile Include="System.Text\EncoderReplacementFallback.cs" />
+    <Compile Include="System.Text\EncoderReplacementFallbackBuffer.cs" />
+    <Compile Include="System.Text\Encoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Text\EncodingInfo.cs" />
+    <Compile Include="System.Text\Latin1Encoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Text\NormalizationForm.cs" />
+    <Compile Include="System.Text\StringBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Text\SurrogateEncoder.cs" />
+    <Compile Include="System.Text\UnicodeEncoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Text\UTF32Encoding.cs" />
+    <Compile Include="System.Threading\Interlocked.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Threading\Monitor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Threading\SynchronizationLockException.cs" />
+    <Compile Include="System.Threading\Thread.cs" />
+    <Compile Include="System.Threading\ThreadAbortException.cs" />
+    <Compile Include="System.Threading\ThreadInterruptedException.cs" />
+    <Compile Include="System.Threading\ThreadPriority.cs" />
+    <Compile Include="System.Threading\ThreadStart.cs" />
+    <Compile Include="System.Threading\ThreadStartException.cs" />
+    <Compile Include="System.Threading\ThreadState.cs" />
+    <Compile Include="System.Threading\ThreadStateException.cs" />
+    <Compile Include="System.Threading\Timeout.cs" />
+    <Compile Include="System\AccessViolationException.cs" />
+    <Compile Include="System\Action.cs" />
+    <Compile Include="System\ActivationContext.cs" />
+    <Compile Include="System\Activator.cs" />
+    <Compile Include="System\ApplicationException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ApplicationId.cs" />
+    <Compile Include="System\ApplicationIdentity.cs" />
+    <Compile Include="System\ArgumentException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ArgumentNullException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ArgumentOutOfRangeException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ArithmeticException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Array.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ArraySegment.cs" />
+    <Compile Include="System\ArrayTypeMismatchException.cs" />
+    <Compile Include="System\AsyncCallback.cs" />
+    <Compile Include="System\Attribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\AttributeTargets.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\AttributeUsageAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\BadImageFormatException.cs" />
+    <Compile Include="System\Base64FormattingOptions.cs" />
+    <Compile Include="System\BitConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Boolean.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Buffer.cs" />
+    <Compile Include="System\Byte.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\CannotUnloadAppDomainException.cs" />
+    <Compile Include="System\Char.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\CharEnumerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\CharUnicodeInfo.cs" />
+    <Compile Include="System\CLSCompliantAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Comparison.cs" />
+    <Compile Include="System\Console.cs" />
+    <Compile Include="System\ConsoleCancelEventArgs.cs" />
+    <Compile Include="System\ConsoleCancelEventHandler.cs" />
+    <Compile Include="System\ConsoleColor.cs" />
+    <Compile Include="System\ConsoleKey.cs" />
+    <Compile Include="System\ConsoleKeyInfo.cs" />
+    <Compile Include="System\ConsoleModifiers.cs" />
+    <Compile Include="System\ConsoleSpecialKey.cs" />
+    <Compile Include="System\ContextStaticAttribute.cs" />
+    <Compile Include="System\Convert.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Converter.cs" />
+    <Compile Include="System\DataMisalignedException.cs" />
+    <Compile Include="System\DateTime.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\DateTimeKind.cs" />
+    <Compile Include="System\DayOfWeek.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\DBNull.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Decimal.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\DecimalEx.cs" />
+    <Compile Include="System\DecimalFormatter.cs" />
+    <Compile Include="System\Delegate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\DivideByZeroException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\DllNotFoundException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\DomainManagerInitializationFlags.cs" />
+    <Compile Include="System\Double.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\EntryPointNotFoundException.cs" />
+    <Compile Include="System\Enum.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Environment.cs" />
+    <Compile Include="System\EnvironmentVariableTarget.cs" />
+    <Compile Include="System\EventArgs.cs" />
+    <Compile Include="System\EventHandler.cs" />
+    <Compile Include="System\Exception.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ExecutionEngineException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\FieldAccessException.cs" />
+    <Compile Include="System\FlagsAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\FloatingPointFormatter.cs" />
+    <Compile Include="System\FormatException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\GC.cs" />
+    <Compile Include="System\Guid.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\IAsyncResult.cs" />
+    <Compile Include="System\ICloneable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\IComparable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\IConsoleDriver.cs" />
+    <Compile Include="System\IConvertible.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ICustomFormatter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\IDisposable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\IEquatable.cs" />
+    <Compile Include="System\IFormatProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\IFormattable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\IndexOutOfRangeException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\InsufficientMemoryException.cs" />
+    <Compile Include="System\Int16.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Int32.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Int64.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\IntParser.cs" />
+    <Compile Include="System\IntPtr.cs">
+      <SubType>
+      </SubType>
+    </Compile>
+    <Compile Include="System\InvalidCastException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\InvalidOperationException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\InvalidProgramException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\IServiceProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\KnownTerminals.cs" />
+    <Compile Include="System\LoaderOptimization.cs" />
+    <Compile Include="System\MarshalByRefObject.cs" />
+    <Compile Include="System\Math.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\MemberAccessException.cs" />
+    <Compile Include="System\MethodAccessException.cs" />
+    <Compile Include="System\MidpointRounding.cs" />
+    <Compile Include="System\MissingFieldException.cs" />
+    <Compile Include="System\MissingMemberException.cs" />
+    <Compile Include="System\MissingMethodException.cs" />
+    <Compile Include="System\MonoCustomAttrs.cs" />
+    <Compile Include="System\MulticastDelegate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\MulticastNotSupportedException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\NotFiniteNumberException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\NotImplementedException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\NotSupportedException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Nullable.cs" />
+    <Compile Include="System\NullConsoleDriver.cs" />
+    <Compile Include="System\NullReferenceException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\NumberFormatter.jvm.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\NumberFormatter.mainsoft.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\NumberFormatter.pfx.cs" />
+    <Compile Include="System\Object.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ObjectDisposedException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ObsoleteAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\OperatingSystem.cs" />
+    <Compile Include="System\OperationCanceledException.cs" />
+    <Compile Include="System\OutOfMemoryException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\OverflowException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ParamArrayAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\PlatformID.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\PlatformNotSupportedException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Predicate.cs" />
+    <Compile Include="System\Random.cs" />
+    <Compile Include="System\RankException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\RuntimeArgumentHandle.cs" />
+    <Compile Include="System\RuntimeFieldHandle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\RuntimeMethodHandle.cs" />
+    <Compile Include="System\RuntimeTypeHandle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\SByte.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\SerializableAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Single.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\StackOverflowException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\STAThreadAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\String.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\StringComparer.cs" />
+    <Compile Include="System\StringComparison.cs" />
+    <Compile Include="System\StringSplitOptions.cs" />
+    <Compile Include="System\SystemException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ThreadStaticAttribute.cs" />
+    <Compile Include="System\TimeoutException.cs" />
+    <Compile Include="System\TimeSpan.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\TimeZone.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Type.cs" />
+    <Compile Include="System\TypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\TypeInitializationException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\TypeLoadException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\UInt16.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\UInt32.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\UInt64.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\UIntPtr.cs">
+      <SubType>
+      </SubType>
+    </Compile>
+    <Compile Include="System\UnauthorizedAccessException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\ValueType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Version.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\Void.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PageFX\Core\fp10.abc" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

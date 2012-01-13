@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <output>
+    <l>1</l>
+    <l>0</l>
+    <l>&lt;%END%&gt;</l>
+  </output>
+</config>

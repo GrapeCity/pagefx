@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config>
+  <output>
+    <l>Hello!</l>
+    <l>&lt;%END%&gt;</l>
+  </output>
+</config>

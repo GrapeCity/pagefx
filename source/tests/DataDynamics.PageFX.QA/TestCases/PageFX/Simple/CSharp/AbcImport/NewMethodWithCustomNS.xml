@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <ref name="ShapeLib.abc"/>
+  <output>
+    <l>Component::OnInit</l>
+    <l>Component::initialized</l>
+    <l>&lt;%END%&gt;</l>
+  </output>
+</config>

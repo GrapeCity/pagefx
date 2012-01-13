@@ -1,0 +1,10 @@
+run app.swf
+break 66
+continue
+break 72
+condition 1 answer==50
+continue
+continue
+info arguments
+info locals
+print a + b

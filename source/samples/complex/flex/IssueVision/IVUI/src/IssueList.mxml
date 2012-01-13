@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ns1="*"
+	width="400" height="300" verticalGap="-1" backgroundColor="#FFFFFF"
+	preinitialize="Init()">
+	
+		<mx:Metadata>
+			[Event(name=dd.events.SelectionEvent.AfterSelect, type="dd.events.SelectionEvent")]
+		</mx:Metadata>
+		
+		<mx:Script>
+			<![CDATA[
+				import mx.events.FlexEvent;
+				import dd.events.SelectionEvent;
+				import mx.containers.Box;
+				import mx.events.ChildExistenceChangedEvent;
+				
+				private var _selectedItem:IssueBox = null;
+				
+				public function Clear():void
+				{
+					_selectedItem = null;
+					removeAllChildren();
+				}
+				
+				public function Select(index:int):void
+				{
+					var box:IssueBox = getChildAt(index) as IssueBox;
+					if (box != null)
+					{
+						box.Select();
+					}
+				}
+				
+				private function Init():void
+				{
+					addEventListener(ChildExistenceChangedEvent.CHILD_ADD, OnChildAdd);
+				}
+				
+				private function OnChildAdd(e:mx.events.ChildExistenceChangedEvent):void
+				{
+					var box:IssueBox = e.relatedObject as IssueBox;
+					if (box != null)
+					{
+						box.addEventListener(SelectionEvent.AfterSelect, OnIssueSelected);
+					}
+				}
+				
+				private function OnIssueSelected(e:SelectionEvent):void
+				{
+					var box:IssueBox = e.Selection as IssueBox;
+					if (box != null)
+					{
+						if (_selectedItem != null)
+						{
+							if (_selectedItem == box) return;
+							_selectedItem.Unselect();
+						}
+						
+						_selectedItem = box;
+						
+						dispatchEvent(new SelectionEvent(box));
+					}
+				}			
+			]]>
+		</mx:Script>	
+</mx:VBox>

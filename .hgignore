@@ -1,0 +1,18 @@
+# ignore patterns via glob syntax
+syntax: glob
+
+# common patterns
+.MySCMServerInfo
+_ReSharper*
+*.ReSharper
+*.dotCover
+*.suo
+*.user
+
+source/**/[Bb]in
+source/**/[Oo]bj
+source/**/.client
+source/**/*.log
+
+# ignore patterns via regexp syntax
+syntax: regexp

@@ -1,0 +1,20 @@
+//
+// WARNING: Automatically generated file. DO NOT EDIT
+//
+
+namespace DataDynamics.PageFX.FLI.IL
+{
+    /// <summary>
+    /// Enumerates AVM2 instruction codes
+    /// </summary>
+    public enum InstructionCode : byte
+    {
+        $for i eol$
+        /// <summary>
+        /// $desc$
+        /// </summary>
+        $name$ = $value$,
+        $endfor$
+    }
+}
+

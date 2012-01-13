@@ -1,0 +1,1 @@
+nant -buildfile:vs.nant install.templates.user

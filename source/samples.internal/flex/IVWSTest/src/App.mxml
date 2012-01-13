@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+	
+    
+    <mx:Button label="Send/Receive" click="OnSendReceive()"/>
+    <mx:TextArea id="text" left="10" right="10" top="40" bottom="318"/>
+    <mx:Panel id="dataPanel" title="Data Tables" height="300" bottom="10" right="10" left="10" y="250"/>
+
+    <mx:Script>
+        <![CDATA[
+        	import mx.rpc.soap.SOAPHeader;
+        	import mx.rpc.soap.Operation;
+        	import mx.rpc.soap.WebService;
+        	import mx.rpc.AsyncToken;
+        	import mx.rpc.AbstractOperation;
+            import mx.controls.Alert;
+            import mx.controls.DataGrid;
+            import mx.rpc.events.FaultEvent;
+            import mx.rpc.events.ResultEvent;
+            
+            private var wsdl:String = "http://localhost/IssueVisionWebCS/IssueVisionServices.asmx?wsdl";
+            private var ws:mx.rpc.soap.WebService;
+            private var _header:SOAPHeader;
+            private var nsIV:String = "http://tempuri.org/IssueVision.Web/IssueVisionServices";
+            private var _initialized:Boolean = false;
+            
+            private function Init():void
+            {
+            	if (_initialized) return;
+            	_initialized = true;
+            	
+            	var h:CredentialSoapHeader = new CredentialSoapHeader();
+            	h.Username = "demo";
+            	h.Password = "demo";
+            	
+            	_header = new SOAPHeader(new QName(nsIV, "CredentialSoapHeader"), h);
+            	
+            	ws = new mx.rpc.soap.WebService();
+            	ws.wsdl = wsdl;
+            	ws.addEventListener(FaultEvent.FAULT, onFault);
+            	ws.addEventListener(ResultEvent.RESULT, onResult);
+            	ws.loadWSDL();
+            }
+            
+            private function getOperation(name:String):Operation
+            {
+            	var op:Operation = Operation(ws.getOperation(name));
+            	op.headers.push(_header);
+            	return op;
+            }
+            
+            private function Authenticate():void
+            {
+            	Init();
+            	
+            	getOperation("Authenticate").send();
+            }
+            
+            private function OnSendReceive():void
+            {
+            	Authenticate();
+            	
+            	var op:Operation = getOperation("SendReceiveIssues");
+            	op.resultFormat = "e4x";
+            	op.send(null, new Date(1900,0,1));
+            }
+                       
+            private function GetDiffgram(result:Object):XML
+            {
+            	var xml:XML = null;
+            	var xl:XMLList = result as XMLList;
+            	if (xl != null)
+            	{
+            		xml = xl[0];	
+            	}
+            	if (xml == null)
+            		xml = result as XML;
+            	if (xml != null)
+            	{
+            		var name:QName = new QName(xml.namespace(), "SendReceiveIssuesResult");
+            		xml = xml.child(name)[0].*::diffgram[0];
+            		return xml;
+            	}
+            	return null;
+            }
+
+            private function onResult(event:ResultEvent):void 
+            {
+            	if (event.result == null) return;
+            	
+            	var x:XML = GetDiffgram(event.result);
+            	
+            	if (x != null)
+            	{
+            		text.text = x.toXMLString();
+            		return;
+            	}
+            	           	
+                // A DataTable or DataSet returned from a .NET webservice is
+                // automatically converted to an object with a "Tables" property,
+                // which contains a map of one or more dataTables.
+                if (event.result.Tables != null)
+                {
+                    // clean up panel from previous calls.
+                    dataPanel.removeAllChildren();
+
+                    for each (var table:Object in event.result.Tables)
+                    {
+                        displayTable(table);
+                    }
+
+                    // Alternatively, if a table's name is known beforehand,
+                    // it can be accessed using this syntax:
+                    //var namedTable:Object = event.result.Tables.Customers;
+                    //displayTable(namedTable);
+                }
+            }
+
+            private function displayTable(tbl:Object):void {
+                var dg:DataGrid = new DataGrid();
+                dataPanel.addChild(dg);
+                // Each table object from the "Tables" map contains two properties:
+                // "Columns" and "Rows". "Rows" is where the data is, so we can set
+                // that as the dataProvider for a DataGrid.
+                dg.dataProvider = tbl.Rows;
+            }
+
+            private function onFault(event:FaultEvent):void {
+                Alert.show(event.fault.toString());
+            }
+        ]]>
+    </mx:Script>
+
+</mx:Application>

@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<project  xmlns="http://nant.sf.net">
+	<description>
+		Contains the source code control (Surround SCM) tasks. 
+		The main tasks are:       scc-checkout
+		The main properties are:  scc.project, scc.rootvaultfolder, scc.rootlocalfolder, 
+                                          scc.nanttaskassembly, scc.username, scc.password, scc.forcecheckout
+	</description>
+
+  <property name="cd" value="${project::get-base-directory()}"/>
+  
+	<property name="scc.server" value="10.2.0.188:4900" overwrite="false"/><!-- Surround SCM server -->
+	<property name="scc.project" value="Pagefx" overwrite="false"/> <!-- Surround SCM branch -->
+	<property name="scc.view" value="Pagefx" overwrite="false"/> <!-- Surround SCM repository root -->
+	<property name="scc.forcecheckout" value="false" unless="${property::exists('scc.forcecheckout')}"/>
+
+	<!-- scc.username defaults to a system environment variable named sccusername if it is not specified -->
+	<property name="scc.username"
+            value="TeamCity.checkout"
+            unless="${property::exists('scc.username')}"/>
+
+  <property name="scc.password"
+            value="sue*&amp;K82"
+            unless="${property::exists('scc.password')}"/>
+
+  <property name="scc.nanttaskassembly"
+            value="${cd}\tools\nantcontrib\bin\NAnt.Contrib.Tasks.dll"
+            unless="${property::exists('scc.nanttaskassembly')}"/>
+  
+  <property name="scc.rootvaultfolder" value="source" unless="${property::exists('scc.rootvaultfolder')}"/>
+  <property name="scc.rootlocalfolder" value="${cd}" unless="${property::exists('scc.rootlocalfolder')}"/>
+
+  <property name="scc.exe" value="sscm.exe" overwrite="false"/>
+  <property name="scc.exe.output" value="${cd}\changelist.txt"/>
+	
+	<target name="load-scm-tasks" unless="${target::has-executed('load-scm-tasks')}">
+		<fail unless="${file::exists(scc.nanttaskassembly)}">
+			Assembly with NAnt tasks for Surround SCM (nant.contrib.tasks.dll) not found.
+		</fail>
+
+		<loadtasks assembly="${scc.nanttaskassembly}" />
+	</target>
+	
+	<target name="scc-checkout" depends="load-scm-tasks" description="Checks files out the source code repository.">
+            <sscmget
+                serverconnect="${scc.server}"
+                serverlogin="${scc.username}:${scc.password}"
+                file="/"
+                branch="${scc.project}"
+                repository="${scc.view}/${scc.rootvaultfolder}"
+                recursive="true"
+                force="${scc.forcecheckout}"
+                overwrite="true"
+                destdir="${scc.rootlocalfolder}"
+                writable="true"
+            />
+	</target>
+
+  <target name="scc-ls" description="Lists the repository differences.">
+    <exec program="${scc.exe}" workingdir="${cd}" verbose="true" output="${scc.exe.output}">
+      <arg value='ls' />
+      <arg value='/' />
+      <arg value='-b${scc.project}' />
+      <arg value='-p${scc.view}/${scc.rootvaultfolder}' />
+      <arg value='-r' />
+      <arg value='-siou' />
+      <arg value='-y"${scc.username}:${scc.password}"' />
+      <arg value='-z${scc.server}' />
+    </exec>
+  </target>
+  
+</project>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+<mx:Metadata>
+    [ResourceBundle("R")]
+</mx:Metadata> 
+	<mx:Label id="labelGreeting" text='{resourceManager.getString("R", "GREETING")}' x="10" y="10"/>
+	<mx:Button id="btn1" label="Flag" icon='{resourceManager.getClass("R", "Flag")}' x="10" y="25"/>
+</mx:Application>

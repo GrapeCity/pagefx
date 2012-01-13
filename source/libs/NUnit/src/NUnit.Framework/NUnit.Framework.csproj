@@ -1,0 +1,118 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{133E655F-90EA-4144-A1B4-5E68F3002B41}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NUnit.Framework</RootNamespace>
+    <AssemblyName>NUnit.Framework</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;AVM</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;AVM</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\DataDynamics.PageFX.Shared\Utils\Filters.cs">
+      <Link>PageFX\Filters.cs</Link>
+    </Compile>
+    <Compile Include="NUnit.Framework\AbstractAsserter.cs" />
+    <Compile Include="NUnit.Framework\Assert.cs" />
+    <Compile Include="NUnit.Framework\Assertion.cs" />
+    <Compile Include="NUnit.Framework\AssertionException.cs" />
+    <Compile Include="NUnit.Framework\AssertionFailureMessage.cs" />
+    <Compile Include="NUnit.Framework\AssertionHelper.cs" />
+    <Compile Include="NUnit.Framework\CategoryAttribute.cs" />
+    <Compile Include="NUnit.Framework\CollectionAssert.cs" />
+    <Compile Include="NUnit.Framework\Constraints\BinaryOperations.cs" />
+    <Compile Include="NUnit.Framework\Constraints\CollectionConstraints.cs" />
+    <Compile Include="NUnit.Framework\Constraints\ComparisonConstraints.cs" />
+    <Compile Include="NUnit.Framework\Constraints\Constraint.cs" />
+    <Compile Include="NUnit.Framework\Constraints\ConstraintBuilder.cs" />
+    <Compile Include="NUnit.Framework\Constraints\ContainsConstraint.cs" />
+    <Compile Include="NUnit.Framework\Constraints\EmptyConstraint.cs" />
+    <Compile Include="NUnit.Framework\Constraints\EqualConstraint.cs" />
+    <Compile Include="NUnit.Framework\Constraints\Numerics.cs" />
+    <Compile Include="NUnit.Framework\Constraints\PrefixConstraints.cs" />
+    <Compile Include="NUnit.Framework\Constraints\SameAsConstraint.cs" />
+    <Compile Include="NUnit.Framework\Constraints\StringConstraints.cs" />
+    <Compile Include="NUnit.Framework\Constraints\TypeConstraints.cs" />
+    <Compile Include="NUnit.Framework\DescriptionAttribute.cs" />
+    <Compile Include="NUnit.Framework\ExpectedExceptionAttribute.cs" />
+    <Compile Include="NUnit.Framework\ExplicitAttribute.cs" />
+    <Compile Include="NUnit.Framework\GlobalSettings.cs" />
+    <Compile Include="NUnit.Framework\IAsserter.cs" />
+    <Compile Include="NUnit.Framework\IExpectException.cs" />
+    <Compile Include="NUnit.Framework\IgnoreAttribute.cs" />
+    <Compile Include="NUnit.Framework\IgnoreException.cs" />
+    <Compile Include="NUnit.Framework\MessageWriter.cs" />
+    <Compile Include="NUnit.Framework\MsgUtils.cs" />
+    <Compile Include="NUnit.Framework\OldTestCase.cs" />
+    <Compile Include="NUnit.Framework\PropertyAttribute.cs" />
+    <Compile Include="NUnit.Framework\SetCultureAttribute.cs" />
+    <Compile Include="NUnit.Framework\SetUpAttribute.cs" />
+    <Compile Include="NUnit.Framework\SetUpFixtureAttribute.cs" />
+    <Compile Include="NUnit.Framework\StringAssert.cs" />
+    <Compile Include="NUnit.Framework\SuiteAttribute.cs" />
+    <Compile Include="NUnit.Framework\SyntaxHelpers\Has.cs" />
+    <Compile Include="NUnit.Framework\SyntaxHelpers\Is.cs" />
+    <Compile Include="NUnit.Framework\SyntaxHelpers\Text.cs" />
+    <Compile Include="NUnit.Framework\TearDownAttribute.cs" />
+    <Compile Include="NUnit.Framework\TestAttribute.cs" />
+    <Compile Include="NUnit.Framework\TestFixtureAttribute.cs" />
+    <Compile Include="NUnit.Framework\TestFixtureSetUpAttribute.cs" />
+    <Compile Include="NUnit.Framework\TestFixtureTearDownAttribute.cs" />
+    <Compile Include="NUnit.Framework\TextMessageWriter.cs" />
+    <Compile Include="PageFX\CategoryExpression.cs" />
+    <Compile Include="PageFX\CategoryFilter.cs" />
+    <Compile Include="PageFX\FlashTestRunner.cs" />
+    <Compile Include="PageFX\Report.cs" />
+    <Compile Include="PageFX\Test.cs" />
+    <Compile Include="PageFX\TestSuite.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\pfx\framework\mscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\mono\mcs\class\System.XML\System.Xml.csproj">
+      <Project>{43285385-BB7C-43C4-9262-6F4D3AE9B654}</Project>
+      <Name>System.Xml</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

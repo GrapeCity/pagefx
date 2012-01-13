@@ -1,0 +1,1 @@
+asc -i -import core.abc %1

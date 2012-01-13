@@ -1,0 +1,136 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{43285385-BB7C-43C4-9262-6F4D3AE9B654}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Xml</RootNamespace>
+    <AssemblyName>System.Xml</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_1_1;INSIDE_CORLIB;PFX;NET_2_0;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;NET_1_1;INSIDE_CORLIB;PFX;NET_2_0;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\build\common\Consts.cs">
+      <Link>Assembly\Consts.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\Locale.cs">
+      <Link>Assembly\Locale.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\MonoTODOAttribute.cs">
+      <Link>Assembly\MonoTODOAttribute.cs</Link>
+    </Compile>
+    <Compile Include="Assembly\AssemblyInfo.cs" />
+    <Compile Include="Mono.Xml\IHasXmlParserContext.cs" />
+    <Compile Include="Mono.Xml\IHasXmlSchemaInfo.cs" />
+    <Compile Include="Mono.Xml\SubtreeXmlReader.cs" />
+    <Compile Include="Mono.Xml\XmlFilterReader.cs" />
+    <Compile Include="System.Xml.Schema\ValidationEventArgs.cs" />
+    <Compile Include="System.Xml.Schema\ValidationHandler.cs" />
+    <Compile Include="System.Xml.Schema\XmlSchema.cs" />
+    <Compile Include="System.Xml.Schema\XmlSchemaException.cs" />
+    <Compile Include="System.Xml.Schema\XmlSchemaObject.cs" />
+    <Compile Include="System.Xml.Schema\XmlSchemaReader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Xml.Schema\XmlSeverityType.cs" />
+    <Compile Include="System.Xml.Schema\XmlTypeCode.cs" />
+    <Compile Include="System.Xml.Serialization\IXmlSerializable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Xml.Serialization\XmlIgnoreAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Xml\ConformanceLevel.cs" />
+    <Compile Include="System.Xml\Formatting.cs" />
+    <Compile Include="System.Xml\IXmlLineInfo.cs" />
+    <Compile Include="System.Xml\IXmlNamespaceResolver.cs" />
+    <Compile Include="System.Xml\MonoFIXAttribute.cs" />
+    <Compile Include="System.Xml\NameTable.cs" />
+    <Compile Include="System.Xml\NewLineHandling.cs" />
+    <Compile Include="System.Xml\ReadState.cs" />
+    <Compile Include="System.Xml\ValidationType.cs" />
+    <Compile Include="System.Xml\WhitespaceHandling.cs" />
+    <Compile Include="System.Xml\WriteState.cs" />
+    <Compile Include="System.Xml\XmlChar.cs" />
+    <Compile Include="System.Xml\XmlConstructs.cs" />
+    <Compile Include="System.Xml\XmlConvert.cs" />
+    <Compile Include="System.Xml\XmlDateTimeSerializationMode.cs" />
+    <Compile Include="System.Xml\XmlException.cs" />
+    <Compile Include="System.Xml\XmlInputStream.cs" />
+    <Compile Include="System.Xml\XmlNameEntry.cs" />
+    <Compile Include="System.Xml\XmlNameEntryCache.cs" />
+    <Compile Include="System.Xml\XmlNamespaceManager.cs" />
+    <Compile Include="System.Xml\XmlNamespaceScope.cs" />
+    <Compile Include="System.Xml\XmlNameTable.cs" />
+    <Compile Include="System.Xml\XmlNodeType.cs" />
+    <Compile Include="System.Xml\XmlParserContext.cs" />
+    <Compile Include="System.Xml\XmlQualifiedName.cs" />
+    <Compile Include="System.Xml\XmlReader.cs" />
+    <Compile Include="System.Xml\XmlReaderBinarySupport.cs" />
+    <Compile Include="System.Xml\XmlReaderSettings.cs" />
+    <Compile Include="System.Xml\XmlResolver.cs" />
+    <Compile Include="System.Xml\XmlSpace.cs" />
+    <Compile Include="System.Xml\XmlTextReader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Xml\XmlTextReader2.cs" />
+    <Compile Include="System.Xml\XmlTextWriter2.cs" />
+    <Compile Include="System.Xml\XmlTokenizedType.cs" />
+    <Compile Include="System.Xml\XmlUrlResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Xml\XmlWriter.cs" />
+    <Compile Include="System.Xml\XmlWriterSettings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\corlib\mscorlib.csproj">
+      <Project>{C9A6CF06-1E1F-4196-8339-B060F0B5714C}</Project>
+      <Name>mscorlib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\System\System.csproj">
+      <Project>{D2D26DF4-6214-4F24-82E3-9190819D9C50}</Project>
+      <Name>System</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Mono.Xml\ChangeLog" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>

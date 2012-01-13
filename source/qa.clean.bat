@@ -1,0 +1,1 @@
+nant -buildfile:qa.nant qa.clean

@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<il>
+  <cat name="Local Variables Instructions">
+    <i name="getlocal" desc="Get a local register.">
+      <op name="var" type="u30" desc="The index of a local register."/>
+    </i>
+    <i name="getlocal0" desc="Get local register at 0 index."/>
+    <i name="getlocal1" desc="Get local register at 1 index."/>
+    <i name="getlocal2" desc="Get local register at 2 index."/>
+    <i name="getlocal3" desc="Get local register at 3 index."/>
+    
+    <i name="setlocal" desc="Set a local register.">
+      <op name="var" type="u30" desc="The index of a local register."/>
+    </i>
+    <i name="setlocal0" desc="Set local register at 0 index."/>
+    <i name="setlocal1" desc="Set local register at 1 index."/>
+    <i name="setlocal2" desc="Set local register at 2 index."/>
+    <i name="setlocal3" desc="Set local register at 3 index."/>
+
+    <i name="kill" desc="Kills a local register.">
+      <op name="var" type="u30" desc="An index of a local register."/>
+    </i>
+
+    <i name="getglobalslot" desc="Get the value of a slot on the global scope.">
+      <op name="slot" type="u30" desc="an index of a slot on the global scope"/>
+    </i>
+    <i name="setglobalslot" desc="Set the value of a slot on the global scope.">
+      <op name="slot" type="u30"/>
+    </i>
+  </cat>
+  
+  <cat name="Arithmetic Instructions">
+    <i name="add" desc="Add two values"/>
+    <i name="add_i" desc="Add two integer values"/>
+
+    <i name="declocal" desc="Decrement a local register value.">
+      <op name="var" type="u30" desc="The index of a local register."/>
+    </i>
+    <i name="declocal_i" desc="Decrement a local register value.">
+      <op name="var" type="u30" desc="The index of a local register."/>
+    </i>
+
+    <i name="decrement" desc="Decrement a value."/>
+    <i name="decrement_i" desc="Decrement an integer value."/>
+
+    <i name="divide" desc="Divide two values."/>
+
+    <i name="subtract" desc="Subtract two values."/>
+    <i name="subtract_i" desc="Subtract two integer values."/>
+
+    <i name="multiply" desc="Multiply two values."/>
+    <i name="multiply_i" desc="Multiply two integer values."/>
+
+    <i name="modulo" desc="Perform modulo division on two values."/>
+
+    <i name="negate" desc="Negate a value."/>
+    <i name="negate_i" desc="Negate an integer value."/>
+
+    <i name="increment" desc="Increment a value."/>
+    <i name="increment_i" desc="Increment an integer value."/>
+
+    <i name="inclocal" desc="Increment a local register value.">
+      <op name="var" type="u30" desc="The index of a local register."/>
+    </i>
+    <i name="inclocal_i" desc="Increment a local register value.">
+      <op name="var" type="u30" desc="The index of a local register."/>
+    </i>
+  </cat>
+
+  <cat name="Comparison Instructions">
+    <i name="equals" desc="Compare two values."/>
+    <i name="greaterequals" desc="Determine if one value is greater than or equal to another."/>
+    <i name="greaterthan" desc="Determine if one value is greater than another."/>
+    <i name="lessequals" desc="Determine if one value is less than or equal to another."/>
+    <i name="lessthan" desc="Determine if one value is less than another."/>
+    <i name="strictequals" desc="Compare two values strictly."/>
+  </cat>
+
+  <cat name="Boolean Instructions">
+    <i name="not" desc="Boolean negation."/>
+  </cat>
+
+  <cat name="Bit Manipulation Instructions">
+    <i name="bitand" desc="Bitwise and"/>
+    <i name="bitnot" desc="Bitwise not"/>
+    <i name="bitor" desc="Bitwise or"/>
+    <i name="bitxor" desc="Bitwise exclusive or"/>
+    <i name="lshift" desc="Bitwise left shift."/>
+    <i name="rshift" desc="Signed bitwise right shift."/>
+    <i name="urshift" desc="Unsigned bitwise right shift."/>
+  </cat>
+
+  <cat name="Type Conversion Instructions">
+    <i name="astype" desc="Return the same value, or null if not of the specified type">
+      <op name="type" type="mname"/>
+    </i>
+    <i name="astypelate" desc="Return the same value, or null if not of the specified type"/>
+    
+    <i name="coerce" desc="Coerce a value to a specified type">
+      <op name="type" type="mname"/>
+    </i>
+    <i name="coerce_a" desc="Coerce a value to the any type."/>
+    <i name="coerce_s" desc="Coerce a value to a string."/>
+    <i name="coerce_b" desc="Coerce a value to a Boolean."/>
+    <i name="coerce_i" desc="Coerce a value to a int."/>
+    <i name="coerce_d" desc="Coerce a value to a double."/>
+    <i name="coerce_u" desc="Coerce a value to a uint."/>
+    <i name="coerce_o" desc="Coerce a value to an Object."/>
+    
+    <i name="convert_b" desc="Convert a value to a Boolean."/>
+    <i name="convert_i" desc="Convert a value to an integer."/>
+    <i name="convert_d" desc="Convert a value to a double."/>
+    <i name="convert_o" desc="Convert a value to an Object."/>
+    <i name="convert_u" desc="Convert a value to an unsigned integer."/>
+    <i name="convert_s" desc="Convert a value to a string."/>
+    
+    <i name="instanceof" desc="Check the prototype chain of an object for the existence of a type."/>
+    <i name="istype" desc="Check whether an Object is of a certain type.">
+      <op name="type" type="mname"/>
+    </i>
+    <i name="istypelate" desc="Check whether an Object is of a certain type."/>
+  </cat>
+
+  <cat name="Object Creation and Manipulation Instructions">
+    <i name="applytype" desc="Apply type params onto thet stack to parametrized type">
+      <op name="arg_count"/>
+    </i>
+    <i name="checkfilter" desc="Check to make sure an object can have a filter operation performed on it."/>
+    <i name="construct" desc="Construct an instance.">
+      <op name="arg_count"/>
+    </i>
+    <i name="constructprop" desc="Construct a property.">
+      <op name="name" type="mname"/>
+      <op name="arg_count" type="u30"/>
+    </i>
+    <i name="constructsuper" desc="Construct an instance of the base class.">
+      <op name="arg_count" type="u30"/>
+    </i>
+    <i name="deleteproperty" desc="Delete a property.">
+      <op name="prop" type="mname"/>
+    </i>
+    <i name="findproperty" desc="Search the scope stack for a property.">
+      <op name="prop" type="mname"/>
+    </i>
+    <i name="findpropstrict" desc="Find a property.">
+      <op name="prop" type="mname"/>
+    </i>
+    <i name="getglobalscope" desc="Gets the global scope."/>
+    <i name="getlex" desc="Find and get a property.">
+      <op name="prop" type="mname"/>
+    </i>
+    <i name="getproperty" desc="Get a property.">
+      <op name="prop" type="mname"/>
+    </i>
+    <i name="getscopeobject" desc="Get a scope object.">
+      <op name="scope" type="u8" desc="the index of the scope object to retrieve from the local scope stack"/>
+    </i>
+    <i name="getslot" desc="Get the value of a slot.">
+      <op name="slot" type="u30" desc="An index of a slot in a object"/>
+    </i>
+    <i name="getsuper" desc="Gets a property from a base class.">
+      <op name="prop" type="mname"/>
+    </i>
+    <i name="hasnext" desc="Determine if the given object has any more properties."/>
+    <i name="hasnext2" desc="Determine if the given object has any more properties.">
+      <op name="target_register" type="u30" desc="the object that is being enumerated"/>
+      <op name="index_register" type="u30"/>
+    </i>
+    <i name="in" desc="Determine whether an object has a named property."/>
+    <i name="initproperty" desc="Initialize a property.">
+      <op name="prop" type="mname"/>
+    </i>
+    <i name="newactivation" desc="Create a new activation object."/>
+    <i name="newarray" desc="Create a new array.">
+      <op name="arg_count" type="u30" desc="the number of entries that will be created in the new array"/>
+    </i>
+    <i name="newclass" desc="Create a new class.">
+      <op name="class" type="class" desc="an index of the ClassInfo that is to be created"/>
+    </i>
+    <i name="newfunction" desc="Create a new function object.">
+      <op name="method" type="method"/>
+    </i>
+    <i name="newobject" desc="Create a new object.">
+      <op name="arg_count" type="u30" desc="the number of properties that will be created in newobj"/>
+    </i>
+    <i name="nextname" desc="Get the name of the next property when iterating over an object."/>
+    <i name="nextvalue" desc="Get the name of the next property when iterating over an object."/>
+    <i name="setproperty" desc="Set a property.">
+      <op name="prop" type="mname"/>
+    </i>
+    <i name="setslot" desc="Set the value of a slot.">
+      <op name="slot" type="u30"/>
+    </i>
+    <i name="setsuper" desc="Sets a property in a base class.">
+      <op name="prop" type="mname"/>
+    </i>
+    <i name="typeof" desc="Get the type name of a value."/>
+    <i name="finddef" desc="Find definition">
+      <op name="name" type="mname"/>
+    </i>
+  </cat>
+
+  <cat name="Stack Management Instructions">
+    <i name="dup" desc="Duplicates the top value on the stack."/>
+    <i name="pop" desc="Pop the top value from the stack."/>
+    <i name="popscope" desc="Pop a scope off of the scope stack"/>
+    <i name="pushbyte" desc="Push a byte value.">
+      <op name="value" type="u8" desc="byte value to push onto the stack"/>
+    </i>
+    <i name="pushdouble" desc="Push a double value onto the stack.">
+      <op name="value" type="const_double" desc="double value to push onto the stack"/>
+    </i>
+    <i name="pushfalse" desc="Push false."/>
+    <i name="pushint" desc="Push an int value onto the stack.">
+      <op name="value" type="const_int" desc="integer value to push onto the stack"/>
+    </i>
+    <i name="pushnamespace" desc="Push a namespace.">
+      <op name="ns" type="ns" desc="an index into the namespace constant pool"/>
+    </i>
+    <i name="pushnan" desc="Push NaN."/>
+    <i name="pushnull" desc="Push null."/>
+    <i name="pushscope" desc="Push an object onto the scope stack."/>
+    <i name="pushshort" desc="Push a short value.">
+      <op name="value" type="u30" desc="16-bit signed value to push onto the stack"/>
+    </i>
+    <i name="pushstring" desc="Push a string value onto the stack.">
+      <op name="value" type="const_str" desc="index of string value to push onto the stack"/>
+    </i>
+    <i name="pushtrue" desc="Push true."/>
+    <i name="pushuint" desc="Push an unsigned int value onto the stack.">
+      <op name="value" type="const_uint"/>
+    </i>
+    <i name="pushundefined" desc="Push undefined."/>
+    <i name="pushwith" desc="Push a with scope onto the scope stack"/>
+    <i name="swap" desc="Swap the top two operands on the stack"/>
+  </cat>
+
+  <cat name="Control Transfer Instructions">
+    <i name="ifeq" desc="Branch if the first value is equal to the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="iffalse" desc="Branch if false.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifge" desc="Branch if the first value is greater than or equal to the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifgt" desc="Branch if the first value is greater than the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifle" desc="Branch if the first value is less than or equal to the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="iflt" desc="Branch if the first value is less than the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifnge" desc="Branch if the first value is not greater than or equal to the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifngt" desc="Branch if the first value is not greater than the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifnle" desc="Branch if the first value is not less than or equal to the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifnlt" desc="Branch if the first value is not less than the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifne" desc="Branch if the first value is not equal to the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifstricteq" desc="Branch if the first value is equal to the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="ifstrictne" desc="Branch if the first value is not equal to the second value.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="iftrue" desc="Branch if true.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="lookupswitch" desc="Jump to different locations based on an index.">
+      <op name="default_offset" type="offset" desc="The offset to jump, in bytes, for the default case."/>
+      <op name="max_index" type="u30" desc="The maximum index in cases"/>
+      <op name="cases" type="offsets" desc="offsets to cases"/>
+    </i>
+    <i name="jump" desc="Unconditional branch.">
+      <op name="offset" type="offset"/>
+    </i>
+    <i name="abs_jump" desc="vm-use only, not allowed in ABC files.">
+      <op name="offset" type="offset"/>
+    </i>
+  </cat>
+  
+  <cat name="Function Invocation Instructions">
+    <i name="call" op="u30" desc="Call a closure.">
+      <op name="arg_count" type="u30"/>
+    </i>
+    <i name="callmethod" desc="Call a method identified by index in the object’s method table.">
+      <op name="method" type="method"/>
+      <op name="arg_count" type="u30"/>
+    </i>
+    <i name="callproperty" desc="Call a property.">
+      <op name="prop" type="mname"/>
+      <op name="arg_count"/>
+    </i>
+    <i name="callproplex" desc="Call a property.">
+      <op name="prop" type="mname"/>
+      <op name="arg_count" type="u30"/>
+    </i>
+    <i name="callpropvoid" desc="Call a property, discarding the return value.">
+      <op name="prop" type="mname"/>
+      <op name="arg_count" type="u30"/>
+    </i>
+    <i name="callstatic" desc="Call a method identified by index in the abcFile method table.">
+      <op name="method" type="method"/>
+      <op name="arg_count" type="u30"/>
+    </i>
+    <i name="callsuper" desc="Call a method on a base class.">
+      <op name="method" type="mname"/>
+      <op name="arg_count" type="u30"/>
+    </i>
+    <i name="callsupervoid" desc="Call a method on a base class, discarding the return value.">
+      <op name="method" type="mname"/>
+      <op name="arg_count" type="u30"/>
+    </i>
+  </cat>
+
+  <cat name="Return Instructions">
+    <i name="returnvalue" desc="Return from the currently executing method."/>
+    <i name="returnvoid" desc="Return from a method."/>
+  </cat>
+
+  <cat name="Exception Instructions">
+    <i name="newcatch" desc="Create a new catch scope.">
+      <op name="exception" type="exc"/>
+    </i>
+    <i name="throw" desc="Throws an exception."/>
+  </cat>
+
+  <cat name="Xml Instructions">
+    <i name="dxns" desc="Sets the default XML namespace.">
+      <op name="value" type="const_str"/>
+    </i>
+    <i name="dxnslate" desc="Sets the default XML namespace with a value determined at runtime."/>
+    <i name="esc_xattr" desc="Escape an xml attribute."/>
+    <i name="esc_xelem" desc="Escape an xml element."/>
+    <i name="getdescendants" desc="Get descendants.">
+      <op name="name" type="mname"/>
+    </i>
+  </cat>
+
+  <cat name="Debugging Instructions">
+    <i name="debug" desc="Debugging info.">
+      <op name="type" type="u8" desc="kind of debug info. currently only 1 is used for local var info."/>
+      <op name="name" type="const_str" desc="debug info"/>
+      <op name="slot" type="u8" desc="register that debugging information for"/>
+      <op name="line" type="u30" desc="first line where variable is declared"/>
+    </i>
+    <i name="debugfile" desc="Sets filename for debugger.">
+      <op name="file" type="const_str"/>
+    </i>
+    <i name="debugline" desc="Sets current line for debugger.">
+      <op name="linenum" type="u30" desc="indicates the current line number the debugger should be using for the code currently executing."/>
+    </i>
+    <i name="bkpt" desc="Enters to debugger"/>
+    <i name="bkptline" desc="Enters to debugger at given line">
+      <op name="line" type="u30"/>
+    </i>
+  </cat>
+
+  <cat name="Misc Instructions">
+    <i name="nop" desc="Do nothing."/>
+    
+    <i name="label" desc="Do nothing. Used to indicate that this location is the target of a branch.">
+      <notes>
+        This is usually used to indicate the target of a backwards branch. The label opcode will
+        prevent the verifier from thinking that the code after the label is unreachable.
+      </notes>
+    </i>
+
+    <i name="timestamp" desc="Do nothing."/>
+  </cat>
+</il>

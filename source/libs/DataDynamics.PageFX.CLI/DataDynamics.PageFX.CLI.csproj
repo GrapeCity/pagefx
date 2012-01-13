@@ -1,0 +1,183 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3C215B55-8587-4A60-8CAA-91FE412B9013}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataDynamics.PageFX.CLI</RootNamespace>
+    <AssemblyName>DataDynamics.PageFX.CLI</AssemblyName>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ISymWrapper" />
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="CFG\Enums.cs" />
+    <Compile Include="CFG\Nodes\HandlerNode.cs" />
+    <Compile Include="CLI\IOUtils.cs" />
+    <Compile Include="GAC\AssemblyCache.cs" />
+    <Compile Include="GAC\Structs.cs" />
+    <Compile Include="GAC\Enums.cs" />
+    <Compile Include="GAC\GacEnum.cs" />
+    <Compile Include="GAC\IAssemblyCache.cs" />
+    <Compile Include="GAC\IAssemblyCacheItem.cs" />
+    <Compile Include="GAC\IAssemblyEnum.cs" />
+    <Compile Include="GAC\IAssemblyName.cs" />
+    <Compile Include="GAC\IInstallReferenceEnum.cs" />
+    <Compile Include="GAC\IInstallReferenceItem.cs" />
+    <Compile Include="CFG\GraphBuilder.cs" />
+    <Compile Include="CFG\FlowGraphHelper.cs" />
+    <Compile Include="IL\Translator\Analysis.cs" />
+    <Compile Include="IL\Translator\Core.cs" />
+    <Compile Include="IL\Translator\DumpMap.cs" />
+    <Compile Include="IL\Translator\Generics.cs" />
+    <Compile Include="IL\Translator\Translation.cs" />
+    <Compile Include="IL\Translator\Utils.cs" />
+    <Compile Include="IL\Values\Arg.cs" />
+    <Compile Include="IL\CIL.cs" />
+    <Compile Include="CFG\NodeList.cs" />
+    <Compile Include="CFG\Nodes\TryNode.cs" />
+    <Compile Include="CFG\Services\DumpService.cs" />
+    <Compile Include="CFG\Edge.cs" />
+    <Compile Include="IL\CLR.cs" />
+    <Compile Include="CLI\CLIDebug.cs" />
+    <Compile Include="IL\Values\ComputedValue.cs" />
+    <Compile Include="IL\Values\ArgPtr.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IL\Values\ComputedPtr.cs" />
+    <Compile Include="IL\Values\Elem.cs" />
+    <Compile Include="IL\Values\ElemPtr.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IL\Values\FieldPtr.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IL\Values\FieldValue.cs" />
+    <Compile Include="IL\Values\Func.cs" />
+    <Compile Include="IL\Values\ThisPtr.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IL\Values\TokenValue.cs" />
+    <Compile Include="IL\Values\ConstValue.cs" />
+    <Compile Include="IL\EvalStack.cs" />
+    <Compile Include="IL\Exceptions.cs" />
+    <Compile Include="CFG\Services\FormatService.cs" />
+    <Compile Include="IL\ILStream.cs" />
+    <Compile Include="IL\Translator\Main.cs" />
+    <Compile Include="IL\IMethodContext.cs" />
+    <Compile Include="IL\Instruction.cs" />
+    <Compile Include="CFG\Nodes\LoopNode.cs" />
+    <Compile Include="IL\LateMethodBody.cs" />
+    <Compile Include="IL\MethodBody.cs" />
+    <Compile Include="IL\InstructionCode.cs" />
+    <Compile Include="CFG\Node.cs" />
+    <Compile Include="IL\Block.cs" />
+    <Compile Include="CFG\Nodes\SwitchNode.cs" />
+    <Compile Include="CFG\Nodes\SequenceNode.cs" />
+    <Compile Include="CFG\Nodes\IfNode.cs" />
+    <Compile Include="CFG\Services\DotService.cs" />
+    <Compile Include="CFG\Services\NameService.cs" />
+    <Compile Include="IL\SEHBlock.cs" />
+    <Compile Include="IL\Values\ThisValue.cs" />
+    <Compile Include="IL\Values\IValue.cs" />
+    <Compile Include="IL\Values\Var.cs" />
+    <Compile Include="IL\Values\VarPtr.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Metadata\Enums.cs" />
+    <Compile Include="Metadata\MdbHtmlExport.cs" />
+    <Compile Include="Metadata\MdbCell.cs" />
+    <Compile Include="Metadata\MdbColumn.cs" />
+    <Compile Include="Metadata\MdbRow.cs" />
+    <Compile Include="Metadata\MdbSignature.cs" />
+    <Compile Include="Metadata\MdbTable.cs" />
+    <Compile Include="Metadata\MdbTables.cs" />
+    <Compile Include="Metadata\MdbXmlExport.cs" />
+    <Compile Include="Metadata\Exceptions.cs" />
+    <Compile Include="Metadata\MdbCodedIndex.cs" />
+    <Compile Include="Metadata\MdbHeader.cs" />
+    <Compile Include="Metadata\MdbReader.cs" />
+    <Compile Include="Metadata\MdbStream.cs" />
+    <Compile Include="Metadata\MdbIndex.cs" />
+    <Compile Include="Metadata\MdbUtils.cs" />
+    <Compile Include="CLI\AssemblyLoader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CLI\Infrastructure.cs" />
+    <Compile Include="CLI\AssemblyResolver.cs" />
+    <Compile Include="CLI\NameUtils.cs" />
+    <Compile Include="PDB\Interop\IMetaDataDispenserEx.cs" />
+    <Compile Include="PDB\Interop\Guids.cs" />
+    <Compile Include="PDB\PdbReader.cs" />
+    <Compile Include="PDB\SymbolUtil.cs" />
+    <Compile Include="PDB\PdbDump.cs" />
+    <Compile Include="PE\CLIHeader.cs" />
+    <Compile Include="PE\COFFHeader.cs" />
+    <Compile Include="PE\DOSHeader.cs" />
+    <Compile Include="PE\Enums.cs" />
+    <Compile Include="PE\NTHeader.cs" />
+    <Compile Include="PE\PEDataDirectory.cs" />
+    <Compile Include="PE\PEDebugDirectory.cs" />
+    <Compile Include="PE\PEDebugInfo.cs" />
+    <Compile Include="PE\PEDictionaryEntry.cs" />
+    <Compile Include="PE\PEDirectory.cs" />
+    <Compile Include="PE\PEHeader.cs" />
+    <Compile Include="PE\PEImage.cs" />
+    <Compile Include="PE\PESection.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.CodeModel.csproj">
+      <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
+      <Name>DataDynamics.PageFX.CodeModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataDynamics.PageFX.Shared\DataDynamics.PageFX.Shared.csproj">
+      <Project>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</Project>
+      <Name>DataDynamics.PageFX.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="IL\Translator\todo.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

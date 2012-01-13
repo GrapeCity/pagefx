@@ -1,0 +1,20 @@
+//
+// WARNING: Automatically generated file. DO NOT EDIT
+//
+
+namespace DataDynamics.PageFX.CLI.IL
+{
+    /// <summary>
+    /// Enumerates CIL instruction codes
+    /// </summary>
+    public enum InstructionCode
+    {
+        $for i eol$
+        /// <summary>
+        $desc$
+        /// </summary>
+        $name$ = $value$,
+        $endfor$
+    }
+}
+

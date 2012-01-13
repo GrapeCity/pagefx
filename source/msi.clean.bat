@@ -1,0 +1,1 @@
+nant -buildfile:msi.nant msi.clean

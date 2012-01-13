@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" initialize="OnInit()">
+
+	<mx:HDividedBox left="0" right="0" top="0" bottom="30">
+		<mx:VDividedBox width="100%" height="100%">
+			<mx:RichTextEditor title="Title" width="100%" height="100%" id="ed1">
+			</mx:RichTextEditor>
+			<mx:RichTextEditor title="Title" width="100%" height="100%" id="ed2">
+			</mx:RichTextEditor>		
+		</mx:VDividedBox>
+		<mx:Tree width="100%" height="100%">
+		</mx:Tree>	
+	</mx:HDividedBox>
+
+	
+	<mx:HBox bottom="0" horizontalGap="2">
+		<mx:Button icon="@Embed('add.png')"/>
+		<mx:Button icon="@Embed('add2.png')"/>
+	</mx:HBox>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			public function OnInit():void
+			{
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Application>

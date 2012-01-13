@@ -1,0 +1,23 @@
+﻿(fdb) Breakpoint 1, CreateShadow() at App.cs:18
+ 18            uint color = 0x000000;
+(fdb)  19            double angle = 45;
+ 20            double alpha = 0.8;
+ 21            double blurX = 8;
+ 22            double blurY = 8;
+ 23            double distance = 15;
+ 24            double strength = 0.65;
+ 25            bool inner = false;
+ 26            bool knockout = false;
+ 27            int quality = BitmapFilterQuality.HIGH;
+(fdb) color = 0 (0x0)
+angle = 45 (0x2d)
+alpha = 0.8
+blurX = 8 (0x8)
+blurY = 8 (0x8)
+distance = 15 (0xf)
+strength = 0.65
+inner = 0 (0x0)
+knockout = 0 (0x0)
+quality = 0 (0x0)
+(fdb)  28            return new DropShadowFilter(distance, angle, color, alpha, blurX, blurY,
+(fdb) $1 = 3 (0x3)

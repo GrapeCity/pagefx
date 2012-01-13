@@ -1,0 +1,1 @@
+msbuild.bat libs\mono\mcs\class\corlib\corlib.csproj -logfile:build.corlib.log

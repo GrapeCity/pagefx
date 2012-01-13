@@ -1,0 +1,17 @@
+#The following table shows the predefined implicit numeric conversions.
+#Implicit conversions might occur in many situations, including method
+#invoking and assignment statements.
+
+#---------------------------------------------------------------------------------
+#From		To
+#---------------------------------------------------------------------------------
+sbyte		short, int, long, float, double, or decimal
+byte		short, ushort, int, uint, long, ulong, float, double, or decimal
+short		int, long, float, double, or decimal
+ushort		int, uint, long, ulong, float, double, or decimal
+int			long, float, double, or decimal
+uint		long, ulong, float, double, or decimal
+long		float, double, or decimal
+ulong		float, double, or decimal
+char		ushort, int, uint, long, ulong, float, double, or decimal
+float		double

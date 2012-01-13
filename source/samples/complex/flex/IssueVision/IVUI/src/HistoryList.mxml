@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="500">
+	<mx:Canvas width="100%" height="27" borderStyle="solid">
+		<mx:Label y="5" left="10" text="User/Comment" fontWeight="bold"/>
+		<mx:Label y="5" right="10" text="Date" fontWeight="bold"/>
+	</mx:Canvas>
+	<mx:VBox id="Items" y="27" width="100%" height="100%"
+		verticalGap="-1" backgroundColor="#FFFFFF">
+	
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+						
+			public function Clear():void
+			{
+				Items.removeAllChildren();	
+			}
+			
+			public function AddItem(user:String, comment:String, date:String):void
+			{
+				var item:HistoryItem = new HistoryItem();
+				item.User = user;
+				item.Comment = comment;
+				item.CommentDate = date;
+				item.percentWidth = 100;
+				Items.addChild(item); 			
+			}
+			
+		]]>
+	</mx:Script>
+</mx:Canvas>

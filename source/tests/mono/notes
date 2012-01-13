@@ -1,0 +1,2 @@
+NOT_PFX - conditional compilation symbol that is used to exclude tests that are't working on AVM
+NOT_MSCLR - conditional compilation symbol that is used to exclude tests that are't working on MS CLR

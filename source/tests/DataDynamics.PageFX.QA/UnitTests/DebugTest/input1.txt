@@ -1,0 +1,12 @@
+﻿run app.swf
+break 18
+break 28
+condition 2 minus==false
+continue
+print circle.alpha
+continue
+kill
+y
+quit
+y
+y

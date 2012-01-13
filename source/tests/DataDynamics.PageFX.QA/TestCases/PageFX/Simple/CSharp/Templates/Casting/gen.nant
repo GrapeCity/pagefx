@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<project xmlns="http://nant.sf.net" name="CastingTemplateGenerator" default="gen">
+
+  <property name="cd" value="${project::get-base-directory()}"/>
+  <property name="root" value="${path::get-directory-name(cd)}"/>
+  <property name="root" value="${path::get-directory-name(root)}"/>
+  <property name="pfx.home" value="c:\pfx"/>
+  <property name="pfx.tools" value="${pfx.home}\tools"/>
+
+  <property name="kind" value=""/>
+  <property name="type-prefix" value=""/>
+  <property name="type-suffix" value=""/>
+  <property name="T" value=""/>
+  
+  <target name="gen">
+
+    <!-- boxing -->
+    <call target="genbox"/>
+
+    <!-- T -->
+    
+    <property name="kind" value=""/>
+    <property name="T" value="IComparable"/>
+    <property name="type-prefix" value=""/>
+    <property name="type-suffix" value=""/>
+    
+    <property name="dir" value="${root}\Casting\${T}"/>
+    <call target="gent"/>
+
+    <property name="T" value="ICloneable"/>
+    <property name="dir" value="${root}\Casting\${T}"/>
+    <call target="gent"/>
+
+    <property name="T" value="IConvertible"/>
+    <property name="dir" value="${root}\Casting\${T}"/>
+    <call target="gent"/>
+
+    <property name="T" value="String"/>
+    <property name="dir" value="${root}\Casting\${T}"/>
+    <call target="gent"/>
+
+    <property name="kind" value="arr"/>
+    <property name="T" value="IEnumerable"/>
+    <property name="dir" value="${root}\Casting\${T}"/>
+    <call target="gent"/>
+    
+    <!-- G<T> -->
+
+    <property name="kind" value=""/>
+    
+    <property name="G" value="IComparable"/>
+    <property name="dir" value="${root}\Generics\Casting\${G}"/>
+    <call target="geng"/>
+
+    <property name="G" value="IEquatable"/>
+    <property name="dir" value="${root}\Generics\Casting\${G}"/>
+    <call target="geng"/>
+
+    <property name="kind" value="arr"/>
+    
+    <property name="G" value="IEnumerable"/>
+    <property name="dir" value="${root}\Generics\Casting\${G}"/>
+    <call target="geng"/>
+
+    <property name="G" value="ICollection"/>
+    <property name="dir" value="${root}\Generics\Casting\${G}"/>
+    <call target="geng"/>
+
+    <property name="G" value="IList"/>
+    <property name="dir" value="${root}\Generics\Casting\${G}"/>
+    <call target="geng"/>
+
+    <call target="genarr"/>
+
+  </target>
+
+  <target name="genbox">
+    <property name="kind" value="box"/>
+    <property name="dir.to" value="${root}\Boxing\ToValue"/>
+    <call target="make.todir"/>
+
+    <property name="dir.to" value="${root}\Boxing\ToNullable"/>
+    <property name="type-prefix" value="Nullable&lt;"/>
+    <property name="type-suffix" value="&gt;"/>
+    <call target="make.todir"/>
+  </target>
+
+  <target name="gent">
+    <fail unless="${property::exists('T')}"/>
+    <property name="dir.to" value="${dir}"/>
+    <call target="make.todir"/>
+  </target>
+
+  <target name="geng">
+    
+    <fail unless="${property::exists('G')}"/>
+    <mkdir dir="${dir}"/>
+
+    <property name="type-prefix" value="${G}&lt;"/>
+    <property name="type-suffix" value="&gt;"/>
+    <property name="T" value=""/>
+
+    <property name="dir.to" value="${dir}\ToValue"/>
+    <call target="make.todir"/>
+
+    <property name="dir.to" value="${dir}\ToNullable"/>
+    <property name="type-suffix" value="?&gt;"/>
+    <call target="make.todir"/>
+
+  </target>
+
+  <target name="genarr">
+    <property name="dir" value="${root}\Casting\Arrays"/>
+    <mkdir dir="${dir}"/>
+
+    <property name="kind" value="valarr"/>
+    <property name="T" value=""/>
+    <property name="type-prefix" value=""/>
+    <property name="type-suffix" value=""/>
+
+
+    <property name="dir.to" value="${dir}\ToValue"/>
+    <call target="make.todir"/>
+
+    <property name="kind" value="nullarr"/>
+    <property name="dir.to" value="${dir}\ToNullable"/>
+    <call target="make.todir"/>
+  </target>
+
+  <!-- generates FromNullable, FromValue dirs -->
+  
+  <target name="make.todir">
+
+    <mkdir dir="${dir.to}"/>
+
+    <property name="test" value="Test"/>
+    <property name="template" value=""/>
+    <if test="${kind == 'arr'}">
+      <property name="test" value="TestArray"/>
+      <property name="template" value="Array"/>
+    </if>
+    <if test="${kind == 'valarr'}">
+      <property name="test" value="TestValueArray"/>
+      <property name="template" value="Array"/>
+    </if>
+    <if test="${kind == 'nullarr'}">
+      <property name="test" value="TestNullableArray"/>
+      <property name="template" value="Array"/>
+    </if>
+    <if test="${kind == 'box'}">
+      <property name="test" value="TestBox"/>
+    </if>
+
+    <foreach item="String" in="FromValue;FromNullable" delim=";" property="dirname">
+      <do>
+        
+        <property name="td" value="${dir.to}\${dirname}"/>
+        <if test="${T != ''}">
+          <property name="td" value="${dir.to}"/>
+        </if>
+        
+        <mkdir dir="${td}"/>
+        <copy file="${cd}\${test}.cs" tofile="${td}\Test.cs"/>
+        <copy file="${cd}\${dirname}${template}.cs" tofile="${td}\Template.cs"/>
+
+        <if test="${T != ''}">          
+          <exec basedir="${pfx.tools}"
+                program="rv.exe"
+                workingdir="${td}"
+                commandline='/TEST:file(Test.cs) /T:"${type-prefix}${T}${type-suffix}" /out:${dirname}.cs Template.cs'/>
+        </if>
+        
+        <if test="${T == ''}">
+          <foreach item="Line" in="${cd}\types.txt" property="type">
+            <do>
+              <property name="ft" value="${type-prefix}${type}${type-suffix}"/>              
+              <exec basedir="${pfx.tools}" program="rv.exe"
+                    workingdir="${td}"
+                    commandline='/TEST:file(Test.cs) /T:"${ft}" /out:${type}.cs Template.cs'/>
+            </do>
+          </foreach>
+        </if>
+
+        <delete>
+          <fileset basedir="${td}">
+            <include name="Test.cs"/>
+            <include name="Template.cs"/>
+          </fileset>
+        </delete>
+        
+      </do>
+    </foreach>
+    
+  </target>
+  
+</project>

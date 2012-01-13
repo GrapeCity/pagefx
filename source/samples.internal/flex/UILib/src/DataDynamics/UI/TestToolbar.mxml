@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="24" horizontalGap="2">
+<mx:Metadata>
+	[ResourceBundle("R")]
+</mx:Metadata>
+	<mx:Button label="{resourceManager.getString('R', 'B1')}" icon="@Embed('add.png')"/>
+	<mx:Button label="{resourceManager.getString('R', 'B2')}" icon="@Embed('add2.png')"/>
+	<mx:Button label="USA" icon="{resourceManager.getClass('R', 'Flag')}"/>
+	<mx:Button label="Japan" icon="{resourceManager.getClass('R', 'FlagJapan')}"/>
+	<mx:Button label="Russia" icon="{resourceManager.getClass('R', 'FlagRussia')}"/>
+	<mx:Button label="Test ClassReference" click="test()"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import DataDynamics.Person;
+			
+			private function test():void
+			{
+				var C:Class = resourceManager.getClass("R", "ClassPerson");
+				var obj:Object = new C();
+				var person:Person = obj as Person;
+				if (person != null)
+				{
+					Alert.show("OK");
+				}
+			}
+		]]>
+	</mx:Script>
+</mx:HBox>

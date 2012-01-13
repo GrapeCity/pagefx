@@ -1,0 +1,32 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0\AD7Metrics\Engine\{E76FB498-F02D-49a9-8B5B-B9E50F6A03E9}]
+@="guidPfxDebugEngine"
+"Name"="PageFX Debugger"
+"CLSID"="{170D1DD5-79EC-41d9-81C3-4684A2E89338}"
+"ProgramProvider"="{E1315474-071E-4a22-8BC2-A3AB34AB6442}"
+"PortSupplier"="{708C1ECA-FF48-11D2-904F-00C04FA302A1}"
+"AutoSelectPriority"=dword:00000004
+"AlwaysLoadLocal"=dword:00000001
+"AlwaysLoadProgramProviderLocal"=dword:00000001
+"CallStackBP"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0\AD7Metrics\Engine\{E76FB498-F02D-49a9-8B5B-B9E50F6A03E9}\IncompatibleList]
+"guidCOMPlusNativeEng"="{92EF0900-2251-11D2-B72E-0000F87572EF}"
+"guidCOMPlusOnlyEng"="{449EC4CC-30D2-4032-9256-EE18EB41B62B}"
+"guidNativeOnlyEng"="{449EC4CC-30D2-4032-9256-EE18EB41B62B}"
+"guidScriptEng"="{F200A7E7-DEA5-11D0-B854-00A0244A1DE2}"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0\CLSID\{170D1DD5-79EC-41d9-81C3-4684A2E89338}]
+@="PageFX Debugger"
+"Assembly"="DataDynamics.PageFX.VisualStudio.Debugger"
+"Class"="DataDynamics.PageFX.VisualStudio.Debugger.Engine"
+"InprocServer32"="%SYSTEMROOT%\\system32\\mscoree.dll"
+"CodeBase"="$PFXHOME\\Visual Studio\\bin\\DataDynamics.PageFX.VisualStudio.Debugger.dll"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0\CLSID\{E1315474-071E-4a22-8BC2-A3AB34AB6442}]
+"Assembly"="DataDynamics.PageFX.VisualStudio.Debugger"
+"Class"="DataDynamics.PageFX.VisualStudio.Debugger.ProgramProvider"
+"InprocServer32"="%SYSTEMROOT%\\system32\\mscoree.dll"
+"CodeBase"="$PFXHOME\\Visual Studio\\bin\\DataDynamics.PageFX.VisualStudio.Debugger.dll"
+

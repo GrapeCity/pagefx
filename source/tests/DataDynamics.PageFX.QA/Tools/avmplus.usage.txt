@@ -1,0 +1,25 @@
+avmplus shell 1.0 build cyclone_dschaffe_2007-05-11_15-05
+
+usage: avmplus
+          [-d]          enter debugger on start
+          [-Ddprofile]  dynamic instruction stats
+          [-Dsprofile]  show static instruction stats
+          [-Dnogc]      don't collect
+          [-Dgcstats]   generate statistics on gc
+          [-Dnoincgc]   don't use incremental collection
+          [-Dastrace N] display AS execution information, where N is [1..4]
+          [-Dinterp]    do not generate machine code, interpret instead
+          [-Dverbose]   trace every instruction (verbose!)
+          [-Dbbgraph]   output MIR basic block graphs for use with Graphviz
+          [-Dforcemir]  use MIR always, never interp
+          [-Dnodce]     disable DCE optimization 
+          [-Dnocse]     disable CSE optimization 
+          [-Dnosse]     use FPU stack instead of SSE2 instructions
+          [-Dverifyall] verify greedily instead of lazily
+          [-Dtimeout]   enforce maximum 15 seconds execution
+          [-error]      crash opens debug dialog, instead of dumping
+          [-log]
+          [-- args]     args passed to AS3 program
+          [-jargs ... ;] args passed to Java runtime
+          filename.abc ...
+          [--] application args

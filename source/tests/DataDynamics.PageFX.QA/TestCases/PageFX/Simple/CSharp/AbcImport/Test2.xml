@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <ref name="ShapeLib.abc"/>
+  <output>
+    <l>Line::Draw</l>
+    <l>0 0 0 0</l>
+    <l>A::Draw</l>
+    <l>Shape::Draw</l>
+    <l>&lt;%END%&gt;</l>
+  </output>
+</config>

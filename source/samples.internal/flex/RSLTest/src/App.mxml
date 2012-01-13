@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+
+	<mx:Button label="Test" click="OnTest()" x="10" y="10">
+	</mx:Button>
+
+	<mx:Script>
+		<![CDATA[
+			import dd.Test;
+			import mx.controls.Alert;
+					
+			private function OnTest():void
+			{
+				Alert.show("Hello!!!");
+				
+				var t:dd.Test = new dd.Test();
+				t.Run();
+			}
+			
+		]]>
+	</mx:Script>
+</mx:Application>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" initialize="SayHello()">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			function SayHello():void
+			{
+				Alert.show("Hello World!!!");
+			}
+		]]>
+	</mx:Script>
+</mx:Application>

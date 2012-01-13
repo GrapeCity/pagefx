@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.Shared", "libs\DataDynamics.PageFX.Shared\DataDynamics.PageFX.Shared.csproj", "{4647C4D2-0C86-4E61-8393-6FA64C88E86A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.CLI", "libs\DataDynamics.PageFX.CLI\DataDynamics.PageFX.CLI.csproj", "{3C215B55-8587-4A60-8CAA-91FE412B9013}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.CodeModel", "libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.CodeModel.csproj", "{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.FLI", "libs\DataDynamics.PageFX.FLI\DataDynamics.PageFX.FLI.csproj", "{A54D800D-621B-491A-BE70-59D46BA70523}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.QA", "tests\DataDynamics.PageFX.QA\DataDynamics.PageFX.QA.csproj", "{D5099CF9-A243-4364-B9C7-6397917E3EFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pfc", "products\pfc\pfc.csproj", "{24A39436-A110-4C67-BF29-7A4FAA399CAA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared Items", "Shared Items", "{C6142C3D-9C9C-4CC4-911A-740DAD86D70B}"
+	ProjectSection(SolutionItems) = preProject
+		build.nant = build.nant
+		common.nant = common.nant
+		qa.nant = qa.nant
+		starteam.nant = starteam.nant
+		surround.nant = surround.nant
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pfx-nunit-console", "products\pfx-nunit-console\pfx-nunit-console.csproj", "{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4647C4D2-0C86-4E61-8393-6FA64C88E86A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4647C4D2-0C86-4E61-8393-6FA64C88E86A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4647C4D2-0C86-4E61-8393-6FA64C88E86A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4647C4D2-0C86-4E61-8393-6FA64C88E86A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A54D800D-621B-491A-BE70-59D46BA70523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A54D800D-621B-491A-BE70-59D46BA70523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A54D800D-621B-491A-BE70-59D46BA70523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A54D800D-621B-491A-BE70-59D46BA70523}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5099CF9-A243-4364-B9C7-6397917E3EFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5099CF9-A243-4364-B9C7-6397917E3EFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5099CF9-A243-4364-B9C7-6397917E3EFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5099CF9-A243-4364-B9C7-6397917E3EFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24A39436-A110-4C67-BF29-7A4FAA399CAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A39436-A110-4C67-BF29-7A4FAA399CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24A39436-A110-4C67-BF29-7A4FAA399CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24A39436-A110-4C67-BF29-7A4FAA399CAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

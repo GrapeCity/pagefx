@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="SVNTasks" default="empty">
+
+  <property name="cd" value="${project::get-base-directory()}"/>
+    
+  <target name="empty">
+  </target>
+
+  <target name="print">
+    <foreach item="File" property="file">
+      <in>
+        <items basedir="${cd}" defaultexcludes="false">
+          <include name="**\.svn\**"/>
+        </items>
+      </in>
+      <do>
+        <echo message="${file}"/>
+      </do>
+    </foreach>
+  </target>
+
+  <target name="zipdirs">
+    <zip zipfile="${cd}\svndirs.zip">
+      <fileset basedir="${cd}" defaultexcludes="false">
+        <include name="**\.svn\**"/>
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="deldirs">
+    <delete>
+      <fileset basedir="${cd}" defaultexcludes="false">
+        <include name="**\.svn\**"/>
+        <include name="**\.svn"/>
+      </fileset>
+    </delete>
+  </target>
+
+</project>

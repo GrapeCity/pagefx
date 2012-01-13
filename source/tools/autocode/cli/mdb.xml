@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mdb>
+  <table name="Assembly" id="0x20" ref="2">
+    <col name="HashAlgId" type="4" enum="HashAlgorithmId"/>
+    <col name="MajorVersion" type="2"/>
+    <col name="MinorVersion" type="2"/>
+    <col name="BuildNumber" type="2"/>
+    <col name="RevisionNumber" type="2"/>
+    <col name="Flags" type="4" enum="AssemblyFlags"/>
+    <col name="PublicKey" type="blob"/>
+    <col name="Name" type="str"/>
+    <col name="Culture" type="str"/>
+  </table>
+  <table name="AssemblyOS" id="0x22" ref="3">
+    <col name="OSPlatformId" type="4"/>
+    <col name="OSMajorVersion" type="4"/>
+    <col name="OSMinorVersion" type="4"/>
+  </table>
+  <table name="AssemblyProcessor" id="0x21" ref="4">
+    <col name="Processor" type="4"/>
+  </table>
+  <table name="AssemblyRef" id="0x23"  ref="5">
+    <col name="MajorVersion" type="2"/>
+    <col name="MinorVersion" type="2"/>
+    <col name="BuildNumber" type="2"/>
+    <col name="RevisionNumber" type="2"/>
+    <col name="Flags" type="4" enum="AssemblyFlags"/>
+    <col name="PublicKeyOrToken" type="blob"/>
+    <col name="Name" type="str"/>
+    <col name="Culture" type="str"/>
+    <col name="HashValue" type="blob"/>
+  </table>
+  <table name="AssemblyRefOS" id="0x25" ref="6">
+    <col name="OSPlatformId" type="4"/>
+    <col name="OSMajorVersion" type="4"/>
+    <col name="OSMinorVersion" type="4"/>
+    <col name="AssemblyRef" type="AssemblyRef"/>
+  </table>
+  <table name="AssemblyRefProcessor" id="0x24" ref="7">
+    <col name="Processor" type="4"/>
+    <col name="AssemblyRef" type="AssemblyRef"/>
+  </table>
+  <table name="ClassLayout" id="0x0F" ref="8" desc="The ClassLayout table is used to define how the fields of a class or value type shall be laid out by the CLI.">
+    <col name="PackingSize" type="2"/>
+    <col name="ClassSize" type="4"/>
+    <col name="Parent" type="TypeDef"/>
+  </table>
+  <table name="Constant" id="0x0B" ref="9" desc="The Constant table is used to store compile-time, constant values for fields, parameters, and properties.">
+    <col name="Type" type="2"/>
+    <col name="Parent" type="HasConstant"/>
+    <col name="Value" type="blob"/>
+  </table>
+  <table name="CustomAttribute" id="0x0C" ref="10">
+    <col name="Parent" type="HasCustomAttribute"/>
+    <col name="Type" type="CustomAttributeType"/>
+    <col name="Value" type="blob"/>
+  </table>
+  <table name="DeclSecurity" id="0x0E" ref="11">
+    <col name="Action" type="2"/>
+    <col name="Parent" type="HasDeclSecurity"/>
+    <col name="PermissionSet" type="blob"/>
+  </table>
+  <table name="EventMap" id="0x12" ref="12">
+    <col name="Parent" type="TypeDef"/>
+    <col name="EventList" type="Event"/>
+  </table>
+  <table name="Event" id="0x14" ref="13">
+    <col name="EventFlags" type="2" enum="EventAttributes"/>
+    <col name="Name" type="str"/>
+    <col name="EventType" type="TypeDefOrRef"/>
+  </table>
+  <table name="ExportedType" id="0x27" ref="14">
+    <col name="Flags" type="4" enum="TypeAttributes"/>
+    <col name="TypeDefId" type="4"/>
+    <col name="TypeName" type="str"/>
+    <col name="TypeNamespace" type="str"/>
+    <col name="Implementation" type="Implementation"/>
+  </table>
+  <table name="Field" id="0x04" ref="15">
+    <col name="Flags" type="2" enum="FieldAttributes"/>
+    <col name="Name" type="str"/>
+    <col name="Signature" type="blob"/>
+  </table>
+  <table name="FieldLayout" id="0x10" ref="16">
+    <col name="Offset" type="4"/>
+    <col name="Field" type="Field"/>
+  </table>
+  <table name="FieldMarshal" id="0x0D" ref="17">
+    <col name="Parent" type="HasFieldMarshal"/>
+    <col name="NativeType" type="blob"/>
+  </table>
+  <table name="FieldRVA" id="0x1D" ref="18">
+    <col name="RVA" type="4"/>
+    <col name="Field" type="Field"/>
+  </table>
+  <table name="File" id="0x26" ref="19">
+    <col name="Flags" type="4" enum="FileFlags"/>
+    <col name="Name" type="str"/>
+    <col name="HashValue" type="blob"/>
+  </table>
+  <table name="GenericParam" id="0x2A" ref="20">
+    <col name="Number" type="2"/>
+    <col name="Flags" type="2" enum="GenericParamAttributes"/>
+    <col name="Owner" type="TypeOrMethodDef"/>
+    <col name="Name" type="str"/>
+  </table>
+  <table name="GenericParamConstraint" id="0x2C" ref="21">
+    <col name="Owner" type="GenericParam"/>
+    <col name="Constraint" type="TypeDefOrRef"/>
+  </table>
+  <table name="ImplMap" id="0x1C" ref="22">
+    <col name="MappingFlags" type="2" enum="PInvokeAttributes"/>
+    <col name="MemberForwarded" type="MemberForwarded"/>
+    <col name="ImportName" type="str"/>
+    <col name="ImportScope" type="ModuleRef"/>
+  </table>
+  <table name="InterfaceImpl" id="0x09" ref="23">
+    <col name="Class" type="TypeDef"/>
+    <col name="Interface" type="TypeDefOrRef"/>
+  </table>
+  <table name="ManifestResource" id="0x28" ref="24">
+    <col name="Offset" type="4"/>
+    <col name="Flags" type="4" enum="ManifestResourceAttributes"/>
+    <col name="Name" type="str"/>
+    <col name="Implementation" type="Implementation"/>
+  </table>
+  <table name="MemberRef" id="0x0A" ref="25" desc="The MemberRef table combines two sorts of references, to Methods and to Fields of a class, known as MethodRef and FieldRef, respectively.">
+    <col name="Class" type="MemberRefParent"/>
+    <col name="Name" type="str"/>
+    <col name="Signature" type="blob"/>
+  </table>
+  <table name="MethodDef" id="0x06" ref="26">
+    <col name="RVA" type="4"/>
+    <col name="ImplFlags" type="2" enum="MethodImplAttributes"/>
+    <col name="Flags" type="2" enum="MethodAttributes"/>
+    <col name="Name" type="str"/>
+    <col name="Signature" type="blob"/>
+    <col name="ParamList" type="Param"/>
+  </table>
+  <table name="MethodImpl" id="0x19" ref="27" desc="MethodImpl tables let a compiler override the default inheritance rules provided by the CLI.">
+    <col name="Class" type="TypeDef"/>
+    <col name="MethodBody" type="MethodDefOrRef"/>
+    <col name="MethodDeclaration" type="MethodDefOrRef"/>
+  </table>
+  <table name="MethodSemantics" id="0x18" ref="28">
+    <col name="Semantics" type="2" enum="MethodSemanticsAttributes"/>
+    <col name="Method" type="MethodDef"/>
+    <col name="Association" type="HasSemantics"/>
+  </table>
+  <table name="MethodSpec" id="0x2B" ref="29">
+    <col name="Method" type="MethodDefOrRef"/>
+    <col name="Instantiation" type="blob"/>
+  </table>
+  <table name="Module" id="0x00" ref="30">
+    <col name="Generation" type="2"/>
+    <col name="Name" type="str"/>
+    <col name="Mvid" type="guid"/>
+    <col name="EncId" type="guid"/>
+    <col name="EncBaseId" type="guid"/>
+  </table>
+  <table name="ModuleRef" id="0x1A" ref="31">
+    <col name="Name" type="str"/>
+  </table>
+  <table name="NestedClass" id="0x29" ref="32">
+    <col name="Class" type="TypeDef"/>
+    <col name="EnclosingClass" type="TypeDef"/>
+  </table>
+  <table name="Param" id="0x08" ref="33">
+    <col name="Flags" type="2" enum="ParamAttributes"/>
+    <col name="Sequence" type="2"/>
+    <col name="Name" type="str"/>
+  </table>
+  <table name="Property" id="0x17" ref="34">
+    <col name="Flags" type="2" enum="PropertyAttributes"/>
+    <col name="Name" type="str"/>
+    <col name="Type" type="blob"/>
+  </table>
+  <table name="PropertyMap" id="0x15" ref="35">
+    <col name="Parent" type="TypeDef"/>
+    <col name="PropertyList" type="Property"/>
+  </table>
+  <table name="StandAloneSig" id="0x11" ref="36">
+    <col name="Signature" type="blob"/>
+  </table>
+  <table name="TypeDef" id="0x02" ref="37">
+    <col name="Flags" type="4" enum="TypeAttributes"/>
+    <col name="TypeName" type="str"/>
+    <col name="TypeNamespace" type="str"/>
+    <col name="Extends" type="TypeDefOrRef"/>
+    <col name="FieldList" type="Field"/>
+    <col name="MethodList" type="MethodDef"/>
+  </table>
+  <table name="TypeRef" id="0x01" ref="38">
+    <col name="ResolutionScope" type="ResolutionScope"/>
+    <col name="TypeName" type="str"/>
+    <col name="TypeNamespace" type="str"/>
+  </table>
+  <table name="TypeSpec" id="0x1B" ref="39">
+    <col name="Signature" type="blob"/>
+  </table>
+  <table name="FieldPtr" id="3">
+    <col name="Field" type="Field"/>
+  </table>
+  <table name="MethodPtr" id="5">
+    <col name="Method" type="MethodDef"/>
+  </table>
+  <table name="ParamPtr" id="7">
+    <col name="Param" type="Param"/>
+  </table>
+  <table name="EventPtr" id="19">
+    <col name="Event" type="Event"/>
+  </table>
+  <table name="PropertyPtr" id="22">
+    <col name="Property" type="Property"/>
+  </table>
+  <table name="EncodingLog" id="30">
+    <col name="Token" type="4"/>
+    <col name="FuncCode" type="4"/>
+  </table>
+  <table name="EncodingMap" id="31">
+    <col name="Token" type="4"/>
+  </table>
+</mdb>

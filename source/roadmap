@@ -1,0 +1,56 @@
+1. Compiler Enhancements
+	* Generics
+	* Add support for all embed asset types.
+	* External linking of SWC files.
+	* Ability to compile flex libraries (swc files).
+	* Optimizations:
+		* Use native string on eval stack
+		* Add option to optimize access to array element
+		* Use native boolean
+	* Compilation of style mixins from css files.
+	* Add to ABC/SWC wrapper generator ability to wrap events (using Event metadata tag).
+	* Add handling of SWC/ABC library references. Generation of wrappers for SWC/ABC files in compile time.
+	* Compilation of RSLs
+	* Linking of RSLs.
+
+2. .NET Class Libraries
+	* Enable NET_2_0 profile in corlib
+    * Enable more Mono unit test cases
+    * Enable more Mono class libs
+    * Collaboration with Mono team
+
+3. Debugger
+	* Investigate flash/flex debugger API
+	* Implement or port flash debugger API in C#
+	* Debugger with Command Line Interface
+
+4. VS Integration
+	* Compiler
+	* Debugger
+
+5. Application Platforms
+	* Investigate available APIs. Make comparison.
+	* Implement WPF
+	* XAML Player on Flash Player
+	* Implement WinForms
+
+6. Graphics API
+	* Design Framework of Open Graphics Infrastructure (OGI).
+	* Implement IGraphics interface to get SWF export facility.
+	* Implement IAnimatedGraphics in SWF Library.
+
+7. Documentation
+	* Simple user guide how to use pfc
+	* Extend wiki knoledge base
+	* Samples
+
+8. QA
+	* Unit tests for compiler components
+	* Samples
+
+9. In a faraway feature
+	* CIL to Java bytecode. DLL to JAR.
+	* CIL to DEX - byte code for Dalvik Virtual Machine (part of Google Android Mobile platform).
+	* One Engine to translate IL between stack based VMs.
+	* Translator from stack based VM to register based VM.
+	* Translator from register based VM to stack based VM.

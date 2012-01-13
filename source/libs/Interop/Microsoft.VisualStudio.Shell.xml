@@ -1,0 +1,2041 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Microsoft.VisualStudio.Shell</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.VisualStudio.IEventHandler">
+      <summary>Provides the methods necessary to add, remove, and test for the existence of handlers in an event handler collection.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.IEventHandler.AddHandler(System.String)">
+      <summary>When implemented by a derived class, adds a named handler to an event handler collection.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" /> if the method succeeds, otherwise an error code.</returns>
+      <param name="bstrEventName">The name of the handler.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.IEventHandler.GetHandledEvents">
+      <summary>When implemented by a derived class, returns an enumerator over all the handlers added by successive calls to <see cref="M:Microsoft.VisualStudio.IEventHandler.AddHandler(System.String)" />.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" /> if the method succeeds, otherwise an error code.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.IEventHandler.HandlesEvent(System.String)">
+      <summary>When implemented by a derived class, determines whether a named handler is in the event handler collection.</summary>
+      <returns>true if the handler is in the underlying handler collection, otherwise false.</returns>
+      <param name="bstrEventName">The name of the evaluated handler.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.IEventHandler.RemoveHandler(System.String)">
+      <summary>When implemented by a derived class, removes a named handler from the collection of event handlers.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" /> if the method succeeds, otherwise an error code.</returns>
+      <param name="bstrEventName">The name of the event handler to remove.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.VSConstants">
+      <summary>Use this class to access common Visual Studio constants.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.ALL"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.BuildOrder">
+      <summary>Use this legacy GUID to access a specific output pane.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.BuildOutput">
+      <summary>Use this legacy GUID to access a specific output pane.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CEF_CLONEFILE">
+      <summary>An obsolete flag combined bitwise as the first parameter of the method <see cref="M:Microsoft.VisualStudio.Package.EditorFactory.CreateEditorInstance(System.UInt32,System.String,System.String,Microsoft.VisualStudio.Shell.Interop.IVsHierarchy,System.UInt32,System.IntPtr,System.IntPtr@,System.IntPtr@,System.String@,System.Guid@,System.Int32@)" />.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CEF_OPENASNEW">
+      <summary>Combined bitwise as the first parameter of the method <see cref="M:Microsoft.VisualStudio.Package.EditorFactory.CreateEditorInstance(System.UInt32,System.String,System.String,Microsoft.VisualStudio.Shell.Interop.IVsHierarchy,System.UInt32,System.IntPtr,System.IntPtr@,System.IntPtr@,System.String@,System.Guid@,System.Int32@)" />, this indicates the editor factory should perform necessary corrections.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CEF_OPENFILE">
+      <summary>Combined bitwise as the first parameter of the method <see cref="M:Microsoft.VisualStudio.Package.EditorFactory.CreateEditorInstance(System.UInt32,System.String,System.String,Microsoft.VisualStudio.Shell.Interop.IVsHierarchy,System.UInt32,System.IntPtr,System.IntPtr@,System.IntPtr@,System.String@,System.Guid@,System.Int32@)" />, this flag is mutually exclusive with <see cref="F:Microsoft.VisualStudio.VSConstants.CEF_CLONEFILE" />. </summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CEF_SILENT">
+      <summary>Indicates the editor factory should create the editor silently. </summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_ComPlusOnlyDebugEngine"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_HtmDocData">
+      <summary>The document's data is HTML format.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_HtmedPackage">
+      <summary>GUID of the HTML package.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_HtmlLanguageService">
+      <summary>GUID of the HTML language service.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_MiscellaneousFilesProject">
+      <summary>CLSID for Miscellaneous Files project.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_SolutionItemsProject">
+      <summary>Project type CLSID for Solution Items project.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_VsCfgProviderEventsHelper">
+      <summary>Provide notifications when configuration-related events are fired. Implemented by the environment.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_VsDocOutlinePackage">
+      <summary>The CLSID of the document outline package window.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_VsEnvironmentPackage">
+      <summary>The CLSID for Visual Studio Environment Package.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_VsTaskList">
+      <summary>The CLSID for Visual Studio Environment Task List.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_VsTaskListPackage">
+      <summary>The CLSID for Visual Studio Environment Task List Package.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CLSID_VsUIHierarchyWindow">
+      <summary>The CLSID for Visual Studio Environment Hierarchy Window.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.cmdidToolsOptions">
+      <summary>On the Tools menu, the command for options.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CPDN_SELCHANGED">
+      <summary>Sent from a page dialog to Component Selector dialog, informs of selection change on page.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CPDN_SELDBLCLICK">
+      <summary>Sent from a page dialog to Component Selector dialog, informs of a double click on a selected item.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CPPM_CLEARSELECTION">
+      <summary>Resets and clears selection in list of available components on the Component Selector dialog.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CPPM_GETSELECTION">
+      <summary>Retrieves information about selection on the Component Selector dialog.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CPPM_INITIALIZELIST">
+      <summary>Initializes the list of available components on the Component Selector dialog.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CPPM_INITIALIZETAB">
+      <summary>Initializes a tab with <see cref="T:Microsoft.VisualStudio.Package.Variant" /> in <see cref="T:Microsoft.VisualStudio.Shell.Interop.VSCOMPONENTSELECTORTABINIT" /> on the Component Selector dialog.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CPPM_QUERYCANSELECT">
+      <summary>Determine whether the Select button should be enabled on the Component Selector dialog.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.CPPM_SETMULTISELECT">
+      <summary>Sets the multiple-selection mode on the Component Selector dialog.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DebugOutput">
+      <summary>Use this legacy GUID to access a specific output pane.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_ARRAYISLOCKED">
+      <summary>An HRESULT that indicates that the array is currently locked.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_BADCALLEE">
+      <summary>A COM return value.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_BADINDEX">
+      <summary>A return value that indicates subscript out of range.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_BADPARAMCOUNT">
+      <summary>An error return value that indicates that the number of elements provided to the method is different from the number of arguments accepted by the method.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_BADVARTYPE">
+      <summary>One of the method arguments is not a valid variant type.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_BUFFERTOOSMALL">
+      <summary>A return error that indicates the destination token buffer is too small.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_DIVBYZERO">
+      <summary>A return error that indicates a divide by zero error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_EXCEPTION">
+      <summary>This return value indicates that the call generated an exception.  The usual implementation is to specify that an argument of the method that returned this error is a pointer to a structure that contains exception information.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_MEMBERNOTFOUND">
+      <summary>A return value indicating that the requested member does not exist, or the call to <paramref name="Invoke" /> tried to set the value of a read-only property.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_NONAMEDARGS">
+      <summary>A return value indicating that the invoked implementation of IDispatch does not support named arguments.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_NOTACOLLECTION">
+      <summary>A return value indicating an unexpected argument type.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_OVERFLOW">
+      <summary>An error that indicates that a value could not be coerced to its expected representation.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_PARAMNOTFOUND">
+      <summary>A return value that indicates that one of the parameter DISPIDs does not correspond to a parameter on the method.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_PARAMNOTOPTIONAL">
+      <summary>A return value that indicates that a required parameter was omitted.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_TYPEMISMATCH">
+      <summary>A return value that indicates that one or more of the parameters could not be coerced.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_UNKNOWNINTERFACE">
+      <summary>A return value that indicates that the interface identifier passed in <paramref name="riid" /> is not equal to IID_NULL.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_UNKNOWNLCID">
+      <summary>A return value that indicates that the member being invoked interprets string arguments according to the Locale ID (LCID), and the LCID is not recognized.  If the LCID is not needed to interpret arguments, this error should not be returned.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DISP_E_UNKNOWNNAME">
+      <summary>A return value that indicates that one or more of the names were not known. The returned DISPIDs contain DISPID_UNKNOWN for each entry that corresponds to an unknown name.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.DocumentFrame">
+      <summary>A constant referenced in selection events to describe which component of the shell has just been selected.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_ABORT">
+      <summary>A return value that may indicate an explicit cancellation action or some process that could no longer proceed after (for instance) both undo and rollback failed.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_ACCESSDENIED">
+      <summary>A return value that describes a general access denied error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_FAIL">
+      <summary>Error HRESULT for a generic failure.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_HANDLE">
+      <summary>A return value that indicates an invalid handle.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_INVALIDARG">
+      <summary>Error HRESULT for an invalid argument.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_NOINTERFACE">
+      <summary>Error HRESULT for the request of a not implemented interface.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_NOTIMPL">
+      <summary>Error HRESULT for the call to a method that is not implemented.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_OUTOFMEMORY">
+      <summary>Error HRESULT for out of memory.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_PENDING">
+      <summary>A return value that indicates the availability of an asynchronously accessed interface.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_POINTER">
+      <summary>A return value that indicates that an invalid pointer, usually null, was passed as a parameter.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.E_UNEXPECTED">
+      <summary>A return value that indicates that the result of the method call is outside of the error cases the client code can readily handle.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_BrowseFilePage"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_BuildOutputWindowPane">
+      <summary>This constant represents the GUID for the interface <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsOutputWindowPane" /> which is implemented by the shell's OutputWindow tool window.  It is used by client code to display messages in the output window.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_COMClassicPage">
+      <summary>A Visual Studio component selector page GUID.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_COMPlusPage">
+      <summary>A Visual Studio component selector page GUID.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_DefaultEditor">
+      <summary>A common system defined editor GUID.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_ExternalEditor">
+      <summary>A common editor GUID.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_HTMEDAllowExistingDocData">
+      <summary>GUID used to mark a <see cref="T:Microsoft.VisualStudio.TextManager.Interop.VsTextBuffer" /> in order to tell to the HTML editor factory to accept preexisting doc data.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_HtmlEditorFactory">
+      <summary>GUID of the HTML editor factory.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_ItemType_PhysicalFile">
+      <summary>A GUID constant used to specify that the type is a physical file on disk or the Web.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_ItemType_PhysicalFolder">
+      <summary>A GUID constant used to specify that the type is a physical folder on disk or the Web.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_ItemType_SubProject">
+      <summary>A GUID constant used to specify that the type is a nested hierarchy project.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_ItemType_VirtualFolder">
+      <summary>A GUID constant used to specify that the type is a non-physical folder.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_OutWindowDebugPane">
+      <summary>A GUID constant used to specify the debug pane inside the output window.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_OutWindowGeneralPane">
+      <summary>The GUID of the pseudo service that returns the General output pane <see cref="F:Microsoft.VisualStudio.VSConstants.SID_SVsGeneralOutputWindowPane" /> in the VS environment.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_ProjectDesignerEditor"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_SolutionPage">
+      <summary>A Visual Studio component selector page GUID.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_TextEditorFactory">
+      <summary>GUID of the Text editor factory.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VS_DEPTYPE_BUILD_PROJECT"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsNewProjectPseudoFolder">
+      <summary>String resource ID for Visual Studio pseudo-folder.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VSStandardCommandSet97">
+      <summary>This GUID identifies the standard set of commands known by Visual Studio 97 (version 6).</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsTaskListViewAll">
+      <summary>The GUID for the highest abstraction task lists.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsTaskListViewCheckedTasks">
+      <summary>The GUID for a certain flavor or task lists.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsTaskListViewCommentTasks">
+      <summary>The GUID for a certain flavor or task lists.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsTaskListViewCompilerTasks">
+      <summary>The GUID for a certain flavor or task lists.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsTaskListViewCurrentFileTasks">
+      <summary>The GUID for a certain flavor or task lists.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsTaskListViewHTMLTasks">
+      <summary>The GUID for a certain flavor or task lists.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsTaskListViewShortcutTasks">
+      <summary>The GUID for a certain flavor or task lists.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsTaskListViewUncheckedTasks">
+      <summary>The GUID for a certain flavor or task lists.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsTaskListViewUserTasks">
+      <summary>The GUID for a certain flavor or task lists.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.GUID_VsUIHierarchyWindowCmds">
+      <summary>A GUID that defines the command group related to the hierarchy window.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.guidCOMPLUSLibrary"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.IID_IUnknown">
+      <summary>GUID of the IUnknown COM interface.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.LOGVIEWID_Code">
+      <summary>
+        <see cref="F:Microsoft.VisualStudio.VSConstants.GUID_VSStandardCommandSet97" />cmdidOpenWith handlers should pass this value to the <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsUIShellOpenDocument.OpenStandardEditor(System.UInt32,System.String,System.Guid@,System.String,Microsoft.VisualStudio.Shell.Interop.IVsUIHierarchy,System.UInt32,System.IntPtr,Microsoft.VisualStudio.OLE.Interop.IServiceProvider,Microsoft.VisualStudio.Shell.Interop.IVsWindowFrame@)" /> method to get the Open With dialog, in this case on possible Code Views.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.LOGVIEWID_Debugging">
+      <summary>
+        <see cref="F:Microsoft.VisualStudio.VSConstants.GUID_VSStandardCommandSet97" />cmdidOpenWith handlers should pass this value to the <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsUIShellOpenDocument.OpenStandardEditor(System.UInt32,System.String,System.Guid@,System.String,Microsoft.VisualStudio.Shell.Interop.IVsUIHierarchy,System.UInt32,System.IntPtr,Microsoft.VisualStudio.OLE.Interop.IServiceProvider,Microsoft.VisualStudio.Shell.Interop.IVsWindowFrame@)" /> method to get the Open With dialog, in this case populated with possible <see cref="F:Microsoft.VisualStudio.VSConstants.LOGVIEWID_Debugging" /> debugging views which map to the same view as <see cref="F:Microsoft.VisualStudio.VSConstants.LOGVIEWID_Code" />.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.LOGVIEWID_Designer">
+      <summary>
+        <see cref="F:Microsoft.VisualStudio.VSConstants.GUID_VSStandardCommandSet97" />cmdidOpenWith handlers should pass this value to the <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsUIShellOpenDocument.OpenStandardEditor(System.UInt32,System.String,System.Guid@,System.String,Microsoft.VisualStudio.Shell.Interop.IVsUIHierarchy,System.UInt32,System.IntPtr,Microsoft.VisualStudio.OLE.Interop.IServiceProvider,Microsoft.VisualStudio.Shell.Interop.IVsWindowFrame@)" /> method to get the Open With dialog, in this case to View Form designer views.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.LOGVIEWID_Primary">
+      <summary>
+        <see cref="F:Microsoft.VisualStudio.VSConstants.GUID_VSStandardCommandSet97" />cmdidOpenWith handlers should pass this value to <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsUIShellOpenDocument.OpenStandardEditor(System.UInt32,System.String,System.Guid@,System.String,Microsoft.VisualStudio.Shell.Interop.IVsUIHierarchy,System.UInt32,System.IntPtr,Microsoft.VisualStudio.OLE.Interop.IServiceProvider,Microsoft.VisualStudio.Shell.Interop.IVsWindowFrame@)" /> method to get the Open With dialog, in this case the default/primary view of the editor factory.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.LOGVIEWID_TextView">
+      <summary>
+        <see cref="F:Microsoft.VisualStudio.VSConstants.GUID_VSStandardCommandSet97" />cmdidOpenWith handlers should pass this value to <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsUIShellOpenDocument.OpenStandardEditor(System.UInt32,System.String,System.Guid@,System.String,Microsoft.VisualStudio.Shell.Interop.IVsUIHierarchy,System.UInt32,System.IntPtr,Microsoft.VisualStudio.OLE.Interop.IServiceProvider,Microsoft.VisualStudio.Shell.Interop.IVsWindowFrame@)" /> method to get the Open With dialog, in this for a document or data text editor view.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.LOGVIEWID_UserChooseView">
+      <summary>
+        <see cref="F:Microsoft.VisualStudio.VSConstants.GUID_VSStandardCommandSet97" />cmdidOpenWith handlers should pass this value to <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsUIShellOpenDocument.OpenStandardEditor(System.UInt32,System.String,System.Guid@,System.String,Microsoft.VisualStudio.Shell.Interop.IVsUIHierarchy,System.UInt32,System.IntPtr,Microsoft.VisualStudio.OLE.Interop.IServiceProvider,Microsoft.VisualStudio.Shell.Interop.IVsWindowFrame@)" /> method which prompts the user to choose which user-defined view to use.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_ADVF">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_ADVISENOTSUPPORTED">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_BLANK">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_CANT_BINDTOSOURCE">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_CANT_GETMONIKER">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_CANTCONVERT">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_CLASSDIFF">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_ENUM_NOMORE">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_INVALIDHWND">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_INVALIDRECT">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_NOCACHE">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_NOCONNECTION">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_NOSTORAGE">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_NOT_INPLACEACTIVE">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_NOTRUNNING">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_OLEVERB">
+      <summary>A legacy OLE error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_PROMPTSAVECANCELLED">
+      <summary>The user was prompted to save but chose the Cancel button from the prompt message box.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_STATIC">
+      <summary>The cache is for a static object and it already has a cache node.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.OLE_E_WRONGCOMPOBJ">
+      <summary>The versions of COMPOBJ.DLL and OLE2.DLL on your machine are incompatible with each other.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.PropertyBrowserSID">
+      <summary>Describes what component of the shell has just been selected.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.S_FALSE">
+      <summary>HRESULT for false.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.S_OK">
+      <summary>Generic HRESULT for success.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.SELECTED"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.SID_SUIHostCommandDispatcher">
+      <summary>The name of the Visual Studio service that implements <see cref="T:Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget" />.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.SID_SVsGeneralOutputWindowPane">
+      <summary>Returns an IID_IVsOutputWindowPane interface of the General output pane in the Visual Studio environment.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.SID_SVsToolboxActiveXDataProvider">
+      <summary>A Visual Studio toolbox service.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.StartupProject">
+      <summary>A constant referenced in selection events to describe which component of the shell has just been selected, in this case in response to project startup.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_CodeWindow">
+      <summary>Returns the GUID of the command associated with a change in UI context.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_Debugging">
+      <summary>Specifies that UI context is the switch to a debugging window.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_DesignMode">
+      <summary>Returns the GUID of the command associated with a change to design mode in UI context.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_Dragging">
+      <summary>Returns the GUID of the command associated with the UI drag/drop operation.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_EmptySolution">
+      <summary>Packages may define a command that is associated with a change in UI context.  Use UICONTEXT_EmptySolution to return the GUID of the command associated with this UI state.  In this case the UI context is an empty solution.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_FullScreenMode">
+      <summary>Packages may define a command that is associated with a change in UI context.  Use UICONTEXT_FullScreenMode to return the GUID of the command associated with this UI state.  In this case the UI context is that the Full Screen command from the View menu has been selected.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_NoSolution">
+      <summary>Packages may define a command that is associated with a change in UI context.  Use UICONTEXT_NoSolution to return the GUID of the command associated with this UI state.  In this case the UI context is that there is no solution.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_SolutionBuilding">
+      <summary>Packages may define a command that is associated with a change in UI context.  Use UICONTEXT_SolutionBuilding to return the GUID of the command associated with this UI state.  In this case the UI context is Build solution or build project mode is in effect.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_SolutionExists">
+      <summary>Packages may define a command that is associated with a change in UI context.  Use UICONTEXT_SolutionExists to return the GUID of the command associated with this UI state.  In this case the UI context is that a solution exists, though the number of projects loaded is not pertinent to this call.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_SolutionHasMultipleProjects">
+      <summary>Packages may define a command that is associated with a change in UI context. Use UICONTEXT_SolutionHasMultipleProjects to return the GUID of the command associated with this UI state. In this case the UI context is that a solution exists and has multiple projects loaded.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UICONTEXT_SolutionHasSingleProject">
+      <summary>Packages may define a command that is associated with a change in UI context. Use UICONTEXT_SolutionHasMultipleProjects to return the GUID of the command associated with this UI state. In this case the UI context is that a solution exists and has a single project loaded.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UNDO_E_CLIENTABORT">
+      <summary>Error HRESULT for a client abort.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UndoManager">
+      <summary>A constant referenced in selection events to describe which component of the shell has just been selected.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.UserContext">
+      <summary>A constant referenced in selection events to describe which component of the shell has just been selected.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_BUILDABLEPROJECTCFGOPTS_BUILD_ACTIVE_DOCUMENT_ONLY"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_BUILDABLEPROJECTCFGOPTS_BUILD_SELECTION_ONLY"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_BUILDABLEPROJECTCFGOPTS_PRIVATE"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_BUILDABLEPROJECTCFGOPTS_REBUILD"></member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_BUSY">
+      <summary>A constant returned by interfaces to asynchronous behavior when the object in question in already busy.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_INCOMPATIBLEDOCDATA">
+      <summary>A Visual Studio specific error HRESULT for "Incompatible document data".</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_PACKAGENOTLOADED">
+      <summary>A Visual Studio specific error HRESULT that indicates "Package not loaded."</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_PROJECTALREADYEXISTS">
+      <summary>A Visual Studio-specific error HRESULT that indicates that the "Project already exists."</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_PROJECTMIGRATIONFAILED">
+      <summary>A Visual Studio specific error HRESULT that indicates "Project configuration failed."</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_PROJECTNOTLOADED">
+      <summary>A Visual Studio-specific error HRESULT that indicates "Project not loaded."</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_SOLUTIONALREADYOPEN">
+      <summary>A Visual Studio-specific error HRESULT that indicates "Solution already open."</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_SOLUTIONNOTOPEN">
+      <summary>A Visual Studio-specific error HRESULT that indicates "Solution not open."</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_SPECIFYING_OUTPUT_UNSUPPORTED">
+      <summary>Returned by build interfaces that have parameters for specifying an array of IVsOutput's but the implementation can only apply the method to all outputs.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_UNSUPPORTEDFORMAT">
+      <summary>
+        <see cref="M:Microsoft.VisualStudio.Package.EditorFactory.CreateEditorInstance(System.UInt32,System.String,System.String,Microsoft.VisualStudio.Shell.Interop.IVsHierarchy,System.UInt32,System.IntPtr,System.IntPtr@,System.IntPtr@,System.String@,System.Guid@,System.Int32@)" /> returns this value if the document has a format that cannot be opened in the editor.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_E_WIZARDBACKBUTTONPRESS">
+      <summary>An HRESULT value that indicates that the user hit the back button in a Visual Studio wizard.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_S_PROJECTFORWARDED">
+      <summary>A Visual Studio-specific error HRESULT that indicates "Project forwarded."</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VS_S_TBXMARKER">
+      <summary>A Visual Studio-specific constant for a "Toolbox marker."</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VSCOOKIE_NIL">
+      <summary>A Visual Studio-specific constant that indicates that a cookie has not been set.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VSITEMID_NIL">
+      <summary>A Visual Studio item identifier that represents the absence of a project item. This value is used when there is no current selection.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT">
+      <summary>A Visual Studio item identifier that represents the root of a project hierarchy and is used to identify the entire hierarchy, as opposed to a single item.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VSITEMID_SELECTION">
+      <summary>A Visual Studio item identifier that represents the currently selected item or items, which can include the root of the hierarchy.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VSM_ENTERMODAL">
+      <summary>A Visual Studio-specific constant for broadcasting a notification message via <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsBroadcastMessageEvents.OnBroadcastMessage(System.UInt32,System.IntPtr,System.IntPtr)" /> that indicates the beginning of modality.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VSM_EXITMODAL">
+      <summary>A Visual Studio-specific constant for broadcasting a notification message via <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsBroadcastMessageEvents.OnBroadcastMessage(System.UInt32,System.IntPtr,System.IntPtr)" /> that indicates the end of modality.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VSM_TOOLBARMETRICSCHANGE">
+      <summary>A Visual Studio-specific constant for broadcasting a notification message via <see cref="M:Microsoft.VisualStudio.Shell.Interop.IVsBroadcastMessageEvents.OnBroadcastMessage(System.UInt32,System.IntPtr,System.IntPtr)" /> indicating that the command bar metrics have changed.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.VSStd2K">
+      <summary>GUID for the Windows 2000 command set. This is a set of standard editor commands.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.VSConstants.WindowFrame">
+      <summary>A constant referenced in selection events to describe which component of the shell has just been selected.</summary>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Win32Methods">
+      <summary>Imports some Win32 window management functions.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Win32Methods.#ctor">
+      <summary>Initializes a new instance of the class.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Win32Methods.IsDialogMessageA(System.IntPtr,Microsoft.VisualStudio.OLE.Interop.MSG@)">
+      <summary>Determines if a message is intended for the specified dialog box, and if so processes the message.</summary>
+      <returns>true if the message has been processed, otherwise false.</returns>
+      <param name="hDlg">A handle to the child window.</param>
+      <param name="msg">The message in question.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Win32Methods.SetParent(System.IntPtr,System.IntPtr)">
+      <summary>Changes the parent window of the specified child window.</summary>
+      <returns>If the function succeeds, a handle to the previous parent window, otherwise null.</returns>
+      <param name="hWnd">A handle to the child window that should receive a new parent.</param>
+      <param name="hWndParent">A handle to the new parent window.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.DefaultRegistryRootAttribute">
+      <summary>Defines the default registry root used to register VSPackage information. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DefaultRegistryRootAttribute.#ctor(System.String)">
+      <summary>Initializes a new <see cref="T:Microsoft.VisualStudio.Shell.DefaultRegistryRootAttribute" /> object with the given registry root.</summary>
+      <param name="root">The default registry root used to register VSPackage information.</param>
+      <exception cref="T:System.ArgumentNullException">The constructor throws an <see cref="T:System.ArgumentNullException" /> if the root argument is null.</exception>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.DefaultRegistryRootAttribute.Root">
+      <summary>Gets the value of the default registry root for the VSPackage.</summary>
+      <returns>The value of the default registry root for the VSPackage.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor">
+      <summary>A specialization of <see cref="T:System.ComponentModel.PropertyDescriptor" /> that allows customization of the display name of the property in the property grid.  </summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.#ctor(System.ComponentModel.PropertyDescriptor)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor" /> for the specified property descriptor.</summary>
+      <param name="prop">
+        <see cref="T:System.ComponentModel.PropertyDescriptor" />.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.CanResetValue(System.Object)">
+      <summary>Determines whether or not resetting the object changes its value.</summary>
+      <returns>true if resetting the component changes its value, otherwise false.</returns>
+      <param name="component">The component that owns the property.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.ComponentType">
+      <summary>Gets the component type.</summary>
+      <returns>The type of the component.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.Converter">
+      <summary>Gets the type converter for the property.</summary>
+      <returns>
+        <see cref="T:System.ComponentModel.TypeConverter" />.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.DisplayName">
+      <summary>Gets the display name for this property.</summary>
+      <returns>The display name.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.GetEditor(System.Type)">
+      <summary>Gets an editor of the specified type.</summary>
+      <returns>The editor, or null if it cannot be found.</returns>
+      <param name="editorBaseType">The type of the editor.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.GetTypeFromNameProperty(System.String)">
+      <summary>Converts the name to a <see cref="T:System.Type" />.</summary>
+      <returns>
+        <see cref="T:System.Type" />.</returns>
+      <param name="typeName">The name of the type.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.GetValue(System.Object)">
+      <summary>Gets the value of the property.</summary>
+      <returns>The value of the property.</returns>
+      <param name="component">The component that owns the property.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.IsReadOnly">
+      <summary>Gets whether or not the property is read-only.</summary>
+      <returns>true if the property is read-only, otherwise false.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.PropertyType">
+      <summary>Gets the type of the property.</summary>
+      <returns>The type of the property.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.ResetValue(System.Object)">
+      <summary>Resets the value to the default value.</summary>
+      <param name="component">The component that owns the property.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.SetValue(System.Object,System.Object)">
+      <summary>Sets the value of the property to the specified value.</summary>
+      <param name="component">The component that owns the property.</param>
+      <param name="value">The value to set.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DesignPropertyDescriptor.ShouldSerializeValue(System.Object)">
+      <summary>Determines whether or not the property's value should be persisted.</summary>
+      <returns>true if the property should be persisted, otherwise false.</returns>
+      <param name="component">The component that owns the property.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.DialogPage.PageApplyEventArgs">
+      <summary>Event arguments that allow the <see cref="M:Microsoft.VisualStudio.Shell.DialogPage.OnApply(Microsoft.VisualStudio.Shell.DialogPage.PageApplyEventArgs)" /> method to indicate how to handle the apply event.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.DialogPage.PageApplyEventArgs.#ctor">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.DialogPage.PageApplyEventArgs" />.</summary>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.DialogPage.PageApplyEventArgs.ApplyBehavior">
+      <summary>Gets or sets the kind of behavior that should take plan on Apply.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.DialogPage.ApplyKind" />.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ErrorListProvider">
+      <summary>This task provider is used to provide tasks for the Visual StudioError List window.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorListProvider.#ctor(System.IServiceProvider)">
+      <summary>Creates an ErrorListProvider object.</summary>
+      <param name="provider">
+        <see cref="T:Microsoft.VisualStudio.OLE.Interop.IServiceProvider" /> object.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorListProvider.BringToFront">
+      <summary>Activates the Error List window and makes it visible.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorListProvider.Dispose(System.Boolean)">
+      <summary>Activates the Error List window and makes it visible.</summary>
+      <param name="disposing">Parameter is set to true if the task list can be disposed, that is, if the <see cref="T:Microsoft.VisualStudio.Shell.TaskProvider.TaskCollection" /> contains tasks.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorListProvider.Finalize">
+      <summary>Destructor for ErrorListProvider.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorListProvider.ForceShowErrors">
+      <summary>Shows the errors in the Error List window.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorListProvider.Show">
+      <summary>Creates a Error List tool window and shows the errors in it. </summary>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ErrorListProvider.VsTaskList">
+      <summary>Returns the service that allows VSPackage implementers to store and manage their tasks as a part of the environment's task list.</summary>
+      <returns>Returns an <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsTaskList" /> object.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ErrorTask">
+      <summary>Represents an error task on the Task List. This class implements <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsErrorItem" />. </summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorTask.#ctor">
+      <summary>Initializes a new instance of an <see cref="T:Microsoft.VisualStudio.Shell.ErrorTask" />.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorTask.#ctor(System.Exception)">
+      <summary>Initializes a new instance of an <see cref="T:Microsoft.VisualStudio.Shell.ErrorTask" /> for the specified error.</summary>
+      <param name="error">
+        <see cref="T:System.Exception" />.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ErrorTask.ErrorCategory">
+      <summary>Gets or sets the error category of this task.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.TaskErrorCategory" />.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ErrorTask.HierarchyItem">
+      <summary>Gets or sets the hierarchy item associated with this task.</summary>
+      <returns>The <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsHierarchy" /> item associated with the task.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorTask.Microsoft#VisualStudio#Shell#Interop#IVsErrorItem#GetCategory(System.UInt32@)">
+      <summary>Gets the category of the error.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="pCategory">[out] Returns the <see cref="T:Microsoft.VisualStudio.Shell.TaskErrorCategory" />.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ErrorTask.Microsoft#VisualStudio#Shell#Interop#IVsErrorItem#GetHierarchy(Microsoft.VisualStudio.Shell.Interop.IVsHierarchy@)">
+      <summary>Gets the hierarchy node associated with the task.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="ppHier">[out] Returns the <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsHierarchy" /> interface of the node associated with this task.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.EventSinkCollection">
+      <summary>Maps objects to and from event "cookies" that represent a client's registration with an event provider. </summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.EventSinkCollection.#ctor">
+      <summary>Initializes a new instance of an <see cref="T:Microsoft.VisualStudio.Shell.EventSinkCollection" /> object.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.EventSinkCollection.Add(System.Object)">
+      <summary>Adds an event and returns its cookie.</summary>
+      <returns>The cookie of the added event.</returns>
+      <param name="o">An object to be added to the event collection.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.EventSinkCollection.Clear">
+      <summary>Removes all event cookies.</summary>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.EventSinkCollection.Count">
+      <summary>Gets the total number of event cookies in the collection.</summary>
+      <returns>The number of cookies in the collection.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.EventSinkCollection.Item(System.UInt32)">
+      <summary>Gets or sets the specified cookie from the collection.</summary>
+      <returns>The cookie.</returns>
+      <param name="cookie">The cookie to get.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.EventSinkCollection.Remove(System.Object)">
+      <summary>Removes the specified event cookie from the collection.</summary>
+      <param name="obj">The event cookie to be removed.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.EventSinkCollection.RemoveAt(System.UInt32)">
+      <summary>Removes the event cookie.</summary>
+      <param name="cookie">The event cookie. </param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.EventSinkCollection.SetAt(System.UInt32,System.Object)">
+      <summary>Updates the event associated with the given cookie.</summary>
+      <param name="cookie">A cookie specifying an event.</param>
+      <param name="value">The value to which the event sink is set.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.EventSinkCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Microsoft Internal Only.</summary>
+      <returns>Returns an <see cref="T:System.Collections.IEnumerator" />.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute">
+      <summary>Provides information for the Visual Studio splash screen and the Help About dialog box when applied to a <see cref="T:Microsoft.VisualStudio.Shell.Package" />-derived class or a class that implements <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsPackage" />. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.#ctor(System.Boolean,System.String,System.String,System.String)">
+      <summary>Initializes a new InstalledProductRegistrationAttribute instance for the specified product.</summary>
+      <param name="useInterface">true if the package implements the <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsInstalledProduct" /> interface to collect and display the information, otherwise false.</param>
+      <param name="productName">The name of the product.</param>
+      <param name="productDetails">The detailed description of the product.</param>
+      <param name="productId">The product ID.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.IconResourceID">
+      <summary>Gets or sets the resource ID of the icon associated with the product.</summary>
+      <returns>The resource ID of the icon associated with the product.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.LanguageIndependentName">
+      <summary>Gets or sets the (non-localized) name of the product.</summary>
+      <returns>The (non-localized) name of the product.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.ProductDetails">
+      <summary>Gets or sets the detailed description of the product.</summary>
+      <returns>The detailed description of the product.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.ProductDetailsResourceID">
+      <summary>Gets or sets the product details resource ID.</summary>
+      <returns>The product details resource ID.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.ProductId">
+      <summary>Gets or sets the product ID.</summary>
+      <returns>The ID of the product.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.ProductName">
+      <summary>Gets or sets the name of the product.</summary>
+      <returns>The name of the product.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.ProductNameResourceID">
+      <summary>Gets or sets the resource ID of the product name.</summary>
+      <returns>The product name resource ID.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Registers information about a VSPackage when called by an external registration tool such as regpkg.exe. </summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="context" /> is null.</exception>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the registration information about a VSPackage when called by an external registration tool such as regpkg.exe. </summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> provided by an external registration tool. The context can be used to remove registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.UseInterface">
+      <summary>Gets or whether the package implements the <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsInstalledProduct" /> interface to display a bitmap in the splash screen and information in the About dialog box on the Help menu.</summary>
+      <returns>The value is true if the product installation implements the <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsInstalledProduct" /> interface and false otherwise.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.InstalledProductRegistrationAttribute.UsePackage">
+      <summary>Gets or sets whether the product installation uses the package ID.</summary>
+      <returns>The value is true if the product installation uses the package ID, and false otherwise.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.IResXResourceService">
+      <summary>An abstraction layer that lets clients control the resx readers and writers used within Visual Studio.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.IResXResourceService.GetResXResourceReader(System.IO.TextReader,System.Boolean,System.String)">
+      <summary>Returns a resx resource reader given a <paramref name="basepath" /> and name.</summary>
+      <returns>
+        <see cref="T:System.Resources.IResourceReader" />.</returns>
+      <param name="textReader">The <see cref="T:System.IO.TextReader" /> that is wrapped by the returned <see cref="T:System.Resources.IResourceReader" />.</param>
+      <param name="useResXDataNodes">If this value is true the reader returns one or more <see cref="T:System.Resources.ResXDataNode" />s instead of the object type the resource becomes at runtime in order to figure out which files the resx references</param>
+      <param name="basePath">The path of the resource file.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.IResXResourceService.GetResXResourceReader(System.String,System.Boolean)">
+      <summary>Returns a resx resource reader that matches a given a <paramref name="resXFullName" />.</summary>
+      <returns>
+        <see cref="T:System.Resources.IResourceReader" />.</returns>
+      <param name="resXFullName">Creates a reader for the specified file.</param>
+      <param name="useResXDataNodes"></param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.IResXResourceService.GetResXResourceWriter(System.IO.TextWriter,System.String)">
+      <summary>Returns a resx resource writer given a <paramref name="textWriter" /> and <paramref name="basepath" />.</summary>
+      <returns>
+        <see cref="T:System.Resources.IResourceWriter" />.</returns>
+      <param name="textWriter">The <see cref="T:System.IO.TextWriter" /> that is wrapped by the returned <see cref="T:System.Resources.IResourceWriter" />.</param>
+      <param name="basePath">The path of the resource file.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.IResXResourceService.GetResXResourceWriter(System.String)">
+      <summary>Returns a resx resource writer given resXFullName.</summary>
+      <returns>
+        <see cref="T:System.Resources.IResourceWriter" />.</returns>
+      <param name="resXFullName">Creates a reader for the specified file.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.LocDisplayNameAttribute">
+      <summary>Specifies the localizable display name for a property, event, or public void method which takes no arguments.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.LocDisplayNameAttribute.#ctor(System.String)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.LocDisplayNameAttribute" /> for the specified name.</summary>
+      <param name="name">The name to localize.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.LocDisplayNameAttribute.DisplayName">
+      <summary>Gets the localized display name.</summary>
+      <returns>The localized display name.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.LogicalView">
+      <summary>This enumeration lists the supported logical views.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.LogicalView.Primary">
+      <summary>The corresponding GUID value is 00000000-0000-0000-0000-000000000000.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.LogicalView.Any">
+      <summary>The corresponding GUID value is FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.LogicalView.Debugging">
+      <summary>The corresponding GUID value is 7651A700-06E5-11D1-8EBD-00A0C90F26EA.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.LogicalView.Code">
+      <summary>The corresponding GUID value is 7651A701-06E5-11D1-8EBD-00A0C90F26EA.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.LogicalView.Designer">
+      <summary>The corresponding GUID value is 7651A702-06E5-11D1-8EBD-00A0C90F26EA.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.LogicalView.Text">
+      <summary>The corresponding GUID value is 7651A703-06E5-11D1-8EBD-00A0C90F26EA.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.LogicalView.UserChoose">
+      <summary>The corresponding GUID value is 7651A704-06E5-11D1-8EBD-00A0C90F26EA.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.LogicalView.ProjectSpecific">
+      <summary>The corresponding GUID value is 80A3471A-6B87-433E-A75A-9D461DE0645F.</summary>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.PackageUtilities">
+      <summary>A set of static utilities for filenames, paths, enumeration/string conversions, images, and other functions.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.ContainsInvalidFileNameChars(System.String)">
+      <summary>Determines whether or not a string contains characters that are invalid for file names or paths.</summary>
+      <returns>true if the string contains invalid characters, false if the string is a valid file name or path.</returns>
+      <param name="name">The file name or path.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.ConvertFromType``1(System.String,System.Globalization.CultureInfo)">
+      <summary>Converts a string to an enumeration using a converter.</summary>
+      <returns>The enumeration value.</returns>
+      <param name="value">The string value.</param>
+      <param name="culture">The <see cref="T:System.Globalization.CultureInfo" /> of the string.</param>
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.ConvertToType``1(``0,System.Type,System.Globalization.CultureInfo)">
+      <summary>Converts a string to an enumeration type.</summary>
+      <returns>The enumeration type.</returns>
+      <param name="value">The enumeration to which the string is to be converted.</param>
+      <param name="typeToConvert">The value to convert.</param>
+      <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> object describing the culture to use to read localized strings.</param>
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.CopyUrlToLocal(System.Uri,System.String)">
+      <summary>Copies the specified file to the local project directory.  </summary>
+      <param name="uri">The <see cref="T:System.Uri" /> to copy.</param>
+      <param name="local">The local resource to copy it to.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.CreateCAUUIDFromGuidArray(System.Guid[])">
+      <summary>Creates a CAUUID from a GUID array. </summary>
+      <returns>A <see cref="T:Microsoft.VisualStudio.OLE.Interop.CAUUID" /> structure.</returns>
+      <param name="guids">An array of GUIDs.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.EnsureOutputPath(System.String)">
+      <summary>Creates the directories necessary for the given path.</summary>
+      <param name="path">The path to create.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.GetImageList(System.IO.Stream)">
+      <summary>Creates an image list from the specified stream.</summary>
+      <returns>An <see cref="T:System.Windows.Forms.ImageList" /> containing a series of 16 by 16 pixel bitmaps with a magenta background color.</returns>
+      <param name="imageStream">The stream from which to extract the bitmaps.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.GetImageList(System.Object)">
+      <summary>Creates a list of bitmaps from the resource handle.</summary>
+      <returns>An <see cref="T:System.Windows.Forms.ImageList" /> containing a series of bitmaps.</returns>
+      <param name="imageListAsPointer">The handle of a resource.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.GetImageList(System.Reflection.Assembly,System.String[])">
+      <summary>Creates a list of bitmaps from the specified assembly and resource names.</summary>
+      <returns>An <see cref="T:System.Windows.Forms.ImageList" /> containing a series of 16 by 16 pixel bitmaps.</returns>
+      <param name="assembly">The assembly from which to get the resources.</param>
+      <param name="resourceNames">An array of resource names (representing bitmaps) in the assembly.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.GetIntPointerFromImage(System.Drawing.Image)">
+      <summary>Gets a pointer from a bitmap image.</summary>
+      <returns>An integer which serves as an <see cref="T:System.IntPtr" />.</returns>
+      <param name="image">
+        <see cref="T:System.Drawing.Image" />.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.GetPathDistance(System.Uri,System.Uri)">
+      <summary>Calculates the distance between two paths.</summary>
+      <returns>The relative path.</returns>
+      <param name="uriBase">The base <see cref="T:System.Uri" />.</param>
+      <param name="uriRelativeTo">The relative <see cref="T:System.Uri" />.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.GetSystemAssemblyPath">
+      <summary>Gets the path of system assemblies.</summary>
+      <returns>The base directory for system assemblies.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.IsFileNameInvalid(System.String)">
+      <summary>Determines whether or not the specified file name is invalid.</summary>
+      <returns>true if the file name is invalid, false if it is valid.</returns>
+      <param name="fileName">The name of the file.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.MakeRelative(System.String,System.String)">
+      <summary>Returns a path for the second file that is relative to the first.</summary>
+      <returns>The relative path of the second file.</returns>
+      <param name="filename">The base path.</param>
+      <param name="filename2">The relative path.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.MakeRelativeIfRooted(System.String,Microsoft.VisualStudio.Shell.Url)">
+      <summary>Returns a relative path if the specified file path is absolute and if it is in the same folder as the URL or in a child folder of the URL.</summary>
+      <returns>The relative path to the file.</returns>
+      <param name="fileName">The path to convert.</param>
+      <param name="url">The base URL.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.PackageUtilities.SetStringValueFromConvertedEnum``1(``0,System.Globalization.CultureInfo)">
+      <summary>Returns a string from an enumeration value.</summary>
+      <returns>A string value derived from the enumeration.</returns>
+      <param name="enumValue">The enumeration value.</param>
+      <param name="culture">The <see cref="T:System.Globalization.CultureInfo" /> of the string.</param>
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideAssemblyFilterAttribute">
+      <summary>Provides an assembly filter for an <see cref="T:Microsoft.VisualStudio.Shell.IConfigureToolboxItem" /> object by describing the assemblies such an object supports.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideAssemblyFilterAttribute.#ctor(System.String)">
+      <summary>Creates a new instance of a <see cref="T:Microsoft.VisualStudio.Shell.ProvideAssemblyFilterAttribute" /> object on the basis of the assembly name provided.</summary>
+      <param name="assemblyFilter">[in] A string containing the full name of an assembly.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideAssemblyFilterAttribute.AssemblyFilter">
+      <summary>The string containing the full assembly specification of the filter.</summary>
+      <returns>A string containing the full assembly specification of the filter.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideAutoLoadAttribute">
+      <summary>Apply this attribute to your VSPackage class to cause it to be automatically loaded when a specified UI context is active. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideAutoLoadAttribute.#ctor(System.String)">
+      <summary>Returns a new instance of this attribute with the specified <paramref name="cmdUiContextGuid" />.</summary>
+      <param name="cmdUiContextGuid">The GUID of the command context which will cause this package to load.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideAutoLoadAttribute.LoadGuid">
+      <summary>Returns the UI context GUID which will cause your package to load.</summary>
+      <returns>The UI context GUID.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideAutoLoadAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Provides registration information about a VSPackage when called by an external registration tool like regpkg.exe. </summary>
+      <param name="context"></param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideAutoLoadAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes registration information about a VSPackage when called by an external registration tool like regpkg.exe. </summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideAutomationObjectAttribute">
+      <summary>Modifying your <see cref="T:Microsoft.VisualStudio.Shell.Package" />-derived class with this attribute declares that it provides a particular automation object.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideAutomationObjectAttribute.#ctor(System.String)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.ProvideAutomationObjectAttribute" />.</summary>
+      <param name="objectName">The name of the automation object.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideAutomationObjectAttribute.Description">
+      <summary>Gets or sets the description of the automation object.</summary>
+      <returns>The description of the automation object.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideAutomationObjectAttribute.Name">
+      <summary>Gets the name of the automation object.</summary>
+      <returns>The name of the automation object.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideAutomationObjectAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Registers this attribute when called by an external registration tool such as RegPkg.exe.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideAutomationObjectAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the registry key when called by an external registration tool such as RegPkg.exe. </summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideEditorFactoryAttribute">
+      <summary>This attribute declares that the VSPackage provides an editor factory.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideEditorFactoryAttribute.#ctor(System.Type,System.Int16)">
+      <summary>This constructor creates a new <see cref="T:Microsoft.VisualStudio.Shell.ProvideEditorFactoryAttribute" /> object.</summary>
+      <param name="factoryType">The object type that implements <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsEditorFactory" />.</param>
+      <param name="nameResourceID">The resource ID in the unmanaged resource file that contains the localized name of the editor factory.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideEditorFactoryAttribute.FactoryType">
+      <summary>Gets the editor factory type.</summary>
+      <returns>The editor factory type.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideEditorFactoryAttribute.NameResourceID">
+      <summary>Gets resource ID.</summary>
+      <returns>Returns the editor factory esource ID specified in the resource file.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideEditorFactoryAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Called to register this attribute with the given context.</summary>
+      <param name="context">
+        <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" />. Contains the location where the registration information should be placed, and also contains information about the editor type being registered, and path information.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideEditorFactoryAttribute.TrustLevel">
+      <summary>Gets or sets the trust level for the editor.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.Interop.__VSEDITORTRUSTLEVEL" />.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideEditorFactoryAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Called to un-register this attribute with the given context.</summary>
+      <param name="context">
+        <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" />. Contains the location where the registration information should be placed, and also contains information about the editor type being registered, and path information.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideLanguageEditorToolsOptionCategoryAttribute">
+      <summary>This attribute is used to declare a Tools Option category for a language.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLanguageEditorToolsOptionCategoryAttribute.#ctor(System.String,System.String,System.String)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.ProvideLanguageEditorToolsOptionCategoryAttribute" /> for the language and option category.</summary>
+      <param name="languageName">The name of the language.</param>
+      <param name="categoryName">The name of the category.</param>
+      <param name="categoryResourceId">The resource ID of the category.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLanguageEditorToolsOptionCategoryAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Registers the Tools Option page.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" />  that describes the location of the key and its values in the registry</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLanguageEditorToolsOptionCategoryAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Unregisters the Tools Option page.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> that describes the location of the key and its values in the registry.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute">
+      <summary>Associates a file extension with a particular language service.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute" /> attribute, using the specified language service GUID.</summary>
+      <param name="languageServiceGuid">[in] A string containing the GUID of the language service.</param>
+      <param name="extension">[in] A string containing the file extension to associate with the language service.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute.#ctor(System.Type,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute" /> attribute, using the type of your language service class.</summary>
+      <param name="languageService">[in] The type of the language service class.</param>
+      <param name="extension">[in] A string containing the file extension to associate with the language service.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute.Extension">
+      <summary>Returns the associated file extension.</summary>
+      <returns>Returns the string containing the file extension that was passed to the constructor of the <see cref="T:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute" /> class.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute.LanguageService">
+      <summary>Returns the language GUID.</summary>
+      <returns>Returns a <see cref="T:System.Guid" /> object containing the GUID of the language service that was passed to the <see cref="T:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute" /> class constructor.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Puts the file extension and language service GUID into the registry.</summary>
+      <param name="context">[in] A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> object used to create registry keys and to log progress.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLanguageExtensionAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the file extension and language service GUID from the registry.</summary>
+      <param name="context">[in] A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> object used to remove registry keys and to log progress.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute">
+      <summary>This attribute provides a package load key for your package.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute.#ctor(System.String,System.String,System.String,System.String,System.Int16)">
+      <summary>Creates a new <see cref="T:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute" />.</summary>
+      <param name="minimumEdition">The minimum edition of Visual Studio on which the VSPackage is loaded. This must be the literal edition value provided by Microsoft when obtaining your Package Load Key (PLK).</param>
+      <param name="productVersion">The version of the product that this VSPackage implements.</param>
+      <param name="productName">Name of the product that this VSPackage delivers. Products comprised of multiple VSPackages each need their own PLK.</param>
+      <param name="companyName">VSIP Partner/creator of the VSPackage. Must exactly match the name you provided to Microsoft when you registered for a PLK. <paramref name="companyName" /> is case-sensitive.</param>
+      <param name="resourceId">Resource ID for VSPackage load key.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="minimumEdition, productVersion, productName " />or<paramref name=" companyName " />are null.</exception>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute.CompanyName">
+      <summary>Returns a string containing the CompanyName.</summary>
+      <returns>The name of your company.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute.MinimumEdition">
+      <summary>The MinimumEdition property returns a string containing the minimum edition of Visual Studio needed to load your VSPackage.</summary>
+      <returns>The minimum edition of Visual Studio needed to load your VSPackage.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute.ProductName">
+      <summary>The ProductName property returns a string containing the name of your VSPackage.</summary>
+      <returns>The name of your VSPackage.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute.ProductVersion">
+      <summary>The ProductVersion attribute returns a string containing the version number of your VSPackage.</summary>
+      <returns>The version number of your VSPackage.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Provides registration information about a VSPackage when called by an external registration tool such as regpkg.exe. For more information, see Registering VSPackages (C#).</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute.RegKeyName(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Returns the registry key name for this package's load key information.</summary>
+      <returns>The Registry Key name for the load key information of the VSPackage.</returns>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute.ResourceId">
+      <summary>Gets resource ID for the Package Load Key.</summary>
+      <returns>The resource ID for the Package Load Key.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideLoadKeyAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the registration information about a VSPackage when called by an external registration tool such as regpkg.exe. For more information, see Registering VSPackages (C#).</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideMenuResourceAttribute">
+      <summary>Provides registration information about menu resources used in a VSPackage. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideMenuResourceAttribute.#ctor(System.Int16,System.Int32)">
+      <summary>This constructor creates a new ProvideMenuResourceAttribute object with the given resource ID and version number.</summary>
+      <param name="resourceID">The ID of the menu resource. It must match the resource ID used in both the satellite (resource-only) DLL and the Command Table Configuration (.Ctc) Files.</param>
+      <param name="version">The version number of the menu resource.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideMenuResourceAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Provides registration information about a VSPackage when called by an external registration tool such as regpkg.exe. For more information, see Registering VSPackages (C#).</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideMenuResourceAttribute.ResourceID">
+      <summary>The ResourceID property returns the value of the resource ID set in the constructor.</summary>
+      <returns>The resource ID of the menu resource.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideMenuResourceAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes registration information about a VSPackage when called by an external registration tool such as regpkg.exe. For more information, see Registering VSPackages (C#).</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to remove registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideMenuResourceAttribute.Version">
+      <summary>Returns the version number of the menu resource.</summary>
+      <returns>The version number of the menu resource.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideObjectAttribute">
+      <summary>Informs Visual Studio that the VSPackage provides an object that can be created from the <see cref="T:Microsoft.VisualStudio.Shell.Interop.ILocalRegistry" />interface. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideObjectAttribute.#ctor(System.Type)">
+      <summary>This constructor creates a new <see cref="T:Microsoft.VisualStudio.Shell.ProvideObjectAttribute" /> object with the given object type.</summary>
+      <param name="objectType">The type of object that the VSPackage can create. This type can have any scoping (public, internal, etc.) but must have a public constructor that takes no arguments.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideObjectAttribute.ObjectType">
+      <summary>The ObjectType property returns the object type set in the constructor.</summary>
+      <returns>Returns the object type set in the constructor.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideObjectAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Provides registration information about a VSPackage when called by an external registration tool such as regpkg.exe. For more information, see Registering VSPackages (C#).</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideObjectAttribute.RegisterUsing">
+      <summary>Gets or sets the registration method.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.RegistrationMethod" />.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideObjectAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes registration information about a VSPackage when called by an external registration tool such as regpkg.exe. For more information, see Registering VSPackages (C#).</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to remove registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideProfileAttribute">
+      <summary>Apply this attribute to independent objects used to implement a VSPackage's Visual Studio settings support.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.#ctor(System.Type,System.String,System.String,System.Int16,System.Int16,System.Boolean)">
+      <summary>Initializes a new instance of ProvideProfileAttribute.</summary>
+      <param name="objectType">The <see cref="T:System.Type" /> of the class implementing Visual Studio settings support.</param>
+      <param name="categoryName">The canonical, nonlocalized name of a Visual Studio settings category.</param>
+      <param name="objectName">The canonical, nonlocalized name used to identify the object implementing a Visual Studio settings category.</param>
+      <param name="categoryResourceID">The localized resource ID of a Visual Studio settings category's name. </param>
+      <param name="objectNameResourceID">The localized resource ID of the name used to identify the object implementing a Visual Studio settings category.</param>
+      <param name="isToolsOptionPage">This argument is not implemented.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.AlternateParent">
+      <summary>Gets or sets the name of a different category in the profile.</summary>
+      <returns>The name of a different category in the profile.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.CategoryName">
+      <summary>Gets the canonical nonlocalized name of the Visual Studio settings category.</summary>
+      <returns>The canonical nonlocalized name of the Visual Studio settings category.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.CategoryResourceID">
+      <summary>Gets the name resource ID for a Visual Studio settings category.</summary>
+      <returns>The localized name resource ID of the Visual Studio settings category.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.DescriptionResourceID">
+      <summary>Gets the localized resource ID of the description of this page of the profile.</summary>
+      <returns>The localized resource ID of the description of this page of the profile.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.GroupName">
+      <summary>Gets the nonlocalized name of this group.</summary>
+      <returns>The nonlocalized name of this group.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.GroupResourceID">
+      <summary>Gets or sets the localized resource ID of the group to which this page belongs.</summary>
+      <returns>The localized resource ID of the group to which this page belongs.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.IsToolsOptionPage">
+      <summary>Gets whether this is also a Tools Options page.</summary>
+      <returns>true if this is also a Tools Options page, otherwise false.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.ObjectName">
+      <summary>Gets the canonical nonlocalized name of this page in the profile.</summary>
+      <returns>The canonical, nonlocalized name of the page.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.ObjectNameResourceID">
+      <summary>Gets the localized resource ID of the name of this page in the profile.</summary>
+      <returns>The localized resource ID of the name of this page in the profile.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.ObjectType">
+      <summary>Gets the type of the page.</summary>
+      <returns>A <see cref="T:System.Type" /> of the page.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Registers this attribute.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> describing the location of the key and its values in the registry.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.ResourcePackageGuid">
+      <summary>Gets or sets the GUID of a package providing the resource strings.</summary>
+      <returns>The GUID of a package providing the resource strings.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideProfileAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the key from the registry.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> describing the location of the key and its values in the registry.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideProjectItemAttribute">
+      <summary>This attribute registers items to be included in the Add New Item dialog for the specified project type. It is placed on a VSPackage.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideProjectItemAttribute.#ctor(System.Object,System.String,System.String,System.Int32)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.ProvideProjectItemAttribute" /> for the item.</summary>
+      <param name="projectFactoryType">The type of project factory. This can be a <see cref="T:System.Type" /> , a GUID, or the string form of the GUID.</param>
+      <param name="itemCategoryName">The display name of the type of item.</param>
+      <param name="templatesDir">The directory in which the templates for this project type can be found.</param>
+      <param name="priority">The priority of this type (for sorting purposes).</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProjectItemAttribute.ItemType">
+      <summary>Gets the name of this type of item.</summary>
+      <returns>The name of this type of item.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProjectItemAttribute.Priority">
+      <summary>Gets the sort priority of this type.</summary>
+      <returns>The sort priority of this type.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProjectItemAttribute.ProjectFactoryType">
+      <summary>Gets the GUID of the type of project factory.</summary>
+      <returns>The GUID of the type of project factory.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideProjectItemAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Registers this item type.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" />  that describes the location and values of the registry key.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideProjectItemAttribute.TemplateDir">
+      <summary>Gets the directory in which the templates for this project type are found.</summary>
+      <returns>The directory in which the templates for this project type are found.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideProjectItemAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the registry key for this item type.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" />  that describes the location and values of the registry key.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideToolboxFormatAttribute">
+      <summary>Apply this attribute to classes implementing VSPackages to declare that the VSPackage provides Toolbox items with the specified clipboard format and to enable drag-and-drop support in the Visual StudioToolbox.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolboxFormatAttribute.#ctor(System.String)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.ProvideToolboxFormatAttribute" /> for the specified format.</summary>
+      <param name="format">The name of a supported format.</param>
+      <exception cref="T:System.ArgumentNullException">Thrown if the <paramref name="format" /> argument is null.</exception>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolboxFormatAttribute.Format">
+      <summary>Gets the name of a supported clipboard format.</summary>
+      <returns>The name of the clipboard format.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideToolboxItemConfigurationAttribute">
+      <summary>Registers a VSPackage as supplying a particular implementation of <see cref="T:Microsoft.VisualStudio.Shell.IConfigureToolboxItem" />. Used in conjunction with <see cref="T:Microsoft.VisualStudio.Shell.ProvideAssemblyFilterAttribute" />.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolboxItemConfigurationAttribute.#ctor(System.Type)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.ProvideToolboxItemConfigurationAttribute" />. </summary>
+      <param name="objectType">[in] <see cref="T:System.Type" />.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolboxItemConfigurationAttribute.ObjectType">
+      <summary>Gets the type of the toolbox item configuration.</summary>
+      <returns>The type of the toolbox item configuration.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolboxItemConfigurationAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Registers the toolbox item configuration.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> describing the location and values of the registry key.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolboxItemConfigurationAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the registry key.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> describing the location and values of the registry key.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute">
+      <summary>Notifies Visual Studio that a VSPackage owns a tool window.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.#ctor(System.Type)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute" />.</summary>
+      <param name="toolType">The type of the tool window.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.Height">
+      <summary>Gets or sets the default height of the tool window.</summary>
+      <returns>The height of the tool window.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.MultiInstances">
+      <summary>Determines whether multiple instances of the tool window are allowed.</summary>
+      <returns>true if multiple instances are allowed, otherwise false.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.Orientation">
+      <summary>Gets or sets the default orientation for the tool window relative to the window specified by the Window property.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.ToolWindowOrientation" />.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.PositionX">
+      <summary>Gets or sets the default horizontal value of the top left corner of the tool window.</summary>
+      <returns>The horizontal value of the top left corner of the tool window.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.PositionY">
+      <summary>Gets or sets the vertical value of the top left corner of the tool window.</summary>
+      <returns>The vertical value of the top left corner of the tool window.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Registers the tool window.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> describing the location and values of the registry key.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.Style">
+      <summary>Gets or sets the default docking style for the tool window.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.VsDockStyle" />.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.ToolType">
+      <summary>Gets or sets the type of the tool window.</summary>
+      <returns>The type of the tool window.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.Transient">
+      <summary>Gets or sets whether the tool window should not be reopened when the IDE restarts.</summary>
+      <returns>false if the tool window should be displayed when the IDE restarts if it was displayed when the IDE closed, otherwise true.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the registry key for the tool window.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> describing the location and values of the registry key.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.Width">
+      <summary>Gets or sets the default width of the tool window.</summary>
+      <returns>The default width of the tool window.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute.Window">
+      <summary>Gets or sets the GUID of the default window on which the tool window should be docked.</summary>
+      <returns>The GUID of the default window on which the tool window should be docked.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideToolWindowVisibilityAttribute">
+      <summary>Maps a tool window to one or more UI contexts, so that the window is displayed when the user switches to one of those contexts and is hidden when the user switches away from one of the contexts.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolWindowVisibilityAttribute.#ctor(System.Object,System.String)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.ProvideToolWindowVisibilityAttribute" /> for the specified type of the tool window and a GUID to associate with its visibility.</summary>
+      <param name="toolWindow">The types of the tool window. This can be the type, the GUID, or the string value of the GUID.</param>
+      <param name="commandUIGuid">The GUID of the tool window to which the automatic visibility behavior should be applied.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowVisibilityAttribute.CommandUIGuid">
+      <summary>Gets the GUID of a command associated with showing or hiding the tool window.</summary>
+      <returns>The GUID of a command associated with showing or hiding the tool window.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideToolWindowVisibilityAttribute.Name">
+      <summary>Gets or sets the name of the window.</summary>
+      <returns>The name of the tool window.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolWindowVisibilityAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Registers the tool window visibility.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> that describes the location and values of the registry key.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideToolWindowVisibilityAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the registry key.</summary>
+      <param name="context">A <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext" /> that describes the location and values of the registry key.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ProvideViewAttribute">
+      <summary>This attribute declares that an editor factory class offers a particular logical view.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ProvideViewAttribute.#ctor(Microsoft.VisualStudio.Shell.LogicalView,System.String)">
+      <summary>Creates a new attribute.</summary>
+      <param name="logicalView">An enumeration of the kinds of logical views available.</param>
+      <param name="physicalView">The GUID of the physical view. This can be null to indicate the default physical view.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideViewAttribute.LogicalView">
+      <summary>Gets the logical view in this attribute.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.LogicalView" />.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.ProvideViewAttribute.PhysicalView">
+      <summary>Returns the physical view that is mapped to the logical view.</summary>
+      <returns>
+        <see cref="P:Microsoft.VisualStudio.Shell.ProvideViewAttribute.PhysicalView" />.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.RegisterAutoLoadAttribute">
+      <summary>Registers the VSPackage as an extender that is automatically loaded in response to a particular context GUID. This class cannot be inherited.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterAutoLoadAttribute.#ctor(System.String)">
+      <summary>Creates a new RegisterAutoLoadAttribute object and saves the GUID of the package that initiated package loading.</summary>
+      <param name="cmdUiContextGuid">Context GUID that triggers the loading of the VSPackage</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegisterAutoLoadAttribute.LoadGuid">
+      <summary>Returns the context GUID that triggers package load.</summary>
+      <returns>The context GUID that triggers package load.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterAutoLoadAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Provides registration information about a VSPackage when called by an external registration tool such as RegPkg.exe.</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterAutoLoadAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes registration information about a VSPackage when called by an external registration tool such as RegPkg.exe.</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to remove registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.RegisterExtenderAttribute">
+      <summary>Registers an extender with Visual Studio.  This class cannot be inherited. This class is obsolete. Please use ProvideExtenderAttribute instead.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterExtenderAttribute.#ctor(System.String,System.String,System.String)">
+      <summary>This constructor creates a new <see cref="T:Microsoft.VisualStudio.Shell.RegisterExtenderAttribute" /> object.</summary>
+      <param name="extendeeCatId">The CATID of the extendee.</param>
+      <param name="extenderGuid">The GUID of the extender.</param>
+      <param name="extenderName">The name of the extender.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegisterExtenderAttribute.ExtendeeCatId">
+      <summary>Gets the CATID of the object to be extended.</summary>
+      <returns>The CATID of the object to be extended.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegisterExtenderAttribute.Extender">
+      <summary>Gets the GUID of the extender.</summary>
+      <returns>The GUID of the extender.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegisterExtenderAttribute.ExtenderName">
+      <summary>Gets the name of the extender.</summary>
+      <returns>The name of the extender.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterExtenderAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Provides registration information about a VSPackage when called by an external registration tool such as RegPkg.exe.</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterExtenderAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes registration information about a VSPackage when called by an external registration tool such as RegPkg.exe.</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to remove registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.RegisterLanguageExtensionAttribute">
+      <summary>Registers a file extension with a given language service by applying the attribute to a <see cref="T:Microsoft.VisualStudio.Shell.Package" />-derived class or class that implements <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsPackage" /> when registered using a registration tool like regpkg.exe. For more information, see Registering VSPackages (C#).</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterLanguageExtensionAttribute.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of RegisterLanguageExtensionAttribute.</summary>
+      <param name="languageServiceGuid">The GUID of language service class that is derived from <see cref="T:Microsoft.VisualStudio.Package.LanguageService" /> as a string.</param>
+      <param name="extension">The file extension associated with the language service. Include a "." in the value of <paramref name="extension" />.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterLanguageExtensionAttribute.#ctor(System.Type,System.String)">
+      <summary>Initializes a new instance of RegisterLanguageExtensionAttribute and initializes the values of the language service and file extension that it associates. </summary>
+      <param name="languageService">The GUID of language service class that is derived from <see cref="T:Microsoft.VisualStudio.Package.LanguageService" /> as a string.</param>
+      <param name="extension">The file extension associated with the language service. Include a "." in the value of <paramref name="extension" />.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegisterLanguageExtensionAttribute.Extension">
+      <summary>Gets the associated file extension.</summary>
+      <returns>The associated file extension.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegisterLanguageExtensionAttribute.LanguageService">
+      <summary>Gets the GUID of the language service.</summary>
+      <returns>The GUID of the language service.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterLanguageExtensionAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Registers this attribute with the given context.</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegisterLanguageExtensionAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes the registration information about a VSPackage when called by an external registration tool such as regpkg.exe. For more information, see Registering VSPackages (C#).</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.RegistrationAttribute">
+      <summary>An abstract class for VSPackage registration. The RegistrationAttribute class allows new registration information to be added without changing the registration tools.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegistrationAttribute.#ctor">
+      <summary>Initializes a new instance of the class.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegistrationAttribute.Register(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Provides registration information about a VSPackage when called by an external registration tool such as regpkg.exe. For more information, see Registering VSPackages (C#).</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to create registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegistrationAttribute.TypeId">
+      <summary>Gets the current instance of this attribute.</summary>
+      <returns>The current instance of this attribute.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegistrationAttribute.Unregister(Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext)">
+      <summary>Removes registration information about a VSPackage when called by an external registration tool such as regpkg.exe. For more information, see Registering VSPackages (C#). Any class deriving from the RegistrationAttribute class must implement this method.</summary>
+      <param name="context">A registration context provided by an external registration tool. The context can be used to remove registry keys, log registration activity, and obtain information about the component being registered.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext">
+      <summary>An abstract base class for objects providing context information from an external source to a registration attribute.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.#ctor">
+      <summary>Creates a new RegistrationAttribute.RegistrationContext object.</summary>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.CodeBase">
+      <summary>Gets the path and filename of the object being registered.</summary>
+      <returns>The path and filename of the object being registered.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.ComponentPath">
+      <summary>Gets the path to the component that is being registered.</summary>
+      <returns>The path to the component being registered.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.ComponentType">
+      <summary>Gets the type of component being registered.</summary>
+      <returns>The type of component being registered.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.CreateKey(System.String)">
+      <summary>Creates a new registration key by name.</summary>
+      <returns>A new <see cref="T:Microsoft.VisualStudio.Shell.RegistrationAttribute.Key" /> object.</returns>
+      <param name="name">The name of the key to create.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.EscapePath(System.String)">
+      <summary>Reformats a string as needed by the registration tool.</summary>
+      <returns>The reformatted path string.</returns>
+      <param name="str">The path string to reformat.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.InprocServerPath">
+      <summary>Gets the path to the in-process server DLL.</summary>
+      <returns>The path to the in-process server DLL.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.Log">
+      <summary>Gets a <see cref="T:System.IO.TextWriter" /> object that can be used to log events during registration.</summary>
+      <returns>A <see cref="T:System.IO.TextWriter" /> object.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.RegistrationMethod">
+      <summary>Gets a value that specifies how the assembly should be registered/located.</summary>
+      <returns>Specifies how the assembly should be registered/located.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.RemoveKey(System.String)">
+      <summary>Removes an existing registration key.</summary>
+      <param name="name">The name of the key to remove.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.RemoveKeyIfEmpty(System.String)">
+      <summary>Removes the key of the specified name if it has no child key and no value.</summary>
+      <param name="name">The name of the key to remove.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext.RemoveValue(System.String,System.String)">
+      <summary>Removes a value from a registration key.</summary>
+      <param name="keyname">The name of the key that contains the value to be removed.</param>
+      <param name="valuename">The name of the value to remove.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.RunningDocumentTable">
+      <summary>Provides access to the Running Document Table (RDT) that tracks all currently opened documents in Visual Studio.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.#ctor(System.IServiceProvider)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.VisualStudio.Package.RunningDocumentTable" /> class.</summary>
+      <param name="site">[in] An <see cref="T:Microsoft.VisualStudio.OLE.Interop.IServiceProvider" /> object used to access services. This cannot be a null value.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.Advise(Microsoft.VisualStudio.Shell.Interop.IVsRunningDocTableEvents)">
+      <summary>Enables the client to receive events about changes to the Running Document Table (RDT).</summary>
+      <returns>A cookie associated with the given <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsRunningDocTableEvents" /> object. If an error occurs, this method throws an exception.</returns>
+      <param name="sink">[in] An <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsRunningDocTableEvents" /> object representing an entity to be called for various running document table events.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.FindDocument(System.String)">
+      <summary>Gets an object from the Running Document Table (RDT) that represents the document specified by the given path.</summary>
+      <returns>An object that can be cast to an appropriate interface to access the document (see Remarks for details), or null if the document is not registered with Visual Studio.</returns>
+      <param name="moniker">[in] Path to the desired document.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.FindDocument(System.String,Microsoft.VisualStudio.Shell.Interop.IVsHierarchy@,System.UInt32@,System.UInt32@)">
+      <summary>Gets an object, cookie, and owning project type from the Running Document Table (RDT) for the document specified by the given path.</summary>
+      <returns>An object that can be cast to an appropriate interface to access the document (see Remarks for details). If a null value is returned, the document is not registered with Visual Studio.</returns>
+      <param name="moniker">[in] Path to the desired document.</param>
+      <param name="hierarchy">[out] Returns an <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsHierarchy" /> object that represents the project that owns the requested document.</param>
+      <param name="itemid">[out] Returns the ID of the document in the <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsHierarchy" /> object. </param>
+      <param name="docCookie">[out] Returns the unique value that represents the requested document in the RDT.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.FindDocument(System.String,System.UInt32@)">
+      <summary>Gets a cookie from the Running Document Table (RDT) that represents the document specified by the given path.</summary>
+      <returns>An object that can be cast to an appropriate interface to access the document (see Remarks for details), or null if the document is not registered with Visual Studio.</returns>
+      <param name="moniker">[in] Path to the desired document.</param>
+      <param name="docCookie">[out] Returns the unique value that represents the requested document in the RDT.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.GetDocumentInfo(System.UInt32)">
+      <summary>Gets information about a document registered in the Running Document Table, given the identifier of the document. </summary>
+      <returns>The <see cref="T:Microsoft.VisualStudio.Shell.RunningDocumentInfo" /> for the specified document.</returns>
+      <param name="docCookie">The identifier of the document data object in the Running Document Table.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.GetEnumerator">
+      <summary>Gets an enumerator of the documents in the Running Document Table.</summary>
+      <returns>An <see cref="T:System.Collections.IEnumerator" /> of type <see cref="T:Microsoft.VisualStudio.Shell.RunningDocumentInfo" />.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.GetHierarchyItem(System.String)">
+      <summary>Gets the project that owns the specified document.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsHierarchy" />, otherwise null.</returns>
+      <param name="moniker">[in] Path to the desired document.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.GetRunningDocumentContents(System.String)">
+      <summary>Uses the Running Document Table (RDT) to obtain the contents of a document given the path to the document.</summary>
+      <returns>The contents of the document in a string format, or null if the document is not registered with the RDT.</returns>
+      <param name="path">[in] Path to the desired document.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.GetRunningDocumentContents(System.UInt32)">
+      <summary>Uses the Running Document Table (RDT) to obtain the contents of a document given the path to the document.</summary>
+      <returns>The contents of the document in a string format, or null if the document is not registered with the RDT.</returns>
+      <param name="docCookie">[in] The unique value that represents the requested document in the RDT.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.LockDocument(Microsoft.VisualStudio.Shell.Interop._VSRDTFLAGS,System.UInt32)">
+      <summary>Gets a read or edit lock on the specified document.</summary>
+      <param name="lockType">Lock values from the <see cref="T:Microsoft.VisualStudio.Shell.Interop._VSRDTFLAGS" /> enumeration.</param>
+      <param name="cookie">The identifier of the document to lock.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.RegisterAndLockDocument(Microsoft.VisualStudio.Shell.Interop._VSRDTFLAGS,System.String,Microsoft.VisualStudio.Shell.Interop.IVsHierarchy,System.UInt32,System.IntPtr)">
+      <summary>Creates an entry in the running document table when a document is created or opened. </summary>
+      <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+      <param name="lockType">Lock values from the <see cref="T:Microsoft.VisualStudio.Shell.Interop._VSRDTFLAGS" /> enumeration. </param>
+      <param name="mkDocument">The absolute path of the document.</param>
+      <param name="hierarchy">The <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsHierarchy" /> interface of the hierarchy element that owns the document.</param>
+      <param name="itemid">The item ID of the node.</param>
+      <param name="docData">[out] Returns a pointer to the IUnknown interface of the document data object.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.RenameDocument(System.String,System.String,Microsoft.VisualStudio.Shell.Interop.IVsHierarchy,System.UInt32)">
+      <summary>Renames a document and optionally gives ownership of the document to the specified project.</summary>
+      <param name="oldName">[in] The full path representing the original name.</param>
+      <param name="newName">[in] The full path representing the new name.</param>
+      <param name="pIVsHierarchy">[in] An <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsHierarchy" /> object representing the project that is to take ownership of the document. Pass the value (IVsHierarchy)-1 to indicate no change in ownership is to take place</param>
+      <param name="itemId">[in] This value can be <see cref="F:Microsoft.VisualStudio.VSConstants.VSITEMID_NIL" />, <see cref="F:Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT" />, or <see cref="F:Microsoft.VisualStudio.VSConstants.VSITEMID_SELECTION" />. Pass <see cref="F:Microsoft.VisualStudio.VSConstants.VSITEMID_NIL" /> to indicate no change in ownership is to take place.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.SaveFileIfDirty(System.String)">
+      <summary>Saves the specified file if it has changed since the last save.</summary>
+      <returns>The path to which the file was saved. This is either the original path or a new path specified by the user.</returns>
+      <param name="fullPath">[in] The full path to the document to be saved.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Enumerates the documents in the Running Document Table.</summary>
+      <returns>An <see cref="T:System.Collections.IEnumerator" /> of type <see cref="T:Microsoft.VisualStudio.Shell.RunningDocumentInfo" />.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.Unadvise(System.UInt32)">
+      <summary>Indicates the client is no longer interested in receiving Running Document Table (RDT) events.</summary>
+      <param name="cookie">[in] A unique value returned from the <see cref="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.Advise(Microsoft.VisualStudio.Shell.Interop.IVsRunningDocTableEvents)" /> method. See Remarks.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.RunningDocumentTable.UnlockDocument(Microsoft.VisualStudio.Shell.Interop._VSRDTFLAGS,System.UInt32)">
+      <summary>Releases a read or edit lock on the open document. </summary>
+      <param name="lockType">Lock values from the <see cref="T:Microsoft.VisualStudio.Shell.Interop._VSRDTFLAGS" /> enumeration.</param>
+      <param name="cookie">The identifier of the document data in the Running Document Table.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.SelectionContainer">
+      <summary>Provides a unified interface for accessing a set of selected objects.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.SelectionContainer.#ctor">
+      <summary>Initializes a new <see cref="T:Microsoft.VisualStudio.Shell.SelectionContainer" /> object.  The overload provides the ability to restrict user control over the <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectableObjects" /> and <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectedObjects" /> collections.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.SelectionContainer.#ctor(System.Boolean,System.Boolean)">
+      <summary>Creates a new <see cref="T:Microsoft.VisualStudio.Shell.SelectionContainer" /> object with the ability to restrict user control over the <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectableObjects" /> and <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectedObjects" /> collections.</summary>
+      <param name="selectableReadOnly">If true, a request to change the <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectableObjects" /> throws a <see cref="T:System.NotSupportedException" />. If false, a request to change the <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectableObjects" /> is handled normally.</param>
+      <param name="selectedReadOnly">If false, a request to change the <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectedObjects" /> throws a <see cref="T:System.NotSupportedException" />. If false, a request to change the <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectedObjects" /> is handled normally.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.SelectionContainer.ActivateObjects">
+      <summary>Overriding this method enables an object to respond when selected.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.SelectionContainer.ALL">
+      <summary>Refers to all <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectableObjects" />.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.SelectionContainer.Microsoft#VisualStudio#Shell#Interop#ISelectionContainer#CountObjects(System.UInt32,System.UInt32@)">
+      <summary>Determines the number of objects either those <see cref="F:Microsoft.VisualStudio.Shell.SelectionContainer.SELECTED" /> or <see cref="F:Microsoft.VisualStudio.Shell.SelectionContainer.ALL" /> items.</summary>
+      <returns>Returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" /> if the operation is successful.</returns>
+      <param name="dwFlags">Use <see cref="F:Microsoft.VisualStudio.Shell.SelectionContainer.ALL" /> to indicate all members and <see cref="F:Microsoft.VisualStudio.Shell.SelectionContainer.SELECTED" /> to indicate only those selected.</param>
+      <param name="pc">A pointer to the number of items, this value is set by the method call.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.SelectionContainer.Microsoft#VisualStudio#Shell#Interop#ISelectionContainer#GetObjects(System.UInt32,System.UInt32,System.Object[])">
+      <summary>Sets <paramref name="cObjects" /> with the number of items <see cref="F:Microsoft.VisualStudio.Shell.SelectionContainer.SELECTED" /> or <see cref="F:Microsoft.VisualStudio.Shell.SelectionContainer.ALL" /> items and populates array <paramref name="apUnkObjects" /> with pointers to those objects.</summary>
+      <returns>Returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" /> if the operation is successful.</returns>
+      <param name="dwFlags">Use <see cref="F:Microsoft.VisualStudio.Shell.SelectionContainer.ALL" /> to indicate all members and <see cref="F:Microsoft.VisualStudio.Shell.SelectionContainer.SELECTED" /> to indicate only those selected.</param>
+      <param name="cObjects">A pointer to the number of items, this value is set by the method call.</param>
+      <param name="apUnkObjects">An array of size <paramref name="cObjects" /> that contains pointers to the retrieved objects.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.SelectionContainer.Microsoft#VisualStudio#Shell#Interop#ISelectionContainer#SelectObjects(System.UInt32,System.Object[],System.UInt32)">
+      <summary>Sets the collection of selectable objects.</summary>
+      <returns>Returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" /> if the operation is successful.</returns>
+      <param name="cSelect">The size of the array of selected objects.</param>
+      <param name="apUnkSelect">The array of objects to be selected.</param>
+      <param name="dwFlags">If this value is true<see cref="M:Microsoft.VisualStudio.Shell.SelectionContainer.ActivateObjects" /> will be performed on the array of objects.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectableObjects">
+      <summary>Gets the collection of selectable objects.</summary>
+      <returns>Returns a collection of selectable objects.</returns>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.SelectionContainer.SELECTED">
+      <summary>Refers to all <see cref="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectedObjects" />.</summary>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.SelectionContainer.SelectedObjects">
+      <summary>Gets or sets the collection of selected objects.</summary>
+      <returns>Returns a collection of selected objects.</returns>
+    </member>
+    <member name="E:Microsoft.VisualStudio.Shell.SelectionContainer.SelectedObjectsChanged">
+      <summary>Raised when an external object calls the <see cref="M:Microsoft.VisualStudio.Shell.SelectionContainer.Microsoft.VisualStudio.Shell.Interop.ISelectionContainer.SelectObjects(System.UInt32,System.Object[],System.UInt32)" /> method with the <see cref="F:Microsoft.VisualStudio.Shell.SelectionContainer.SELECTED" /> flag set. </summary>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ServiceProviderHierarchy">
+      <summary>A hierarchical service provider that stores <see cref="T:Microsoft.VisualStudio.OLE.Interop.IServiceProvider" /> objects in a sorted collection for an ordered retrieval. When <see cref="M:Microsoft.VisualStudio.Shell.ServiceProviderHierarchy.GetService(System.Type)" /> is called to retrieve a service, the service providers are queried in a specific order. This is useful when multiple service providers are combined, such as in the <see cref="T:Microsoft.VisualStudio.Shell.WindowPane" /> implementation.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ServiceProviderHierarchy.#ctor">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.ServiceProviderHierarchy" />.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ServiceProviderHierarchy.GetService(System.Type)">
+      <summary>Gets a service of the specified type.</summary>
+      <returns>The requested service, or null if the service cannot be found. This service must be cast to the required service type. </returns>
+      <param name="serviceType">The type of the service.</param>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.ServiceProviderHierarchyOrder">
+      <summary>Provides a recommended service resolution order for common service providers. When multiple service providers are combined in a service provider hierarchy, they are given a numeric ordering.  </summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.ServiceProviderHierarchyOrder.#ctor">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.ServiceProviderHierarchyOrder" />.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.ServiceProviderHierarchyOrder.PackageSite">
+      <summary>The order for a package service provider.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.ServiceProviderHierarchyOrder.ProjectItemContext">
+      <summary>The order for a project item context service provider.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.ServiceProviderHierarchyOrder.WindowPaneSite">
+      <summary>The order for a window pane service provider.</summary>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.TaskCategory">
+      <summary>Provides a set of task categories that specify the kind of task that is to be performed.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskCategory.All">
+      <summary>All tasks. Not a real category. It is used to allow a task list view to show all of the tasks in the task list. </summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskCategory.BuildCompile">
+      <summary>Build errors and warnings, and possibly deployment errors.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskCategory.Comments">
+      <summary>Tasks generated by special comments, such as "TODO," "UNDONE," or "TBD." Also used for informational messages. </summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskCategory.CodeSense">
+      <summary>Errors generated as the user types source code.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskCategory.ShortCuts">
+      <summary>Short cuts to code. Shortcuts are generated by the user right-clicking the editor window, and choosing Add Task List Shortcut from the pop-up menu.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskCategory.User">
+      <summary>User-defined tasks.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskCategory.Misc">
+      <summary>Miscellaneous tasks.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskCategory.Html">
+      <summary>Tasks which pertain to Web page development. .</summary>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.TaskErrorCategory">
+      <summary>Represents a collection of values that identify types or severity of error messages that can appear in the Error List Options task window.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskErrorCategory.Error">
+      <summary>Represents an error.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskErrorCategory.Warning">
+      <summary>Represents a warning.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.TaskErrorCategory.Message">
+      <summary>Represents an informational note.</summary>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.TaskProvider">
+      <summary>This class implements <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsTaskProvider" />. It provides a framework-friendly way to define a task provider and its associated services.  </summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.#ctor(System.IServiceProvider)">
+      <summary>Initializes a new instance of the <see cref="T:Microsoft.VisualStudio.Shell.TaskProvider" /> with the supplied service provider.</summary>
+      <param name="provider">
+        <see cref="T:System.IServiceProvider" />.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.AlwaysVisible">
+      <summary>Determines whether or not the provider is always visible in the dropdown menu even though it has no tasks.</summary>
+      <returns>true if it is always visible, otherwise false.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.DisableAutoRoute">
+      <summary>Gets or sets whether autorouting should be disabled.</summary>
+      <returns>true if autorouting should be disabled, false if it should be enabled.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Dispose">
+      <summary>Disposes this provider.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Dispose(System.Boolean)">
+      <summary>Disposes the resources (task collection, task list, and image list) of this provider.</summary>
+      <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Finalize">
+      <summary>Destroys the provider.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.GetService(System.Type)">
+      <summary>Gets the service of the specified type.</summary>
+      <returns>An object representing the service.</returns>
+      <param name="serviceType"> The type of the service.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.ImageList">
+      <summary>Gets or sets the provider's image list (a list of icons for the tasks that belong to the provider).</summary>
+      <returns>
+        <see cref="T:System.Windows.Forms.ImageList" />.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.MaintainInitialTaskOrder">
+      <summary>Gets or sets whether or not the task list should maintain the task order given to it by the task provider.</summary>
+      <returns>true if the task order should be maintained, otherwise false.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider#EnumTaskItems(Microsoft.VisualStudio.Shell.Interop.IVsEnumTaskItems@)">
+      <summary>Gets an enumerator over the task items.</summary>
+      <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+      <param name="items">[out] <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsEnumTaskItems" />.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider#ImageList(System.IntPtr@)">
+      <summary>Gets this provider's image list.</summary>
+      <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+      <param name="himagelist">[out] <see cref="P:System.Windows.Forms.ImageList.Handle" />.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider#OnTaskListFinalRelease(Microsoft.VisualStudio.Shell.Interop.IVsTaskList)">
+      <summary>Notifies the client to unregister the task provider from the task list if it has not been unregistered by the time the task list is closing. </summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />. </returns>
+      <param name="taskList">The task list.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider#ReRegistrationKey(System.String@)">
+      <summary>Gets the re-registration key.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="key">[out] Returns the key.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider#SubcategoryList(System.UInt32,System.String[],System.UInt32@)">
+      <summary>Gets a list of subcategories for the tasks of this task provider.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="cbstr">The number of subcategories in <paramref name="rgbstr" />.</param>
+      <param name="rgbstr">An array of subcategories </param>
+      <param name="cnt">[out] The number of subcategories.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider2#EnumTaskItems(Microsoft.VisualStudio.Shell.Interop.IVsEnumTaskItems@)">
+      <summary>Gets an enumerator over task items.</summary>
+      <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+      <param name="items">[out] <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsEnumTaskItems" />.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider2#ImageList(System.IntPtr@)">
+      <summary>Gets this provider's image list.</summary>
+      <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+      <param name="himagelist">[out] <see cref="P:System.Windows.Forms.ImageList.Handle" />.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider2#MaintainInitialTaskOrder(System.Int32@)">
+      <summary>Gets or sets whether or not the task list should maintain the task order given to it by the task provider.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="fMaintainOrder">[out] Returns true if the task order should be maintained, otherwise false.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider2#OnTaskListFinalRelease(Microsoft.VisualStudio.Shell.Interop.IVsTaskList)">
+      <summary>Notifies the client to unregister the task provider from the task list if it has not been unregistered by the time the task list is closing. </summary>
+      <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+      <param name="taskList">The task list.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider2#ReRegistrationKey(System.String@)">
+      <summary>Gets the reregistration key.</summary>
+      <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+      <param name="key">[out] Returns the key.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider2#SubcategoryList(System.UInt32,System.String[],System.UInt32@)">
+      <summary>Gets a list of subcategories for the tasks of this task provider.</summary>
+      <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+      <param name="cbstr">The number of subcategories in <paramref name="rgbstr" />.</param>
+      <param name="rgbstr">An array of subcategories </param>
+      <param name="cnt">[out] The number of subcategories.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider3#GetColumn(System.Int32,Microsoft.VisualStudio.Shell.Interop.VSTASKCOLUMN[])">
+      <summary>Gets the definition of the column with the specified index.</summary>
+      <returns>When implemented by derived classes, <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" /> or an error code.</returns>
+      <param name="iColumn">The index of the column.</param>
+      <param name="pColumn">An array of <see cref="T:Microsoft.VisualStudio.Shell.Interop.VSTASKCOLUMN" /> structures.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider3#GetColumnCount(System.Int32@)">
+      <summary>Gets the total number of columns supported by this provider, including columns that are not visible by default.</summary>
+      <returns>When implemented by derived classes, <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" /> or an error code.</returns>
+      <param name="count">[out] Returns the total number of columns. By default returns 0.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider3#GetProviderFlags(System.UInt32@)">
+      <summary>Gets the behavior flags for this provider.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="tpfFlags">[out] Returns <see cref="T:Microsoft.VisualStudio.Shell.Interop.__VSTASKPROVIDERFLAGS" />. </param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider3#GetProviderGuid(System.Guid@)">
+      <summary>Gets a unique GUID for this provider. This is used to persist and restore provider-specific data managed by the task list, such as user customizations of column width and order.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="pguidProvider">[out] The GUID of the provider's type.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider3#GetProviderName(System.String@)">
+      <summary>Gets the name of the provider.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="pbstrName">[out] The name of the provider.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider3#GetProviderToolbar(System.Guid@,System.UInt32@)">
+      <summary>Gets the provider's toolbar.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="pguidGroup">[out] The GUID of the group to which the toolbar belongs.</param>
+      <param name="pdwID">[out] The ID of the toolbar.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider3#GetSurrogateProviderGuid(System.Guid@)">
+      <summary>If this method is implemented, all the provider's tasks will be listed under the surrogate provider in the list as though they belonged to the surrogate provider.</summary>
+      <returns>When implemented by derived classes, <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" /> or an error code.</returns>
+      <param name="guid">[out] The GUID of the surrogate provider. By default returns an empty GUID.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider3#OnBeginTaskEdit(Microsoft.VisualStudio.Shell.Interop.IVsTaskItem)">
+      <summary>Raised when the user begins editing a task in place.</summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="item"> The <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsTaskItem" /> being edited.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Microsoft#VisualStudio#Shell#Interop#IVsTaskProvider3#OnEndTaskEdit(Microsoft.VisualStudio.Shell.Interop.IVsTaskItem,System.Int32,System.Int32@)">
+      <summary>Raised when the user finishes editing a task in-place.  </summary>
+      <returns>
+        <see cref="F:Microsoft.VisualStudio.NativeMethods.S_OK" />.</returns>
+      <param name="item">The <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsTaskItem" /> being edited.</param>
+      <param name="fCommitChanges">true if the user wishes to commit the changes, false if the user wishes to discard them.</param>
+      <param name="fAllowChanges"> [out] Returns true if the changes have been committed, false to disallow the user from leaving edit mode.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Navigate(Microsoft.VisualStudio.Shell.Task,System.Guid)">
+      <summary>Navigates from the task to the correct position in the document, shown in the specified logical view.</summary>
+      <returns>true if it was possible to perform the navigation, otherwise false.</returns>
+      <param name="task">The task from which to do the navigation.</param>
+      <param name="logicalView">The logical view in which to display the document.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.ProviderGuid">
+      <summary>Gets or sets the GUID of this provider.</summary>
+      <returns>The GUID of this provider.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.ProviderName">
+      <summary>Gets or sets a localized name for this provider.</summary>
+      <returns>The localized name of the provider.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Refresh">
+      <summary>Informs the task list that there are new or edited tasks.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.ResumeRefresh">
+      <summary>Restarts the refreshing of the task list after it has been suspended.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.Show">
+      <summary>Displays the task list window.</summary>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.Subcategories">
+      <summary>Gets a collection of task subcategories.</summary>
+      <returns>A <see cref="T:System.Collections.Specialized.StringCollection" /> of task subcategories.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.TaskProvider.SuspendRefresh">
+      <summary>Stops refreshing the task list until <see cref="M:Microsoft.VisualStudio.Shell.TaskProvider.ResumeRefresh" /> is called.  </summary>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.Tasks">
+      <summary>Gets a collection of tasks.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.TaskProvider.TaskCollection" />.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.ToolbarGroup">
+      <summary>Gets or sets a group GUID and toolbar ID indicating which toolbar should be displayed when this provider is active.  </summary>
+      <returns>The group GUID and toolbar ID indicating which toolbar should be displayed when this provider is active.  </returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.ToolbarId">
+      <summary>Gets or sets this provider's toolbar ID.</summary>
+      <returns>The toolbar ID.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.TaskProvider.VsTaskList">
+      <summary>Gets the task list.</summary>
+      <returns>
+        <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsTaskList" />.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.Url">
+      <summary>Wraps the <see cref="T:System.Uri" /> class. Provides an unescaped version of <see cref="P:System.Uri.LocalPath" /> for file URL types and <see cref="P:System.Uri.AbsoluteUri" /> for HTTP URL types. Also returns an unescaped result from <see cref="M:System.Uri.MakeRelativeUri(System.Uri)" /> so that it can be presented to the user.</summary>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.Url.#ctor(Microsoft.VisualStudio.Shell.Url,System.String)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.Url" /> that is based on the specified base <see cref="T:Microsoft.VisualStudio.Shell.Url" /> and relative path.</summary>
+      <param name="baseUrl">The base <see cref="T:Microsoft.VisualStudio.Shell.Url" />.</param>
+      <param name="relpath">The relative path.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.Url.#ctor(System.String)">
+      <summary>Initializes a new instance of <see cref="T:Microsoft.VisualStudio.Shell.Url" /> for the specified path.</summary>
+      <param name="path">The path for which to create the URL.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.Url.AbsoluteUrl">
+      <summary>Gets the absolute URL as a string.</summary>
+      <returns>The string value of the absolute URL.</returns>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.Url.Directory">
+      <summary>Returns the unescaped absolute URL for the parent directory that contains the file that is referenced by this URL object.</summary>
+      <returns>The unescaped absolute URL of the parent directory.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.Url.GetPartial(System.Int32)">
+      <summary>Gets the unescaped path up to the specified index.</summary>
+      <returns>The unescaped path up to the specified index of the <see cref="P:Microsoft.VisualStudio.Shell.Url.Segments" /> array.</returns>
+      <param name="i">The index of the <see cref="P:Microsoft.VisualStudio.Shell.Url.Segments" /> array up to which to get the path.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.Url.GetPartial(System.Int32,System.Int32)"></member>
+    <member name="M:Microsoft.VisualStudio.Shell.Url.GetRemainder(System.Int32)">
+      <summary>Gets the unescaped remainder of the path, starting at the specified segment.</summary>
+      <returns>The unescaped remainder of the path, starting with the specified index of the <see cref="P:Microsoft.VisualStudio.Shell.Url.Segments" /> array.</returns>
+      <param name="i">The index of the <see cref="P:Microsoft.VisualStudio.Shell.Url.Segments" /> array at which to start getting the path.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.Url.IsFile">
+      <summary>Determines whether the URL represents a file (as opposed to an HTTP location).</summary>
+      <returns>true if the URL represents a file; otherwise, false.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.Url.JoinSegments(System.Int32,System.Int32)">
+      <summary>Joins the specified segments into a path.</summary>
+      <returns>The unescaped path, starting at segment <paramref name="i" /> and not including segment <paramref name="j" /> or higher.</returns>
+      <param name="i">The index of the <see cref="P:Microsoft.VisualStudio.Shell.Url.Segments" /> array at which to start the path.</param>
+      <param name="j">The index of the <see cref="P:Microsoft.VisualStudio.Shell.Url.Segments" /> array at which to stop adding segments to the path.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.Url.MakeRelative(Microsoft.VisualStudio.Shell.Url)">
+      <summary>Makes the specified <see cref="T:Microsoft.VisualStudio.Shell.Url" /> relative with respect to the current one.</summary>
+      <returns>Using the current <see cref="T:Microsoft.VisualStudio.Shell.Url" /> as the base, the relative path of <paramref name="url" />.</returns>
+      <param name="url">The <see cref="T:Microsoft.VisualStudio.Shell.Url" /> to make relative.</param>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.Url.Move(Microsoft.VisualStudio.Shell.Url,Microsoft.VisualStudio.Shell.Url)">
+      <summary>Moves the URL from the old base to the new one.</summary>
+      <returns>The new <see cref="T:Microsoft.VisualStudio.Shell.Url" />.</returns>
+      <param name="oldBase">The original <see cref="T:Microsoft.VisualStudio.Shell.Url" /> base.</param>
+      <param name="newBase">The new <see cref="T:Microsoft.VisualStudio.Shell.Url" /> base.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.Url.Segments">
+      <summary>Gets an array of the segments of the URL.</summary>
+      <returns>An array of the segments of the URL.</returns>
+    </member>
+    <member name="M:Microsoft.VisualStudio.Shell.Url.Unescape(System.String,System.Boolean)">
+      <summary>Converts an escaped string to an unescaped string.</summary>
+      <returns>The unescaped string.</returns>
+      <param name="escaped">The string to convert.</param>
+      <param name="isFile">true if the string represents a file URL; otherwise, false.</param>
+    </member>
+    <member name="P:Microsoft.VisualStudio.Shell.Url.Uri">
+      <summary>Gets the URI for this URL.</summary>
+      <returns>
+        <see cref="T:System.Uri" />.</returns>
+    </member>
+    <member name="T:Microsoft.VisualStudio.Shell.VsDockStyle">
+      <summary>Defines constants for tool window orientation.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.VsDockStyle.none">
+      <summary>The registration attribute <see cref="T:Microsoft.VisualStudio.Shell.ProvideToolWindowAttribute" /> initializes to this value if no style is specified. </summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.VsDockStyle.MDI">
+      <summary>If the Style value is <see cref="F:Microsoft.VisualStudio.Shell.VsDockStyle.MDI" />, the tool window will be linked to the multiple-document interface (MDI) area, and Window is ignored.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.VsDockStyle.Float">
+      <summary>If the Style value is <see cref="F:Microsoft.VisualStudio.Shell.VsDockStyle.Float" />, the tool window will float initially, but when the title bar is double-clicked, Orientation and Window apply, and the window will default to Tabbed.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.VsDockStyle.Linked">
+      <summary>If the Style value is <see cref="F:Microsoft.VisualStudio.Shell.VsDockStyle.Linked" />, Orientation can be Left, Right, Top, or Bottom.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.VsDockStyle.Tabbed">
+      <summary>If the Style value is <see cref="F:Microsoft.VisualStudio.Shell.VsDockStyle.Tabbed" />, Orientation can be Left or Right and tab placement can be specified.</summary>
+    </member>
+    <member name="F:Microsoft.VisualStudio.Shell.VsDockStyle.AlwaysFloat">
+      <summary>If the Style value is <see cref="F:Microsoft.VisualStudio.Shell.VsDockStyle.AlwaysFloat" />, the tool window cannot be docked.</summary>
+    </member>
+  </members>
+</doc>

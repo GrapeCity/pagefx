@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns:ns1="*"
+	initialize="Init()">
+	<ns1:MainPane id="PaneMain" left="10" right="10" top="10" bottom="10">
+	</ns1:MainPane>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.messaging.AbstractConsumer;
+			import mx.containers.Box;
+			import mx.controls.Alert;
+			import dd.events.SelectionEvent;
+			private function Init():void
+			{
+				PaneMain.PaneMiddle.Issues.addEventListener(SelectionEvent.AfterSelect, OnIssueSelect);
+				
+				var box:IssueBox = new IssueBox();
+				box.percentWidth = 100;
+				//box.IssueDescription = "aasdlkjasd lkhasldh oiuasodi yoiyasdo yoasydo iyoiyasod yoiasdy oiy";
+				box.Setup("asdasd khjasldk hlkahsd lkhlkashdlkh lkhasd hlkahsd", 
+				"asdlkj asdklhalkshd lkahsdlkh aldhlash lhalskdh lhasldhaosudpo upoauspdu puaspdou poausdp upasoudp oupasodup ou",
+				"asdasd", true);
+				  
+				  PaneMain.PaneMiddle.Issues.addChild(box);
+			}
+			
+			private function OnIssueSelect(e:SelectionEvent):void
+			{
+				var box:IssueBox = e.Selection as IssueBox;
+				if (box != null)
+				{
+					if (box.Issue != null)
+						mx.controls.Alert.show(box.Issue.toString());
+				}	
+			}
+		]]>
+	</mx:Script>
+	
+</mx:Application>

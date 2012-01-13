@@ -1,0 +1,1 @@
+nant -buildfile:gen.nant

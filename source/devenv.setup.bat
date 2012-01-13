@@ -1,0 +1,1 @@
+nant -buildfile:vs.nant devenv.setup

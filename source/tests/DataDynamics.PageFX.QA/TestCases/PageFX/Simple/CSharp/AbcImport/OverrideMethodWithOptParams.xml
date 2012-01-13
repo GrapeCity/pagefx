@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <ref name="ShapeLib.abc"/>
+  <output>
+    <l>msg</l>
+    <l>10</l>
+    <l>end</l>
+    <l>aaa</l>
+    <l>10</l>
+    <l>end</l>
+    <l>bbb</l>
+    <l>20</l>
+    <l>end</l>
+    <l>&lt;%END%&gt;</l>
+  </output>
+</config>

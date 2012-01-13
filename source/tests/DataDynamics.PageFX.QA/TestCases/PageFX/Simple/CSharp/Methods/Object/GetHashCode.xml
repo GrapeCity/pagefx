@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <output>
+    <l>----Test1</l>
+    <l>True</l>
+    <l>123</l>
+    <l>True</l>
+    <l>True</l>
+    <l>&lt;%END%&gt;</l>
+  </output>
+</config>

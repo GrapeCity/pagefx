@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+  <output>
+    <l>10</l>
+    <l>20</l>
+    <l>30</l>
+    <l>30</l>
+    <l>10</l>
+    <l>1</l>
+    <l>20</l>
+    <l>&lt;%END%&gt;</l>
+  </output>
+</config>

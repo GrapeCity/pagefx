@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>API Status</title>
+
+    <link rel="stylesheet" href="screen.css"/>
+    
+    <script src="jquery.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">     
+      function loadFrame()
+      {
+        var url = $(this).attr("url");
+        $("#status").attr("src", url);
+      }
+
+      $(document).ready(function(){
+        $("input[url]").click(loadFrame);
+      });
+    </script>
+
+  </head>
+  <body>
+    <table style="width:100%; height: 100%">
+      <tr>
+        <td style="width: 10%">
+          <h3>Assemblies</h3>
+          <div>
+          <input type="button" url="mscorlib.htm" value="mscorlib"/>
+          <br/>
+          <input type="button" url="System.htm" value="System"/>
+          <br/>
+          <input type="button" url="System.Core.htm" value="System.Core"/>
+          <br/>
+          <input type="button" url="System.Xml.htm" value="System.Xml"/>
+          </div>
+        </td>
+        <td style="width: 90%">
+          <iframe id="status" name="status" src="mscorlib.htm" width="100%" height="100%"/>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

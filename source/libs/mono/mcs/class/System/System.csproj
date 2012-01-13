@@ -1,0 +1,151 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D2D26DF4-6214-4F24-82E3-9190819D9C50}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System</RootNamespace>
+    <AssemblyName>System</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_1_1;INSIDE_CORLIB;PFX;PTR32;AVM;NET_2_0;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\framework\</OutputPath>
+    <DefineConstants>TRACE;NET_1_1;INSIDE_CORLIB;PFX;PTR32;AVM;NET_2_0;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\corlib\mscorlib.csproj">
+      <Project>{C9A6CF06-1E1F-4196-8339-B060F0B5714C}</Project>
+      <Name>mscorlib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\build\common\Consts.cs">
+      <Link>Assembly\Consts.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\Locale.cs">
+      <Link>Assembly\Locale.cs</Link>
+    </Compile>
+    <Compile Include="..\..\build\common\MonoTODOAttribute.cs">
+      <Link>Assembly\MonoTODOAttribute.cs</Link>
+    </Compile>
+    <Compile Include="Assembly\AssemblyInfo.cs" />
+    <Compile Include="System.Collections.Generic\LinkedList.cs" />
+    <Compile Include="System.Collections.Generic\LinkedListNode.cs" />
+    <Compile Include="System.Collections.Generic\Queue.cs" />
+    <Compile Include="System.Collections.Generic\Stack.cs" />
+    <Compile Include="System.Collections.Specialized\BitVector32.cs" />
+    <Compile Include="System.Collections.Specialized\ListDictionary.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections.Specialized\StringCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Collections.Specialized\StringDictionary.cs" />
+    <Compile Include="System.Collections.Specialized\StringEnumerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.ComponentModel\AsyncCompletedEventArgs.cs" />
+    <Compile Include="System.ComponentModel\BrowsableAttribute.cs" />
+    <Compile Include="System.ComponentModel\CancelEventArgs.cs" />
+    <Compile Include="System.ComponentModel\CancelEventHandler.cs" />
+    <Compile Include="System.ComponentModel\CategoryAttribute.cs" />
+    <Compile Include="System.ComponentModel\DefaultValueAttribute.cs" />
+    <Compile Include="System.ComponentModel\DescriptionAttribute.cs" />
+    <Compile Include="System.ComponentModel\DisplayNameAttribute.cs" />
+    <Compile Include="System.ComponentModel\EditorBrowsableAttribute.cs" />
+    <Compile Include="System.ComponentModel\EditorBrowsableState.cs" />
+    <Compile Include="System.ComponentModel\INotifyPropertyChanged.cs" />
+    <Compile Include="System.ComponentModel\InvalidEnumArgumentException.cs" />
+    <Compile Include="System.ComponentModel\PropertyChangedEventArgs.cs" />
+    <Compile Include="System.ComponentModel\PropertyChangedEventHandler.cs" />
+    <Compile Include="System.ComponentModel\SettingsBindableAttribute.cs" />
+    <Compile Include="System.ComponentModel\TypeConverterAttribute.cs" />
+    <Compile Include="System.ComponentModel\TypeDescriptionProviderAttribute.cs" />
+    <Compile Include="System.Diagnostics\AvmTraceListener.cs" />
+    <Compile Include="System.Diagnostics\Debug.cs" />
+    <Compile Include="System.Diagnostics\TraceImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System.Diagnostics\TraceListener.cs" />
+    <Compile Include="System.Diagnostics\TraceListenerCollection.cs" />
+    <Compile Include="System.Runtime.InteropServices\DefaultParameterValueAttribute.cs" />
+    <Compile Include="System.Text.RegularExpressions\arch.cs" />
+    <Compile Include="System.Text.RegularExpressions\BaseMachine.cs" />
+    <Compile Include="System.Text.RegularExpressions\cache.cs" />
+    <Compile Include="System.Text.RegularExpressions\Capture.cs" />
+    <Compile Include="System.Text.RegularExpressions\CaptureCollection.cs" />
+    <Compile Include="System.Text.RegularExpressions\category.cs" />
+    <Compile Include="System.Text.RegularExpressions\compiler.cs" />
+    <Compile Include="System.Text.RegularExpressions\debug.cs" />
+    <Compile Include="System.Text.RegularExpressions\Group.cs" />
+    <Compile Include="System.Text.RegularExpressions\GroupCollection.cs" />
+    <Compile Include="System.Text.RegularExpressions\interpreter.cs" />
+    <Compile Include="System.Text.RegularExpressions\interval.cs" />
+    <Compile Include="System.Text.RegularExpressions\Match.cs" />
+    <Compile Include="System.Text.RegularExpressions\MatchCollection.cs" />
+    <Compile Include="System.Text.RegularExpressions\MatchEvaluator.cs" />
+    <Compile Include="System.Text.RegularExpressions\parser.cs" />
+    <Compile Include="System.Text.RegularExpressions\quicksearch.cs" />
+    <Compile Include="System.Text.RegularExpressions\Regex.cs" />
+    <Compile Include="System.Text.RegularExpressions\RegexCompilationInfo.cs" />
+    <Compile Include="System.Text.RegularExpressions\RegexOptions.cs" />
+    <Compile Include="System.Text.RegularExpressions\RegexRunner.cs" />
+    <Compile Include="System.Text.RegularExpressions\RegexRunnerFactory.cs" />
+    <Compile Include="System.Text.RegularExpressions\replace.cs" />
+    <Compile Include="System.Text.RegularExpressions\syntax.cs" />
+    <Compile Include="System\FileStyleUriParser.cs" />
+    <Compile Include="System\FtpStyleUriParser.cs" />
+    <Compile Include="System\GenericUriParser.cs" />
+    <Compile Include="System\GenericUriParserOptions.cs" />
+    <Compile Include="System\HttpStyleUriParser.cs" />
+    <Compile Include="System\SRDescriptionAttribute.cs" />
+    <Compile Include="System\Uri.cs" />
+    <Compile Include="System\UriBuilder.cs" />
+    <Compile Include="System\UriComponents.cs" />
+    <Compile Include="System\UriFormat.cs" />
+    <Compile Include="System\UriFormatException.cs" />
+    <Compile Include="System\UriIdnScope.cs" />
+    <Compile Include="System\UriKind.cs" />
+    <Compile Include="System\UriParser.cs" />
+    <Compile Include="System\UriPartial.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="System.Text.RegularExpressions\notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>

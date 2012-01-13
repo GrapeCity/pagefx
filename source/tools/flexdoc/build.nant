@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="PageFX" default="main">
+
+  <property name="cd" value="${project::get-base-directory()}"/>
+  <property name="dir.flexsdk" value="E:\Program Files\Adobe\Flex Builder 3\sdks\3.0.0"/>
+  <property name="src.projects" value="${dir.flexsdk}\frameworks\projects"/>
+  <property name="src.framework" value="${src.projects}\framework\src"/>
+  <property name="src.rpc" value="${src.projects}\rpc\src"/>
+  <property name="pfx.home" value="c:\pfx"/>
+  <property name="pfx.tools" value="${pfx.home}\tools"/>
+  
+  <target name="main">
+    <property name="srcdir" value="${src.framework}"/>
+    <property name="libname" value="flex3"/>
+    <call target="build.xmls"/>
+    <property name="srcdir" value="${src.rpc}"/>
+    <property name="libname" value="flex3.rpc"/>
+    <call target="build.xmls"/>
+  </target>
+
+  <target name="build.xmls">
+    <property name="asdoc.outdir" value="${cd}\asdoc\${libname}"/>
+    <call target="get-classes"/>
+    <!--<call target="asdoc"/>-->
+    <foreach item="String" in="${class-list}" delim=";" property="class">
+      <do>
+        <call target="asdoc-class"/>
+      </do>
+    </foreach>
+    <delete>
+      <fileset basedir="${asdoc.outdir}">
+        <include name="toplevel.xml"/>
+        <include name="toplevel_classes.xml"/>
+      </fileset>
+    </delete>
+    <property name="asdoc.xml" value="${cd}\${libname}.asdoc.xml"/>
+    <exec basedir="${pfx.tools}" program="xools.exe" workingdir="${asdoc.outdir}"
+          commandline='/merge /xpath:"asdoc/packages/asPackage" /out:"${asdoc.xml}"'/>
+    <exec basedir="${pfx.tools}" program="as2xdoc.exe" workingdir="${cd}"
+          commandline='/asm:${libname} /out:${libname}.xml "${asdoc.xml}"'/>
+  </target>
+
+  <target name="get-classes">
+    <property name="class-list" value=""/>
+    <foreach item="File" property="file">
+      <in>
+        <items basedir="${srcdir}">
+          <include name="**\*.as"/>
+          <exclude name="**\Version.as"/>
+          <exclude name="**\*Classes.as"/>
+          <exclude name="**\IDisplayObjectInterface.as"/>
+          <exclude name="**\IDisplayObjectContainerInterface.as"/>
+          <exclude name="**\IInteractiveObjectInterface.as"/>
+          <exclude name="**\ISpriteInterface.as"/>
+          <exclude name="**\ITextFieldInterface.as"/>
+          <exclude name="**\mx\styles\metadata\*"/>
+        </items>
+      </in>
+      <do>
+        <property name="s" value="${string::substring(file, string::get-length(srcdir) + 1, string::get-length(file) - string::get-length(srcdir) - 1)}"/>
+        <property name="s" value="${string::replace(s, '\', '.')}"/>
+        <property name="s" value="${string::substring(s, 0, string::get-length(s) - 3)}"/>
+        <!--<echo message="${s}"/>-->
+        <if test="${string::get-length(class-list) > 0}">
+          <property name="class-list" value="${class-list + ';'}"/>
+        </if>
+        <property name="class-list" value="${class-list + s}"/>
+      </do>
+    </foreach>
+  </target>
+
+  <target name="asdoc">
+    <exec basedir="${dir.flexsdk}\bin" program="asdoc.exe" workingdir="${srcdir}"
+          commandline="-keep-xml -skip-xsl -exclude-dependencies -source-path . -doc-classes ${class-list} -output ${asdoc.outdir}"/>
+    <copy file="${asdoc.outdir}\toplevel_classes.xml" tofile="${asdoc.outdir}\${out}.xml"/>
+  </target>
+
+  <target name="asdoc-class">
+    <property name="outfile" value="${asdoc.outdir}\${class}.xml"/>
+    <if test="${not file::exists(outfile)}">
+      <exec basedir="${dir.flexsdk}\bin" program="asdoc.exe" workingdir="${srcdir}"
+            commandline="-keep-xml -skip-xsl -exclude-dependencies -source-path . -doc-classes ${class} -output ${asdoc.outdir}"/>
+      <copy file="${asdoc.outdir}\toplevel_classes.xml" tofile="${outfile}"/>
+    </if>
+  </target>
+
+</project>
