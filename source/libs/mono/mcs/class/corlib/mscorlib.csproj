@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C9A6CF06-1E1F-4196-8339-B060F0B5714C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -78,937 +78,412 @@
     <Compile Include="PageFX\Core\abc.cs" />
     <Compile Include="PageFX\Core\avm.cs" />
     <Compile Include="PageFX\Core\AvmErrors.cs" />
-    <Compile Include="PageFX\Core\FP10\adobe.utils\CustomActions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\adobe.utils\Global.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\adobe.utils\ProductManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\adobe.utils\XMLUI.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\ArgumentError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Array.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Boolean.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Class.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Date.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\DefinitionError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Error.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\EvalError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Function.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Global.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Int.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Math.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Namespace.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Number.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\Object.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\QName.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\RangeError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\ReferenceError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\RegExp.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\SecurityError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\String.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\SyntaxError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\TypeError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\UInt.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\UninitializedError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\URIError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\VerifyError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\XML.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\Avm\XMLList.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.accessibility\Accessibility.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.accessibility\AccessibilityImplementation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.accessibility\AccessibilityProperties.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.debugger\Global.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.desktop\Clipboard.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.desktop\ClipboardFormats.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.desktop\ClipboardTransferMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\ActionScriptVersion.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\AVM1Movie.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\Bitmap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\BitmapData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\BitmapDataChannel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\BlendMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\CapsStyle.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\DisplayObject.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\DisplayObjectContainer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\FrameLabel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GradientType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\Graphics.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsBitmapFill.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsEndFill.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsGradientFill.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsPath.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsPathCommand.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsPathWinding.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsShaderFill.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsSolidFill.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsStroke.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\GraphicsTrianglePath.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\IBitmapDrawable.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\IGraphicsData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\IGraphicsFill.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\IGraphicsPath.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\IGraphicsStroke.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\InteractiveObject.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\InterpolationMethod.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\JointStyle.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\LineScaleMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\Loader.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\LoaderInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\MorphShape.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\MovieClip.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\PixelSnapping.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\Scene.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\Shader.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\ShaderData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\ShaderInput.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\ShaderJob.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\ShaderParameter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\ShaderParameterType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\ShaderPrecision.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\Shape.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\SimpleButton.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\SpreadMethod.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\Sprite.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\Stage.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\StageAlign.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\StageColorCorrectionMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\StageDisplayState.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\StageQuality.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\StageScaleMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\SWFVersion.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.display\TriangleCulling.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.errors\EOFError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.errors\IllegalOperationError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.errors\InvalidSWFError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.errors\IOError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.errors\MemoryError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.errors\ScriptTimeoutError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.errors\StackOverflowError.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ActivityEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ActivityEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\AsyncErrorEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\AsyncErrorEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ContextMenuEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ContextMenuEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\DataEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\DataEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ErrorEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ErrorEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\Event.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\EventDispatcher.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\EventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\EventPhase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\FocusEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\FocusEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\FullScreenEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\FullScreenEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\HTTPStatusEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\HTTPStatusEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\IEventDispatcher.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\IMEEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\IMEEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\IOErrorEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\IOErrorEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\KeyboardEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\KeyboardEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\MouseEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\MouseEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\NetFilterEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\NetStatusEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\NetStatusEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ProgressEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ProgressEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\SampleDataEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\SampleDataEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\SecurityErrorEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\SecurityErrorEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ShaderEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\ShaderEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\StatusEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\StatusEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\SyncEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\SyncEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\TextEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\TextEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\TimerEvent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.events\TimerEventHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.external\ExternalInterface.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\BevelFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\BitmapFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\BitmapFilterQuality.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\BitmapFilterType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\BlurFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\ColorMatrixFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\ConvolutionFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\DisplacementMapFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\DisplacementMapFilterMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\DropShadowFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\GlowFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\GradientBevelFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\GradientGlowFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.filters\ShaderFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\ColorTransform.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\Matrix.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\Matrix3D.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\Orientation3D.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\PerspectiveProjection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\Point.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\Rectangle.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\Transform.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\Utils3D.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.geom\Vector3D.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\Camera.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\ID3Info.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\Microphone.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\Sound.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\SoundChannel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\SoundCodec.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\SoundLoaderContext.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\SoundMixer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\SoundTransform.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.media\Video.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\FileFilter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\FileReference.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\FileReferenceList.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\Global.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\IDynamicPropertyOutput.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\IDynamicPropertyWriter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\LocalConnection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\NetConnection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\NetStream.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\NetStreamInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\NetStreamPlayOptions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\NetStreamPlayTransitions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\ObjectEncoding.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\Responder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\SharedObject.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\SharedObjectFlushStatus.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\Socket.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\URLLoader.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\URLLoaderDataFormat.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\URLRequest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\URLRequestHeader.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\URLRequestMethod.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\URLStream.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\URLVariables.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.net\XMLSocket.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.printing\PrintJob.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.printing\PrintJobOptions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.printing\PrintJobOrientation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.profiler\Global.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.sampler\DeleteObjectSample.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.sampler\Global.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.sampler\NewObjectSample.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.sampler\Sample.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.sampler\StackFrame.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\ApplicationDomain.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\Capabilities.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\Global.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\IME.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\IMEConversionMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\JPEGLoaderContext.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\LoaderContext.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\Security.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\SecurityDomain.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\SecurityPanel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.system\System.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\BreakOpportunity.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\CFFHinting.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\ContentElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\DigitCase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\DigitWidth.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\EastAsianJustifier.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\ElementFormat.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontDescription.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontLookup.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontMetrics.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontPosture.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\FontWeight.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\GraphicElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\GroupElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\JustificationStyle.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\Kerning.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\LigatureLevel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\LineJustification.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\RenderingMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\SpaceJustifier.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TabAlignment.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TabStop.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextBaseline.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextBlock.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextJustifier.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextLine.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextLineCreationResult.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextLineMirrorRegion.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextLineValidity.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TextRotation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text.engine\TypographicCase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\AntiAliasType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\CSMSettings.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\Font.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\FontStyle.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\FontType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\GridFitType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\StaticText.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\StyleSheet.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextColorType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextDisplayMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextExtent.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextField.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextFieldAutoSize.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextFieldType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextFormat.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextFormatAlign.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextFormatDisplay.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextLineMetrics.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextRenderer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextRun.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.text\TextSnapshot.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.trace\Trace.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.ui\ContextMenu.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.ui\ContextMenuBuiltInItems.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.ui\ContextMenuClipboardItems.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.ui\ContextMenuItem.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.ui\Keyboard.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.ui\KeyLocation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.ui\Mouse.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.ui\MouseCursor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.utils\ByteArray.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.utils\Dictionary.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.utils\Endian.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.utils\Global.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.utils\IDataInput.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.utils\IDataOutput.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.utils\IExternalizable.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.utils\Proxy.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.utils\Timer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.xml\XMLDocument.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.xml\XMLNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\flash.xml\XMLNodeType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector_double.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector_int.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector_object.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PageFX\Core\FP10\__AS3__.vec\Vector_uint.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="PageFX\Core\CompilerUtils.cs" />
+    <Compile Include="PageFX\Core\FP10.2\adobe.utils\CustomActions.cs" />
+    <Compile Include="PageFX\Core\FP10.2\adobe.utils\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\adobe.utils\ProductManager.cs" />
+    <Compile Include="PageFX\Core\FP10.2\adobe.utils\XMLUI.cs" />
+    <Compile Include="PageFX\Core\FP10.2\avmplus\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\ArgumentError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Array.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Boolean.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Class.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Date.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\DefinitionError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Error.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\EvalError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Function.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Int.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Math.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Namespace.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Number.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\Object.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\QName.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\RangeError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\ReferenceError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\RegExp.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\SecurityError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\String.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\SyntaxError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\TypeError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\UInt.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\UninitializedError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\URIError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\VerifyError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\XML.cs" />
+    <Compile Include="PageFX\Core\FP10.2\Avm\XMLList.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.accessibility\Accessibility.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.accessibility\AccessibilityImplementation.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.accessibility\AccessibilityProperties.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.accessibility\ISearchableText.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.accessibility\ISimpleTextSelection.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.automation\ActionGenerator.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.automation\AutomationAction.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.automation\Configuration.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.automation\KeyboardAutomationAction.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.automation\MouseAutomationAction.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.automation\StageCapture.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.automation\StageCaptureEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.debugger\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.desktop\Clipboard.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.desktop\ClipboardFormats.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.desktop\ClipboardTransferMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\ActionScriptVersion.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\AVM1Movie.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\Bitmap.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\BitmapData.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\BitmapDataChannel.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\BlendMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\CapsStyle.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\ColorCorrection.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\ColorCorrectionSupport.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\DisplayObject.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\DisplayObjectContainer.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\FocusDirection.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\FrameLabel.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GradientType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\Graphics.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsBitmapFill.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsEndFill.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsGradientFill.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsPath.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsPathCommand.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsPathWinding.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsShaderFill.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsSolidFill.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsStroke.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\GraphicsTrianglePath.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\IBitmapDrawable.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\IGraphicsData.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\IGraphicsFill.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\IGraphicsPath.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\IGraphicsStroke.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\InteractiveObject.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\InterpolationMethod.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\JointStyle.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\LineScaleMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\Loader.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\LoaderInfo.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\MorphShape.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\MovieClip.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\NativeMenu.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\NativeMenuItem.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\PixelSnapping.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\Scene.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\Shader.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\ShaderData.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\ShaderInput.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\ShaderJob.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\ShaderParameter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\ShaderParameterType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\ShaderPrecision.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\Shape.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\SimpleButton.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\SpreadMethod.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\Sprite.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\Stage.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\StageAlign.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\StageDisplayState.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\StageQuality.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\StageScaleMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\SWFVersion.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.display\TriangleCulling.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.errors\DRMManagerError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.errors\EOFError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.errors\IllegalOperationError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.errors\InvalidSWFError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.errors\IOError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.errors\MemoryError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.errors\ScriptTimeoutError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.errors\StackOverflowError.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\AccelerometerEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\AccelerometerEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ActivityEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ActivityEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\AsyncErrorEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\AsyncErrorEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ContextMenuEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ContextMenuEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DataEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DataEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMAuthenticateEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMAuthenticateEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMAuthenticationCompleteEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMAuthenticationCompleteEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMAuthenticationErrorEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMAuthenticationErrorEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMErrorEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMErrorEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMStatusEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\DRMStatusEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ErrorEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ErrorEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\Event.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\EventDispatcher.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\EventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\EventPhase.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\FocusEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\FocusEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\FullScreenEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\FullScreenEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\GeolocationEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\GeolocationEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\GestureEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\GestureEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\GesturePhase.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\HTTPStatusEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\HTTPStatusEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\IEventDispatcher.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\IMEEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\IMEEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\IOErrorEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\IOErrorEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\KeyboardEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\KeyboardEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\MouseEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\MouseEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\NetFilterEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\NetStatusEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\NetStatusEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\PressAndTapGestureEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\PressAndTapGestureEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ProgressEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ProgressEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\SampleDataEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\SampleDataEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\SecurityErrorEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\SecurityErrorEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ShaderEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\ShaderEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\SoftKeyboardEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\SoftKeyboardEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\SoftKeyboardTrigger.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\StageVideoAvailabilityEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\StageVideoAvailabilityEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\StageVideoEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\StageVideoEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\StatusEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\StatusEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\SyncEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\SyncEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\TextEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\TextEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\TimerEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\TimerEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\TouchEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\TouchEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\TransformGestureEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\TransformGestureEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\UncaughtErrorEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\UncaughtErrorEventHandler.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\UncaughtErrorEvents.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.events\VideoEvent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.external\ExternalInterface.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\BevelFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\BitmapFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\BitmapFilterQuality.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\BitmapFilterType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\BlurFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\ColorMatrixFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\ConvolutionFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\DisplacementMapFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\DisplacementMapFilterMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\DropShadowFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\GlowFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\GradientBevelFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\GradientGlowFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.filters\ShaderFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\ColorTransform.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\Matrix.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\Matrix3D.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\Orientation3D.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\PerspectiveProjection.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\Point.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\Rectangle.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\Transform.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\Utils3D.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.geom\Vector3D.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\Collator.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\CollatorMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\CurrencyFormatter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\CurrencyParseResult.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\DateTimeFormatter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\DateTimeNameContext.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\DateTimeNameStyle.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\DateTimeStyle.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\LastOperationStatus.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\LocaleID.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\NationalDigitsType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\NumberFormatter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\NumberParseResult.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.globalization\StringTools.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\Camera.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\ID3Info.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\Microphone.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\Sound.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\SoundChannel.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\SoundCodec.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\SoundLoaderContext.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\SoundMixer.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\SoundTransform.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\StageVideo.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\StageVideoAvailability.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\Video.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.media\VideoStatus.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net.drm\AuthenticationMethod.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net.drm\DRMContentData.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net.drm\DRMManager.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net.drm\DRMPlaybackTimeWindow.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net.drm\DRMVoucher.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net.drm\LoadVoucherSetting.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net.drm\VoucherAccessInfo.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\FileFilter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\FileReference.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\FileReferenceList.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\GroupSpecifier.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\IDynamicPropertyOutput.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\IDynamicPropertyWriter.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\LocalConnection.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetConnection.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetGroup.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetGroupInfo.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetGroupReceiveMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetGroupReplicationStrategy.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetGroupSendMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetGroupSendResult.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetStream.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetStreamAppendBytesAction.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetStreamInfo.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetStreamMulticastInfo.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetStreamPlayOptions.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\NetStreamPlayTransitions.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\ObjectEncoding.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\Responder.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\SharedObject.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\SharedObjectFlushStatus.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\Socket.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\URLLoader.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\URLLoaderDataFormat.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\URLRequest.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\URLRequestHeader.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\URLRequestMethod.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\URLStream.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\URLVariables.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.net\XMLSocket.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.printing\PrintJob.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.printing\PrintJobOptions.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.printing\PrintJobOrientation.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.profiler\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.sampler\DeleteObjectSample.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.sampler\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.sampler\NewObjectSample.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.sampler\Sample.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.sampler\StackFrame.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.sensors\Accelerometer.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.sensors\Geolocation.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\ApplicationDomain.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\Capabilities.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\IME.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\IMEConversionMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\JPEGLoaderContext.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\LoaderContext.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\Security.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\SecurityDomain.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\SecurityPanel.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\System.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\SystemUpdater.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\SystemUpdaterType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.system\TouchscreenType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\BreakOpportunity.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\CFFHinting.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\ContentElement.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\DigitCase.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\DigitWidth.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\EastAsianJustifier.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\ElementFormat.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\FontDescription.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\FontLookup.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\FontMetrics.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\FontPosture.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\FontWeight.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\GraphicElement.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\GroupElement.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\JustificationStyle.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\Kerning.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\LigatureLevel.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\LineJustification.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\RenderingMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\SpaceJustifier.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TabAlignment.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TabStop.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TextBaseline.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TextBlock.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TextElement.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TextJustifier.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TextLine.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TextLineCreationResult.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TextLineMirrorRegion.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TextLineValidity.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TextRotation.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.engine\TypographicCase.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.ime\CompositionAttributeRange.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text.ime\IIMEClient.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\AntiAliasType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\CSMSettings.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\Font.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\FontStyle.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\FontType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\GridFitType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\StaticText.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\StyleSheet.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextColorType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextDisplayMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextExtent.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextField.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextFieldAutoSize.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextFieldType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextFormat.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextFormatAlign.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextFormatDisplay.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextInteractionMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextLineMetrics.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextRenderer.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextRun.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.text\TextSnapshot.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.trace\Trace.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\ContextMenu.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\ContextMenuBuiltInItems.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\ContextMenuClipboardItems.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\ContextMenuItem.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\Keyboard.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\KeyboardType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\KeyLocation.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\Mouse.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\MouseCursor.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\MouseCursorData.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\Multitouch.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.ui\MultitouchInputMode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.utils\ByteArray.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.utils\Dictionary.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.utils\Endian.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.utils\Global.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.utils\IDataInput.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.utils\IDataOutput.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.utils\IExternalizable.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.utils\Proxy.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.utils\Timer.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.xml\XMLDocument.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.xml\XMLNode.cs" />
+    <Compile Include="PageFX\Core\FP10.2\flash.xml\XMLNodeType.cs" />
+    <Compile Include="PageFX\Core\FP10.2\__AS3__.vec\Vector.cs" />
+    <Compile Include="PageFX\Core\FP10.2\__AS3__.vec\Vector_double.cs" />
+    <Compile Include="PageFX\Core\FP10.2\__AS3__.vec\Vector_int.cs" />
+    <Compile Include="PageFX\Core\FP10.2\__AS3__.vec\Vector_object.cs" />
+    <Compile Include="PageFX\Core\FP10.2\__AS3__.vec\Vector_uint.cs" />
     <Compile Include="PageFX\Core\Vector.cs" />
     <Compile Include="PageFX\System\ConsoleWriter.cs" />
     <Compile Include="PageFX\System\PfxIO.cs" />

@@ -205,7 +205,7 @@ public class AvmErrors
         else
             exc = ExceptionFromErrorID(err.errorID);
 
-        exc.avm_setMessage(err.message);
+        exc.avm_setMessage((string)err.message);
 
         if (flash.system.Capabilities.isDebugger)
             exc.stack_trace = err.getStackTrace();
