@@ -13,6 +13,7 @@ source/**/[Bb]in
 source/**/[Oo]bj
 source/**/.client
 source/**/*.log
+source/*.log
 source/Artifacts/
 
 # ignore patterns via regexp syntax

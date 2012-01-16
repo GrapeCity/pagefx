@@ -45,6 +45,8 @@
   <property name="flex.dlldir" value="${flex.sdkdir}\dll"/>
   <property name="flex.localedir" value="${flex.sdkdir}\locale"/>
   <property name="flex.rslsdir" value="${flex.sdkdir}\rsls"/>
+	<property name="flex4.5.sdkdir" value="${dir.src}\sdks\flex4.5"/>
+	<property name="flex4.5.dlldir" value="${flex4.5.sdkdir}\dll"/>
 
   <!-- PageFX directories -->
   <property name="pfx.home" value="c:\pfx"/>
@@ -470,16 +472,26 @@
     <echo message=""/>
     
     <copy file="${dir.src}\readme.htm" todir="${pfx.home}"/>
-    
-    <copy todir="${pfx.flexsdkdir}/">
-      <fileset basedir="${flex.dlldir}">
-        <include name="**"/>
-        <exclude name="**/*.swz"/>
-        <exclude name="**/.svn"/>
-	<exclude name="**/.MySCMserverInfo"/>
-        <exclude name="**/.svn/**"/>
-      </fileset>
-    </copy>
+
+	  <copy todir="${pfx.flexsdkdir}/">
+		  <fileset basedir="${flex.dlldir}">
+			  <include name="**"/>
+			  <exclude name="**/*.swz"/>
+			  <exclude name="**/.svn"/>
+			  <exclude name="**/.MySCMserverInfo"/>
+			  <exclude name="**/.svn/**"/>
+		  </fileset>
+	  </copy>
+
+	  <copy todir="${pfx.flexsdkdir}/">
+		  <fileset basedir="${flex4.5.dlldir}">
+			  <include name="**"/>
+			  <exclude name="**/*.swz"/>
+			  <exclude name="**/.svn"/>
+			  <exclude name="**/.MySCMserverInfo"/>
+			  <exclude name="**/.svn/**"/>
+		  </fileset>
+	  </copy>
     
     <copy todir="${pfx.flexsdkdir}/locale">
       <fileset basedir="${flex.localedir}">

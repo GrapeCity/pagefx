@@ -1,1 +1,0 @@
-nant -buildfile:build.nant -D:build.number=%1 -logfile:build.number.log local-continuous
