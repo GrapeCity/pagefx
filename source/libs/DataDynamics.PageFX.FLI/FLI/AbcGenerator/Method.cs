@@ -258,7 +258,7 @@ namespace DataDynamics.PageFX.FLI
             _abc.Methods.Add(abcMethod);
 
             bool isMxAppCtor = false;
-            if (AbcGenConfig.MxAppCtorAsHandler)
+            if (AbcGenConfig.FlexAppCtorAsHandler)
                 isMxAppCtor = IsMxAppCtor(method);
 
             //NOTE:
@@ -838,7 +838,7 @@ namespace DataDynamics.PageFX.FLI
             if (!IsSwf) return false;
             if (!method.IsConstructor) return false;
             if (method.Parameters.Count != 0) return false;
-            return method.DeclaringType == sfc.TypeMxApp;
+            return method.DeclaringType == sfc.TypeFlexApp;
         }
         #endregion
     }

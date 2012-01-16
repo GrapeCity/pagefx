@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FLI
 {
     class Embed
     {
-        public static class Attrs
+        private static class Attrs
         {
             public const string Source = "source";
             public const string Symbol = "symbol";
@@ -42,8 +42,9 @@ namespace DataDynamics.PageFX.FLI
 
         public AbcInstance Instance;
 
-        #region Setup
-        public static void Setup(AbcTrait trait, AbcMetaEntry e, SwfMovie lib)
+		#region Resolve
+
+		public static void Resolve(AbcTrait trait, AbcMetaEntry e, SwfMovie lib)
         {
             if (trait.Embed != null) return;
 
@@ -81,7 +82,31 @@ namespace DataDynamics.PageFX.FLI
             trait.Embed = embed;
             trait.AssetInstance = instance;
         }
-        #endregion
+
+		public static void Apply(AbcTrait trait, SwfAsset asset, SwfMovie lib)
+		{
+			if (trait.Embed != null) return;
+
+			var klass = trait.Class;
+			if (klass == null)
+			{
+				throw new InvalidOperationException("Embed can be applied to class trait only");
+			}
+
+			var instance = klass.Instance;
+
+			var embed = new Embed
+			            	{
+			            		Asset = asset,
+			            		Movie = lib,
+			            		Instance = instance
+			            	};
+
+			trait.Embed = embed;
+			trait.AssetInstance = instance;
+		}
+
+    	#endregion
 
         #region FromDirective
         public static Embed FromDirective(Function f)

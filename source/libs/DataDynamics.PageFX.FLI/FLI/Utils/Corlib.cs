@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.FLI
         /// </summary>
         public static IAssembly Assembly
         {
-            get { return SystemTypes.Object.Assembly; }
+            get { return SystemTypes.Object != null ? SystemTypes.Object.Assembly : null; }
         }
 
         /// <summary>

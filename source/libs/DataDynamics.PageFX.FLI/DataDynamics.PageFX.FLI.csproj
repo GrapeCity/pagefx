@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A54D800D-621B-491A-BE70-59D46BA70523}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -47,13 +47,14 @@
     <Compile Include="ABC\AbcCache.cs" />
     <Compile Include="ABC\AbcConst.cs" />
     <Compile Include="ABC\AbcConstList.cs" />
+    <Compile Include="ABC\AbcFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ABC\AbcFile.ResourceBundle.cs" />
     <Compile Include="ABC\AbcFile.Test.cs" />
     <Compile Include="ABC\AbcMultinamePool.cs" />
     <Compile Include="ABC\AbcTraitCache.cs" />
     <Compile Include="ABC\AbcTraitCollection.cs" />
-    <Compile Include="ABC\AblAsset.cs" />
-    <Compile Include="ABC\Dep.cs" />
     <Compile Include="ABC\AbcFile.Define.cs" />
     <Compile Include="ABC\AbcFile.Import.cs" />
     <Compile Include="ABC\AbcIO.cs" />
@@ -63,7 +64,15 @@
     <Compile Include="ABC\AbcHelper.cs" />
     <Compile Include="ABC\AbcDumpService.cs" />
     <Compile Include="ABC\AbcExceptionHandler.cs" />
-    <Compile Include="ABC\AblFile.cs" />
+    <Compile Include="ABC\AblAsset.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ABC\AblFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ABC\Dep.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ABC\Interfaces.cs" />
     <Compile Include="ABC\AbcNamespaceSet.cs" />
     <Compile Include="ABC\AbcProperty.cs" />
@@ -103,6 +112,7 @@
     <Compile Include="FLI\SpecTypes\IVectorType.cs" />
     <Compile Include="FLI\SpecTypes\VectorInstance.cs" />
     <Compile Include="FLI\SwfCompiler\Assets.cs" />
+    <Compile Include="FLI\SwfCompiler\StyleMixins.cs" />
     <Compile Include="FLI\SwfCompiler\SwcCatalog.cs" />
     <Compile Include="FLI\SwfCompiler\FlexInitMixin.cs" />
     <Compile Include="FLI\SwfCompiler\Mixins.cs" />
@@ -164,7 +174,6 @@
     <Compile Include="IL\AbcCode.cs" />
     <Compile Include="IL\ILStream.cs" />
     <Compile Include="IL\InstructionCode.cs" />
-    <Compile Include="ABC\AbcFile.cs" />
     <Compile Include="ABC\AbcClass.cs" />
     <Compile Include="ABC\AbcConstPool.cs" />
     <Compile Include="ABC\Enums.cs" />

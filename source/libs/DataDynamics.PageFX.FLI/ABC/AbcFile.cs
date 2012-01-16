@@ -1017,7 +1017,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get 
             {
-                return _sfc != null && _sfc.IsMxApplication;
+                return _sfc != null && _sfc.IsFlexApplication;
             }
         }
 

@@ -197,9 +197,9 @@ namespace DataDynamics.PageFX.FLI
         {
             var code = new AbcCode(_abc);
 
-            if (!AbcGenConfig.MxAppCtorAsHandler && IsMxAppBaseCtor(method))
+            if (!AbcGenConfig.FlexAppCtorAsHandler && IsMxAppBaseCtor(method))
             {
-                _generator.MxCtorAfterSuperCall(code);
+                _generator.FlexAppCtorAfterSuperCall(code);
             }
 
             _callStack.Pop();
@@ -563,7 +563,7 @@ namespace DataDynamics.PageFX.FLI
                 if (!_method.IsConstructor) return false;
                 if (_method.Parameters.Count > 0) return false;
                 if (!IsMxApp) return false;
-                return _declType == _generator.sfc.TypeMxApp;
+                return _declType == _generator.sfc.TypeFlexApp;
             }
         }
 
@@ -574,7 +574,7 @@ namespace DataDynamics.PageFX.FLI
 
         bool ShouldPopBaseCtorCall(IMethod method)
         {
-            if (AbcGenConfig.MxAppCtorAsHandler && IsMxAppBaseCtor(method))
+            if (AbcGenConfig.FlexAppCtorAsHandler && IsMxAppBaseCtor(method))
                 return true;
             if (IsAvmString)
                 return true;

@@ -828,11 +828,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             return null;
         }
 
-        public ImportTypeStrategy ImportTypeStrategy
-        {
-            get;
-            set;
-        }
+        public ImportTypeStrategy ImportTypeStrategy { get; set; }
 
         bool IsImportTypeExternally
         {

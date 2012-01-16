@@ -242,7 +242,7 @@ namespace DataDynamics.PageFX.FLI
                 if (IsSwf)
                 {
                     if (IsMxApplication)
-                        return sfc.TypeMxApp;
+                        return sfc.TypeFlexApp;
                     var root = RootSprite;
                     if (root != null)
                         return root.Type;

@@ -98,7 +98,7 @@ namespace DataDynamics.PageFX.FLI
             get
             {
                 if (sfc != null)
-                    return sfc.IsMxApplication;
+                    return sfc.IsFlexApplication;
                 return false;
             }
         }
@@ -177,9 +177,12 @@ namespace DataDynamics.PageFX.FLI
 #if DEBUG
             DebugService.DoCancel();
 #endif
-            if (sfc != null)
-                sfc.FinishApplication();
-            #endregion
+			if (sfc != null)
+			{
+				sfc.FinishApplication();
+			}
+
+        	#endregion
 
             BuildRootTimeline();
 
@@ -277,7 +280,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (IsMxApplication)
             {
-                var type = sfc.TypeMxApp;
+                var type = sfc.TypeFlexApp;
                 if (type == null)
                     throw new InvalidOperationException();
                 DefineType(type);
@@ -340,12 +343,39 @@ namespace DataDynamics.PageFX.FLI
             return AssemblyIndex.FindInstance(_assembly, name);
         }
 
-        public AbcInstance ImportType(string fullname)
+		public AbcInstance ImportType(string fullname)
+		{
+			return ImportType(fullname, false);
+		}
+
+        public AbcInstance ImportType(string fullname, bool safe)
         {
-            return AvmHelper.ImportType(_abc, _assembly, fullname);
+        	try
+        	{
+				return AvmHelper.ImportType(_abc, _assembly, fullname);
+        	}
+        	catch (Exception)
+        	{
+				if (safe)
+				{
+					CompilerReport.Add(Warnings.UnableImportType, fullname);
+					return null;
+				}
+        		throw;
+        	}            
         }
 
-        void AddMethod(AbcMethod method)
+		public AbcInstance ImportType(string fullname, ref AbcInstance field)
+		{
+			return ImportType(fullname, ref field, false);
+		}
+
+		public AbcInstance ImportType(string fullname, ref AbcInstance field, bool safe)
+		{
+			return field ?? (field = ImportType(fullname));
+		}
+
+    	void AddMethod(AbcMethod method)
         {
             _abc.AddMethod(method);
         }

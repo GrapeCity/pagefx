@@ -14,6 +14,7 @@ namespace DataDynamics.PageFX.FLI
     {
         public static AssemblyTag Instance(IAssembly asm)
         {
+			if (asm == null) return null;
             return asm.Tag as AssemblyTag ?? new AssemblyTag(asm);
         }
 
@@ -70,7 +71,7 @@ namespace DataDynamics.PageFX.FLI
         /// </summary>
         public SwfMovie SWF;
 
-        public RSLItem RSL;
+        public RslItem RSL;
 
         /// <summary>
         /// Index assotiated with assembly.

@@ -154,5 +154,14 @@ namespace DataDynamics.PageFX.FLI
     internal static class MX
     {
         public const string NamespaceInternal2006 = "http://www.adobe.com/2006/flex/mx/internal";
+
+    	public const string IFlexModuleFactory = "mx.core.IFlexModuleFactory";
+    	public const string IFlexModule = "mx.core.IFlexModule";
+    	public const string ChildManager = "mx.managers.systemClasses.ChildManager";
+    	public const string StyleManager = "mx.styles.StyleManager";
+    	public const string IStyleManager2 = "mx.styles.IStyleManager2";
+    	public const string StyleManagerImpl = "mx.styles.StyleManagerImpl";
+
+    	public const string FlexEvent = "mx.events.FlexEvent";
     }
 }

@@ -71,6 +71,11 @@ namespace DataDynamics.PageFX
         [Description("Specify locales used to compile resource bundles.")]
         [Format("<en_US,ja_JP,...>")]
         public static readonly CLOption Locale = new CLOption("locale");
+
+		[Category(Cat_Flex)]
+		[Description("Specify style mixins to link to application.")]
+		[Format("<path to swc>")]
+		public static readonly CLOption StyleMixins = new CLOption("style-mixins");
         #endregion
 
         #region SWF Options
@@ -172,6 +177,7 @@ namespace DataDynamics.PageFX
                 CDRSL,
                 RSL,
                 Locale,
+				StyleMixins,
                 
                 //swf
                 RootSprite,

@@ -416,8 +416,6 @@
       <call target="make.home"/>
     </if>
 
-    <call target="build.apps"/>
-
     <if test="${flag.build.qatools}">
       <property name="flag.build.qatools" value="false"/>
       <call target="build.qatools"/>
@@ -610,16 +608,6 @@
 
     </if>
     
-  </target>
-
-  <target name="build.apps">
-    <property name="outdir" value="${pfx.home}/temp/apps/fv"/>
-    
-    <property name="project" value="${dir.src}/Applications/Ddf/Source/Ddf.vs2008.csproj"/>
-    <call target="msbuild"/>
-
-    <property name="project" value="${dir.src}/Applications/Ddf/Source/FlashViewer.csproj"/>
-    <call target="msbuild"/>
   </target>
 
   <!-- ================================================================================================================= -->

@@ -186,19 +186,19 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        public void ImportAsset(AblAsset asset, AbcInstance instance)
-        {
-            if (asset == null)
-                throw new ArgumentNullException("asset");
-            ImportAsset(asset);
-            AddSymbol(asset.ImportedCharacter, instance);
-        }
+		public void ImportAsset(AblAsset asset, AbcInstance instance)
+		{
+			if (asset == null)
+				throw new ArgumentNullException("asset");
+			ImportAsset(asset);
+			AddSymbol(asset.ImportedCharacter, instance);
+		}
 
-        void ImportAsset(AblAsset asset)
-        {
-            if (asset.ImportedCharacter != null) return;
-            throw new NotImplementedException();
-        }
+		void ImportAsset(AblAsset asset)
+		{
+			if (asset.ImportedCharacter != null) return;
+			throw new NotImplementedException();
+		}
 
         SwfAsset AddSymbol(ISwfCharacter obj, AbcInstance instance)
         {

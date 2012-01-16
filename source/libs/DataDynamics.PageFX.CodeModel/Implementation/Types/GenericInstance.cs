@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -450,9 +449,14 @@ namespace DataDynamics.PageFX.CodeModel
             return _genericType.FullName;
         }
 
-        string EvalName(TypeNameKind kind, TypeNameKind argKind)
+		string EvalName(TypeNameKind kind, TypeNameKind argKind)
+		{
+			return EvalName(kind, argKind, true);
+		}
+
+        string EvalName(TypeNameKind kind, TypeNameKind argKind, bool clr)
         {
-            return EvalNameBase(kind) + GenericType.Format(_args, argKind, true);
+            return EvalNameBase(kind) + GenericType.Format(_args, argKind, clr);
         }
 
         /// <summary>
@@ -460,13 +464,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string Key
         {
-            get
-            {
-                if (_key == null)
-                    _key = EvalName(TypeNameKind.Key, TypeNameKind.Key);
-                return _key;
-            }
-            internal set { _key = value; }
+            get { return _key ?? (_key = EvalName(TypeNameKind.Key, TypeNameKind.Key)); }
+        	internal set { _key = value; }
         }
         string _key;
 
@@ -475,12 +474,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string SigName
         {
-            get
-            {
-                if (_sigName == null)
-                    _sigName = EvalName(TypeNameKind.SigName, TypeNameKind.SigName);
-                return _sigName;
-            }
+            get { return _sigName ?? (_sigName = EvalName(TypeNameKind.SigName, TypeNameKind.SigName)); }
         }
         string _sigName;
 
@@ -489,12 +483,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string NestedName
         {
-            get
-            {
-                if (_nestedName == null)
-                    _nestedName = EvalName(TypeNameKind.NestedName, TypeNameKind.FullName);
-                return _nestedName;
-            }
+            get { return _nestedName ?? (_nestedName = EvalName(TypeNameKind.NestedName, TypeNameKind.FullName)); }
         }
         string _nestedName;
         #endregion
@@ -507,10 +496,8 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                var mod = Module;
-                if (mod != null)
-                    return mod.Assembly;
-                return null;
+                var module = Module;
+                return module != null ? module.Assembly : null;
             }
         }
 
@@ -521,11 +508,9 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                if (_genericType != null)
-                    return _genericType.Module;
-                return null;
+            	return _genericType != null ? _genericType.Module : null;
             }
-            set
+        	set
             {
                 throw new NotSupportedException();
             }
@@ -541,20 +526,16 @@ namespace DataDynamics.PageFX.CodeModel
 
         public string Name
         {
-            get
-            {
-                if (_name == null)
-                    _name = EvalName(TypeNameKind.Name, TypeNameKind.FullName);
-                return _name;
-            }
-            set { throw new NotSupportedException(); }
+            get { return _name ?? (_name = EvalName(TypeNameKind.Name, TypeNameKind.FullName)); }
+        	set { throw new NotSupportedException(); }
         }
         string _name;
 
         public string DisplayName
         {
-            get { return Name; }
+			get { return _displayName ?? (_displayName = EvalName(TypeNameKind.DisplayName, TypeNameKind.DisplayName, false)); }
         }
+    	private string _displayName;
 
         public IType DeclaringType { get; set; }
 

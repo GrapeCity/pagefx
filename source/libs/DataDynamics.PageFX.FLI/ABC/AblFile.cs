@@ -313,7 +313,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
                 case MDTags.Embed:
                     {
-                        Embed.Setup(trait, e, abc.SWF);
+                        Embed.Resolve(trait, e, abc.SWF);
                         var embed = trait.Embed;
                     }
                     return;

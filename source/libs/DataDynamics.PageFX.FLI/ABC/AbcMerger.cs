@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.SWC;
 using DataDynamics.PageFX.FLI.SWF;
 
@@ -8,6 +9,11 @@ namespace DataDynamics.PageFX.FLI.ABC
 {
     public static class AbcMerger
     {
+		static void EnshureSystemTypes()
+		{
+			LanguageInfrastructure.CLI.Deserialize(GlobalSettings.GetCorlibPath(true), null);
+		}
+
         private static string GetExt(string path)
         {
             if (string.IsNullOrEmpty(path)) return "";
@@ -30,7 +36,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 if (n == 1)
                 {
                     outpath = Path.Combine(Environment.CurrentDirectory,
-                                           Path.GetFileName(path) + ".abc");
+                                           Path.GetFileNameWithoutExtension(path) + ".abc");
                 }
                 else
                 {
@@ -64,6 +70,8 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public static void Merge(IEnumerable<AbcFile> files, string outpath)
         {
+        	EnshureSystemTypes();
+
             AbcFile.FilterMetadata = false;
             int i = 0;
             AbcFile main = null;

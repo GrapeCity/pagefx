@@ -6,71 +6,96 @@ namespace DataDynamics.PageFX.FLI
 {
     internal partial class AbcGenerator
     {
-        const string Event_Initialize = "initialize";
+		private static class FlexAppEvents
+		{
+			public const string Initialize = "initialize";
+		}
 
-        void MxApp_DefineMembers(AbcInstance instance)
+    	private void DefineFlexAppMembers(AbcInstance instance)
         {
             if (!IsMxApplication) return;
-            if (instance.Type != sfc.TypeMxApp) return;
-            if (AbcGenConfig.MxAppCtorAsHandler)
-                MxApp_DefineInitializer(instance);
-            //MxApp_DefineInitialize(instance);
+            if (instance.Type != sfc.TypeFlexApp) return;
+
+            if (AbcGenConfig.FlexAppCtorAsHandler)
+                DefineFlexAppInitializer(instance);
+
+    		OverrideFlexAppInitialize(instance);
+
+			if (IsFlex4)
+			{
+				OverrideFlexAppModuleFactorySetter(instance);
+			}
         }
 
-        void MxApp_DefineInitializer(AbcInstance instance)
+        private void DefineFlexAppInitializer(AbcInstance instance)
         {
             Debug.Assert(instance.Initializer == null);
 
-            instance.Initializer = _abc.DefineInitializer(
-                delegate(AbcCode code)
-                    {
-                        code.PushThisScope();
-                        code.ConstructSuper();
+        	instance.Initializer = _abc.DefineInitializer(
+        		code =>
+        			{
+        				code.PushThisScope();
+        				code.ConstructSuper();
 
-                        MxCtorAfterSuperCall(code);
+						code.Trace("PFC: calling App.initializer");
 
-                        var ctor = TypeHelper.FindParameterlessConstructor(instance);
-                        if (ctor != null)
-                        {
-                            var ctorMethod = DefineAbcMethod(ctor);
-                            AddEventListener(code, ctorMethod);
+        				FlexAppCtorAfterSuperCall(code);
 
-                            //AbcMethod m = MxApp_ShowAssets(instance);
-                            //AddEventListener(code, m);
-                        }
+						if (!IsFlex4)
+						{
+							var ctor = TypeHelper.FindParameterlessConstructor(instance);
+							if (ctor != null)
+							{
+								var ctorMethod = DefineAbcMethod(ctor);
+								AddEventListener(code, ctorMethod, FlexAppEvents.Initialize);
+							}
+						}
 
-                        code.ReturnVoid();
-                    });
+        				code.ReturnVoid();
+        			});
         }
 
-        public void MxCtorAfterSuperCall(AbcCode code)
+		/// <summary>
+		/// Adds some initialization after app.ctor super.ctor call.
+		/// </summary>
+		/// <param name="code"></param>
+        public void FlexAppCtorAfterSuperCall(AbcCode code)
         {
             Debug.Assert(IsMxApplication);
 
             var instance = MainInstance;
             Debug.Assert(instance != null);
 
+			code.Trace("PFC: init flex _document property");
+
             code.LoadThis();
             code.LoadThis();
             code.SetMxInternalProperty("_document");
 
-            //our style settings
+			//init styles
+			if (!IsFlex4)
+			{
+				CallInitStyles(code, instance);
+			}
 
-            //ambient styles
-            var initStyles = MxApp_DefineInitStyles(instance);
-            code.Getlex(instance);
-            code.Call(initStyles);
-
-            //properties
+        	//properties
             code.LoadThis();
             code.PushString("absolute");
             code.InitProperty("layout");
         }
 
-        static void AddEventListener(AbcCode code, AbcMethod method)
+    	private void CallInitStyles(AbcCode code, AbcInstance instance)
+    	{
+			code.Trace("PFC: calling App.initStyles");
+    		var initStyles = DefineInitFlexAppStyles(instance);
+    		code.LoadThis();
+    		code.Call(initStyles);
+    	}
+
+    	private static void AddEventListener(AbcCode code, AbcMethod method, string eventName)
         {
             code.LoadThis();
-            code.PushString(Event_Initialize);
+            code.PushString(eventName);
             code.LoadThis();
             code.GetProperty(method.TraitName);
             code.CallVoid("addEventListener", 2);
@@ -111,54 +136,113 @@ namespace DataDynamics.PageFX.FLI
         //}
         #endregion
 
-        #region MxApp_DefineInitialize
-        AbcMethod MxApp_DefineInitialize(AbcInstance instance)
+    	private void OverrideFlexAppInitialize(AbcInstance instance)
         {
             var name = _abc.DefineGlobalQName("initialize");
-            return instance.DefineVirtualOverrideMethod(
-                name, AvmTypeCode.Void,
-                delegate(AbcCode code)
-                    {
-                        code.LoadThis();
-                        code.Add(InstructionCode.Callsupervoid, name, 0);
+    		instance.DefineVirtualOverrideMethod(
+    			name, AvmTypeCode.Void,
+    			code =>
+    				{
+    					code.LoadThis();
+    					code.Add(InstructionCode.Callsupervoid, name, 0);
 
-                        //Alert(code, "App Initialize!!!");
+    					code.Trace("PFC: calling App.initialize");
 
-                        code.ReturnVoid();
-                    });
+    					//Alert(code, "App Initialize!!!");
+
+    					code.ReturnVoid();
+    				});
         }
-        #endregion
 
-        #region MxApp_DefineInitStyles
-        AbcMethod MxApp_DefineInitStyles(AbcInstance instance)
+    	private void OverrideFlexAppModuleFactorySetter(AbcInstance instance)
+		{
+			Debug.Assert(IsFlex4);
+
+			var moduleFactoryInitialized = instance.DefineSlot("__moduleFactoryInitialized", AvmTypeCode.Boolean);
+    		var flexModuleFactoryInterface = ImportType(MX.IFlexModuleFactory);
+
+			var propertyName = _abc.DefineGlobalQName("moduleFactory");
+    		instance.DefineSetter(
+				propertyName, flexModuleFactoryInterface,
+				AbcMethodSemantics.Virtual | AbcMethodSemantics.Override, 
+    			code =>
+    				{
+						code.Trace("PFC: setting FlexModuleFactory to application");
+
+    					// super.moduleFactory = value
+    					code.LoadThis();
+    					code.GetLocal(1);
+    					code.SetSuper(propertyName);
+
+    					code.LoadThis();
+    					code.GetProperty(moduleFactoryInitialized);
+    					var br = code.IfFalse();
+    					code.ReturnVoid();
+
+    					br.BranchTarget = code.Label();
+
+    					code.LoadThis();
+    					code.Add(InstructionCode.Pushtrue);
+    					code.SetProperty(moduleFactoryInitialized);
+
+    					CallInitStyles(code, instance);
+
+						// init application after styles are initialized
+						var ctor = TypeHelper.FindParameterlessConstructor(instance);
+						if (ctor != null)
+						{
+							var ctorMethod = DefineAbcMethod(ctor);
+							code.LoadThis();
+							if (AbcGenConfig.FlexAppCtorAsHandler)
+							{
+								code.PushNull();
+							}
+							code.Call(ctorMethod);
+						}
+
+    					code.ReturnVoid();
+    				});
+		}
+
+		#region DefineInitFlexAppStyles
+		private AbcMethod DefineInitFlexAppStyles(AbcInstance instance)
         {
-            var done = instance.DefineStaticSlot("_init_styles_done", AvmTypeCode.Boolean);
+            var done = instance.DefineSlot("_init_styles_done", AvmTypeCode.Boolean);
 
-            return instance.DefineStaticMethod(
-                "$init_styles$", AvmTypeCode.Void,
-                delegate(AbcCode code)
-                {
-                    code.LoadThis();
-                    code.GetProperty(done);
+			return instance.DefineInstanceMethod(
+				"$init_flex_styles$", AvmTypeCode.Void,
+				code =>
+					{
+						code.LoadThis();
+						code.GetProperty(done);
 
-                    var br = code.IfFalse();
-                    code.ReturnVoid();
+						var br = code.IfFalse();
+						code.ReturnVoid();
 
-                    br.BranchTarget = code.Label();
+						br.BranchTarget = code.Label();
 
-                    code.LoadThis();
-                    code.Add(InstructionCode.Pushtrue);
-                    code.SetProperty(done);
+						code.LoadThis();
+						code.Add(InstructionCode.Pushtrue);
+						code.SetProperty(done);
 
-                    //TODO: init app CSSStyleDeclaration
-                    //TODO: init app effects
+						//TODO: init app CSSStyleDeclaration
+						//TODO: init app effects
 
-                    var styleMgr = ImportType("mx.styles.StyleManager");
-                    code.Getlex(styleMgr);
-                    code.CallVoid(_abc.DefineMxInternalName("initProtoChainRoots"), 0);
+						if (IsFlex4)
+						{
+							code.LoadThis();
+							code.GetProperty("styleManager");
+							code.CallVoid("initProtoChainRoots", 0);
+						}
+						else
+						{
+							var styleMgr = ImportType("mx.styles.StyleManager");
+							code.Getlex(styleMgr);
+							code.CallVoid(_abc.DefineMxInternalName("initProtoChainRoots"), 0);
+						}
 
-                    code.ReturnVoid();
-                });
+						code.ReturnVoid();
+					});
         }
         #endregion
 
@@ -171,21 +255,28 @@ namespace DataDynamics.PageFX.FLI
             code.CallVoid("show", 1);
         }
 
-        AbcInstance ImportFlexEventType()
+		private AbcInstance ImportFlexEventType()
         {
-            if (_typeFlexEvent == null)
-                _typeFlexEvent = ImportType("mx.events.FlexEvent");
-            return _typeFlexEvent;
+            return ImportType(MX.FlexEvent, ref _typeFlexEvent);
         }
-        AbcInstance _typeFlexEvent;
+        private AbcInstance _typeFlexEvent;
 
-        AbcInstance ImportAlertControl()
+        private AbcInstance ImportAlertControl()
         {
-            if (_typeAlert == null)
-                _typeAlert = ImportType("mx.controls.Alert");
-            return _typeAlert;
+			return ImportType("mx.controls.Alert", ref _typeAlert);
         }
-        AbcInstance _typeAlert;
+        private AbcInstance _typeAlert;
+
+    	private bool IsFlex4
+    	{
+    		get
+    		{
+    			if (!_isFlex4.HasValue)
+    				_isFlex4 = ImportType(MX.IStyleManager2, true) != null;
+    			return _isFlex4.Value;
+    		}
+    	}
+    	private bool? _isFlex4;
         #endregion
     }
 }

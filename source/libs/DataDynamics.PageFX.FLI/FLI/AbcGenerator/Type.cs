@@ -527,7 +527,7 @@ namespace DataDynamics.PageFX.FLI
 
             if (!type.IsInterface)
             {
-                MxApp_DefineMembers(instance);
+                DefineFlexAppMembers(instance);
                 DefineFields(type);
             }
 

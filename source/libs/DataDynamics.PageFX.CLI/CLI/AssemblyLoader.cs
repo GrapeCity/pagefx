@@ -36,25 +36,25 @@ namespace DataDynamics.PageFX.CLI
         #endregion
 
         #region Fields
-        MdbReader _mdb;
-        IAssembly _assembly;
-        IAssembly[] _assemblyRef;
-        IModule[] _module;
-        IModule[] _moduleRef;
-        IType[] _typeRef;
-        IType[] _typeDef;
-        IType[] _typeSpec;
-        IType[] _interfaceImpl;
-        IField[] _field;
-        IMethod[] _methodDef;
-        ITypeMember[] _memberRef;
-        IMethod[] _methodSpec;
-        IParameter[] _param;
-        IGenericParameter[] _genericParam;
-        IProperty[] _property;
-        IEvent[] _event;
-        IManifestFile[] _file;
-        IManifestResource[] _manifestResource;
+		private MdbReader _mdb;
+		private IAssembly _assembly;
+		private IAssembly[] _assemblyRef;
+		private IModule[] _module;
+		private IModule[] _moduleRef;
+		private IType[] _typeRef;
+		private IType[] _typeDef;
+		private IType[] _typeSpec;
+		private IType[] _interfaceImpl;
+		private IField[] _field;
+		private IMethod[] _methodDef;
+		private ITypeMember[] _memberRef;
+		private IMethod[] _methodSpec;
+		private IParameter[] _param;
+		private IGenericParameter[] _genericParam;
+		private IProperty[] _property;
+        private IEvent[] _event;
+		private IManifestFile[] _file;
+		private IManifestResource[] _manifestResource;
         #endregion
 
         #region Loading Process
@@ -1220,18 +1220,14 @@ namespace DataDynamics.PageFX.CLI
                 var flags = (EventAttributes)row[MDB.Event.EventFlags].Value;
                 var name = row[MDB.Event.Name].String;
 
-                var typeCell = row[MDB.Event.EventType];
-            	var type = GetTypeDef(typeCell.Index - 1, false);
-
-            	var e = new Event
+                var e = new Event
             	        	{
             	        		MetadataToken = MdbIndex.MakeToken(tableId, i + 1),
             	        		Name = name,
             	        		IsSpecialName = ((flags & EventAttributes.SpecialName) != 0),
-            	        		IsRuntimeSpecialName = ((flags & EventAttributes.RTSpecialName) != 0)
-            	        		, Type = type
-								//,IsFlash = true
+            	        		IsRuntimeSpecialName = ((flags & EventAttributes.RTSpecialName) != 0),
                             };
+
                 _event[i] = e;
             }
         }
@@ -1259,18 +1255,18 @@ namespace DataDynamics.PageFX.CLI
                             var property = _property[assocRowIndex];
 
                             method.Association = property;
-                            if (sem == MethodSemanticsAttributes.Getter)
+                            switch (sem)
                             {
-                                property.Getter = method;                                
+                            	case MethodSemanticsAttributes.Getter:
+                            		property.Getter = method;
+                            		break;
+                            	case MethodSemanticsAttributes.Setter:
+                            		property.Setter = method;
+                            		break;
+                            	default:
+                            		throw new ArgumentOutOfRangeException();
                             }
-                            else if (sem == MethodSemanticsAttributes.Setter)
-                            {
-                                property.Setter = method;
-                            }
-                            else
-                            {
-                                throw new ArgumentOutOfRangeException();
-                            }
+
                             TypeService.CompleteProperty(property);
 
                             if (property.DeclaringType == null)
@@ -1285,14 +1281,22 @@ namespace DataDynamics.PageFX.CLI
                             var e = _event[assocRowIndex];
                             method.Association = e;
 
-                            if (sem == MethodSemanticsAttributes.AddOn)
-                                e.Adder = method;
-                            else if (sem == MethodSemanticsAttributes.RemoveOn)
-                                e.Remover = method;
-                            else if (sem == MethodSemanticsAttributes.Fire)
-                                e.Raiser = method;
-                            else
-                                throw new ArgumentOutOfRangeException();
+							switch (sem)
+							{
+								case MethodSemanticsAttributes.AddOn:
+									e.Adder = method;
+									break;
+								case MethodSemanticsAttributes.RemoveOn:
+									e.Remover = method;
+									break;
+								case MethodSemanticsAttributes.Fire:
+									e.Raiser = method;
+									break;
+								default:
+									throw new ArgumentOutOfRangeException();
+							}
+
+                        	TypeService.CompleteEvent(e);
 
                             if (e.DeclaringType == null)
                             {

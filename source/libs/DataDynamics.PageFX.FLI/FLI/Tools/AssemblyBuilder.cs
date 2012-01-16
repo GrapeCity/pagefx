@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using DataDynamics.Compression.Zip;
@@ -40,7 +41,7 @@ namespace DataDynamics.PageFX.FLI
         bool _xdoc;
         CommandLine _cl;
         bool _useFPAttrs;
-        int _fpVersion;
+        float _fpVersion;
         #endregion
 
         #region ctor
@@ -96,7 +97,7 @@ namespace DataDynamics.PageFX.FLI
             string fp = cl.GetOption(null, "FP");
             if (!string.IsNullOrEmpty(fp))
             {
-                if (!int.TryParse(fp, out _fpVersion))
+                if (!float.TryParse(fp, NumberStyles.Currency, CultureInfo.InvariantCulture, out _fpVersion))
                     throw new InvalidOperationException("Invalid /FP option");
                 _useFPAttrs = true;
                 LoadFP9();
@@ -324,11 +325,7 @@ namespace DataDynamics.PageFX.FLI
             string map = namemap[name] as string;
             if (map != null) return map;
             name = ReplaceBadChars(name);
-
-            //TODO: Add filter
-            //if (_norename) return name;
-            if (clistyle) return NameHelper.Rename(name);
-            return name;
+            return clistyle ? NameHelper.Rename(name) : name;
         }
 
         static string RenameParam(string name)
@@ -422,12 +419,12 @@ namespace DataDynamics.PageFX.FLI
             _swc = new SwcFile(path);
             _swc.AddNsRefs = true;
 
+			foreach (var abc in _swc.GetAbcFiles())
+				_abcFiles.Add(abc);
+
             ResolveRefs(path);
 
             _swc.ResolveDependencies(this, null);
-
-            foreach (var abc in _swc.GetAbcFiles())
-                _abcFiles.Add(abc);
 
             BuildCore();
 
@@ -689,18 +686,28 @@ namespace DataDynamics.PageFX.FLI
 
         IType BuildMemberType(AbcMultiname name)
         {
-            if (name.IsObject)
-                return SystemTypes.Object;
+			if (name.IsObject)
+			{
+				return SystemTypes.Object;
+			}
 
-            if (string.IsNullOrEmpty(name.NamespaceString))
-            {
-                string s = name.NameString;
-                if (s == "Number") return SystemTypes.Double;
-                if (s == "int") return SystemTypes.Int32;
-                if (s == "uint") return SystemTypes.UInt32;
-                if (s == "Boolean") return SystemTypes.Boolean;
-            }
-            return BuildTypeByName(name);
+        	if (string.IsNullOrEmpty(name.NamespaceString))
+        	{
+        		string s = name.NameString;
+        		switch (s)
+        		{
+        			case "Number":
+        				return SystemTypes.Double;
+        			case "int":
+        				return SystemTypes.Int32;
+        			case "uint":
+        				return SystemTypes.UInt32;
+        			case "Boolean":
+        				return SystemTypes.Boolean;
+        		}
+        	}
+
+        	return BuildTypeByName(name);
         }
         #endregion
 
@@ -739,9 +746,13 @@ namespace DataDynamics.PageFX.FLI
             type.GenericParameters.Add(T);
 
             _genericVector = type;
-            RegisterType(type);
 
-            return _genericVector;
+			if (IsCoreAPI)
+			{
+				RegisterType(type);
+			}
+
+        	return _genericVector;
         }
 
         IGenericType _genericVector;
@@ -929,27 +940,26 @@ namespace DataDynamics.PageFX.FLI
 
         static void ImplementEvents(IType type)
         {
-            if (type.Interfaces != null)
-            {
-                foreach (var iface in type.Interfaces)
-                {
-                    foreach (var e in iface.Events)
-                    {
-                        if (!HasMember(type, e.Name))
-                        {
-                            var e2 = CopyEvent(e);
-							e2.Visibility = Visibility.Public;
-                            type.Members.Add(e2);
-                        }
-                    }
-                }
-            }
+        	if (type.Interfaces == null) return;
+
+        	foreach (var iface in type.Interfaces)
+        	{
+        		foreach (var e in iface.Events)
+        		{
+        			var typeEvent = FindMember(type, e.Name);
+        			if (typeEvent == null)
+        			{
+        				typeEvent = CopyEvent(e);
+        				type.Members.Add(typeEvent);
+        			}
+					typeEvent.Visibility = Visibility.Public;
+        		}
+        	}
         }
 
-        static Event CopyEvent(IEvent e)
+    	static Event CopyEvent(IEvent e)
         {
-            Debug.Assert(e.IsFlash);
-            var e2 = new Event
+            var copy = new Event
                          {
                              Name = e.Name,
                              IsFlash = e.IsFlash,
@@ -957,8 +967,8 @@ namespace DataDynamics.PageFX.FLI
                              IsStatic = e.IsStatic,
                              Type = e.Type
                          };
-            CopyAttrs(e, e2);
-            return e2;
+            CopyAttrs(e, copy);
+            return copy;
         }
 
         static void CopyAttrs(ICustomAttributeProvider from, ICustomAttributeProvider to)
@@ -971,14 +981,15 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        static bool HasMember(IType type, string name)
-        {
-            return Algorithms.Contains(type.Members,
-                                       delegate(ITypeMember m)
-                                           {
-                                               return m.Name == name;
-                                           });
-        }
+		private static ITypeMember FindMember(IType type, string name)
+		{
+			return Algorithms.Find(type.Members, m => m.Name == name);
+		}
+
+    	private static bool HasMember(IType type, string name)
+    	{
+    		return FindMember(type, name) != null;
+    	}
 
         void BuildEvent(AbcMetaEntry me, IType type)
         {
@@ -1444,7 +1455,14 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        Parameter BuildVectorParam(AbcMethod method, int i, XmlElement pe)
+		/// <summary>
+		/// Creates parameter for AS3.Vector type method.
+		/// </summary>
+		/// <param name="method"></param>
+		/// <param name="i"></param>
+		/// <param name="pe"></param>
+		/// <returns></returns>
+        private Parameter BuildVectorParam(AbcMethod method, int i, XmlElement pe)
         {
             string vparam = GetVectorTypeParam(method);
             if (vparam == null) return null;
@@ -1592,30 +1610,29 @@ namespace DataDynamics.PageFX.FLI
             return p != null;
         }
 
-        IType AvmString
+        private IType AvmString
         {
-            get
-            {
-                if (_avmString == null)
-                    _avmString = GetSystemType("string");
-                return _avmString;
-            }
+            get { return _avmString ?? (_avmString = GetSystemType("string")); }
         }
-        IType _avmString;
+		private IType _avmString;
 
-        IType AvmFunction
+		private IType AvmFunction
         {
-            get
-            {
-                if (_avmFunction == null)
-                    _avmFunction = GetSystemType("Function");
-                return _avmFunction;
-            }
+            get { return _avmFunction ?? (_avmFunction = GetSystemType("Function")); }
         }
-        IType _avmFunction;
+		private IType _avmFunction;
         #endregion
 
         #region BuildMethod
+		private static void RenameMethod(IType declType, IMethod method)
+		{
+			string newname = ReplaceBadChars(method.Name);
+			if (newname != method.Name && newname != declType.Name)
+			{
+				method.Name = newname;
+			}
+		}
+
         void BuildMethod(IType declType, AbcTrait trait)
         {
             var abcMethod = trait.Method;
@@ -1623,11 +1640,8 @@ namespace DataDynamics.PageFX.FLI
             var method = new Method();
             InitTypeMember(method, trait);
 
-            //TODO: Rename???
-            //string newname = Rename(method.Name, true);
-            //if (newname != declType.Name)
-            //    method.Name = newname;
-
+        	RenameMethod(declType, method);
+			
             method.IsVirtual = trait.IsVirtual;
             method.IsNewSlot = !trait.IsOverride;
             method.Type = BuildReturnType(abcMethod);
@@ -2015,7 +2029,7 @@ namespace DataDynamics.PageFX.FLI
                 instance = type.Tag as AbcInstance;
                 if (instance != null)
                 {
-                    int version = GetTypeFPVersion(name);
+                    float version = GetTypeFPVersion(name);
                     DefineFPAttribute(type, version);
                     instance.FlashVersion = version;
                 }
@@ -2027,7 +2041,7 @@ namespace DataDynamics.PageFX.FLI
             {
                 if (instance.FlashVersion == 9)
                 {
-                    int version = GetTraitFPVersion(instance.Name, name);
+                    float version = GetTraitFPVersion(instance.Name, name);
                     DefineFPAttribute(owner, version);
                 }
                 else if (instance.FlashVersion > 0)
@@ -2037,28 +2051,27 @@ namespace DataDynamics.PageFX.FLI
             }
             else if (declType.Tag is GlobalType)
             {
-                int version = GetGlobalTraitFPVersion(name);
+                float version = GetGlobalTraitFPVersion(name);
                 DefineFPAttribute(owner, version);
             }
         }
 
-        static void DefineFPAttribute(ICustomAttributeProvider owner, int version)
+        static void DefineFPAttribute(ICustomAttributeProvider owner, float version)
         {
-            switch (version)
-            {
-                case 9:
-                    DefineAttribute(owner, Attrs.FP9);
-                    break;
-                case 10:
-                    DefineAttribute(owner, Attrs.FP10);
-                    break;
-                default:
-                    DefineAttribute(owner, Attrs.FP, "version", version.ToString());
-                    break;
-            }
+        	if (version == 9)
+        	{
+        		DefineAttribute(owner, Attrs.FP9);
+				return;
+        	}
+        	if (version == 10)
+        	{
+        		DefineAttribute(owner, Attrs.FP10);
+				return;
+        	}
+        	DefineAttribute(owner, Attrs.FP, "version", version.ToString(CultureInfo.InvariantCulture));
         }
 
-        void DefinePfxAttributes(IType declType, ITypeMember owner, AbcMultiname name)
+    	void DefinePfxAttributes(IType declType, ITypeMember owner, AbcMultiname name)
         {
             var type = owner as IType;
             if (type != null)
@@ -2144,17 +2157,17 @@ namespace DataDynamics.PageFX.FLI
             return Algorithms.Contains(instance.GetAllTraits(), t => Equals(t.Name, name));
         }
 
-        int GetTypeFPVersion(AbcMultiname type)
+        private float GetTypeFPVersion(AbcMultiname type)
         {
             return IsFP9Type(type) ? 9 : _fpVersion;
         }
 
-        int GetTraitFPVersion(AbcMultiname type, AbcMultiname name)
+        private float GetTraitFPVersion(AbcMultiname type, AbcMultiname name)
         {
             return IsFP9Trait(type, name) ? 9 : _fpVersion;
         }
 
-        private int GetGlobalTraitFPVersion(AbcMultiname name)
+        private float GetGlobalTraitFPVersion(AbcMultiname name)
         {
             if (_fpVersion == 9) return 9;
             LoadFP9();
@@ -2338,11 +2351,11 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        bool IsCoreAPI
+        private bool IsCoreAPI
         {
             get
             {
-                foreach (var abc in _abcFiles)
+				foreach (var abc in _abcFiles)
                 {
                     if (abc.IsCoreAPI)
                         return true;
@@ -2351,12 +2364,11 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        string NsPrefix
+        private string NsPrefix
         {
             get
             {
-                if (IsCoreAPI) return "Avm";
-                return "";
+            	return IsCoreAPI ? "Avm" : "";
             }
         }
 

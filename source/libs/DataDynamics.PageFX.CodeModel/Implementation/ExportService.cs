@@ -18,13 +18,13 @@ namespace DataDynamics.PageFX.CodeModel
             if (type == null) return false;
             while (type != null)
             {
-                if (!_CanWrite(type)) return false;
+                if (!CanWriteCore(type)) return false;
                 type = type.DeclaringType;
             }
             return true;
         }
 
-        public static bool _CanWrite(IType type)
+        public static bool CanWriteCore(IType type)
         {
             if (type.IsCompilerGenerated)
                 return false;

@@ -4,29 +4,25 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.FLI.ABC
 {
-    internal class AbcCache
+    internal sealed class AbcCache
     {
-        public List<AbcInstance> Mixins
+		private readonly List<AbcInstance> _mixins = new List<AbcInstance>();
+		private readonly Hashtable _instanceCache = new Hashtable();
+		private static readonly Hashtable NamespaceCache = new Hashtable();
+		private readonly Hashtable _globalMethods = new Hashtable();
+		private readonly bool _checkCoreAPI;
+
+		public AbcCache(bool checkCoreAPI)
+		{
+			_checkCoreAPI = checkCoreAPI;
+		}
+
+        public IList<AbcInstance> Mixins
         {
             get { return _mixins; }
         }
-        readonly List<AbcInstance> _mixins = new List<AbcInstance>();
 
-        readonly Hashtable _instanceCache = new Hashtable();
-        static readonly Hashtable _nsCache = new Hashtable();
-        readonly Hashtable _globalMethods = new Hashtable();
-
-        public AbcCache(bool checkCoreAPI)
-        {
-            _checkCoreAPI = checkCoreAPI;
-        }
-
-        public bool IsCoreAPI
-        {
-            get { return _isCoreAPI; }
-        }
-        bool _isCoreAPI;
-        readonly bool _checkCoreAPI;
+    	public bool IsCoreAPI { get; private set; }
 
         public AbcInstance FindInstance(IType type)
         {
@@ -41,7 +37,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcFile FindNamespace(string name)
         {
-            return _nsCache[name] as AbcFile;
+            return NamespaceCache[name] as AbcFile;
         }
 
         public AbcMethod FindGlobalMethod(IMethod method)
@@ -56,8 +52,8 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 string fn = instance.FullName;
                 _instanceCache[fn] = instance;
-                if (_checkCoreAPI && !_isCoreAPI && fn == "Object")
-                    abc.IsCoreAPI = _isCoreAPI = true;
+                if (_checkCoreAPI && !IsCoreAPI && fn == "Object")
+                    abc.IsCoreAPI = IsCoreAPI = true;
             }
 
             foreach (var script in abc.Scripts)
@@ -70,7 +66,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                             {
                                 var ns = t.SlotValue as AbcNamespace;
                                 if (ns != null)
-                                    _nsCache[t.Name.FullName] = abc;
+                                    NamespaceCache[t.Name.FullName] = abc;
                             }
                             break;
 

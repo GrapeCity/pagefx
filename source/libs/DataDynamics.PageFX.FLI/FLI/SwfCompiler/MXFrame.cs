@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,22 +10,53 @@ namespace DataDynamics.PageFX.FLI
 {
     //Contains generation of MX preloading frame where flex environment is initialized.
     internal partial class SwfCompiler
-    {
-        AbcInstance ImportType(AbcFile abc, string fullname)
+	{
+		#region ImportType Helpers
+
+		private AbcInstance ImportType(AbcFile abc, string fullname)
+		{
+			return ImportType(abc, fullname, false);
+		}
+
+        private AbcInstance ImportType(AbcFile abc, string fullname, bool safe)
         {
-            return AvmHelper.ImportType(abc, _assembly, fullname);
+        	try
+        	{
+				return AvmHelper.ImportType(abc, _assembly, fullname);
+        	}
+        	catch (Exception)
+        	{
+        		if (safe)
+        		{
+					CompilerReport.Add(Warnings.UnableImportType, fullname);
+        			return null;
+        		}
+        		throw;
+        	}
         }
 
-        #region BuildMxSystemManager
-        bool HasCrossDomainRSLs
+		private AbcInstance ImportType(AbcFile abc, string fullname, ref AbcInstance field)
+		{
+			return ImportType(abc, fullname, ref field, false);
+		}
+
+		private AbcInstance ImportType(AbcFile abc, string fullname, ref AbcInstance field, bool safe)
+		{
+			return field ?? (field = ImportType(abc, fullname, safe));
+		}
+
+		#endregion
+
+		#region BuildMxSystemManager
+		private bool HasCrossDomainRsls
         {
             get
             {
-                return Algorithms.Contains(_options.RSLList, rsl => rsl.IsCrossDomain);
+                return Algorithms.Contains(_options.RslList, rsl => rsl.IsCrossDomain);
             }
         }
 
-        AbcInstance _mxSystemManager;
+        private AbcInstance _mxSystemManager;
 
         AbcMultiname DefineMxSystemManagerName(AbcFile abc)
         {
@@ -32,12 +64,18 @@ namespace DataDynamics.PageFX.FLI
             return abc.DefineQName(ns, NameMxSysManager);
         }
 
+		private static class SystemManagerProperties
+		{
+			public const string MainAppClass = "MainAppClass";
+		}
+    	
+
         void BuildMxSystemManager(AbcFile abc)
         {
             var superType = ImportType(abc, "mx.managers.SystemManager");
-            var IFlexModuleFactory = ImportType(abc, "mx.core.IFlexModuleFactory");
+        	var flexModuleFactoryInterface = GetFlexModuleFactoryInterface(abc);
 
-            if (HasCrossDomainRSLs)
+            if (HasCrossDomainRsls)
             {
                 // Cause the CrossDomainRSLItem class to be linked into this application.
                 var crossDomainRSLItem = ImportType(abc, "mx.core.CrossDomainRSLItem");
@@ -49,11 +87,11 @@ namespace DataDynamics.PageFX.FLI
                                    Name = DefineMxSystemManagerName(abc),
                                    Flags = AbcClassFlags.FinalSealed,
                                    //ProtectedNamespace = abc.DefineProtectedNamespace(NameMxSysManager),
-                                   Type = _typeMxApp,
+                                   Type = TypeFlexApp,
                                    SuperName = superType.Name,
                                    SuperType = superType
                                };
-            instance.Interfaces.Add(IFlexModuleFactory.Name);
+            instance.Interfaces.Add(flexModuleFactoryInterface.Name);
 
             instance.Initializer = abc.DefineEmptyConstructor();
             instance.Class.Initializer = abc.DefineEmptyMethod();
@@ -64,11 +102,12 @@ namespace DataDynamics.PageFX.FLI
 
             BuildSystemManagerCreate(abc, instance);
             BuildSystemManagerInfo(abc, instance);
-
+        	
             abc.DefineScript(instance);
             abc.DefineEmptyScript();
         }
-        #endregion
+
+		#endregion
 
         #region BuildSystemManagerCreate
         /* Base Method Code
@@ -111,7 +150,7 @@ namespace DataDynamics.PageFX.FLI
         {
             var method = instance.DefineVirtualOverrideMethod(
                 "create", AvmTypeCode.Object,
-                delegate(AbcCode code)
+                code =>
                     {
                         var typeString = abc.DefineGlobalQName("String");
                         var typeClass = abc.DefineGlobalQName("Class");
@@ -163,26 +202,41 @@ namespace DataDynamics.PageFX.FLI
                         code.ReturnValue();
 
                         //instance creation block
-                        var create = code.Label();
-                        gotoCreate1.BranchTarget = create;
-                        gotoCreate2.BranchTarget = create;
+                        gotoCreate1.BranchTarget = 
+                        gotoCreate2.BranchTarget = code.Label();
 
-                        code.FindPropertyStrict(typeClass);
-
-                        code.LoadThis();
-
-                        code.GetLocal(varClassName);
+						// resolve class by name using SystemManager.getDefinitionByName
+						//code.Trace("PFX_SYSMGR: try to resolve class using SystemManager.getDefinitionByName");
+						code.FindPropertyStrict(typeClass);
+						code.LoadThis();
+						code.GetLocal(varClassName);
                         code.Call(getDefByName, 1);
                         code.Call(typeClass, 1);
                         code.Coerce(typeClass);
                         code.SetLocal(varClass);
 
                         code.GetLocal(varClass);
-                        var ifClassNotNull = code.IfTrue();
+                        var ifClassNotNull1 = code.IfTrue();
+
+						// try to resolve class using flash.system.ApplicationDomain.currentDomain
+						//code.Trace("PFX_SYSMGR: try to resolve class using flash.system.ApplicationDomain.currentDomain");
+						code.FindPropertyStrict(typeClass);
+                    	GetCurrentAppDomain(code);
+						code.GetLocal(varClassName);
+						code.Call(abc.DefineGlobalQName("getDefinition"), 1);
+						code.Call(typeClass, 1);
+						code.Coerce(typeClass);
+						code.SetLocal(varClass);
+
+						code.GetLocal(varClass);
+						var ifClassNotNull2 = code.IfTrue();
+						code.Trace(string.Format("PFX_SYSMGR: unable to resolve class '{0}'", MainClassName));
                         code.ReturnNull();
 
-                        ifClassNotNull.BranchTarget = code.Label();
+						ifClassNotNull1.BranchTarget = 
+						ifClassNotNull2.BranchTarget = code.Label();
 
+						// create instance of class was resolved succesfully
                         code.GetLocal(varClass);
                         code.Add(InstructionCode.Construct, 0);
                         code.Add(InstructionCode.Coerce_o);
@@ -190,7 +244,7 @@ namespace DataDynamics.PageFX.FLI
 
                         //if (instance is mx.core.IFlexModule)
                         code.GetLocal(varInstance);
-                        var flexModule = ImportType(abc, "mx.core.IFlexModule");
+                        var flexModule = ImportType(abc, MX.IFlexModule);
                         code.Getlex(flexModule);
                         code.Add(InstructionCode.Istypelate);
                         var gotoReturn = code.IfFalse();
@@ -211,34 +265,34 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region BuildSystemManagerInfo
-        static bool cacheInfoObject;
+        private static bool _cacheInfoObject;
 
         void BuildSystemManagerInfo(AbcFile abc, AbcInstance instance)
         {
             var objType = abc.BuiltinTypes.Object;
-            if (cacheInfoObject)
+            if (_cacheInfoObject)
             {
                 var method = instance.DefineInstanceMethod("$info$", objType, null, null);
                 AddLateMethod(method, BuildSystemManagerInfo);
 
-                var __info = instance.DefineSlot("__info", AvmTypeCode.Object);
+                var infoField = instance.DefineSlot("__info", AvmTypeCode.Object);
 
                 instance.DefineVirtualOverrideMethod(
                     "info", objType,
                     delegate(AbcCode code)
                         {
                             code.LoadThis();
-                            code.GetProperty(__info);
+                            code.GetProperty(infoField);
 
                             var br = code.IfNotNull();
                             code.LoadThis();
                             code.LoadThis();
                             code.Call(method);
-                            code.SetProperty(__info);
+                            code.SetProperty(infoField);
 
                             br.BranchTarget = code.Label();
                             code.LoadThis();
-                            code.GetProperty(__info);
+                            code.GetProperty(infoField);
                             code.ReturnValue();
                         });
             }
@@ -249,7 +303,7 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        List<string> GetResourceBundleNames()
+        private List<string> GetResourceBundleNames()
         {
             var list = new List<string>();
             var hash = new Hashtable();
@@ -273,29 +327,28 @@ namespace DataDynamics.PageFX.FLI
         /// </summary>
         public string MainClassName
         {
-            get
-            {
-                if (_typeMxApp == null)
-                    return null;
+			get
+			{
+				var type = TypeFlexApp;
+				if (type == null) return null;
 
-                string ns = NameUtil.GetTypeNamespace(RootNamespace, _typeMxApp);
-                if (string.IsNullOrEmpty(ns))
-                    return _typeMxApp.Name;
-
-                return ns + "::" + _typeMxApp.Name;
-            }
+				string ns = NameUtil.GetTypeNamespace(RootNamespace, type);
+				return string.IsNullOrEmpty(ns)
+				       	? type.Name
+				       	: ns + "::" + type.Name;
+			}
         }
 
-        void BuildSystemManagerInfo(AbcCode code)
+        private void BuildSystemManagerInfo(AbcCode code)
         {
-            int pn = 0; //number of object properties
+            int propertyCount = 0; //number of object properties
 
             code.PushThisScope();
 
-            List<RSLItem> cdRsls;
-            List<RSLItem> rsls;
+            List<RslItem> cdRsls;
+            List<RslItem> rsls;
             Algorithms.Split(
-                _options.RSLList,
+                _options.RslList,
                 out cdRsls,
                 out rsls,
                 rsl => rsl.IsCrossDomain);
@@ -304,70 +357,79 @@ namespace DataDynamics.PageFX.FLI
             {
                 code.PushString("cdRsls");
                 CreateCdRslArray(code, cdRsls);
-                ++pn;
+                ++propertyCount;
             }
 
             if (rsls != null && rsls.Count > 0)
             {
                 code.PushString("rsls");
                 CreateSimpleRslArray(code, rsls);
-                ++pn;
+                ++propertyCount;
             }
 
             code.PushString("compiledLocales");
             code.PushStringArray(Locales);
-            ++pn;
+            ++propertyCount;
 
             var list = GetResourceBundleNames();
             if (list != null && list.Count > 0)
             {
                 code.PushString("compiledResourceBundleNames");
                 code.PushStringArray(list);
-                ++pn;
+                ++propertyCount;
             }
 
             code.PushString("currentDomain");
-            code.Getlex("flash.system", "ApplicationDomain");
-            code.GetProperty("currentDomain");
-            ++pn;
+            GetCurrentAppDomain(code);
+        	++propertyCount;
 
             //code.PushString("initialize");
             //++n;
 
             code.PushString("layout");
             code.PushString("absolute");
-            ++pn;
+            ++propertyCount;
 
             code.PushString("mainClassName");
             code.PushString(MainClassName);
-            ++pn;
+            ++propertyCount;
+
+			code.PushString("usePreloader");
+			code.PushBool(false);
+			++propertyCount;
 
             list = _mixinNames;
             if (list != null && list.Count > 0)
             {
                 code.PushString("mixins");
                 code.PushStringArray(list);
-                ++pn;
+                ++propertyCount;
             }
 
-            code.NewObject(pn);
+            code.NewObject(propertyCount);
             code.ReturnValue();
         }
 
-        static void CreateCdRslArray(AbcCode code, IList<RSLItem> rsls)
+    	private static void GetCurrentAppDomain(AbcCode code)
+    	{
+    		code.Getlex("flash.system", "ApplicationDomain");
+    		code.GetProperty("currentDomain");
+    	}
+
+    	static void CreateCdRslArray(AbcCode code, IList<RslItem> rsls)
         {
             int n = rsls.Count;
             for (int i = 0; i < n; ++i)
             {
                 var rsl = rsls[i];
                 code.PushString("rsls");
-                code.PushStringArray(new[] { rsl.URI });
+                code.PushStringArray(new[] { rsl.Uri });
 
                 code.PushString("policyFiles");
                 code.PushStringArray(rsl.PolicyFiles);
 
                 code.PushString("digests");
-                string digest = rsl.SWC.GetLibraryDigest(null, rsl.HashType, rsl.IsSigned);
+                string digest = rsl.Swc.GetLibraryDigest(null, rsl.HashType, rsl.IsSigned);
                 if (string.IsNullOrEmpty(digest))
                     throw Errors.RSL.UnableToResolveLibraryDigest.CreateException(rsl.LocalPath);
                 code.PushStringArray(new[] { digest });
@@ -384,14 +446,14 @@ namespace DataDynamics.PageFX.FLI
             code.Add(InstructionCode.Newarray, n);
         }
 
-        static void CreateSimpleRslArray(AbcCode code, IList<RSLItem> rsls)
+        static void CreateSimpleRslArray(AbcCode code, IList<RslItem> rsls)
         {
             int n = rsls.Count;
             for (int i = 0; i < n; ++i)
             {
                 var rsl = rsls[i];
                 code.PushString("url");
-                code.PushString(rsl.URI);
+                code.PushString(rsl.Uri);
 
                 code.PushString("size");
                 code.PushInt(-1);
@@ -409,9 +471,9 @@ namespace DataDynamics.PageFX.FLI
 
         bool BuildMxFrame()
         {
-            if (!IsMxApplication) return false;
+            if (!IsFlexApplication) return false;
 
-            MxAppPrefix = _typeMxApp.FullName.Replace('.', '_');
+            MxAppPrefix = _typeFlexApp.FullName.Replace('.', '_');
             NameMxSysManager = "$" + MxAppPrefix + MxMgrNameSuffix;
 
             AbcFile.AllowExternalLinking = false;

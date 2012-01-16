@@ -809,12 +809,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AvmBuiltinTypes BuiltinTypes
         {
-            get
-            {
-                if (_avmBuiltinTypes == null)
-                    _avmBuiltinTypes = new AvmBuiltinTypes(this);
-                return _avmBuiltinTypes;
-            }
+            get { return _avmBuiltinTypes ?? (_avmBuiltinTypes = new AvmBuiltinTypes(this)); }
         }
         AvmBuiltinTypes _avmBuiltinTypes;
 

@@ -649,6 +649,18 @@ namespace DataDynamics.PageFX.FLI.IL
             return GetSuper(mn);
         }
 
+		public Instruction SetSuper(AbcMultiname name)
+		{
+			if (name == null) throw new ArgumentNullException("name");
+			return Add(InstructionCode.Setsuper, name);
+		}
+
+		public Instruction SetSuper(string name)
+		{
+			var mn = abc.DefineGlobalQName(name);
+			return SetSuper(mn);
+		}
+
         public Instruction SetProperty(string name)
         {
             var mn = DefineGlobalQName(name);
@@ -882,6 +894,19 @@ namespace DataDynamics.PageFX.FLI.IL
             return Add(InstructionCode.Setslot, t.SlotID);
 #endif
         }
+
+		public void GetClassRef(AbcMultiname name)
+		{
+			if (name == null) throw new ArgumentNullException("name");
+			FindPropertyStrict(name);
+			GetProperty(name);
+			CoerceClass();
+		}
+
+		public void GetClassRef(AbcInstance instance)
+		{
+			GetClassRef(instance.Name);
+		}
         #endregion
 
         #region Push Methods
@@ -937,7 +962,7 @@ namespace DataDynamics.PageFX.FLI.IL
             code.LoadConstant(value);
         }
 
-        IType GetArrayElementType(Array arr)
+    	private static IType GetArrayElementType(Array arr)
         {
             var type = arr.GetType().GetElementType();
             return SystemTypes.GetType(type);
@@ -1141,8 +1166,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void PushNamespace(AbcNamespace ns)
         {
-            if (ns == null)
-                throw new ArgumentNullException();
+            if (ns == null) throw new ArgumentNullException();
             Add(InstructionCode.Pushnamespace, ns);
         }
 
@@ -1234,34 +1258,59 @@ namespace DataDynamics.PageFX.FLI.IL
         #endregion
 
         #region CreateInstance
-        public void CreateInstance(AbcMultiname name)
+		public void CreateInstance(AbcMultiname name, Func<int> pushArgs)
         {
-            if (name == null)
-                throw new ArgumentNullException();
+            if (name == null) throw new ArgumentNullException();
             Getlex(name);
-            Construct(0);
+
+			int argCount = 0;
+			if (pushArgs != null)
+			{
+				argCount = pushArgs();
+			}
+
+            Construct(argCount);
         }
 
-        public void CreateInstance(AbcInstance instance)
+		public void CreateInstance(AbcMultiname name)
+		{
+			CreateInstance(name, null);
+		}
+
+		public void CreateInstance(AbcInstance instance, Func<int> pushArgs)
         {
-            if (instance == null)
-                throw new ArgumentNullException();
-            CreateInstance(instance.Name);
+            if (instance == null) throw new ArgumentNullException();
+            CreateInstance(instance.Name, pushArgs);
         }
 
-        public void CreateInstance(IType type, bool mustBeInstance)
+		public void CreateInstance(AbcInstance instance)
+		{
+			CreateInstance(instance, null);
+		}
+
+		public void CreateInstance(IType type, bool mustBeInstance, Func<int> pushArgs)
         {
             var tag = Generator.DefineType(type);
             if (mustBeInstance && !(tag is AbcInstance))
                 throw new InvalidOperationException("Type has invalid tag. Tag must be AbcInstance.");
             var mn = abc.GetTypeName(type, false);
-            CreateInstance(mn);
+            CreateInstance(mn, pushArgs);
         }
+
+		public void CreateInstance(IType type, bool mustBeInstance)
+		{
+			CreateInstance(type, mustBeInstance, null);
+		}
 
         public Instruction ConstructProperty(AbcMultiname name, int argc)
         {
             return Add(InstructionCode.Constructprop, name, argc);
         }
+
+		public Instruction ConstructProperty(AbcInstance instance, int argc)
+		{
+			return Add(InstructionCode.Constructprop, instance.Name, argc);
+		}
 
         public Instruction ConstructProperty(IType type, int argc)
         {

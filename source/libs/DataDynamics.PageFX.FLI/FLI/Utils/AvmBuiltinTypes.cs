@@ -74,12 +74,11 @@ namespace DataDynamics.PageFX.FLI
             Names = new string[n];
             for (int i = 0; i < n; ++i)
             {
-                var fi = fields[i];
-                var attr = ReflectionHelper.GetAttribute<NameAttribute>(fi, false);
-                if (attr != null)
-                    Names[i] = attr.Name;
-                else
-                    Names[i] = fi.GetValue(null).ToString();
+                var field = fields[i];
+				var value = field.GetValue(null);
+            	var index = (int)value;
+                var attr = ReflectionHelper.GetAttribute<NameAttribute>(field, false);
+            	Names[index] = attr != null ? attr.Name : field.Name;
             }
         }
 

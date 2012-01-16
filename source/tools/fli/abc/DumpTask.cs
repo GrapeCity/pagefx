@@ -650,7 +650,7 @@ namespace abc
             var tag = asset.Character as SwfTag;
             if (tag != null)
             {
-                writer.WriteLine("[{0}] {1} - {2}", asset.ID, asset.Name, tag.TagCode);
+                writer.WriteLine("[{0}] {1} - {2}", asset.Id, asset.Name, tag.TagCode);
 
                 var refs = tag.GetRefs();
                 if (refs != null && refs.Length > 0)
@@ -675,7 +675,7 @@ namespace abc
             }
             else
             {
-                writer.WriteLine("[{0}] {1}", asset.ID, asset.Name);
+                writer.WriteLine("[{0}] {1}", asset.Id, asset.Name);
             }
         }
         #endregion

@@ -425,12 +425,12 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         internal bool IsApp { get; set; }
 
-        internal int FlashVersion
+        internal float FlashVersion
         {
             get { return _flashVersion; }
             set { _flashVersion = value; }
         }
-        private int _flashVersion = -1;
+        private float _flashVersion = -1;
 
         internal bool Ordered;
         #endregion

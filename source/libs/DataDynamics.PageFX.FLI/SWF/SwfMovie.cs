@@ -733,7 +733,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             foreach (var asset in assets)
             {
-                var ch = GetCharacter(asset.ID);
+                var ch = GetCharacter(asset.Id);
                 if (ch != null)
                 {
                     asset.Character = ch;
@@ -750,7 +750,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (a.Character == null)
             {
-                var ch = GetCharacter(a.ID);
+                var ch = GetCharacter(a.Id);
                 if (ch != null)
                 {
                     a.Character = ch;

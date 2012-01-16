@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared Items", "Shared Item
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pfx-nunit-console", "products\pfx-nunit-console\pfx-nunit-console.csproj", "{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "abc", "tools\fli\abc\abc.csproj", "{19D836C7-4C04-406A-A820-155AB14A797D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19D836C7-4C04-406A-A820-155AB14A797D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19D836C7-4C04-406A-A820-155AB14A797D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19D836C7-4C04-406A-A820-155AB14A797D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19D836C7-4C04-406A-A820-155AB14A797D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

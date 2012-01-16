@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static bool ExludeEnumConstants = true;
 
-        public static bool MxAppCtorAsHandler = true;
+        public static bool FlexAppCtorAsHandler = true;
 
         public static bool UseAvmString = true;
 

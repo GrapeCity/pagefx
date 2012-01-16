@@ -6,30 +6,22 @@ using DataDynamics.PageFX.FLI.SWF;
 
 namespace DataDynamics.PageFX.FLI
 {
-    class SwfCompilerOptions
+    internal sealed class SwfCompilerOptions
     {
         public const string DefaultDebugPassword = "$1$22$D52fy3bya4.1fRX17bpC00";
 
-        public SizeF FrameSize = SwfMovie.DefaultFrameSize;
-        public float FrameRate = SwfMovie.DefaultFrameRate;
-        public bool Compressed = true;
-        public int FlashVersion = PfxConfig.Runtime.DefaultFlashVersion;
-        public string RootSprite;
-        public Color BackgroundColor = PfxConfig.SWF.DefaultBgColor;
-        public bool Debug;
-        public string DebugPassword = DefaultDebugPassword;
-        public RSLList RSLList;
-        public string HtmlTemplate;
-        public bool NoHtmlWrapper;
-
-        public bool ExceptionBreak;
-        public bool IgnoreExceptionBreaks;
-
-        public OutputFormat OutputFormat = OutputFormat.SWF;
-        
         public SwfCompilerOptions()
         {
-            RSLList = new RSLList();
+        	FrameSize = SwfMovie.DefaultFrameSize;
+        	FrameRate = SwfMovie.DefaultFrameRate;
+        	Compressed = true;
+        	FlashVersion = PfxConfig.Runtime.DefaultFlashVersion;
+        	BackgroundColor = PfxConfig.SWF.DefaultBgColor;
+			DebugPassword = DefaultDebugPassword;
+			OutputFormat = OutputFormat.SWF;
+
+        	RslList = new RslList();
+
             LoadDefaults();
         }
 
@@ -39,12 +31,16 @@ namespace DataDynamics.PageFX.FLI
             SetFrameRate(cl);
             SetFlashVersion(cl);
             SetBgColor(cl);
+
             Compressed = cl.GetBoolOption(true, PFCOptions.Compressed.Names);
             RootSprite = cl.GetOption(null, PFCOptions.RootSprite.Names);
             Debug = cl.GetBoolOption(true, PFCOptions.Debug.Names);
             DebugPassword = cl.GetOption(DefaultDebugPassword, PFCOptions.DebugPassword.Names);
+
             SetLocales(cl);
+
             SetRootNamespace(cl);
+
             HtmlTemplate = cl.GetOption(PFCOptions.HtmlTemplate);
 
             IgnoreExceptionBreaks = cl.IsMinus(PFCOptions.ExceptionBreak);
@@ -54,12 +50,14 @@ namespace DataDynamics.PageFX.FLI
             if (cl.HasOption(PFCOptions.NoHtmlWrapper))
                 NoHtmlWrapper = true;
 
-            RSLList = RSLList.Parse(cl);
+            RslList = RslList.Parse(cl);
 
-            _title = cl.GetOption(PFCOptions.HtmlTitle);
+            Title = cl.GetOption(PFCOptions.HtmlTitle);
+
+        	StyleMixins = cl.GetPath("", PFCOptions.StyleMixins.Names);
         }
 
-        void LoadDefaults()
+        private void LoadDefaults()
         {
             FlashVersion = PfxConfig.Runtime.FlashVersion;
             FrameSize = new SizeF(PfxConfig.SWF.Width, PfxConfig.SWF.Height);
@@ -67,6 +65,34 @@ namespace DataDynamics.PageFX.FLI
             Compressed = PfxConfig.SWF.Compressed;
             Locales = new []{ Const.Locales.en_US };
         }
+
+		public SizeF FrameSize { get; set; }
+
+    	public float FrameRate { get; set; }
+
+    	public bool Compressed { get; set; }
+
+    	public int FlashVersion { get; set; }
+
+		public string RootSprite { get; set; }
+
+		public Color BackgroundColor { get; set; }
+
+		public bool Debug { get; set; }
+
+		public string DebugPassword { get; set; }
+
+		public RslList RslList { get; private set; }
+
+		public string HtmlTemplate { get; set; }
+
+		public bool NoHtmlWrapper { get; set; }
+
+		public bool ExceptionBreak { get; set; }
+
+		public bool IgnoreExceptionBreaks { get; set; }
+
+		public OutputFormat OutputFormat { get; set; }
 
         #region FrameSize
         void SetFrameSize(CommandLine cl)
@@ -143,12 +169,19 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region BgColor
-        void SetBgColor(CommandLine cl)
-        {
-            string s = cl.GetOption(PFCOptions.BackgroundColor);
-            ColorHelper.TryParse(s, ref BackgroundColor);
-        }
-        #endregion
+
+		void SetBgColor(CommandLine cl)
+		{
+			string s = cl.GetOption(PFCOptions.BackgroundColor);
+			Color backgroundColor = BackgroundColor;
+			if (ColorHelper.TryParse(s, ref backgroundColor))
+			{
+				BackgroundColor = backgroundColor;
+
+			}
+		}
+
+    	#endregion
 
         public string OutputPath { get; set; }
 
@@ -157,27 +190,27 @@ namespace DataDynamics.PageFX.FLI
         {
             get
             {
-                if (!string.IsNullOrEmpty(_app))
-                    return _app;
-                return Path.GetFileNameWithoutExtension(OutputPath);
+            	return !string.IsNullOrEmpty(_application)
+            	       	? _application
+            	       	: Path.GetFileNameWithoutExtension(OutputPath);
             }
-            set { _app = value; }
+        	set { _application = value; }
         }
-        string _app;
+        private string _application;
         #endregion
 
         #region Title
         public string Title
         {
-            get 
+            get
             {
-                if (!string.IsNullOrEmpty(_title))
-                    return _title;
-                return Application;
+            	return !string.IsNullOrEmpty(_title)
+            	       	? _title
+            	       	: Application;
             }
-            set { _title = value; }
+        	set { _title = value; }
         }
-        string _title;
+        private string _title;
         #endregion
 
         #region RootNamespace
@@ -257,7 +290,13 @@ namespace DataDynamics.PageFX.FLI
                 _locales = value;
             }
         }
-        string[] _locales;
+
+    	string[] _locales;
         #endregion
+
+		/// <summary>
+		/// Specifies path to SWC file with style mixins.
+		/// </summary>
+		public string StyleMixins { get; set; }
     }
 }

@@ -604,8 +604,18 @@ namespace DataDynamics.PageFX.FLI.SWF
         #region 9.0
         #endregion
 
-        #region Special
-        [SwfVersion(1000)]
+		#region 10.0
+		[SwfVersion(10)]
+		[SwfTagCategory(SwfTagCategory.Define)]
+		DefineBitsJPEG4 = 90,
+
+		[SwfVersion(10)]
+		[SwfTagCategory(SwfTagCategory.Define)]
+		DefineFont4 = 91,
+		#endregion
+
+		#region Special
+		[SwfVersion(1000)]
         [SwfTagCategory(SwfTagCategory.Editor)]
         /// <summary>
         /// A special tag used only in the editor

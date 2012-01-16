@@ -92,7 +92,7 @@ namespace DataDynamics.PageFX.FLI
             if (cl == null)
                 cl = new CommandLine();
 
-            var asm = LoadAssembly(path, cl);
+            var asm = BuildAssembly(path, cl);
 
             if (string.IsNullOrEmpty(outpath))
                 outpath = Path.ChangeExtension(path, ".dll");
@@ -119,10 +119,12 @@ namespace DataDynamics.PageFX.FLI
             ExportService.ToDirectory(asm, "c#", srcdir);
             copts.Recurse.Add(srcdir + "\\*.cs");
 
-            if (!hasCorlibRef)
-                CopyAbcAttributes(srcdir);
+			if (!hasCorlibRef)
+			{
+				CopyAbcAttributes(srcdir);
+			}
 
-            if (!srconly)
+        	if (!srconly)
             {
                 copts.AddRes(path);
 
@@ -151,7 +153,7 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        static IAssembly LoadAssembly(string path, CommandLine cl)
+        private static IAssembly BuildAssembly(string path, CommandLine cl)
         {
             var builder = new AssemblyBuilder(cl);
             IAssembly asm;
@@ -180,10 +182,14 @@ namespace DataDynamics.PageFX.FLI
                 Environment.CurrentDirectory = Path.GetDirectoryName(path);
                 string cout = CompilerConsole.Run(copts, true);
                 var errors = CompilerConsole.ParseOutput(cout);
-                if (errors.HasErrors)
-                    throw new InvalidOperationException(string.Format("Unable to generate wrapper.\n{0}", cout));
-                if (errors.HasWarnings)
-                    Console.WriteLine(cout);
+				if (errors.HasErrors)
+				{
+					throw new InvalidOperationException(string.Format("Unable to generate wrapper.\n{0}", cout));
+				}
+				if (errors.HasWarnings)
+				{
+					Console.WriteLine(cout);
+				}
             }
             finally
             {

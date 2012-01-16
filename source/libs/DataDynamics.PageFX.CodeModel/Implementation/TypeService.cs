@@ -494,30 +494,42 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static void CompleteProperty(IProperty prop)
         {
-            if (prop.Type == null)
-            {
-                var m = prop.Getter;
-                if (m != null)
-                {
-                    prop.Type = m.Type;
-                    foreach (var p in m.Parameters)
-                    {
-                        prop.Parameters.Add(p);
-                    }
-                    return;
-                }
-                m = prop.Setter;
-                if (m != null)
-                {
-                    int n = m.Parameters.Count;
-                    prop.Type = m.Parameters[n - 1].Type;
-                    for (int i = 0; i < n - 1; ++i)
-                    {
-                        prop.Parameters.Add(m.Parameters[i]);
-                    }
-                }
-            }
+        	if (prop.Type != null) return;
+
+        	var m = prop.Getter;
+        	if (m != null)
+        	{
+        		prop.Type = m.Type;
+        		foreach (var p in m.Parameters)
+        		{
+        			prop.Parameters.Add(p);
+        		}
+        		return;
+        	}
+
+        	m = prop.Setter;
+        	if (m != null)
+        	{
+        		int n = m.Parameters.Count;
+        		prop.Type = m.Parameters[n - 1].Type;
+        		for (int i = 0; i < n - 1; ++i)
+        		{
+        			prop.Parameters.Add(m.Parameters[i]);
+        		}
+        	}
         }
+
+		public static void CompleteEvent(IEvent e)
+		{
+			if (e.Type != null) return;
+
+			foreach (var method in new[]{e.Adder, e.Remover})
+			{
+				if (method == null) return;
+				e.Type = method.Parameters[0].Type;
+				break;
+			}
+		}
 
         public static bool IsVoid(IMethod method)
         {

@@ -14,14 +14,14 @@ namespace DataDynamics.PageFX.FLI.SWF
         public SwfAsset(ushort id, string name)
         {
             _id = id;
-            _name = name;
+            Name = name;
         }
 
         public SwfAsset(ISwfCharacter obj, string name)
         {
-            _obj = obj;
+            Character = obj;
             _id = obj.CharacterID;
-            _name = name;
+            Name = name;
         }
 
         public SwfAsset(SwfReader reader)
@@ -31,66 +31,51 @@ namespace DataDynamics.PageFX.FLI.SWF
         #endregion
 
         #region Properties
-        public ushort ID
+        public ushort Id
         {
             get
             {
-                if (_obj != null)
-                    return _obj.CharacterID;
+                if (Character != null)
+                    return Character.CharacterID;
                 return _id;
             }
             set { _id = value; }
         }
         private ushort _id;
 
-        public ISwfCharacter Character
-        {
-            get { return _obj; }
-            set { _obj = value; }
-        }
-        private ISwfCharacter _obj;
+    	public ISwfCharacter Character { get; set; }
 
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
+    	public string Name { get; set; }
 
-        public SwfAssetFlags Flags
-        {
-            get { return _flags; }
-            set { _flags = value; }
-        }
-        private SwfAssetFlags _flags;
+    	public SwfAssetFlags Flags { get; set; }
 
-        public bool IsExported
+    	public bool IsExported
         {
-            get { return (_flags & SwfAssetFlags.Exported) != 0; }
+            get { return (Flags & SwfAssetFlags.Exported) != 0; }
             set
             {
-                if (value) _flags |= SwfAssetFlags.Exported;
-                else _flags &= ~SwfAssetFlags.Exported;
+                if (value) Flags |= SwfAssetFlags.Exported;
+                else Flags &= ~SwfAssetFlags.Exported;
             }
         }
 
         public bool IsImported
         {
-            get { return (_flags & SwfAssetFlags.Imported) != 0; }
+            get { return (Flags & SwfAssetFlags.Imported) != 0; }
             set
             {
-                if (value) _flags |= SwfAssetFlags.Imported;
-                else _flags &= ~SwfAssetFlags.Imported;
+                if (value) Flags |= SwfAssetFlags.Imported;
+                else Flags &= ~SwfAssetFlags.Imported;
             }
         }
 
         public bool IsSymbol
         {
-            get { return (_flags & SwfAssetFlags.Symbol) != 0; }
+            get { return (Flags & SwfAssetFlags.Symbol) != 0; }
             set
             {
-                if (value) _flags |= SwfAssetFlags.Symbol;
-                else _flags &= ~SwfAssetFlags.Symbol;
+                if (value) Flags |= SwfAssetFlags.Symbol;
+                else Flags &= ~SwfAssetFlags.Symbol;
             }
         }
         #endregion
@@ -99,13 +84,13 @@ namespace DataDynamics.PageFX.FLI.SWF
         public void Read(SwfReader reader)
         {
             _id = reader.ReadUInt16();
-            _name = reader.ReadString();
+            Name = reader.ReadString();
         }
 
         public void Write(SwfWriter writer)
         {
-            writer.WriteUInt16(ID);
-            writer.WriteString(_name);
+            writer.WriteUInt16(Id);
+            writer.WriteString(Name);
         }
         #endregion
 
@@ -114,7 +99,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             writer.WriteStartElement(elementName);
             writer.WriteAttributeString("id", _id.ToString());
-            writer.WriteAttributeString("name", _name);
+            writer.WriteAttributeString("name", Name);
             writer.WriteEndElement();
         }
 
@@ -126,7 +111,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public override string ToString()
         {
-            return string.Format("{0} - {1}", ID, _name);
+            return string.Format("{0} - {1}", Id, Name);
         }
     }
 

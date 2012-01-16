@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX.FLI.SWC
 
         public IAssembly Assembly { get; set; }
 
-        public RSLItem RSL { get; set; }
+        public RslItem RSL { get; set; }
         #endregion
 
         #region Libs
@@ -319,7 +319,7 @@ namespace DataDynamics.PageFX.FLI.SWC
             _linker = linker;
             _deps = deps;
 
-            Cache();
+            LoadAbcFiles();
 
             if (_deps != null)
                 ResolveDeps();
@@ -331,23 +331,32 @@ namespace DataDynamics.PageFX.FLI.SWC
 #endif
         }
 
-        #region Caching
-        void Cache()
+        #region Loading ABC files
+
+        private void LoadAbcFiles()
         {
             var libs = GetLibraries();
             foreach (var lib in libs)
             {
                 foreach (var abc in lib.GetAbcFiles())
                 {
-                    if (_linker != null)
-                        abc.Assembly = _linker.Assembly;
-                    ProcessTraits(lib, abc);
+					if (_linker != null)
+					{
+						abc.Assembly = _linker.Assembly;
+					}
+
+                	ProcessTraits(lib, abc);
+
                     AbcCache.Add(abc);
-                    if (_deps != null)
-                        abc.ImportStrategy = ImportStrategy.Refs;
+
+					if (_deps != null)
+					{
+						abc.ImportStrategy = ImportStrategy.Refs;
+					}
                 }
             }
         }
+
         #endregion
 
         #region ResolveDeps - Fast Version
@@ -568,24 +577,51 @@ namespace DataDynamics.PageFX.FLI.SWC
         #endregion
 
         #region ProcessTraits
-        void ProcessTraits(SwfMovie lib, AbcFile abc)
+
+		private void ProcessTraits(SwfMovie lib, AbcFile abc)
         {
-            foreach (var trait in abc.GetTraits(AbcTraitOwner.Script))
+			foreach (var instance in abc.Instances)
+        	{
+				if (IsMixin(instance))
+				{
+					RegisterMixin(instance);
+				}
+        	}
+
+			foreach (var trait in abc.GetTraits(AbcTraitOwner.Script))
             {
-                if (trait.HasMetadata)
-                {
-                    foreach (var e in trait.Metadata)
-                        ProcessMeta(lib, trait, e);
-                }
+				if (trait.HasMetadata)
+				{
+					foreach (var e in trait.Metadata)
+						ProcessMeta(lib, trait, e);
+				}
+
+				if (trait.Kind == AbcTraitKind.Class && trait.Embed == null)
+				{
+					var traitInstance = trait.Class.Instance;
+					var superName = traitInstance.SuperName.FullName;
+					if (superName.EndsWith("Asset"))
+					{
+						string className = traitInstance.FullName;
+						var asset = lib.FindAsset(className);
+						if (asset == null)
+						{
+							CompilerReport.Add(Warnings.UnableFindSwfAsset, className);
+							continue;
+						}
+
+						Embed.Apply(trait, asset, lib);
+					}
+				}
             }
         }
 
-        void ProcessMeta(SwfMovie lib, AbcTrait trait, AbcMetaEntry e)
+    	private void ProcessMeta(SwfMovie lib, AbcTrait trait, AbcMetaEntry e)
         {
             string name = e.NameString;
             if (name == MDTags.Embed)
             {
-                Embed.Setup(trait, e, lib);
+                Embed.Resolve(trait, e, lib);
                 return;
             }
 
@@ -596,11 +632,34 @@ namespace DataDynamics.PageFX.FLI.SWC
                     throw new InvalidOperationException("Mixin can be applied to class trait only");
 
                 var instance = klass.Instance;
-                instance.IsMixin = true;
-                AbcCache.Mixins.Add(instance);
-                return;
+                RegisterMixin(instance);
+            	return;
             }
         }
+
+    	private void RegisterMixin(AbcInstance instance)
+    	{
+    		instance.IsMixin = true;
+    		AbcCache.Mixins.Add(instance);
+    	}
+
+    	private static readonly Dictionary<string, bool> MixinInterfaces =
+    		new Dictionary<string, bool>()
+    			{
+					{"mx.binding.IWatcherSetupUtil", true},
+					{"mx.binding.IWatcherSetupUtil2", true}
+    			};
+
+		private static bool IsMixin(AbcInstance instance)
+		{
+			foreach (var name in instance.Interfaces)
+			{
+				if (MixinInterfaces.ContainsKey(name.FullName))
+					return true;
+			}
+			return false;
+		}
+
         #endregion
 
         #region DevUtils

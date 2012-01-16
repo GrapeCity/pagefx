@@ -1,7 +1,6 @@
 using System;
 using System.CodeDom.Compiler;
 using System.IO;
-using DataDynamics.PageFX;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.Flash;
 using DataDynamics.PageFX.FLI;
@@ -328,7 +327,7 @@ namespace DataDynamics.PageFX
                 options.AddRef(mx);
             }
 
-            var rsls = RSLList.Parse(cl);
+            var rsls = RslList.Parse(cl);
             foreach (var rsl in rsls)
                 options.AddRef(rsl.Library);
 
