@@ -286,10 +286,7 @@ namespace DataDynamics.Compression.Zip
 				throw new ZipException("Entry name too long.");
 			}
 
-			byte[] extra = entry.ExtraData;
-			if (extra == null) {
-				extra = new byte[0];
-			}
+			byte[] extra = entry.ExtraData ?? new byte[0];
 
 			if (extra.Length > 0xFFFF) {
 				throw new ZipException("Extra data too long.");
@@ -498,11 +495,8 @@ namespace DataDynamics.Compression.Zip
 					throw new ZipException("Name too long.");
 				}
 				
-				byte[] extra = entry.ExtraData;
-				if (extra == null) {
-					extra = new byte[0];
-				}
-				
+				byte[] extra = entry.ExtraData ?? new byte[0];
+
 				byte[] entryComment = entry.Comment != null ? ZipConstants.ConvertToArray(entry.Comment) : new byte[0];
 				if (entryComment.Length > 0xffff) {
 					throw new ZipException("Comment too long.");

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.Collections;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
@@ -48,7 +49,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public void Sort()
         {
-            _list.Sort(delegate(IType x, IType y) { return x.Name.CompareTo(y.Name); });
+            _list.Sort((x, y) => x.Name.CompareTo(y.Name));
         }
 
         public bool Contains(IType type)
@@ -101,6 +102,7 @@ namespace DataDynamics.PageFX.CodeModel
         }
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Types; }
@@ -111,16 +113,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Convert(_list); }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        private object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)
@@ -130,7 +128,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
     }
 
-    internal class SimpleTypeCollection : List<IType>, ITypeCollection
+    internal sealed class SimpleTypeCollection : List<IType>, ITypeCollection
     {
         public string ToString(string format, IFormatProvider formatProvider)
         {
@@ -152,22 +150,15 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Convert(this); }
         }
 
-        public object Tag
-        {
-            get { return null; }
-            set { throw new NotSupportedException(); }
-        }
+    	public object Tag { get; set; }
 
         public IType this[string fullname]
         {
-            get
-            {
-                return Algorithms.Find(this, t => t.FullName == fullname);
-            }
+            get { return this.FirstOrDefault(type => type.FullName == fullname); }
         }
     }
 
-    class EmptyTypeCollection : ITypeCollection
+    internal sealed class EmptyTypeCollection : ITypeCollection
     {
         public static readonly ITypeCollection Instance = new EmptyTypeCollection();
 

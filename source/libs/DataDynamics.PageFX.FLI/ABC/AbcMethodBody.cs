@@ -109,14 +109,9 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         public ILStream IL
         {
-            get
-            {
-                if (_il == null)
-                    _il = new ILStream();
-                return _il;
-            }
+            get { return _il ?? (_il = new ILStream()); }
         }
-        ILStream _il;
+        private ILStream _il;
 
         public AbcExceptionHandlerCollection Exceptions
         {
@@ -461,24 +456,20 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             if (_tokenStorage == null)
             {
-                _tokenStorage = new List<List<int>>();
-                _tokenStorage.Add(null);
-                _tokenStorage.Add(null);
-                return;
+                _tokenStorage = new List<List<int>> {null, null};
+            	return;
             }
             var store = _tokenStorage[(int)kind];
             if (store == null)
             {
-                store = new List<int>();
-                store.Add(token);
-                _tokenStorage[(int)kind] = store;
+                store = new List<int> {token};
+            	_tokenStorage[(int)kind] = store;
                 return;
             }
-            if (store.Contains(token))
-                return;
+            if (store.Contains(token)) return;
             store.Add(token);
         }
-        List<List<int>> _tokenStorage;
+        private List<List<int>> _tokenStorage;
 
         internal int[] GetTokens(TokenKind kind)
         {

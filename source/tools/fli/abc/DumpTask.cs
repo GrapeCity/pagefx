@@ -264,15 +264,14 @@ namespace abc
         #endregion
 
         #region DumpInstance
-        static List<AbcFile> GetAbcFiles(string path)
+        private static IEnumerable<AbcFile> GetAbcFiles(string path)
         {
             string ext = Utils.GetExt(path);
             if (ext == "abc")
             {
                 var abc = new AbcFile(path);
-                var list = new List<AbcFile>();
-                list.Add(abc);
-                return list;
+                var list = new List<AbcFile> {abc};
+            	return list;
             }
 
             if (ext == "swf")

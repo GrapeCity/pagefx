@@ -82,6 +82,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Module; }
@@ -92,16 +93,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Enumerate(_namespaces); }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)
@@ -151,7 +148,7 @@ namespace DataDynamics.PageFX.CodeModel
         #region IModuleCollection Members
         public new void Sort()
         {
-            Sort(delegate(IModule x, IModule y) { return x.Name.CompareTo(y.Name); });
+            Sort((x, y) => x.Name.CompareTo(y.Name));
             foreach (var m in this)
             {
                 m.Namespaces.Sort();
@@ -163,12 +160,13 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                return Find(delegate(IModule m) { return m.Name == name; });
+                return Find(m => m.Name == name);
             }
         }
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Modules; }
@@ -179,16 +177,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Convert(this); }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)

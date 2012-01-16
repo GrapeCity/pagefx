@@ -116,7 +116,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get
             {
-                return Find(delegate(AbcProperty p) { return p.Name == name; });
+                return Find(p => p.Name == name);
             }
         }
 

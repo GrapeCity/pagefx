@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel;
 
@@ -794,7 +796,7 @@ namespace DataDynamics.PageFX.FLI
         public static IMethod Find(IType type, string name)
         {
             var set = type.Methods[name];
-            return Algorithms.First(set);
+            return set.FirstOrDefault();
         }
 
         public static IMethod Find(IType type, string name, IType arg1)
@@ -822,9 +824,8 @@ namespace DataDynamics.PageFX.FLI
             return type.Methods[name,
                                 m =>
                                     {
-                                        var p= m.Parameters;
-                                        if (p.Count != argc) return false;
-                                        return args(p);
+                                        var p = m.Parameters;
+                                        return p.Count == argc && args(p);
                                     }];
         }
         #endregion

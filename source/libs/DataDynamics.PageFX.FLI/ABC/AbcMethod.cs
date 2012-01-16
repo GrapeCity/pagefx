@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
@@ -174,67 +174,58 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
 
         #region Flags
-        public AbcMethodFlags Flags
-        {
-            get { return _flags; }
-            set { _flags = value; }
-        }
-        AbcMethodFlags _flags;
 
-        public bool IsNative
+    	public AbcMethodFlags Flags { get; set; }
+
+    	public bool IsNative
         {
             get
             {
                 var instance = Instance;
                 if (instance != null && instance.IsNative)
                     return true;
-                return (_flags & AbcMethodFlags.Native) != 0;
+                return (Flags & AbcMethodFlags.Native) != 0;
             }
             set
             {
-                if (value) _flags |= AbcMethodFlags.Native;
-                else _flags &= ~AbcMethodFlags.Native;
+                if (value) Flags |= AbcMethodFlags.Native;
+                else Flags &= ~AbcMethodFlags.Native;
             }
         }
 
         public bool HasParamNames
         {
-            get { return (_flags & AbcMethodFlags.HasParamNames) != 0; }
+            get { return (Flags & AbcMethodFlags.HasParamNames) != 0; }
             set
             {
-                if (value) _flags |= AbcMethodFlags.HasParamNames;
-                else _flags &= ~AbcMethodFlags.HasParamNames;
+                if (value) Flags |= AbcMethodFlags.HasParamNames;
+                else Flags &= ~AbcMethodFlags.HasParamNames;
             }
         }
 
         public bool HasOptionalParams
         {
-            get { return (_flags & AbcMethodFlags.HasOptional) != 0; }
+            get { return (Flags & AbcMethodFlags.HasOptional) != 0; }
             set
             {
-                if (value) _flags |= AbcMethodFlags.HasOptional;
-                else _flags &= ~AbcMethodFlags.HasOptional;
+                if (value) Flags |= AbcMethodFlags.HasOptional;
+                else Flags &= ~AbcMethodFlags.HasOptional;
             }
         }
 
         public bool NeedRest
         {
-            get { return (_flags & AbcMethodFlags.NeedRest) != 0; }
+            get { return (Flags & AbcMethodFlags.NeedRest) != 0; }
             set
             {
-                if (value) _flags |= AbcMethodFlags.NeedRest;
-                else _flags &= ~AbcMethodFlags.NeedRest;
+                if (value) Flags |= AbcMethodFlags.NeedRest;
+                else Flags &= ~AbcMethodFlags.NeedRest;
             }
         }
 
-        public bool IsInitializer
-        {
-            get { return _isInitializer; }
-            set { _isInitializer = value; }
-        }
-        bool _isInitializer;
+    	public bool IsInitializer { get; set; }
 
-        public bool IsEntryPoint
+    	public bool IsEntryPoint
         {
             get
             {
@@ -243,6 +234,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 return false;
             }
         }
+
         #endregion
 
         /// <summary>
@@ -263,16 +255,11 @@ namespace DataDynamics.PageFX.FLI.ABC
                 }
             }
         }
-        AbcTrait _trait;
+        private AbcTrait _trait;
 
         public AbcMultiname TraitName
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.Name;
-                return null;
-            }
+            get { return _trait != null ? _trait.Name : null; }
         }
 
         public bool IsAbstract
@@ -282,12 +269,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public bool IsOverride
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.IsOverride;
-                return false;
-            }
+            get { return _trait != null && _trait.IsOverride; }
         }
 
         /// <summary>
@@ -295,12 +277,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         public bool IsGetter
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.IsGetter;
-                return false;
-            }
+            get { return _trait != null && _trait.IsGetter; }
         }
 
         /// <summary>
@@ -308,12 +285,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         public bool IsSetter
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.IsSetter;
-                return false;
-            }
+            get { return _trait != null && _trait.IsSetter; }
         }
 
         /// <summary>
@@ -321,46 +293,28 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         public bool IsAccessor
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.IsAccessor;
-                return false;
-            }
+            get { return _trait != null && _trait.IsAccessor; }
         }
 
         public IAbcTraitProvider Owner
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.Owner;
-                return null;
-            }
+            get { return _trait != null ? _trait.Owner : null; }
         }
 
         public AbcInstance Instance
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.Instance;
-                return _instance;
-            }
-            set
-            {
-                _instance = value;
-            }
+            get { return _trait != null ? _trait.Instance : _instance; }
+        	set { _instance = value; }
         }
-        AbcInstance _instance;
+        private AbcInstance _instance;
 
         public AbcClass Class
         {
             get
             {
-                var i = Instance;
-                if (i != null)
-                    return i.Class;
+                var instance = Instance;
+                if (instance != null)
+                    return instance.Class;
                 return Owner as AbcClass;
             }
         }
@@ -377,16 +331,11 @@ namespace DataDynamics.PageFX.FLI.ABC
                 }
             }
         }
-        AbcMethodBody _body;
+        private AbcMethodBody _body;
 
         public Visibility Visibility
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.Visibility;
-                return Visibility.Private;
-            }
+            get { return _trait != null ? _trait.Visibility : Visibility.Private; }
         }
 
         public IMethod SourceMethod { get; set; }
@@ -419,10 +368,10 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             _beginName = (int)reader.Position;
             _name = AbcIO.ReadString(reader); //name_index
-            _flags = (AbcMethodFlags)reader.ReadUInt8();
+            Flags = (AbcMethodFlags)reader.ReadUInt8();
 
             _beginParamValues = (int)reader.Position;
-            if ((_flags & AbcMethodFlags.HasOptional) != 0)
+            if ((Flags & AbcMethodFlags.HasOptional) != 0)
             {
                 int optional_count = (int)reader.ReadUIntEncoded();
                 int firstOptionalParam = param_count - optional_count;
@@ -437,7 +386,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
             
             _beginParamNames = (int)reader.Position;
-            if ((_flags & AbcMethodFlags.HasParamNames) != 0)
+            if ((Flags & AbcMethodFlags.HasParamNames) != 0)
             {
                 for (int i = 0; i < param_count; ++i)
                 {
@@ -477,18 +426,14 @@ namespace DataDynamics.PageFX.FLI.ABC
             else writer.WriteUIntEncoded((uint)_name.Index);
 
             //flags
-            writer.WriteUInt8((byte)_flags);
+            writer.WriteUInt8((byte)Flags);
 
             //param values
             if (HasOptionalParams)
             {
-                int optional_count = Logic.CountOf(_params,
-                                                   delegate(AbcParameter p)
-                                                       {
-                                                           return p.IsOptional;
-                                                       });
+                int optionalCount = _params.Count(p => p.IsOptional);
 
-                writer.WriteUIntEncoded((uint)optional_count);
+                writer.WriteUIntEncoded((uint)optionalCount);
                 for (int i = 0; i < param_count; ++i)
                 {
                     var p = _params[i];
@@ -554,7 +499,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             writer.WriteElementString("returnType", ReturnType.ToString());
             //writer.WriteElementString("signature", ToString("s"));
-            writer.WriteElementString("flags", _flags.ToString());
+            writer.WriteElementString("flags", Flags.ToString());
             _params.DumpXml(writer);
 
             if (AbcDumpService.DumpCode && _body != null)
@@ -710,16 +655,10 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         internal bool IsTypeUsed(AbcMultiname typename)
         {
-            if (ReturnType == typename) return true;
-            foreach (var p in Parameters)
-            {
-                if (p.Type == typename)
-                    return true;
-            }
-            return false;
+        	return ReturnType == typename || Parameters.Any(p => p.Type == typename);
         }
 
-        internal int MethodInfoIndex { get; set; }
+    	internal int MethodInfoIndex { get; set; }
     }
 
     public class AbcMethodCollection : List<AbcMethod>, ISwfAtom, ISupportXmlDump

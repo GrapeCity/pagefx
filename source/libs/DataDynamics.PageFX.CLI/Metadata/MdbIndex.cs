@@ -70,7 +70,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
 
         public override bool Equals(object obj)
         {
-            return obj is MdbIndex ? Equals((MdbIndex)obj) : false;
+            return obj is MdbIndex && Equals((MdbIndex)obj);
         }
 
         public override int GetHashCode()

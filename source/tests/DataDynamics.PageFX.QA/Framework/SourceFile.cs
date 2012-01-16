@@ -3,7 +3,7 @@ using System.IO;
 
 namespace DataDynamics.PageFX
 {
-    public class SourceFile
+    public sealed class SourceFile
     {
         public SourceFile()
         {
@@ -11,47 +11,31 @@ namespace DataDynamics.PageFX
 
         public SourceFile(string name, string text)
         {
-            _name = name;
-            _text = text;
+            Name = name;
+            Text = text;
         }
 
-        /// <summary>
-        /// Gets or sets name of file
-        /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
+    	/// <summary>
+    	/// Gets or sets name of file
+    	/// </summary>
+    	public string Name { get; set; }
 
-        /// <summary>
-        /// Gets or sets the source text
-        /// </summary>
-        public string Text
-        {
-            get { return _text; }
-            set { _text = value; }
-        }
-        private string _text;
+    	/// <summary>
+    	/// Gets or sets the source text
+    	/// </summary>
+    	public string Text { get; set; }
 
-        public override string ToString()
+    	public override string ToString()
         {
-            return _name;
+            return Name;
         }
     }
 
-    public class SourceFileList : List<SourceFile>
+    public sealed class SourceFileList : List<SourceFile>
     {
         public SourceFile this[string name]
         {
-            get
-            {
-                return Find(delegate(SourceFile f)
-                                {
-                                    return f.Name == name;
-                                });
-            }
+            get { return Find(f => f.Name == name); }
         }
 
         public void Add(string name, string text)

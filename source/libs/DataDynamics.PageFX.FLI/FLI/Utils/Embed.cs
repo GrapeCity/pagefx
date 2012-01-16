@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWF;
 
@@ -122,9 +124,7 @@ namespace DataDynamics.PageFX.FLI
                 return new Embed { Source = source, MimeType = MimeTypes.AutoDetect(source) };
             }
 
-            var src = Algorithms.Find(f.Arguments,
-                                      a => a.Name == null
-                                           || string.Compare(a.Name, "source", true) == 0);
+        	var src = f.Arguments.FirstOrDefault(a => a.Name == null || string.Compare(a.Name, "source", StringComparison.OrdinalIgnoreCase) == 0);
             if (src != null)
             {
                 string source = src.Value as string;

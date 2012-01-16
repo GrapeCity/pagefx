@@ -251,9 +251,8 @@ namespace DataDynamics.PageFX.CLI.IL
                 return;
             }
 
-            var builder = new GraphBuilder(_body, false);
-            builder.IsVoidCallEnd = true;
-            var entry = builder.Build();
+        	var builder = new GraphBuilder(_body, false) {IsVoidCallEnd = true};
+        	var entry = builder.Build();
             if (entry == null)
                 throw new ILTranslatorException("Unable to build flowgraph");
 

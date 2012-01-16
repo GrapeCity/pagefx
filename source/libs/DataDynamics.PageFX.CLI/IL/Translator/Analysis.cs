@@ -432,35 +432,27 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region Utils
-        IType ResolveBoxingType(IInstruction instr, IType methodDeclType)
+        private IType ResolveBoxingType(IInstruction instr, IType methodDeclType)
         {
-            var type = HasConstrainedPrefix(instr);
-            if (type == null)
-                type = methodDeclType;
-
-            if (IsBoxableType(type))
-                return type;
-
-            return null;
+            var type = HasConstrainedPrefix(instr) ?? methodDeclType;
+        	return IsBoxableType(type) ? type : null;
         }
 
-        bool IsBoxableType(IType type)
+        private bool IsBoxableType(IType type)
         {
             return type != null && type != _declType
                    && TypeService.IsBoxableType(type);
         }
 
-        IType HasConstrainedPrefix(IInstruction instr)
+        private IType HasConstrainedPrefix(IInstruction instr)
         {
             int index = instr.Index - 1;
             if (index < 0) return null;
             var prev = _body.Code[index];
-            if (prev.Code == InstructionCode.Constrained)
-                return prev.Type;
-            return null;
+        	return prev.Code == InstructionCode.Constrained ? prev.Type : null;
         }
 
-        static bool IsDup(Stack<EvalItem> stack, out Instruction dup)
+        private static bool IsDup(Stack<EvalItem> stack, out Instruction dup)
         {
             dup = null;
             if (stack.Count == 0) return false;

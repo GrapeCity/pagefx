@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.FLI.ABC;
 
 namespace DataDynamics.PageFX.FLI.SWC
@@ -22,11 +23,11 @@ namespace DataDynamics.PageFX.FLI.SWC
         #endregion
 
         #region Build
-        public List<string[]> Build(AbcFile app, AbcInstance def, string defID)
+        public List<string[]> Build(AbcFile app, AbcInstance def, string defId)
         {
             _app = app;
             _def = def;
-            _defID = defID;
+            _defID = defId;
 
             AddInheritanceRef(def.SuperName);
 
@@ -38,7 +39,7 @@ namespace DataDynamics.PageFX.FLI.SWC
             GetSigRefs();
             GetExpressionRefs(def.ABC);
 
-            return Algorithms.Convert(_deps, d => new [] { d.ID, d.Type });
+        	return _deps.Select(d => new[] {d.ID, d.Type}).ToList();
         }
         #endregion
 

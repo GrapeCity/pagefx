@@ -512,16 +512,14 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        AbcFile GetAbcFile(ITypeMember member)
+        private AbcFile GetAbcFile(ITypeMember member)
         {
-            var type = member as IType;
-            if (type == null)
-                type = member.DeclaringType;
+            var type = member as IType ?? member.DeclaringType;
 
-            return GetAbcFileCore(type);
+        	return GetAbcFileCore(type);
         }
 
-        AbcFile GetAbcFileCore(ICustomAttributeProvider cp)
+        private AbcFile GetAbcFileCore(ICustomAttributeProvider cp)
         {
             if (_abc != null) return _abc;
             if (_swc == null) return null;

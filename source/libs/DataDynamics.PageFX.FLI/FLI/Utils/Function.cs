@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace DataDynamics.PageFX
 {
-    class Function
+    internal class Function
     {
         public string Name { get; set; }
 
@@ -35,7 +36,7 @@ namespace DataDynamics.PageFX
                 if (c != null)
                 {
                     double d = c.ToDouble(null);
-                    return d.ToString(FloatFormat);
+                    return d.ToString(CultureInfo.InvariantCulture);
                 }
                 return v.ToString();
             }
@@ -56,9 +57,7 @@ namespace DataDynamics.PageFX
 
         public Argument Find(string name, bool ignoreCase)
         {
-            return Algorithms.Find(_args,
-                                   a => a.Name != null
-                                        && string.Compare(a.Name, name, ignoreCase) == 0);
+            return _args.FirstOrDefault(a => a.Name != null && string.Compare(a.Name, name, ignoreCase) == 0);
         }
 
         public override string ToString()
@@ -290,21 +289,11 @@ namespace DataDynamics.PageFX
             }
         }
 
-        static double ParseDouble(string s)
+        private static double ParseDouble(string s)
         {
-            return double.Parse(s, NumberStyles.Float, FloatFormat);
+            return double.Parse(s, NumberStyles.Float, CultureInfo.InvariantCulture);
         }
 
-        static IFormatProvider _floatFormat;
-        public static IFormatProvider FloatFormat
-        {
-            get
-            {
-                if (_floatFormat == null)
-                    _floatFormat = new NumberFormatInfo {NumberDecimalSeparator = "."};
-                return _floatFormat;
-            }
-        }
         #endregion
     }
 }

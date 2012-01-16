@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
@@ -13,8 +12,8 @@ namespace DataDynamics.PageFX.CodeModel
         private readonly IMethod _method;
         private readonly IType _type;
         private readonly ParameterCollection _params;
-        private object _tag;
-        #endregion
+
+    	#endregion
 
         #region ctor
         public MethodProxy(IGenericInstance instance, IMethod method)
@@ -389,6 +388,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return _method.NodeType; }
@@ -399,12 +399,9 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.EmptyCodeNodes; }
         }
 
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        #endregion
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)

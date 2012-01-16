@@ -38,10 +38,7 @@ namespace DataDynamics.PE
     {
         public PESection this[string name]
         {
-            get
-            {
-                return Find(delegate(PESection s) { return s.Name == name; });
-            }
+            get { return Find(s => s.Name == name); }
         }
     }
 }

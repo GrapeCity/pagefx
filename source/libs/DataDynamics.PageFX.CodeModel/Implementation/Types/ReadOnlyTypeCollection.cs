@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    internal class ReadOnlyTypeCollection : ReadOnlyList<IType>, ITypeCollection
+    internal sealed class ReadOnlyTypeCollection : ReadOnlyList<IType>, ITypeCollection
     {
         #region ITypeCollection Members
         public IType this[string fullname]
         {
-            get 
-            {
-                return Algorithms.Find(list, t => t.FullName == fullname);
-            }
+            get { return list.FirstOrDefault(type => type.FullName == fullname); }
         }
 
         public void Sort()

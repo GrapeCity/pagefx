@@ -59,11 +59,13 @@ namespace DataDynamics
                             }
                             else
                             {
-                                var f = new For();
-                                f.var = var;
-                                f.index = i;
-                                f.useeol = names.Length >= 3 && names[2] == "eol";
-                                stack.Push(f);
+                            	var f = new For
+                            	        	{
+                            	        		var = var,
+                            	        		index = i,
+                            	        		useeol = names.Length >= 3 && names[2] == "eol"
+                            	        	};
+                            	stack.Push(f);
                             }
                         }
                         else if (s == StatementEndFor)

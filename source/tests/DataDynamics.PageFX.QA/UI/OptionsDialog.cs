@@ -48,10 +48,9 @@ namespace DataDynamics.UI
         {
             if (opt == null) return;
 
-            var node = new TreeNode(opt.Name);
-            node.Tag = opt;
+        	var node = new TreeNode(opt.Name) {Tag = opt};
 
-            if (parent != null)
+        	if (parent != null)
                 parent.Nodes.Add(node);
             else
                 treeOpts.Nodes.Add(node);
@@ -90,7 +89,7 @@ namespace DataDynamics.UI
     {
         public OptionNode(string name, Control ctrl, params OptionNode[] kids)
         {
-            _name = name;
+            Name = name;
             _ctrl = ctrl;
             if (kids != null)
             {
@@ -98,21 +97,16 @@ namespace DataDynamics.UI
             }
         }
 
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
+    	public string Name { get; set; }
 
-        public Control Control
+    	public Control Control
         {
             get { return _ctrl; }
             set { _ctrl = value; }
         }
         private Control _ctrl;
 
-        public List<OptionNode> Kids
+        public IEnumerable<OptionNode> Kids
         {
             get { return _kids; }
         }

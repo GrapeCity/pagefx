@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
@@ -23,11 +24,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         /// </summary>
         public SwfMovie()
         {
-            _displayList = new HashedList<ushort, ISwfDisplayObject>(
-                delegate(ISwfDisplayObject obj)
-                    {
-                        return obj.Depth;
-                    });
+            _displayList = new HashedList<ushort, ISwfDisplayObject>(obj => obj.Depth);
         }
 
         /// <summary>
@@ -395,12 +392,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         #region Graphics
         public SwfGraphics Graphics
         {
-            get
-            {
-                if (_graphics == null)
-                    _graphics = new SwfGraphics(this);
-                return _graphics;
-            }
+            get { return _graphics ?? (_graphics = new SwfGraphics(this)); }
         }
         private SwfGraphics _graphics;
         #endregion
@@ -443,10 +435,9 @@ namespace DataDynamics.PageFX.FLI.SWF
         /// <param name="options">options to decode tags.</param>
         public void Load(Stream input, SwfTagDecodeOptions options)
         {
-            var reader = new SwfReader(input);
-            reader.TagDecodeOptions = options;
+        	var reader = new SwfReader(input) {TagDecodeOptions = options};
 
-            //File Header
+        	//File Header
             string sig = reader.ReadASCII(3);
             // "FWS" or "CWS" for ZLIB compressed files (v6.0 or later)
             if (sig != "FWS" && sig != "CWS")
@@ -480,11 +471,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (_autoFrameCount)
             {
-                _frameCount = (ushort)Logic.CountOf(_tags,
-                                                    delegate(SwfTag tag)
-                                                        {
-                                                            return tag.TagCode == SwfTagCode.ShowFrame;
-                                                        });
+                _frameCount = (ushort)_tags.Count(tag => tag.TagCode == SwfTagCode.ShowFrame);
             }
 
             var writer = new SwfWriter();
@@ -943,10 +930,9 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (mysprite != null)
                 return mysprite;
 
-            mysprite = new SwfSprite();
-            mysprite.FrameCount = sprite.FrameCount;
+        	mysprite = new SwfSprite {FrameCount = sprite.FrameCount};
 
-            _spriteStack.Push(mysprite);
+        	_spriteStack.Push(mysprite);
             foreach (var tag in sprite.Tags)
                 Import(from, tag);
             _spriteStack.Pop();

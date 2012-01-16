@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace DataDynamics.PageFX
@@ -29,7 +30,7 @@ namespace DataDynamics.PageFX
                     case NodeKind.Assembly:
                         return false;
                 }
-                return Algorithms.TrueAny(Stats, s => s.Total != 0);
+                return Stats.Any(s => s.Total != 0);
             }
         }
 

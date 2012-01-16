@@ -86,16 +86,19 @@ namespace DataDynamics.PageFX.CodeModel
     public class VariableCollection : List<IVariable>, IVariableCollection
     {
         #region IVariableCollection Members
+
         public IVariable this[string name]
         {
             get
             {
-                return Find(delegate(IVariable v) { return v.Name == name; });
+                return Find(v => v.Name == name);
             }
         }
+
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Variables; }
@@ -106,16 +109,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Convert(this); }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        private object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)

@@ -229,12 +229,9 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region IConstantProvider Members
-        public object Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-        private object _value;
-        #endregion
+
+    	public object Value { get; set; }
+
+    	#endregion
     }
 }

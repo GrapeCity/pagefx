@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using System.Linq;
 using DataDynamics;
 
 namespace abc
@@ -65,10 +66,8 @@ namespace abc
         {
             string path = GetStatePath(fname, true);
 
-            var xws = new XmlWriterSettings();
-            xws.Indent = true;
-            xws.IndentChars = "  ";
-            using (var writer = XmlWriter.Create(path))
+        	var xws = new XmlWriterSettings {Indent = true, IndentChars = "  "};
+        	using (var writer = XmlWriter.Create(path))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("root");
@@ -185,11 +184,7 @@ namespace abc
                 string name = kidElem.GetAttribute("name");
                 if (string.IsNullOrEmpty(name)) continue;
 
-                var kid = Algorithms.Find(ctrl.Controls,
-                                                       delegate(Control c)
-                                                       {
-                                                           return c.Name == name;
-                                                       });
+                var kid = ctrl.Controls.Cast<Control>().FirstOrDefault(c => c.Name == name);
                 if (kid != null)
                 {
                     LoadState(kid, kidElem);
@@ -215,25 +210,31 @@ namespace abc
                 form.SuspendLayout();
                 int d = 10;
 
-                var ok = new Button();
-                ok.DialogResult = DialogResult.OK;
-                ok.Text = "OK";
-                ok.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+            	var ok = new Button
+            	         	{
+            	         		DialogResult = DialogResult.OK,
+            	         		Text = "OK",
+            	         		Anchor = AnchorStyles.Right | AnchorStyles.Bottom
+            	         	};
 
-                var cancel = new Button();
-                cancel.DialogResult = DialogResult.Cancel;
-                cancel.Text = "Cancel";
-                cancel.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+            	var cancel = new Button
+            	             	{
+            	             		DialogResult = DialogResult.Cancel,
+            	             		Text = "Cancel",
+            	             		Anchor = AnchorStyles.Right | AnchorStyles.Bottom
+            	             	};
 
-                cancel.Location = new Point(w - d - cancel.Width, h - d - cancel.Height);
+            	cancel.Location = new Point(w - d - cancel.Width, h - d - cancel.Height);
                 ok.Location = new Point(cancel.Left - d - ok.Width, cancel.Top);
 
-                var list = new CheckedListBox();
-                list.Location = new Point(d, d);
-                list.Size = new Size(w - 2 * d, ok.Top - d);
-                list.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+            	var list = new CheckedListBox
+            	           	{
+            	           		Location = new Point(d, d),
+            	           		Size = new Size(w - 2*d, ok.Top - d),
+            	           		Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom
+            	           	};
 
-                foreach (var item in items)
+            	foreach (var item in items)
                 {
                     list.Items.Add(item);
                 }

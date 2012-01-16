@@ -50,9 +50,8 @@ namespace DataDynamics.UI
             {
                 int size = ImageSize;
 
-                var imageViewer = new ImageViewer();
-                imageViewer.Dock = DockStyle.Bottom;
-                imageViewer.LoadImage(path, 256, 256);
+            	var imageViewer = new ImageViewer {Dock = DockStyle.Bottom};
+            	imageViewer.LoadImage(path, 256, 256);
                 imageViewer.Width = size;
                 imageViewer.Height = size;
                 imageViewer.IsThumbnail = true;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
 using DataDynamics.PageFX.CodeModel;
@@ -245,23 +246,18 @@ namespace DataDynamics.PageFX.FLI
 
         IAssembly NUnitFrameworkAssembly
         {
-            get
-            {
-                if (_asmNUnitFramework == null)
-                    _asmNUnitFramework = FindNUnitFramework();
-                return _asmNUnitFramework;
-            }
+            get { return _asmNUnitFramework ?? (_asmNUnitFramework = FindNUnitFramework()); }
         }
         IAssembly _asmNUnitFramework;
 
         static bool IsNUnitFramework(IAssembly asm)
         {
-            return string.Compare(asm.Name, "NUnit.Framework", true) == 0;
+            return string.Compare(asm.Name, "NUnit.Framework", StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        IAssembly FindNUnitFramework()
+        private IAssembly FindNUnitFramework()
         {
-            return Algorithms.Find(AssemblyHelper.GetReferences(_assembly, true), IsNUnitFramework);
+            return AssemblyHelper.GetReferences(_assembly, true).FirstOrDefault(IsNUnitFramework);
         }
         
         #region NUnitTypes & Methods

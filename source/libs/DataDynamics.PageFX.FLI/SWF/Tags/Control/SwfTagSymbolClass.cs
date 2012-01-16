@@ -36,6 +36,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         #endregion
 
         #region Public Members
+
         public SwfAssetCollection Symbols
         {
             get { return _symbols; }
@@ -44,19 +45,24 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public void AddSymbol(ushort id, string name)
         {
-            var asset = new SwfAsset(id, name);
-            asset.IsSymbol = true;
-            asset.Name = name;
-            Symbols.Add(asset);
+        	var asset = new SwfAsset(id, name)
+        	            	{
+        	            		IsSymbol = true,
+        	            		Name = name
+        	            	};
+        	Symbols.Add(asset);
         }
 
         public void AddSymbol(ISwfCharacter obj, string name)
         {
-            var asset = new SwfAsset(obj, name);
-            asset.IsSymbol = true;
-            asset.Name = name;
-            Symbols.Add(asset);
+        	var asset = new SwfAsset(obj, name)
+        	            	{
+        	            		IsSymbol = true,
+        	            		Name = name
+        	            	};
+        	Symbols.Add(asset);
         }
+
         #endregion
 
         #region IO

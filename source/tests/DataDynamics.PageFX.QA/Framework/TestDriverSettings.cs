@@ -59,12 +59,7 @@ namespace DataDynamics.PageFX
 
         public TestReport Report
         {
-            get
-            {
-                if (_report == null)
-                    _report = new TestReport();
-                return _report;
-            }
+            get { return _report ?? (_report = new TestReport()); }
         }
         private TestReport _report;
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace DataDynamics
@@ -25,11 +26,10 @@ namespace DataDynamics
 
         public static bool IsHex(string s)
         {
-            if (s == null) return false;
-            return Algorithms.TrueAll(s, IsHexDigit);
+        	return s != null && s.All(IsHexDigit);
         }
 
-        public static int ParseHex(string s)
+    	public static int ParseHex(string s)
         {
             return int.Parse(s, NumberStyles.HexNumber, null);
         }

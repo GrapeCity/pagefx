@@ -7,7 +7,7 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 namespace DataDynamics.PageFX.CodeModel
 {
     [XmlElementName("Methods")]
-    public class MethodCollection : ParameterizedMemberCollection<IMethod>, IMethodCollection
+    public sealed class MethodCollection : ParameterizedMemberCollection<IMethod>, IMethodCollection
     {
         public MethodCollection(IType owner) : base(owner)
         {
@@ -20,7 +20,7 @@ namespace DataDynamics.PageFX.CodeModel
             {
                 _ctors.Add(method);
                 if (method.IsStatic)
-                    _cctor = method;
+                    StaticConstructor = method;
             }
         }
 
@@ -28,14 +28,11 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _ctors; }
         }
-        readonly List<IMethod> _ctors = new List<IMethod>();
+        private readonly List<IMethod> _ctors = new List<IMethod>();
 
-        public IMethod StaticConstructor
-        {
-            get { return _cctor; }
-        }
-        IMethod _cctor;
-        #endregion
+    	public IMethod StaticConstructor { get; private set; }
+
+    	#endregion
 
         #region ICodeNode Members
         public CodeNodeType NodeType
@@ -59,7 +56,7 @@ namespace DataDynamics.PageFX.CodeModel
         }
     }
 
-    class EmptyMethodCollection : IMethodCollection
+    internal sealed class EmptyMethodCollection : IMethodCollection
     {
         public static readonly IMethodCollection Instance = new EmptyMethodCollection();
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using DataDynamics.Compression.Zip;
 using DataDynamics.PageFX.CodeModel;
@@ -416,10 +417,9 @@ namespace DataDynamics.PageFX.FLI
             _assembly.Location = path;
             _assembly.Name = Path.GetFileName(path);
 
-            _swc = new SwcFile(path);
-            _swc.AddNsRefs = true;
+        	_swc = new SwcFile(path) {AddNsRefs = true};
 
-			foreach (var abc in _swc.GetAbcFiles())
+        	foreach (var abc in _swc.GetAbcFiles())
 				_abcFiles.Add(abc);
 
             ResolveRefs(path);
@@ -470,11 +470,14 @@ namespace DataDynamics.PageFX.FLI
             string fullname = NameHelper.MakeFullName(ns, name);
             var res = _assembly.FindType(fullname);
             if (res != null) return res;
-            var type = new UserDefinedType();
-            type.Namespace = ns;
-            type.Name = name;
-            type.Visibility = Visibility.Public;
-            type.Tag = new GlobalType(type);
+
+        	var type = new UserDefinedType
+        	           	{
+        	           		Namespace = ns,
+        	           		Name = name,
+        	           		Visibility = Visibility.Public
+        	           	};
+        	type.Tag = new GlobalType(type);
             RegisterType(type);
 
             DefineSwcAbcFileAttribute(type, script.ABC);
@@ -983,7 +986,7 @@ namespace DataDynamics.PageFX.FLI
 
 		private static ITypeMember FindMember(IType type, string name)
 		{
-			return Algorithms.Find(type.Members, m => m.Name == name);
+			return type.Members.FirstOrDefault(m => m.Name == name);
 		}
 
     	private static bool HasMember(IType type, string name)
@@ -1290,16 +1293,18 @@ namespace DataDynamics.PageFX.FLI
             int n = fix.Length;
             if (n <= 0) return null;
             var arr = new ParamFix[n];
-            for (int i = 0; i < n; ++i)
-            {
-                var ps = fix[i].Split(' ');
-                var p = new ParamFix();
-                p.index = i;
-                p.type = ps[0];
-                p.name = ps[1];
-                arr[i] = p;
-            }
-            return arr;
+			for (int i = 0; i < n; ++i)
+			{
+				var ps = fix[i].Split(' ');
+				var p = new ParamFix
+				        	{
+				        		index = i,
+				        		type = ps[0],
+				        		name = ps[1]
+				        	};
+				arr[i] = p;
+			}
+        	return arr;
         }
 
         IType GetSystemType(string name)
@@ -1397,9 +1402,11 @@ namespace DataDynamics.PageFX.FLI
 
             ParamFix pfix = null;
             if (fix != null)
-                pfix = Algorithms.Find(fix, item => item.index == i);
+            {
+            	pfix = fix.FirstOrDefault(item => item.index == i);
+            }
 
-            string name = null;
+        	string name = null;
             IType type = null;
             if (i == 0 && HasThisObjectArgument(method))
             {

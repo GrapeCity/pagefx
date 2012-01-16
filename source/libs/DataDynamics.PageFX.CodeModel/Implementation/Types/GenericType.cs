@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -82,11 +83,10 @@ namespace DataDynamics.PageFX.CodeModel
         #region Utils
         public static bool HasGenericParams(IEnumerable<IType> set)
         {
-            if (set == null) return false;
-            return Algorithms.TrueAny(set, HasGenericParams);
+        	return set != null && set.Any(HasGenericParams);
         }
 
-        public static bool HasGenericParams(IType type)
+    	public static bool HasGenericParams(IType type)
         {
             if (type == null) return false;
             if (type is IGenericType) return true;
@@ -259,17 +259,18 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region DisplayName
-        public override string DisplayName
-        {
-            get
-            {
-                if (_displayName == null)
-                    _displayName = ToDisplayName(FullName)
-                        + Format(_genericParams, TypeNameKind.DisplayName, false);
-                return _displayName;
-            }
-        }
-        string _displayName;
+
+    	public override string DisplayName
+    	{
+    		get
+    		{
+    			return _displayName
+    			       ?? (_displayName = ToDisplayName(FullName)
+    			                          + Format(_genericParams, TypeNameKind.DisplayName, false));
+    		}
+    	}
+
+    	private string _displayName;
 
         internal static string ToDisplayName(string name)
         {

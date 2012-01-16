@@ -58,8 +58,7 @@ namespace DataDynamics
 
         public AndFilter(IFilter<T> filter)
         {
-            _filters = new List<IFilter<T>>();
-            _filters.Add(filter);
+            _filters = new List<IFilter<T>> {filter};
         }
 
         public AndFilter(IEnumerable<IFilter<T>> filters)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
 
@@ -78,17 +79,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public bool IsSwitchCase
         {
-            get
-            {
-                foreach (var i in InEdges)
-                {
-                    if (i.From.IsSwitch) //goto case
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
+            get { return InEdges.Any(i => i.From.IsSwitch); }
         }
 
         public bool HasZeroIn
@@ -366,17 +357,13 @@ namespace DataDynamics.PageFX.CLI.CFG
         #endregion
 
         #region Sibling Linked List
-        /// <summary>
-        /// Gets or sets the parent of this node.
-        /// </summary>
-        public Node Parent
-        {
-            get { return _parent; }
-            set { _parent = value; }
-        }
-        Node _parent;
 
-        /// <summary>
+    	/// <summary>
+    	/// Gets or sets the parent of this node.
+    	/// </summary>
+    	public Node Parent { get; set; }
+
+    	/// <summary>
         /// Gets the previous node
         /// </summary>
         public Node Prev
@@ -914,16 +901,11 @@ namespace DataDynamics.PageFX.CLI.CFG
         
         public IEnumerable<Node> ReachableNodes
         {
-            get
-            {
-                if (_reachableNodes == null)
-                    _reachableNodes = new List<Node>(GetReachableNodesCore());
-                return _reachableNodes;
-            }
+            get { return _reachableNodes ?? (_reachableNodes = new List<Node>(EvalReachableNodes())); }
         }
-        List<Node> _reachableNodes;
+        private List<Node> _reachableNodes;
 
-        IEnumerable<Node> GetReachableNodesCore()
+        private IEnumerable<Node> EvalReachableNodes()
         {
             var stack = new Stack<Node>();
             var marked = new Hashtable();
@@ -948,15 +930,10 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public bool IsReachable(Node from)
         {
-            foreach (var node in from.ReachableNodes)
-            {
-                if (node == this)
-                    return true;
-            }
-            return false;
+        	return from.ReachableNodes.Any(node => node == this);
         }
 
-        public void Detach()
+    	public void Detach()
         {
             if (PreventDetach) return;
 
@@ -997,22 +974,13 @@ namespace DataDynamics.PageFX.CLI.CFG
         /// </summary>
         public ILStream Code
         {
-            get
-            {
-                if (_code == null)
-                    _code = new ILStream();
-                return _code;
-            }
+            get { return _code ?? (_code = new ILStream()); }
         }
-        ILStream _code;
+        private ILStream _code;
 
         public int CodeLength
         {
-            get
-            {
-                if (_code == null) return 0;
-                return _code.Count;
-            }
+            get { return _code == null ? 0 : _code.Count; }
         }
 
         /// <summary>
@@ -1020,12 +988,7 @@ namespace DataDynamics.PageFX.CLI.CFG
         /// </summary>
         public Instruction EntryPoint
         {
-            get
-            {
-                if (_code.Count > 0)
-                    return _code[0];
-                return null;
-            }
+            get { return _code.Count > 0 ? _code[0] : null; }
         }
 
         /// <summary>
@@ -1035,10 +998,8 @@ namespace DataDynamics.PageFX.CLI.CFG
         {
             get
             {
-                int i = _code.Count - 1;
-                if (i >= 0)
-                    return _code[i];
-                return null;
+                int index = _code.Count - 1;
+                return index >= 0 ? _code[index] : null;
             }
         }
 
@@ -1046,10 +1007,8 @@ namespace DataDynamics.PageFX.CLI.CFG
         {
             get
             {
-                var p = EntryPoint;
-                if (p != null)
-                    return p.Index;
-                return -1;
+            	var p = EntryPoint;
+            	return p != null ? p.Index : -1;
             }
         }
 
@@ -1057,10 +1016,8 @@ namespace DataDynamics.PageFX.CLI.CFG
         {
             get
             {
-                var p = ExitPoint;
-                if (p != null)
-                    return p.Index;
-                return -1;
+            	var p = ExitPoint;
+            	return p != null ? p.Index : -1;
             }
         }
 
@@ -1203,14 +1160,9 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public List<IInstruction> TranslatedCode
         {
-            get
-            {
-                if (_translatedCode == null)
-                    _translatedCode = new List<IInstruction>();
-                return _translatedCode;
-            }
+            get { return _translatedCode ?? (_translatedCode = new List<IInstruction>()); }
         }
-        List<IInstruction> _translatedCode;
+        private List<IInstruction> _translatedCode;
 
         public int TranslatedEntryIndex { get; set; }
 

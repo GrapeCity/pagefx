@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {
@@ -49,18 +48,14 @@ namespace DataDynamics.PageFX.CLI.Metadata
         {
             get
             {
-                if (_single == null)
-                {
-                    _single = new ArrayShape
-                    {
-                        LoBounds = new int[0],
-                        Sizes = new int[0]
-                    };
-                }
-                return _single;
+            	return _single ?? (_single = new ArrayShape
+            	                             	{
+            	                             		LoBounds = new int[0],
+            	                             		Sizes = new int[0]
+            	                             	});
             }
         }
-        static ArrayShape _single;
+        private static ArrayShape _single;
 
         public int GetLowBound(int index)
         {

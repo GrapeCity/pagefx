@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
@@ -265,17 +266,13 @@ namespace DataDynamics.PageFX.FLI
             for (int i = 0; i < list.Count; ++i)
             {
                 var rsl = list[i];
-                var asm = Algorithms.Find(
-                    GetRefs(),
-                    delegate(IAssembly r)
-                        {
-                            string rpath = r.Location;
-                            if (!Path.IsPathRooted(rpath))
-                                rpath = Path.Combine(Environment.CurrentDirectory, rpath);
-                            if (PathHelper.Compare(rpath, rsl.Library) == 0)
-                                return true;
-                            return false;
-                        });
+            	var asm = GetRefs().FirstOrDefault(r =>
+            	                                   	{
+            	                                   		string rpath = r.Location;
+            	                                   		if (!Path.IsPathRooted(rpath))
+            	                                   			rpath = Path.Combine(Environment.CurrentDirectory, rpath);
+            	                                   		return PathHelper.Compare(rpath, rsl.Library) == 0;
+            	                                   	});
 
                 if (asm == null)
                 {
@@ -352,14 +349,16 @@ namespace DataDynamics.PageFX.FLI
         #region ProductInfo
         void SetupProductInfo()
         {
-            var productInfo = new SwfTagProductInfo();
-            productInfo.ProductID = 1;
-            productInfo.Edition = 0;
-            productInfo.MajorVersion = 1;
-            productInfo.MinorVersion = 0;
-            productInfo.BuildNumber = 0;
-            productInfo.BuildDate = (ulong)DateTime.Now.Ticks;
-            _swf.Tags.Add(productInfo);
+        	var productInfo = new SwfTagProductInfo
+        	                  	{
+        	                  		ProductID = 1,
+        	                  		Edition = 0,
+        	                  		MajorVersion = 1,
+        	                  		MinorVersion = 0,
+        	                  		BuildNumber = 0,
+        	                  		BuildDate = (ulong)DateTime.Now.Ticks
+        	                  	};
+        	_swf.Tags.Add(productInfo);
         }
         #endregion
 
@@ -485,8 +484,7 @@ namespace DataDynamics.PageFX.FLI
                 {
                     //TODO: Resolve the situation: assembly can have more than one subclasses of mx.core.Application
                     _searchFlexAppType = false;
-                    var apps = Algorithms.FindAll(_assembly.Types,
-                                                  type => TypeHelper.IsFrom(type, "mx.core.Application"));
+                    var apps = _assembly.Types.Where(type => TypeHelper.IsFrom(type, "mx.core.Application")).ToList();
                     int n = apps.Count;
                     if (n > 0)
                     {
@@ -496,8 +494,8 @@ namespace DataDynamics.PageFX.FLI
                         }
                         else
                         {
-                            _typeFlexApp = Algorithms.Find(apps, TypeHelper.IsRootSprite);
-                            if (_typeFlexApp == null)
+                        	_typeFlexApp = apps.FirstOrDefault(TypeHelper.IsRootSprite);
+                        	if (_typeFlexApp == null)
                                 throw new AmbiguousMatchException("Unable to find MX application class");
                         }
                     }

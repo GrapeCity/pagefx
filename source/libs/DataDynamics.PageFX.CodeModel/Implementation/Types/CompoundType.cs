@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
+	//TODO: Consider to rename to ConstructedType
+
     public abstract class CompoundType : ICompoundType
     {
         #region Constructors
@@ -44,26 +45,16 @@ namespace DataDynamics.PageFX.CodeModel
 
         public string FullName
         {
-            get
-            {
-                if (_fullName == null)
-                    _fullName = ElementType.FullName + NameSuffix;
-                return _fullName;
-            }
+            get { return _fullName ?? (_fullName = ElementType.FullName + NameSuffix); }
         }
-        string _fullName;
+        private string _fullName;
 
         public abstract TypeKind TypeKind { get; }
 
         public bool IsAbstract
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.IsAbstract;
-                return false;
-            }
-            set
+            get { return _elementType != null && _elementType.IsAbstract; }
+        	set
             {
                 if (_elementType != null)
                     _elementType.IsAbstract = value;
@@ -72,13 +63,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsSealed
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.IsSealed;
-                return false;
-            }
-            set
+            get { return _elementType != null && _elementType.IsSealed; }
+        	set
             {
                 if (_elementType != null)
                     _elementType.IsSealed = value;
@@ -87,13 +73,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsBeforeFieldInit
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.IsBeforeFieldInit;
-                return false;
-            }
-            set
+            get { return _elementType != null && _elementType.IsBeforeFieldInit; }
+        	set
             {
                 if (_elementType != null)
                     _elementType.IsBeforeFieldInit = value;
@@ -105,13 +86,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsCompilerGenerated
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.IsCompilerGenerated;
-                return false;
-            }
-            set
+            get { return _elementType != null && _elementType.IsCompilerGenerated; }
+        	set
             {
                 throw new NotSupportedException();
             }
@@ -312,28 +288,18 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string Key
         {
-            get
-            {
-                if (_key == null)
-                    _key = ElementType.Key + NameSuffix;
-                return _key;
-            }
+            get { return _key ?? (_key = ElementType.Key + NameSuffix); }
         }
-        string _key;
+        private string _key;
         
         /// <summary>
         /// Gets name of the type used in signatures.
         /// </summary>
         public string SigName
         {
-            get
-            {
-                if (_sigName == null)
-                    _sigName = ElementType.SigName + SigSuffix;
-                return _sigName;
-            }
+            get { return _sigName ?? (_sigName = ElementType.SigName + SigSuffix); }
         }
-        string _sigName;
+        private string _sigName;
 
         protected abstract string SigSuffix { get; }
 
@@ -389,26 +355,16 @@ namespace DataDynamics.PageFX.CodeModel
 
         public string Name
         {
-            get
-            {
-                if (_name == null)
-                    _name = ElementType.Name + NameSuffix;
-                return _name;
-            }
-            set { throw new NotSupportedException(); }
+            get { return _name ?? (_name = ElementType.Name + NameSuffix); }
+        	set { throw new NotSupportedException(); }
         }
-        string _name;
+        private string _name;
 
         public string DisplayName
         {
-            get
-            {
-                if (_displayName == null)
-                    _displayName = ElementType.DisplayName + NameSuffix;
-                return _displayName;
-            }
+            get { return _displayName ?? (_displayName = ElementType.DisplayName + NameSuffix); }
         }
-        string _displayName;
+        private string _displayName;
 
         public IType DeclaringType
         {
@@ -516,6 +472,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Type; }
@@ -526,16 +483,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Enumerate(_elementType); }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public virtual string ToString(string format, IFormatProvider formatProvider)
@@ -545,16 +498,13 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region IDocumentationProvider Members
-        /// <summary>
-        /// Gets or sets documentation of this member
-        /// </summary>
-        public string Documentation
-        {
-            get { return _doc; }
-            set { _doc = value; }
-        }
-        string _doc;
-        #endregion
+
+    	/// <summary>
+    	/// Gets or sets documentation of this member
+    	/// </summary>
+    	public string Documentation { get; set; }
+
+    	#endregion
 
         #region Object Override Members
         public override bool Equals(object obj)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -178,34 +179,19 @@ namespace DataDynamics.PageFX.CodeModel
 
         public string FullName
         {
-            get
-            {
-                if (_fullName == null)
-                    _fullName = EvalName(TypeNameKind.FullName, TypeNameKind.FullName);
-                return _fullName;
-            }
+            get { return _fullName ?? (_fullName = EvalName(TypeNameKind.FullName, TypeNameKind.FullName)); }
         }
-        string _fullName;
+        private string _fullName;
 
         public TypeKind TypeKind
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.TypeKind;
-                return TypeKind.Class;
-            }
+            get { return _genericType != null ? _genericType.TypeKind : TypeKind.Class; }
         }
 
         public bool IsAbstract
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsAbstract;
-                return false;
-            }
-            set
+            get { return _genericType != null && _genericType.IsAbstract; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.IsAbstract = value;
@@ -214,13 +200,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsSealed
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsSealed;
-                return false;
-            }
-            set
+            get { return _genericType != null && _genericType.IsSealed; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.IsSealed = value;
@@ -229,13 +210,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsBeforeFieldInit
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsBeforeFieldInit;
-                return true;
-            }
-            set
+            get { return _genericType == null || _genericType.IsBeforeFieldInit; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.IsBeforeFieldInit = value;
@@ -247,16 +223,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsCompilerGenerated
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsCompilerGenerated;
-                return false;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return _genericType != null && _genericType.IsCompilerGenerated; }
+        	set { throw new NotSupportedException(); }
         }
 
         public bool IsInterface
@@ -295,48 +263,34 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IType BaseType
         {
-            get
-            {
-                if (_baseType == null)
-                    _baseType = GenericType.Resolve(this, _genericType.BaseType);
-                return _baseType;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return _baseType ?? (_baseType = GenericType.Resolve(this, _genericType.BaseType)); }
+        	set { throw new NotSupportedException(); }
         }
-        IType _baseType;
+        private IType _baseType;
 
         public ITypeCollection Interfaces
         {
             get
             {
-                if (_ifaces == null)
+                if (_interfaces == null)
                 {
-                    _ifaces = new ReadOnlyTypeCollection();
+                    _interfaces = new ReadOnlyTypeCollection();
                     if (_genericType.Interfaces != null)
                     {
-                        foreach (var iface in _genericType.Interfaces)
+                        foreach (var resolvedIface in _genericType.Interfaces.Select(iface => GenericType.Resolve(this, null, iface)))
                         {
-                            var resolvedIface = GenericType.Resolve(this, null, iface);
-                            _ifaces.AddInternal(resolvedIface);
+                        	_interfaces.AddInternal(resolvedIface);
                         }
                     }
                 }
-                return _ifaces;
+                return _interfaces;
             }
         }
-        ReadOnlyTypeCollection _ifaces;
+        private ReadOnlyTypeCollection _interfaces;
 
         public IType ValueType
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.ValueType;
-                return null;
-            }
+            get { return _genericType != null ? _genericType.ValueType : null; }
         }
 
         public SystemType SystemType

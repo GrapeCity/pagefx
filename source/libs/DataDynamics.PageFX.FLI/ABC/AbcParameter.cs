@@ -143,7 +143,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             CopyFrom(method.Parameters);
         }
 
-        public void CopyFrom(AbcParameterList list)
+        public void CopyFrom(IEnumerable<AbcParameter> list)
         {
             if (list == null)
                 throw new ArgumentNullException("list");

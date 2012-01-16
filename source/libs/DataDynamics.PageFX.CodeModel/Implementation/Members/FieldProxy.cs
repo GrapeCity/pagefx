@@ -144,6 +144,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Field; }
@@ -154,14 +155,9 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.EmptyCodeNodes; }
         }
 
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
+    	public object Tag { get; set; }
 
-        object _tag;
-        #endregion
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)

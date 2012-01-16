@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using DataDynamics.Compression.Zip;
 using DataDynamics.Compression.Zip.Compression.Streams;
 
@@ -19,7 +20,7 @@ namespace DataDynamics
         {
             Stream unzip = Uncompress(new MemoryStream(data));
             byte[] buf = new byte[4096];
-            MemoryStream ms = new MemoryStream();
+            var ms = new MemoryStream();
             int size;
             while ((size = unzip.Read(buf, 0, buf.Length)) > 0)
             {
@@ -37,7 +38,7 @@ namespace DataDynamics
 
         public static byte[] Compress(byte[] data)
         {
-            MemoryStream ms = new MemoryStream(data.Length);
+            var ms = new MemoryStream(data.Length);
             Stream zip = Compress(ms);
             zip.Write(data, 0, data.Length);
             zip.Flush();
@@ -47,17 +48,12 @@ namespace DataDynamics
 
         public static ZipEntry FindEntry(ZipFile zip, Predicate<ZipEntry> p)
         {
-            foreach (ZipEntry e in zip)
-            {
-                if (p(e)) 
-                    return e;
-            }
-            return null;
+        	return zip.Cast<ZipEntry>().FirstOrDefault(e => p(e));
         }
 
-        public static Stream Extract(ZipFile zip, Predicate<ZipEntry> p)
+    	public static Stream Extract(ZipFile zip, Predicate<ZipEntry> p)
         {
-            ZipEntry e = FindEntry(zip, p);
+            var e = FindEntry(zip, p);
             if (e != null)
                 return ToMemoryStream(e.Data);
             return null;
@@ -65,16 +61,12 @@ namespace DataDynamics
 
         public static Stream Extract(ZipFile zip, string name)
         {
-            return Extract(zip,
-                           delegate(ZipEntry e)
-                               {
-                                   return e.Name == name;
-                               });
+            return Extract(zip, e => e.Name == name);
         }
 
         private static MemoryStream ToMemoryStream(Stream s)
         {
-            MemoryStream ms = new MemoryStream();
+            var ms = new MemoryStream();
             CopyTo(s, ms);
             ms.Flush();
             ms.Position = 0;

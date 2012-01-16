@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -18,8 +19,8 @@ namespace DataDynamics.PageFX.CodeModel
         {
             if (ctor == null)
                 throw new ArgumentNullException("ctor");
-            _ctor = ctor;
-            _type = ctor.DeclaringType;
+            Constructor = ctor;
+            Type = ctor.DeclaringType;
         }
 
         public CustomAttribute(IType type)
@@ -42,14 +43,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         private static IMethod GetDefaultCtor(IType type)
         {
-            foreach (var m in type.Methods)
-            {
-                if (IsDeaultCtor(m))
-                    return m;
-            }
-            return null;
+        	return type.Methods.FirstOrDefault(m => IsDeaultCtor(m));
         }
-        #endregion
+
+    	#endregion
 
         #region ICustomAttribute Members
         /// <summary>
@@ -57,68 +54,48 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string TypeName
         {
-            get
-            {
-                if (_type != null)
-                    return _type.FullName;
-                return _typeName;
-            }
-            set { _typeName = value; }
+            get { return Type != null ? Type.FullName : _typeName; }
+        	set { _typeName = value; }
         }
-        string _typeName;
+        private string _typeName;
 
-        /// <summary>
-        /// Attribute type
-        /// </summary>
-        public IType Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
-        IType _type;
+    	/// <summary>
+    	/// Attribute type
+    	/// </summary>
+    	public IType Type { get; set; }
 
-        /// <summary>
+    	/// <summary>
         /// Attribute target
         /// </summary>
         public ICustomAttributeProvider Owner { get; set; }
 
-        /// <summary>
-        /// Attribute constructor
-        /// </summary>
-        public IMethod Constructor
-        {
-            get { return _ctor; }
-            set { _ctor = value; }
-        }
-        IMethod _ctor;
+    	/// <summary>
+    	/// Attribute constructor
+    	/// </summary>
+    	public IMethod Constructor { get; set; }
 
-        /// <summary>
+    	/// <summary>
         /// Gets the arguments used in attribute constructor.
         /// </summary>
         public IArgumentCollection Arguments
         {
             get { return _args; }
         }
-        readonly ArgumentCollection _args = new ArgumentCollection();
+        private readonly ArgumentCollection _args = new ArgumentCollection();
 
         public IArgumentCollection FixedArguments
         {
-            get 
-            {
-                return new ArgumentCollection(Algorithms.Filter(_args, a => a.IsFixed));
-            }
+            get { return new ArgumentCollection(_args.Where(a => a.IsFixed)); }
         }
 
         public IArgumentCollection NamedArguments
         {
-            get
-            {
-                return new ArgumentCollection(Algorithms.Filter(_args, a => a.IsNamed));
-            }
+            get { return new ArgumentCollection(_args.Where(a => a.IsNamed)); }
         }
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Attribute; }
@@ -129,16 +106,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return null; }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        private object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)
@@ -150,15 +123,16 @@ namespace DataDynamics.PageFX.CodeModel
         #region ICloneable Members
         public object Clone()
         {
-            var attr = new CustomAttribute();
-            attr._ctor = _ctor;
-            attr._type = _type;
-            attr._typeName = _typeName;
-            foreach (var arg in _args)
-            {
-                var arg2 = (IArgument)arg.Clone();
-                attr._args.Add(arg2);
-            }
+        	var attr = new CustomAttribute
+        	           	{
+        	           		Constructor = Constructor,
+        	           		Type = Type,
+        	           		_typeName = _typeName
+        	           	};
+        	foreach (var item in _args.Select(arg => (IArgument)arg.Clone()))
+        	{
+        		attr._args.Add(item);
+        	}
             return attr;
         }
         #endregion
@@ -204,6 +178,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Attributes; }
@@ -214,16 +189,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Convert(this); }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        private object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)

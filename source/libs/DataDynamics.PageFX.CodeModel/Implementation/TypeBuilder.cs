@@ -10,19 +10,23 @@ namespace DataDynamics.PageFX.CodeModel
             if (baseType == null)
                 throw new InvalidOperationException();
 
-            var type = new UserDefinedType(TypeKind.Class);
-            type.Namespace = ns;
-            type.Name = name;
-            type.Visibility = Visibility.Public;
+        	var type = new UserDefinedType(TypeKind.Class)
+        	           	{
+        	           		Namespace = ns,
+        	           		Name = name,
+        	           		Visibility = Visibility.Public,
+        	           		BaseType = baseType
+        	           	};
 
-            type.BaseType = baseType;
 
-            var ctor = new Method();
-            ctor.Name = ".ctor";
-            ctor.IsSpecialName = true;
-            ctor.Type = SystemTypes.Void;
-            ctor.Visibility = Visibility.Public;
-            type.Members.Add(ctor);
+        	var ctor = new Method
+        	           	{
+        	           		Name = ".ctor",
+        	           		IsSpecialName = true,
+        	           		Type = SystemTypes.Void,
+        	           		Visibility = Visibility.Public
+        	           	};
+        	type.Members.Add(ctor);
 
             int n;
             if (args != null)
@@ -30,10 +34,12 @@ namespace DataDynamics.PageFX.CodeModel
                 n = args.Length;
                 for (int i = 0; i < n; i += 2)
                 {
-                    var p = new Parameter();
-                    p.Type = args[i] as IType;
-                    p.Name = args[i + 1] as string;
-                    ctor.Parameters.Add(p);
+                	var p = new Parameter
+                	        	{
+                	        		Type = args[i] as IType,
+                	        		Name = args[i + 1] as string
+                	        	};
+                	ctor.Parameters.Add(p);
                 }
             }
 
@@ -42,16 +48,17 @@ namespace DataDynamics.PageFX.CodeModel
             {
                 var p = ctor.Parameters[i];
                 p.Index = i + 1;
-                var f = new Field();
-                f.Name = NameHelper.Cap(p.Name);
-                f.Visibility = Visibility.Public;
-                f.Type = p.Type;
-                type.Members.Add(f);
+            	var f = new Field
+            	        	{
+            	        		Name = NameHelper.Cap(p.Name),
+            	        		Visibility = Visibility.Public,
+            	        		Type = p.Type
+            	        	};
+            	type.Members.Add(f);
             }
 
-            var body = new MethodBody(ctor);
-            body.MaxStackSize = 2;
-            ctor.Body = body;
+        	var body = new MethodBody(ctor) {MaxStackSize = 2};
+        	ctor.Body = body;
 
             var code = new MethodCode(body);
 

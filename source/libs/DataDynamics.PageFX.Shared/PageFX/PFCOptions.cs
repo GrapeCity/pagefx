@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace DataDynamics.PageFX
 {
@@ -211,7 +214,7 @@ namespace DataDynamics.PageFX
 
         public static CLOption Find(string name)
         {
-            return Algorithms.Find(All, o => o.CheckName(name, true));
+        	return All.FirstOrDefault(o => o.CheckName(name, true));
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using DataDynamics.PageFX.CodeModel;
@@ -10,7 +11,7 @@ namespace DataDynamics.PageFX.CLI.IL
     public static class CIL
     {
         #region StackBehaviour
-        internal static int GetPopCount(IMethod method, Instruction instruction)
+        internal static int GetPopCount(IMethod method, IL.Instruction instruction)
         {
             var c = instruction.Code;
             if (c == InstructionCode.Ret)
@@ -64,7 +65,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        internal static int GetPushCount(Instruction instruction)
+        internal static int GetPushCount(IL.Instruction instruction)
         {
             //InstructionCode c = instruction.Code;
             
@@ -130,12 +131,12 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        class I
+        private sealed class Instruction
         {
             public readonly OpCode OpCode;
             public bool IsUsed;
 
-            public I(OpCode c)
+            public Instruction(OpCode c)
             {
                 OpCode = c;
             }
@@ -145,16 +146,16 @@ namespace DataDynamics.PageFX.CLI.IL
                 return string.Format("{0,15} [{1}, 0x{1:X2}]", OpCode, (ushort)OpCode.Value);
             }
         }
-        static I[] _short;
-        static I[] _long;
+        static Instruction[] _short;
+        static Instruction[] _long;
         static List<OpCode> _all;
 
         static void LoadAllOpCodes()
         {
             if (_all != null) return;
             _all = new List<OpCode>(226);
-            _short = new I[256];
-            _long = new I[256];
+            _short = new Instruction[256];
+            _long = new Instruction[256];
             var bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
             var fields = typeof(OpCodes).GetFields(bf);
             foreach (var fi in fields)
@@ -162,12 +163,12 @@ namespace DataDynamics.PageFX.CLI.IL
                 var c = (OpCode)fi.GetValue(null);
                 if (c.Size == 1)
                 {
-                    _short[c.Value] = new I(c);
+                    _short[c.Value] = new Instruction(c);
                 }
                 else
                 {
                     int i = (ushort)c.Value & 0xFF;
-                    _long[i] = new I(c);
+                    _long[i] = new Instruction(c);
                 }
                 _all.Add(c);
             }
@@ -315,7 +316,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        internal static void UpdateCoverage(IEnumerable<Instruction> list)
+        internal static void UpdateCoverage(IEnumerable<IL.Instruction> list)
         {
             foreach (var instruction in list)
             {
@@ -323,9 +324,9 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        static IEnumerable<I> GetAllI()
+        private static IEnumerable<Instruction> GetAllInstructions()
         {
-            return Algorithms.Merge(_short, _long);
+            return _short.Concat(_long);
         }
 
         public static void DumpCoverage(TextWriter writer)
@@ -336,7 +337,7 @@ namespace DataDynamics.PageFX.CLI.IL
             writer.WriteLine("--------------------------------------------------");
             writer.WriteLine("Not covered instructions:");
             writer.WriteLine("--------------------------------------------------");
-            foreach (var i in GetAllI())
+            foreach (var i in GetAllInstructions())
                 if (i != null && !i.IsUsed)
                     writer.WriteLine(i);
 
@@ -344,7 +345,7 @@ namespace DataDynamics.PageFX.CLI.IL
             writer.WriteLine("--------------------------------------------------");
             writer.WriteLine("Covered instructions:");
             writer.WriteLine("--------------------------------------------------");
-            foreach (var i in GetAllI())
+            foreach (var i in GetAllInstructions())
                 if (i != null && i.IsUsed)
                     writer.WriteLine(i);
         }

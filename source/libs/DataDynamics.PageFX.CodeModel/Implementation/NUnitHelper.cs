@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -143,23 +145,23 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static IMethod FindSetupMethod(IType type)
         {
-            return Algorithms.Find(type.Methods, IsSetup);
+            return type.Methods.FirstOrDefault(IsSetup);
         }
 
         public static IType FindTestFixture(IAssembly assembly)
         {
-            return Algorithms.Find(assembly.Types, IsTestFixture);
+            return assembly.Types.FirstOrDefault(IsTestFixture);
         }
 
         public static IEnumerable<IType> GetTestFixtures(IAssembly assembly)
         {
-            return Algorithms.Filter(assembly.Types, IsTestFixture);
+            return assembly.Types.Where(IsTestFixture);
         }
 
         public static IEnumerable<IMethod> GetTests(IType fixture, bool pfx)
         {
             var list = new List<IMethod>(fixture.Methods);
-            return Algorithms.Filter(list, m => IsTest(m, pfx));
+            return list.Where(m => IsTest(m, pfx));
         }
 
         public static IEnumerable<IMethod> GetTests(IType fixture)
@@ -207,8 +209,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         static ICustomAttribute FindAttribute(ICustomAttributeProvider p, string fullname)
         {
-            return Algorithms.Find(p.CustomAttributes,
-                                   attr => attr.TypeName == fullname);
+            return p.CustomAttributes.FirstOrDefault(attr => attr.TypeName == fullname);
         }
 
         static bool HasAttribute(ICustomAttributeProvider p, string fullname)

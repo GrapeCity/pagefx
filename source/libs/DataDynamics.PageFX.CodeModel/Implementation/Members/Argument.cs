@@ -85,14 +85,16 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICloneable Members
-        public object Clone()
-        {
-            var arg = new Argument(Name, Value);
-            arg.Kind = Kind;
-            arg.Type = Type;
-            return arg;
-        }
-        #endregion
+		public object Clone()
+		{
+			return new Argument(Name, Value)
+			       	{
+			       		Kind = Kind,
+			       		Type = Type
+			       	};
+		}
+
+    	#endregion
 
         #region Object Override Methods
         public override string ToString()

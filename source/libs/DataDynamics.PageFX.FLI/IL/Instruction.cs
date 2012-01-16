@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
@@ -123,10 +124,7 @@ namespace DataDynamics.PageFX.FLI.IL
                 int size = 1;
                 if (_operands != null)
                 {
-                    foreach (var op in _operands)
-                    {
-                        size += op.Size;
-                    }
+                	size += _operands.Sum(op => op.Size);
                 }
                 return size;
             }
@@ -907,7 +905,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public override int GetHashCode()
         {
-            return (int)Code ^ Algorithms.GetHashCode(_operands);
+            return (int)Code ^ _operands.EvalHashCode();
         }
         #endregion
 

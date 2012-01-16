@@ -45,10 +45,7 @@ namespace DataDynamics.PageFX
 
         public TreeNode this[string name]
         {
-            get 
-            {
-                return Algorithms.Find(_kids, k => k.Name == name);
-            }
+            get { return _kids.Find(k => k.Name == name); }
         }
 
         public void Add(TreeNode kid)

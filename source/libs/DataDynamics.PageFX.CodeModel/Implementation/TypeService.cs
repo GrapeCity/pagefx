@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -27,7 +28,7 @@ namespace DataDynamics.PageFX.CodeModel
         public static IProperty FindProperty(IType type, string name, bool inherit)
         {
             return FindMember(type, inherit,
-                              t => Algorithms.Find(t.Properties, p => !p.IsIndexer && p.Name == name));
+                              t => t.Properties.FirstOrDefault(p => !p.IsIndexer && p.Name == name));
         }
 
         public static IType GetCommonBaseType(IType A, IType B)
