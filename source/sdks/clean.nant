@@ -1,0 +1,17 @@
+<project name="clean" default="clean">
+    <target name="clean">
+        <delete>
+            <fileset>
+                <include name="**/*.abcfiles/**" />
+                <include name="**/*.swc.images/**" />
+                <include name="**/*.suo" />
+                <include name="**/*.user" />
+                <include name="**/*.projdata" />
+                <include name="**/*.ncb" />
+                <include name="**/*.resharper*" />
+                <include name="**/*.swc.xml" />
+                <include name="**/*.swc.abc" />
+            </fileset>
+        </delete>
+    </target>
+</project>
