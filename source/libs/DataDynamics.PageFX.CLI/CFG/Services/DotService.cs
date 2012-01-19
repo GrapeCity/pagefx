@@ -71,15 +71,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public static string GetDirectory(MethodBody body)
         {
-            string dir;
-            if (string.IsNullOrEmpty(Infrastructure.TestCaseDirectory))
-            {
-                dir = "c:\\QA\\PageFX";
-            }
-            else
-            {
-                dir = Infrastructure.TestCaseDirectory;
-            }
+        	string dir = string.IsNullOrEmpty(Infrastructure.TestCaseDirectory) ? "c:\\QA\\PageFX" : Infrastructure.TestCaseDirectory;
             dir = Path.Combine(dir, PathHelper.ReplaceInvalidPathChars(body.Method.DeclaringType.FullName));
             dir = Path.Combine(dir, PathHelper.ReplaceInvalidFileNameChars(GetFullName(body.Method)));
             Directory.CreateDirectory(dir);
@@ -257,10 +249,10 @@ namespace DataDynamics.PageFX.CLI.CFG
                     writer.WriteLine("subgraph cluster{0}", node.Name);
                     writer.WriteLine("{");
 
-                    WriteNode(writer, ifNode.Condition, subgraph);
-                    WriteNode(writer, ifNode.True, subgraph);
+                    WriteNode(writer, ifNode.Condition, true);
+                    WriteNode(writer, ifNode.True, true);
                     if (ifNode.False != null)
-                        WriteNode(writer, ifNode.False, subgraph);
+                        WriteNode(writer, ifNode.False, true);
 
                     writer.WriteLine("{0} -> {1} [color=red, label=\"1\"];",
                                      ifNode.Condition.GetSourceName(true),
@@ -294,11 +286,11 @@ namespace DataDynamics.PageFX.CLI.CFG
 
                     if (loop.Condition != null)
                     {
-                        WriteNode(writer, loop.Condition, subgraph);
+                        WriteNode(writer, loop.Condition, true);
 
                         if (loop.IsPreTested)
                         {
-                            string srcName = loop.Condition.GetSourceName(subgraph);
+                            string srcName = loop.Condition.GetSourceName(true);
                             if (loop.FirstChild != null)
                             {
                                 writer.WriteLine("{0} -> {1} [color=red];", srcName,

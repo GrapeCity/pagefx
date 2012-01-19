@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.IL;
@@ -311,12 +312,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         public bool HasInterface(AbcInstance iface)
         {
             var ifaceName = iface.Name;
-            foreach (var mn in Interfaces)
-            {
-                if (mn == ifaceName)
-                    return true;
-            }
-            return false;
+        	return Interfaces.Any(mn => mn == ifaceName);
         }
 
         public AbcTraitCollection Traits
@@ -1021,16 +1017,10 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Utils
         internal bool IsInheritedFrom(AbcMultiname typename)
         {
-            if (SuperName == typename) return true;
-            foreach (var iface in _interfaces)
-            {
-                if (iface == typename)
-                    return true;
-            }
-            return false;
+        	return SuperName == typename || _interfaces.Any(iface => iface == typename);
         }
 
-        internal bool IsTypeUsed(AbcMultiname typename)
+    	internal bool IsTypeUsed(AbcMultiname typename)
         {
             foreach (var t in GetAllTraits())
             {
@@ -1130,16 +1120,12 @@ namespace DataDynamics.PageFX.FLI.ABC
                 return null;
             if (mname.NamespaceSet != null)
             {
-                foreach (var ns in mname.NamespaceSet)
-                {
-                    string fname = NameHelper.MakeFullName(ns.NameString, name);
-                    var instance = Find(fname);
-                    if (instance != null)
-                        return instance;
-                }
-                return null;
+            	return mname.NamespaceSet
+					.Select(ns => NameHelper.MakeFullName(ns.NameString, name))
+					.Select(fullname => Find(fullname))
+					.FirstOrDefault(instance => instance != null);
             }
-            return Find(mname.FullName);
+        	return Find(mname.FullName);
         }
 
         public AbcInstance FindStrict(AbcMultiname name)

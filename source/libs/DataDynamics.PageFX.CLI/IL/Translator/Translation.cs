@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CLI.CFG;
 using DataDynamics.PageFX.CodeModel;
 
@@ -233,30 +234,16 @@ namespace DataDynamics.PageFX.CLI.IL
         #region CheckStackBalance
         void CheckStackBalance(Node bb)
         {
-            int nbefore = bb.StackBefore.Count;
-            foreach (var e in bb.InEdges)
+            int beforeCount = bb.StackBefore.Count;
+            if (bb.InEdges.Select(e => e.From).Where(from => from.IsTranslated).Any(from => beforeCount != from.Stack.Count))
             {
-                var from = e.From;
-                if (from.IsTranslated)
-                {
-                    if (nbefore != from.Stack.Count)
-                    {
-                        throw new ILTranslatorException();
-                    }
-                }
+            	throw new ILTranslatorException();
             }
 
-            int nafter = bb.Stack.Count;
-            foreach (var e in bb.InEdges)
+            int afterCount = bb.Stack.Count;
+            if (bb.InEdges.Select(e => e.To).Where(to => to.IsTranslated).Any(to => afterCount != to.Stack.Count))
             {
-                var to = e.To;
-                if (to.IsTranslated)
-                {
-                    if (nafter != to.Stack.Count)
-                    {
-                        throw new ILTranslatorException();
-                    }
-                }
+            	throw new ILTranslatorException();
             }
         }
         #endregion
@@ -370,7 +357,7 @@ namespace DataDynamics.PageFX.CLI.IL
             PopScope();
         }
 
-        bool CanLabel()
+        private bool CanLabel()
         {
             var first = _block.Code[0];
             if (first.IsBranchTarget)
@@ -384,16 +371,7 @@ namespace DataDynamics.PageFX.CLI.IL
             //    || first.IsReturn)
             //    return false;
 
-            if (_block.IsNWay)
-                return true;
-
-            foreach (var p in _block.Predecessors)
-            {
-                if (p.IsNWay)
-                    return true;
-            }
-            
-            return false;
+            return _block.IsNWay || _block.Predecessors.Any(p => p.IsNWay);
         }
 
         void LabelBlock()

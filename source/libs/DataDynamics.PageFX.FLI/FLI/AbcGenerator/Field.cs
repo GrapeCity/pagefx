@@ -67,11 +67,8 @@ namespace DataDynamics.PageFX.FLI
             //Try to find trait, may be it has already been defined
             if (field.Tag != null)
             {
-                var kind = field.IsConstant ? AbcTraitKind.Const : AbcTraitKind.Slot;
-                if (isStatic)
-                    trait = instance.Class.Traits.Find(name, kind);
-                else
-                    trait = instance.Traits.Find(name, kind);
+            	var kind = field.IsConstant ? AbcTraitKind.Const : AbcTraitKind.Slot;
+            	trait = isStatic ? instance.Class.Traits.Find(name, kind) : instance.Traits.Find(name, kind);
             }
 
 #if DEBUG

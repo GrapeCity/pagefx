@@ -166,18 +166,16 @@ namespace DataDynamics.PageFX.FLI.SWC
 
         void InitLibs()
         {
-            InitLibElems();
+        	InitLibElems();
 
-            foreach (var libElem in _libElems)
-            {
-                string name = GetLibName(libElem);
-                var lib = GetLibrary(name);
-                if (lib == null)
-                    throw new BadFormatException();
-            }
+			if (_libElems.Select(libElem => GetLibName(libElem))
+				.Select(name => GetLibrary(name)).Any(lib => lib == null))
+			{
+				throw new BadFormatException();
+			}
         }
 
-        void InitLibElems()
+    	void InitLibElems()
         {
             if (_libElems != null) return;
 
@@ -209,11 +207,10 @@ namespace DataDynamics.PageFX.FLI.SWC
             if (string.IsNullOrEmpty(hashType))
                 hashType = HashHelper.TypeSHA256;
 
-            SwfMovie lib;
-            if (string.IsNullOrEmpty(libName))
+        	if (string.IsNullOrEmpty(libName))
                 libName = LIBRARY_SWF;
 
-            lib = GetLibrary(libName);
+            var lib = GetLibrary(libName);
             if (lib == null)
             {
                 libName = libName + ".swf";
@@ -268,16 +265,12 @@ namespace DataDynamics.PageFX.FLI.SWC
         #region XmlUtils
         static XmlElement GetElement(XmlNode parent, string localName)
         {
-            foreach (XmlNode kid in parent.ChildNodes)
-            {
-                var e = kid as XmlElement;
-                if (e != null && e.LocalName == localName)
-                    return e;
-            }
-            return null;
+        	return (from XmlNode kid in parent.ChildNodes
+        	        select kid as XmlElement)
+        		.FirstOrDefault(e => e != null && e.LocalName == localName);
         }
 
-        private static IEnumerable<XmlElement> GetElements(XmlNode parent, string localName)
+    	private static IEnumerable<XmlElement> GetElements(XmlNode parent, string localName)
         {
         	return (from XmlNode kid in parent.ChildNodes
 					select kid as XmlElement
@@ -289,8 +282,7 @@ namespace DataDynamics.PageFX.FLI.SWC
         {
             var root = cat.DocumentElement;
             var libs = GetElement(root, "libraries");
-            if (libs == null) return null;
-            return GetElements(libs, "library");
+            return libs != null ? GetElements(libs, "library") : null;
         }
         #endregion
 
@@ -495,13 +487,12 @@ namespace DataDynamics.PageFX.FLI.SWC
 
         public IEnumerable<string> GetNamespaceRefs(AbcFile abc)
         {
-            foreach (var dep in GetDeps(abc))
-            {
-                if (dep.IsNamespace)
-                    yield return dep.ID;
-            }
+        	return from dep in GetDeps(abc)
+				   where dep.IsNamespace
+				   select dep.ID;
         }
-        #endregion
+
+    	#endregion
 
         #region ResolveNamespace
         internal bool AddNsRefs;
@@ -648,15 +639,10 @@ namespace DataDynamics.PageFX.FLI.SWC
 
 		private static bool IsMixin(AbcInstance instance)
 		{
-			foreach (var name in instance.Interfaces)
-			{
-				if (MixinInterfaces.ContainsKey(name.FullName))
-					return true;
-			}
-			return false;
+			return instance.Interfaces.Any(name => MixinInterfaces.ContainsKey(name.FullName));
 		}
 
-        #endregion
+    	#endregion
 
         #region DevUtils
 

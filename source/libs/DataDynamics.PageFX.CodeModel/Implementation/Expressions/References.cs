@@ -169,14 +169,16 @@ namespace DataDynamics.PageFX.CodeModel
     public abstract class MemberReferenceExpression : Expression, IMemberReferenceExpression, ITypeReferenceProvider
     {
         #region Constructors
-        public MemberReferenceExpression()
+
+    	protected MemberReferenceExpression()
         {
         }
 
-        public MemberReferenceExpression(IExpression target)
+    	protected MemberReferenceExpression(IExpression target)
         {
             _target = target;
         }
+
         #endregion
 
         #region IMemberReferenceExpression Members

@@ -12,25 +12,22 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         private static Hashtable LoadEnumCache<T>()
         {
             var cache = new Hashtable();
-            var bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
-            var fields = typeof(T).GetFields(bf);
+            const BindingFlags publicStaticField = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
+            var fields = typeof(T).GetFields(publicStaticField);
             foreach (var field in fields)
             {
                 var v = (T)field.GetValue(null);
                 var attrs = (LanguageAttribute[])field.GetCustomAttributes(typeof(LanguageAttribute), false);
-                if (attrs != null)
-                {
-                    foreach (var attr in attrs)
-                    {
-                        var langCache = (Hashtable)cache[attr.Language];
-                        if (langCache == null)
-                        {
-                            langCache = new Hashtable();
-                            cache[attr.Language] = langCache;
-                        }
-                        langCache[v] = attr.Value;
-                    }
-                }
+            	foreach (var attr in attrs)
+            	{
+            		var langCache = (Hashtable)cache[attr.Language];
+            		if (langCache == null)
+            		{
+            			langCache = new Hashtable();
+            			cache[attr.Language] = langCache;
+            		}
+            		langCache[v] = attr.Value;
+            	}
             }
             return cache;
         }

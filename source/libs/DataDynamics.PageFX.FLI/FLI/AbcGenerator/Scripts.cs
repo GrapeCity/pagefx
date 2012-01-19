@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -101,7 +102,7 @@ namespace DataDynamics.PageFX.FLI
         //    return instance.Type == MainType;
         //}
 
-        void BuildScripts()
+        private void BuildScripts()
         {
 #if DEBUG
             DebugService.DoCancel();
@@ -111,11 +112,9 @@ namespace DataDynamics.PageFX.FLI
             int start = Environment.TickCount;
 #endif
 
-            for (int i = 0; i < _abc.Instances.Count; ++i)
+            foreach (var instance in _abc.Instances.Where(x => x.Script == null))
             {
-                var instance = _abc.Instances[i];
-                if (instance.Script != null) continue;
-                DefineScript(instance);
+            	DefineScript(instance);
             }
 
 #if PERF

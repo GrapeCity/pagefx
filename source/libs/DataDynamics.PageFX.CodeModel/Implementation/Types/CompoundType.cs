@@ -8,14 +8,16 @@ namespace DataDynamics.PageFX.CodeModel
     public abstract class CompoundType : ICompoundType
     {
         #region Constructors
-        public CompoundType()
+
+    	protected CompoundType()
         {
         }
 
-        public CompoundType(IType elementType)
+    	protected CompoundType(IType elementType)
         {
             ElementType = elementType;
         }
+
         #endregion
 
         #region ICompoundType Members

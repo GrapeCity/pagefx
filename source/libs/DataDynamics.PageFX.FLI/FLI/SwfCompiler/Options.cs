@@ -252,26 +252,25 @@ namespace DataDynamics.PageFX.FLI
         #region Locales
         internal static string[] DefaultLocales = new[] { Const.Locales.en_US };
 
-        static readonly char[] comma = { ',', ';' };
+        private static readonly char[] LocaleSeparators = { ',', ';' };
 
         void SetLocales(CommandLine cl)
         {
             string s = cl.GetOption(PFCOptions.Locale);
             if (string.IsNullOrEmpty(s)) return;
 
-            var arr = s.Split(comma, StringSplitOptions.RemoveEmptyEntries);
-            if (arr.Length == 0) return;
+            var locales = s.Split(LocaleSeparators, StringSplitOptions.RemoveEmptyEntries);
+            if (locales.Length == 0) return;
 
             var list = new List<string>();
-            for (int i = 0; i < arr.Length; ++i)
+            foreach (string locale in locales)
             {
-                string locale = arr[i];
-                if (!LocaleHelper.IsValid(locale))
-                {
-                    CompilerReport.Add(Warnings.InvalidLocale, locale);
-                    continue;
-                }
-                list.Add(locale);
+            	if (!LocaleHelper.IsValid(locale))
+            	{
+            		CompilerReport.Add(Warnings.InvalidLocale, locale);
+            		continue;
+            	}
+            	list.Add(locale);
             }
 
             _locales = list.ToArray();

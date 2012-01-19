@@ -473,7 +473,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineArrayGetEnumerator
-        AbcMethod DefineArrayGetEnumerator(IType elemType)
+        void DefineArrayGetEnumerator(IType elemType)
         {
             var IEnumerable = MakeIEnumerable(elemType);
             DefineAbcInstance(IEnumerable);
@@ -481,15 +481,15 @@ namespace DataDynamics.PageFX.FLI
             var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
             var arrayInstance = GetArrayInstance();
 
-            return arrayInstance.DefineMethod(
-                ifaceAbcMethod,
-                code =>
-                    {
-                        var ArrayEnumerator = DefineArrayEnumerator(elemType);
-                        var ctor = TypeHelper.FindConstructor(ArrayEnumerator, 1);
-                        code.NewObject(ctor, () => code.LoadThis());
-                        code.ReturnValue();
-                    });
+        	arrayInstance.DefineMethod(
+        		ifaceAbcMethod,
+        		code =>
+        			{
+        				var ArrayEnumerator = DefineArrayEnumerator(elemType);
+        				var ctor = TypeHelper.FindConstructor(ArrayEnumerator, 1);
+        				code.NewObject(ctor, () => code.LoadThis());
+        				code.ReturnValue();
+        			});
         }
 
         IType DefineArrayEnumerator(IType elemType)

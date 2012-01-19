@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 
@@ -158,32 +159,20 @@ namespace DataDynamics.PageFX.FLI
 
 		private static IEnumerable<AbcInstance> GetStyleMixins(SwcFile swc, bool strict)
 		{
-			foreach (var abc in swc.GetAbcFiles())
-			{
-				foreach (var instance in GetStyleMixins(abc, strict))
-				{
-					yield return instance;
-				}
-			}
+			return swc.GetAbcFiles().SelectMany(abc => GetStyleMixins(abc, strict));
 		}
 
 		private static IEnumerable<AbcInstance> GetStyleMixins(AbcFile abc, bool strict)
 		{
-			foreach (var script in abc.Scripts)
+			foreach (var instance in abc.Scripts.SelectMany(script => script.Traits.Select(trait => trait.Class)
+				.Where(klass => klass != null)
+				.Select(klass => klass.Instance)
+				.Where(instance => IsStyleMixin(instance, strict))))
 			{
-				foreach (var trait in script.Traits)
-				{
-					var klass = trait.Class;
-					if (klass == null) continue;
+				instance.IsMixin = true;
+				instance.IsStyleMixin = true;
 
-					var instance = klass.Instance;
-					if (!IsStyleMixin(instance, strict)) continue;
-
-					instance.IsMixin = true;
-					instance.IsStyleMixin = true;
-
-					yield return instance;
-				}
+				yield return instance;
 			}
 		}
 

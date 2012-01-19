@@ -83,7 +83,6 @@ namespace DataDynamics.UI
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
-            if (g == null) return;
             if (m_Image == null) return;
 
             int dw = m_Image.Width;

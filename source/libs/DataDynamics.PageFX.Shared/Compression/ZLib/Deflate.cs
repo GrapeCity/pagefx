@@ -246,16 +246,16 @@ namespace DataDynamics.ZLib
 			m_anDynLiteralTree = new short[HEAP_SIZE*2];
 			m_anDynDistanceTree = new short[(2*D_CODES+1)*2]; // distance tree
 			m_anBLTree = new short[(2*BL_CODES+1)*2];  // Huffman tree for bit lengths
-			m_aConfigTable = new Config[]{new Config( 0,  0,  0,   0, new CompressDelegate(DeflateStored)), 
-										  new Config( 4,  4,  8,   4, new CompressDelegate(DeflateFast)),
-										  new Config( 4,  5, 16,   8, new CompressDelegate(DeflateFast)),
-										  new Config( 4,  6, 32,  32, new CompressDelegate(DeflateFast)),
-										  new Config( 4,  4, 16,  16, new CompressDelegate(DeflateSlow)),
-										  new Config( 8, 16, 32,  32, new CompressDelegate(DeflateSlow)),
-										  new Config( 8, 16,128, 128, new CompressDelegate(DeflateSlow)),
-										  new Config( 8, 32,128, 256, new CompressDelegate(DeflateSlow)),
-										  new Config(32,128,258,1024, new CompressDelegate(DeflateSlow)),
-										  new Config(32,258,258,4096, new CompressDelegate(DeflateSlow))};    
+			m_aConfigTable = new Config[]{new Config( 0,  0,  0,   0, DeflateStored), 
+										  new Config( 4,  4,  8,   4, DeflateFast),
+										  new Config( 4,  5, 16,   8, DeflateFast),
+										  new Config( 4,  6, 32,  32, DeflateFast),
+										  new Config( 4,  4, 16,  16, DeflateSlow),
+										  new Config( 8, 16, 32,  32, DeflateSlow),
+										  new Config( 8, 16,128, 128, DeflateSlow),
+										  new Config( 8, 32,128, 256, DeflateSlow),
+										  new Config(32,128,258,1024, DeflateSlow),
+										  new Config(32,258,258,4096, DeflateSlow)};    
 		}
 
 		void LiteralMatchInit() 

@@ -280,11 +280,11 @@ namespace DataDynamics.PageFX.FLI.IL
                 int[] cases = Cases;
                 if (cases.Length == 0)
                     throw new InvalidOperationException();
-                for (int i = 0; i < cases.Length; ++i)
+                foreach (int target in cases)
                 {
-                    index = cases[i];
-                    if (index < 0 || index >= n)
-                        throw new InvalidOperationException();
+                	index = target;
+                	if (index < 0 || index >= n)
+                		throw new InvalidOperationException();
                 }
             }
         }
@@ -302,11 +302,10 @@ namespace DataDynamics.PageFX.FLI.IL
             if (IsSwitch)
             {
                 int origin = _offset;
-                int offset, index;
 
-                var def = _operands[SW_Default];
-                offset = origin + (int)def.Value;
-                index = list.GetOffsetIndex(offset);
+            	var def = _operands[SW_Default];
+                int offset = origin + (int)def.Value;
+                int index = list.GetOffsetIndex(offset);
                 list[index].IsBranchTarget = true;
                 def.Value = index;
 

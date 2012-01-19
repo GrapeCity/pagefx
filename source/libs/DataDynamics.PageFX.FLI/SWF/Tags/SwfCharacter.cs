@@ -7,18 +7,16 @@ namespace DataDynamics.PageFX.FLI.SWF
     /// </summary>
     public abstract class SwfCharacter : SwfTag, ISwfCharacter
     {
-        #region ctors
-        public SwfCharacter()
+    	protected SwfCharacter()
         {
         }
 
-        public SwfCharacter(int id)
+    	protected SwfCharacter(int id)
         {
             _id = checked((ushort)id);
         }
-        #endregion
 
-        #region ISwfCharacter Members
+    	#region ISwfCharacter Members
         public ushort CharacterID
         {
             get { return _id; }

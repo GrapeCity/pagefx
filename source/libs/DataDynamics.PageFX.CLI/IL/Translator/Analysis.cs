@@ -85,14 +85,7 @@ namespace DataDynamics.PageFX.CLI.IL
 #endif
             var from = e.From;
             var prevStack = from.Stack;
-            if (prevStack != null)
-            {
-                bb.Stack = prevStack.Clone();
-            }
-            else
-            {
-                bb.Stack = new EvalStack();
-            }
+            bb.Stack = prevStack != null ? prevStack.Clone() : new EvalStack();
         }
         #endregion
 

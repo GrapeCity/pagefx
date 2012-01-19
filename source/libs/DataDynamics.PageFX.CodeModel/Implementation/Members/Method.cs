@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -417,14 +418,9 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static int GetSpecificity(IMethod method)
         {
-            int spec = 0;
-            foreach (var p in method.Parameters)
-            {
-                if (!p.HasResolvedType)
-                    ++spec;
-            }
-            return spec;
+        	return method.Parameters.Count(p => !p.HasResolvedType);
         }
-        #endregion
+
+    	#endregion
     }
 }

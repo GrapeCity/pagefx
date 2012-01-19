@@ -76,13 +76,9 @@ namespace DataDynamics
 
             var parts = name.Split('_');
             var s = new StringBuilder();
-            for (int i = 0; i < parts.Length; ++i)
+            foreach (string part in parts)
             {
-                string part = parts[i];
-                if (string.IsNullOrEmpty(part))
-                    s.Append("_");
-                else
-                    s.Append(Recap(part));
+            	s.Append(string.IsNullOrEmpty(part) ? "_" : Recap(part));
             }
             return s.ToString();
         }

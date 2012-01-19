@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using DataDynamics.PageFX.CLI.GAC;
@@ -11,12 +12,12 @@ namespace DataDynamics.PageFX.CLI
 {
     internal static class AssemblyResolver
     {
-        static readonly PathResolver _pathResolver;
+        static readonly PathResolver PathResolver;
 
         static AssemblyResolver()
         {
-            _pathResolver = new PathResolver();
-            _pathResolver.AddEnvironmentVariable("LIB");
+            PathResolver = new PathResolver();
+            PathResolver.AddEnvironmentVariable("LIB");
         }
 
         #region GetCacLocation
@@ -79,7 +80,7 @@ namespace DataDynamics.PageFX.CLI
             string dir = Path.GetDirectoryName(refpath);
             string fullpath = Path.Combine(dir, path);
             if (File.Exists(fullpath)) return fullpath;
-            path = _pathResolver.Resolve(path);
+            path = PathResolver.Resolve(path);
             if (!string.IsNullOrEmpty(path))
                 return path;
             return null;
@@ -92,13 +93,7 @@ namespace DataDynamics.PageFX.CLI
                     GlobalSettings.LibsDirectory,
                     GlobalSettings.FlexLibsDirectory,
                 };
-            var list = new List<string>();
-            for (int i = 0; i < dirs.Length; ++i)
-            {
-                if (Directory.Exists(dirs[i]))
-                    list.Add(dirs[i]);
-            }
-            return list.ToArray();
+        	return dirs.Where(Directory.Exists).ToArray();
         }
 
         private static string GetAssemblyLocation(IAssemblyReference asmref, string refpath)
@@ -134,18 +129,13 @@ namespace DataDynamics.PageFX.CLI
 
         private static string GetPfxLocation(string refname)
         {
-            if (string.Compare(refname, GlobalSettings.CorlibAssemblyName, true) == 0)
+            if (string.Compare(refname, GlobalSettings.CorlibAssemblyName, StringComparison.OrdinalIgnoreCase) == 0)
                 return GlobalSettings.GetCorlibPath(true);
 
             var libdirs = GetLibDirs();
             if (libdirs != null)
             {
-                foreach (var libdir in libdirs)
-                {
-                    string path = Path.Combine(libdir, refname + ".dll");
-                    if (File.Exists(path))
-                        return path;
-                }
+            	return libdirs.Select(libdir => Path.Combine(libdir, refname + ".dll")).FirstOrDefault(File.Exists);
             }
 
             return null;

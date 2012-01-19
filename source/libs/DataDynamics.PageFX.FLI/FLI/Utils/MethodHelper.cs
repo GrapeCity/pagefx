@@ -563,14 +563,9 @@ namespace DataDynamics.PageFX.FLI
                 foreach (var impl in type.Methods)
                 {
                     var implMethods = impl.ImplementedMethods;
-                    if (implMethods == null)
-                        continue;
-                    //if (Algorithms.Contains(implMethods, im => im == method))
-                    //    return impl;
-                    foreach (var implMethod in implMethods)
+                    if (implMethods != null && implMethods.Any(implMethod => implMethod == method || implMethod.ProxyOf == method))
                     {
-                        if (implMethod == method || implMethod.ProxyOf == method)
-                            return impl;
+                    	return impl;
                     }
                 }
                 if (!inherited) break;

@@ -374,7 +374,7 @@ namespace DataDynamics
 
         public static ImageFormat GetImageFormatByExtension(string ext)
         {
-            var cmp = StringComparison.InvariantCultureIgnoreCase;
+            const StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
             if (ext.EndsWith("bmp", cmp))
                 return ImageFormat.Bmp;
             if (ext.EndsWith("emf", cmp))

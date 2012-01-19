@@ -7,10 +7,10 @@ namespace DataDynamics.PE
     /// </summary>
     public sealed class DOSHeader
     {
-        private readonly int OpenSize = 60;
-        private readonly int CloseSize = 64;
+    	private const int OpenSize = 60;
+    	private const int CloseSize = 64;
 
-        private byte[] open_data; // First 60 bytes of data
+    	private byte[] open_data; // First 60 bytes of data
         private byte[] close_data; // Last 64 bytes of data
 
         // File address of new exe header.

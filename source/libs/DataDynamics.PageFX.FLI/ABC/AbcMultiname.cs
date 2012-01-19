@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
@@ -600,15 +601,8 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (format == "s")
             {
                 string fullname = FullName;
-                if (string.IsNullOrEmpty(fullname))
-                {
-                    sb.Append(_kind.ToString());
-                }
-                else
-                {
-                    sb.Append(fullname);
-                }
-                return sb.ToString();
+            	sb.Append(string.IsNullOrEmpty(fullname) ? _kind.ToString() : fullname);
+            	return sb.ToString();
             }
 
             if (IsQName)
@@ -678,7 +672,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         public void DumpXml(XmlWriter writer, string elementName)
         {
             writer.WriteStartElement(elementName);
-            writer.WriteAttributeString("index", _index.ToString());
+            writer.WriteAttributeString("index", _index.ToString(CultureInfo.InvariantCulture));
             writer.WriteAttributeString("kind", _kind.ToString());
             if (IsParameterizedType)
             {
@@ -695,11 +689,11 @@ namespace DataDynamics.PageFX.FLI.ABC
                 {
                     writer.WriteAttributeString("ns", _ns.NameString);
                     writer.WriteAttributeString("nskind", _ns.Kind.ToString());
-                    writer.WriteAttributeString("nsindex", _ns.Index.ToString());
+                    writer.WriteAttributeString("nsindex", _ns.Index.ToString(CultureInfo.InvariantCulture));
                 }
                 if (_nsset != null)
                 {
-                    writer.WriteAttributeString("nsset", _nsset.Index.ToString());
+                    writer.WriteAttributeString("nsset", _nsset.Index.ToString(CultureInfo.InvariantCulture));
                     //_nsset.DumpXml(writer);
                 }
             }

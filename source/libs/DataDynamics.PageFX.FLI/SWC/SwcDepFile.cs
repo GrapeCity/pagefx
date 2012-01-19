@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
@@ -311,39 +310,37 @@ namespace DataDynamics.PageFX.FLI.SWC
         #region Build
         public void Build(SwcFile swc, ITypeResolver resolver)
         {
-            var libs = swc.GetLibraries();
-            for (int i = 0; i < libs.Count; ++i)
-            {
-                var lib = libs[i];
-                var abclist = lib.GetAbcFiles();
-                for (int k = 0; k < abclist.Count; ++k)
-                {
-                    var abc = abclist[k];
-                    var f = new File
-                                {
-                                    LibIndex = lib.Index,
-                                    FileIndex = abc.Index
-                                };
+        	var libs = swc.GetLibraries();
+        	foreach (var lib in libs)
+        	{
+        		var abclist = lib.GetAbcFiles();
+        		foreach (var abc in abclist)
+        		{
+        			var f = new File
+        			        	{
+        			        		LibIndex = lib.Index,
+        			        		FileIndex = abc.Index
+        			        	};
 
-                    BuildTypeRefs(f, lib, abc, resolver);
+        			BuildTypeRefs(f, lib, abc, resolver);
 
-                    var nsrefs = abc.GetNsRefs();
-                    if (nsrefs != null)
-                    {
-                        foreach (var ns in nsrefs)
-                        {
-                            int nsIndex = AddNamespace(ns);
-                            f.AddNamespaceRef(nsIndex);
-                        }
-                    }
+        			var nsrefs = abc.GetNsRefs();
+        			if (nsrefs != null)
+        			{
+        				foreach (var ns in nsrefs)
+        				{
+        					int nsIndex = AddNamespace(ns);
+        					f.AddNamespaceRef(nsIndex);
+        				}
+        			}
 
-                    if (f.Deps.Count > 0)
-                        _files.Add(f);
-                }
-            }
+        			if (f.Deps.Count > 0)
+        				_files.Add(f);
+        		}
+        	}
         }
 
-        static void BuildTypeRefs(File f, SwfMovie lib, AbcFile abc, ITypeResolver resolver)
+    	static void BuildTypeRefs(File f, SwfMovie lib, AbcFile abc, ITypeResolver resolver)
         {
             int n = abc.Multinames.Count;
             for (int i = 1; i < n; ++i)

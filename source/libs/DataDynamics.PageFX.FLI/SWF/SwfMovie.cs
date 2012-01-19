@@ -685,13 +685,12 @@ namespace DataDynamics.PageFX.FLI.SWF
         #region Assets
         public SwfAsset FindAsset(string name)
         {
-            if (string.IsNullOrEmpty(name))
-                return null;
+            if (string.IsNullOrEmpty(name)) return null;
+
             LoadAssetCache();
+
             SwfAsset asset;
-            if (_assetCache.TryGetValue(name, out asset))
-                return asset;
-            return null;
+            return _assetCache.TryGetValue(name, out asset) ? asset : null;
         }
 
         private void LoadAssetCache()
@@ -735,23 +734,21 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         private void LinkAsset(SwfAsset a)
         {
-            if (a.Character == null)
-            {
-                var ch = GetCharacter(a.Id);
-                if (ch != null)
-                {
-                    a.Character = ch;
-                    if (a.IsExported)
-                    {
-                        ch.Name = a.Name;
-                    }
-                    else if (a.IsSymbol)
-                    {
-                        if (string.IsNullOrEmpty(ch.Name))
-                            ch.Name = a.Name;
-                    }
-                }
-            }
+        	if (a.Character != null) return;
+
+        	var ch = GetCharacter(a.Id);
+        	if (ch == null) return;
+
+        	a.Character = ch;
+        	if (a.IsExported)
+        	{
+        		ch.Name = a.Name;
+        	}
+        	else if (a.IsSymbol)
+        	{
+        		if (string.IsNullOrEmpty(ch.Name))
+        			ch.Name = a.Name;
+        	}
         }
 
         private void LinkAssets(IEnumerable<SwfAsset> set)
@@ -760,66 +757,28 @@ namespace DataDynamics.PageFX.FLI.SWF
                 LinkAsset(asset);
         }
 
-        public IEnumerable<SwfAsset> GetImportAssets()
-        {
-            foreach (var tag in _tags)
-            {
-                var import = tag as SwfTagImportAssets;
-                if (import != null)
-                {
-                    foreach (var a in import.Assets)
-                    {
-                        LinkAsset(a);
-                        yield return a;
-                    }
-                    continue;
-                }
+		private IEnumerable<SwfAsset> GetAssets<T>() where T : class, ISwfAssetContainer
+		{
+			foreach (var asset in _tags.OfType<T>().SelectMany(tag => tag.Assets))
+			{
+				LinkAsset(asset);
+				yield return asset;
+			}
+		}
 
-                var import2 = tag as SwfTagImportAssets2;
-                if (import2 != null)
-                {
-                    foreach (var a in import2.Assets)
-                    {
-                        LinkAsset(a);
-                        yield return a;
-                    }
-                    continue;
-                }
-            }
+    	public IEnumerable<SwfAsset> GetImportAssets()
+        {
+        	return GetAssets<SwfTagImportAssets>();
         }
 
         public IEnumerable<SwfAsset> GetExportAssets()
         {
-            foreach (var tag in _tags)
-            {
-                var export = tag as SwfTagExportAssets;
-                if (export != null)
-                {
-                    foreach (var a in export.Assets)
-                    {
-                        LinkAsset(a);
-                        yield return a;
-                    }
-                    continue;
-                }
-            }
+        	return GetAssets<SwfTagExportAssets>();
         }
 
         public IEnumerable<SwfAsset> GetSymbolAssets()
         {
-            foreach (var tag in _tags)
-            {
-                var symbolTable = tag as SwfTagSymbolClass;
-                if (symbolTable != null)
-                {
-                    foreach (var a in symbolTable.Symbols)
-                    {
-                        LinkAsset(a);
-                        yield return a;
-                    }
-                    continue;
-                }
-            }
+			return GetAssets<SwfTagSymbolClass>();
         }
 
         public void LinkAssets()
@@ -828,32 +787,10 @@ namespace DataDynamics.PageFX.FLI.SWF
             {
                 tag.Swf = this;
 
-                var export = tag as SwfTagExportAssets;
-                if (export != null)
+                var container = tag as ISwfAssetContainer;
+                if (container != null)
                 {
-                    LinkAssets(export.Assets);
-                    continue;
-                }
-
-                var symbolTable = tag as SwfTagSymbolClass;
-                if (symbolTable != null)
-                {
-                    LinkAssets(symbolTable.Symbols);
-                    continue;
-                }
-
-                var import = tag as SwfTagImportAssets;
-                if (import != null)
-                {
-                    LinkAssets(import.Assets);
-                    continue;
-                }
-
-                var import2 = tag as SwfTagImportAssets2;
-                if (import2 != null)
-                {
-                    LinkAssets(import2.Assets);
-                    continue;
+                    LinkAssets(container.Assets);
                 }
             }
         }

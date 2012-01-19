@@ -22,7 +22,7 @@ namespace DataDynamics
         public static void AddRoundRect(GraphicsPath path, float x, float y, float width, float height, float rx,
                                         float ry)
         {
-            float b = 0.4477f;
+            const float b = 0.4477f;
             var gp = new GPBuilder(path);
             gp.MoveTo(x + rx, y);
             gp.LineTo(x + width - rx, y);

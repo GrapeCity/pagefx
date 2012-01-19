@@ -19,7 +19,7 @@ namespace DataDynamics.PageFX
         private static void ExportMscorlibToHtml()
         {
             string path = typeof(int).Assembly.Location;
-            string dir = "c:\\tests\\cli";
+            const string dir = "c:\\tests\\cli";
             Directory.CreateDirectory(dir);
             MdbHtmlExport.Export(path, Path.Combine(dir, "mscorlib"));
         }
@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX
         private static void ExportMscorlibToXml()
         {
             string path = typeof(int).Assembly.Location;
-            string dir = "c:\\tests\\cli";
+            const string dir = "c:\\tests\\cli";
             Directory.CreateDirectory(dir);
             MdbXmlExport.Export(path, Path.Combine(dir, "mscorlib.xml"));
         }

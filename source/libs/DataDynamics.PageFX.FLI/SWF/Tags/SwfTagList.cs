@@ -60,8 +60,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         private static SwfTag DecodeTag(SwfReader reader, int length, SwfTagCode tagCode)
         {
-            SwfTag tag;
-            if (length == 0)
+        	if (length == 0)
                 return new SwfTagEmpty(tagCode);
 
             var opts = reader.TagDecodeOptions;
@@ -86,17 +85,14 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (isImage && (opts & SwfTagDecodeOptions.DonotDecodeImages) != 0)
                 return ReadChar(reader, tagCode, tagData);
 
-            tag = SwfTagFactory.Create(tagCode);
+            var tag = SwfTagFactory.Create(tagCode);
             if (tag != null)
             {
                 tag.ReadTagData(tagData, reader);
                 return tag;
             }
 
-            if (isChar)
-                return ReadChar(reader, tagCode, tagData);
-
-            return new SwfTagAny(tagCode, tagData);
+            return isChar ? ReadChar(reader, tagCode, tagData) : new SwfTagAny(tagCode, tagData);
         }
 
         private static SwfTag ReadChar(SwfReader reader, SwfTagCode tagCode, byte[] tagData)

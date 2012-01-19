@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 
 namespace DataDynamics.PageFX.CLI.Metadata
@@ -37,15 +38,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
 
         public MdbCell? this[string name]
         {
-            get
-            {
-                for (int i = 0; i < _cells.Length; ++i)
-                {
-                    if (_cells[i].Name == name)
-                        return _cells[i];
-                }
-                return null;
-            }
+            get { return _cells.FirstOrDefault(x => x.Name == name); }
         }
 
         internal MdbRow(int index, MdbCell[] cells)

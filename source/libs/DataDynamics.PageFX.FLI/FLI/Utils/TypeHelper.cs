@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 
@@ -27,15 +28,10 @@ namespace DataDynamics.PageFX.FLI
 
             if (IsPrivateImplementationDetails(type))
             {
-                foreach (var field in type.Fields)
-                {
-                    if (!IsArrayInitializer(field.Type))
-                        return false;
-                }
-                return true;
+            	return type.Fields.All(field => IsArrayInitializer(field.Type));
             }
 
-            return false;
+        	return false;
         }
 
         //class <PrivateImplementationDetails>{C05318BA-D3C5-45BA-8FEC-725F72EE7B81}
@@ -202,19 +198,12 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region ctor utils
-        public static IMethod FindConstructor(IType type, Predicate<IMethod> ctorPredicate)
+        public static IMethod FindConstructor(IType type, Predicate<IMethod> filter)
         {
-            if (type == null) return null;
-            foreach (var m in type.Methods.Constructors)
-            {
-                if (m.IsStatic) continue;
-                if (ctorPredicate(m))
-                    return m;
-            }
-            return null;
+        	return type == null ? null : type.Methods.Constructors.Where(m => !m.IsStatic).FirstOrDefault(m => filter(m));
         }
 
-        public static IMethod FindConstructor(IType type, int argCount)
+    	public static IMethod FindConstructor(IType type, int argCount)
         {
             return FindConstructor(type, ctor => ctor.Parameters.Count == argCount);
         }
@@ -276,16 +265,10 @@ namespace DataDynamics.PageFX.FLI
 
         public static int GetCtorCount(IType type)
         {
-            int n = 0;
-            foreach (var m in type.Methods.Constructors)
-            {
-                if (!m.IsStatic)
-                    ++n;
-            }
-            return n;
+        	return type.Methods.Constructors.Count(m => !m.IsStatic);
         }
 
-        public static bool CanUseEmptyCtor(IType type)
+    	public static bool CanUseEmptyCtor(IType type)
         {
             if (type == null) return false;
             var st = type.SystemType;
@@ -466,21 +449,13 @@ namespace DataDynamics.PageFX.FLI
         public static bool HasInitFields(IType type, bool isStatic)
         {
             if (!MustInitValueTypeFields(type)) return false;
-            foreach (var f in type.Fields)
-            {
-                if (f.IsConstant) continue;
-                if (f.IsStatic == isStatic
-                    && IsInitRequiredField(f.Type))
-                    return true;
-            }
-            return false;
+        	return type.Fields.Any(f => !f.IsConstant && f.IsStatic == isStatic && IsInitRequiredField(f.Type));
         }
 
         public static IType GetElemType(IType type)
         {
             var ct = type as ICompoundType;
-            if (ct == null)
-                throw new ArgumentException("type");
+            if (ct == null) throw new ArgumentException("type");
             return ct.ElementType;
         }
 

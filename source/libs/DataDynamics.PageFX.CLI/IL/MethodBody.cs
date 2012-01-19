@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.SymbolStore;
 using System.IO;
+using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using DataDynamics.PageFX.CLI.Metadata;
@@ -457,18 +458,13 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        static Block FindParent(IEnumerable<Block> list, Block block)
+        private static Block FindParent(IEnumerable<Block> parents, Block block)
         {
-            foreach (var parent in list)
-            {
-                if (parent == block) continue;
-                if (block.EntryIndex >= parent.EntryIndex && block.ExitIndex <= parent.ExitIndex)
-                    return parent;
-            }
-            return null;
+        	return parents.Where(parent => parent != block)
+				.FirstOrDefault(parent => block.EntryIndex >= parent.EntryIndex && block.ExitIndex <= parent.ExitIndex);
         }
 
-        static void SetupInstructions(ILStream code, Block block)
+    	static void SetupInstructions(ILStream code, Block block)
         {
             foreach (var kid in block.Kids)
             {

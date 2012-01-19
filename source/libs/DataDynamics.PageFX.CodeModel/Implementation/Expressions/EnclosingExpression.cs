@@ -5,14 +5,16 @@ namespace DataDynamics.PageFX.CodeModel
     public abstract class EnclosingExpression : Expression, IEnclosingExpression
     {
         #region Constructors
-        public EnclosingExpression()
+
+    	protected EnclosingExpression()
         {
         }
 
-        public EnclosingExpression(IExpression e)
+    	protected EnclosingExpression(IExpression e)
         {
             _expression = e;
         }
+
         #endregion
 
         #region IEnclosingExpression Members

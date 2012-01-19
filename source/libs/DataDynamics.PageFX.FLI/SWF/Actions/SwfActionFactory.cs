@@ -5,7 +5,7 @@ using System.Reflection;
 namespace DataDynamics.PageFX.FLI.SWF
 {
 	/// <summary>
-	/// Factory to create <cref name="SwfAction"> instances.
+	/// Factory to create <see cref="SwfAction"/> instances.
 	/// </summary>
 	public static class SwfActionFactory
 	{

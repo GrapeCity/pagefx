@@ -4,7 +4,6 @@ namespace DataDynamics.PageFX.CLI.GAC
 {
     /// <summary>
     /// Undocumented. Probably only for internal use.
-    /// <see cref="M:System.GAC.IAssemblyCache.CreateAssemblyCacheItem(System.UInt32,System.IntPtr,System.GAC.IAssemblyCacheItem@,System.String)" />
     /// </summary>
     [ComImport, Guid("9E3AAEB4-D1CD-11D2-BAB9-00C04F8ECEAE"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IAssemblyCacheItem

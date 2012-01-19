@@ -515,33 +515,30 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineOverrideMethods
-        void DefineOverrideMethods(IMethod method)
+        private void DefineOverrideMethods(IMethod method)
         {
-            if (method.IsAbstract || method.IsVirtual)
-            {
+        	if (!method.IsAbstract && !method.IsVirtual) return;
 #if DEBUG
-                DebugService.DoCancel();
+        	DebugService.DoCancel();
 #endif
-                var type = method.DeclaringType;
-                var instance = type.Tag as AbcInstance;
-                if (instance == null)
-                    throw new InvalidOperationException();
-                if (instance.IsInterface)
-                {
-                    for (int i = 0; i < instance.Implementations.Count; ++i)
-                    {
+        	var type = method.DeclaringType;
+        	var instance = type.Tag as AbcInstance;
+        	if (instance == null)
+        		throw new InvalidOperationException();
+        	if (instance.IsInterface)
+        	{
+        		foreach (var impl in instance.Implementations)
+        		{
 #if DEBUG
-                        DebugService.DoCancel();
+        			DebugService.DoCancel();
 #endif
-                        var impl = instance.Implementations[i];
-                        DefineImplementation(impl.Type, method);
-                    }
-                }
-                else
-                {
-                    DefineSubclassOverrideMethods(instance, method);
-                }
-            }
+        			DefineImplementation(impl.Type, method);
+        		}
+        	}
+        	else
+        	{
+        		DefineSubclassOverrideMethods(instance, method);
+        	}
         }
         #endregion
 
@@ -551,18 +548,17 @@ namespace DataDynamics.PageFX.FLI
         {
             var type = instance.Type;
             if (type == SystemTypes.Enum) return;
-            for (int i = 0; i < instance.Subclasses.Count; ++i)
+			foreach (var subclass in instance.Subclasses)
             {
 #if DEBUG
-                DebugService.DoCancel();
+            	DebugService.DoCancel();
 #endif
-                var subclass = instance.Subclasses[i];
-                DefineOverrideMethod(subclass.Type, method);
+            	DefineOverrideMethod(subclass.Type, method);
 
 #if DEBUG
-                DebugService.DoCancel();
+            	DebugService.DoCancel();
 #endif
-                DefineSubclassOverrideMethods(subclass, method);
+            	DefineSubclassOverrideMethods(subclass, method);
             }
         }
         #endregion

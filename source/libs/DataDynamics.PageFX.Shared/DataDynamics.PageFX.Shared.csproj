@@ -94,7 +94,6 @@
     <Compile Include="DataStructures\FilteredEnumerator.cs" />
     <Compile Include="DataStructures\FunctorComparer.cs" />
     <Compile Include="DataStructures\LinkedList.cs" />
-    <Compile Include="DataStructures\Logic.cs" />
     <Compile Include="DataStructures\ReadOnlyList.cs" />
     <Compile Include="DataStructures\SimpleList.cs" />
     <Compile Include="DataStructures\Pair.cs" />

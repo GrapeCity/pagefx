@@ -31,22 +31,20 @@ namespace DataDynamics.PageFX
                 if (!File.Exists(path))
                 {
                     var files = Directory.GetFiles(dir, "*.bat");
-                    if (files == null) return null;
-                    if (files.Length <= 0) return null;
+                	if (files.Length <= 0) return null;
                     path = files[0];
                 }
 
                 SamplePath = path;
 
                 var lines = File.ReadAllLines(path);
-                if (lines == null) return null;
-                int n = lines.Length;
+            	int n = lines.Length;
                 if (n <= 0) return null;
 
                 for (int i = 0; i < n; ++i)
                 {
                     string line = lines[i];
-                    int index = line.IndexOf("pfc");
+					int index = line.IndexOf("pfc", StringComparison.OrdinalIgnoreCase);
                     if (index >= 0)
                     {
                         line = line.Substring(index + 3);

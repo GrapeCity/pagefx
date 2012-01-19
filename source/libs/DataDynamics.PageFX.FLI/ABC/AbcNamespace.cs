@@ -143,17 +143,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public string Key
         {
-            get
-            {
-                if (key == null)
-                {
-                    if (_kind == 0)
-                        key = "*";
-                    else
-                        key = KeyOf(_name, _kind);
-                }
-                return key;
-            }
+            get { return key ?? (key = _kind == 0 ? "*" : KeyOf(_name, _kind)); }
         }
         internal string key;
 

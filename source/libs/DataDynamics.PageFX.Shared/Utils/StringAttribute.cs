@@ -19,15 +19,14 @@ namespace DataDynamics
 
         public static string EnumToString<T>(T value)
         {
-            var bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
-            var fields = typeof(T).GetFields(bf);
+            const BindingFlags publicStaticField = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
+            var fields = typeof(T).GetFields(publicStaticField);
             foreach (var field in fields)
             {
                 var v = (T)field.GetValue(null);
                 if (Equals(value, v))
                 {
-                    var attrs =
-                        (StringAttribute[])field.GetCustomAttributes(typeof(StringAttribute), false);
+                    var attrs = (StringAttribute[])field.GetCustomAttributes(typeof(StringAttribute), false);
                     if (attrs != null && attrs.Length > 0)
                         return attrs[0].Value;
                     break;
@@ -41,8 +40,8 @@ namespace DataDynamics
             if (string.IsNullOrEmpty(s))
                 return defval;
 
-            var bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
-            var fields = typeof(T).GetFields(bf);
+            const BindingFlags publicStaticField = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
+            var fields = typeof(T).GetFields(publicStaticField);
             foreach (var field in fields)
             {
                 var attrs = (StringAttribute[])field.GetCustomAttributes(typeof(StringAttribute), false);

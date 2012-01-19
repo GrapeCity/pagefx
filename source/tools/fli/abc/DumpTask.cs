@@ -654,21 +654,20 @@ namespace abc
                 var refs = tag.GetRefs();
                 if (refs != null && refs.Length > 0)
                 {
-                    for (int i = 0; i < refs.Length; ++i)
+                    foreach (int rid in refs)
                     {
-                        int rid = refs[i];
-                        var rc = swf.GetCharacter((ushort)rid);
-                        if (rc != null)
-                        {
-                            if (string.IsNullOrEmpty(rc.Name))
-                                writer.WriteLine("\t{0}[{1}]", rc.TagCode, rid);
-                            else
-                                writer.WriteLine("\t{0}[{1}]", rc.Name, rid);
-                        }
-                        else
-                        {
-                            writer.Write("\tnull[{0}]", rid);
-                        }
+                    	var rc = swf.GetCharacter((ushort)rid);
+                    	if (rc != null)
+                    	{
+                    		if (string.IsNullOrEmpty(rc.Name))
+                    			writer.WriteLine("\t{0}[{1}]", rc.TagCode, rid);
+                    		else
+                    			writer.WriteLine("\t{0}[{1}]", rc.Name, rid);
+                    	}
+                    	else
+                    	{
+                    		writer.Write("\tnull[{0}]", rid);
+                    	}
                     }
                 }
             }

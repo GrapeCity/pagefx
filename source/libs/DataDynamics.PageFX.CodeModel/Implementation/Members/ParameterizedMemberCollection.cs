@@ -40,8 +40,8 @@ namespace DataDynamics.PageFX.CodeModel
                                 {
                                     var p = m.Parameters;
                                     if (p.Count != 2) return false;
-                                    if (!Signature.TypeEquals(p[0].Type, arg1)) return false;
-                                    return Signature.TypeEquals(p[1].Type, arg2);
+                                    return Signature.TypeEquals(p[0].Type, arg1)
+										&& Signature.TypeEquals(p[1].Type, arg2);
                                 }];
             }
         }
@@ -50,15 +50,15 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                return base[name,
-                            m =>
-                                {
-                                    var p = m.Parameters;
-                                    if (p.Count != 3) return false;
-                                    if (!Signature.TypeEquals(p[0].Type, arg1)) return false;
-                                    if (!Signature.TypeEquals(p[1].Type, arg2)) return false;
-                                    return Signature.TypeEquals(p[2].Type, arg3);
-                                }];
+            	return base[name,
+            	            m =>
+            	            	{
+            	            		var p = m.Parameters;
+            	            		if (p.Count != 3) return false;
+            	            		return Signature.TypeEquals(p[0].Type, arg1)
+            	            		       && (Signature.TypeEquals(p[1].Type, arg2)
+										   && Signature.TypeEquals(p[2].Type, arg3));
+            	            	}];
             }
         }
 

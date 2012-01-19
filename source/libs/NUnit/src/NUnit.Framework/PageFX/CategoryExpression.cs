@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace DataDynamics.PageFX.NUnit
 {
@@ -135,13 +136,9 @@ namespace DataDynamics.PageFX.NUnit
             return _next >= _text.Length;
         }
 
-        bool NextIsOperator()
+        private bool NextIsOperator()
         {
-            foreach (char op in ops)
-                if (op == _text[_next])
-                    return true;
-
-            return false;
+        	return ops.Any(op => op == _text[_next]);
         }
     }
 }

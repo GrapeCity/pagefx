@@ -2,11 +2,16 @@ using System.Xml;
 
 namespace DataDynamics.PageFX.FLI.SWF
 {
+	public interface ISwfAssetContainer
+	{
+		SwfAssetCollection Assets { get; }
+	}
+
     /// <summary>
     /// The ExportAssets tag makes portions of a SWF file available for import by other SWF files.
     /// </summary>
     [SwfTag(SwfTagCode.ExportAssets)]
-    public class SwfTagExportAssets : SwfTag
+    public class SwfTagExportAssets : SwfTag, ISwfAssetContainer
     {
         public SwfAssetCollection Assets
         {

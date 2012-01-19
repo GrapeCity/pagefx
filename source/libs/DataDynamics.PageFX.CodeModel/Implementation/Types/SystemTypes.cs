@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
@@ -532,8 +533,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         static SystemTypes()
         {
-            var bf = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField;
-            var fields = typeof(SystemTypeCode).GetFields(bf);
+            const BindingFlags publicStaticField = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField;
+            var fields = typeof(SystemTypeCode).GetFields(publicStaticField);
             _types = new SystemType[fields.Length];
             foreach (var field in fields)
             {
@@ -868,7 +869,7 @@ namespace DataDynamics.PageFX.CodeModel
             return st.Unsigned;
         }
 
-        static IEnumerable<IType> GetDescendingOrder()
+        private static IEnumerable<IType> GetDescendingOrder()
         {
             yield return Decimal;
             yield return Double;
@@ -885,15 +886,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static IType GetCommonDenominator(IType a, IType b)
         {
-            foreach (var type in GetDescendingOrder())
-            {
-                if (a == type || b == type)
-                    return type;
-            }
-            return null;
+        	return GetDescendingOrder().FirstOrDefault(type => a == type || b == type);
         }
 
-        public static IType UInt32OR64(IType type)
+    	public static IType UInt32OR64(IType type)
         {
             if (type == null) return null;
             var st = type.SystemType;

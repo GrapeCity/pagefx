@@ -469,7 +469,7 @@ namespace DataDynamics.PageFX.CodeModel
                 {
                     if (i > 0) sb.Append(',');
                     var d = dims[i];
-                    sb.Append(ArrayDimension.Format(d.LowerBound, d.UpperBound, sig));
+                    sb.Append(ArrayDimension.Format(d.LowerBound, d.UpperBound, false));
                 }
                 sb.Append(']');
             }

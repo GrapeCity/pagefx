@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FLI.SWF
     /// The ImportAssets tag imports characters from another SWF file.
     /// </summary>
     [SwfTag(SwfTagCode.ImportAssets)]
-    public class SwfTagImportAssets : SwfTag
+    public class SwfTagImportAssets : SwfTag, ISwfAssetContainer
     {
         /// <summary>
         /// Gets or sets URL to the exporting SWF file from which characters will be imported.

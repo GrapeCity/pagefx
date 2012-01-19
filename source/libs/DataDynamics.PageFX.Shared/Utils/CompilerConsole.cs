@@ -543,7 +543,7 @@ namespace DataDynamics.PageFX
             }
         }
 
-        static FrameworkVersion[] FrameworkVersions = 
+        private static readonly FrameworkVersion[] FrameworkVersions = 
         {
             FrameworkVersion.NET_3_5, 
             FrameworkVersion.NET_2_0, 
@@ -620,7 +620,7 @@ namespace DataDynamics.PageFX
             return s.Substring(start, end - start + 1);
         }
 
-        static readonly string[] errorLevels =
+        private static readonly string[] ErrorLevels =
             {
                 "error",
                 "warning",
@@ -632,20 +632,19 @@ namespace DataDynamics.PageFX
             int n = s.Length;
             for (int i = 0; i < n; ++i)
             {
-                for (int k = 0; k < errorLevels.Length; ++k)
+                foreach (string errorLevel in ErrorLevels)
                 {
-                    string el = errorLevels[k];
-                    if (Is(s, i, el))
-                    {
-                        int si = i + el.Length + 1;
-                        int colon = s.IndexOf(':', si);
-                        if (colon >= 0)
-                        {
-                            level = el;
-                            errorNumber = substr(s, si, colon - 1).Trim();
-                            return i;
-                        }
-                    }
+                	if (Is(s, i, errorLevel))
+                	{
+                		int si = i + errorLevel.Length + 1;
+                		int colon = s.IndexOf(':', si);
+                		if (colon >= 0)
+                		{
+                			level = errorLevel;
+                			errorNumber = substr(s, si, colon - 1).Trim();
+                			return i;
+                		}
+                	}
                 }
             }
             return -1;
