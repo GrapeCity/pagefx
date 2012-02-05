@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.IL;
 
@@ -1121,17 +1120,27 @@ namespace DataDynamics.PageFX.FLI.ABC
             return true;
         }
 
-        private bool HasSimilarScript(AbcScript script)
+        bool HasSimilarScript(AbcScript script)
         {
-        	return _scripts.Any(s => IsSimilar(s, script));
+            foreach (var s in _scripts)
+            {
+                if (IsSimilar(s, script))
+                    return true;
+            }
+            return false;
         }
 
-    	private bool HasSimilarScripts(AbcFile abc)
-    	{
-    		return abc.Scripts.All(HasSimilarScript);
-    	}
+        bool HasSimilarScripts(AbcFile abc)
+        {
+            foreach (var script in abc.Scripts)
+            {
+                if (!HasSimilarScript(script))
+                    return false;
+            }
+            return true;
+        }
 
-    	IEnumerable<AbcFile> GetAllFrames()
+        IEnumerable<AbcFile> GetAllFrames()
         {
             yield return this;
             foreach (var f in PrevFrames)

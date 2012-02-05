@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace DataDynamics.PageFX.NUnit
 {
-    internal class CategoryFilter
+    class CategoryFilter
     {
-        private static readonly List<IFilter<string>> ExcludeFilters = new List<IFilter<string>>();
-        private static readonly List<IFilter<string>> IncludeFilters = new List<IFilter<string>>();
+        static readonly List<IFilter<string>> _exclude = new List<IFilter<string>>();
+        static readonly List<IFilter<string>> _include = new List<IFilter<string>>();
 
         public static void Clear()
         {
-            IncludeFilters.Clear();
-            ExcludeFilters.Clear();
+            _include.Clear();
+            _exclude.Clear();
         }
 
         static IFilter<string> Parse(string exp)
@@ -22,7 +21,7 @@ namespace DataDynamics.PageFX.NUnit
         public static void Exclude(string exp)
         {
             if (string.IsNullOrEmpty(exp)) return;
-            ExcludeFilters.Add(Parse(exp));
+            _exclude.Add(Parse(exp));
         }
 
         public static void Exclude(params string[] exps)
@@ -35,7 +34,7 @@ namespace DataDynamics.PageFX.NUnit
         public static void Include(string exp)
         {
             if (string.IsNullOrEmpty(exp)) return;
-            IncludeFilters.Add(Parse(exp));
+            _include.Add(Parse(exp));
         }
 
         public static void Include(params string[] exps)
@@ -47,23 +46,28 @@ namespace DataDynamics.PageFX.NUnit
 
         public static bool IsIncluded(ICollection<string> cats)
         {
-            if (IncludeFilters.Count > 0)
+            if (_include.Count > 0)
             {
                 if (cats == null || cats.Count == 0)
                     return false;
-            	return (from filter in IncludeFilters
-						from cat in cats
-						where filter.Pass(cat)
-						select filter).Any();
+                foreach (var f in _include)
+                {
+                    foreach (var cat in cats)
+                        if (f.Pass(cat))
+                            return true;
+                }
+                return false;
             }
-            if (ExcludeFilters.Count > 0)
+            if (_exclude.Count > 0)
             {
                 if (cats != null && cats.Count > 0)
                 {
-                	return !(from filter in ExcludeFilters
-							 from cat in cats
-							 where filter.Pass(cat)
-							 select filter).Any();
+                    foreach (var f in _exclude)
+                    {
+                        foreach (var cat in cats)
+                            if (f.Pass(cat))
+                                return false;
+                    }
                 }
             }
             return true;

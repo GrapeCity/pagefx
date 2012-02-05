@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace System.IO
@@ -35,11 +34,14 @@ namespace System.IO
             if (!CheckDirectory(dir))
                 return;
 
-            if (_dirs.Any(s => string.Compare(s, dir, StringComparison.CurrentCultureIgnoreCase) == 0))
+            foreach (var s in _dirs)
             {
-            	return;
+                if (string.Compare(s, dir, true) == 0)
+                {
+                    //log.Warning(ErrorCodes.Path_Duplicate, "Specified directory {0} have already contained in search directories", dir);
+                    return;
+                }
             }
-
             _dirs.Add(dir);
         }
 

@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         private static IMethod GetDefaultCtor(IType type)
         {
-        	return type.Methods.FirstOrDefault(IsDeaultCtor);
+        	return type.Methods.FirstOrDefault(m => IsDeaultCtor(m));
         }
 
     	#endregion

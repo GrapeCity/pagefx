@@ -64,10 +64,17 @@ namespace DataDynamics.PageFX.CodeModel
         public static string[] GetCategories(IMethod method)
         {
             if (method == null) return null;
-        	return (from attr in method.CustomAttributes
-					where attr.TypeName == Attrs.Category
-					select attr.Arguments[0].Value as string into value
-					where !string.IsNullOrEmpty(value) select value).ToArray();
+            var list = new List<string>();
+            foreach (var attr in method.CustomAttributes)
+            {
+                if (attr.TypeName == Attrs.Category)
+                {
+                    var s = attr.Arguments[0].Value as string;
+                    if (!string.IsNullOrEmpty(s))
+                        list.Add(s);
+                }
+            }
+            return list.ToArray();
         }
 
         public static bool HasCategories(IMethod method, bool ignoreCase, params string[] cats)
@@ -354,10 +361,11 @@ namespace DataDynamics.PageFX.CodeModel
 
             BeginMain(writer);
 
-            foreach (var method in methods)
+            for (int i = 0; i < methods.Count; ++i)
             {
-            	writer.WriteLine("Console.WriteLine(\"{0}\");", method);
-            	writer.WriteLine("{0}();", method);
+                var method = methods[i];
+                writer.WriteLine("Console.WriteLine(\"{0}\");", method);
+                writer.WriteLine("{0}();", method);
             }
 
             EndMain(writer, options);

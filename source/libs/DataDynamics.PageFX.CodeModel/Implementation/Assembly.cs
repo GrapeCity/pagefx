@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -92,10 +91,15 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IType FindType(string fullname)
         {
-        	return _modules.Select(module => module.Types[fullname]).FirstOrDefault(type => type != null);
+            foreach (var module in _modules)
+            {
+                var type = module.Types[fullname];
+                if (type != null)
+                    return type;
+            }
+            return null;
         }
-
-    	#endregion
+        #endregion
 
         #region ITypeContainer Members
         public ITypeCollection Types
@@ -109,7 +113,12 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-            	return _modules.Sum(module => module.Types.Count);
+                int n = 0;
+                foreach (var module in _modules)
+                {
+                    n += module.Types.Count;
+                }
+                return n;
             }
         }
 
@@ -159,10 +168,15 @@ namespace DataDynamics.PageFX.CodeModel
         #region IEnumerable<IType> Members
         IEnumerator<IType> IEnumerable<IType>.GetEnumerator()
         {
-        	return _modules.SelectMany(module => module.Types).GetEnumerator();
+            foreach (var module in _modules)
+            {
+                foreach (var type in module.Types)
+                {
+                    yield return type;
+                }
+            }
         }
-
-    	#endregion
+        #endregion
 
         #region IEnumerable Members
         IEnumerator IEnumerable.GetEnumerator()
@@ -196,7 +210,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                return Find(r.Equals);
+                return Find(a => r.Equals(a));
             }
         }
         #endregion

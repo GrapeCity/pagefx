@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.FLI.SWF;
@@ -31,14 +30,24 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
         int _index = -1;
 
-    	/// <summary>
-    	/// Gets or sets entry name.
-    	/// </summary>
-    	public AbcString Name { get; set; }
-
-    	public string NameString
+        /// <summary>
+        /// Gets or sets entry name.
+        /// </summary>
+        public AbcString Name
         {
-            get { return Name != null ? Name.Value : ""; }
+            get { return _name; }
+            set { _name = value; }
+        }
+        AbcString _name;
+
+        public string NameString
+        {
+            get
+            {
+                if (_name != null)
+                    return _name.Value;
+                return "";
+            }
         }
 
         public KeyValueList Items
@@ -56,7 +65,13 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get
             {
-            	return keys.Select(key => _items[key]).FirstOrDefault(value => !string.IsNullOrEmpty(value));
+                foreach (var key in keys)
+                {
+                    string s = _items[key];
+                    if (!string.IsNullOrEmpty(s))
+                        return s;
+                }
+                return null;
             }
         }
         #endregion
@@ -64,13 +79,13 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region IAbcAtom Members
         public void Read(SwfReader reader)
         {
-            Name = AbcIO.ReadString(reader);
+            _name = AbcIO.ReadString(reader);
             _items.Read(reader);
         }
 
         public void Write(SwfWriter writer)
         {
-            writer.WriteUIntEncoded((uint)Name.Index);
+            writer.WriteUIntEncoded((uint)_name.Index);
             _items.Write(writer);
         }
         #endregion
@@ -89,7 +104,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         public override string ToString()
         {
             var s = new StringBuilder();
-            s.Append(Name);
+            s.Append(_name);
             int n = _items.Count;
             if (n > 0)
             {

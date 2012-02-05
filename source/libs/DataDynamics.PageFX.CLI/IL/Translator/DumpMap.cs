@@ -41,29 +41,27 @@ namespace DataDynamics.PageFX.CLI.IL
                     writer.WriteLine(separator);
 
                     writer.WriteLine("#ORIGINAL CODE");
-                    foreach (var instruction in bb.Code)
+                    for (int i = 0; i < bb.Code.Count; ++i)
                     {
-                    	writer.WriteLine(instruction.ToString(format, null));
+                        writer.WriteLine(bb.Code[i].ToString(format, null));
                     }
-                	writer.WriteLine();
+                    writer.WriteLine();
 
                     var code = bb.TranslatedCode;
                     writer.WriteLine("#TRANSLATED CODE");
-                    foreach (var instruction in code)
+                    for (int i = 0; i < code.Count; ++i)
                     {
-                    	writer.WriteLine(instruction.ToString(format, null));
+                        writer.WriteLine(code[i].ToString(format, null));
                     }
-                	writer.WriteLine(separator);
+                    writer.WriteLine(separator);
                 }
 
                 if (_endCode != null && _endCode.Length > 0)
                 {
                     writer.WriteLine("#END CODE");
                     writer.WriteLine(separator);
-					foreach (var instruction in _endCode)
-					{
-						writer.WriteLine(instruction.ToString(format, null));
-					}
+                    for (int i = 0; i < _endCode.Length; ++i)
+                        writer.WriteLine(_endCode[i].ToString(format, null));
                 }
             }
 

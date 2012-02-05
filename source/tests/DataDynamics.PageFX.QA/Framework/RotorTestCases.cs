@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX
                                     text = reader.ReadToEnd();
 
                                 int i = name.IndexOf('/');
-                                if (i < 0) i = name.IndexOf('\\');
+                                if (i < 0) name.IndexOf('\\');
                                 name = name.Substring(i + 1);
                                 name = name.Replace('/', '.');
                                 name = name.Replace('\\', '.');

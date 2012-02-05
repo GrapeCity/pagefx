@@ -95,9 +95,12 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             var s = new StringBuilder();
 
-        	s.Append(Type != null ? Type.ToString() : "*");
-
-        	if (Variable != null)
+            if (Type != null)
+                s.Append(Type.ToString());
+            else
+                s.Append("*");
+            
+            if (Variable != null)
             {
                 s.Append(" ");
                 s.Append(Variable);

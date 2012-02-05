@@ -397,7 +397,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// Called before invokation of given method.
         /// </summary>
         /// <param name="method"></param>
-        /// <returns>code to perform given operation</returns>
+        /// <returns><code to perform given operation/returns>
         IInstruction[] BeginCall(IMethod method);
 
         /// <summary>

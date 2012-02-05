@@ -38,8 +38,8 @@ namespace DataDynamics.PageFX
         {
             string s = this[key, defval ? "true" : "false"];
             if (string.IsNullOrEmpty(s)) return defval;
-            if (string.Compare(s, "true", StringComparison.OrdinalIgnoreCase) == 0) return true;
-			if (string.Compare(s, "false", StringComparison.OrdinalIgnoreCase) == 0) return true;
+            if (string.Compare(s, "true", true) == 0) return true;
+            if (string.Compare(s, "false", true) == 0) return true;
             int v;
             if (int.TryParse(s, out v)) return v != 0;
             return defval;
@@ -186,15 +186,16 @@ namespace DataDynamics.PageFX
             }
         }
 
-        private static XmlElement Find(XmlElement parent, string key)
+        static XmlElement Find(XmlElement parent, string key)
         {
             string[] names = key.Split('.');
             XmlElement e = null;
-            foreach (string name in names)
+            for (int i = 0; i < names.Length; ++i)
             {
-            	e = parent[name];
-            	if (e == null) return null;
-            	parent = e;
+                string name = names[i];
+                e = parent[name];
+                if (e == null) return null;
+                parent = e;
             }
             return e;
         }

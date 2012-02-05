@@ -54,7 +54,7 @@ namespace DataDynamics
         #endregion
 
         #region Properties
-        private static readonly char[] NameSeparators = { ',', ';' };
+        static readonly char[] sep = { ',', ';' };
 
         public string[] Names
         {
@@ -68,12 +68,12 @@ namespace DataDynamics
                     
                     if (!string.IsNullOrEmpty(Aliases))
                     {
-                    	var names = Aliases.Split(NameSeparators, StringSplitOptions.RemoveEmptyEntries);
-                    	foreach (string name in names)
-                    		AddName(list, name);
+                        var ss = Aliases.Split(sep, StringSplitOptions.RemoveEmptyEntries);
+                        for (int i = 0; i < ss.Length; ++i)
+                            AddName(list, ss[i]);
                     }
 
-                	_names = list.ToArray();
+                    _names = list.ToArray();
                 }
                 return _names;
             }

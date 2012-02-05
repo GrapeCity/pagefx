@@ -170,33 +170,34 @@ namespace DataDynamics.PageFX.FLI
             }
             foreach (var abc in list)
             {
-            	abc.generator = this;
-				foreach (var instance in abc.Instances)
-            	{
+                abc.generator = this;
+                for (int i = 0; i < abc.Instances.Count; ++i)
+                {
 #if DEBUG
-            		DebugService.DoCancel();
+                    DebugService.DoCancel();
 #endif
-            		if (instance.ABC != abc)
-            		{
-            			throw new InvalidOperationException();
-            		}
+                    var instance = abc.Instances[i];
+                    if (instance.ABC != abc)
+                    {
+                        throw new InvalidOperationException();
+                    }
 
-            		var type = instance.Type;
-            		if (type == null) continue;
+                    var type = instance.Type;
+                    if (type == null) continue;
 
-            		//NOTE: System.Array defines GetType explicitly
-            		if (type == SystemTypes.Array)
-            		{
-            			var m = MethodHelper.Find(type, "GetType", 0);
-            			if (m == null)
-            				throw new InvalidOperationException("Unable to find System.Array.GetType method. Invalid corlib.");
-            			DefineAbcMethod(m);
-            		}
-            		else
-            		{
-            			DefineGetTypeIdMethod(type, instance);
-            		}
-            	}
+                    //NOTE: System.Array defines GetType explicitly
+                    if (type == SystemTypes.Array)
+                    {
+                        var m = MethodHelper.Find(type, "GetType", 0);
+                        if (m == null)
+                            throw new InvalidOperationException("Unable to find System.Array.GetType method. Invalid corlib.");
+                        DefineAbcMethod(m);
+                    }
+                    else
+                    {
+                        DefineGetTypeIdMethod(type, instance);
+                    }
+                }
             }
         }
         #endregion

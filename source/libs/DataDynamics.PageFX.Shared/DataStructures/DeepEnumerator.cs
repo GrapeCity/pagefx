@@ -38,12 +38,18 @@ namespace DataDynamics.Collections
                     flat.Add(root);
                     ++i;
                 }
-            	flat.AddRange(kids(parent));
-            	while (i < flat.Count)
+                foreach (var kid in kids(parent))
+                {
+                    flat.Add(kid);
+                }
+                while (i < flat.Count)
                 {
                     parent = flat[i];
-                	flat.AddRange(kids(parent));
-                	++i;
+                    foreach (var kid in kids(parent))
+                    {
+                        flat.Add(kid);
+                    }
+                    ++i;
                 }
             }
             else

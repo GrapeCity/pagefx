@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -529,10 +528,17 @@ namespace DataDynamics.PageFX.CodeModel
                 var types = type.Types;
                 if (types == null) return;
                 if (types.Count <= 0) return;
-                var list = types.Where(nestedType => nestedType.IsVisible).ToList();
-            	if (list.Count <= 0) return;
-            	list.Sort((x, y) => string.Compare(x.Name, y.Name));
-            	WriteClasses(writer, list);
+                var list = new List<IType>();
+                foreach (var nt in types)
+                {
+                    if (!nt.IsVisible) continue;
+                    list.Add(nt);
+                }
+                if (list.Count > 0)
+                {
+                    list.Sort((x, y) => string.Compare(x.Name, y.Name));
+                    WriteClasses(writer, list);
+                }
             }
             #endregion
         }
@@ -563,18 +569,33 @@ namespace DataDynamics.PageFX.CodeModel
             return GetMethodName(method, false);
         }
 
-        private static class Util
+        class Util
         {
             public static IEnumerable<IType> GetTypes(ITypeContainer assembly)
             {
-            	return assembly.Types.Where(type => type.DeclaringType == null && type.IsVisible).ToArray();
+                var types = new List<IType>();
+                foreach (var type in assembly.Types)
+                {
+                    if (type.DeclaringType != null)
+                        continue;
+                    if (type.IsVisible)
+                        types.Add(type);
+                }
+                return types.ToArray();
             }
 
-        	private static T[] GetVisibleMembers<T>(IEnumerable<T> set)
+            public static T[] GetVisibleMembers<T>(IEnumerable<T> set)
                 where T:ITypeMember
             {
-                var list = set.Where(m => IsVisibleMember(m)).ToList();
-        		list.Sort((x, y) => string.Compare(x.Name, y.Name));
+                var list = new List<T>();
+                foreach (var m in set)
+                {
+                    // we're only interested in public or protected members
+                    if (!IsVisibleMember(m))
+                        continue;
+                    list.Add(m);
+                }
+                list.Sort((x, y) => string.Compare(x.Name, y.Name));
                 return list.ToArray();
             }
 
@@ -595,8 +616,16 @@ namespace DataDynamics.PageFX.CodeModel
 
             public static IEnumerable<IMethod> GetConstructors(IType type)
             {
-                var list = (from m in type.Methods where IsVisibleMember(m) && m.IsConstructor && !type.IsAbstract select m).ToList();
-            	list.Sort((x, y) => string.Compare(x.Name, y.Name));
+                var list = new List<IMethod>();
+                foreach (var m in type.Methods)
+                {
+                    if (!IsVisibleMember(m)) continue;
+                    if (!m.IsConstructor) continue;
+                    if (type.IsAbstract) continue;
+
+                    list.Add(m);
+                }
+                list.Sort((x, y) => string.Compare(x.Name, y.Name));
                 return list.ToArray();
             }
 
@@ -611,8 +640,13 @@ namespace DataDynamics.PageFX.CodeModel
 
             public static IEnumerable<IMethod> GetMethods(IType type)
             {
-                var list = type.Methods.Where(FilterMethod).ToList();
-            	list.Sort((x, y) => string.Compare(x.Name, y.Name));
+                var list = new List<IMethod>();
+                foreach (var m in type.Methods)
+                {
+                    if (!FilterMethod(m)) continue;
+                    list.Add(m);
+                }
+                list.Sort((x, y) => string.Compare(x.Name, y.Name));
                 return list.ToArray();
             }
 

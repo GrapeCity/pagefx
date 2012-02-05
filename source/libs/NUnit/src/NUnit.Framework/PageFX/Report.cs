@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml;
 #if !AVM
 using System.Xml.Xsl;
@@ -72,14 +71,20 @@ namespace DataDynamics.PageFX.NUnit
             test.Suite = suite;
         }
 
-        private TestSuite FindSuite(TestSuite parent, string name)
+        TestSuite FindSuite(TestSuite parent, string name)
         {
             var list = parent == null ? _suites : parent.Suites;
 
-        	return list.FirstOrDefault(suite => suite.Name == name);
+            foreach (var suite in list)
+            {
+                if (suite.Name == name)
+                    return suite;
+            }
+
+            return null;
         }
 
-        private TestSuite AddSuite(TestSuite parent, string name)
+        TestSuite AddSuite(TestSuite parent, string name)
         {
             var s = FindSuite(parent, name);
             if (s != null) return s;

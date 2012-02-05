@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
+using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI
 {
@@ -482,7 +483,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region FinishTypes, FinishType
-        private void FinishType(AbcInstance instance)
+        void FinishType(AbcInstance instance)
         {
             //TODO: Comment when copying of value types will be implemented using Reflection
             DefineCopyMethod(instance);
@@ -490,24 +491,24 @@ namespace DataDynamics.PageFX.FLI
             DefineCompiledMethods(instance);
         }
 
-        private void FinishTypes()
+        void FinishTypes()
         {
 #if PERF
             int start = Environment.TickCount;
 #endif
-			foreach (var instance in _abc.Instances)
-        	{
+            for (int i = 0; i < _abc.Instances.Count; ++i)
+            {
 #if DEBUG
-        		DebugService.DoCancel();
+                DebugService.DoCancel();
 #endif
-        		FinishType(instance);
-        	}
+                var instance = _abc.Instances[i];
+                FinishType(instance);
+            }
 #if PERF
             Console.WriteLine("AbcGen.FinishTypes: {0}", Environment.TickCount - start);
 #endif
         }
-
-    	#endregion
+        #endregion
 
         #region DefineMembers
         void DefineMembers(IType type)
@@ -632,37 +633,37 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        private void DefineCompiledMethods(IType type, AbcInstance super)
+        void DefineCompiledMethods(IType type, AbcInstance super)
         {
-        	if (type == SystemTypes.Exception) return;
+            if (type == SystemTypes.Exception) return;
 
             //NOTE: super.Traits.Count can be changed during execution
-			foreach (var trait in super.Traits)
-        	{
+            for (int i = 0; i < super.Traits.Count; ++i)
+            {
 #if DEBUG
-        		DebugService.DoCancel();
+                DebugService.DoCancel();
 #endif
-        		if (!trait.IsMethod) continue;
+                var trait = super.Traits[i];
+                if (!trait.IsMethod) continue;
 
-        		var abcMethod = trait.Method;
-        		var m = abcMethod.SourceMethod;
-        		if (m == null) continue;
-        		if (m.IsStatic) continue;
-        		if (m.IsConstructor) continue;
+                var abcMethod = trait.Method;
+                var m = abcMethod.SourceMethod;
+                if (m == null) continue;
+                if (m.IsStatic) continue;
+                if (m.IsConstructor) continue;
 
-        		if (super.IsInterface)
-        		{
-        			DefineImplementation(type, m);
-        		}
-        		else
-        		{
-        			if (m.IsVirtual || m.IsAbstract)
-        				DefineOverrideMethod(type, m);
-        		}
-        	}
+                if (super.IsInterface)
+                {
+                    DefineImplementation(type, m);
+                }
+                else
+                {
+                    if (m.IsVirtual || m.IsAbstract)
+                        DefineOverrideMethod(type, m);
+                }
+            }
         }
-
-    	#endregion
+        #endregion
 
         #region DefineCtorStaticCall
         /// <summary>

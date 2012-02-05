@@ -186,7 +186,7 @@ namespace DataDynamics.PageFX.FLI
             return IsCallProperty(instr, Const.Namespaces.PFX, Const.Boxing.MethodUnbox);
         }
 
-        private static readonly Pattern[] Patterns =
+        static readonly Pattern[] _patterns =
             new[]
                 {
                     new Pattern(
@@ -532,22 +532,24 @@ namespace DataDynamics.PageFX.FLI
             for (int index = 0; index < n; ++index)
             {
                 bool add = true;
-                foreach (var pattern in Patterns)
+                for (int j = 0; j < _patterns.Length; ++j)
                 {
-                	var r = pattern.Replace(_abc, code, index);
-                	if (r == null) continue;
-                	list.AddRange(r);
-                	index += pattern.Length - 1;
-                	add = false;
-                	noopt = false;
-                	break;
+                    var p = _patterns[j];
+                    var r = p.Replace(_abc, code, index);
+                    if (r != null)
+                    {
+                        list.AddRange(r);
+                        index += p.Length - 1;
+                        add = false;
+                        noopt = false;
+                        break;
+                    }
                 }
-				if (add)
-				{
-					list.Add(code[index]);
-				}
+                if (add)
+                    list.Add(code[index]);
             }
-            return noopt ? code : list.ToArray();
+            if (noopt) return code;
+            return list.ToArray();
         }
 
 #if DUMP_PATOPT

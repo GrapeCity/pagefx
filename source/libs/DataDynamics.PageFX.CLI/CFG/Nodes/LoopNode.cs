@@ -22,10 +22,10 @@ namespace DataDynamics.PageFX.CLI.CFG
             if (subgraph)
             {
                 if (_condition != null && IsPostTested)
-                    return _condition.GetTargetName(true);
+                    return _condition.GetTargetName(subgraph);
                 int n = _body.Count;
                 if (n > 0)
-                    return _body[n - 1].GetSourceName(true);
+                    return _body[n - 1].GetSourceName(subgraph);
             }
             return Name;
         }
@@ -35,10 +35,10 @@ namespace DataDynamics.PageFX.CLI.CFG
             if (subgraph)
             {
                 if (_condition != null && IsPreTested)
-                    return _condition.GetSourceName(true);
+                    return _condition.GetSourceName(subgraph);
                 int n = _body.Count;
                 if (n > 0)
-                    return _body[0].GetSourceName(true);
+                    return _body[0].GetSourceName(subgraph);
             }
             return Name;
         }
@@ -130,8 +130,11 @@ namespace DataDynamics.PageFX.CLI.CFG
         public override string ToString(bool full)
         {
             var sb = new StringBuilder();
-        	sb.Append(!string.IsNullOrEmpty(Name) ? Name : LoopType.ToString());
-        	if (full)
+            if (!string.IsNullOrEmpty(Name))
+                sb.Append(Name);
+            else
+                sb.Append(LoopType.ToString());
+            if (full)
             {
                 sb.Append("(");
                 bool comma = false;

@@ -143,14 +143,19 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        private static readonly string[] CastOpNames = { OpNames.Implicit, OpNames.Explicit, OpNames.True, OpNames.False };
+        static readonly string[] CastOpNames = { OpNames.Implicit, OpNames.Explicit, OpNames.True, OpNames.False };
 
-        private static IEnumerable<IMethod> GetCastOperators(IType type)
+        static IEnumerable<IMethod> GetCastOperators(IType type)
         {
-        	return CastOpNames.SelectMany(opName => type.Methods[opName]);
+            foreach (var opName in CastOpNames)
+            {
+                var set = type.Methods[opName];
+                foreach (var method in set)
+                    yield return method;
+            }
         }
 
-    	public static IMethod FindCastOperator(IType type, IType source, IType target)
+        public static IMethod FindCastOperator(IType type, IType source, IType target)
         {
             return FindCastOperator(type, source, target, true);
         }

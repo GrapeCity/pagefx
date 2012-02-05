@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -166,11 +165,11 @@ namespace DataDynamics.PageFX
             var names = path.Split('\\', '/');
             TreeNode node = null;
             var parent = list;
-            foreach (string name in names)
+            for (int i = 0; i < names.Length; ++i)
             {
-            	node = FindByText(parent, name);
-            	if (node == null) return null;
-            	parent = node.Nodes;
+                node = FindByText(parent, names[i]);
+                if (node == null) return null;
+                parent = node.Nodes;
             }
             return node;
         }
@@ -355,8 +354,16 @@ namespace DataDynamics.PageFX
             {
                 if (isChecked)
                 {
-                    bool isAll = parent.Nodes.Cast<TreeNode>().All(d => d.Checked);
-                	if (isAll)
+                    bool isAll = true;
+                    foreach (TreeNode d in parent.Nodes)
+                    {
+                        if (!d.Checked)
+                        {
+                            isAll = false;
+                            break;
+                        }
+                    }
+                    if (isAll)
                     {
                         if (!parent.Checked)
                             parent.Checked = true;
@@ -373,7 +380,7 @@ namespace DataDynamics.PageFX
             _checkHandling = false;
         }
 
-        private List<TreeNode> GetTestCases(string path)
+        List<TreeNode> GetTestCases(string path)
         {
             var node = FindByPath(testCases.Nodes, path);
             if (node == null) return null;
@@ -384,7 +391,11 @@ namespace DataDynamics.PageFX
             }
             else
             {
-            	list.AddRange(GetDescendants(node).Where(d => d.Tag is TestCase));
+                foreach (var d in GetDescendants(node))
+                {
+                    if (d.Tag is TestCase)
+                        list.Add(d);
+                }
             }
             return list;
         }
@@ -409,22 +420,34 @@ namespace DataDynamics.PageFX
             }
         }
 
-        private List<TreeNode> GetSelectedTestCases()
+        List<TreeNode> GetSelectedTestCases()
         {
-        	return (from TreeNode node in testCases.Nodes
-					from tc in GetSelectedTestCases(node)
-					select tc).ToList();
+            var list = new List<TreeNode>();
+            foreach (TreeNode node in testCases.Nodes)
+            {
+                foreach (var tc in GetSelectedTestCases(node))
+                {
+                    list.Add(tc);
+                }
+            }
+            return list;
         }
 
-    	private List<TreeNode> GetAllTestCases()
-    	{
-    		return (from TreeNode node in testCases.Nodes
-					from d in GetDescendants(node)
-					where d.Tag is TestCase
-					select d).ToList();
-    	}
+        List<TreeNode> GetAllTestCases()
+        {
+            var list = new List<TreeNode>();
+            foreach (TreeNode node in testCases.Nodes)
+            {
+                foreach (var d in GetDescendants(node))
+                {
+                    if (d.Tag is TestCase)
+                        list.Add(d);
+                }
+            }
+            return list;
+        }
 
-    	private void Run()
+        void Run()
         {
             if (!worker.IsBusy)
             {
@@ -951,11 +974,17 @@ namespace DataDynamics.PageFX
             {
                 try
                 {
-                	var doc = new XmlDocument();
+                    var list = new List<TreeNode>();
+                    var doc = new XmlDocument();
                     doc.Load(path);
-                	return (from XmlElement e in doc.DocumentElement.GetElementsByTagName("tc")
-							select e.GetAttribute("name") into name
-							select _nodeCache[name]).OfType<TreeNode>().ToList();
+                    foreach (XmlElement e in doc.DocumentElement.GetElementsByTagName("tc"))
+                    {
+                        string name = e.GetAttribute("name");
+                        var node = _nodeCache[name] as TreeNode;
+                        if (node != null)
+                            list.Add(node);
+                    }
+                    return list;
                 }
                 catch (Exception exc)
                 {
@@ -1112,12 +1141,19 @@ namespace DataDynamics.PageFX
             }
         }
 
-        private static bool IsSelected(TreeNode node)
+        static bool IsSelected(TreeNode node)
         {
-        	return node.Checked || node.Nodes.Cast<TreeNode>().Any(kid => kid.Checked);
+            if (node.Checked)
+                return true;
+            foreach (TreeNode kid in node.Nodes)
+            {
+                if (kid.Checked)
+                    return true;
+            }
+            return false;
         }
 
-    	void GetSelectedTestSuites(List<TestSuite> list, TreeNode node, List<TestCase> failedTestCases)
+        void GetSelectedTestSuites(List<TestSuite> list, TreeNode node, List<TestCase> failedTestCases)
         {
             var ts = node.Tag as TestSuite;
             if (ts != null)
@@ -1296,10 +1332,15 @@ namespace DataDynamics.PageFX
 
         static IEnumerable<TestCase> ToIEnumerable_TestCase(IEnumerable<TreeNode> nodes)
         {
-        	return nodes.Select(node => node.Tag).OfType<TestCase>();
+            foreach (var node in nodes)
+            {
+                var tc = node.Tag as TestCase;
+                if (tc != null)
+                    yield return tc;
+            }
         }
-
-    	void cbAvmShellMode_SelectedIndexChanged(object sender, EventArgs e)
+        
+        void cbAvmShellMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             ApplySettings();
         }

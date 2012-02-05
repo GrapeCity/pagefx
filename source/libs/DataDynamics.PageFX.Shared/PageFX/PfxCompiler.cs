@@ -315,19 +315,20 @@ namespace DataDynamics.PageFX
             int n = s.Length;
             for (int i = 0; i < n; ++i)
             {
-                foreach (string errorLevel in errorLevels)
+                for (int k = 0; k < errorLevels.Length; ++k)
                 {
-                	if (Is(s, i, errorLevel))
-                	{
-                		int si = i + errorLevel.Length + 1;
-                		int colon = s.IndexOf(':', si);
-                		if (colon >= 0)
-                		{
-                			level = errorLevel;
-                			errorNumber = substr(s, si, colon - 1).Trim();
-                			return i;
-                		}
-                	}
+                    string el = errorLevels[k];
+                    if (Is(s, i, el))
+                    {
+                        int si = i + el.Length + 1;
+                        int colon = s.IndexOf(':', si);
+                        if (colon >= 0)
+                        {
+                            level = el;
+                            errorNumber = substr(s, si, colon - 1).Trim();
+                            return i;
+                        }
+                    }
                 }
             }
             return -1;

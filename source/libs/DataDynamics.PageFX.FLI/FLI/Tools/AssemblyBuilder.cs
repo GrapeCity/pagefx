@@ -198,10 +198,15 @@ namespace DataDynamics.PageFX.FLI
 
         public object ResolveExternalReference(string id)
         {
-        	return _refs.Select(asm => AssemblyIndex.ResolveRef(asm, id)).FirstOrDefault(r => r != null);
+            foreach (var asm in _refs)
+            {
+                var r = AssemblyIndex.ResolveRef(asm, id);
+                if (r != null)
+                    return r;
+            }
+            return null;
         }
-
-    	#endregion
+        #endregion
 
         #region Naming Utils
         static readonly Hashtable namemap = new Hashtable();
@@ -308,10 +313,15 @@ namespace DataDynamics.PageFX.FLI
 
         static string ReplaceBadChars(IEnumerable<char> name)
         {
-        	return name.Aggregate("", (current, c) => current + (IsBadNameChar(c) ? '_' : c));
+            string name2 = "";
+            foreach (var c in name)
+            {
+                name2 += IsBadNameChar(c) ? '_' : c;
+            }
+            return name2;
         }
 
-    	static string Rename(string name, bool clistyle)
+        static string Rename(string name, bool clistyle)
         {
             string map = namemap[name] as string;
             if (map != null) return map;
@@ -563,14 +573,27 @@ namespace DataDynamics.PageFX.FLI
 
         AbcInstance FindInstance(AbcMultiname name)
         {
-        	return _abcFiles.Select(abc => FindInstance(abc, name)).FirstOrDefault(instance => instance != null);
+            foreach (var abc in _abcFiles)
+            {
+                var i = FindInstance(abc, name);
+                if (i != null) return i;
+            }
+            return null;
         }
 
-    	AbcInstance FindVector(string type)
+        AbcInstance FindVector(string type)
         {
             string vtype = "Vector$" + type;
-    		return _abcFiles.SelectMany(abc => abc.Instances)
-				.FirstOrDefault(instance => instance.NamespaceString == AS3.Vector.Namespace && instance.NameString == vtype);
+            foreach (var abc in _abcFiles)
+            {
+                foreach (var instance in abc.Instances)
+                {
+                    if (instance.NamespaceString == AS3.Vector.Namespace
+                        && instance.NameString == vtype)
+                        return instance;
+                }
+            }
+            return null;
         }
 
         IType BuildPredefinedVector(AbcMultiname param)
@@ -1762,9 +1785,9 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-    	private const int MaxRestCount = 10;
+        readonly int MaxRestCount = 10;
 
-    	static bool UseArg(AbcMethod m)
+        static bool UseArg(AbcMethod m)
         {
             if (IsFunctionCall(m)) return true;
             if (IsFunctionApply(m)) return true;
@@ -2155,10 +2178,14 @@ namespace DataDynamics.PageFX.FLI
         {
             if (_fpVersion == 9) return 9;
             LoadFP9();
-            if (_fp9.Scripts.Any(script => script.Traits.Any(trait => trait.Kind == AbcTraitKind.Method
-                                                                      && Equals(trait.Name, name))))
+            foreach (var script in _fp9.Scripts)
             {
-            	return 9;
+                foreach (var trait in script.Traits)
+                {
+                    if (trait.Kind == AbcTraitKind.Method
+                        && Equals(trait.Name, name))
+                        return 9;
+                }
             }
             return _fpVersion;
         }
@@ -2212,11 +2239,17 @@ namespace DataDynamics.PageFX.FLI
             var members = _doc.DocumentElement["members"];
             if (members == null) return null;
 
-        	return (from elem in members.ChildNodes.OfType<XmlElement>()
-					where elem.LocalName == "member"
-					let name = elem.GetAttribute("name")
-					where name.StartsWith(memberName)
-					select elem).FirstOrDefault();
+            foreach (XmlNode cn in members.ChildNodes)
+            {
+                var elem = cn as XmlElement;
+                if (elem == null) continue;
+                if (elem.LocalName != "member") continue;
+                string name = elem.GetAttribute("name");
+                if (name.StartsWith(memberName))
+                    return elem;
+            }
+
+            return null;
         }
 
         static string GetMemberName(AbcTrait trait, string typename)
@@ -2327,7 +2360,15 @@ namespace DataDynamics.PageFX.FLI
 
         private bool IsCoreAPI
         {
-            get { return _abcFiles.Any(abc => abc.IsCoreAPI); }
+            get
+            {
+				foreach (var abc in _abcFiles)
+                {
+                    if (abc.IsCoreAPI)
+                        return true;
+                }
+                return false;
+            }
         }
 
         private string NsPrefix

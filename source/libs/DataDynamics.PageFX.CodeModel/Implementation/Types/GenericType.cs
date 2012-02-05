@@ -68,8 +68,13 @@ namespace DataDynamics.PageFX.CodeModel
             var gt = type as IGenericInstance;
             if (gt != null)
             {
-                var args = gt.GenericArguments.Select(p => Resolve(contextType, contextMethod, p)).ToList();
-            	return TypeFactory.MakeGenericType(gt.Type, args);
+                var args = new List<IType>();
+                foreach (var p in gt.GenericArguments)
+                {
+                    var arg = Resolve(contextType, contextMethod, p);
+                    args.Add(arg);
+                }
+                return TypeFactory.MakeGenericType(gt.Type, args);
             }
             return type;
         }
@@ -100,7 +105,11 @@ namespace DataDynamics.PageFX.CodeModel
             var gi = type as IGenericInstance;
             if (gi != null)
             {
-            	return gi.GenericArguments.Any(HasGenericParams);
+                foreach (var arg in gi.GenericArguments)
+                {
+                    if (HasGenericParams(arg))
+                        return true;
+                }
             }
 
             return false;
@@ -118,9 +127,10 @@ namespace DataDynamics.PageFX.CodeModel
                     if (HasGenericParams(method.GenericArguments))
                         return true;
                 }
-                if (method.Parameters.Any(p => HasGenericParams(p.Type)))
+                foreach (var p in method.Parameters)
                 {
-                	return true;
+                    if (HasGenericParams(p.Type))
+                        return true;
                 }
             }
 

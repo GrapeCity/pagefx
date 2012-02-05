@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using DataDynamics.PE;
@@ -151,7 +150,8 @@ namespace DataDynamics.PageFX.CLI.Metadata
         public int GetRowCount(MdbTableId id)
         {
             var table = this[id];
-            return table == null ? 0 : table.RowCount;
+            if (table == null) return 0;
+            return table.RowCount;
         }
 
         public MdbRow GetRow(MdbTableId tableId, int rowIndex)
@@ -268,12 +268,19 @@ namespace DataDynamics.PageFX.CLI.Metadata
             return GetIndexSize(n);
         }
 
-        private int GetMaxRowCount(IEnumerable<MdbTableId> tables)
+        int GetMaxRowCount(IEnumerable<MdbTableId> tables)
         {
-        	return tables.Select(id => GetRowCount(id)).Max();
+            int maxRowCount = 0;
+            foreach (var id in tables)
+            {
+                int n = GetRowCount(id);
+                if (n > maxRowCount)
+                    maxRowCount = n;
+            }
+            return maxRowCount;
         }
 
-    	int[] _codedIndexSizes;
+        int[] _codedIndexSizes;
         int GetCodedIndexSize(MdbCodedIndex i)
         {
             return _codedIndexSizes[i.ID];
@@ -449,8 +456,13 @@ namespace DataDynamics.PageFX.CLI.Metadata
                 if (table != null)
                 {
                     table.Offset = pos;
-                    int rowSize = table.Columns.Sum(column => GetColumnSize(column));
-                	table.RowSize = rowSize;
+                    int rowSize = 0;
+                    foreach (var column in table.Columns)
+                    {
+                        int colSize = GetColumnSize(column);
+                        rowSize += colSize;
+                    }
+                    table.RowSize = rowSize;
                     table.Size = table.RowCount * rowSize;
                     table.Rows = new MdbRow[table.RowCount];
                     pos += table.Size;

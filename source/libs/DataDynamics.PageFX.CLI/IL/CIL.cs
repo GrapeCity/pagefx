@@ -156,8 +156,8 @@ namespace DataDynamics.PageFX.CLI.IL
             _all = new List<OpCode>(226);
             _short = new Instruction[256];
             _long = new Instruction[256];
-            const BindingFlags publicStaticField = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
-            var fields = typeof(OpCodes).GetFields(publicStaticField);
+            var bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
+            var fields = typeof(OpCodes).GetFields(bf);
             foreach (var fi in fields)
             {
                 var c = (OpCode)fi.GetValue(null);

@@ -208,7 +208,7 @@ namespace abc
                 h = form.ClientSize.Height;
 
                 form.SuspendLayout();
-                const int padding = 10;
+                int d = 10;
 
             	var ok = new Button
             	         	{
@@ -224,13 +224,13 @@ namespace abc
             	             		Anchor = AnchorStyles.Right | AnchorStyles.Bottom
             	             	};
 
-            	cancel.Location = new Point(w - padding - cancel.Width, h - padding - cancel.Height);
-                ok.Location = new Point(cancel.Left - padding - ok.Width, cancel.Top);
+            	cancel.Location = new Point(w - d - cancel.Width, h - d - cancel.Height);
+                ok.Location = new Point(cancel.Left - d - ok.Width, cancel.Top);
 
             	var list = new CheckedListBox
             	           	{
-            	           		Location = new Point(padding, padding),
-            	           		Size = new Size(w - 2*padding, ok.Top - padding),
+            	           		Location = new Point(d, d),
+            	           		Size = new Size(w - 2*d, ok.Top - d),
             	           		Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom
             	           	};
 

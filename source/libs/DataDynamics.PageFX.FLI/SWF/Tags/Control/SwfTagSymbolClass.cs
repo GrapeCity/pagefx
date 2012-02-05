@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.FLI.SWF
     /// The SymbolClass tag creates associations between symbols in the SWF file and ActionScript 3.0 classes.
     /// </summary>
     [SwfTag(SwfTagCode.SymbolClass)]
-    public class SwfTagSymbolClass : SwfTag, ISwfAssetContainer
+    public class SwfTagSymbolClass : SwfTag
     {
         #region ctors
         public SwfTagSymbolClass()
@@ -88,10 +88,5 @@ namespace DataDynamics.PageFX.FLI.SWF
             _symbols.DumpXml(writer, "symbols", "symbol");
         }
         #endregion
-
-    	SwfAssetCollection ISwfAssetContainer.Assets
-    	{
-			get { return Symbols; }
-    	}
     }
 }

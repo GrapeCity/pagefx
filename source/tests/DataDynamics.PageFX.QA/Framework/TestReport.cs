@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml;
 
 namespace DataDynamics.PageFX
@@ -50,7 +49,15 @@ namespace DataDynamics.PageFX
 
         public bool HasErrors
         {
-            get { return _items.Any(item => !item.Passed); }
+            get
+            {
+                foreach (var item in _items)
+                {
+                    if (!item.Passed)
+                        return true;
+                }
+                return false;
+            }
         }
 
         #region Export
@@ -140,7 +147,7 @@ namespace DataDynamics.PageFX
         #region Show
         public void Show()
         {
-            const string path = "c:\\QA\\report.xml";
+            string path = "c:\\QA\\report.xml";
             Export(path, "xml");
             QA.ShowBrowser(Title, path, true);
         }

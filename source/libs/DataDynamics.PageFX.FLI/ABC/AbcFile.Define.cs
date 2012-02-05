@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.IL;
 
@@ -20,10 +19,29 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// <returns></returns>
         public bool IsDefined(AbcInstance instance)
         {
-        	return instance.IsNative || AllFrames.Any(abc => instance.ABC == abc);
+            if (instance.IsNative)
+                return true;
+
+            foreach (var abc in AllFrames)
+            {
+                if (instance.ABC == abc)
+                    return true;
+            }
+
+            //if (_instances.IsDefined(instance))
+            //    return true;
+
+            //foreach (AbcFile pf in PrevFrames)
+            //{
+            //    Debug.Assert(pf != this);
+            //    if (pf.IsDefined(instance))
+            //        return true;
+            //}
+
+            return false;
         }
 
-    	/// <summary>
+        /// <summary>
         /// Determines whether the given <see cref="AbcMultiname"/> is defined in this ABC file.
         /// </summary>
         /// <param name="name">name to check</param>
@@ -811,7 +829,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 {
                     if (type.ValueType == null)
                         throw new InvalidOperationException("Invalid enum type");
-                    return GetTypeName(type.ValueType, true);
+                    return GetTypeName(type.ValueType, native);
                 }
 
                 if (st != null)

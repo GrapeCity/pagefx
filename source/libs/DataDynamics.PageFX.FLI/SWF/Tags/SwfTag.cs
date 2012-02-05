@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using System.Xml;
 
@@ -192,8 +191,8 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (SwfDumpService.Verbose)
             {
                 writer.WriteAttributeString("codex", string.Format("{0} - 0x{0:X2}", (int)code));
-                writer.WriteAttributeString("size", GetDataSize().ToString(CultureInfo.InvariantCulture));
-                writer.WriteAttributeString("version", TagVersion.ToString(CultureInfo.InvariantCulture));
+                writer.WriteAttributeString("size", GetDataSize().ToString());
+                writer.WriteAttributeString("version", TagVersion.ToString());
             }
 
             if (fullbody) DumpBody(writer);
@@ -211,16 +210,16 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (refs != null && refs.Length > 0)
             {
                 writer.WriteStartElement("refs");
-                foreach (int id in refs)
-                	DumpRef(writer, id);
-            	writer.WriteEndElement();
+                for (int i = 0; i < refs.Length; ++i)
+                    DumpRef(writer, refs[i]);
+                writer.WriteEndElement();
             }
         }
 
         private void DumpRef(XmlWriter writer, int id)
         {
             writer.WriteStartElement("ref");
-            writer.WriteAttributeString("id", id.ToString(CultureInfo.InvariantCulture));
+            writer.WriteAttributeString("id", id.ToString());
 
             if (_swf != null)
             {

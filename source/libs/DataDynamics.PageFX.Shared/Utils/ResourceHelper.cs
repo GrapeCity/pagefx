@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace DataDynamics
@@ -10,13 +9,15 @@ namespace DataDynamics
     {
         public static Stream GetStream(Assembly asm, string subname)
         {
-        	return (from name in asm.GetManifestResourceNames()
-					where name.Contains(subname)
-					select asm.GetManifestResourceStream(name))
-					.FirstOrDefault();
+            foreach (var name in asm.GetManifestResourceNames())
+            {
+                if (name.Contains(subname))
+                    return asm.GetManifestResourceStream(name);
+            }
+            return null;
         }
 
-    	public static Stream GetStream(Type type, string subname)
+        public static Stream GetStream(Type type, string subname)
         {
             return GetStream(type.Assembly, subname);
         }

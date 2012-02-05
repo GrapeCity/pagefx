@@ -5,11 +5,21 @@ namespace DataDynamics.PageFX.FLI.SWF
 {
     public class SwfEvent
     {
-    	public SwfEventFlags Flags { get; set; }
+        public SwfEventFlags Flags
+        {
+            get { return _flags; }
+            set { _flags = value; }
+        }
+        private SwfEventFlags _flags;
 
-    	public byte KeyCode { get; set; }
+        public byte KeyCode
+        {
+            get { return _keyCode; }
+            set { _keyCode = value; }
+        }
+        private byte _keyCode;
 
-    	public SwfActionList Actions
+        public SwfActionList Actions
         {
             get { return _actions; }
         }
@@ -54,9 +64,9 @@ namespace DataDynamics.PageFX.FLI.SWF
         public void Read(SwfReader reader)
         {
             uint len = reader.ReadUInt32();
-            if ((Flags & SwfEventFlags.KeyPress) != 0)
+            if ((_flags & SwfEventFlags.KeyPress) != 0)
             {
-                KeyCode = reader.ReadUInt8();
+                _keyCode = reader.ReadUInt8();
             }
             //TODO: use len
             _actions.Read(reader);
@@ -64,11 +74,11 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public void Write(SwfWriter writer)
         {
-            WriteFlags(writer, Flags);
+            WriteFlags(writer, _flags);
 
         	var eventWriter = new SwfWriter {FileVersion = writer.FileVersion};
-        	if ((Flags & SwfEventFlags.KeyPress) != 0)
-                eventWriter.WriteUInt8(KeyCode);
+        	if ((_flags & SwfEventFlags.KeyPress) != 0)
+                eventWriter.WriteUInt8(_keyCode);
             _actions.Write(eventWriter);
 
             var eventData = eventWriter.ToByteArray();
@@ -79,12 +89,17 @@ namespace DataDynamics.PageFX.FLI.SWF
 
     public class SwfEventList : List<SwfEvent>
     {
-    	public SwfEventFlags AllEventFlags { get; set; }
+        public SwfEventFlags AllEventFlags
+        {
+            get { return _allFlags; }
+            set { _allFlags = value; }
+        }
+        private SwfEventFlags _allFlags;
 
-    	public void Read(SwfReader reader)
+        public void Read(SwfReader reader)
         {
             reader.ReadUInt16(); //reserved
-            AllEventFlags = SwfEvent.ReadFlags(reader);
+            _allFlags = SwfEvent.ReadFlags(reader);
 
             int ver = reader.FileVersion;
             while (true)
@@ -103,7 +118,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         public void Write(SwfWriter writer)
         {
             writer.WriteUInt16(0); //reserved
-            SwfEvent.WriteFlags(writer, AllEventFlags);
+            SwfEvent.WriteFlags(writer, _allFlags);
 
             int n = Count;
             for (int i = 0; i < n; ++i)

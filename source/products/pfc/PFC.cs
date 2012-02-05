@@ -1,7 +1,6 @@
 using System;
 using System.CodeDom.Compiler;
 using System.IO;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.Flash;
 using DataDynamics.PageFX.FLI;
@@ -289,13 +288,18 @@ namespace DataDynamics.PageFX
             return false;
         }
 
-        private static bool IsSysRef(string r)
+        static bool IsSysRef(string r)
         {
             r = Path.GetFileName(r);
-        	return SysRefs.Any(sysRef => IsSysRefCore(r, sysRef));
+            foreach (var sysRef in SysRefs)
+            {
+                if (IsSysRefCore(r, sysRef))
+                    return true;
+            }
+            return false;
         }
 
-        private static void CompileAssembly()
+        static void CompileAssembly()
         {
             var options = new CompilerOptions();
 
@@ -557,11 +561,11 @@ namespace DataDynamics.PageFX
             }
         }
 
-        private const bool WaitInput = true;
+        const bool wait = true;
 
         static void Wait()
         {
-            if (WaitInput)
+            if (wait)
             {
                 Console.WriteLine("Done!");
                 Console.ReadKey();

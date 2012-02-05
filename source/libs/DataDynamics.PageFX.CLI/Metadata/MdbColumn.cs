@@ -62,18 +62,22 @@ namespace DataDynamics.PageFX.CLI.Metadata
         private int _offset;
         private MdbTableId _simpleIndex;
         private int _size;
-    	private MdbColumnType _type;
+        private MdbTableId _tableId;
+        private MdbColumnType _type;
         private Type _enumType;
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// Gets the table id of this column.
+        /// </summary>
+        public MdbTableId TableId
+        {
+            get { return _tableId; }
+            internal set { _tableId = value; }
+        }
 
-    	/// <summary>
-    	/// Gets the table id of this column.
-    	/// </summary>
-    	public MdbTableId TableId { get; internal set; }
-
-    	/// <summary>
+        /// <summary>
         /// Gets the column name.
         /// </summary>
         public string Name
@@ -183,7 +187,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
         {
         	return new MdbColumn
         	        	{
-        	        		TableId = TableId,
+        	        		_tableId = _tableId,
         	        		_name = _name,
         	        		_desc = _desc,
         	        		_type = _type,

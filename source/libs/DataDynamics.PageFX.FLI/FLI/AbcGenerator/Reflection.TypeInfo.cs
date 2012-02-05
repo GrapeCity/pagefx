@@ -247,7 +247,7 @@ namespace DataDynamics.PageFX.FLI
             if (!ShouldWrap(m)) return am;
 
             var provname = ++MethodWrappperCounter;
-            const string prefix = "wrap_";
+            string prefix = "wrap_";
             var name = DefinePfxName(prefix + provname);
             var instance = am.Instance;
             bool addParam = false;

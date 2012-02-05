@@ -131,7 +131,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return;
             }
 
-			var e = member as IEvent;
+            var e = method as IEvent;
             if (e != null)
             {
                 _events.AddInternal(e);

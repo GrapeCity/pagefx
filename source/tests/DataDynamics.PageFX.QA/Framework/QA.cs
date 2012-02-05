@@ -859,11 +859,11 @@ namespace DataDynamics.PageFX
         #region Utils
         internal static string RemovePrefix(string fullname)
         {
-            const string prefix = ".TestCases.";
-            int i = fullname.IndexOf(prefix, StringComparison.InvariantCultureIgnoreCase);
+            string str = ".TestCases.";
+            int i = fullname.IndexOf(str);
             if (i >= 0)
             {
-                return fullname.Substring(i + prefix.Length);
+                return fullname.Substring(i + str.Length);
             }
             return fullname;
         }

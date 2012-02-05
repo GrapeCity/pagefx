@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 
@@ -44,10 +43,16 @@ namespace DataDynamics.PageFX.FLI
 
         public static IType FindType(IAssembly asm, AbcMultiname name)
         {
-        	return name.GetFullNames().Select(fullName => FindType(asm, fullName)).FirstOrDefault(type => type != null);
+            foreach (var fullName in name.GetFullNames())
+            {
+                var type = FindType(asm, fullName);
+                if (type != null)
+                    return type;
+            }
+            return null;
         }
 
-    	public static AbcInstance FindInstance(IAssembly asm, string name)
+        public static AbcInstance FindInstance(IAssembly asm, string name)
         {
             Setup(asm);
             var idx = AssemblyTag.Instance(asm).Index as AssemblyIndex;
@@ -64,12 +69,16 @@ namespace DataDynamics.PageFX.FLI
                 return null;
             if (name.NamespaceSet != null)
             {
-            	return name.NamespaceSet
-					.Select(ns => NameHelper.MakeFullName(ns.NameString, name.NameString))
-					.Select(fname => FindInstance(asm, fname))
-					.FirstOrDefault(instance => instance != null);
+                foreach (var ns in name.NamespaceSet)
+                {
+                    string fname = NameHelper.MakeFullName(ns.NameString, name.NameString);
+                    var instance = FindInstance(asm, fname);
+                    if (instance != null)
+                        return instance;
+                }
+                return null;
             }
-        	return FindInstance(asm, name.FullName);
+            return FindInstance(asm, name.FullName);
         }
 
         AssemblyIndex(IAssembly asm)

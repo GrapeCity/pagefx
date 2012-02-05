@@ -853,9 +853,9 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 if (members.IsEmpty()) return;
 
                 var sets = new List<MemberSet>();
-                foreach (var member in members)
+                foreach (ITypeMember m in members)
                 {
-                    var v = member.Visibility;
+                    var v = m.Visibility;
                     int i = sets.IndexOf(x => x.Visibility == v);
                     MemberSet set;
                     if (i < 0)
@@ -867,7 +867,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                     {
                         set = sets[i];
                     }
-                    set.List.Add(member);
+                    set.List.Add(m);
                 }
 
                 sets.Sort((x, y) => x.Visibility - y.Visibility);
@@ -2327,8 +2327,8 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
         void WriteMethodArguments(IMethod method, IList<IExpression> args)
         {
-            const string prefix = "(";
-            const string suffx = ")";
+            string prefix = "(";
+            string suffx = ")";
             if (method == null)
             {
                 Write(prefix);

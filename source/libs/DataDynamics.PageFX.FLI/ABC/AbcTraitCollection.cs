@@ -159,20 +159,36 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Utils
         public AbcTrait[] GetRange(AbcTraitKind kind)
         {
-        	return this.Where(trait => trait.Kind == kind).ToArray();
+            var list = new List<AbcTrait>();
+            foreach (var trait in this)
+            {
+                if (trait.Kind == kind)
+                    list.Add(trait);
+            }
+            return list.ToArray();
         }
 
         public AbcTrait[] GetFields()
         {
-            var list = this.Where(trait => trait.Kind == AbcTraitKind.Slot || trait.Kind == AbcTraitKind.Const).ToList();
-        	list.Sort((x, y) => (int)x.Visibility - (int)y.Visibility);
+            var list = new List<AbcTrait>();
+            foreach (var trait in this)
+            {
+                if (trait.Kind == AbcTraitKind.Slot || trait.Kind == AbcTraitKind.Const)
+                    list.Add(trait);
+            }
+            list.Sort((x, y) => (int)x.Visibility - (int)y.Visibility);
             return list.ToArray();
         }
 
         public AbcMethod[] GetMethods()
         {
-            var list = (from trait in this where trait.Kind == AbcTraitKind.Method select trait.Method).ToList();
-        	list.Sort((x, y) => (int)x.Visibility - (int)y.Visibility);
+            var list = new List<AbcMethod>();
+            foreach (var trait in this)
+            {
+                if (trait.Kind == AbcTraitKind.Method)
+                    list.Add(trait.Method);
+            }
+            list.Sort((x, y) => (int)x.Visibility - (int)y.Visibility);
             return list.ToArray();
         }
 

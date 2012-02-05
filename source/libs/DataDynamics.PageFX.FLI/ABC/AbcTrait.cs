@@ -504,7 +504,11 @@ namespace DataDynamics.PageFX.FLI.ABC
         public bool IsConst
         {
             get { return _kind == AbcTraitKind.Const; }
-            set { _kind = value ? AbcTraitKind.Const : AbcTraitKind.Slot; }
+            set
+            {
+                if (value) _kind = AbcTraitKind.Const;
+                else _kind = AbcTraitKind.Slot;
+            }
         }
 
         /// <summary>

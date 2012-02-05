@@ -1,4 +1,4 @@
-using System.Linq;
+using System.Text;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {
@@ -7,27 +7,41 @@ namespace DataDynamics.PageFX.CLI.Metadata
     /// </summary>
     public sealed class MdbTable
     {
-    	private readonly MdbColumnList _columns = new MdbColumnList();
+        #region Fields
+        readonly MdbColumnList _columns = new MdbColumnList();
+        string _desc;
+        readonly MdbTableId _id;
+        int _rowCount;
+        int _rowSize;
+        int _size;
+        #endregion
 
-    	/// <summary>
-    	/// Gets the table id.
-    	/// </summary>
-    	public MdbTableId Id { get; private set; }
+        #region Public Properties
+        /// <summary>
+        /// Gets the table id.
+        /// </summary>
+        public MdbTableId Id
+        {
+            get { return _id; }
+        }
 
-    	/// <summary>
+        /// <summary>
         /// Gets the table name.
         /// </summary>
         public string Name
         {
-            get { return Id.ToString(); }
+            get { return _id.ToString(); }
         }
 
-    	/// <summary>
-    	/// Gets the table description.
-    	/// </summary>
-    	public string Description { get; set; }
+        /// <summary>
+        /// Gets the table description.
+        /// </summary>
+        public string Description
+        {
+            get { return _desc; }
+        }
 
-    	/// <summary>
+        /// <summary>
         /// Gets or sets table offset.
         /// </summary>
         public long Offset { get; set; }
@@ -40,47 +54,59 @@ namespace DataDynamics.PageFX.CLI.Metadata
             get { return _columns; }
         }
 
-    	/// <summary>
-    	/// Gets the number of rows in this table.
-    	/// </summary>
-    	public int RowCount { get; internal set; }
+        /// <summary>
+        /// Gets the number of rows in this table.
+        /// </summary>
+        public int RowCount
+        {
+            get { return _rowCount; }
+            internal set { _rowCount = value; }
+        }
 
-    	/// <summary>
-    	/// Gets the size of row in bytes.
-    	/// </summary>
-    	public int RowSize { get; internal set; }
+        /// <summary>
+        /// Gets the size of row in bytes.
+        /// </summary>
+        public int RowSize
+        {
+            get { return _rowSize; }
+            internal set { _rowSize = value; }
+        }
 
-    	/// <summary>
-    	/// Gets the table size in bytes
-    	/// </summary>
-    	public int Size { get; internal set; }
+        /// <summary>
+        /// Gets the table size in bytes
+        /// </summary>
+        public int Size
+        {
+            get { return _size; }
+            internal set { _size = value; }
+        }
 
-    	public bool IsSorted { get; internal set; }
+        public bool IsSorted { get; internal set; }
 
         /// <summary>
         /// Row cache
         /// </summary>
         internal MdbRow[] Rows { get; set; }
+        #endregion
 
-    	#region Constructors
-
+        #region Constructors
         internal MdbTable(MdbTableId id, params MdbColumn[] columns)
         {
-        	Id = id;
-        	foreach (var column in columns.Select(c => c.Clone()))
-        	{
-        		column.TableId = id;
-        		_columns.Add(column);
-        	}
+            _id = id;
+            for (int i = 0; i < columns.Length; ++i)
+            {
+                var col = columns[i].Clone();
+                col.TableId = id;
+                _columns.Add(col);
+            }
         }
-
-    	#endregion
+        #endregion
 
         #region Object Overrides
         public override string ToString()
         {
             return string.Format("Table({0}, Rows = {1}, Size = {2}, RowSize = {3})",
-                                 Name, RowCount, Size, RowSize);
+                                 Name, _rowCount, _size, _rowSize);
         }
         #endregion
     }
