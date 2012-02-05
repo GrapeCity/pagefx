@@ -76,8 +76,9 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             WriteFlags(writer, _flags);
 
-        	var eventWriter = new SwfWriter {FileVersion = writer.FileVersion};
-        	if ((_flags & SwfEventFlags.KeyPress) != 0)
+            var eventWriter = new SwfWriter();
+            eventWriter.FileVersion = writer.FileVersion;
+            if ((_flags & SwfEventFlags.KeyPress) != 0)
                 eventWriter.WriteUInt8(_keyCode);
             _actions.Write(eventWriter);
 
@@ -110,8 +111,9 @@ namespace DataDynamics.PageFX.FLI.SWF
                 else
                     flags = reader.ReadUInt16();
                 if (flags == 0) break;
-            	var e = new SwfEvent {Flags = SwfEvent.ToFlags(flags, ver)};
-            	e.Read(reader);
+                var e = new SwfEvent();
+                e.Flags = SwfEvent.ToFlags(flags, ver);
+                e.Read(reader);
             }
         }
 

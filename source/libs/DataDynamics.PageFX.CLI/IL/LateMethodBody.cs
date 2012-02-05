@@ -2,7 +2,7 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
-    internal sealed class LateMethodBody : IMethodBody
+    class LateMethodBody : IMethodBody
     {
         private readonly uint _rva;
         private readonly IMethod _method;
@@ -18,7 +18,12 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public MethodBody RealBody
         {
-            get { return _body ?? (_body = _loader.Decompile(_method, _rva)); }
+            get
+            {
+                if (_body == null)
+                    _body = _loader.Decompile(_method, _rva);
+                return _body;
+            }
         }
 
         #region IMethodBody Members

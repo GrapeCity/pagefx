@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Xml;
 using DataDynamics.Compression.Zip;
 using DataDynamics.PageFX.CodeModel;
@@ -277,15 +277,19 @@ namespace DataDynamics.PageFX.FLI.SWC
             return null;
         }
 
-        private static IEnumerable<XmlElement> GetElements(XmlNode parent, string localName)
+        static List<XmlElement> GetElements(XmlNode parent, string localName)
         {
-        	return (from XmlNode kid in parent.ChildNodes
-					select kid as XmlElement
-					into e where e != null && e.LocalName == localName
-					select e).ToList();
+            var list = new List<XmlElement>();
+            foreach (XmlNode kid in parent.ChildNodes)
+            {
+                var e = kid as XmlElement;
+                if (e != null && e.LocalName == localName)
+                    list.Add(e);
+            }
+            return list;
         }
 
-    	private static IEnumerable<XmlElement> GetLibElements(XmlDocument cat)
+        static List<XmlElement> GetLibElements(XmlDocument cat)
         {
             var root = cat.DocumentElement;
             var libs = GetElement(root, "libraries");
@@ -659,16 +663,22 @@ namespace DataDynamics.PageFX.FLI.SWC
         #endregion
 
         #region DevUtils
-
-		public IEnumerable<SwfMovie> ExtractSwfs()
-		{
-			return (from ZipEntry e in _zip
-			        where e.Name.EndsWith(".swf", StringComparison.InvariantCultureIgnoreCase)
-			        let stream = Stream2.ToMemoryStream(e.Data)
-			        select new SwfMovie(stream) {Name = e.Name}).ToList();
-		}
-
-    	#endregion
+        public List<SwfMovie> ExtractSwfs()
+        {
+            var list = new List<SwfMovie>();
+            foreach (ZipEntry e in _zip)
+            {
+                if (e.Name.EndsWith(".swf", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Stream stream = Stream2.ToMemoryStream(e.Data);
+                    var swf = new SwfMovie(stream);
+                    swf.Name = e.Name;
+                    list.Add(swf);
+                }
+            }
+            return list;
+        }
+        #endregion
 
         #region Utils
         static string GetDefID(XmlElement scriptElem)

@@ -15,8 +15,13 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IStatementCollection Then
         {
-            get { return _then ?? (_then = new StatementCollection(this)); }
-        	set
+            get
+            {
+                if (_then == null)
+                    _then = new StatementCollection(this);
+                return _then;
+            }
+            set
             {
                 if (value == null)
                 {
@@ -34,8 +39,13 @@ namespace DataDynamics.PageFX.CodeModel
         
         public IStatementCollection Else
         {
-            get { return _else ?? (_else = new StatementCollection(this)); }
-        	set
+            get
+            {
+                if (_else == null)
+                    _else = new StatementCollection(this);
+                return _else;
+            }
+            set
             {
                 if (value == null)
                 {

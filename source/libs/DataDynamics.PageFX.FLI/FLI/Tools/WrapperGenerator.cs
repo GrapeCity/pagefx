@@ -88,9 +88,11 @@ namespace DataDynamics.PageFX.FLI
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
                 throw new ArgumentException("Input path is invalid");
 
-            var cl = CommandLine.Parse(format) ?? new CommandLine();
+            var cl = CommandLine.Parse(format);
+            if (cl == null)
+                cl = new CommandLine();
 
-        	var asm = BuildAssembly(path, cl);
+            var asm = BuildAssembly(path, cl);
 
             if (string.IsNullOrEmpty(outpath))
                 outpath = Path.ChangeExtension(path, ".dll");

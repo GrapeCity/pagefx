@@ -1,4 +1,3 @@
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.FLI
@@ -41,7 +40,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static ICustomAttribute Find(ICustomAttributeProvider cp, string fullTypeName)
         {
-            return cp.CustomAttributes.FirstOrDefault(attr => attr.TypeName == fullTypeName);
+            return Algorithms.Find(cp.CustomAttributes, attr => attr.TypeName == fullTypeName);
         }
 
         public static bool Has(ICustomAttributeProvider cp, string fullTypeName)

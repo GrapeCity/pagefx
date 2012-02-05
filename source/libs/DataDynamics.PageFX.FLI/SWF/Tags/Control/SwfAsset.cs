@@ -133,8 +133,9 @@ namespace DataDynamics.PageFX.FLI.SWF
             int n = reader.ReadUInt16();
             for (int i = 0; i < n; ++i)
             {
-            	var asset = new SwfAsset(reader) {Flags = flags};
-            	Add(asset);
+                var asset = new SwfAsset(reader);
+                asset.Flags = flags;
+                Add(asset);
             }
         }
 

@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
-    internal static class FlowGraphHelper
+    internal class FlowGraphHelper
     {
         //   C
         //  / \
@@ -77,8 +76,18 @@ namespace DataDynamics.PageFX.CLI.CFG
                 hash[node] = node;
 
             var entryPoints = new NodeList();
-        	entryPoints.AddRange(nodes.Where(node => node.Predecessors.Any(p => hash[p] == null)));
-        	return entryPoints;
+            foreach (var node in nodes)
+            {
+                foreach (var p in node.Predecessors)
+                {
+                    if (hash[p] == null)
+                    {
+                        entryPoints.Add(node);
+                        break;
+                    }
+                }
+            }
+            return entryPoints;
         }
     }
 }

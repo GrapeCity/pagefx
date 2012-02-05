@@ -8,21 +8,44 @@ namespace DataDynamics.PageFX.CodeModel
     public class ManifestResource : CustomAttributeProvider, IManifestResource
     {
         #region IManifestResource Members
+        /// <summary>
+        /// Gets the resource name.
+        /// </summary>
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+        private string _name;
 
-    	/// <summary>
-    	/// Gets the resource name.
-    	/// </summary>
-    	public string Name { get; set; }
+        public int Offset
+        {
+            get { return _offset; }
+            set { _offset = value; }
+        }
+        private int _offset;
 
-    	public int Offset { get; set; }
+        public bool IsPublic
+        {
+            get { return _isPublic; }
+            set { _isPublic = value; }
+        }
+        private bool _isPublic;
 
-    	public bool IsPublic { get; set; }
+        public IModule Module
+        {
+            get { return _module; }
+            set { _module = value; }
+        }
+        private IModule _module;
 
-    	public IModule Module { get; set; }
-
-    	public byte[] Data { get; set; }
-
-    	#endregion
+        public byte[] Data
+        {
+            get { return _data; }
+            set { _data = value; }
+        }
+        private byte[] _data;
+        #endregion
 
         public override string ToString()
         {
@@ -36,15 +59,16 @@ namespace DataDynamics.PageFX.CodeModel
     public class ManifestResourceCollection : List<IManifestResource>, IManifestResourceCollection
     {
         #region IManifestResourceCollection Members
-
         public IManifestResource this[string name]
         {
             get
             {
-                return Find(r => r.Name == name);
+                return Find(delegate(IManifestResource r)
+                                {
+                                    return r.Name == name;
+                                });
             }
         }
-
         #endregion
     }
 }

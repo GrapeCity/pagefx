@@ -142,9 +142,11 @@ namespace DataDynamics.PageFX.CodeModel
                     if (typeFilter != null && !typeFilter(type))
                         continue;
                     
-                    string nsname = type.Namespace ?? "";
+                    string nsname = type.Namespace;
+                    if (nsname == null)
+                        nsname = "";
 
-                	var ns = _nscache[nsname] as Namespace;
+                    var ns = _nscache[nsname] as Namespace;
                     if (ns == null)
                     {
                         ns = new Namespace {Name = nsname};
@@ -410,7 +412,7 @@ namespace DataDynamics.PageFX.CodeModel
             #endregion
 
             #region WriteParameters
-            static void WriteParameters(XmlWriter writer, IEnumerable<IParameter> args)
+            static void WriteParameters(XmlWriter writer, IParameterCollection args)
             {
                 writer.WriteStartElement("parameters");
                 if (args != null)
@@ -571,7 +573,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         class Util
         {
-            public static IEnumerable<IType> GetTypes(ITypeContainer assembly)
+            public static IType[] GetTypes(ITypeContainer assembly)
             {
                 var types = new List<IType>();
                 foreach (var type in assembly.Types)
@@ -599,22 +601,22 @@ namespace DataDynamics.PageFX.CodeModel
                 return list.ToArray();
             }
 
-            public static IEnumerable<IField> GetFields(IType type)
+            public static IField[] GetFields(IType type)
             {
                 return GetVisibleMembers(type.Fields);
             }
 
-            public static IEnumerable<IProperty> GetProperties(IType type)
+            public static IProperty[] GetProperties(IType type)
             {
                 return GetVisibleMembers(type.Properties);
             }
 
-            public static IEnumerable<IEvent> GetEvents(IType type)
+            public static IEvent[] GetEvents(IType type)
             {
                 return GetVisibleMembers(type.Events);
             }
 
-            public static IEnumerable<IMethod> GetConstructors(IType type)
+            public static IMethod[] GetConstructors(IType type)
             {
                 var list = new List<IMethod>();
                 foreach (var m in type.Methods)
@@ -638,7 +640,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return true;
             }
 
-            public static IEnumerable<IMethod> GetMethods(IType type)
+            public static IMethod[] GetMethods(IType type)
             {
                 var list = new List<IMethod>();
                 foreach (var m in type.Methods)

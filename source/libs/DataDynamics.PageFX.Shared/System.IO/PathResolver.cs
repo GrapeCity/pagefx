@@ -5,11 +5,16 @@ namespace System.IO
 {
     public class PathResolver
     {
-    	private readonly List<string> _dirs = new List<string>();
+        internal List<string> _dirs = new List<string>();
 
-    	public bool UseCurrentDirectory { get; set; }
+        public bool UseCurrentDirectory
+        {
+            get { return _useCurrentDirectory; }
+            set { _useCurrentDirectory = value; }
+        }
+        private bool _useCurrentDirectory;
 
-    	private static bool CheckDirectory(string dir)
+        private static bool CheckDirectory(string dir)
         {
             if (string.IsNullOrEmpty(dir))
             {

@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.FLI.SWF
     public abstract class SwfTag : ISwfTag, ICloneable, ISupportXmlDump
     {
         #region Shared Members
-        private static Dictionary<SwfTagCode, int> _versions;
+        private static Dictionary<SwfTagCode, int> _mapver;
 
         /// <summary>
         /// Returns minimum SWF version where tag with specified code was defined.
@@ -17,24 +17,30 @@ namespace DataDynamics.PageFX.FLI.SWF
         /// <returns></returns>
         public static int GetTagVersion(SwfTagCode code)
         {
-            if (_versions == null)
+            if (_mapver == null)
             {
-                _versions = SwfHelper.GetEnumAttributeMap<SwfTagCode, int, SwfVersionAttribute>(attr => attr.Version);
+                _mapver = SwfHelper.GetEnumAttributeMap<SwfTagCode, int, SwfVersionAttribute>(
+                    delegate(SwfVersionAttribute attr) { return attr.Version; });
             }
             int result;
-        	return _versions.TryGetValue(code, out result) ? result : -1;
+            if (_mapver.TryGetValue(code, out result))
+                return result;
+            return -1;
         }
 
-        private static Dictionary<SwfTagCode, SwfTagCategory> _categories;
+        private static Dictionary<SwfTagCode, SwfTagCategory> _mapcat;
 
         public static SwfTagCategory GetTagCategory(SwfTagCode code)
         {
-            if (_categories == null)
+            if (_mapcat == null)
             {
-                _categories = SwfHelper.GetEnumAttributeMap<SwfTagCode, SwfTagCategory, SwfTagCategoryAttribute>(attr => attr.Category);
+                _mapcat = SwfHelper.GetEnumAttributeMap<SwfTagCode, SwfTagCategory, SwfTagCategoryAttribute>(
+                    delegate(SwfTagCategoryAttribute attr) { return attr.Category; });
             }
             SwfTagCategory result;
-        	return _categories.TryGetValue(code, out result) ? result : SwfTagCategory.Unknown;
+            if (_mapcat.TryGetValue(code, out result))
+                return result;
+            return SwfTagCategory.Unknown;
         }
 
         public static bool IsCharacter(SwfTagCode code)

@@ -279,9 +279,14 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string Key
         {
-            get { return _key ?? (_key = Name + ID); }
+            get
+            {
+                if (_key == null)
+                    _key = Name + ID;
+                return _key;
+            }
         }
-        private string _key;
+        string _key;
 
         /// <summary>
         /// Gets name of the type used in signatures.
@@ -301,7 +306,6 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
-
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.GenericParameter; }
@@ -312,12 +316,16 @@ namespace DataDynamics.PageFX.CodeModel
             get { return null; }
         }
 
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Tag { get; set; }
-
-    	#endregion
+        /// <summary>
+        /// Gets or sets user defined data assotiated with this object.
+        /// </summary>
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
+        private object _tag;
+        #endregion
 
         #region IFormatable Members
         public string ToString(string format, IFormatProvider formatProvider)
@@ -327,13 +335,16 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region IDocumentationProvider Members
-
-    	/// <summary>
-    	/// Gets or sets documentation of this member
-    	/// </summary>
-    	public string Documentation { get; set; }
-
-    	#endregion
+        /// <summary>
+        /// Gets or sets documentation of this member
+        /// </summary>
+        public string Documentation
+        {
+            get { return _doc; }
+            set { _doc = value; }
+        }
+        private string _doc;
+        #endregion
 
         #region Object Override Members
         public override bool Equals(object obj)
@@ -356,16 +367,13 @@ namespace DataDynamics.PageFX.CodeModel
     public sealed class GenericParameterCollection : List<IGenericParameter>, IGenericParameterCollection
     {
         #region IGenericParameterCollection Members
-
         public IGenericParameter this[string name]
         {
-            get { return Find(p => p.Name == name); }
+            get { return Find(delegate(IGenericParameter p) { return p.Name == name; }); }
         }
-
         #endregion
 
         #region ICodeNode Members
-
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.GenericParameters; }
@@ -376,12 +384,16 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Convert(this); }
         }
 
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Tag { get; set; }
-
-    	#endregion
+        /// <summary>
+        /// Gets or sets user defined data assotiated with this object.
+        /// </summary>
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
+        private object _tag;
+        #endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)

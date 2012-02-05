@@ -2,7 +2,6 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 #region csc /help
 /*
@@ -203,7 +202,7 @@ namespace DataDynamics.PageFX
         public void AddRef(string name)
         {
             if (string.IsNullOrEmpty(name)) return;
-            if (_refs.Contains(name, StringComparer.CurrentCultureIgnoreCase)) return;
+            if (Algorithms.ContainsIgnoreCase(_refs, name)) return;
             _refs.Add(name);
         }
 

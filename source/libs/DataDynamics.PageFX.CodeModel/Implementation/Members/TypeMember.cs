@@ -145,7 +145,6 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
-
         public virtual CodeNodeType NodeType
         {
             get { return CodeNodeType.TypeMember; }
@@ -156,12 +155,16 @@ namespace DataDynamics.PageFX.CodeModel
             get { return null; }
         }
 
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Tag { get; set; }
-
-    	#endregion
+        /// <summary>
+        /// Gets or sets user defined data assotiated with this object.
+        /// </summary>
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
+        object _tag;
+        #endregion
 
         #region IFormattable Members
         public virtual string ToString(string format, IFormatProvider formatProvider)
@@ -184,13 +187,16 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region IDocumentationProvider Members
-
-    	/// <summary>
-    	/// Gets or sets documentation of this member
-    	/// </summary>
-    	public string Documentation { get; set; }
-
-    	#endregion
+        /// <summary>
+        /// Gets or sets documentation of this member
+        /// </summary>
+        public string Documentation
+        {
+            get { return _doc; }
+            set { _doc = value; }
+        }
+        string _doc;
+        #endregion
 
         #region Object Override Members
         public override string ToString()

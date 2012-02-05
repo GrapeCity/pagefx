@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace DataDynamics.PageFX
@@ -90,7 +91,12 @@ namespace DataDynamics.PageFX
 
         public static TestSuite Root
         {
-            get { return _root ?? (_root = new TestSuite("", "")); }
+            get
+            {
+                if (_root == null)
+                    _root = new TestSuite("", "");
+                return _root;
+            }
         }
         private static TestSuite _root;
 

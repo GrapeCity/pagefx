@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -349,11 +348,9 @@ namespace DataDynamics.PageFX.FLI
             e.To = -1;
             e.Target = -1;
 
-        	var fi = new FinallyInfo
-        	         	{
-        	         		fault = fault
-        	         	};
-        	_finallyStack.Push(fi);
+            var fi = new FinallyInfo();
+            fi.fault = fault;
+            _finallyStack.Push(fi);
 
             _resolver.Add(tb.EntryPoint, new ExceptionFrom(e));
 
@@ -531,7 +528,12 @@ namespace DataDynamics.PageFX.FLI
         {
             foreach (var tb in _sehsToResolve)
             {
-                var h = tb.Handlers.FirstOrDefault(seh => seh.Tag is SehHandlerTag);
+                var h = Algorithms.Find(
+                    tb.Handlers,
+                    delegate(ISehHandlerBlock seh)
+                        {
+                            return seh.Tag is SehHandlerTag;
+                        });
 
                 Debug.Assert(h != null);
 

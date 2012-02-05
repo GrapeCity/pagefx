@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.IL;
@@ -278,7 +277,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         public int InterfaceCount
         {
-            get { return Instances.Count(instance => instance.IsInterface); }
+            get { return Logic.CountOf(Instances, i => i.IsInterface); }
         }
 
         public IAssembly Assembly { get; set; }
@@ -517,12 +516,21 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region Write
+        public bool AutoComplete
+        {
+            get { return _autoComplete; }
+            set { _autoComplete = value; }
+        }
+        private bool _autoComplete;
 
-    	public bool AutoComplete { get; set; }
+        public bool ReduceSize
+        {
+            get { return _reduceSize; }
+            set { _reduceSize = value; }
+        }
+        private bool _reduceSize;
 
-    	public bool ReduceSize { get; set; }
-
-    	public void Write(SwfWriter writer)
+        public void Write(SwfWriter writer)
         {
             writer.ABC = this;
             var ver = Version;
@@ -667,8 +675,10 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public void DumpXml(string path)
         {
-        	var xws = new XmlWriterSettings {Indent = true, IndentChars = "  "};
-        	using (var writer = XmlWriter.Create(path, xws))
+            var xws = new XmlWriterSettings();
+            xws.Indent = true;
+            xws.IndentChars = "  ";
+            using (var writer = XmlWriter.Create(path, xws))
             {
                 DumpXml(writer);
             }
@@ -1120,7 +1130,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcInstance FindInstance(Predicate<AbcInstance> p)
         {
-            return Instances.FirstOrDefault(x => p(x));
+            return Algorithms.Find(Instances, p);
         }
 
         public AbcInstance FindInstance(string name)
@@ -1130,15 +1140,26 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public static AbcInstance FindInstance(IEnumerable<AbcFile> files, Predicate<AbcInstance> p)
         {
-        	return files.Select(abc => abc.FindInstance(p)).FirstOrDefault(res => res != null);
+            foreach (var abc in files)
+            {
+                var res = abc.FindInstance(p);
+                if (res != null)
+                    return res;
+            }
+            return null;
         }
 
-    	public static AbcInstance FindInstance(IEnumerable<AbcFile> files, string name)
-    	{
-    		return files.Select(abc => abc.FindInstance(name)).FirstOrDefault(res => res != null);
-    	}
-
-    	#endregion
+        public static AbcInstance FindInstance(IEnumerable<AbcFile> files, string name)
+        {
+            foreach (var abc in files)
+            {
+                var res = abc.FindInstance(name);
+                if (res != null)
+                    return res;
+            }
+            return null;
+        }
+        #endregion
 
         #region Object Overrides
         public override string ToString()

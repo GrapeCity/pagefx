@@ -13,14 +13,28 @@ namespace DataDynamics.PageFX.CodeModel
         }
 
         #region IField Members
+        public int Offset
+        {
+            get { return _offset; }
+            set { _offset = value; }
+        }
+        private int _offset;
 
-    	public int Offset { get; set; }
+        public object Value
+        {
+            get { return _value; }
+            set { _value = value; }
+        }
+        private object _value;
 
-    	public object Value { get; set; }
+        public IExpression Initializer
+        {
+            get { return _initializer; }
+            set { _initializer = value; }
+        }
+        private IExpression _initializer;
 
-    	public IExpression Initializer { get; set; }
-
-    	public bool IsConstant
+        public bool IsConstant
         {
             get { return GetModifier(Modifiers.Const); }
             set { SetModifier(value, Modifiers.Const); }

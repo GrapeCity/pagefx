@@ -61,7 +61,10 @@ namespace DataDynamics.PageFX
                     list.Add(tc);
                 }
             }
-            list.Sort((x, y) => x.FullName.CompareTo(y.FullName));
+            list.Sort(delegate(TestCase x, TestCase y)
+                          {
+                              return x.FullName.CompareTo(y.FullName);
+                          });
             return list;
         }
 
@@ -70,7 +73,12 @@ namespace DataDynamics.PageFX
         /// </summary>
         public static TestCaseCollection CSharp
         {
-            get { return _cs ?? (_cs = Load(".cs")); }
+            get
+            {
+                if (_cs == null)
+                    _cs = Load(".cs");
+                return _cs;
+            }
         }
         private static TestCaseCollection _cs;
     }

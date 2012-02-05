@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -742,9 +743,14 @@ namespace DataDynamics.PageFX.FLI.SWF
                 Position = pos + 4 - pad;
         }
 
-    	public SwfTagDecodeOptions TagDecodeOptions { get; set; }
+        public SwfTagDecodeOptions TagDecodeOptions
+        {
+            get { return _tagDecodeOptions; }
+            set { _tagDecodeOptions = value; }
+        }
+        private SwfTagDecodeOptions _tagDecodeOptions;
 
-    	#region Shapes
+        #region Shapes
         public SwfStyles Styles
         {
             get { return _styles; }

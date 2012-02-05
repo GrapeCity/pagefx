@@ -1258,8 +1258,9 @@ namespace DataDynamics.PageFX.CLI.IL
                         {
                             var code = new Code();
                             int obj = MoveTemp(code, ptr.obj);
-                        	var newPtr = new MockFieldPtr(ptr.field, obj) {dup_source = ptr};
-                        	Push(newPtr);
+                            var newPtr = new MockFieldPtr(ptr.field, obj);
+                            newPtr.dup_source = ptr;
+                            Push(newPtr);
                             return code.ToArray();
                         }
                         Push(v);
@@ -1272,8 +1273,9 @@ namespace DataDynamics.PageFX.CLI.IL
                         var code = new Code();
                         int arr = MoveTemp(code, ptr.arr);
                         int index = MoveTemp(code, ptr.index);
-                    	var newPtr = new MockElemPtr(ptr.arrType, ptr.elemType, arr, index) {dup_source = ptr};
-                    	Push(newPtr);
+                        var newPtr = new MockElemPtr(ptr.arrType, ptr.elemType, arr, index);
+                        newPtr.dup_source = ptr;
+                        Push(newPtr);
                         return code.ToArray();
                     }
 

@@ -11,7 +11,10 @@ namespace DataDynamics.PageFX
 
         public void Sort()
         {
-            Suites.Sort((x, y) => String.Compare(x.FullName, y.FullName, StringComparison.CurrentCultureIgnoreCase));
+            Suites.Sort(delegate(TestSuite x, TestSuite y)
+                            {
+                                return string.Compare(x.FullName, y.FullName, true);
+                            });
         }
 
         public bool HasSuite(TestSuite ts)

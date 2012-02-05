@@ -5,8 +5,12 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using DataDynamics;
+using DataDynamics.PageFX;
+using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.SWF;
 using DataDynamics.PageFX.PDB;
 using Infrastructure=DataDynamics.PageFX.FLI.Infrastructure;
@@ -92,31 +96,25 @@ namespace DataDynamics.PageFX
                 form.SuspendLayout();
                 int d = 10;
 
-            	var ok = new Button
-            	         	{
-            	         		DialogResult = DialogResult.OK,
-            	         		Text = "OK",
-            	         		Anchor = AnchorStyles.Right | AnchorStyles.Bottom
-            	         	};
+                var ok = new Button();
+                ok.DialogResult = DialogResult.OK;
+                ok.Text = "OK";
+                ok.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
 
-            	var cancel = new Button
-            	             	{
-            	             		DialogResult = DialogResult.Cancel,
-            	             		Text = "Cancel",
-            	             		Anchor = AnchorStyles.Right | AnchorStyles.Bottom
-            	             	};
+                var cancel = new Button();
+                cancel.DialogResult = DialogResult.Cancel;
+                cancel.Text = "Cancel";
+                cancel.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
 
-            	cancel.Location = new Point(w - d - cancel.Width, h - d - cancel.Height);
+                cancel.Location = new Point(w - d - cancel.Width, h - d - cancel.Height);
                 ok.Location = new Point(cancel.Left - d - ok.Width, cancel.Top);
 
-            	var list = new CheckedListBox
-            	           	{
-            	           		Location = new Point(d, d),
-            	           		Size = new Size(w - 2*d, ok.Top - d),
-            	           		Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom
-            	           	};
+                var list = new CheckedListBox();
+                list.Location = new Point(d, d);
+                list.Size = new Size(w - 2 * d, ok.Top - d);
+                list.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
 
-            	foreach (var item in items)
+                foreach (var item in items)
                 {
                     list.Items.Add(item);
                 }
@@ -180,19 +178,17 @@ namespace DataDynamics.PageFX
 
         public static ColorBlend CreatePalette(params Color[] colors)
         {
-        	return new ColorBlend
-        	       	{
-        	       		Positions = CreatePositions(colors.Length),
-        	       		Colors = colors
-        	       	};
+            var res = new ColorBlend();
+            res.Positions = CreatePositions(colors.Length);
+            res.Colors = colors;
+            return res;
         }
 
         private static LinearGradientBrush CreateGradient(RectangleF r, params Color[] colors)
         {
-        	return new LinearGradientBrush(r, Color.Lime, Color.Red, LinearGradientMode.Horizontal)
-        	         	{
-        	         		InterpolationColors = CreatePalette(colors)
-        	         	};
+            var lg = new LinearGradientBrush(r, Color.Lime, Color.Red, LinearGradientMode.Horizontal);
+            lg.InterpolationColors = CreatePalette(colors);
+            return lg;
         }
 
         private static void SWF_CreateMovingRectangles()

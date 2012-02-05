@@ -135,15 +135,15 @@ namespace DataDynamics.PageFX.FLI
 
             //TODO: Check existance of instance
 
-        	var instance = new AbcInstance(true)
-        	               	{
-        	               		Name = name,
-        	               		SuperName = superName,
-        	               		Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
-        	               		ProtectedNamespace = _abc.DefineProtectedNamespace(name.NameString),
-        	               		Initializer = _abc.DefineEmptyConstructor((string)null, true),
-        	               		SuperType = superType
-        	               	};
+            var instance = new AbcInstance(true)
+            {
+                Name = name,
+                SuperName = superName,
+                Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
+                ProtectedNamespace = _abc.DefineProtectedNamespace(name.NameString),
+                Initializer = _abc.DefineEmptyConstructor((string)null, true),
+                SuperType = superType
+            };
             instance.Class.Initializer = _abc.DefineEmptyMethod(true);
             AddInstance(instance);
 

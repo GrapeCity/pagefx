@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWF;
 
@@ -164,7 +163,8 @@ namespace DataDynamics.PageFX.FLI
                 {
                     foreach (var name in LateAssetNames)
                     {
-                        var embed = _lateAssets.FirstOrDefault(e => e.Asset.Name == name);
+                        var embed = Algorithms.Find(_lateAssets,
+                                                    e => e.Asset.Name == name);
                         if (embed != null)
                         {
                             ImportAssetCore(embed);

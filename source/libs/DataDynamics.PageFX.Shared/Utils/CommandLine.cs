@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -105,24 +104,38 @@ namespace DataDynamics
             return s;
         }
 
-    	private static bool Match(string s, bool ignoreCase, params string[] list)
+        public static bool Match(string s, bool ignoreCase, params string[] list)
         {
-        	return list.Any(s2 => string.Compare(s, s2, ignoreCase) == 0);
+            foreach (var s2 in list)
+            {
+                if (string.Compare(s, s2, ignoreCase) == 0)
+                    return true;
+            }
+            return false;
         }
 
-    	private IEnumerable<Item> Options
+        IEnumerable<Item> Options
         {
-            get { return Items.Where(item => item.Type == ItemType.Option); }
+            get 
+            {
+                foreach (var item in Items)
+                    if (item.Type == ItemType.Option)
+                        yield return item;
+            }
         }
 
         public bool HasOption(params string[] names)
         {
-        	return Options.Any(item => Match(item.Name, true, names));
+            foreach (var item in Options)
+                if (Match(item.Name, true, names))
+                    return true;
+            return false;
         }
 
-    	public bool HasOption(CLOption opt)
+        public bool HasOption(CLOption opt)
         {
-            if (opt == null) throw new ArgumentNullException("opt");
+            if (opt == null)
+                throw new ArgumentNullException("opt");
             return HasOption(opt.Names);
         }
 
@@ -204,7 +217,7 @@ namespace DataDynamics
             return ParseBool(o, defval);
         }
 
-        private static bool ParseBool(string s, bool defval)
+        static bool ParseBool(string s, bool defval)
         {
             if (string.IsNullOrEmpty(s)) return defval;
             if (s == "+") return true;

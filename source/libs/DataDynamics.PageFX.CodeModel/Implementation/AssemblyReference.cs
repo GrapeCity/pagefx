@@ -27,10 +27,13 @@ namespace DataDynamics.PageFX.CodeModel
         public AssemblyReference(string name, Version version,
                                 byte[] publicKeyToken, CultureInfo culture)
         {
-            Name = name;
-            Version = version;
-            _culture = culture ?? CultureInfo.InvariantCulture;
-            PublicKeyToken = publicKeyToken;
+            _name = name;
+            _version = version;
+            if (culture == null)
+                _culture = CultureInfo.InvariantCulture;
+            else
+                _culture = culture;
+            _publicKeyToken = publicKeyToken;
         }
 
         /// <summary>
@@ -54,40 +57,80 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region IAssemblyReference Members
+        /// <summary>
+        /// Assembly Name
+        /// </summary>
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+        private string _name;
 
-    	/// <summary>
-    	/// Assembly Name
-    	/// </summary>
-    	public string Name { get; set; }
+        /// <summary>
+        /// Gets or sets assembly version
+        /// </summary>
+        public Version Version
+        {
+            get { return _version; }
+            set { _version = value; }
+        }
+        private Version _version;
 
-    	/// <summary>
-    	/// Gets or sets assembly version
-    	/// </summary>
-    	public Version Version { get; set; }
+        public AssemblyFlags Flags
+        {
+            get { return _flags; }
+            set { _flags = value; }
+        }
+        private AssemblyFlags _flags;
 
-    	public AssemblyFlags Flags { get; set; }
-
-    	/// <summary>
+        /// <summary>
         /// Culture Info
         /// </summary>
         public CultureInfo Culture
         {
-            get { return _culture ?? CultureInfo.InvariantCulture; }
-    		set { _culture = value ?? CultureInfo.InvariantCulture; }
+            get
+            {
+                if (_culture == null)
+                    return CultureInfo.InvariantCulture;
+                return _culture;
+            }
+            set
+            {
+                if (value == null)
+                    _culture = CultureInfo.InvariantCulture;
+                else
+                    _culture = value;
+            }
         }
         private CultureInfo _culture;
-
-    	public byte[] PublicKey { get; set; }
-
-    	/// <summary>
-    	/// Public key token
-    	/// </summary>
-    	/// <remarks>Can be null</remarks>
-    	public byte[] PublicKeyToken { get; set; }
-
-    	public byte[] HashValue { get; set; }
-
-    	public string FullName
+        
+        public byte[] PublicKey
+        {
+            get { return _publicKey; }
+            set { _publicKey = value; }
+        }
+        private byte[] _publicKey;
+        
+        /// <summary>
+        /// Public key token
+        /// </summary>
+        /// <remarks>Can be null</remarks>
+        public byte[] PublicKeyToken
+        {
+            get { return _publicKeyToken; }
+            set { _publicKeyToken = value; }
+        }
+        private byte[] _publicKeyToken;
+        
+        public byte[] HashValue
+        {
+            get { return _hashValue; }
+            set { _hashValue = value; }
+        }
+        private byte[] _hashValue;
+        
+        public string FullName
         {
             get
             {
@@ -121,8 +164,8 @@ namespace DataDynamics.PageFX.CodeModel
                     throw new ArgumentNullException("value");
 
                 var parts = value.Split(',');
-                Name = parts[0].Trim();
-                Version = new Version(0, 0, 0, 0);
+                _name = parts[0].Trim();
+                _version = new Version(0, 0, 0, 0);
                 _culture = CultureInfo.InvariantCulture;
 
                 for (int i = 1; i < parts.Length; i++)
@@ -130,7 +173,7 @@ namespace DataDynamics.PageFX.CodeModel
                     var pair = parts[i].Split('=');
                     pair[0] = pair[0].Trim();
                     if (pair[0] == "Version")
-                        Version = new Version(pair[1].Trim());
+                        _version = new Version(pair[1].Trim());
                     if (pair[0] == "Culture")
                     {
                         string cultureName = pair[1].Trim();
@@ -143,14 +186,14 @@ namespace DataDynamics.PageFX.CodeModel
                     {
                         string keyToken = pair[1].Trim().ToLower();
                         if (keyToken == "null")
-                            PublicKeyToken = null;
+                            _publicKeyToken = null;
                         else
                         {
-                            PublicKeyToken = new byte[keyToken.Length / 2];
-                            for (int j = 0; j < PublicKeyToken.Length; j++)
+                            _publicKeyToken = new byte[keyToken.Length / 2];
+                            for (int j = 0; j < _publicKeyToken.Length; j++)
                             {
                                 string byteStr = keyToken.Substring(j * 2, 2);
-                                PublicKeyToken[j] = byte.Parse(byteStr, NumberStyles.HexNumber);
+                                _publicKeyToken[j] = byte.Parse(byteStr, NumberStyles.HexNumber);
                             }
                         }
                     }
@@ -221,7 +264,6 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
-
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.AssemblyReference; }
@@ -232,12 +274,16 @@ namespace DataDynamics.PageFX.CodeModel
             get { return null; }
         }
 
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Tag { get; set; }
-
-    	#endregion
+        /// <summary>
+        /// Gets or sets user defined data assotiated with this object.
+        /// </summary>
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
+        private object _tag;
+        #endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)

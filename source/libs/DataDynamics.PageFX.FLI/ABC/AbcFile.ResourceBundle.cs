@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
 using DataDynamics.PageFX.FLI.IL;
 using DataDynamics.PageFX.FLI.SWC;
@@ -9,7 +8,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 {
     public partial class AbcFile
     {
-        private IEnumerable<string> Locales
+        string[] Locales
         {
             get
             {
@@ -20,7 +19,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        private bool ImportResourceBundle(AbcFile abc, AbcMetaEntry e)
+        bool ImportResourceBundle(AbcFile abc, AbcMetaEntry e)
         {
             if (e.NameString != MDTags.ResourceBundle)
                 return false;
@@ -64,7 +63,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             RBCache.CopyFlexLocale(locale);
 
             string key = locale + "$" + name;
-            if (IsResourceBundleDefined(key)) return;
+            if (HasRB(key)) return;
 
             var rb = RBCache.Get(locale, name);
             //NOTE: null in case of Dynamic Resource Modules!!!
@@ -145,7 +144,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
         AbcInstance _rbsuper;
 
-        bool IsResourceBundleDefined(string key)
+        bool HasRB(string key)
         {
             var pf = PrevFrame;
             while (pf != null)

@@ -61,7 +61,12 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public string Key
         {
-            get { return key ?? (key = KeyOf(this)); }
+            get
+            {
+                if (key == null)
+                    key = KeyOf(this);
+                return key;
+            }
         }
         internal string key;
         #endregion
@@ -118,7 +123,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public override int GetHashCode()
         {
-            return this.EvalHashCode();
+            return Algorithms.GetHashCode(this);
         }
 
         public override string ToString()

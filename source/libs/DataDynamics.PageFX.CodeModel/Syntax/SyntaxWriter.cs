@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace DataDynamics.PageFX.CodeModel.Syntax
@@ -664,7 +663,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (type.TypeKind != TypeKind.Delegate) return null;
             var list = type.Methods["Invoke"];
             if (list == null) return null;
-            return list.FirstOrDefault();
+            return Algorithms.First(list);
         }
 
         void WriteType(IType type)
@@ -805,7 +804,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         void WriteNodes<T>(IEnumerable<T> list, string region) where T : ICodeNode
         {
             bool reg = !string.IsNullOrEmpty(region);
-            if (list.IsEmpty())
+            if (Algorithms.IsEmpty(list))
             {
                 if (reg)
                 {
@@ -850,18 +849,19 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         {
             if (_useRegions)
             {
-                if (members.IsEmpty()) return;
+                if (Algorithms.IsEmpty(members)) return;
 
                 var sets = new List<MemberSet>();
                 foreach (ITypeMember m in members)
                 {
                     var v = m.Visibility;
-                    int i = sets.IndexOf(x => x.Visibility == v);
+                    int i = Algorithms.IndexOf(sets, delegate(MemberSet x) { return x.Visibility == v; });
                     MemberSet set;
                     if (i < 0)
                     {
-                    	set = new MemberSet {Visibility = v};
-                    	sets.Add(set);
+                        set = new MemberSet();
+                        set.Visibility = v;
+                        sets.Add(set);
                     }
                     else
                     {
@@ -870,7 +870,10 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                     set.List.Add(m);
                 }
 
-                sets.Sort((x, y) => x.Visibility - y.Visibility);
+                sets.Sort(delegate(MemberSet x, MemberSet y)
+                              {
+                                  return x.Visibility - y.Visibility;
+                              });
 
                 bool eol = false;
                 foreach (var set in sets)
@@ -1432,8 +1435,10 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             for (int i = 0; i < n; ++i)
             {
                 var p = method.Parameters[i];
-                string name = p.Name ?? "";
-            	WriteXmlComment(p.Documentation, "param", "name", name);
+                string name = p.Name;
+                if (name == null)
+                    name = "";
+                WriteXmlComment(p.Documentation, "param", "name", name);
             }
 
             WriteXmlComment(method.ReturnDocumentation, "returns");

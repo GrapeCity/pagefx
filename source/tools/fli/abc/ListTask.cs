@@ -26,7 +26,7 @@ namespace abc
                     string fullname = instance.FullName;
                     if (
                         Algorithms.Contains(types,
-                                            type => string.Compare(type, fullname, true) == 0))
+                                            delegate(string type) { return string.Compare(type, fullname, true) == 0; }))
                     {
                         List(Console.Out, instance);
                     }

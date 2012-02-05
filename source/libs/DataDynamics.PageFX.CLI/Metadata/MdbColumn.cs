@@ -185,16 +185,15 @@ namespace DataDynamics.PageFX.CLI.Metadata
         #region Public Members
         public MdbColumn Clone()
         {
-        	return new MdbColumn
-        	        	{
-        	        		_tableId = _tableId,
-        	        		_name = _name,
-        	        		_desc = _desc,
-        	        		_type = _type,
-        	        		_enumType = _enumType,
-        	        		_codedIndex = _codedIndex,
-        	        		_simpleIndex = _simpleIndex
-        	        	};
+            var c = new MdbColumn();
+            c._tableId = _tableId;
+            c._name = _name;
+            c._desc = _desc;
+            c._type = _type;
+            c._enumType = _enumType;
+            c._codedIndex = _codedIndex;
+            c._simpleIndex = _simpleIndex;
+            return c;
         }
 
         /// <summary>

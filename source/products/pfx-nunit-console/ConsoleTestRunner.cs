@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI;
 
@@ -360,7 +359,7 @@ namespace DataDynamics.PageFX.NUnit
         {
             if (string.IsNullOrEmpty(s)) return s;
             var lines = Str.GetLines(s);
-            var list = lines.Where(l => !Algorithms.Contains(Markers, l)).ToList();
+            var list = new List<string>(Algorithms.Filter(lines, l => !Algorithms.Contains(Markers, l)));
             return string.Join("\n", list.ToArray());
         }
         #endregion

@@ -158,9 +158,14 @@ namespace DataDynamics.PageFX.CLI.CFG
             get { return _type == EdgeType.Back; }
         }
 
-    	public int Label { get; set; }
+        public int Label
+        {
+            get { return _label; }
+            set { _label = value; }
+        }
+        private int _label;
 
-    	public void Remove()
+        public void Remove()
         {
             _from.RemoveOut(this);
             _to.RemoveIn(this);

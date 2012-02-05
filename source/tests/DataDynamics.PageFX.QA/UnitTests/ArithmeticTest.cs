@@ -85,16 +85,16 @@ namespace DataDynamics.Tests
         [Test]
         public void TestAddOvf()
         {
-            ExpectException(typeof(OverflowException), () => AddOvf(int.MaxValue, 1));
-            ExpectException(typeof(OverflowException), () => AddOvf(uint.MaxValue, 1u));
-            ExpectException(typeof(OverflowException), () => AddOvf(1u, uint.MaxValue));
+            ExpectException(typeof(OverflowException), delegate { AddOvf(int.MaxValue, 1); });
+            ExpectException(typeof(OverflowException), delegate { AddOvf(uint.MaxValue, 1u); });
+            ExpectException(typeof(OverflowException), delegate { AddOvf(1u, uint.MaxValue); });
             Assert.AreEqual(9, AddOvf(4, 5));
         }
 
         [Test]
         public void TestSubOvf()
         {
-            ExpectException(typeof(OverflowException), () => SubOvf(int.MinValue, 1));
+            ExpectException(typeof(OverflowException), delegate { SubOvf(int.MinValue, 1); });
             Assert.AreEqual(4, SubOvf(7, 3));
         }
 

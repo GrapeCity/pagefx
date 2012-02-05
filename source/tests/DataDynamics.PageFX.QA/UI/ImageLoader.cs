@@ -38,8 +38,9 @@ namespace DataDynamics.UI
         {
             CancelScanning = false;
 
-        	var thread = new Thread(AddFolder) {IsBackground = true};
-        	thread.Start(path);
+            var thread = new Thread(AddFolder);
+            thread.IsBackground = true;
+            thread.Start(path);
         }
 
         private void AddFolder(object folderPath)

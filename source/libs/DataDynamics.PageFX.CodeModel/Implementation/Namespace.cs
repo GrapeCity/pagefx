@@ -38,7 +38,6 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
-
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Namespace; }
@@ -49,12 +48,16 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Enumerate(_types); }
         }
 
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Tag { get; set; }
-
-    	#endregion
+        /// <summary>
+        /// Gets or sets user defined data assotiated with this object.
+        /// </summary>
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
+        private object _tag;
+        #endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)
@@ -128,7 +131,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public void Sort()
         {
-            _list.Sort((x, y) => x.Name.CompareTo(y.Name));
+            _list.Sort(delegate(INamespace x, INamespace y) { return x.Name.CompareTo(y.Name); });
             foreach (var ns in _list)
             {
                 ns.Types.Sort();
@@ -151,7 +154,6 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
-
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Namespaces; }
@@ -162,12 +164,16 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Convert(_list); }
         }
 
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Tag { get; set; }
-
-    	#endregion
+        /// <summary>
+        /// Gets or sets user defined data assotiated with this object.
+        /// </summary>
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
+        private object _tag;
+        #endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)

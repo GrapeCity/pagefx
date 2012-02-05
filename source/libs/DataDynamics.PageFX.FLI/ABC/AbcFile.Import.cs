@@ -726,9 +726,11 @@ namespace DataDynamics.PageFX.FLI.ABC
 
                 case AbcTraitKind.Class:
                     {
-                        var instance = Instances.Find(from.Name) ?? ImportInstance(from.Class.Instance);
+                        var instance = Instances.Find(from.Name);
+                        if (instance == null)
+                            instance = ImportInstance(from.Class.Instance);
 
-                    	trait.Class = instance.Class;
+                        trait.Class = instance.Class;
                         //trait.SlotID = trait.SlotID;
                     }
                     break;
@@ -942,27 +944,25 @@ namespace DataDynamics.PageFX.FLI.ABC
             instance.Embed = newEmbed;
         }
 
-		private Embed ImportEmbedAsset(AbcTrait from)
-		{
-			if (from == null) return null;
-			var embed = from.Embed;
-			if (embed == null) return null;
-			if (embed.Asset == null) return null;
+        Embed ImportEmbedAsset(AbcTrait from)
+        {
+            if (from == null) return null;
+            var embed = from.Embed;
+            if (embed == null) return null;
+            if (embed.Asset == null) return null;
 
-			if (!IsSwf)
-				throw Errors.NotSwf.CreateException();
+            if (!IsSwf)
+                throw Errors.NotSwf.CreateException();
+            
+            var sfc = SwfCompiler;
+            var asset = sfc.ImportAsset(embed);
 
-			var sfc = SwfCompiler;
-			var asset = sfc.ImportAsset(embed);
-
-			return new Embed(embed)
-			       	{
-			       		Asset = asset,
-			       		Movie = sfc._swf
-			       	};
-		}
-
-    	#endregion
+            var newEmbed = new Embed(embed);
+            newEmbed.Asset = asset;
+            newEmbed.Movie = sfc._swf;
+            return newEmbed;
+        }
+        #endregion
 
         #region ImportMetaEntry
         static bool FilterMetaEntry(string name)
@@ -1017,11 +1017,9 @@ namespace DataDynamics.PageFX.FLI.ABC
                     return null;
             }
 
-        	var e = new AbcMetaEntry
-        	        	{
-        	        		Name = ImportConst(from.Name)
-        	        	};
-        	foreach (var item in from.Items)
+            var e = new AbcMetaEntry();
+            e.Name = ImportConst(from.Name);
+            foreach (var item in from.Items)
             {
                 var key = ImportConst(item.Key);
                 var val = ImportConst(item.Value);

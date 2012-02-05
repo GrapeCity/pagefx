@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace DataDynamics.PageFX
 {
@@ -13,14 +12,14 @@ namespace DataDynamics.PageFX
 
         public TestStat GetStat(Runtime runtime)
         {
-            return Stats.FirstOrDefault(s => s.Runtime == runtime);
+            return Algorithms.Find(Stats, s => s.Runtime == runtime);
         }
 
         public bool Success
         {
             get
             {
-                return Stats.All(s => s.Success);
+                return Algorithms.TrueAll(Stats, s => s.Success);
             }
             set
             {

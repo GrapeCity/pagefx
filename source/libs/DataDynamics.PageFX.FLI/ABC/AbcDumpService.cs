@@ -24,7 +24,10 @@ namespace DataDynamics.PageFX.FLI.ABC
         private static void WriteClassList(AbcFile abc, string path)
         {
             var list = new List<AbcInstance>(abc.Instances);
-            list.Sort((a, b) => a.FullName.CompareTo(b.FullName));
+            list.Sort(delegate (AbcInstance a, AbcInstance b)
+                          {
+                              return a.FullName.CompareTo(b.FullName);
+                          });
 
             string fname = path + ".classlist.txt";
             using (var writer = new StreamWriter(fname))

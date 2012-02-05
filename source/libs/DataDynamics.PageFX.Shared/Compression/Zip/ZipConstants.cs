@@ -306,11 +306,8 @@ namespace DataDynamics.Compression.Zip
 		
 #if !COMPACT_FRAMEWORK
 
-		static ZipConstants()
-		{
-			DefaultCodePage = 0;
-		}
-
+		static int defaultCodePage = 0;
+		
 		/// <summary>
 		/// Default encoding used for string conversion.  0 gives default system ansi code page.
 		/// Dont use unicode encodings if you want to be Zip compatible!
@@ -318,8 +315,14 @@ namespace DataDynamics.Compression.Zip
 		/// there are many variable factors, codepage 850 is often a good choice for
 		/// European users, however be careful about compatability.
 		/// </summary>
-		public static int DefaultCodePage { get; set; }
-
+		public static int DefaultCodePage {
+			get {
+				return defaultCodePage; 
+			}
+			set {
+				defaultCodePage = value; 
+			}
+		}
 #endif
 
 		/// <summary>

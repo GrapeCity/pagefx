@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using DataDynamics.Compression.Checksums;
+using DataDynamics.Compression.Zip.Compression;
 
 namespace DataDynamics.Compression.Zip.Compression.Streams 
 {
@@ -238,7 +239,6 @@ namespace DataDynamics.Compression.Zip.Compression.Streams
 		/// </exception>
 		public DeflaterOutputStream(Stream baseOutputStream, Deflater deflater, int bufsize)
 		{
-			Password = null;
 			if (baseOutputStream.CanWrite == false) {
 				throw new ArgumentException("baseOutputStream", "must support writing");
 			}
@@ -336,14 +336,22 @@ namespace DataDynamics.Compression.Zip.Compression.Streams
 		#region Encryption
 		
 		// TODO  Refactor this code.  The presence of Zip specific code in this low level class is wrong
+		string password = null;
 		uint[] keys     = null;
-
+		
 		/// <summary>
 		/// Get/set the password used for encryption.  When null no encryption is performed
 		/// </summary>
-		public string Password { get; set; }
-
-
+		public string Password {
+			get { 
+				return password; 
+			}
+			set { 
+				password = value; 
+			}
+		}
+		
+		
 		/// <summary>
 		/// Encrypt a single byte 
 		/// </summary>

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DataDynamics
 {
@@ -43,7 +42,12 @@ namespace DataDynamics
 
         public bool Run(object obj)
         {
-        	return _items.Any(item => item.Run(obj));
+            foreach (var item in _items)
+            {
+                if (item.Run(obj))
+                    return true;
+            }
+            return false;
         }
     }
 }

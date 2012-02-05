@@ -17,15 +17,13 @@ namespace DataDynamics.PageFX.Tests
 
             string asmpath = Path.Combine(dir, "out.dll");
 
-        	var options = new CompilerOptions
-        	              	{
-        	              		NoLogo = true,
-        	              		NoConfig = true,
-        	              		NoStdlib = true,
-        	              		Target = CompilerTarget.Library,
-        	              		Output = asmpath
-        	              	};
-        	GlobalSettings.AddCommonReferences(options);
+            var options = new CompilerOptions();
+            options.NoLogo = true;
+            options.NoConfig = true;
+            options.NoStdlib = true;
+            options.Target = CompilerTarget.Library;
+            options.Output = asmpath;
+            GlobalSettings.AddCommonReferences(options);
 
             options.Input.Add(csfile);
 

@@ -141,9 +141,14 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public override string FullName
         {
-            get { return _fullName ?? (_fullName = FullNameBase + FullNameSuffix); }
+            get
+            {
+                if (_fullName == null)
+                    _fullName = FullNameBase + FullNameSuffix;
+                return _fullName;
+            }
         }
-        private string _fullName;
+        string _fullName;
 
         protected virtual string FullNameBase
         {
@@ -270,9 +275,14 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public ITypeCollection Types
         {
-            get { return _types ?? (_types = new TypeCollection(this)); }
+            get
+            {
+                if (_types == null)
+                    _types = new TypeCollection(this);
+                return _types;
+            }
         }
-        private TypeCollection _types;
+        TypeCollection _types;
         #endregion
 
         #region IFormattable Members
@@ -360,9 +370,14 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public virtual string NestedName
         {
-            get { return _nestedName ?? (_nestedName = GetName(this, false)); }
+            get
+            {
+                if (_nestedName == null)
+                    _nestedName = GetName(this, false);
+                return _nestedName;
+            }
         }
-        private string _nestedName;
+        string _nestedName;
         #endregion
 
         #region XmlSerialization

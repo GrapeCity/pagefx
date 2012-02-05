@@ -23,8 +23,9 @@ namespace DataDynamics.PageFX.CLI
         static string GetCacLocation(IAssemblyReference id)
         {
             IAssemblyCache cache = null;
+            ASSEMBLY_INFO asmInfo;
 
-        	try
+            try
             {
                 cache = AssemblyCache.CreateAssemblyCache();
                 using (var e = new GacEnum(id.Name))
@@ -39,7 +40,7 @@ namespace DataDynamics.PageFX.CLI
                             break;
                     }
 
-                    var asmInfo = new ASSEMBLY_INFO();
+                    asmInfo = new ASSEMBLY_INFO();
                     int hr;
                     try
                     {
@@ -85,7 +86,7 @@ namespace DataDynamics.PageFX.CLI
             return null;
         }
 
-        private static IEnumerable<string> GetLibDirs()
+        static string[] GetLibDirs()
         {
             var dirs = new[]
                 {
@@ -101,7 +102,7 @@ namespace DataDynamics.PageFX.CLI
             return list.ToArray();
         }
 
-        private static string GetAssemblyLocation(IAssemblyReference asmref, string refpath)
+        static string GetAssemblyLocation(IAssemblyReference asmref, string refpath)
         {
             string path;
 
@@ -132,7 +133,7 @@ namespace DataDynamics.PageFX.CLI
             return GetPfxLocation(refname);
         }
 
-        private static string GetPfxLocation(string refname)
+        static string GetPfxLocation(string refname)
         {
             if (string.Compare(refname, GlobalSettings.CorlibAssemblyName, true) == 0)
                 return GlobalSettings.GetCorlibPath(true);
@@ -151,12 +152,14 @@ namespace DataDynamics.PageFX.CLI
             return null;
         }
 
-        private static readonly Dictionary<IAssemblyReference, IAssembly> _cache = new Dictionary<IAssemblyReference, IAssembly>();
+        static readonly Dictionary<IAssemblyReference, IAssembly> _cache = new Dictionary<IAssemblyReference, IAssembly>();
 
         public static IAssembly GetFromCache(IAssemblyReference id)
         {
             IAssembly asm;
-            return _cache.TryGetValue(id, out asm) ? asm : null;
+            if (_cache.TryGetValue(id, out asm))
+                return asm;
+            return null;
         }
 
         public static void AddToCache(IAssembly asm)

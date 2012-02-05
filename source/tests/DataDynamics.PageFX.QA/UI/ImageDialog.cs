@@ -14,8 +14,9 @@ namespace DataDynamics.UI
 
         public void SetImage(string filename)
         {
-        	var thread = new Thread(SetImageIntern) {IsBackground = true};
-        	thread.Start(filename);
+            var thread = new Thread(SetImageIntern);
+            thread.IsBackground = true;
+            thread.Start(filename);
         }
 
         private void SetImageIntern(object filename)

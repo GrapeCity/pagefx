@@ -178,11 +178,9 @@ namespace DataDynamics.PageFX.FLI
             if (type == null) return null;
             if (!type.IsEnum) return null;
 
-        	var method = new AbcMethod
-        	             	{
-        	             		ReturnType = _abc.BuiltinTypes.Void
-        	             	};
-        	var body = new AbcMethodBody(method);
+            var method = new AbcMethod();
+            method.ReturnType = _abc.BuiltinTypes.Void;
+            var body = new AbcMethodBody(method);
 
             AddMethod(method);
 

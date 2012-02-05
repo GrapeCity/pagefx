@@ -94,9 +94,14 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public IVariableCollection LocalVariables
         {
-            get { return _vars ?? (_vars = new VariableCollection()); }
+            get
+            {
+                if (_vars == null)
+                    _vars = new VariableCollection();
+                return _vars;
+            }
         }
-        private IVariableCollection _vars;
+        IVariableCollection _vars;
 
         public IStatementCollection Statements { get; set; }
 
@@ -114,7 +119,7 @@ namespace DataDynamics.PageFX.CLI.IL
             get { return _protectedBlocks != null && _protectedBlocks.Count > 0; }
         }
 
-        public IEnumerable<Block> ProtectedBlocks
+        public BlockList ProtectedBlocks
         {
             get { return _protectedBlocks; }
         }

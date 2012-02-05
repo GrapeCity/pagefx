@@ -10,9 +10,14 @@ namespace DataDynamics.PageFX.CLI.CFG
             get { return NodeType.Handler; }
         }
 
-    	public HandlerBlock Block { get; set; }
+        public HandlerBlock Block
+        {
+            get { return _block; }
+            set { _block = value; }
+        }
+        private HandlerBlock _block;
 
-    	public NodeList Body
+        public NodeList Body
         {
             get { return _body; }
         }

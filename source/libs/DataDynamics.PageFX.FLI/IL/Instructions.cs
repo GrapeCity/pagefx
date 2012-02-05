@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         static Instruction Find(string name)
         {
-            return _list.Find(i => i.Name == name);
+            return _list.Find(delegate(Instruction i) { return i.Name == name; });
         }
 
         static OperandType ParseOperandType(string s)

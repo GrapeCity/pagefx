@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
@@ -965,27 +966,47 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Internal Properties
         internal List<AbcInstance> Implementations
         {
-            get { return _impls ?? (_impls = new List<AbcInstance>()); }
+            get
+            {
+                if (_impls == null)
+                    _impls = new List<AbcInstance>();
+                return _impls;
+            }
         }
-        private List<AbcInstance> _impls;
+        List<AbcInstance> _impls;
 
         internal List<AbcInstance> Implements
         {
-            get { return _ifaces ?? (_ifaces = new List<AbcInstance>()); }
+            get
+            {
+                if (_ifaces == null)
+                    _ifaces = new List<AbcInstance>();
+                return _ifaces;
+            }
         }
-        private List<AbcInstance> _ifaces;
+        List<AbcInstance> _ifaces;
 
         internal List<AbcInstance> Subclasses
         {
-            get { return _subclasses ?? (_subclasses = new List<AbcInstance>()); }
+            get
+            {
+                if (_subclasses == null)
+                    _subclasses = new List<AbcInstance>();
+                return _subclasses;
+            }
         }
-        private List<AbcInstance> _subclasses;
+        List<AbcInstance> _subclasses;
 
         internal List<AbcFile> ImportAbcFiles
         {
-            get { return _importAbcFiles ?? (_importAbcFiles = new List<AbcFile>()); }
+            get
+            {
+                if (_importAbcFiles == null)
+                    _importAbcFiles = new List<AbcFile>();
+                return _importAbcFiles;
+            }
         }
-        private List<AbcFile> _importAbcFiles;
+        List<AbcFile> _importAbcFiles;
 
         public AbcScript Script
         {
@@ -1275,7 +1296,7 @@ namespace DataDynamics.PageFX.FLI.ABC
     {
         public InstanceNamespace this[string name]
         {
-            get { return Find(ns => ns.Name == name); }
+            get { return Find(delegate(InstanceNamespace ns) { return ns.Name == name; }); }
         }
 
         public void Dump(TextWriter writer)

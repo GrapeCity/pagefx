@@ -246,7 +246,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public override int GetHashCode()
         {
-            return new object[]{_kind, _name}.EvalHashCode();
+            return Algorithms.GetHashCode(_kind, _name);
         }
 
         public override bool Equals(object obj)
@@ -467,9 +467,14 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public static AbcNamespaceList Global
         {
-            get { return _global ?? (_global = new AbcNamespaceList()); }
+            get 
+            {
+                if (_global == null)
+                    _global = new AbcNamespaceList();
+                return _global;
+            }
         }
-        private static AbcNamespaceList _global;
+        static AbcNamespaceList _global;
 
         public int Count
         {

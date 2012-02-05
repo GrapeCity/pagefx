@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
@@ -11,7 +11,7 @@ using DataDynamics.PageFX.FLI.SWF;
 
 namespace DataDynamics.PageFX.FLI
 {
-    internal sealed class CodeCachingService : ICodeCachingService
+    class CodeCachingService : ICodeCachingService
     {
         #region Run
         public static void Run()
@@ -39,24 +39,29 @@ namespace DataDynamics.PageFX.FLI
             var g = new AbcGenerator {Mode = AbcGenMode.Full, IsCcsRunning = true};
             var abc = g.Generate(asm);
 
-        	var total = new List<AbcMethod>(
-        		abc.Methods.Where(m =>
-        		                  	{
-        		                  		var sm = m.SourceMethod;
-        		                  		return sm != null && sm.Assembly == asm;
-        		                  	}));
+            var total = new List<AbcMethod>(
+                Algorithms.Filter(
+                    abc.Methods,
+                    m =>
+                    {
+                        var sm = m.SourceMethod;
+                        if (sm == null) return false;
+                        return sm.Assembly == asm;
+                    }));
 
-        	var list = new List<AbcMethod>(
-        		total.Where(m =>
-        		            	{
-        		            		var sm = m.SourceMethod;
-        		            		if (sm == null) return false;
-        		            		if (sm.IsAbstract) return false;
-        		            		if (sm.IsInternalCall) return false;
-        		            		if (sm.CodeType != MethodCodeType.IL) return false;
-        		            		if (HasGenericContext(m)) return false;
-        		            		return true;
-        		            	}));
+            var list = new List<AbcMethod>(
+                Algorithms.Filter(
+                    total,
+                    m =>
+                    {
+                        var sm = m.SourceMethod;
+                        if (sm == null) return false;
+                        if (sm.IsAbstract) return false;
+                        if (sm.IsInternalCall) return false;
+                        if (sm.CodeType != MethodCodeType.IL) return false;
+                        if (HasGenericContext(m)) return false;
+                        return true;
+                    }));
 
             Comparison<AbcMethod> c = (x, y) => GetIdx(x.SourceMethod) - GetIdx(y.SourceMethod);
             list.Sort(c);
@@ -64,18 +69,18 @@ namespace DataDynamics.PageFX.FLI
             Console.WriteLine("ABC Stat:");
             Console.WriteLine("Total: {0}", abc.Methods.Count);
 
-            var cgm = new List<AbcMethod>(abc.Methods.Where(m => m.SourceMethod == null));
+            var cgm = new List<AbcMethod>(Algorithms.Filter(abc.Methods, m => m.SourceMethod == null));
             Console.WriteLine("Compiler Generated: {0}", cgm.Count);
-            int n = cgm.Count(m => m.Trait != null);
+            int n = Logic.CountOf(cgm, m => m.Trait != null);
             Console.WriteLine("  With Trait: {0}", n);
             Console.WriteLine("  Without Trait: {0}", cgm.Count - n);
 
             Console.WriteLine("{0} Methods Stat:", asm.Name);
             Console.WriteLine("Total Count: {0}", total.Count);
-            Console.WriteLine("Abstract Count: {0}", total.Count(m => m.SourceMethod.IsAbstract));
-            Console.WriteLine("InternalCall Count: {0}", total.Count(m => m.SourceMethod.IsInternalCall));
-            Console.WriteLine("Runtime Count: {0}", total.Count(m => m.SourceMethod.CodeType == MethodCodeType.Runtime));
-            Console.WriteLine("GenericContext Count: {0}", total.Count(HasGenericContext));
+            Console.WriteLine("Abstract Count: {0}", Logic.CountOf(total, m => m.SourceMethod.IsAbstract));
+            Console.WriteLine("InternalCall Count: {0}", Logic.CountOf(total, m => m.SourceMethod.IsInternalCall));
+            Console.WriteLine("Runtime Count: {0}", Logic.CountOf(total, m => m.SourceMethod.CodeType == MethodCodeType.Runtime));
+            Console.WriteLine("GenericContext Count: {0}", Logic.CountOf(total, HasGenericContext));
             Console.WriteLine("Cached Count: {0}", list.Count);
 
             var lib = new Lib
@@ -102,14 +107,12 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region ctor
-
-    	private readonly AbcGenerator _generator;
+        AbcGenerator _generator;
 
         public CodeCachingService(AbcGenerator generator)
         {
             _generator = generator;
         }
-
         #endregion
 
         #region Import

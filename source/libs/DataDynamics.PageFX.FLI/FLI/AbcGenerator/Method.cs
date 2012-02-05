@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Diagnostics;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -13,13 +13,13 @@ namespace DataDynamics.PageFX.FLI
     partial class AbcGenerator
     {
         #region GetMethodName
-        private AbcMultiname GetMethodName(IMethod method)
+        AbcMultiname GetMethodName(IMethod method)
         {
             string name = NameUtil.GetMethodName(method);
             return _abc.DefineQName(method, name);
         }
 
-        private static string GetFixedName(IMethod method)
+        static string GetFixedName(IMethod method)
         {
             //NOTE: flex compiler lookups inside instance to resolve type refs
             var declType = method.DeclaringType;
@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        private AbcMultiname GetMethodName(IMethod method, out bool isOverride)
+        AbcMultiname GetMethodName(IMethod method, out bool isOverride)
         {
             isOverride = MethodHelper.IsOverride(method);
 
@@ -59,11 +59,13 @@ namespace DataDynamics.PageFX.FLI
                     return GetDefinedMethodName(impl);
             }
 
-            string name = GetFixedName(method) ?? NameUtil.GetMethodName(method);
-        	return _abc.DefineQName(method, name);
+            string name = GetFixedName(method);
+            if (name == null)
+                name = NameUtil.GetMethodName(method);
+            return _abc.DefineQName(method, name);
         }
 
-        private AbcMultiname GetDefinedMethodName(IMethod method)
+        AbcMultiname GetDefinedMethodName(IMethod method)
         {
             var tag = DefineMethod(method);
 
@@ -729,7 +731,7 @@ namespace DataDynamics.PageFX.FLI
                 throw new ArgumentNullException("type");
             if (p == null)
                 throw new ArgumentNullException("p");
-            var m = type.Methods.FirstOrDefault(x => p(x));
+            var m = Algorithms.Find(type.Methods, p);
             if (m == null)
                 throw new InvalidOperationException("Unable to find method by given predicate");
             return DefineAbcMethod(m);

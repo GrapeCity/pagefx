@@ -34,12 +34,11 @@ namespace DataDynamics.PageFX
 
         public void Add(string name, string mode, string error)
         {
-        	_items.Add(new Item
-        	           	{
-        	           		Name = name,
-        	           		Mode = mode,
-        	           		Error = error
-        	           	});
+            var item = new Item();
+            item.Name = name;
+            item.Mode = mode;
+            item.Error = error;
+            _items.Add(item);
         }
 
         public void Add(TestCase testCase, string mode, string error)
@@ -71,8 +70,10 @@ namespace DataDynamics.PageFX
         {
             if (IsXml(format))
             {
-            	var xws = new XmlWriterSettings {Indent = true, IndentChars = "\t"};
-            	using (var writer = XmlWriter.Create(output, xws))
+                var xws = new XmlWriterSettings();
+                xws.Indent = true;
+                xws.IndentChars = "\t";
+                using (var writer = XmlWriter.Create(output, xws))
                 {
                     writer.WriteStartDocument();
                     writer.WriteProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"html.xslt\"");

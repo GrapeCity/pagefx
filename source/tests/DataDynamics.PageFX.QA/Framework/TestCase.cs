@@ -227,9 +227,14 @@ namespace DataDynamics.PageFX
 
         public bool IsNUnit { get; set; }
 
-    	public string NUnitBasePath { get; set; }
+        public string NUnitBasePath
+        {
+            get { return _nunitBasePath; }
+            set { _nunitBasePath = value; }
+        }
+        string _nunitBasePath;
 
-    	public string GetNUnitTestsPath(string root)
+        public string GetNUnitTestsPath(string root)
         {
             string suffix = VM == VM.AVM ? ".avm.dll" : ".clr.dll";
             string fullpath = NUnitBasePath + suffix;

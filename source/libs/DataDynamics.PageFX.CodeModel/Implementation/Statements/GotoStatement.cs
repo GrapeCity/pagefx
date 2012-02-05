@@ -46,11 +46,25 @@ namespace DataDynamics.PageFX.CodeModel
 
     public class BreakStatement : Statement, IBreakStatement
     {
-    	public ILabeledStatement Label { get; set; }
+        #region IGotoStatement Members
+        public ILabeledStatement Label
+        {
+            get { return _label; }
+            set { _label = value; }
+        }
+        private ILabeledStatement _label;
+        #endregion
     }
 
     public class ContinueStatement : Statement, IContinueStatement
     {
-    	public ILabeledStatement Label { get; set; }
+        #region IGotoStatement Members
+        public ILabeledStatement Label
+        {
+            get { return _label; }
+            set { _label = value; }
+        }
+        private ILabeledStatement _label;
+        #endregion
     }
 }

@@ -33,9 +33,14 @@ namespace DataDynamics.PageFX.NUnit
         {
             get
             {
-            	return _filter ?? (_filter = GetToken() == null
-            	                             	? TrueFilter<string>.Instance
-            	                             	: GetExpression());
+                if (_filter == null)
+                {
+                    _filter = GetToken() == null
+                                  ? TrueFilter<string>.Instance
+                                  : GetExpression();
+                }
+
+                return _filter;
             }
         }
 

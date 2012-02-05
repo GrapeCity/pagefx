@@ -52,8 +52,8 @@ namespace DataDynamics.PageFX
         /// <filterpriority>2</filterpriority>
         public override int GetHashCode()
         {
-            return new object[] {Offset, StartRow, StartColumn,
-                                 EndRow, EndColumn, File}.EvalHashCode();
+            return Algorithms.GetHashCode(Offset, StartRow, StartColumn,
+                                          EndRow, EndColumn, File);
         }
     }
 }

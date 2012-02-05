@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX
@@ -148,7 +147,7 @@ namespace DataDynamics.PageFX
 
         public static TestCase Find(string name)
         {
-            return All.FirstOrDefault(tc => String.Compare(tc.FullName, name, StringComparison.InvariantCultureIgnoreCase) == 0);
+            return Algorithms.Find(All, tc => string.Compare(tc.FullName, name, true) == 0);
         }
 
         /// <summary>
@@ -174,15 +173,20 @@ namespace DataDynamics.PageFX
                 return _cs;
             }
         }
-        private static List<TestCase> _cs;
+        static List<TestCase> _cs;
 
         /// <summary>
         /// Gets all VB test cases.
         /// </summary>
         public static List<TestCase> VB
         {
-            get { return _vb ?? (_vb = Load(".vb")); }
+            get
+            {
+                if (_vb == null)
+                    _vb = Load(".vb");
+                return _vb;
+            }
         }
-        private static List<TestCase> _vb;
+        static List<TestCase> _vb;
     }
 }

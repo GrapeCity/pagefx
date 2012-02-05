@@ -672,7 +672,11 @@ namespace DataDynamics.PageFX.CLI
             }
             else
             {
-                type = CreateSystemType(ns, name) ?? new UserDefinedType(TypeKind.Class);
+                type = CreateSystemType(ns, name);
+                if (type == null)
+                {
+                    type = new UserDefinedType(TypeKind.Class);
+                }
             }
             SetTypeFlags(type, flags);
             return type;
@@ -854,9 +858,10 @@ namespace DataDynamics.PageFX.CLI
             //var f = GetFile(name);
             //var res = GetResource(name);
 
-        	mod = new Module {Name = name};
+            mod = new Module();
+            mod.Name = name;
 
-        	_moduleRef[index] = mod;
+            _moduleRef[index] = mod;
             _assembly.Modules.Add(mod);
             
             return mod;
@@ -2254,12 +2259,14 @@ namespace DataDynamics.PageFX.CLI
 
         IType ResolveTypeSig(MdbTypeSignature sig, IType contextType)
         {
-        	if (_resolvingMethodSpec)
+            if (_resolvingMethodSpec)
                 return ResolveTypeSignature(sig, contextType, CurrentMethod);
-        	return sig.ResolvedType ?? (sig.ResolvedType = ResolveTypeSignature(sig, contextType, CurrentMethod));
+            if (sig.ResolvedType == null)
+                sig.ResolvedType = ResolveTypeSignature(sig, contextType, CurrentMethod);
+            return sig.ResolvedType;
         }
 
-    	ITypeMember GetMemberRef(IType type, string name, MdbSignature sig)
+        ITypeMember GetMemberRef(IType type, string name, MdbSignature sig)
         {
             if (type == null) return null;
 
@@ -2503,12 +2510,12 @@ namespace DataDynamics.PageFX.CLI
         #endregion
 
         #region ResolveTypeSignature
-        private static Exception BadTypeSig(MdbTypeSignature sig)
+        static Exception BadTypeSig(MdbTypeSignature sig)
         {
             return new BadSignatureException(string.Format("Unable to resolve type signature {0}", sig));            
         }
 
-        private IEnumerable<IType> ResolveGenericArgs(MdbTypeSignature sig, IType contextType, IMethod contextMethod)
+        IType[] ResolveGenericArgs(MdbTypeSignature sig, IType contextType, IMethod contextMethod)
         {
             int n = sig.GenericParams.Length;
             var args = new IType[n];
@@ -2522,12 +2529,12 @@ namespace DataDynamics.PageFX.CLI
             return args;
         }
 
-        private IType ResolveTypeSignature(MdbTypeSignature sig)
+        IType ResolveTypeSignature(MdbTypeSignature sig)
         {
             return ResolveTypeSignature(sig, CurrentType, CurrentMethod);
         }
 
-        private IType ResolveTypeSignature(MdbTypeSignature sig, IType contextType, IMethod contextMethod)
+        IType ResolveTypeSignature(MdbTypeSignature sig, IType contextType, IMethod contextMethod)
         {
             switch (sig.Element)
             {

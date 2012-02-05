@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.FLI.ABC;
 
 namespace DataDynamics.PageFX.FLI
 {
@@ -52,9 +53,11 @@ namespace DataDynamics.PageFX.FLI
 
             public IAssembly Deserialize(Stream input, string format)
             {
-                var cl = CommandLine.Parse(format) ?? new CommandLine();
+                var cl = CommandLine.Parse(format);
+                if (cl == null)
+                    cl = new CommandLine();
 
-            	var f = GetFormat(cl);
+                var f = GetFormat(cl);
                 if (f == OutputFormat.ABC)
                 {
                     return AssemblyBuilder.Build(input, cl);

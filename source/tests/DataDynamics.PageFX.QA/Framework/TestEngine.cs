@@ -306,10 +306,8 @@ namespace DataDynamics.PageFX.FLI
 
             if (testResults == null)
             {
-            	testResults = new TestResult
-            	              	{
-            	              		Suites = new List<TestSuite>()
-            	              	};
+                testResults = new TestResult();
+                testResults.Suites = new List<TestSuite>();
             }
 
             var ts = tc.Suite;
@@ -387,12 +385,10 @@ namespace DataDynamics.PageFX.FLI
             int start = Environment.TickCount;
 #endif
 
-        	var opts = new AvmShell.Options
-        	           	{
-        	           		Verbose = true
-        	           	};
+            var opts = new AvmShell.Options();
+            opts.Verbose = true;
 
-        	int exitCode;
+            int exitCode;
             string cout = AvmShell.Run(opts, out exitCode, path);
 
             string dir = Path.GetDirectoryName(path);

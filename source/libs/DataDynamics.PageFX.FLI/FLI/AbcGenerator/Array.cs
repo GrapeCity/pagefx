@@ -25,11 +25,9 @@ namespace DataDynamics.PageFX.FLI
             var type = method.DeclaringType;
             if (!type.IsArray) return null;
 
-        	var ctor = new AbcMethod
-        	           	{
-        	           		ReturnType = _abc[AvmTypeCode.Void]
-        	           	};
-        	DefineParameters(ctor, method);
+            var ctor = new AbcMethod();
+            ctor.ReturnType = _abc[AvmTypeCode.Void];
+            DefineParameters(ctor, method);
 
             var name = _abc.DefineGlobalQName("arrctor_" + NameUtil.GetSigName(type));
             var trait = AbcTrait.CreateMethod(ctor, name);

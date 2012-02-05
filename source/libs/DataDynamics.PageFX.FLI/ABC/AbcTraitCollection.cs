@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.FLI.SWF;
 
@@ -34,7 +33,11 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public int SlotCount
         {
-            get { return this.Count(trait => trait.Kind == AbcTraitKind.Slot); }
+            get
+            {
+                return Logic.CountOf(this,
+                                     t => t.Kind == AbcTraitKind.Slot);
+            }
         }
 
         public AbcTrait Find(AbcMultiname name, AbcTraitKind kind)
@@ -55,7 +58,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcTrait Find(string name, AbcTraitKind kind)
         {
-            return _list.FirstOrDefault(trait => trait.Kind == kind && trait.NameString == name);
+            return Algorithms.Find(_list, t => t.Kind == kind && t.NameString == name);
         }
 
         public AbcTrait FindMethod(string name)
@@ -65,7 +68,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcTrait Find(string name)
         {
-            return _list.FirstOrDefault(trait => trait.NameString == name);
+            return Algorithms.Find(_list, t => t.NameString == name);
         }
 
         public bool Contains(AbcMultiname name, AbcTraitKind kind)

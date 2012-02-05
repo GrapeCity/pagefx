@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DataDynamics.PageFX.FLI
 {
-    internal static class MimeTypes
+    static class MimeTypes
     {
         public static class Text
         {
@@ -212,40 +211,46 @@ namespace DataDynamics.PageFX.FLI
                 throw new NotSupportedException("Empty mime-type is not supported");
         }
 
-    	private static readonly IDictionary<string, bool> BitmapTypes =
-    		new[]
-    			{
-    				Image.Png,
-    				Image.Gif,
-    				Image.Bmp,
-    				Image.Ico,
-    			}.ToDictionary(x => x, x => true, StringComparer.InvariantCultureIgnoreCase);
+        static readonly string[] BitmapTypes = 
+        {
+            Image.Png,
+            Image.Gif,
+            Image.Bmp,
+            Image.Ico,
+        };
 
-    	private static readonly IDictionary<string, bool> JpegTypes =
-    		new[]
-    			{
-    				Image.Jpeg,
-    				Image.Jpg
-    			}.ToDictionary(x => x, x => true, StringComparer.InvariantCultureIgnoreCase);
+        static readonly string[] JpegTypes = 
+        {
+            Image.Jpeg,
+            Image.Jpg
+        };
 
-    	private static readonly IDictionary<string, bool> SupportedTypes = BitmapTypes.Keys.Concat(JpegTypes.Keys)
-    		.ToDictionary(x => x,
-    		              x => true,
-    		              StringComparer.InvariantCultureIgnoreCase);
-        
+        static string[] SupportedTypes
+        {
+            get 
+            {
+                if (_supportedTypes == null)
+                {
+                    _supportedTypes = new List<string>(Algorithms.Merge(BitmapTypes, JpegTypes)).ToArray();
+                }
+                return _supportedTypes;
+            }
+        }
+        static string[] _supportedTypes;
+
         public static bool IsBitmap(string type)
         {
-            return !string.IsNullOrEmpty(type) && BitmapTypes.ContainsKey(type);
+            return Algorithms.ContainsIgnoreCase(BitmapTypes, type);
         }
 
         public static bool IsJpeg(string type)
         {
-            return !string.IsNullOrEmpty(type) && JpegTypes.ContainsKey(type);
+            return Algorithms.ContainsIgnoreCase(JpegTypes, type);
         }
 
         public static bool IsSupported(string type)
         {
-        	return !string.IsNullOrEmpty(type) && SupportedTypes.ContainsKey(type);
+            return Algorithms.ContainsIgnoreCase(SupportedTypes, type);
         }
     }
 }
