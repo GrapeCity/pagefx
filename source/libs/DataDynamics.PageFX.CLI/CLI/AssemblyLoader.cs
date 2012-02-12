@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Metadata;
@@ -1126,19 +1127,12 @@ namespace DataDynamics.PageFX.CLI
 
         static bool HasExplicitImplementation(IType type, IMethod ifaceMethod)
         {
-            foreach (var method in type.Methods)
-            {
-                if (method.IsExplicitImplementation)
-                {
-                    var impl = method.ImplementedMethods;
-                    if (impl != null && impl.Length == 1 && impl[0] == ifaceMethod)
-                        return true;
-                }
-            }
-            return false;
+        	return (from method in type.Methods
+					where method.IsExplicitImplementation
+					select method.ImplementedMethods).Any(impl => impl != null && impl.Length == 1 && impl[0] == ifaceMethod);
         }
 
-        static IMethod FindImpl(IType type, IMethod ifaceMethod)
+    	static IMethod FindImpl(IType type, IMethod ifaceMethod)
         {
             string mname = ifaceMethod.Name;
             while (type != null)

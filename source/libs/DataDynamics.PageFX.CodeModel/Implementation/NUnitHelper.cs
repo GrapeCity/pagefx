@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -62,17 +63,10 @@ namespace DataDynamics.PageFX.CodeModel
         public static string[] GetCategories(IMethod method)
         {
             if (method == null) return null;
-            var list = new List<string>();
-            foreach (var attr in method.CustomAttributes)
-            {
-                if (attr.TypeName == Attrs.Category)
-                {
-                    var s = attr.Arguments[0].Value as string;
-                    if (!string.IsNullOrEmpty(s))
-                        list.Add(s);
-                }
-            }
-            return list.ToArray();
+        	return (from attr in method.CustomAttributes
+					where attr.TypeName == Attrs.Category
+					select attr.Arguments[0].Value as string into value
+					where !string.IsNullOrEmpty(value) select value).ToArray();
         }
 
         public static bool HasCategories(IMethod method, bool ignoreCase, params string[] cats)

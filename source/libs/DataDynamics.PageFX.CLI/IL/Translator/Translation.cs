@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CLI.CFG;
 using DataDynamics.PageFX.CodeModel;
 
@@ -234,29 +235,15 @@ namespace DataDynamics.PageFX.CLI.IL
         void CheckStackBalance(Node bb)
         {
             int nbefore = bb.StackBefore.Count;
-            foreach (var e in bb.InEdges)
+            if (bb.InEdges.Select(e => e.From).Any(from => from.IsTranslated && nbefore != from.Stack.Count))
             {
-                var from = e.From;
-                if (from.IsTranslated)
-                {
-                    if (nbefore != from.Stack.Count)
-                    {
-                        throw new ILTranslatorException();
-                    }
-                }
+            	throw new ILTranslatorException();
             }
 
             int nafter = bb.Stack.Count;
-            foreach (var e in bb.InEdges)
+            if (bb.InEdges.Select(e => e.To).Any(to => to.IsTranslated && nafter != to.Stack.Count))
             {
-                var to = e.To;
-                if (to.IsTranslated)
-                {
-                    if (nafter != to.Stack.Count)
-                    {
-                        throw new ILTranslatorException();
-                    }
-                }
+            	throw new ILTranslatorException();
             }
         }
         #endregion
@@ -384,16 +371,7 @@ namespace DataDynamics.PageFX.CLI.IL
             //    || first.IsReturn)
             //    return false;
 
-            if (_block.IsNWay)
-                return true;
-
-            foreach (var p in _block.Predecessors)
-            {
-                if (p.IsNWay)
-                    return true;
-            }
-            
-            return false;
+            return _block.IsNWay || _block.Predecessors.Any(p => p.IsNWay);
         }
 
         void LabelBlock()

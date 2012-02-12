@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -42,14 +43,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         private static IMethod GetDefaultCtor(IType type)
         {
-            foreach (var m in type.Methods)
-            {
-                if (IsDeaultCtor(m))
-                    return m;
-            }
-            return null;
+        	return type.Methods.FirstOrDefault(IsDeaultCtor);
         }
-        #endregion
+
+    	#endregion
 
         #region ICustomAttribute Members
         /// <summary>
@@ -146,11 +143,8 @@ namespace DataDynamics.PageFX.CodeModel
         #region ICloneable Members
         public object Clone()
         {
-            var attr = new CustomAttribute();
-            attr._ctor = _ctor;
-            attr._type = _type;
-            attr._typeName = _typeName;
-            foreach (var arg in _args)
+        	var attr = new CustomAttribute {_ctor = _ctor, _type = _type, _typeName = _typeName};
+        	foreach (var arg in _args)
             {
                 var arg2 = (IArgument)arg.Clone();
                 attr._args.Add(arg2);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
@@ -885,15 +886,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static IType GetCommonDenominator(IType a, IType b)
         {
-            foreach (var type in GetDescendingOrder())
-            {
-                if (a == type || b == type)
-                    return type;
-            }
-            return null;
+        	return GetDescendingOrder().FirstOrDefault(type => a == type || b == type);
         }
 
-        public static IType UInt32OR64(IType type)
+    	public static IType UInt32OR64(IType type)
         {
             if (type == null) return null;
             var st = type.SystemType;

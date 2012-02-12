@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -146,15 +147,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         static IEnumerable<IMethod> GetCastOperators(IType type)
         {
-            foreach (var opName in CastOpNames)
-            {
-                var set = type.Methods[opName];
-                foreach (var method in set)
-                    yield return method;
-            }
+        	return CastOpNames.SelectMany(opName => type.Methods[opName]);
         }
 
-        public static IMethod FindCastOperator(IType type, IType source, IType target)
+    	public static IMethod FindCastOperator(IType type, IType source, IType target)
         {
             return FindCastOperator(type, source, target, true);
         }

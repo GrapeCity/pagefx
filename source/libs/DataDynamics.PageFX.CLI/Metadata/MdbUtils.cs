@@ -25,13 +25,15 @@ namespace DataDynamics.PageFX.CLI.Metadata
                     if (key.Length == s_NeutralPublicKey.Length)
                     {
                         bool isMatch = true;
-                        for (int i = 0; i < s_NeutralPublicKey.Length; i++)
-                            if (s_NeutralPublicKey[i] != key[i])
-                            {
-                                isMatch = false;
-                                break;
-                            }
-                        if (isMatch)
+						for (int i = 0; i < s_NeutralPublicKey.Length; i++)
+						{
+							if (s_NeutralPublicKey[i] != key[i])
+							{
+								isMatch = false;
+								break;
+							}
+						}
+                    	if (isMatch)
                         {
                             arPKT = new byte[s_NeutralPublicKeyToken.Length];
                             s_NeutralPublicKeyToken.CopyTo(arPKT, 0);

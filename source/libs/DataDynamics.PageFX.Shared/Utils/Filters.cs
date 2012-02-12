@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace DataDynamics
 {
@@ -58,8 +59,7 @@ namespace DataDynamics
 
         public AndFilter(IFilter<T> filter)
         {
-            _filters = new List<IFilter<T>>();
-            _filters.Add(filter);
+            _filters = new List<IFilter<T>> {filter};
         }
 
         public AndFilter(IEnumerable<IFilter<T>> filters)
@@ -79,12 +79,7 @@ namespace DataDynamics
 
         public bool Pass(T obj)
         {
-            foreach (var filter in _filters)
-            {
-                if (!filter.Pass(obj))
-                    return false;
-            }
-            return true;
+        	return _filters.All(filter => filter.Pass(obj));
         }
     }
     #endregion
@@ -101,8 +96,7 @@ namespace DataDynamics
 
         public OrFilter(IFilter<T> filter)
         {
-            _filters = new List<IFilter<T>>();
-            _filters.Add(filter);
+            _filters = new List<IFilter<T>> {filter};
         }
 
         public OrFilter(IEnumerable<IFilter<T>> filters)
@@ -122,12 +116,7 @@ namespace DataDynamics
 
         public bool Pass(T obj)
         {
-            foreach (var filter in _filters)
-            {
-                if (filter.Pass(obj))
-                    return true;
-            }
-            return false;
+        	return _filters.Any(filter => filter.Pass(obj));
         }
     }
     #endregion

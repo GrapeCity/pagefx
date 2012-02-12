@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -106,33 +107,20 @@ namespace DataDynamics
 
         public static bool Match(string s, bool ignoreCase, params string[] list)
         {
-            foreach (var s2 in list)
-            {
-                if (string.Compare(s, s2, ignoreCase) == 0)
-                    return true;
-            }
-            return false;
+        	return list.Any(s2 => string.Compare(s, s2, ignoreCase) == 0);
         }
 
-        IEnumerable<Item> Options
+    	private IEnumerable<Item> Options
         {
-            get 
-            {
-                foreach (var item in Items)
-                    if (item.Type == ItemType.Option)
-                        yield return item;
-            }
+            get { return Items.Where(item => item.Type == ItemType.Option); }
         }
 
         public bool HasOption(params string[] names)
         {
-            foreach (var item in Options)
-                if (Match(item.Name, true, names))
-                    return true;
-            return false;
+        	return Options.Any(item => Match(item.Name, true, names));
         }
 
-        public bool HasOption(CLOption opt)
+    	public bool HasOption(CLOption opt)
         {
             if (opt == null)
                 throw new ArgumentNullException("opt");

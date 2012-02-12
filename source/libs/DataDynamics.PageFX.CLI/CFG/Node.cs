@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
 
@@ -78,17 +79,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public bool IsSwitchCase
         {
-            get
-            {
-                foreach (var i in InEdges)
-                {
-                    if (i.From.IsSwitch) //goto case
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
+            get { return InEdges.Any(i => i.From.IsSwitch); }
         }
 
         public bool HasZeroIn
@@ -931,15 +922,10 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public bool IsReachable(Node from)
         {
-            foreach (var node in from.ReachableNodes)
-            {
-                if (node == this)
-                    return true;
-            }
-            return false;
+        	return from.ReachableNodes.Any(node => node == this);
         }
 
-        public void Detach()
+    	public void Detach()
         {
             if (PreventDetach) return;
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace DataDynamics.PageFX.NUnit
 {
@@ -15,7 +16,7 @@ namespace DataDynamics.PageFX.NUnit
     /// </summary>
     class CategoryExpression
     {
-        static readonly char[] ops = new [] { ',', ';', '-', '|', '+', '(', ')' };
+        private static readonly char[] Operators = new [] { ',', ';', '-', '|', '+', '(', ')' };
 
         readonly string _text;
         int _next;
@@ -114,7 +115,7 @@ namespace DataDynamics.PageFX.NUnit
                 _token = _text.Substring(_next++, 1);
             else
             {
-                int index2 = _text.IndexOfAny(ops, _next);
+                int index2 = _text.IndexOfAny(Operators, _next);
                 if (index2 < 0) index2 = _text.Length;
 
                 _token = _text.Substring(_next, index2 - _next).TrimEnd();
@@ -137,11 +138,7 @@ namespace DataDynamics.PageFX.NUnit
 
         bool NextIsOperator()
         {
-            foreach (char op in ops)
-                if (op == _text[_next])
-                    return true;
-
-            return false;
+        	return Operators.Any(op => op == _text[_next]);
         }
     }
 }

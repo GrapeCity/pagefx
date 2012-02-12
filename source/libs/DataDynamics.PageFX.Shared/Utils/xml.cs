@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -209,32 +210,22 @@ namespace DataDynamics
             return false;
         }
 
-        static IEnumerable<XmlNode> GetChildNodes(XmlNode parent)
+        private static IEnumerable<XmlNode> GetChildNodes(XmlNode parent)
         {
-            foreach (XmlNode node in parent.ChildNodes)
-                yield return node;
+        	return parent.ChildNodes.Cast<XmlNode>();
         }
 
-        public static IEnumerable<XmlNode> GetDescendantNodes(XmlNode parent)
-        {
-            foreach (var node in Algorithms.IterateTreeTopDown(parent, GetChildNodes))
-            {
-                if (node == parent) continue;
-                yield return node;
-            }
-        }
+    	public static IEnumerable<XmlNode> GetDescendantNodes(XmlNode parent)
+    	{
+    		return Algorithms.IterateTreeTopDown(parent, GetChildNodes).Where(node => node != parent);
+    	}
 
-        public static IEnumerable<XmlElement> GetDescendantElements(XmlNode parent)
-        {
-            foreach (var node in GetDescendantNodes(parent))
-            {
-                var e = node as XmlElement;
-                if (e == null) continue;
-                yield return e;
-            }
-        }
+    	public static IEnumerable<XmlElement> GetDescendantElements(XmlNode parent)
+    	{
+    		return GetDescendantNodes(parent).OfType<XmlElement>();
+    	}
 
-        public static void ProcessNodes(XmlNode parent, Action<XmlNode> action)
+    	public static void ProcessNodes(XmlNode parent, Action<XmlNode> action)
         {
             foreach (var node in GetDescendantNodes(parent))
                 action(node);

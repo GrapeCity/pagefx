@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -525,15 +526,10 @@ namespace DataDynamics.PageFX.CodeModel
                 var types = type.Types;
                 if (types == null) return;
                 if (types.Count <= 0) return;
-                var list = new List<IType>();
-                foreach (var nt in types)
+                var list = types.Where(nt => nt.IsVisible).ToList();
+            	if (list.Count > 0)
                 {
-                    if (!nt.IsVisible) continue;
-                    list.Add(nt);
-                }
-                if (list.Count > 0)
-                {
-                    list.Sort((x, y) => string.Compare(x.Name, y.Name));
+                    list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
                     WriteClasses(writer, list);
                 }
             }
@@ -568,65 +564,45 @@ namespace DataDynamics.PageFX.CodeModel
 
         class Util
         {
-            public static IType[] GetTypes(ITypeContainer assembly)
+            public static IEnumerable<IType> GetTypes(ITypeContainer assembly)
             {
-                var types = new List<IType>();
-                foreach (var type in assembly.Types)
-                {
-                    if (type.DeclaringType != null)
-                        continue;
-                    if (type.IsVisible)
-                        types.Add(type);
-                }
-                return types.ToArray();
+            	return assembly.Types.Where(type => type.DeclaringType == null && type.IsVisible).ToArray();
             }
 
-            public static T[] GetVisibleMembers<T>(IEnumerable<T> set)
+        	private static T[] GetVisibleMembers<T>(IEnumerable<T> set)
                 where T:ITypeMember
             {
-                var list = new List<T>();
-                foreach (var m in set)
-                {
-                    // we're only interested in public or protected members
-                    if (!IsVisibleMember(m))
-                        continue;
-                    list.Add(m);
-                }
-                list.Sort((x, y) => string.Compare(x.Name, y.Name));
+				// we're only interested in public or protected members
+                var list = set.Where(m => IsVisibleMember(m)).ToList();
+            	list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
                 return list.ToArray();
             }
 
-            public static IField[] GetFields(IType type)
+            public static IEnumerable<IField> GetFields(IType type)
             {
                 return GetVisibleMembers(type.Fields);
             }
 
-            public static IProperty[] GetProperties(IType type)
+            public static IEnumerable<IProperty> GetProperties(IType type)
             {
                 return GetVisibleMembers(type.Properties);
             }
 
-            public static IEvent[] GetEvents(IType type)
+            public static IEnumerable<IEvent> GetEvents(IType type)
             {
                 return GetVisibleMembers(type.Events);
             }
 
-            public static IMethod[] GetConstructors(IType type)
+            public static IEnumerable<IMethod> GetConstructors(IType type)
             {
-                var list = new List<IMethod>();
-                foreach (var m in type.Methods)
-                {
-                    if (!IsVisibleMember(m)) continue;
-                    if (!m.IsConstructor) continue;
-                    if (type.IsAbstract) continue;
-
-                    list.Add(m);
-                }
-                list.Sort((x, y) => string.Compare(x.Name, y.Name));
+                var list = (from method in type.Methods
+							where method.IsConstructor && !type.IsAbstract && IsVisibleMember(method)
+							select method).ToList();
+            	list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
                 return list.ToArray();
             }
 
-            static bool FilterMethod(IMethod m)
+            private static bool FilterMethod(IMethod m)
             {
                 if (!IsVisibleMember(m)) return false;
                 if (m.IsConstructor) return false;
@@ -635,19 +611,14 @@ namespace DataDynamics.PageFX.CodeModel
                 return true;
             }
 
-            public static IMethod[] GetMethods(IType type)
+            public static IEnumerable<IMethod> GetMethods(IType type)
             {
-                var list = new List<IMethod>();
-                foreach (var m in type.Methods)
-                {
-                    if (!FilterMethod(m)) continue;
-                    list.Add(m);
-                }
-                list.Sort((x, y) => string.Compare(x.Name, y.Name));
+                var list = type.Methods.Where(FilterMethod).ToList();
+            	list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
                 return list.ToArray();
             }
 
-            public static string GetModifier(IParameter p)
+        	private static string GetModifier(IParameter p)
             {
                 if (p.IsByRef)
                     return p.IsOut ? "out " : "ref ";
@@ -661,7 +632,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return "in";
             }
 
-            static IType UnwrapRefType(IType type)
+            private static IType UnwrapRefType(IType type)
             {
                 while (type.TypeKind == TypeKind.Reference)
                 {
@@ -670,12 +641,10 @@ namespace DataDynamics.PageFX.CodeModel
                 return type;
             }
 
-            static string GetArgTypeName(IType type, bool displayName)
+            private static string GetArgTypeName(IType type, bool displayName)
             {
                 type = UnwrapRefType(type);
-                if (displayName)
-                    return type.DisplayName;
-                return type.FullName.Replace('<', '[').Replace('>', ']');
+                return displayName ? type.DisplayName : type.FullName.Replace('<', '[').Replace('>', ']');
             }
 
             public static string GetSignature(IEnumerable<IParameter> args, bool displayName)

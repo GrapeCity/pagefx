@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using DataDynamics.PageFX.CLI.GAC;
@@ -86,20 +87,14 @@ namespace DataDynamics.PageFX.CLI
             return null;
         }
 
-        static string[] GetLibDirs()
+        private static IEnumerable<string> GetLibDirs()
         {
             var dirs = new[]
                 {
                     GlobalSettings.LibsDirectory,
                     GlobalSettings.FlexLibsDirectory,
                 };
-            var list = new List<string>();
-            for (int i = 0; i < dirs.Length; ++i)
-            {
-                if (Directory.Exists(dirs[i]))
-                    list.Add(dirs[i]);
-            }
-            return list.ToArray();
+        	return dirs.Where(Directory.Exists).ToArray();
         }
 
         static string GetAssemblyLocation(IAssemblyReference asmref, string refpath)
@@ -141,12 +136,7 @@ namespace DataDynamics.PageFX.CLI
             var libdirs = GetLibDirs();
             if (libdirs != null)
             {
-                foreach (var libdir in libdirs)
-                {
-                    string path = Path.Combine(libdir, refname + ".dll");
-                    if (File.Exists(path))
-                        return path;
-                }
+            	return libdirs.Select(libdir => Path.Combine(libdir, refname + ".dll")).FirstOrDefault(File.Exists);
             }
 
             return null;

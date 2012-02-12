@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -67,13 +68,8 @@ namespace DataDynamics.PageFX.CodeModel
             var gt = type as IGenericInstance;
             if (gt != null)
             {
-                var args = new List<IType>();
-                foreach (var p in gt.GenericArguments)
-                {
-                    var arg = Resolve(contextType, contextMethod, p);
-                    args.Add(arg);
-                }
-                return TypeFactory.MakeGenericType(gt.Type, args);
+                var args = gt.GenericArguments.Select(p => Resolve(contextType, contextMethod, p)).ToList();
+            	return TypeFactory.MakeGenericType(gt.Type, args);
             }
             return type;
         }
@@ -105,11 +101,7 @@ namespace DataDynamics.PageFX.CodeModel
             var gi = type as IGenericInstance;
             if (gi != null)
             {
-                foreach (var arg in gi.GenericArguments)
-                {
-                    if (HasGenericParams(arg))
-                        return true;
-                }
+            	return gi.GenericArguments.Any(HasGenericParams);
             }
 
             return false;
@@ -127,10 +119,9 @@ namespace DataDynamics.PageFX.CodeModel
                     if (HasGenericParams(method.GenericArguments))
                         return true;
                 }
-                foreach (var p in method.Parameters)
+                if (method.Parameters.Any(p => HasGenericParams(p.Type)))
                 {
-                    if (HasGenericParams(p.Type))
-                        return true;
+                	return true;
                 }
             }
 

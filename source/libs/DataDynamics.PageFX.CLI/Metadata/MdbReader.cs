@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using DataDynamics.PE;
@@ -268,19 +269,12 @@ namespace DataDynamics.PageFX.CLI.Metadata
             return GetIndexSize(n);
         }
 
-        int GetMaxRowCount(IEnumerable<MdbTableId> tables)
+        private int GetMaxRowCount(IEnumerable<MdbTableId> tables)
         {
-            int maxRowCount = 0;
-            foreach (var id in tables)
-            {
-                int n = GetRowCount(id);
-                if (n > maxRowCount)
-                    maxRowCount = n;
-            }
-            return maxRowCount;
+        	return tables.Select(id => GetRowCount(id)).Concat(new[] {0}).Max();
         }
 
-        int[] _codedIndexSizes;
+    	int[] _codedIndexSizes;
         int GetCodedIndexSize(MdbCodedIndex i)
         {
             return _codedIndexSizes[i.ID];
@@ -456,13 +450,8 @@ namespace DataDynamics.PageFX.CLI.Metadata
                 if (table != null)
                 {
                     table.Offset = pos;
-                    int rowSize = 0;
-                    foreach (var column in table.Columns)
-                    {
-                        int colSize = GetColumnSize(column);
-                        rowSize += colSize;
-                    }
-                    table.RowSize = rowSize;
+                    int rowSize = table.Columns.Sum(column => GetColumnSize(column));
+                	table.RowSize = rowSize;
                     table.Size = table.RowCount * rowSize;
                     table.Rows = new MdbRow[table.RowCount];
                     pos += table.Size;
