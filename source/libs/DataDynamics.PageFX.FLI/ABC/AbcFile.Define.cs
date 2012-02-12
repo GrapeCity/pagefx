@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.IL;
 
@@ -19,29 +20,10 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// <returns></returns>
         public bool IsDefined(AbcInstance instance)
         {
-            if (instance.IsNative)
-                return true;
-
-            foreach (var abc in AllFrames)
-            {
-                if (instance.ABC == abc)
-                    return true;
-            }
-
-            //if (_instances.IsDefined(instance))
-            //    return true;
-
-            //foreach (AbcFile pf in PrevFrames)
-            //{
-            //    Debug.Assert(pf != this);
-            //    if (pf.IsDefined(instance))
-            //        return true;
-            //}
-
-            return false;
+        	return instance.IsNative || AllFrames.Any(abc => instance.ABC == abc);
         }
 
-        /// <summary>
+    	/// <summary>
         /// Determines whether the given <see cref="AbcMultiname"/> is defined in this ABC file.
         /// </summary>
         /// <param name="name">name to check</param>

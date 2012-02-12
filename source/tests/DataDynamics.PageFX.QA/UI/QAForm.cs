@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -353,16 +354,8 @@ namespace DataDynamics.PageFX
             {
                 if (isChecked)
                 {
-                    bool isAll = true;
-                    foreach (TreeNode d in parent.Nodes)
-                    {
-                        if (!d.Checked)
-                        {
-                            isAll = false;
-                            break;
-                        }
-                    }
-                    if (isAll)
+                    bool isAll = parent.Nodes.Cast<TreeNode>().All(d => d.Checked);
+                	if (isAll)
                     {
                         if (!parent.Checked)
                             parent.Checked = true;
@@ -390,11 +383,7 @@ namespace DataDynamics.PageFX
             }
             else
             {
-                foreach (var d in GetDescendants(node))
-                {
-                    if (d.Tag is TestCase)
-                        list.Add(d);
-                }
+            	list.AddRange(GetDescendants(node).Where(d => d.Tag is TestCase));
             }
             return list;
         }
@@ -421,32 +410,19 @@ namespace DataDynamics.PageFX
 
         List<TreeNode> GetSelectedTestCases()
         {
-            var list = new List<TreeNode>();
-            foreach (TreeNode node in testCases.Nodes)
-            {
-                foreach (var tc in GetSelectedTestCases(node))
-                {
-                    list.Add(tc);
-                }
-            }
-            return list;
+        	return (from TreeNode node in testCases.Nodes
+					from tc in GetSelectedTestCases(node)
+					select tc).ToList();
         }
 
-        List<TreeNode> GetAllTestCases()
-        {
-            var list = new List<TreeNode>();
-            foreach (TreeNode node in testCases.Nodes)
-            {
-                foreach (var d in GetDescendants(node))
-                {
-                    if (d.Tag is TestCase)
-                        list.Add(d);
-                }
-            }
-            return list;
-        }
+    	List<TreeNode> GetAllTestCases()
+    	{
+    		return (from TreeNode node in testCases.Nodes
+					from d in GetDescendants(node)
+					where d.Tag is TestCase select d).ToList();
+    	}
 
-        void Run()
+    	void Run()
         {
             if (!worker.IsBusy)
             {
@@ -969,17 +945,11 @@ namespace DataDynamics.PageFX
             {
                 try
                 {
-                    var list = new List<TreeNode>();
-                    var doc = new XmlDocument();
+                	var doc = new XmlDocument();
                     doc.Load(path);
-                    foreach (XmlElement e in doc.DocumentElement.GetElementsByTagName("tc"))
-                    {
-                        string name = e.GetAttribute("name");
-                        var node = _nodeCache[name] as TreeNode;
-                        if (node != null)
-                            list.Add(node);
-                    }
-                    return list;
+                	return (from XmlElement e in doc.DocumentElement.GetElementsByTagName("tc")
+							select e.GetAttribute("name") into name
+							select _nodeCache[name]).OfType<TreeNode>().ToList();
                 }
                 catch (Exception exc)
                 {
@@ -1138,14 +1108,8 @@ namespace DataDynamics.PageFX
 
         static bool IsSelected(TreeNode node)
         {
-            if (node.Checked)
-                return true;
-            foreach (TreeNode kid in node.Nodes)
-            {
-                if (kid.Checked)
-                    return true;
-            }
-            return false;
+            if (node.Checked) return true;
+        	return node.Nodes.Cast<TreeNode>().Any(kid => kid.Checked);
         }
 
         void GetSelectedTestSuites(List<TestSuite> list, TreeNode node, List<TestCase> failedTestCases)
@@ -1324,17 +1288,7 @@ namespace DataDynamics.PageFX
         {
         }
 
-        static IEnumerable<TestCase> ToIEnumerable_TestCase(IEnumerable<TreeNode> nodes)
-        {
-            foreach (var node in nodes)
-            {
-                var tc = node.Tag as TestCase;
-                if (tc != null)
-                    yield return tc;
-            }
-        }
-        
-        void cbAvmShellMode_SelectedIndexChanged(object sender, EventArgs e)
+    	void cbAvmShellMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             ApplySettings();
         }

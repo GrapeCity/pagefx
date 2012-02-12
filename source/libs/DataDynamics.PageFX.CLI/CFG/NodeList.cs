@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DataDynamics.PageFX.CLI.CFG
@@ -16,19 +17,13 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public void Remove(params Node[] nodes)
         {
-            int n = nodes.Length;
-            for (int i = 0; n > 0 && i < Count; ++i)
+            for (int i = 0; i < Count; ++i)
             {
-                var p = this[i];
-                for (int j = 0; j < nodes.Length; ++j)
-                {
-                    if (p == nodes[j])
-                    {
-                        RemoveAt(i);
-                        --n;
-                        break;
-                    }
-                }
+            	var p = this[i];
+            	if (nodes.Contains(p))
+            	{
+            		RemoveAt(i);
+            	}
             }
         }
         #endregion

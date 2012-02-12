@@ -3604,9 +3604,9 @@ namespace DataDynamics.PageFX.FLI.IL
             }
         }
 
-        public void NewObject(IType type, Predicate<IMethod> ctorPredicate, Action args)
+        public void NewObject(IType type, System.Func<IMethod, bool> ctorPredicate, Action args)
         {
-            var ctor = TypeHelper.FindConstructor(type, ctorPredicate);
+            var ctor = type.FindConstructor(ctorPredicate);
             if (ctor == null)
                 throw new InvalidOperationException("Unable to find ctor");
             NewObject(ctor, args);

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Cryptography;
 using DataDynamics.PageFX.CodeModel;
 
@@ -24,15 +25,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
                 case HashAlgorithmId.SHA1:
                     if (key.Length == s_NeutralPublicKey.Length)
                     {
-                        bool isMatch = true;
-						for (int i = 0; i < s_NeutralPublicKey.Length; i++)
-						{
-							if (s_NeutralPublicKey[i] != key[i])
-							{
-								isMatch = false;
-								break;
-							}
-						}
+                        bool isMatch = !s_NeutralPublicKey.Where((b, i) => b != key[i]).Any();
                     	if (isMatch)
                         {
                             arPKT = new byte[s_NeutralPublicKeyToken.Length];

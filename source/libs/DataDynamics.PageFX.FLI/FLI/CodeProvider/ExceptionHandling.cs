@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -132,13 +133,7 @@ namespace DataDynamics.PageFX.FLI
             }
 
             var tb = h.Owner;
-            foreach (var handler in tb.Handlers)
-            {
-                if (IsVesException(handler.ExceptionType))
-                    return true;
-            }
-
-            return false;
+        	return tb.Handlers.Any(handler => IsVesException(handler.ExceptionType));
         }
 
         public IInstruction[] BeginCatch(ISehHandlerBlock h)

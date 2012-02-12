@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel;
 
@@ -558,22 +559,18 @@ namespace DataDynamics.PageFX.FLI
 
             while (type != null)
             {
-                foreach (var impl in type.Methods)
-                {
-                    var implMethods = impl.ImplementedMethods;
-                    if (implMethods == null)
-                        continue;
-                    //if (Algorithms.Contains(implMethods, im => im == method))
-                    //    return impl;
-                    foreach (var implMethod in implMethods)
-                    {
-                        if (implMethod == method || implMethod.ProxyOf == method)
-                            return impl;
-                    }
-                }
+            	var impl = (from candidate in type.Methods
+            	            where candidate.ImplementedMethods != null &&
+            	                  candidate.ImplementedMethods.Any(x => x == method || x.ProxyOf == method)
+            	            select candidate).FirstOrDefault();
+				if (impl != null)
+				{
+					return impl;
+				}
                 if (!inherited) break;
                 type = type.BaseType;
             }
+
             return null;
         }
 

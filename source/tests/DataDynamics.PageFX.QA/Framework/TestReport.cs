@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace DataDynamics.PageFX
@@ -34,11 +35,7 @@ namespace DataDynamics.PageFX
 
         public void Add(string name, string mode, string error)
         {
-            var item = new Item();
-            item.Name = name;
-            item.Mode = mode;
-            item.Error = error;
-            _items.Add(item);
+        	_items.Add(new Item {Name = name, Mode = mode, Error = error});
         }
 
         public void Add(TestCase testCase, string mode, string error)
@@ -48,15 +45,7 @@ namespace DataDynamics.PageFX
 
         public bool HasErrors
         {
-            get
-            {
-                foreach (var item in _items)
-                {
-                    if (!item.Passed)
-                        return true;
-                }
-                return false;
-            }
+            get { return _items.Any(item => !item.Passed); }
         }
 
         #region Export
@@ -148,7 +137,7 @@ namespace DataDynamics.PageFX
         #region Show
         public void Show()
         {
-            string path = "c:\\QA\\report.xml";
+            const string path = "c:\\QA\\report.xml";
             Export(path, "xml");
             QA.ShowBrowser(Title, path, true);
         }

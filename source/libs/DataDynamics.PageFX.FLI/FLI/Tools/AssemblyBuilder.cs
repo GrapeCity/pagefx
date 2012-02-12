@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using DataDynamics.Compression.Zip;
 using DataDynamics.PageFX.CodeModel;
@@ -197,15 +198,10 @@ namespace DataDynamics.PageFX.FLI
 
         public object ResolveExternalReference(string id)
         {
-            foreach (var asm in _refs)
-            {
-                var r = AssemblyIndex.ResolveRef(asm, id);
-                if (r != null)
-                    return r;
-            }
-            return null;
+        	return _refs.Select(assembly => AssemblyIndex.ResolveRef(assembly, id)).FirstOrDefault(r => r != null);
         }
-        #endregion
+
+    	#endregion
 
         #region Naming Utils
         static readonly Hashtable namemap = new Hashtable();
@@ -310,17 +306,12 @@ namespace DataDynamics.PageFX.FLI
             return Algorithms.Contains(BadNameChars, c);
         }
 
-        static string ReplaceBadChars(IEnumerable<char> name)
+        private static string ReplaceBadChars(IEnumerable<char> name)
         {
-            string name2 = "";
-            foreach (var c in name)
-            {
-                name2 += IsBadNameChar(c) ? '_' : c;
-            }
-            return name2;
+        	return name.Aggregate("", (current, c) => current + (IsBadNameChar(c) ? '_' : c));
         }
 
-        static string Rename(string name, bool clistyle)
+    	static string Rename(string name, bool clistyle)
         {
             string map = namemap[name] as string;
             if (map != null) return map;
@@ -557,40 +548,21 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        static AbcInstance FindInstance(AbcFile abc, AbcMultiname name)
+        private static AbcInstance FindInstance(AbcFile abc, AbcMultiname name)
         {
-            return abc.FindInstance(
-                i => Equals(i.Name, name));
+            return abc.FindInstance(instance => Equals(instance.Name, name));
         }
 
-        AbcInstance FindInstance(Predicate<AbcInstance> p)
-        {
-            return AbcFile.FindInstance(_abcFiles, p);
-        }
+    	private AbcInstance FindInstance(AbcMultiname name)
+    	{
+    		return _abcFiles.Select(abc => FindInstance(abc, name)).FirstOrDefault(instance => instance != null);
+    	}
 
-        AbcInstance FindInstance(AbcMultiname name)
-        {
-            foreach (var abc in _abcFiles)
-            {
-                var i = FindInstance(abc, name);
-                if (i != null) return i;
-            }
-            return null;
-        }
-
-        AbcInstance FindVector(string type)
+    	AbcInstance FindVector(string type)
         {
             string vtype = "Vector$" + type;
-            foreach (var abc in _abcFiles)
-            {
-                foreach (var instance in abc.Instances)
-                {
-                    if (instance.NamespaceString == AS3.Vector.Namespace
-                        && instance.NameString == vtype)
-                        return instance;
-                }
-            }
-            return null;
+    		return _abcFiles.SelectMany(abc => abc.Instances)
+				.FirstOrDefault(instance => instance.NamespaceString == AS3.Vector.Namespace && instance.NameString == vtype);
         }
 
         IType BuildPredefinedVector(AbcMultiname param)
@@ -2171,14 +2143,10 @@ namespace DataDynamics.PageFX.FLI
         {
             if (_fpVersion == 9) return 9;
             LoadFP9();
-            foreach (var script in _fp9.Scripts)
+            if (_fp9.Scripts.SelectMany(script => script.Traits).Any(trait => trait.Kind == AbcTraitKind.Method
+                                                                              && Equals(trait.Name, name)))
             {
-                foreach (var trait in script.Traits)
-                {
-                    if (trait.Kind == AbcTraitKind.Method
-                        && Equals(trait.Name, name))
-                        return 9;
-                }
+            	return 9;
             }
             return _fpVersion;
         }
@@ -2232,17 +2200,11 @@ namespace DataDynamics.PageFX.FLI
             var members = _doc.DocumentElement["members"];
             if (members == null) return null;
 
-            foreach (XmlNode cn in members.ChildNodes)
-            {
-                var elem = cn as XmlElement;
-                if (elem == null) continue;
-                if (elem.LocalName != "member") continue;
-                string name = elem.GetAttribute("name");
-                if (name.StartsWith(memberName))
-                    return elem;
-            }
-
-            return null;
+        	return (from elem in members.ChildNodes.OfType<XmlElement>()
+					where elem.LocalName == "member"
+					let name = elem.GetAttribute("name")
+					where name.StartsWith(memberName)
+					select elem).FirstOrDefault();
         }
 
         static string GetMemberName(AbcTrait trait, string typename)
@@ -2353,23 +2315,12 @@ namespace DataDynamics.PageFX.FLI
 
         private bool IsCoreAPI
         {
-            get
-            {
-				foreach (var abc in _abcFiles)
-                {
-                    if (abc.IsCoreAPI)
-                        return true;
-                }
-                return false;
-            }
+            get { return _abcFiles.Any(abc => abc.IsCoreAPI); }
         }
 
         private string NsPrefix
         {
-            get
-            {
-            	return IsCoreAPI ? "Avm" : "";
-            }
+            get { return IsCoreAPI ? "Avm" : ""; }
         }
 
         static string SetNamespacePrefix(string ns, string prefix)

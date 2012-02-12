@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
@@ -477,7 +478,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             //param values
             if (HasOptionalParams)
             {
-                int optionalCount = Logic.CountOf(_params, p => p.IsOptional);
+                int optionalCount = _params.Count(p => p.IsOptional);
 
                 writer.WriteUIntEncoded((uint)optionalCount);
                 for (int i = 0; i < param_count; ++i)
@@ -702,12 +703,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         internal bool IsTypeUsed(AbcMultiname typename)
         {
             if (ReturnType == typename) return true;
-            foreach (var p in Parameters)
-            {
-                if (p.Type == typename)
-                    return true;
-            }
-            return false;
+        	return Parameters.Any(p => p.Type == typename);
         }
 
         internal int MethodInfoIndex { get; set; }

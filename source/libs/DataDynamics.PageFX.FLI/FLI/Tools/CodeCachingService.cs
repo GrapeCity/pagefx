@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
@@ -71,16 +72,16 @@ namespace DataDynamics.PageFX.FLI
 
             var cgm = new List<AbcMethod>(Algorithms.Filter(abc.Methods, m => m.SourceMethod == null));
             Console.WriteLine("Compiler Generated: {0}", cgm.Count);
-            int n = Logic.CountOf(cgm, m => m.Trait != null);
+            int n = cgm.Count(m => m.Trait != null);
             Console.WriteLine("  With Trait: {0}", n);
             Console.WriteLine("  Without Trait: {0}", cgm.Count - n);
 
             Console.WriteLine("{0} Methods Stat:", asm.Name);
             Console.WriteLine("Total Count: {0}", total.Count);
-            Console.WriteLine("Abstract Count: {0}", Logic.CountOf(total, m => m.SourceMethod.IsAbstract));
-            Console.WriteLine("InternalCall Count: {0}", Logic.CountOf(total, m => m.SourceMethod.IsInternalCall));
-            Console.WriteLine("Runtime Count: {0}", Logic.CountOf(total, m => m.SourceMethod.CodeType == MethodCodeType.Runtime));
-            Console.WriteLine("GenericContext Count: {0}", Logic.CountOf(total, HasGenericContext));
+            Console.WriteLine("Abstract Count: {0}", total.Count(m => m.SourceMethod.IsAbstract));
+            Console.WriteLine("InternalCall Count: {0}", total.Count(m => m.SourceMethod.IsInternalCall));
+            Console.WriteLine("Runtime Count: {0}", total.Count(m => m.SourceMethod.CodeType == MethodCodeType.Runtime));
+            Console.WriteLine("GenericContext Count: {0}", total.Count(HasGenericContext));
             Console.WriteLine("Cached Count: {0}", list.Count);
 
             var lib = new Lib

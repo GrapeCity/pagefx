@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
@@ -473,7 +474,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (_autoFrameCount)
             {
-                _frameCount = (ushort)Logic.CountOf(_tags, tag => tag.TagCode == SwfTagCode.ShowFrame);
+                _frameCount = (ushort)_tags.Count(tag => tag.TagCode == SwfTagCode.ShowFrame);
             }
 
             var writer = new SwfWriter();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.FLI.SWF;
 
@@ -35,8 +36,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get
             {
-                return Logic.CountOf(this,
-                                     t => t.Kind == AbcTraitKind.Slot);
+                return this.Count(t => t.Kind == AbcTraitKind.Slot);
             }
         }
 
@@ -162,36 +162,22 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Utils
         public AbcTrait[] GetRange(AbcTraitKind kind)
         {
-            var list = new List<AbcTrait>();
-            foreach (var trait in this)
-            {
-                if (trait.Kind == kind)
-                    list.Add(trait);
-            }
-            return list.ToArray();
+        	return this.Where(trait => trait.Kind == kind).ToArray();
         }
 
         public AbcTrait[] GetFields()
         {
-            var list = new List<AbcTrait>();
-            foreach (var trait in this)
-            {
-                if (trait.Kind == AbcTraitKind.Slot || trait.Kind == AbcTraitKind.Const)
-                    list.Add(trait);
-            }
-            list.Sort((x, y) => (int)x.Visibility - (int)y.Visibility);
+            var list = this.Where(trait => trait.Kind == AbcTraitKind.Slot || trait.Kind == AbcTraitKind.Const).ToList();
+        	list.Sort((x, y) => (int)x.Visibility - (int)y.Visibility);
             return list.ToArray();
         }
 
         public AbcMethod[] GetMethods()
         {
-            var list = new List<AbcMethod>();
-            foreach (var trait in this)
-            {
-                if (trait.Kind == AbcTraitKind.Method)
-                    list.Add(trait.Method);
-            }
-            list.Sort((x, y) => (int)x.Visibility - (int)y.Visibility);
+            var list = (from trait in this
+						where trait.Kind == AbcTraitKind.Method
+						select trait.Method).ToList();
+        	list.Sort((x, y) => (int)x.Visibility - (int)y.Visibility);
             return list.ToArray();
         }
 

@@ -955,10 +955,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             var sfc = SwfCompiler;
             var asset = sfc.ImportAsset(embed);
 
-            var newEmbed = new Embed(embed);
-            newEmbed.Asset = asset;
-            newEmbed.Movie = sfc._swf;
-            return newEmbed;
+        	return new Embed(embed) {Asset = asset, Movie = sfc._swf};
         }
         #endregion
 
@@ -1015,9 +1012,8 @@ namespace DataDynamics.PageFX.FLI.ABC
                     return null;
             }
 
-            var e = new AbcMetaEntry();
-            e.Name = ImportConst(from.Name);
-            foreach (var item in from.Items)
+        	var e = new AbcMetaEntry {Name = ImportConst(from.Name)};
+        	foreach (var item in from.Items)
             {
                 var key = ImportConst(item.Key);
                 var val = ImportConst(item.Value);
@@ -1065,84 +1061,6 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 foreach (var e in trait.Metadata)
                     ProcessMetaEntry(trait.Name.ABC, trait, e);
-            }
-        }
-        #endregion
-
-        #region Utils
-        static bool IsSimilar(AbcTrait x, AbcTrait y)
-        {
-            if (x.Kind != y.Kind)
-                return false;
-            if (!Equals(x.Name, y.Name))
-                return false;
-
-            switch (x.Kind)
-            {
-                case AbcTraitKind.Class:
-                    {
-                        var cx = x.Class;
-                        var cy = y.Class;
-                        if (Equals(cx.Instance.Name, cy.Instance.Name))
-                            return true;
-                    }
-                    break;
-
-                case AbcTraitKind.Slot:
-                case AbcTraitKind.Const:
-                    {
-                        //if (x.SlotID != y.SlotID)
-                        //    return false;
-                        if (!Equals(x.SlotType, y.SlotType))
-                            return false;
-                        return true;
-                    }
-            }
-
-            return false;
-        }
-
-        static bool IsSimilar(AbcScript x, AbcScript y)
-        {
-            int n = x.Traits.Count;
-            if (n != y.Traits.Count) return false;
-            for (int i = 0; i < n; ++i)
-            {
-                var tx = x.Traits[i];
-                var ty = y.Traits[i];
-                if (!IsSimilar(tx, ty))
-                    return false;
-            }
-            return true;
-        }
-
-        bool HasSimilarScript(AbcScript script)
-        {
-            foreach (var s in _scripts)
-            {
-                if (IsSimilar(s, script))
-                    return true;
-            }
-            return false;
-        }
-
-        bool HasSimilarScripts(AbcFile abc)
-        {
-            foreach (var script in abc.Scripts)
-            {
-                if (!HasSimilarScript(script))
-                    return false;
-            }
-            return true;
-        }
-
-        IEnumerable<AbcFile> GetAllFrames()
-        {
-            yield return this;
-            foreach (var f in PrevFrames)
-            {
-                Debug.Assert(f != null);
-                yield return f;
             }
         }
         #endregion

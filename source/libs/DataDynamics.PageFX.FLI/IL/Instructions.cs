@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace DataDynamics.PageFX.FLI.IL
@@ -189,13 +190,7 @@ namespace DataDynamics.PageFX.FLI.IL
         public static Instruction[] GetUsedInstructions()
         {
             var all = GetInstructions();
-            var list = new List<Instruction>();
-            foreach (var i in all)
-            {
-                if (i.IsUsed)
-                    list.Add(i);
-            }
-            return list.ToArray();
+        	return all.Where(i => i.IsUsed).ToArray();
         }
     }
 }

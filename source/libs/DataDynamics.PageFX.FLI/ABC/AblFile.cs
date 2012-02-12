@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using DataDynamics.PageFX.FLI.SWC;
 using DataDynamics.PageFX.FLI.SWF;
@@ -166,7 +167,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         private void WriteDeps(SwfWriter writer)
         {
-            int n = Logic.CountOf(_files, f => f.HasDeps);
+            int n = _files.Count(f => f.HasDeps);
             writer.WriteUIntEncoded(n);
             for (int i = 0; i < _files.Count; ++i)
             {

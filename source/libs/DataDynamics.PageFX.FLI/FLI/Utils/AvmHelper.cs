@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 
@@ -48,13 +49,10 @@ namespace DataDynamics.PageFX.FLI
         public static IManifestResource FindResource(IAssembly asm, string subname)
         {
             subname = subname.ToLower();
-            foreach (var res in asm.MainModule.Resources)
-            {
-                string name = res.Name.ToLower();
-                if (name.Contains(subname))
-                    return res;
-            }
-            return null;
+        	return (from resource in asm.MainModule.Resources
+					let name = resource.Name.ToLower()
+					where name.Contains(subname)
+					select resource).FirstOrDefault();
         }
 
         public static string GetExtension(string path)
@@ -72,13 +70,7 @@ namespace DataDynamics.PageFX.FLI
                 throw new ArgumentNullException("type");
             if (type.TypeKind != TypeKind.Enum)
                 throw new ArgumentException("type is not enum");
-            var list = new List<IField>();
-            foreach (var f in type.Fields)
-            {
-                if (f.IsStatic)
-                    list.Add(f);
-            }
-            return list.ToArray();
+        	return type.Fields.Where(f => f.IsStatic).ToArray();
         }
 
         //NOTE: For enums we will use m_value name for internal value.
