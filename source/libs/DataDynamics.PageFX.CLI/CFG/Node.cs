@@ -366,35 +366,23 @@ namespace DataDynamics.PageFX.CLI.CFG
         #endregion
 
         #region Sibling Linked List
-        /// <summary>
-        /// Gets or sets the parent of this node.
-        /// </summary>
-        public Node Parent
-        {
-            get { return _parent; }
-            set { _parent = value; }
-        }
-        Node _parent;
 
-        /// <summary>
-        /// Gets the previous node
-        /// </summary>
-        public Node Prev
-        {
-            get { return _prev; }
-        }
-        Node _prev;
+    	/// <summary>
+    	/// Gets or sets the parent of this node.
+    	/// </summary>
+    	public Node Parent { get; set; }
 
-        /// <summary>
-        /// Gets the next node
-        /// </summary>
-        public Node Next
-        {
-            get { return _next; }
-        }
-        Node _next;
+    	/// <summary>
+    	/// Gets the previous node
+    	/// </summary>
+    	public Node Prev { get; private set; }
 
-        public Node First
+    	/// <summary>
+    	/// Gets the next node
+    	/// </summary>
+    	public Node Next { get; private set; }
+
+    	public Node First
         {
             get
             {
@@ -423,11 +411,11 @@ namespace DataDynamics.PageFX.CLI.CFG
         public void Prepend(Node node)
         {
             node.Remove();
-            if (_prev != null)
-                _prev._next = node;
-            node._prev = _prev;
-            node._next = this;
-            _prev = node;
+            if (Prev != null)
+                Prev.Next = node;
+            node.Prev = Prev;
+            node.Next = this;
+            Prev = node;
         }
 
         /// <summary>
@@ -437,11 +425,11 @@ namespace DataDynamics.PageFX.CLI.CFG
         public void Append(Node node)
         {
             node.Remove();
-            if (_next != null)
-                _next._prev = node;
-            node._prev = this;
-            node._next = _next;
-            _next = node;
+            if (Next != null)
+                Next.Prev = node;
+            node.Prev = this;
+            node.Next = Next;
+            Next = node;
         }
 
         /// <summary>
@@ -450,16 +438,16 @@ namespace DataDynamics.PageFX.CLI.CFG
         /// <returns>the next node in the list</returns>
         public Node Remove()
         {
-            var prev = _prev;
-            var next = _next;
+            var prev = Prev;
+            var next = Next;
 
-            _prev = null;
-            _next = null;
+            Prev = null;
+            Next = null;
 
             if (prev != null)
-                prev._next = next;
+                prev.Next = next;
             if (next != null)
-                next._prev = prev;
+                next.Prev = prev;
 
             return next;
         }

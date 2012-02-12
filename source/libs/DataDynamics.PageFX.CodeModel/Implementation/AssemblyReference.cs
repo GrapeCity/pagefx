@@ -77,14 +77,9 @@ namespace DataDynamics.PageFX.CodeModel
         }
         private Version _version;
 
-        public AssemblyFlags Flags
-        {
-            get { return _flags; }
-            set { _flags = value; }
-        }
-        private AssemblyFlags _flags;
+    	public AssemblyFlags Flags { get; set; }
 
-        /// <summary>
+    	/// <summary>
         /// Culture Info
         /// </summary>
         public CultureInfo Culture
@@ -104,15 +99,10 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
         private CultureInfo _culture;
-        
-        public byte[] PublicKey
-        {
-            get { return _publicKey; }
-            set { _publicKey = value; }
-        }
-        private byte[] _publicKey;
-        
-        /// <summary>
+
+    	public byte[] PublicKey { get; set; }
+
+    	/// <summary>
         /// Public key token
         /// </summary>
         /// <remarks>Can be null</remarks>
@@ -122,15 +112,10 @@ namespace DataDynamics.PageFX.CodeModel
             set { _publicKeyToken = value; }
         }
         private byte[] _publicKeyToken;
-        
-        public byte[] HashValue
-        {
-            get { return _hashValue; }
-            set { _hashValue = value; }
-        }
-        private byte[] _hashValue;
-        
-        public string FullName
+
+    	public byte[] HashValue { get; set; }
+
+    	public string FullName
         {
             get
             {
@@ -274,16 +259,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return null; }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        private object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)

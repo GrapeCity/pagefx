@@ -8,44 +8,21 @@ namespace DataDynamics.PageFX.CodeModel
     public class ManifestResource : CustomAttributeProvider, IManifestResource
     {
         #region IManifestResource Members
-        /// <summary>
-        /// Gets the resource name.
-        /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
 
-        public int Offset
-        {
-            get { return _offset; }
-            set { _offset = value; }
-        }
-        private int _offset;
+    	/// <summary>
+    	/// Gets the resource name.
+    	/// </summary>
+    	public string Name { get; set; }
 
-        public bool IsPublic
-        {
-            get { return _isPublic; }
-            set { _isPublic = value; }
-        }
-        private bool _isPublic;
+    	public int Offset { get; set; }
 
-        public IModule Module
-        {
-            get { return _module; }
-            set { _module = value; }
-        }
-        private IModule _module;
+    	public bool IsPublic { get; set; }
 
-        public byte[] Data
-        {
-            get { return _data; }
-            set { _data = value; }
-        }
-        private byte[] _data;
-        #endregion
+    	public IModule Module { get; set; }
+
+    	public byte[] Data { get; set; }
+
+    	#endregion
 
         public override string ToString()
         {

@@ -9,14 +9,9 @@ namespace DataDynamics.PageFX.CLI.CFG
             get { return NodeType.Try; }
         }
 
-        public ProtectedBlock Block
-        {
-            get { return _block; }
-            set { _block = value; }
-        }
-        private ProtectedBlock _block;
+    	public ProtectedBlock Block { get; set; }
 
-        public NodeList Body
+    	public NodeList Body
         {
             get { return _body; }
         }

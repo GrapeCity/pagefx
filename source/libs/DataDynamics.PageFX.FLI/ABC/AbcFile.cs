@@ -516,21 +516,12 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region Write
-        public bool AutoComplete
-        {
-            get { return _autoComplete; }
-            set { _autoComplete = value; }
-        }
-        private bool _autoComplete;
 
-        public bool ReduceSize
-        {
-            get { return _reduceSize; }
-            set { _reduceSize = value; }
-        }
-        private bool _reduceSize;
+    	public bool AutoComplete { get; set; }
 
-        public void Write(SwfWriter writer)
+    	public bool ReduceSize { get; set; }
+
+    	public void Write(SwfWriter writer)
         {
             writer.ABC = this;
             var ver = Version;

@@ -9,18 +9,15 @@ namespace DataDynamics.PageFX.CodeModel
 
         public GotoStatement(ILabeledStatement label)
         {
-            _label = label;
+            Label = label;
         }
         #endregion
 
         #region IGotoStatement Members
-        public ILabeledStatement Label
-        {
-            get { return _label; }
-            set { _label = value; }
-        }
-        private ILabeledStatement _label;
-        #endregion
+
+    	public ILabeledStatement Label { get; set; }
+
+    	#endregion
 
         #region Object Override Members
         public override bool Equals(object obj)
@@ -28,7 +25,7 @@ namespace DataDynamics.PageFX.CodeModel
             if (obj == this) return true;
             var go = obj as IGotoStatement;
             if (go == null) return false;
-            if (!Equals(go.Label, _label)) return false;
+            if (!Equals(go.Label, Label)) return false;
             return true;
         }
 
@@ -37,8 +34,8 @@ namespace DataDynamics.PageFX.CodeModel
         public override int GetHashCode()
         {
             int h = _hs;
-            if (_label != null)
-                h ^= _label.GetHashCode();
+            if (Label != null)
+                h ^= Label.GetHashCode();
             return h;
         }
         #endregion
@@ -47,24 +44,18 @@ namespace DataDynamics.PageFX.CodeModel
     public class BreakStatement : Statement, IBreakStatement
     {
         #region IGotoStatement Members
-        public ILabeledStatement Label
-        {
-            get { return _label; }
-            set { _label = value; }
-        }
-        private ILabeledStatement _label;
-        #endregion
+
+    	public ILabeledStatement Label { get; set; }
+
+    	#endregion
     }
 
     public class ContinueStatement : Statement, IContinueStatement
     {
         #region IGotoStatement Members
-        public ILabeledStatement Label
-        {
-            get { return _label; }
-            set { _label = value; }
-        }
-        private ILabeledStatement _label;
-        #endregion
+
+    	public ILabeledStatement Label { get; set; }
+
+    	#endregion
     }
 }

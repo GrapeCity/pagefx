@@ -40,146 +40,71 @@ namespace DataDynamics.PageFX.FLI
         #region class Options
         public class Options
         {
-            public bool AS3
-            {
-                get { return _as3; }
-                set { _as3 = value; }
-            }
-            private bool _as3;
+        	public bool AS3 { get; set; }
 
-            public bool ES
-            {
-                get { return _es; }
-                set { _es = value; }
-            }
-            private bool _es;
+        	public bool ES { get; set; }
 
-            public bool Debug
-            {
-                get { return _debug; }
-                set { _debug = value; }
-            }
-            private bool _debug;
+        	public bool Debug { get; set; }
 
-            public bool Optimize
-            {
-                get { return _optimize; }
-                set { _optimize = value; }
-            }
-            private bool _optimize;
+        	public bool Optimize { get; set; }
 
-            public bool PrintFlowGraph
-            {
-                get { return _printFlowGraph; }
-                set { _printFlowGraph = value; }
-            }
-            private bool _printFlowGraph;
+        	public bool PrintFlowGraph { get; set; }
 
-            public bool WriteIntermediateCode
-            {
-                get { return _writeIntermediateCode; }
-                set { _writeIntermediateCode = value; }
-            }
-            private bool _writeIntermediateCode;
+        	public bool WriteIntermediateCode { get; set; }
 
-            public bool WriteAssemblyCode
-            {
-                get { return _writeAssemblyCode; }
-                set { _writeAssemblyCode = value; }
-            }
-            private bool _writeAssemblyCode;
+        	public bool WriteAssemblyCode { get; set; }
 
-            public bool WriteParseTree
-            {
-                get { return _writeParseTree; }
-                set { _writeParseTree = value; }
-            }
-            private bool _writeParseTree;
+        	public bool WriteParseTree { get; set; }
 
-            public bool EmitMetadata
-            {
-                get { return _emitMetadata; }
-                set { _emitMetadata = value; }
-            }
-            private bool _emitMetadata;
+        	public bool EmitMetadata { get; set; }
 
-            public bool Strict
-            {
-                get { return _strict; }
-                set { _strict = value; }
-            }
-            private bool _strict;
+        	public bool Strict { get; set; }
 
-            public bool Sanity
-            {
-                get { return _sanity; }
-                set { _sanity = value; }
-            }
-            private bool _sanity;
+        	public bool Sanity { get; set; }
 
-            public string LogFile
-            {
-                get { return _log; }
-                set { _log = value; }
-            }
-            private string _log;
+        	public string LogFile { get; set; }
 
-            public string Language
-            {
-                get { return _lang; }
-                set { _lang = value; }
-            }
-            private string _lang;
+        	public string Language { get; set; }
 
-            public string AvmPlusPath
-            {
-                get { return _avmPlusPath; }
-                set { _avmPlusPath = value; }
-            }
-            private string _avmPlusPath;
+        	public string AvmPlusPath { get; set; }
 
-            public string[] Imports
-            {
-                get { return _imports; }
-                set { _imports = value; }
-            }
-            private string[] _imports;
+        	public string[] Imports { get; set; }
 
-            public override string ToString()
+        	public override string ToString()
             {
                 var sb = new StringBuilder();
-                if (_as3) sb.Append("-AS3 ");
-                if (_es) sb.Append("-ES3 ");
-                if (_debug) sb.Append("-d ");
-                if (_printFlowGraph) sb.Append("-f ");
-                if (_writeIntermediateCode) sb.Append("-i ");
-                if (_writeAssemblyCode) sb.Append("-m ");
-                if (_emitMetadata) sb.Append("-md ");
-                if (_strict) sb.Append("-strict ");
-                if (_sanity) sb.Append("-sanity ");
-                if (_optimize) sb.Append("-optimize ");
+                if (AS3) sb.Append("-AS3 ");
+                if (ES) sb.Append("-ES3 ");
+                if (Debug) sb.Append("-d ");
+                if (PrintFlowGraph) sb.Append("-f ");
+                if (WriteIntermediateCode) sb.Append("-i ");
+                if (WriteAssemblyCode) sb.Append("-m ");
+                if (EmitMetadata) sb.Append("-md ");
+                if (Strict) sb.Append("-strict ");
+                if (Sanity) sb.Append("-sanity ");
+                if (Optimize) sb.Append("-optimize ");
 
-                if (!string.IsNullOrEmpty(_log))
+                if (!string.IsNullOrEmpty(LogFile))
                 {
-                    sb.AppendFormat("-log {0} ", _log);
+                    sb.AppendFormat("-log {0} ", LogFile);
                 }
 
-                if (!string.IsNullOrEmpty(_lang))
+                if (!string.IsNullOrEmpty(Language))
                 {
-                    sb.AppendFormat("-language {0} ", _lang);
+                    sb.AppendFormat("-language {0} ", Language);
                 }
 
-                if (_imports != null)
+                if (Imports != null)
                 {
-                    foreach (var import in _imports)
+                    foreach (var import in Imports)
                     {
                         sb.AppendFormat("-import {0} ", import);
                     }
                 }
 
-                if (!string.IsNullOrEmpty(_avmPlusPath))
+                if (!string.IsNullOrEmpty(AvmPlusPath))
                 {
-                    sb.AppendFormat("-exe {0} ", _avmPlusPath);
+                    sb.AppendFormat("-exe {0} ", AvmPlusPath);
                 }
 
                 return sb.ToString();

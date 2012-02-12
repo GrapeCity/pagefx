@@ -227,14 +227,9 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public bool IsInitializer
-        {
-            get { return _isInitializer; }
-            set { _isInitializer = value; }
-        }
-        bool _isInitializer;
+    	public bool IsInitializer { get; set; }
 
-        public bool IsEntryPoint
+    	public bool IsEntryPoint
         {
             get
             {

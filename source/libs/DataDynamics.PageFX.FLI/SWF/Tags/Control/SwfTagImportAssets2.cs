@@ -8,21 +8,11 @@ namespace DataDynamics.PageFX.FLI.SWF
     [SwfTag(SwfTagCode.ImportAssets2)]
     public class SwfTagImportAssets2 : SwfTagImportAssets
     {
-        public byte MajorVersion
-        {
-            get { return _majorVersion; }
-            set { _majorVersion = value; }
-        }
-        private byte _majorVersion;
+    	public byte MajorVersion { get; set; }
 
-        public byte MinorVersion
-        {
-            get { return _minorVersion; }
-            set { _minorVersion = value; }
-        }
-        private byte _minorVersion;
+    	public byte MinorVersion { get; set; }
 
-        public override SwfTagCode TagCode
+    	public override SwfTagCode TagCode
         {
             get { return SwfTagCode.ImportAssets2; }
         }

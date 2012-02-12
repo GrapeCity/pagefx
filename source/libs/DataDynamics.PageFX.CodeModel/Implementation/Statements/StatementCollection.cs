@@ -4,31 +4,26 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public class StatementCollection : List<IStatement>, IStatementCollection
+    public sealed class StatementCollection : List<IStatement>, IStatementCollection
     {
         #region Constructors
         public StatementCollection()
         {
-            _parent = null;
+            ParentStatement = null;
         }
 
         public StatementCollection(IStatement parent)
         {
-            _parent = parent;
+            ParentStatement = parent;
         }
         #endregion
 
-        /// <summary>
-        /// Gets or sets parent statement
-        /// </summary>
-        public IStatement ParentStatement
-        {
-            get { return _parent; }
-            set { _parent = value; }
-        }
-        private IStatement _parent;
+    	/// <summary>
+    	/// Gets or sets parent statement
+    	/// </summary>
+    	public IStatement ParentStatement { get; set; }
 
-        public new void Add(IStatement st)
+    	public new void Add(IStatement st)
         {
             st.ParentStatement = this;
             base.Add(st);
@@ -43,6 +38,7 @@ namespace DataDynamics.PageFX.CodeModel
         }
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Statement; }
@@ -53,16 +49,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Convert(this); }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        private object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)
@@ -97,26 +89,21 @@ namespace DataDynamics.PageFX.CodeModel
         #region Constructors
         public StatementCollection()
         {
-            _parent = null;
+            ParentStatement = null;
         }
 
         public StatementCollection(IStatement parent)
         {
-            _parent = parent;
+            ParentStatement = parent;
         }
         #endregion
 
-        /// <summary>
-        /// Gets or sets parent statement
-        /// </summary>
-        public IStatement ParentStatement
-        {
-            get { return _parent; }
-            set { _parent = value; }
-        }
-        private IStatement _parent;
+    	/// <summary>
+    	/// Gets or sets parent statement
+    	/// </summary>
+    	public IStatement ParentStatement { get; set; }
 
-        public new void Add(T st)
+    	public new void Add(T st)
         {
             st.ParentStatement = this;
             base.Add(st);
@@ -131,6 +118,7 @@ namespace DataDynamics.PageFX.CodeModel
         }
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Statement; }
@@ -141,16 +129,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return CMHelper.Convert(this); }
         }
 
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        private object _tag;
-        #endregion
+    	/// <summary>
+    	/// Gets or sets user defined data assotiated with this object.
+    	/// </summary>
+    	public object Tag { get; set; }
+
+    	#endregion
 
         #region IFormattable Members
         public string ToString(string format, IFormatProvider formatProvider)
