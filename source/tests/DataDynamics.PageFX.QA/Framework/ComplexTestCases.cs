@@ -61,10 +61,7 @@ namespace DataDynamics.PageFX
                     list.Add(tc);
                 }
             }
-            list.Sort(delegate(TestCase x, TestCase y)
-                          {
-                              return x.FullName.CompareTo(y.FullName);
-                          });
+            list.Sort((x, y) => x.FullName.CompareTo(y.FullName));
             return list;
         }
 

@@ -357,10 +357,12 @@ namespace DataDynamics.PageFX.CodeModel
     public sealed class GenericParameterCollection : List<IGenericParameter>, IGenericParameterCollection
     {
         #region IGenericParameterCollection Members
+
         public IGenericParameter this[string name]
         {
-            get { return Find(delegate(IGenericParameter p) { return p.Name == name; }); }
+            get { return Find(p => p.Name == name); }
         }
+
         #endregion
 
         #region ICodeNode Members

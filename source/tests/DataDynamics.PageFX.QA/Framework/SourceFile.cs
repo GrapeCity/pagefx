@@ -31,17 +31,11 @@ namespace DataDynamics.PageFX
         }
     }
 
-    public class SourceFileList : List<SourceFile>
+    public sealed class SourceFileList : List<SourceFile>
     {
         public SourceFile this[string name]
         {
-            get
-            {
-                return Find(delegate(SourceFile f)
-                                {
-                                    return f.Name == name;
-                                });
-            }
+            get { return Find(f => f.Name == name); }
         }
 
         public void Add(string name, string text)

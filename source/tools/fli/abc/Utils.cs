@@ -185,11 +185,7 @@ namespace abc
                 string name = kidElem.GetAttribute("name");
                 if (string.IsNullOrEmpty(name)) continue;
 
-                var kid = Algorithms.Find(ctrl.Controls,
-                                                       delegate(Control c)
-                                                       {
-                                                           return c.Name == name;
-                                                       });
+                var kid = Algorithms.Find(ctrl.Controls, (Control c) => c.Name == name);
                 if (kid != null)
                 {
                     LoadState(kid, kidElem);

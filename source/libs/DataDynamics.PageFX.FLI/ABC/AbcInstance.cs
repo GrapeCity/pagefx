@@ -1272,11 +1272,11 @@ namespace DataDynamics.PageFX.FLI.ABC
     #endregion
 
     #region class InstanceNamespaceCollection
-    public class InstanceNamespaceCollection : List<InstanceNamespace>
+    public sealed class InstanceNamespaceCollection : List<InstanceNamespace>
     {
         public InstanceNamespace this[string name]
         {
-            get { return Find(delegate(InstanceNamespace ns) { return ns.Name == name; }); }
+            get { return Find(ns => ns.Name == name); }
         }
 
         public void Dump(TextWriter writer)

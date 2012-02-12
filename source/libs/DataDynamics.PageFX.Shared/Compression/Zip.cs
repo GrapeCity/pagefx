@@ -17,9 +17,9 @@ namespace DataDynamics
 
         public static byte[] Uncompress(byte[] data)
         {
-            Stream unzip = Uncompress(new MemoryStream(data));
-            byte[] buf = new byte[4096];
-            MemoryStream ms = new MemoryStream();
+            var unzip = Uncompress(new MemoryStream(data));
+            var buf = new byte[4096];
+            var ms = new MemoryStream();
             int size;
             while ((size = unzip.Read(buf, 0, buf.Length)) > 0)
             {
@@ -37,8 +37,8 @@ namespace DataDynamics
 
         public static byte[] Compress(byte[] data)
         {
-            MemoryStream ms = new MemoryStream(data.Length);
-            Stream zip = Compress(ms);
+            var ms = new MemoryStream(data.Length);
+            var zip = Compress(ms);
             zip.Write(data, 0, data.Length);
             zip.Flush();
             zip.Close();
@@ -65,16 +65,12 @@ namespace DataDynamics
 
         public static Stream Extract(ZipFile zip, string name)
         {
-            return Extract(zip,
-                           delegate(ZipEntry e)
-                               {
-                                   return e.Name == name;
-                               });
+            return Extract(zip, e => e.Name == name);
         }
 
         private static MemoryStream ToMemoryStream(Stream s)
         {
-            MemoryStream ms = new MemoryStream();
+            var ms = new MemoryStream();
             CopyTo(s, ms);
             ms.Flush();
             ms.Position = 0;
@@ -84,7 +80,7 @@ namespace DataDynamics
         private static void CopyTo(Stream input, Stream output)
         {
             int len;
-            byte[] buf = new byte[512];
+            var buf = new byte[512];
             while ((len = input.Read(buf, 0, buf.Length)) > 0)
                 output.Write(buf, 0, len);
         }

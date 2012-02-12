@@ -23,11 +23,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         /// </summary>
         public SwfMovie()
         {
-            _displayList = new HashedList<ushort, ISwfDisplayObject>(
-                delegate(ISwfDisplayObject obj)
-                    {
-                        return obj.Depth;
-                    });
+            _displayList = new HashedList<ushort, ISwfDisplayObject>(obj => obj.Depth);
         }
 
         /// <summary>
@@ -477,11 +473,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (_autoFrameCount)
             {
-                _frameCount = (ushort)Logic.CountOf(_tags,
-                                                    delegate(SwfTag tag)
-                                                        {
-                                                            return tag.TagCode == SwfTagCode.ShowFrame;
-                                                        });
+                _frameCount = (ushort)Logic.CountOf(_tags, tag => tag.TagCode == SwfTagCode.ShowFrame);
             }
 
             var writer = new SwfWriter();

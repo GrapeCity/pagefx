@@ -19,27 +19,14 @@ namespace DataDynamics.PageFX.CodeModel
     	#endregion
 
         #region IManifestFile Members
-        public string Location
-        {
-            get { return _location; }
-            set { _location = value; }
-        }
-        private string _location;
 
-        public byte[] HashValue
-        {
-            get { return _hashValue; }
-            set { _hashValue = value; }
-        }
-        private byte[] _hashValue;
+    	public string Location { get; set; }
 
-        public bool ContainsMetadata
-        {
-            get { return _containsMetadata; }
-            set { _containsMetadata = value; }
-        }
-        private bool _containsMetadata;
-        #endregion
+    	public byte[] HashValue { get; set; }
+
+    	public bool ContainsMetadata { get; set; }
+
+    	#endregion
     }
 
     public sealed class ManifestFileCollection : HashedList<string, IManifestFile>, IManifestFileCollection

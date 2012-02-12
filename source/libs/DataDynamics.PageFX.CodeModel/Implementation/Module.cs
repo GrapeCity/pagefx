@@ -146,9 +146,11 @@ namespace DataDynamics.PageFX.CodeModel
         }
 
         #region IModuleCollection Members
+
         public new void Sort()
         {
-            Sort(delegate(IModule x, IModule y) { return x.Name.CompareTo(y.Name); });
+            Sort((x, y) => x.Name.CompareTo(y.Name));
+
             foreach (var m in this)
             {
                 m.Namespaces.Sort();
@@ -158,11 +160,9 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IModule this[string name]
         {
-            get
-            {
-                return Find(delegate(IModule m) { return m.Name == name; });
-            }
+            get { return Find(m => m.Name == name); }
         }
+
         #endregion
 
         #region ICodeNode Members

@@ -33,7 +33,7 @@ namespace DataDynamics.Collections.Tests
 
             int[] arr1 = {0, 1, 2, 3, 11, 12, 13, 21, 22, 23, 31, 32, 33};
             int i = 0;
-            foreach (var node in new DeepEnumerator<Node>(root, delegate(Node n) { return n.Kids; }, true, true))
+            foreach (var node in new DeepEnumerator<Node>(root, n => n.Kids, true, true))
             {
                 Assert.AreEqual(arr1[i], node.Value, "#1:" + i);
                 ++i;
@@ -41,7 +41,7 @@ namespace DataDynamics.Collections.Tests
 
             int[] arr2 = { 11, 12, 13, 1, 21, 22, 23, 2, 31, 32, 33, 3, 0 };
             i = 0;
-            foreach (var node in new DeepEnumerator<Node>(root, delegate(Node n) { return n.Kids; }, true, false))
+            foreach (var node in new DeepEnumerator<Node>(root, n => n.Kids, true, false))
             {
                 Assert.AreEqual(arr2[i], node.Value, "#2:" + i);
                 ++i;
@@ -58,7 +58,7 @@ namespace DataDynamics.Collections.Tests
 
             int[] arr1 = { 0, 1, 11, 12, 13, 2, 21, 22, 23, 3, 31, 32, 33 };
             int i = 0;
-            foreach (var node in Algorithms.IterateTreeTopDown(root, delegate(Node n) { return n.Kids; }))
+            foreach (var node in Algorithms.IterateTreeTopDown(root, n => n.Kids))
             {
                 Assert.AreEqual(arr1[i], node.Value, "#" + i);
                 ++i;
@@ -75,7 +75,7 @@ namespace DataDynamics.Collections.Tests
 
             int[] arr = { 11, 12, 13, 1, 21, 22, 23, 2, 31, 32, 33, 3, 0 };
             int i = 0;
-            foreach (var node in Algorithms.IterateTreeBottomUp(root, delegate(Node n) { return n.Kids; }))
+            foreach (var node in Algorithms.IterateTreeBottomUp(root, n => n.Kids))
             {
                 Assert.AreEqual(arr[i], node.Value, "#" + i);
                 ++i;

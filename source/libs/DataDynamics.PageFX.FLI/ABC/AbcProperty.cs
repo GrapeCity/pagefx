@@ -110,14 +110,11 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
     }
 
-    public class PropertyCollection : List<AbcProperty>
+    public sealed class PropertyCollection : List<AbcProperty>
     {
         public AbcProperty this[AbcMultiname name]
         {
-            get
-            {
-                return Find(delegate(AbcProperty p) { return p.Name == name; });
-            }
+            get { return Find(p => p.Name == name); }
         }
 
         public void Dump(TextWriter writer, string tab, bool isStatic)

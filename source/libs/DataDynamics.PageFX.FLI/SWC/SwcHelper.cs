@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using DataDynamics.Compression.Zip;
 using DataDynamics.PageFX.FLI.ABC;
@@ -28,11 +29,7 @@ namespace DataDynamics.PageFX.FLI.SWC
 
         public static Stream ExtractLibrary(ZipFile zip)
         {
-            return Zip.Extract(zip,
-                               delegate(ZipEntry e)
-                                   {
-                                       return string.Compare(e.Name, SwcFile.LIBRARY_SWF, true) == 0;
-                                   });
+            return Zip.Extract(zip, e => string.Compare(e.Name, SwcFile.LIBRARY_SWF, StringComparison.CurrentCultureIgnoreCase) == 0);
         }
     }
 }

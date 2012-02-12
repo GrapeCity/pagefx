@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public void Sort()
         {
-            _list.Sort(delegate(IType x, IType y) { return x.Name.CompareTo(y.Name); });
+            _list.Sort((x, y) => x.Name.CompareTo(y.Name));
         }
 
         public bool Contains(IType type)

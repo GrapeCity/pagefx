@@ -86,13 +86,12 @@ namespace DataDynamics.PageFX.CodeModel
     public class VariableCollection : List<IVariable>, IVariableCollection
     {
         #region IVariableCollection Members
+
         public IVariable this[string name]
         {
-            get
-            {
-                return Find(delegate(IVariable v) { return v.Name == name; });
-            }
+            get { return Find(v => v.Name == name); }
         }
+
         #endregion
 
         #region ICodeNode Members

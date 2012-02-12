@@ -128,7 +128,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public void Sort()
         {
-            _list.Sort(delegate(INamespace x, INamespace y) { return x.Name.CompareTo(y.Name); });
+            _list.Sort((x, y) => x.Name.CompareTo(y.Name));
+
             foreach (var ns in _list)
             {
                 ns.Types.Sort();

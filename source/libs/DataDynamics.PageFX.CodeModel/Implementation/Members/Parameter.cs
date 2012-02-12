@@ -182,16 +182,15 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// List of <see cref="Parameter"/>s.
     /// </summary>
-    public class ParameterCollection : List<IParameter>, IParameterCollection
+    public sealed class ParameterCollection : List<IParameter>, IParameterCollection
     {
         #region IParamaterCollection Members
+
         public IParameter this[string name]
         {
-            get
-            {
-                return Find(delegate(IParameter p) { return p.Name == name; });
-            }
+            get { return Find(p => p.Name == name); }
         }
+
         #endregion
 
         #region ICodeNode Members

@@ -477,13 +477,9 @@ namespace DataDynamics.PageFX.FLI.ABC
             //param values
             if (HasOptionalParams)
             {
-                int optional_count = Logic.CountOf(_params,
-                                                   delegate(AbcParameter p)
-                                                       {
-                                                           return p.IsOptional;
-                                                       });
+                int optionalCount = Logic.CountOf(_params, p => p.IsOptional);
 
-                writer.WriteUIntEncoded((uint)optional_count);
+                writer.WriteUIntEncoded((uint)optionalCount);
                 for (int i = 0; i < param_count; ++i)
                 {
                     var p = _params[i];

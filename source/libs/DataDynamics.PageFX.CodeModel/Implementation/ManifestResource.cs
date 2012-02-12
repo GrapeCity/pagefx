@@ -36,16 +36,12 @@ namespace DataDynamics.PageFX.CodeModel
     public class ManifestResourceCollection : List<IManifestResource>, IManifestResourceCollection
     {
         #region IManifestResourceCollection Members
+
         public IManifestResource this[string name]
         {
-            get
-            {
-                return Find(delegate(IManifestResource r)
-                                {
-                                    return r.Name == name;
-                                });
-            }
+            get { return Find(r => r.Name == name); }
         }
+
         #endregion
     }
 }

@@ -206,13 +206,12 @@ namespace DataDynamics.PageFX.CodeModel
     public sealed class AssemblyCollection : List<IAssembly>, IAssemblyCollection
     {
         #region IAssemblyCollection Members
+
         public IAssembly this[IAssemblyReference r]
         {
-            get
-            {
-                return Find(a => r.Equals(a));
-            }
+            get { return Find(r.Equals); }
         }
+
         #endregion
     }
 }

@@ -19,13 +19,10 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (_mapver == null)
             {
-                _mapver = SwfHelper.GetEnumAttributeMap<SwfTagCode, int, SwfVersionAttribute>(
-                    delegate(SwfVersionAttribute attr) { return attr.Version; });
+                _mapver = SwfHelper.GetEnumAttributeMap<SwfTagCode, int, SwfVersionAttribute>(attr => attr.Version);
             }
             int result;
-            if (_mapver.TryGetValue(code, out result))
-                return result;
-            return -1;
+        	return _mapver.TryGetValue(code, out result) ? result : -1;
         }
 
         private static Dictionary<SwfTagCode, SwfTagCategory> _mapcat;
@@ -34,13 +31,10 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (_mapcat == null)
             {
-                _mapcat = SwfHelper.GetEnumAttributeMap<SwfTagCode, SwfTagCategory, SwfTagCategoryAttribute>(
-                    delegate(SwfTagCategoryAttribute attr) { return attr.Category; });
+                _mapcat = SwfHelper.GetEnumAttributeMap<SwfTagCode, SwfTagCategory, SwfTagCategoryAttribute>(attr => attr.Category);
             }
             SwfTagCategory result;
-            if (_mapcat.TryGetValue(code, out result))
-                return result;
-            return SwfTagCategory.Unknown;
+            return _mapcat.TryGetValue(code, out result) ? result : SwfTagCategory.Unknown;
         }
 
         public static bool IsCharacter(SwfTagCode code)

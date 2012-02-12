@@ -527,10 +527,7 @@ namespace DataDynamics.PageFX.FLI
             {
                 var h = Algorithms.Find(
                     tb.Handlers,
-                    delegate(ISehHandlerBlock seh)
-                        {
-                            return seh.Tag is SehHandlerTag;
-                        });
+                    seh => seh.Tag is SehHandlerTag);
 
                 Debug.Assert(h != null);
 

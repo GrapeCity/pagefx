@@ -852,16 +852,15 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 if (Algorithms.IsEmpty(members)) return;
 
                 var sets = new List<MemberSet>();
-                foreach (ITypeMember m in members)
+                foreach (var m in members)
                 {
                     var v = m.Visibility;
-                    int i = Algorithms.IndexOf(sets, delegate(MemberSet x) { return x.Visibility == v; });
+                    int i = Algorithms.IndexOf(sets, x => x.Visibility == v);
                     MemberSet set;
                     if (i < 0)
                     {
-                        set = new MemberSet();
-                        set.Visibility = v;
-                        sets.Add(set);
+                    	set = new MemberSet {Visibility = v};
+                    	sets.Add(set);
                     }
                     else
                     {
@@ -870,10 +869,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                     set.List.Add(m);
                 }
 
-                sets.Sort(delegate(MemberSet x, MemberSet y)
-                              {
-                                  return x.Visibility - y.Visibility;
-                              });
+                sets.Sort((x, y) => x.Visibility - y.Visibility);
 
                 bool eol = false;
                 foreach (var set in sets)
