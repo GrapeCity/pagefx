@@ -173,20 +173,15 @@ namespace DataDynamics.PageFX
                 return _cs;
             }
         }
-        static List<TestCase> _cs;
+        private static List<TestCase> _cs;
 
         /// <summary>
         /// Gets all VB test cases.
         /// </summary>
         public static List<TestCase> VB
         {
-            get
-            {
-                if (_vb == null)
-                    _vb = Load(".vb");
-                return _vb;
-            }
+            get { return _vb ?? (_vb = Load(".vb")); }
         }
-        static List<TestCase> _vb;
+        private static List<TestCase> _vb;
     }
 }

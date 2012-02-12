@@ -78,13 +78,10 @@ namespace DataDynamics
             var s = new StringBuilder();
             for (int i = 0; i < parts.Length; ++i)
             {
-                string part = parts[i];
-                if (string.IsNullOrEmpty(part))
-                    s.Append("_");
-                else
-                    s.Append(Recap(part));
+            	string part = parts[i];
+            	s.Append(string.IsNullOrEmpty(part) ? "_" : Recap(part));
             }
-            return s.ToString();
+        	return s.ToString();
         }
 
         public static string MakeFullName(string ns, string name)

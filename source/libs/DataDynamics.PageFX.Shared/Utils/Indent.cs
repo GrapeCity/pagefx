@@ -34,14 +34,7 @@ namespace DataDynamics
         public static Indent operator --(Indent i)
         {
             int n = i._value.Length - i._one.Length;
-            if (n > 0)
-            {
-                i._value = i._value.Substring(0, n);
-            }
-            else
-            {
-                i._value = "";
-            }
+            i._value = n > 0 ? i._value.Substring(0, n) : "";
             return i;
         }
 

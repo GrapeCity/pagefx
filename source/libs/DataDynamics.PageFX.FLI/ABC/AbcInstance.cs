@@ -966,47 +966,27 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Internal Properties
         internal List<AbcInstance> Implementations
         {
-            get
-            {
-                if (_impls == null)
-                    _impls = new List<AbcInstance>();
-                return _impls;
-            }
+            get { return _impls ?? (_impls = new List<AbcInstance>()); }
         }
-        List<AbcInstance> _impls;
+        private List<AbcInstance> _impls;
 
         internal List<AbcInstance> Implements
         {
-            get
-            {
-                if (_ifaces == null)
-                    _ifaces = new List<AbcInstance>();
-                return _ifaces;
-            }
+            get { return _ifaces ?? (_ifaces = new List<AbcInstance>()); }
         }
-        List<AbcInstance> _ifaces;
+        private List<AbcInstance> _ifaces;
 
         internal List<AbcInstance> Subclasses
         {
-            get
-            {
-                if (_subclasses == null)
-                    _subclasses = new List<AbcInstance>();
-                return _subclasses;
-            }
+            get { return _subclasses ?? (_subclasses = new List<AbcInstance>()); }
         }
-        List<AbcInstance> _subclasses;
+        private List<AbcInstance> _subclasses;
 
         internal List<AbcFile> ImportAbcFiles
         {
-            get
-            {
-                if (_importAbcFiles == null)
-                    _importAbcFiles = new List<AbcFile>();
-                return _importAbcFiles;
-            }
+            get { return _importAbcFiles ?? (_importAbcFiles = new List<AbcFile>()); }
         }
-        List<AbcFile> _importAbcFiles;
+        private List<AbcFile> _importAbcFiles;
 
         public AbcScript Script
         {

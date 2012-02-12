@@ -165,11 +165,8 @@ namespace DataDynamics.PageFX.CodeModel
             var op = Algorithms.Find(ops, m => IsCastOperator(m, source, target));
             if (check && op == null)
             {
-                if (type == source)
-                    op = FindCastOperator(target, source, target, false);
-                else
-                    op = FindCastOperator(source, source, target, false);
-                if (op != null) return op;
+            	op = FindCastOperator(type == source ? target : source, source, target, false);
+            	if (op != null) return op;
                 throw new InvalidOperationException("Unable to find cast operator");
             }
             return op;

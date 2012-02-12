@@ -238,28 +238,23 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region NUnitFrameworkAssembly
-        IType FindNUnitType(string fullname)
+        private IType FindNUnitType(string fullname)
         {
             return TypeHelper.FindType(NUnitFrameworkAssembly, fullname);
         }
 
-        IAssembly NUnitFrameworkAssembly
+		private IAssembly NUnitFrameworkAssembly
         {
-            get
-            {
-                if (_asmNUnitFramework == null)
-                    _asmNUnitFramework = FindNUnitFramework();
-                return _asmNUnitFramework;
-            }
+            get { return _asmNUnitFramework ?? (_asmNUnitFramework = FindNUnitFramework()); }
         }
-        IAssembly _asmNUnitFramework;
+        private IAssembly _asmNUnitFramework;
 
-        static bool IsNUnitFramework(IAssembly asm)
+		private static bool IsNUnitFramework(IAssembly asm)
         {
             return string.Compare(asm.Name, "NUnit.Framework", true) == 0;
         }
 
-        IAssembly FindNUnitFramework()
+		private IAssembly FindNUnitFramework()
         {
             return Algorithms.Find(AssemblyHelper.GetReferences(_assembly, true), IsNUnitFramework);
         }

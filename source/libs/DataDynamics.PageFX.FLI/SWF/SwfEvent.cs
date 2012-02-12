@@ -37,12 +37,8 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public static SwfEventFlags ReadFlags(SwfReader reader)
         {
-            uint v;
-            int ver = reader.FileVersion;
-            if (ver >= 6)
-                v = reader.ReadUInt32();
-            else
-                v = reader.ReadUInt16();
+        	int ver = reader.FileVersion;
+            uint v = ver >= 6 ? reader.ReadUInt32() : reader.ReadUInt16();
             return ToFlags(v, ver);
         }
 
@@ -105,11 +101,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             int ver = reader.FileVersion;
             while (true)
             {
-                uint flags;
-                if (ver >= 6)
-                    flags = reader.ReadUInt32();
-                else
-                    flags = reader.ReadUInt16();
+            	uint flags = ver >= 6 ? reader.ReadUInt32() : reader.ReadUInt16();
                 if (flags == 0) break;
                 var e = new SwfEvent();
                 e.Flags = SwfEvent.ToFlags(flags, ver);

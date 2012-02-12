@@ -902,14 +902,9 @@ namespace DataDynamics.PageFX.CLI.CFG
         
         public IEnumerable<Node> ReachableNodes
         {
-            get
-            {
-                if (_reachableNodes == null)
-                    _reachableNodes = new List<Node>(GetReachableNodesCore());
-                return _reachableNodes;
-            }
+            get { return _reachableNodes ?? (_reachableNodes = new List<Node>(GetReachableNodesCore())); }
         }
-        List<Node> _reachableNodes;
+        private List<Node> _reachableNodes;
 
         IEnumerable<Node> GetReachableNodesCore()
         {
@@ -985,22 +980,13 @@ namespace DataDynamics.PageFX.CLI.CFG
         /// </summary>
         public ILStream Code
         {
-            get
-            {
-                if (_code == null)
-                    _code = new ILStream();
-                return _code;
-            }
+            get { return _code ?? (_code = new ILStream()); }
         }
-        ILStream _code;
+        private ILStream _code;
 
         public int CodeLength
         {
-            get
-            {
-                if (_code == null) return 0;
-                return _code.Count;
-            }
+            get { return _code == null ? 0 : _code.Count; }
         }
 
         /// <summary>
@@ -1008,12 +994,7 @@ namespace DataDynamics.PageFX.CLI.CFG
         /// </summary>
         public Instruction EntryPoint
         {
-            get
-            {
-                if (_code.Count > 0)
-                    return _code[0];
-                return null;
-            }
+            get { return _code.Count > 0 ? _code[0] : null; }
         }
 
         /// <summary>
@@ -1021,13 +1002,7 @@ namespace DataDynamics.PageFX.CLI.CFG
         /// </summary>
         public Instruction ExitPoint
         {
-            get
-            {
-                int i = _code.Count - 1;
-                if (i >= 0)
-                    return _code[i];
-                return null;
-            }
+            get { return _code.Count > 0 ? _code[_code.Count - 1] : null; }
         }
 
         public int EntryIndex
@@ -1191,14 +1166,9 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public List<IInstruction> TranslatedCode
         {
-            get
-            {
-                if (_translatedCode == null)
-                    _translatedCode = new List<IInstruction>();
-                return _translatedCode;
-            }
+            get { return _translatedCode ?? (_translatedCode = new List<IInstruction>()); }
         }
-        List<IInstruction> _translatedCode;
+        private List<IInstruction> _translatedCode;
 
         public int TranslatedEntryIndex { get; set; }
 

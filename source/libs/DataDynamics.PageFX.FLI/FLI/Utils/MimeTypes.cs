@@ -225,18 +225,15 @@ namespace DataDynamics.PageFX.FLI
             Image.Jpg
         };
 
-        static string[] SupportedTypes
+        private static string[] SupportedTypes
         {
-            get 
-            {
-                if (_supportedTypes == null)
-                {
-                    _supportedTypes = new List<string>(Algorithms.Merge(BitmapTypes, JpegTypes)).ToArray();
-                }
-                return _supportedTypes;
+            get
+			{
+            	return _supportedTypes ??
+            	       (_supportedTypes = new List<string>(Algorithms.Merge(BitmapTypes, JpegTypes)).ToArray());
             }
         }
-        static string[] _supportedTypes;
+        private static string[] _supportedTypes;
 
         public static bool IsBitmap(string type)
         {

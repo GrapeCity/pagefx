@@ -1109,8 +1109,7 @@ namespace DataDynamics.PageFX.FLI.IL
             }
             else
             {
-                if (value) Add(InstructionCode.Pushtrue);
-                else Add(InstructionCode.Pushfalse);
+            	Add(value ? InstructionCode.Pushtrue : InstructionCode.Pushfalse);
             }
         }
 
@@ -1927,10 +1926,7 @@ namespace DataDynamics.PageFX.FLI.IL
             }
 
             int n = method.Parameters.Count;
-            if (method.IsVoid)
-                Add(InstructionCode.Callpropvoid, name, n);
-            else
-                Add(InstructionCode.Callproperty, name, n);
+        	Add(method.IsVoid ? InstructionCode.Callpropvoid : InstructionCode.Callproperty, name, n);
         }
 
         public void Call(AbcMultiname name, int argc)
@@ -3136,11 +3132,8 @@ namespace DataDynamics.PageFX.FLI.IL
                     break;
 
                 case BinaryOperator.RightShift:
-                    if (SystemTypes.IsUnsigned(result))
-                        BitOp(result, InstructionCode.Urshift);
-                    else
-                        BitOp(result, InstructionCode.Rshift);
-                    break;
+            		BitOp(result, SystemTypes.IsUnsigned(result) ? InstructionCode.Urshift : InstructionCode.Rshift);
+            		break;
 
                 case BinaryOperator.BitwiseOr:
                     BitOp(result, InstructionCode.Bitor);

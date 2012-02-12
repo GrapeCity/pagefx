@@ -83,17 +83,15 @@ namespace DataDynamics.PageFX.FLI.SWF
             }
             else if (hasMulTerms)
             {
-                if (alpha)
-                    nbits = BitHelper.GetMinBits(q, MulRed, MulGreen, MulBlue, MulAlpha);
-                else
-                    nbits = BitHelper.GetMinBits(q, MulRed, MulGreen, MulBlue);
+            	nbits = alpha
+            	        	? BitHelper.GetMinBits(q, MulRed, MulGreen, MulBlue, MulAlpha)
+            	        	: BitHelper.GetMinBits(q, MulRed, MulGreen, MulBlue);
             }
             else
             {
-                if (alpha)
-                    nbits = BitHelper.GetMinBits(q, AddRed, AddGreen, AddBlue, AddAlpha);
-                else
-                    nbits = BitHelper.GetMinBits(q, AddRed, AddGreen, AddBlue);
+            	nbits = alpha
+            	        	? BitHelper.GetMinBits(q, AddRed, AddGreen, AddBlue, AddAlpha)
+            	        	: BitHelper.GetMinBits(q, AddRed, AddGreen, AddBlue);
             }
             writer.WriteUB((uint)nbits, 4);
 

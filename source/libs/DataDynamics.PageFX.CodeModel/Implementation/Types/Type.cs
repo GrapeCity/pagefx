@@ -141,14 +141,9 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public override string FullName
         {
-            get
-            {
-                if (_fullName == null)
-                    _fullName = FullNameBase + FullNameSuffix;
-                return _fullName;
-            }
+            get { return _fullName ?? (_fullName = FullNameBase + FullNameSuffix); }
         }
-        string _fullName;
+        private string _fullName;
 
         protected virtual string FullNameBase
         {
@@ -275,14 +270,9 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public ITypeCollection Types
         {
-            get
-            {
-                if (_types == null)
-                    _types = new TypeCollection(this);
-                return _types;
-            }
+            get { return _types ?? (_types = new TypeCollection(this)); }
         }
-        TypeCollection _types;
+        private TypeCollection _types;
         #endregion
 
         #region IFormattable Members
@@ -325,6 +315,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region Names
+
         /// <summary>
         /// Gets c# keyword used for this type
         /// </summary>
@@ -354,30 +345,23 @@ namespace DataDynamics.PageFX.CodeModel
             {
                 if (_sigName == null)
                 {
-                    string k = CSharpKeyword;
-                    if (!string.IsNullOrEmpty(k))
-                        _sigName = k;
-                    else
-                        _sigName = GenericType.ToDisplayName(FullName, true);
+                	string k = CSharpKeyword;
+                	_sigName = !string.IsNullOrEmpty(k) ? k : GenericType.ToDisplayName(FullName, true);
                 }
-                return _sigName;
+            	return _sigName;
             }
         }
-        string _sigName;
+        private string _sigName;
 
         /// <summary>
         /// Name with names of enclosing types.
         /// </summary>
         public virtual string NestedName
         {
-            get
-            {
-                if (_nestedName == null)
-                    _nestedName = GetName(this, false);
-                return _nestedName;
-            }
+            get { return _nestedName ?? (_nestedName = GetName(this, false)); }
         }
-        string _nestedName;
+        private string _nestedName;
+
         #endregion
 
         #region XmlSerialization

@@ -200,10 +200,7 @@ namespace DataDynamics
                     }
 
                     string value = ReadSimpleValue(reader, ref c, pairEnd);
-                    if (string.IsNullOrEmpty(value))
-                        dic.Add(name, "");
-                    else
-                        dic.Add(name, value);
+                	dic.Add(name, string.IsNullOrEmpty(value) ? "" : value);
                 }
                 else //key has no value
                 {

@@ -1073,15 +1073,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (attr.Owner is IAssembly)
                 Write("assembly: ");
 
-            string name;
-            if (attr.Type == null)
-            {
-                name = attr.TypeName;
-            }
-            else
-            {
-                name = GetFullName(attr.Type);
-            }
+        	string name = attr.Type == null ? attr.TypeName : GetFullName(attr.Type);
             if (name.EndsWith(SuffixAttribute))
                 name = name.Substring(0, name.Length - SuffixAttribute.Length);
             Write(name);
@@ -1194,14 +1186,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
             else
             {
-                if (p.HasParams)
-                {
-                    Write("object[] ");
-                }
-                else
-                {
-                    Write("object ");
-                }
+            	Write(p.HasParams ? "object[] " : "object ");
             }
             Write(p.Name);
         }
@@ -1435,10 +1420,8 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             for (int i = 0; i < n; ++i)
             {
                 var p = method.Parameters[i];
-                string name = p.Name;
-                if (name == null)
-                    name = "";
-                WriteXmlComment(p.Documentation, "param", "name", name);
+                string name = p.Name ?? "";
+            	WriteXmlComment(p.Documentation, "param", "name", name);
             }
 
             WriteXmlComment(method.ReturnDocumentation, "returns");
@@ -1523,8 +1506,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 {
                     if (!IsPrivate(m.Visibility))
                     {
-                        if (m.IsNewSlot) WriteKeyword(Keyword.Virtual);
-                        else WriteKeyword(Keyword.Override);
+                    	WriteKeyword(m.IsNewSlot ? Keyword.Virtual : Keyword.Override);
                     }
                     return;
                 }

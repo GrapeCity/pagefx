@@ -672,11 +672,7 @@ namespace DataDynamics.PageFX.CLI
             }
             else
             {
-                type = CreateSystemType(ns, name);
-                if (type == null)
-                {
-                    type = new UserDefinedType(TypeKind.Class);
-                }
+                type = CreateSystemType(ns, name) ?? new UserDefinedType(TypeKind.Class);
             }
             SetTypeFlags(type, flags);
             return type;
@@ -2257,16 +2253,14 @@ namespace DataDynamics.PageFX.CLI
             return true;
         }
 
-        IType ResolveTypeSig(MdbTypeSignature sig, IType contextType)
+        private IType ResolveTypeSig(MdbTypeSignature sig, IType contextType)
         {
-            if (_resolvingMethodSpec)
+        	if (_resolvingMethodSpec)
                 return ResolveTypeSignature(sig, contextType, CurrentMethod);
-            if (sig.ResolvedType == null)
-                sig.ResolvedType = ResolveTypeSignature(sig, contextType, CurrentMethod);
-            return sig.ResolvedType;
+        	return sig.ResolvedType ?? (sig.ResolvedType = ResolveTypeSignature(sig, contextType, CurrentMethod));
         }
 
-        ITypeMember GetMemberRef(IType type, string name, MdbSignature sig)
+    	private ITypeMember GetMemberRef(IType type, string name, MdbSignature sig)
         {
             if (type == null) return null;
 

@@ -726,11 +726,9 @@ namespace DataDynamics.PageFX.FLI.ABC
 
                 case AbcTraitKind.Class:
                     {
-                        var instance = Instances.Find(from.Name);
-                        if (instance == null)
-                            instance = ImportInstance(from.Class.Instance);
+                        var instance = Instances.Find(from.Name) ?? ImportInstance(from.Class.Instance);
 
-                        trait.Class = instance.Class;
+                    	trait.Class = instance.Class;
                         //trait.SlotID = trait.SlotID;
                     }
                     break;

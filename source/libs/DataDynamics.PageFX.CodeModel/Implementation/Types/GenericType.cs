@@ -263,13 +263,11 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                if (_displayName == null)
-                    _displayName = ToDisplayName(FullName)
-                        + Format(_genericParams, TypeNameKind.DisplayName, false);
-                return _displayName;
+            	return _displayName ?? (_displayName = ToDisplayName(FullName)
+            	                                       + Format(_genericParams, TypeNameKind.DisplayName, false));
             }
         }
-        string _displayName;
+        private string _displayName;
 
         internal static string ToDisplayName(string name)
         {

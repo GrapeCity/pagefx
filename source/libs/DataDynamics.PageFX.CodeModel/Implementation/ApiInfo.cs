@@ -142,11 +142,9 @@ namespace DataDynamics.PageFX.CodeModel
                     if (typeFilter != null && !typeFilter(type))
                         continue;
                     
-                    string nsname = type.Namespace;
-                    if (nsname == null)
-                        nsname = "";
+                    string nsname = type.Namespace ?? "";
 
-                    var ns = _nscache[nsname] as Namespace;
+                	var ns = _nscache[nsname] as Namespace;
                     if (ns == null)
                     {
                         ns = new Namespace {Name = nsname};
@@ -399,10 +397,7 @@ namespace DataDynamics.PageFX.CodeModel
 
                 if (!method.IsConstructor)
                 {
-                    if (method.Type == null)
-                        writer.WriteAttributeString("returntype", "void");
-                    else
-                        writer.WriteAttributeString("returntype", method.Type.FullName);
+                	writer.WriteAttributeString("returntype", method.Type == null ? "void" : method.Type.FullName);
                 }
 
                 WriteParameters(writer, method.Parameters);

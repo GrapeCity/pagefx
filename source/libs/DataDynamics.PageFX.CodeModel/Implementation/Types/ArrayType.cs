@@ -157,14 +157,9 @@ namespace DataDynamics.PageFX.CodeModel
         #region Runtime Methods
         public IMethodCollection Constructors
         {
-            get
-            {
-                if (_ctors == null)
-                    _ctors = new MethodCollection(this);
-                return _ctors;
-            }
+            get { return _ctors ?? (_ctors = new MethodCollection(this)); }
         }
-        MethodCollection _ctors;
+        private MethodCollection _ctors;
 
         public IMethod FindConstructor(IType[] types)
         {

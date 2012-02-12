@@ -94,14 +94,9 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public IVariableCollection LocalVariables
         {
-            get
-            {
-                if (_vars == null)
-                    _vars = new VariableCollection();
-                return _vars;
-            }
+            get { return _vars ?? (_vars = new VariableCollection()); }
         }
-        IVariableCollection _vars;
+        private IVariableCollection _vars;
 
         public IStatementCollection Statements { get; set; }
 

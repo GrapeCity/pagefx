@@ -35,11 +35,8 @@ namespace System
                         first = false;
                     }
                     if (sep) writer.Write(separator);
-                    if (stringer != null)
-                        writer.Write(stringer(item));
-                    else
-                        writer.Write(item.ToString());
-                    sep = true;
+                	writer.Write(stringer != null ? stringer(item) : item.ToString());
+                	sep = true;
                 }
                 if (!first) writer.Write(suffix);
             }

@@ -91,12 +91,7 @@ namespace DataDynamics.PageFX
 
         public static TestSuite Root
         {
-            get
-            {
-                if (_root == null)
-                    _root = new TestSuite("", "");
-                return _root;
-            }
+            get { return _root ?? (_root = new TestSuite("", "")); }
         }
         private static TestSuite _root;
 

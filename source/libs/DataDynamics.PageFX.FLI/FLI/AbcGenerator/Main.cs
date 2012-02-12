@@ -118,14 +118,9 @@ namespace DataDynamics.PageFX.FLI
 
         public AbcNamespace RootAbcNamespace
         {
-            get 
-            {
-                if (_nsroot == null)
-                    _nsroot = _abc.DefinePackage(RootNamespace);
-                return _nsroot;
-            }
+            get { return _nsroot ?? (_nsroot = _abc.DefinePackage(RootNamespace)); }
         }
-        AbcNamespace _nsroot;
+        private AbcNamespace _nsroot;
         #endregion
 
         #region Generate - Entry Point

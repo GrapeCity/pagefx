@@ -235,14 +235,9 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcString EmptyString
         {
-            get 
-            {
-                if (_emptyString == null)
-                    _emptyString = DefineString("");
-                return _emptyString;
-            }
+            get { return _emptyString ?? (_emptyString = DefineString("")); }
         }
-        AbcString _emptyString;
+        private AbcString _emptyString;
 
         AbcString DefineString2(string value)
         {
@@ -256,14 +251,9 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Frequently Used Names in ABC generation
         public AbcMultiname RuntimeQName
         {
-            get
-            {
-                if (_mnRuntimeQName == null)
-                    _mnRuntimeQName = DefineMultiname(AbcConstKind.RTQNameL);
-                return _mnRuntimeQName;
-            }
+            get { return _mnRuntimeQName ?? (_mnRuntimeQName = DefineMultiname(AbcConstKind.RTQNameL)); }
         }
-        AbcMultiname _mnRuntimeQName;
+        private AbcMultiname _mnRuntimeQName;
 
         public AbcMultiname NameArrayIndexer
         {
@@ -277,7 +267,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 return _mnArrayIndexer;
             }
         }
-        AbcMultiname _mnArrayIndexer;
+        private AbcMultiname _mnArrayIndexer;
         #endregion
 
         #region Known Namespaces

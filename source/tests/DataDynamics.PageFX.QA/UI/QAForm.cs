@@ -532,10 +532,7 @@ namespace DataDynamics.PageFX
                           };
             if (_testDriver == TestDriver.AbcSerialization || _testDriver == TestDriver.SwfSerialization)
             {
-                if (_testDriver == TestDriver.SwfSerialization)
-                    tds.OutputFormat = "swf";
-                else
-                    tds.OutputFormat = "abc";
+                tds.OutputFormat = _testDriver == TestDriver.SwfSerialization ? "swf" : "abc";
 
                 tds.SetDecompiledCode = false;
                 TestEngine.RunTestCase(tc, tds);
@@ -756,10 +753,7 @@ namespace DataDynamics.PageFX
                 node.BackColor = Color.Yellow;
             else if (tc.IsFinished)
             {
-                if (tc.HasErrors)
-                    node.BackColor = Color.Red;
-                else
-                    node.BackColor = Color.Lime;
+                node.BackColor = tc.HasErrors ? Color.Red : Color.Lime;
             }
             //testCases.Invalidate();
         }

@@ -101,11 +101,8 @@ namespace DataDynamics.PageFX.CLI.CFG
         public override string ToString(bool full)
         {
             var sb = new StringBuilder();
-            if (string.IsNullOrEmpty(Name))
-                sb.Append("SEQ");
-            else
-                sb.Append(Name);
-            if (full)
+        	sb.Append(string.IsNullOrEmpty(Name) ? "SEQ" : Name);
+        	if (full)
             {
                 sb.Append("(");
                 int n = _kids.Count;

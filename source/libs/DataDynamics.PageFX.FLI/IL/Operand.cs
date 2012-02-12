@@ -209,13 +209,10 @@ namespace DataDynamics.PageFX.FLI.IL
                          };
             if (Value != null)
             {
-                var c = Value as ICloneable;
-                if (c != null)
-                    op.Value = c.Clone();
-                else
-                    op.Value = Value;
+            	var c = Value as ICloneable;
+            	op.Value = c != null ? c.Clone() : Value;
             }
-            return op;
+        	return op;
         }
 
         object ICloneable.Clone()

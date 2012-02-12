@@ -39,7 +39,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
     #endregion
 
     #region class ArrayShape
-    public class ArrayShape
+    public sealed class ArrayShape
     {
         public int Rank;
         public int[] Sizes;
@@ -49,18 +49,14 @@ namespace DataDynamics.PageFX.CLI.Metadata
         {
             get
             {
-                if (_single == null)
-                {
-                    _single = new ArrayShape
-                    {
-                        LoBounds = new int[0],
-                        Sizes = new int[0]
-                    };
-                }
-                return _single;
+            	return _single ?? (_single = new ArrayShape
+            	                             	{
+            	                             		LoBounds = new int[0],
+            	                             		Sizes = new int[0]
+            	                             	});
             }
         }
-        static ArrayShape _single;
+        private static ArrayShape _single;
 
         public int GetLowBound(int index)
         {
@@ -313,10 +309,9 @@ namespace DataDynamics.PageFX.CLI.Metadata
         public override string ToString()
         {
             var s = new StringBuilder();
-            if (IsProperty) s.Append("PROPERTY ");
-            else s.Append("METHOD ");
+        	s.Append(IsProperty ? "PROPERTY " : "METHOD ");
 
-            if (GenericParamCount > 0)
+        	if (GenericParamCount > 0)
             {
                 s.Append("GENERIC<");
                 s.Append(GenericParamCount);
@@ -433,7 +428,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
 
         static MdbIndex DecodeTypeDefOrRef(BufferedBinaryReader reader)
         {
-            uint token = (uint)reader.ReadPackedInt();
+            var token = (uint)reader.ReadPackedInt();
             return MdbCodedIndex.TypeDefOrRef.Decode(token);
         }
 

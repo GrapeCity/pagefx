@@ -4,7 +4,7 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public static class LanguageInfrastructure
     {
-        static readonly List<ILanguageInfrastructure> _lis = new List<ILanguageInfrastructure>();
+        private static readonly List<ILanguageInfrastructure> _lis = new List<ILanguageInfrastructure>();
 
         public static void Register(ILanguageInfrastructure li)
         {
@@ -18,24 +18,14 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static ILanguageInfrastructure CLI
         {
-            get
-            {
-                if (_cli == null)
-                    _cli = Find("CLI");
-                return _cli;
-            }
+            get { return _cli ?? (_cli = Find("CLI")); }
         }
-        static ILanguageInfrastructure _cli;
+        private static ILanguageInfrastructure _cli;
 
         public static ILanguageInfrastructure FLI
         {
-            get
-            {
-                if (_fli == null)
-                    _fli = Find("FLI");
-                return _fli;
-            }
+            get { return _fli ?? (_fli = Find("FLI")); }
         }
-        static ILanguageInfrastructure _fli;
+        private static ILanguageInfrastructure _fli;
     }
 }

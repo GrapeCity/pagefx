@@ -77,6 +77,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region IType Members
+
         /// <summary>
         /// Gets the assembly in which the type is declared.
         /// </summary>
@@ -279,14 +280,9 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string Key
         {
-            get
-            {
-                if (_key == null)
-                    _key = Name + ID;
-                return _key;
-            }
+            get { return _key ?? (_key = Name + ID); }
         }
-        string _key;
+        private string _key;
 
         /// <summary>
         /// Gets name of the type used in signatures.
@@ -303,6 +299,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return Name; }
         }
+
         #endregion
 
         #region ICodeNode Members

@@ -28,10 +28,7 @@ namespace DataDynamics.PageFX
         {
             if (_config != null) return;
             string path = GetConfigPath();
-            if (File.Exists(path))
-                _config = new SimpleConfig(path);
-            else
-                _config = new SimpleConfig();
+            _config = File.Exists(path) ? new SimpleConfig(path) : new SimpleConfig();
         }
 
         internal static void Save()

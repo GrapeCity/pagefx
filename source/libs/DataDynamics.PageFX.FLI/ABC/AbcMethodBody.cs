@@ -109,14 +109,9 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         public ILStream IL
         {
-            get
-            {
-                if (_il == null)
-                    _il = new ILStream();
-                return _il;
-            }
+            get { return _il ?? (_il = new ILStream()); }
         }
-        ILStream _il;
+        private ILStream _il;
 
         public AbcExceptionHandlerCollection Exceptions
         {

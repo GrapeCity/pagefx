@@ -130,11 +130,8 @@ namespace DataDynamics.PageFX.CLI.CFG
         public override string ToString(bool full)
         {
             var sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(Name))
-                sb.Append(Name);
-            else
-                sb.Append(LoopType.ToString());
-            if (full)
+        	sb.Append(!string.IsNullOrEmpty(Name) ? Name : LoopType.ToString());
+        	if (full)
             {
                 sb.Append("(");
                 bool comma = false;

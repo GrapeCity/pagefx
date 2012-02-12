@@ -29,10 +29,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             _name = name;
             _version = version;
-            if (culture == null)
-                _culture = CultureInfo.InvariantCulture;
-            else
-                _culture = culture;
+            _culture = culture ?? CultureInfo.InvariantCulture;
             _publicKeyToken = publicKeyToken;
         }
 
@@ -84,19 +81,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public CultureInfo Culture
         {
-            get
-            {
-                if (_culture == null)
-                    return CultureInfo.InvariantCulture;
-                return _culture;
-            }
-            set
-            {
-                if (value == null)
-                    _culture = CultureInfo.InvariantCulture;
-                else
-                    _culture = value;
-            }
+            get { return _culture ?? CultureInfo.InvariantCulture; }
+    		set { _culture = value ?? CultureInfo.InvariantCulture; }
         }
         private CultureInfo _culture;
 
@@ -131,11 +117,8 @@ namespace DataDynamics.PageFX.CodeModel
                 s.Append('.');
                 s.Append(Version.Revision);
                 s.Append(", Culture=");
-                if (Culture == CultureInfo.InvariantCulture)
-                    s.Append("neutral");
-                else
-                    s.Append(Culture.Name);
-                if (PublicKeyToken != null && PublicKeyToken.Length > 0)
+            	s.Append(Culture == CultureInfo.InvariantCulture ? "neutral" : Culture.Name);
+            	if (PublicKeyToken != null && PublicKeyToken.Length > 0)
                 {
                     s.Append(", PublicKeyToken=");
                     for (int i = 0; i < PublicKeyToken.Length; i++)
@@ -161,26 +144,25 @@ namespace DataDynamics.PageFX.CodeModel
                         _version = new Version(pair[1].Trim());
                     if (pair[0] == "Culture")
                     {
-                        string cultureName = pair[1].Trim();
-                        if (cultureName.ToLower() == "neutral")
-                            _culture = CultureInfo.InvariantCulture;
-                        else
-                            _culture = new CultureInfo(cultureName);
+                    	string cultureName = pair[1].Trim();
+                    	_culture = cultureName.ToLower() == "neutral" ? CultureInfo.InvariantCulture : new CultureInfo(cultureName);
                     }
-                    if (pair[0] == "PublicKeyToken")
+                	if (pair[0] == "PublicKeyToken")
                     {
                         string keyToken = pair[1].Trim().ToLower();
-                        if (keyToken == "null")
-                            _publicKeyToken = null;
-                        else
-                        {
-                            _publicKeyToken = new byte[keyToken.Length / 2];
-                            for (int j = 0; j < _publicKeyToken.Length; j++)
-                            {
-                                string byteStr = keyToken.Substring(j * 2, 2);
-                                _publicKeyToken[j] = byte.Parse(byteStr, NumberStyles.HexNumber);
-                            }
-                        }
+						if (keyToken == "null")
+						{
+							_publicKeyToken = null;
+						}
+						else
+						{
+							_publicKeyToken = new byte[keyToken.Length / 2];
+							for (int j = 0; j < _publicKeyToken.Length; j++)
+							{
+								string byteStr = keyToken.Substring(j * 2, 2);
+								_publicKeyToken[j] = byte.Parse(byteStr, NumberStyles.HexNumber);
+							}
+						}
                     }
                 }
             }

@@ -178,34 +178,19 @@ namespace DataDynamics.PageFX.CodeModel
 
         public string FullName
         {
-            get
-            {
-                if (_fullName == null)
-                    _fullName = EvalName(TypeNameKind.FullName, TypeNameKind.FullName);
-                return _fullName;
-            }
+            get { return _fullName ?? (_fullName = EvalName(TypeNameKind.FullName, TypeNameKind.FullName)); }
         }
-        string _fullName;
+        private string _fullName;
 
         public TypeKind TypeKind
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.TypeKind;
-                return TypeKind.Class;
-            }
+            get { return _genericType != null ? _genericType.TypeKind : TypeKind.Class; }
         }
 
         public bool IsAbstract
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsAbstract;
-                return false;
-            }
-            set
+            get { return _genericType != null && _genericType.IsAbstract; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.IsAbstract = value;
@@ -214,13 +199,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsSealed
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsSealed;
-                return false;
-            }
-            set
+            get { return _genericType != null && _genericType.IsSealed; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.IsSealed = value;
@@ -229,13 +209,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsBeforeFieldInit
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsBeforeFieldInit;
-                return true;
-            }
-            set
+            get { return _genericType == null || _genericType.IsBeforeFieldInit; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.IsBeforeFieldInit = value;
@@ -247,16 +222,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsCompilerGenerated
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsCompilerGenerated;
-                return false;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return _genericType != null && _genericType.IsCompilerGenerated; }
+        	set { throw new NotSupportedException(); }
         }
 
         public bool IsInterface
@@ -295,18 +262,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IType BaseType
         {
-            get
-            {
-                if (_baseType == null)
-                    _baseType = GenericType.Resolve(this, _genericType.BaseType);
-                return _baseType;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return _baseType ?? (_baseType = GenericType.Resolve(this, _genericType.BaseType)); }
+        	set { throw new NotSupportedException(); }
         }
-        IType _baseType;
+        private IType _baseType;
 
         public ITypeCollection Interfaces
         {
@@ -327,16 +286,11 @@ namespace DataDynamics.PageFX.CodeModel
                 return _ifaces;
             }
         }
-        ReadOnlyTypeCollection _ifaces;
+        private ReadOnlyTypeCollection _ifaces;
 
         public IType ValueType
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.ValueType;
-                return null;
-            }
+            get { return _genericType != null ? _genericType.ValueType : null; }
         }
 
         public SystemType SystemType
@@ -392,13 +346,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public ClassLayout Layout
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.Layout;
-                return null;
-            }
-            set { throw new NotSupportedException(); }
+            get { return _genericType != null ? _genericType.Layout : null; }
+        	set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -418,6 +367,7 @@ namespace DataDynamics.PageFX.CodeModel
             get { throw new NotSupportedException(); }
             set { throw new NotSupportedException(); }
         }
+
         #endregion
 
         #region Names
@@ -467,7 +417,7 @@ namespace DataDynamics.PageFX.CodeModel
             get { return _key ?? (_key = EvalName(TypeNameKind.Key, TypeNameKind.Key)); }
         	internal set { _key = value; }
         }
-        string _key;
+        private string _key;
 
         /// <summary>
         /// Gets name of the type used in signatures.
@@ -476,7 +426,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _sigName ?? (_sigName = EvalName(TypeNameKind.SigName, TypeNameKind.SigName)); }
         }
-        string _sigName;
+        private string _sigName;
 
         /// <summary>
         /// Name with names of enclosing types.
@@ -485,7 +435,8 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _nestedName ?? (_nestedName = EvalName(TypeNameKind.NestedName, TypeNameKind.FullName)); }
         }
-        string _nestedName;
+        private string _nestedName;
+
         #endregion
 
         #region ITypeMember Members
@@ -506,14 +457,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public IModule Module
         {
-            get
-            {
-            	return _genericType != null ? _genericType.Module : null;
-            }
-        	set
-            {
-                throw new NotSupportedException();
-            }
+            get { return _genericType != null ? _genericType.Module : null; }
+        	set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -529,7 +474,7 @@ namespace DataDynamics.PageFX.CodeModel
             get { return _name ?? (_name = EvalName(TypeNameKind.Name, TypeNameKind.FullName)); }
         	set { throw new NotSupportedException(); }
         }
-        string _name;
+        private string _name;
 
         public string DisplayName
         {
@@ -550,13 +495,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public Visibility Visibility
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.Visibility;
-                return Visibility.Public;
-            }
-            set
+            get { return _genericType != null ? _genericType.Visibility : Visibility.Public; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.Visibility = value;
@@ -569,22 +509,14 @@ namespace DataDynamics.PageFX.CodeModel
             {
                 if (DeclaringType != null && !DeclaringType.IsVisible)
                     return false;
-
-                if (_genericType != null)
-                    return _genericType.IsVisible;
-                return true;
+                return _genericType == null || _genericType.IsVisible;
             }
         }
 
         public bool IsStatic
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsStatic;
-                return false;
-            }
-            set
+            get { return _genericType != null && _genericType.IsStatic; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.IsStatic = value;
@@ -593,13 +525,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsSpecialName
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsSpecialName;
-                return false;
-            }
-            set
+            get { return _genericType != null && _genericType.IsSpecialName; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.IsSpecialName = value;
@@ -608,13 +535,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsRuntimeSpecialName
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.IsRuntimeSpecialName;
-                return false;
-            }
-            set
+            get { return _genericType != null && _genericType.IsRuntimeSpecialName; }
+        	set
             {
                 if (_genericType != null)
                     _genericType.IsRuntimeSpecialName = value;
@@ -629,9 +551,11 @@ namespace DataDynamics.PageFX.CodeModel
             get { return -1; }
             set { throw new NotSupportedException(); }
         }
+
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Type; }
@@ -639,47 +563,45 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.ChildNodes;
-                return null;
-            }
+            get { return _genericType != null ? _genericType.ChildNodes : null; }
         }
 
         /// <summary>
         /// Gets or sets user defined data assotiated with this object.
         /// </summary>
         public object Tag { get; set; }
+
         #endregion
 
         #region IFormattable Members
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return FullName;
         }
+
         #endregion
 
         #region ITypeContainer Members
+
         public ITypeCollection Types
         {
-            get
-            {
-                if (_genericType != null)
-                    return _genericType.Types;
-                return null;
-            }
+            get { return _genericType != null ? _genericType.Types : null; }
         }
+
         #endregion
 
         #region IDocumentationProvider Members
+
         /// <summary>
         /// Gets or sets documentation of this member
         /// </summary>
         public string Documentation { get; set; }
+
         #endregion
 
         #region Object Override Members
+
         public override bool Equals(object obj)
         {
             return CMHelper.AreEquals(this, obj as IType);
@@ -694,6 +616,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             return ToString(null, null);
         }
+
         #endregion
     }
 }

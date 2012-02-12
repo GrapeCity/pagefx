@@ -577,9 +577,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 return false;
             }
             string s = obj as string;
-            if (s != null)
-                return Equals(s);
-            return false;
+            return s != null && Equals(s);
         }
 
         public static string MakeFullName(string ns, string name)
@@ -600,15 +598,8 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (format == "s")
             {
                 string fullname = FullName;
-                if (string.IsNullOrEmpty(fullname))
-                {
-                    sb.Append(_kind.ToString());
-                }
-                else
-                {
-                    sb.Append(fullname);
-                }
-                return sb.ToString();
+            	sb.Append(string.IsNullOrEmpty(fullname) ? _kind.ToString() : fullname);
+            	return sb.ToString();
             }
 
             if (IsQName)

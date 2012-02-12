@@ -73,12 +73,7 @@ namespace DataDynamics.PageFX
         /// </summary>
         public static TestCaseCollection CSharp
         {
-            get
-            {
-                if (_cs == null)
-                    _cs = Load(".cs");
-                return _cs;
-            }
+            get { return _cs ?? (_cs = Load(".cs")); }
         }
         private static TestCaseCollection _cs;
     }

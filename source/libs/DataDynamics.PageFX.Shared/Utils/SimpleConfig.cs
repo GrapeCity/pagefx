@@ -124,18 +124,11 @@ namespace DataDynamics.PageFX
 
         void DecKey()
         {
-            int i = m_key.LastIndexOf('.');
-            if (i >= 0)
-            {
-                m_key = m_key.Substring(0, i);
-            }
-            else
-            {
-                m_key = "";
-            }
+        	int i = m_key.LastIndexOf('.');
+        	m_key = i >= 0 ? m_key.Substring(0, i) : "";
         }
 
-        void SetValue(string value)
+    	void SetValue(string value)
         {
             this[m_key] = value;
         }

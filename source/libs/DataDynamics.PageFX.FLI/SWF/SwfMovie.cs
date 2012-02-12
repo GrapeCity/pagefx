@@ -393,16 +393,13 @@ namespace DataDynamics.PageFX.FLI.SWF
         #endregion
 
         #region Graphics
+
         public SwfGraphics Graphics
         {
-            get
-            {
-                if (_graphics == null)
-                    _graphics = new SwfGraphics(this);
-                return _graphics;
-            }
+            get { return _graphics ?? (_graphics = new SwfGraphics(this)); }
         }
         private SwfGraphics _graphics;
+
         #endregion
 
         #region IO
@@ -522,12 +519,9 @@ namespace DataDynamics.PageFX.FLI.SWF
             bool compress = _allowCompression && _version >= MinVersionSupportedComression;
 
             //write header
-            if (compress)
-                writer.Write(SigCWS);
-            else
-                writer.Write(SigFWS);
+        	writer.Write(compress ? SigCWS : SigFWS);
 
-            writer.WriteUInt8((byte)_version); //file version
+        	writer.WriteUInt8((byte)_version); //file version
 
             //NOTE: Comment below is from SWF specification.
             //The FileLength field is the total length of the SWF file, including the header. If this is an

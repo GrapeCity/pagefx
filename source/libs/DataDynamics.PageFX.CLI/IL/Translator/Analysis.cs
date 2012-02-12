@@ -85,14 +85,7 @@ namespace DataDynamics.PageFX.CLI.IL
 #endif
             var from = e.From;
             var prevStack = from.Stack;
-            if (prevStack != null)
-            {
-                bb.Stack = prevStack.Clone();
-            }
-            else
-            {
-                bb.Stack = new EvalStack();
-            }
+            bb.Stack = prevStack != null ? prevStack.Clone() : new EvalStack();
         }
         #endregion
 
@@ -432,25 +425,20 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region Utils
-        IType ResolveBoxingType(IInstruction instr, IType methodDeclType)
+
+        private IType ResolveBoxingType(IInstruction instr, IType methodDeclType)
         {
-            var type = HasConstrainedPrefix(instr);
-            if (type == null)
-                type = methodDeclType;
-
-            if (IsBoxableType(type))
-                return type;
-
-            return null;
+            var type = HasConstrainedPrefix(instr) ?? methodDeclType;
+        	return IsBoxableType(type) ? type : null;
         }
 
-        bool IsBoxableType(IType type)
+        private bool IsBoxableType(IType type)
         {
             return type != null && type != _declType
                    && TypeService.IsBoxableType(type);
         }
 
-        IType HasConstrainedPrefix(IInstruction instr)
+        private IType HasConstrainedPrefix(IInstruction instr)
         {
             int index = instr.Index - 1;
             if (index < 0) return null;
@@ -460,7 +448,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return null;
         }
 
-        static bool IsDup(Stack<EvalItem> stack, out Instruction dup)
+        private static bool IsDup(Stack<EvalItem> stack, out Instruction dup)
         {
             dup = null;
             if (stack.Count == 0) return false;
@@ -469,6 +457,7 @@ namespace DataDynamics.PageFX.CLI.IL
             if (dup == null) return false;
             return dup.Code == InstructionCode.Dup;
         }
+
         #endregion
     }
 }

@@ -479,16 +479,8 @@ namespace DataDynamics.PageFX.FLI
             var methods =
                 new List<IMethod>(Algorithms.Filter(type.Methods,
                                                     m => m.IsConstructor == ctor && !IsUnsupportedMethod(m)));
-            IType mtype;
 
-            if (ctor)
-            {
-                mtype = CorlibTypes[CorlibTypeId.ConstructorInfo];
-            }
-            else
-            {
-                mtype = CorlibTypes[CorlibTypeId.MethodInfo];
-            }
+        	var mtype = ctor ? CorlibTypes[CorlibTypeId.ConstructorInfo] : CorlibTypes[CorlibTypeId.MethodInfo];
 
             instance = FixInstance(instance);
 

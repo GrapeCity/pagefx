@@ -61,12 +61,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public string Key
         {
-            get
-            {
-                if (key == null)
-                    key = KeyOf(this);
-                return key;
-            }
+            get { return key ?? (key = KeyOf(this)); }
         }
         internal string key;
         #endregion

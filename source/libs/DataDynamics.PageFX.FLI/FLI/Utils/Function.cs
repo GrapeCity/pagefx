@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX
                 return FormatValue(Value);
             }
 
-            static string FormatValue(object v)
+            private static string FormatValue(object v)
             {
                 if (v == null) return "null";
                 if (v is bool) return (bool)v ? "true" : "false";
@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX
                 if (c != null)
                 {
                     double d = c.ToDouble(null);
-                    return d.ToString(FloatFormat);
+                    return d.ToString(CultureInfo.InvariantCulture);
                 }
                 return v.ToString();
             }
@@ -292,19 +292,9 @@ namespace DataDynamics.PageFX
 
         static double ParseDouble(string s)
         {
-            return double.Parse(s, NumberStyles.Float, FloatFormat);
+            return double.Parse(s, NumberStyles.Float, CultureInfo.InvariantCulture);
         }
 
-        static IFormatProvider _floatFormat;
-        public static IFormatProvider FloatFormat
-        {
-            get
-            {
-                if (_floatFormat == null)
-                    _floatFormat = new NumberFormatInfo {NumberDecimalSeparator = "."};
-                return _floatFormat;
-            }
-        }
-        #endregion
+    	#endregion
     }
 }

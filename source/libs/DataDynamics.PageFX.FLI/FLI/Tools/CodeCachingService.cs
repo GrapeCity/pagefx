@@ -1104,14 +1104,11 @@ namespace DataDynamics.PageFX.FLI
                         throw new NotImplementedException();
 
                     case OperandType.ExceptionIndex:
-                        {
-                            var h = op.Value as AbcExceptionHandler;
-                            if (h != null)
-                                writer.WriteInt32(h.Index);
-                            else
-                                writer.WriteInt32(op.ToInt32());
-                        }
-                        break;
+                		{
+                			var h = op.Value as AbcExceptionHandler;
+                			writer.WriteInt32(h != null ? h.Index : op.ToInt32());
+                		}
+                		break;
 
                     case OperandType.BranchTargets:
                         {

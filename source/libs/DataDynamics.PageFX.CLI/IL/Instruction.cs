@@ -480,25 +480,15 @@ namespace DataDynamics.PageFX.CLI.IL
         //stack to insert code to code to begin call or to begin store of static field
         public Stack BeginStack
         {
-            get
-            {
-                if (_beginStack == null)
-                    _beginStack = new Stack();
-                return _beginStack;
-            }
+            get { return _beginStack ?? (_beginStack = new Stack()); }
         }
-        Stack _beginStack;
+        private Stack _beginStack;
 
         public Stack EndStack
         {
-            get
-            {
-                if (_endStack == null)
-                    _endStack = new Stack();
-                return _endStack;
-            }
+            get { return _endStack ?? (_endStack = new Stack()); }
         }
-        Stack _endStack;
+        private Stack _endStack;
 
         public IType BoxingType;
 

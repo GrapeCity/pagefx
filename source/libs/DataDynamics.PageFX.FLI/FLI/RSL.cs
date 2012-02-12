@@ -41,17 +41,7 @@ namespace DataDynamics.PageFX.FLI
 
 		public string[] PolicyFiles
 		{
-			get
-			{
-				if (_policyFiles == null)
-				{
-					if (string.IsNullOrEmpty(PolicyFile))
-						_policyFiles = new[] {""};
-					else
-						_policyFiles = new[] {PolicyFile};
-				}
-				return _policyFiles;
-			}
+			get { return _policyFiles ?? (_policyFiles = string.IsNullOrEmpty(PolicyFile) ? new[] {""} : new[] {PolicyFile}); }
 		}
 
 		public bool IsCrossDomain { get; set; }

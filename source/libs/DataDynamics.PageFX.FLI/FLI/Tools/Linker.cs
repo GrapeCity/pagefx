@@ -514,11 +514,9 @@ namespace DataDynamics.PageFX.FLI
 
         AbcFile GetAbcFile(ITypeMember member)
         {
-            var type = member as IType;
-            if (type == null)
-                type = member.DeclaringType;
+            var type = member as IType ?? member.DeclaringType;
 
-            return GetAbcFileCore(type);
+        	return GetAbcFileCore(type);
         }
 
         AbcFile GetAbcFileCore(ICustomAttributeProvider cp)

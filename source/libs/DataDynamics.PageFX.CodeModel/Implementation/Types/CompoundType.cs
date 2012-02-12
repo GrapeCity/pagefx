@@ -7,96 +7,70 @@ namespace DataDynamics.PageFX.CodeModel
     public abstract class CompoundType : ICompoundType
     {
         #region Constructors
-        public CompoundType()
+
+    	protected CompoundType()
         {
         }
 
-        public CompoundType(IType elementType)
+    	protected CompoundType(IType elementType)
         {
             ElementType = elementType;
         }
+
         #endregion
 
         #region ICompoundType Members
-        public IType ElementType
-        {
-            get { return _elementType; }
-            set { _elementType = value; }
-        }
-        IType _elementType;
-        #endregion
+
+    	public IType ElementType { get; set; }
+
+    	#endregion
 
         #region IType Members
         public string Namespace
         {
-            get
+            get { return ElementType != null ? ElementType.Namespace : null; }
+        	set
             {
-                if (_elementType != null)
-                    return _elementType.Namespace;
-                return null;
-            }
-            set
-            {
-                if (_elementType != null)
-                    _elementType.Namespace = value;
+                if (ElementType != null)
+                    ElementType.Namespace = value;
             }
         }
 
         public string FullName
         {
-            get
-            {
-                if (_fullName == null)
-                    _fullName = ElementType.FullName + NameSuffix;
-                return _fullName;
-            }
+            get { return _fullName ?? (_fullName = ElementType.FullName + NameSuffix); }
         }
-        string _fullName;
+        private string _fullName;
 
         public abstract TypeKind TypeKind { get; }
 
         public bool IsAbstract
         {
-            get
+            get { return ElementType != null && ElementType.IsAbstract; }
+        	set
             {
-                if (_elementType != null)
-                    return _elementType.IsAbstract;
-                return false;
-            }
-            set
-            {
-                if (_elementType != null)
-                    _elementType.IsAbstract = value;
+                if (ElementType != null)
+                    ElementType.IsAbstract = value;
             }
         }
 
         public bool IsSealed
         {
-            get
+            get { return ElementType != null && ElementType.IsSealed; }
+        	set
             {
-                if (_elementType != null)
-                    return _elementType.IsSealed;
-                return false;
-            }
-            set
-            {
-                if (_elementType != null)
-                    _elementType.IsSealed = value;
+                if (ElementType != null)
+                    ElementType.IsSealed = value;
             }
         }
 
         public bool IsBeforeFieldInit
         {
-            get
+            get { return ElementType != null && ElementType.IsBeforeFieldInit; }
+        	set
             {
-                if (_elementType != null)
-                    return _elementType.IsBeforeFieldInit;
-                return false;
-            }
-            set
-            {
-                if (_elementType != null)
-                    _elementType.IsBeforeFieldInit = value;
+                if (ElementType != null)
+                    ElementType.IsBeforeFieldInit = value;
             }
         }
 
@@ -105,16 +79,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsCompilerGenerated
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.IsCompilerGenerated;
-                return false;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return ElementType != null && ElementType.IsCompilerGenerated; }
+        	set { throw new NotSupportedException(); }
         }
 
         public bool IsInterface
@@ -147,138 +113,74 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IMethod DeclaringMethod
         {
-            get
+            get { return ElementType != null ? ElementType.DeclaringMethod : null; }
+        	set
             {
-                if (_elementType != null)
-                    return _elementType.DeclaringMethod;
-                return null;
-            }
-            set
-            {
-                if (_elementType != null)
-                    _elementType.DeclaringMethod = value;
+                if (ElementType != null)
+                    ElementType.DeclaringMethod = value;
             }
         }
 
         public virtual IType BaseType
         {
-            get
+            get { return ElementType != null ? ElementType.BaseType : null; }
+        	set
             {
-                if (_elementType != null)
-                    return _elementType.BaseType;
-                return null;
-            }
-            set
-            {
-                if (_elementType != null)
-                    _elementType.BaseType = value;
+                if (ElementType != null)
+                    ElementType.BaseType = value;
             }
         }
 
         public virtual ITypeCollection Interfaces
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Interfaces;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.Interfaces : null; }
         }
 
         public virtual ITypeCollection Types
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Types;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.Types : null; }
         }
 
         public virtual IFieldCollection Fields
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Fields;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.Fields : null; }
         }
 
         public virtual IMethodCollection Methods
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Methods;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.Methods : null; }
         }
 
         public virtual IPropertyCollection Properties
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Properties;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.Properties : null; }
         }
 
         public virtual IEventCollection Events
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Events;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.Events : null; }
         }
 
         public virtual ITypeMemberCollection Members
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Members;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.Members : null; }
         }
 
         public IType ValueType
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.ValueType;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.ValueType : null; }
         }
 
         public SystemType SystemType
         {
-            get
-            {
-                return null;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return null; }
+            set { throw new NotSupportedException(); }
         }
 
         public virtual ClassLayout Layout
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Layout;
-                return null;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return ElementType != null ? ElementType.Layout : null; }
+        	set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -312,28 +214,18 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string Key
         {
-            get
-            {
-                if (_key == null)
-                    _key = ElementType.Key + NameSuffix;
-                return _key;
-            }
+            get { return _key ?? (_key = ElementType.Key + NameSuffix); }
         }
-        string _key;
+        private string _key;
         
         /// <summary>
         /// Gets name of the type used in signatures.
         /// </summary>
         public string SigName
         {
-            get
-            {
-                if (_sigName == null)
-                    _sigName = ElementType.SigName + SigSuffix;
-                return _sigName;
-            }
+            get { return _sigName ?? (_sigName = ElementType.SigName + SigSuffix); }
         }
-        string _sigName;
+        private string _sigName;
 
         protected abstract string SigSuffix { get; }
 
@@ -342,7 +234,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string NestedName
         {
-            get { return _elementType.NestedName + NameSuffix; }
+            get { return ElementType.NestedName + NameSuffix; }
         }
         #endregion
 
@@ -352,12 +244,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public IAssembly Assembly
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Assembly;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.Assembly : null; }
         }
 
         /// <summary>
@@ -365,13 +252,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public IModule Module
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.Module;
-                return null;
-            }
-            set { throw new NotSupportedException(); }
+            get { return ElementType != null ? ElementType.Module : null; }
+        	set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -389,37 +271,21 @@ namespace DataDynamics.PageFX.CodeModel
 
         public string Name
         {
-            get
-            {
-                if (_name == null)
-                    _name = ElementType.Name + NameSuffix;
-                return _name;
-            }
-            set { throw new NotSupportedException(); }
+            get { return _name ?? (_name = ElementType.Name + NameSuffix); }
+        	set { throw new NotSupportedException(); }
         }
-        string _name;
+        private string _name;
 
         public string DisplayName
         {
-            get
-            {
-                if (_displayName == null)
-                    _displayName = ElementType.DisplayName + NameSuffix;
-                return _displayName;
-            }
+            get { return _displayName ?? (_displayName = ElementType.DisplayName + NameSuffix); }
         }
-        string _displayName;
+        private string _displayName;
 
         public IType DeclaringType
         {
-            get
-            {
-                return null;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return null; }
+            set { throw new NotSupportedException(); }
         }
 
         public IType Type
@@ -433,64 +299,39 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public Visibility Visibility
         {
-            get
+            get { return ElementType != null ? ElementType.Visibility : Visibility.Private; }
+        	set
             {
-                if (_elementType != null)
-                    return _elementType.Visibility;
-                return Visibility.Private;
-            }
-            set
-            {
-                if (_elementType != null)
-                    _elementType.Visibility = value;
+                if (ElementType != null)
+                    ElementType.Visibility = value;
             }
         }
 
         public bool IsVisible
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.IsVisible;
-                return false;
-            }
+            get { return ElementType != null && ElementType.IsVisible; }
         }
 
         public bool IsStatic
         {
-            get
+            get { return ElementType != null && ElementType.IsStatic; }
+        	set
             {
-                if (_elementType != null)
-                    return _elementType.IsStatic;
-                return false;
-            }
-            set
-            {
-                if (_elementType != null)
-                    _elementType.IsStatic = value;
+                if (ElementType != null)
+                    ElementType.IsStatic = value;
             }
         }
 
         public bool IsSpecialName
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.IsSpecialName;
-                return false;
-            }
-            set { throw new NotSupportedException(); }
+            get { return ElementType != null && ElementType.IsSpecialName; }
+        	set { throw new NotSupportedException(); }
         }
 
         public bool IsRuntimeSpecialName
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.IsRuntimeSpecialName;
-                return false;
-            }
-            set { throw new NotSupportedException(); }
+            get { return ElementType != null && ElementType.IsRuntimeSpecialName; }
+        	set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -504,18 +345,16 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICustomAttributeProvider Members
+
         public ICustomAttributeCollection CustomAttributes
         {
-            get
-            {
-                if (_elementType != null)
-                    return _elementType.CustomAttributes;
-                return null;
-            }
+            get { return ElementType != null ? ElementType.CustomAttributes : null; }
         }
+
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Type; }
@@ -523,7 +362,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Enumerate(_elementType); }
+            get { return CMHelper.Enumerate(ElementType); }
         }
 
     	/// <summary>
@@ -534,10 +373,12 @@ namespace DataDynamics.PageFX.CodeModel
     	#endregion
 
         #region IFormattable Members
+
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
             return FullName;
         }
+
         #endregion
 
         #region IDocumentationProvider Members
@@ -550,6 +391,7 @@ namespace DataDynamics.PageFX.CodeModel
     	#endregion
 
         #region Object Override Members
+
         public override bool Equals(object obj)
         {
             return CMHelper.AreEquals(this, obj as IType);
@@ -564,6 +406,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             return ToString(null, null);
         }
+
         #endregion
     }
 

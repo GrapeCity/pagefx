@@ -1579,16 +1579,9 @@ namespace DataDynamics.PageFX.CLI.IL
             var type = _instruction.Type;
             var value = PopValue();
 
-            if (TypeService.IsNullableInstance(type))
-            {
-                PushResult(TypeService.GetTypeArg(type, 0));
-            }
-            else
-            {
-                PushResult(type);
-            }
+        	PushResult(TypeService.IsNullableInstance(type) ? TypeService.GetTypeArg(type, 0) : type);
 
-            var code = new Code();
+        	var code = new Code();
 
             var vtype = type;
             if (type.IsEnum)
