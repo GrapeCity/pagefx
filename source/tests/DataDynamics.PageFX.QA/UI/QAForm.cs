@@ -165,11 +165,11 @@ namespace DataDynamics.PageFX
             var names = path.Split('\\', '/');
             TreeNode node = null;
             var parent = list;
-            for (int i = 0; i < names.Length; ++i)
+            foreach (string name in names)
             {
-                node = FindByText(parent, names[i]);
-                if (node == null) return null;
-                parent = node.Nodes;
+            	node = FindByText(parent, name);
+            	if (node == null) return null;
+            	parent = node.Nodes;
             }
             return node;
         }

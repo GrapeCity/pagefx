@@ -183,12 +183,11 @@ namespace DataDynamics.PageFX
         {
             string[] names = key.Split('.');
             XmlElement e = null;
-            for (int i = 0; i < names.Length; ++i)
+            foreach (string name in names)
             {
-                string name = names[i];
-                e = parent[name];
-                if (e == null) return null;
-                parent = e;
+            	e = parent[name];
+            	if (e == null) return null;
+            	parent = e;
             }
             return e;
         }

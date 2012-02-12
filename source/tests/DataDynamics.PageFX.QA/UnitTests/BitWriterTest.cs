@@ -35,9 +35,9 @@ namespace DataDynamics
             int[] codes = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             var ms = new MemoryStream();
             var writer = new BitWriter(ms);
-            for (int i = 0; i < codes.Length; ++i)
-                writer.WriteCode(codes[i], 4);
-            ms.Flush();
+            foreach (int code in codes)
+            	writer.WriteCode(code, 4);
+        	ms.Flush();
             ms.Close();
             byte[] data = { 0x01, 0x23, 0x45, 0x67, 0x89 };
             var actual = ms.ToArray();
@@ -50,10 +50,10 @@ namespace DataDynamics
             int[] codes = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             var ms = new MemoryStream();
             var writer = new BitWriter(ms);
-            for (int i = 0; i < codes.Length; ++i)
+            foreach (int code in codes)
             {
-                writer.WriteCode(codes[i], 4);
-                writer.Align();
+            	writer.WriteCode(code, 4);
+            	writer.Align();
             }
             ms.Flush();
             ms.Close();

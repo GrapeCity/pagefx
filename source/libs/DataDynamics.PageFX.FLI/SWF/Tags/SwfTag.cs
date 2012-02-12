@@ -210,9 +210,9 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (refs != null && refs.Length > 0)
             {
                 writer.WriteStartElement("refs");
-                for (int i = 0; i < refs.Length; ++i)
-                    DumpRef(writer, refs[i]);
-                writer.WriteEndElement();
+                foreach (int id in refs)
+                	DumpRef(writer, id);
+            	writer.WriteEndElement();
             }
         }
 

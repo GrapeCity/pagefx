@@ -528,6 +528,7 @@ namespace DataDynamics.PageFX.FLI
                     throw new InvalidOperationException();
                 if (instance.IsInterface)
                 {
+					//warning: do not use for each since instance.Implementations is modifiable.
                     for (int i = 0; i < instance.Implementations.Count; ++i)
                     {
 #if DEBUG
@@ -551,6 +552,7 @@ namespace DataDynamics.PageFX.FLI
         {
             var type = instance.Type;
             if (type == SystemTypes.Enum) return;
+			//warning: do not use foreach since instance.Subclasses is modifiable collection.
             for (int i = 0; i < instance.Subclasses.Count; ++i)
             {
 #if DEBUG

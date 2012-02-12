@@ -1,4 +1,4 @@
-using System.Text;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {
@@ -92,15 +92,15 @@ namespace DataDynamics.PageFX.CLI.Metadata
         #region Constructors
         internal MdbTable(MdbTableId id, params MdbColumn[] columns)
         {
-            _id = id;
-            for (int i = 0; i < columns.Length; ++i)
-            {
-                var col = columns[i].Clone();
-                col.TableId = id;
-                _columns.Add(col);
-            }
+        	_id = id;
+        	foreach (var col in columns.Select(c => c.Clone()))
+        	{
+        		col.TableId = id;
+        		_columns.Add(col);
+        	}
         }
-        #endregion
+
+    	#endregion
 
         #region Object Overrides
         public override string ToString()

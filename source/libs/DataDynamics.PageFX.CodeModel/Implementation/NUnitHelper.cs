@@ -360,11 +360,10 @@ namespace DataDynamics.PageFX.CodeModel
 
             BeginMain(writer);
 
-            for (int i = 0; i < methods.Count; ++i)
+            foreach (var method in methods)
             {
-                var method = methods[i];
-                writer.WriteLine("Console.WriteLine(\"{0}\");", method);
-                writer.WriteLine("{0}();", method);
+            	writer.WriteLine("Console.WriteLine(\"{0}\");", method);
+            	writer.WriteLine("{0}();", method);
             }
 
             EndMain(writer, options);

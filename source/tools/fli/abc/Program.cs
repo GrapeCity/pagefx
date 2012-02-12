@@ -239,13 +239,13 @@ namespace abc
         static void Test(string path)
         {
             var swf = new SwfMovie(path, SwfTagDecodeOptions.DonotDecodeCharacters);
-            for (int i = 0; i < swf.Tags.Count; ++i)
+            foreach (var t in swf.Tags)
             {
-                var export = swf.Tags[i] as SwfTagExportAssets;
-                if (export != null)
-                {
-                    Algorithms.Shuffle(export.Assets);
-                }
+            	var export = t as SwfTagExportAssets;
+            	if (export != null)
+            	{
+            		Algorithms.Shuffle(export.Assets);
+            	}
             }
             swf.Save(path + ".shuffle.swf");
         }
