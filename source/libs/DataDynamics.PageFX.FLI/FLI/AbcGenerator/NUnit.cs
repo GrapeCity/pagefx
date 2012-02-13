@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
 using DataDynamics.PageFX.CodeModel;
@@ -256,7 +257,7 @@ namespace DataDynamics.PageFX.FLI
 
 		private IAssembly FindNUnitFramework()
         {
-            return Algorithms.Find(AssemblyHelper.GetReferences(_assembly, true), IsNUnitFramework);
+			return AssemblyHelper.GetReferences(_assembly, true).FirstOrDefault(IsNUnitFramework);
         }
         
         #region NUnitTypes & Methods

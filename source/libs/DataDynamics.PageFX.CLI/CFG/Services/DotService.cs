@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using MethodBody=DataDynamics.PageFX.CLI.IL.MethodBody;
 
@@ -118,7 +119,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                 writer.WriteLine("{");
 
                 string label = "CFG";
-                var first = Algorithms.First(graph);
+				var first = graph.FirstOrDefault();
                 if (first != null && first.OwnerBlock != null)
                 {
                     label = first.OwnerBlock.ToString();

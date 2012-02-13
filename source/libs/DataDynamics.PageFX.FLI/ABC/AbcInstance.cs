@@ -174,7 +174,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 if (_superType != null)
                 {
-                    int i = Algorithms.IndexOf(_superType.Subclasses, this);
+					int i = _superType.Subclasses.IndexOf(this);
                     if (i >= 0)
                         _superType.Subclasses.RemoveAt(i);
                 }

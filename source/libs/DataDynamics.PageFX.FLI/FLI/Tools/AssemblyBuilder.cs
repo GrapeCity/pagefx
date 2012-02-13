@@ -303,7 +303,7 @@ namespace DataDynamics.PageFX.FLI
 
         static bool IsBadNameChar(char c)
         {
-            return Algorithms.Contains(BadNameChars, c);
+            return BadNameChars.Contains(c);
         }
 
         private static string ReplaceBadChars(IEnumerable<char> name)
@@ -955,7 +955,7 @@ namespace DataDynamics.PageFX.FLI
 
 		private static ITypeMember FindMember(IType type, string name)
 		{
-			return Algorithms.Find(type.Members, m => m.Name == name);
+			return type.Members.FirstOrDefault(m => m.Name == name);
 		}
 
     	private static bool HasMember(IType type, string name)
@@ -1369,7 +1369,7 @@ namespace DataDynamics.PageFX.FLI
 
             ParamFix pfix = null;
             if (fix != null)
-                pfix = Algorithms.Find(fix, item => item.index == i);
+				pfix = fix.FirstOrDefault(item => item.index == i);
 
             string name = null;
             IType type = null;
@@ -1895,8 +1895,7 @@ namespace DataDynamics.PageFX.FLI
             //TODO: avoid warning about using "new" keyword
             //FIX: This is fix for field and accessor name conflict.
             var instance = trait.Instance;
-            if (Algorithms.Contains(instance.GetAllTraits(),
-                                    t => t != trait && t.Name.NameString == trait.Name.NameString))
+            if (instance.GetAllTraits().Any(t => t != trait && t.Name.NameString == trait.Name.NameString))
             {
                 if (field.IsStatic)
                     field.Name = "st_" + field.Name;
@@ -2126,7 +2125,7 @@ namespace DataDynamics.PageFX.FLI
             LoadFP9();
             var instance = _fp9.Instances[type];
             if (instance == null) return false;
-            return Algorithms.Contains(instance.GetAllTraits(), t => Equals(t.Name, name));
+            return instance.GetAllTraits().Any(t => Equals(t.Name, name));
         }
 
         private float GetTypeFPVersion(AbcMultiname type)

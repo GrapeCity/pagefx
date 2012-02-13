@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace DataDynamics
@@ -43,7 +44,7 @@ namespace DataDynamics
             var list = new List<char>();
             foreach (char c in s)
             {
-                if (Algorithms.IndexOf(invalidChars, c) >= 0)
+                if (invalidChars.Contains(c))
                 {
                     char rc = replacer(c);
                     if (rc != 0)

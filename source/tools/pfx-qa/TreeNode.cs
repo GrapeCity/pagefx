@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace DataDynamics.PageFX
@@ -45,10 +46,7 @@ namespace DataDynamics.PageFX
 
         public TreeNode this[string name]
         {
-            get 
-            {
-                return Algorithms.Find(_kids, k => k.Name == name);
-            }
+            get { return _kids.FirstOrDefault(k => k.Name == name); }
         }
 
         public void Add(TreeNode kid)

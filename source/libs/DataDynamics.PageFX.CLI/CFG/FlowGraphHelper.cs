@@ -59,7 +59,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             Node result = null;
             foreach (var suc in a.Successors)
             {
-                if (Algorithms.Contains(b.Successors, suc))
+                if (b.Successors.Contains(suc))
                 {
                     if (result != null)
                         return null;

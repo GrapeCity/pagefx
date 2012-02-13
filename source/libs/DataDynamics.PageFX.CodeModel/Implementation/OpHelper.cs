@@ -158,7 +158,7 @@ namespace DataDynamics.PageFX.CodeModel
         static IMethod FindCastOperator(IType type, IType source, IType target, bool check)
         {
             var ops = GetCastOperators(type);
-            var op = Algorithms.Find(ops, m => IsCastOperator(m, source, target));
+            var op = ops.FirstOrDefault(m => IsCastOperator(m, source, target));
             if (check && op == null)
             {
             	op = FindCastOperator(type == source ? target : source, source, target, false);
@@ -219,7 +219,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             string opName = GetOpName(op);
             var set = left.Methods[opName];
-            return Algorithms.Find(set, m => IsBinaryOperator(m, op, left, right));
+            return set.FirstOrDefault(m => IsBinaryOperator(m, op, left, right));
         }
 
         static bool IsBinaryOperator(IMethod m, BinaryOperator op, IType left, IType right)
@@ -236,7 +236,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             string opName = GetOpName(op);
             var ops = type.Methods[opName];
-            return Algorithms.Find(ops, m => IsUnaryOperator(m, op, type));
+            return ops.FirstOrDefault(m => IsUnaryOperator(m, op, type));
         }
 
         public static bool IsUnaryOperator(IMethod m, UnaryOperator op, IType type)
@@ -251,7 +251,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             string opName = isTrue ? OpNames.True : OpNames.False;
             var ops = type.Methods[opName];
-            return Algorithms.Find(ops, IsBooleanOperator);
+            return ops.FirstOrDefault(IsBooleanOperator);
         }
 
         static bool IsBooleanOperator(IMethod m)

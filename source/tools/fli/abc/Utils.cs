@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using System.Linq;
 using DataDynamics;
 
 namespace abc
@@ -185,7 +186,7 @@ namespace abc
                 string name = kidElem.GetAttribute("name");
                 if (string.IsNullOrEmpty(name)) continue;
 
-                var kid = Algorithms.Find(ctrl.Controls, (Control c) => c.Name == name);
+                var kid = ctrl.Controls.Cast<Control>().FirstOrDefault(c => c.Name == name);
                 if (kid != null)
                 {
                     LoadState(kid, kidElem);

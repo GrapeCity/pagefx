@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -731,7 +732,7 @@ namespace DataDynamics.PageFX.FLI
                 throw new ArgumentNullException("type");
             if (p == null)
                 throw new ArgumentNullException("p");
-            var m = Algorithms.Find(type.Methods, p);
+        	var m = type.Methods.FirstOrDefault(x => p(x));
             if (m == null)
                 throw new InvalidOperationException("Unable to find method by given predicate");
             return DefineAbcMethod(m);

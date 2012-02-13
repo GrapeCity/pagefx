@@ -19,8 +19,8 @@ namespace DataDynamics.PageFX.CodeModel
         {
             if (ctor == null)
                 throw new ArgumentNullException("ctor");
-            _ctor = ctor;
-            _type = ctor.DeclaringType;
+            Constructor = ctor;
+            Type = ctor.DeclaringType;
         }
 
         public CustomAttribute(IType type)
@@ -54,64 +54,43 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string TypeName
         {
-            get
-            {
-                if (_type != null)
-                    return _type.FullName;
-                return _typeName;
-            }
-            set { _typeName = value; }
+            get { return Type != null ? Type.FullName : _typeName; }
+        	set { _typeName = value; }
         }
-        string _typeName;
+        private string _typeName;
 
-        /// <summary>
-        /// Attribute type
-        /// </summary>
-        public IType Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
-        IType _type;
+    	/// <summary>
+    	/// Attribute type
+    	/// </summary>
+    	public IType Type { get; set; }
 
-        /// <summary>
+    	/// <summary>
         /// Attribute target
         /// </summary>
         public ICustomAttributeProvider Owner { get; set; }
 
-        /// <summary>
-        /// Attribute constructor
-        /// </summary>
-        public IMethod Constructor
-        {
-            get { return _ctor; }
-            set { _ctor = value; }
-        }
-        IMethod _ctor;
+    	/// <summary>
+    	/// Attribute constructor
+    	/// </summary>
+    	public IMethod Constructor { get; set; }
 
-        /// <summary>
+    	/// <summary>
         /// Gets the arguments used in attribute constructor.
         /// </summary>
         public IArgumentCollection Arguments
         {
             get { return _args; }
         }
-        readonly ArgumentCollection _args = new ArgumentCollection();
+        private readonly ArgumentCollection _args = new ArgumentCollection();
 
         public IArgumentCollection FixedArguments
         {
-            get 
-            {
-                return new ArgumentCollection(Algorithms.Filter(_args, a => a.IsFixed));
-            }
+            get { return new ArgumentCollection(_args.Where(a => a.IsFixed)); }
         }
 
         public IArgumentCollection NamedArguments
         {
-            get
-            {
-                return new ArgumentCollection(Algorithms.Filter(_args, a => a.IsNamed));
-            }
+            get { return new ArgumentCollection(_args.Where(a => a.IsNamed)); }
         }
         #endregion
 
@@ -143,7 +122,7 @@ namespace DataDynamics.PageFX.CodeModel
         #region ICloneable Members
         public object Clone()
         {
-        	var attr = new CustomAttribute {_ctor = _ctor, _type = _type, _typeName = _typeName};
+        	var attr = new CustomAttribute {Constructor = Constructor, Type = Type, _typeName = _typeName};
         	foreach (var arg in _args)
             {
                 var arg2 = (IArgument)arg.Clone();
@@ -201,7 +180,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Convert(this); }
+            get { return this.Cast<ICodeNode>(); }
         }
 
     	/// <summary>

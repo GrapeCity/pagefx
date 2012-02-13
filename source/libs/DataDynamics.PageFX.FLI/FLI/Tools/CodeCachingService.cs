@@ -41,28 +41,24 @@ namespace DataDynamics.PageFX.FLI
             var abc = g.Generate(asm);
 
             var total = new List<AbcMethod>(
-                Algorithms.Filter(
-                    abc.Methods,
-                    m =>
-                    {
-                        var sm = m.SourceMethod;
-                        if (sm == null) return false;
-                        return sm.Assembly == asm;
-                    }));
+                abc.Methods.Where(m =>
+                                  	{
+                                  		var sm = m.SourceMethod;
+                                  		if (sm == null) return false;
+                                  		return sm.Assembly == asm;
+                                  	}));
 
             var list = new List<AbcMethod>(
-                Algorithms.Filter(
-                    total,
-                    m =>
-                    {
-                        var sm = m.SourceMethod;
-                        if (sm == null) return false;
-                        if (sm.IsAbstract) return false;
-                        if (sm.IsInternalCall) return false;
-                        if (sm.CodeType != MethodCodeType.IL) return false;
-                        if (HasGenericContext(m)) return false;
-                        return true;
-                    }));
+                total.Where(m =>
+                            	{
+                            		var sm = m.SourceMethod;
+                            		if (sm == null) return false;
+                            		if (sm.IsAbstract) return false;
+                            		if (sm.IsInternalCall) return false;
+                            		if (sm.CodeType != MethodCodeType.IL) return false;
+                            		if (HasGenericContext(m)) return false;
+                            		return true;
+                            	}));
 
             Comparison<AbcMethod> c = (x, y) => GetIdx(x.SourceMethod) - GetIdx(y.SourceMethod);
             list.Sort(c);
@@ -70,7 +66,7 @@ namespace DataDynamics.PageFX.FLI
             Console.WriteLine("ABC Stat:");
             Console.WriteLine("Total: {0}", abc.Methods.Count);
 
-            var cgm = new List<AbcMethod>(Algorithms.Filter(abc.Methods, m => m.SourceMethod == null));
+            var cgm = new List<AbcMethod>(abc.Methods.Where(m => m.SourceMethod == null));
             Console.WriteLine("Compiler Generated: {0}", cgm.Count);
             int n = cgm.Count(m => m.Trait != null);
             Console.WriteLine("  With Trait: {0}", n);

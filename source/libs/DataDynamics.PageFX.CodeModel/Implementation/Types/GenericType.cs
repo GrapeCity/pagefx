@@ -78,11 +78,10 @@ namespace DataDynamics.PageFX.CodeModel
         #region Utils
         public static bool HasGenericParams(IEnumerable<IType> set)
         {
-            if (set == null) return false;
-            return Algorithms.TrueAny(set, HasGenericParams);
+        	return set != null && set.Any(HasGenericParams);
         }
 
-        public static bool HasGenericParams(IType type)
+    	public static bool HasGenericParams(IType type)
         {
             if (type == null) return false;
             if (type is IGenericType) return true;
@@ -335,7 +334,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         internal static string Format(IEnumerable<IGenericParameter> args, TypeNameKind kind, bool clr)
         {
-            return Format(Algorithms.Convert<IGenericParameter, IType>(args), kind, clr);
+            return Format(args.Cast<IType>(), kind, clr);
         }
 
         public override string Key

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DataDynamics.PageFX
 {
@@ -274,13 +275,13 @@ namespace DataDynamics.PageFX
         public static bool HasCorlibRef(IEnumerable<string> refs)
         {
             if (refs == null) return false;
-            return Algorithms.Contains(refs, r => IsSysRef(r, CorlibAssemblyName));
+        	return refs.Any(r => IsSysRef(r, CorlibAssemblyName));
         }
 
         public static bool HasSysRefs(IEnumerable<string> refs)
         {
             if (refs == null) return false;
-            return Algorithms.Contains(refs, IsSysRef);
+            return refs.Any(IsSysRef);
         }
         #endregion
 

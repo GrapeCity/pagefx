@@ -76,11 +76,7 @@ namespace DataDynamics.PageFX.CodeModel
             var mcats = GetCategories(method);
             if (mcats == null) return false;
             if (mcats.Length <= 0) return false;
-            return Algorithms.Contains(
-                mcats,
-                cat => Algorithms.Contains(
-                           cats,
-                           c => string.Compare(cat, c, ignoreCase) == 0));
+            return mcats.Any(cat => cats.Any(c => string.Compare(cat, c, ignoreCase) == 0));
         }
 
         static readonly string[] NotTestAttrs = 
@@ -131,29 +127,28 @@ namespace DataDynamics.PageFX.CodeModel
         public static bool IsNUnitMethod(IMethod method)
         {
             if (method == null) return false;
-            return Algorithms.Contains(method.CustomAttributes,
-                                       attr => attr.TypeName.StartsWith(NSPrefix));
+            return method.CustomAttributes.Any(attr => attr.TypeName.StartsWith(NSPrefix));
         }
 
         public static IMethod FindSetupMethod(IType type)
         {
-            return Algorithms.Find(type.Methods, IsSetup);
+            return type.Methods.FirstOrDefault(IsSetup);
         }
 
         public static IType FindTestFixture(IAssembly assembly)
         {
-            return Algorithms.Find(assembly.Types, IsTestFixture);
+            return assembly.Types.FirstOrDefault(IsTestFixture);
         }
 
         public static IEnumerable<IType> GetTestFixtures(IAssembly assembly)
         {
-            return Algorithms.Filter(assembly.Types, IsTestFixture);
+            return assembly.Types.Where(IsTestFixture);
         }
 
         public static IEnumerable<IMethod> GetTests(IType fixture, bool pfx)
         {
             var list = new List<IMethod>(fixture.Methods);
-            return Algorithms.Filter(list, m => IsTest(m, pfx));
+            return list.Where(m => IsTest(m, pfx));
         }
 
         public static IEnumerable<IMethod> GetTests(IType fixture)
@@ -201,8 +196,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         static ICustomAttribute FindAttribute(ICustomAttributeProvider p, string fullname)
         {
-            return Algorithms.Find(p.CustomAttributes,
-                                   attr => attr.TypeName == fullname);
+            return p.CustomAttributes.FirstOrDefault(attr => attr.TypeName == fullname);
         }
 
         static bool HasAttribute(ICustomAttributeProvider p, string fullname)
@@ -212,8 +206,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         static bool HasAttribute(ICustomAttributeProvider p, params string[] attrs)
         {
-            return Algorithms.Contains(p.CustomAttributes,
-                                       attr => Algorithms.Contains(attrs, attr.TypeName));
+            return p.CustomAttributes.Any(attr => attrs.Contains(attr.TypeName));
         }
 
         #region GetMonoTestCaseName

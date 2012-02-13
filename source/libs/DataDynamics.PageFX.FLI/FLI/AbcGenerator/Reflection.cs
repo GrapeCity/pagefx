@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -88,7 +89,7 @@ namespace DataDynamics.PageFX.FLI
             var abc = instance.ABC;
             if (IsSwf)
             {
-                if (!Algorithms.Contains(sfc.AbcFrames, abc))
+                if (!((IEnumerable<AbcFile>)sfc.AbcFrames).Contains(abc))
                     return null;
             }
             else

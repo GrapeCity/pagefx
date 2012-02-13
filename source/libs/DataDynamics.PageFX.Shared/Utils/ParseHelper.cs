@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace DataDynamics
 {
@@ -25,11 +26,10 @@ namespace DataDynamics
 
         public static bool IsHex(string s)
         {
-            if (s == null) return false;
-            return Algorithms.TrueAll(s, IsHexDigit);
+        	return s != null && s.All(IsHexDigit);
         }
 
-        public static int ParseHex(string s)
+    	public static int ParseHex(string s)
         {
             return int.Parse(s, NumberStyles.HexNumber, null);
         }
@@ -79,15 +79,13 @@ namespace DataDynamics
 
         public static bool SkipOne(TextReader reader, ref int c, IEnumerable<char> set)
         {
-            if (set != null)
-            {
-                if (Algorithms.Contains(set, (char)c))
-                {
-                    c = reader.Read();
-                    return true;
-                }
-            }
-            return false;
+        	if (set == null) return false;
+        	if (set.Contains((char)c))
+        	{
+        		c = reader.Read();
+        		return true;
+        	}
+        	return false;
         }
 
         public static int Skip(string s, int index, Predicate<char> p)
@@ -155,7 +153,7 @@ namespace DataDynamics
             while (true)
             {
                 if (c < 0) break;
-                if (end != null && Algorithms.Contains(end, (char)c)) break;
+                if (end != null && end.Contains((char)c)) break;
                 if (char.IsWhiteSpace((char)c)) break;
                 value.Append((char)c);
                 c = reader.Read();

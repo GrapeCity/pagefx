@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -99,7 +100,7 @@ namespace DataDynamics.PageFX.FLI
 
         AbcMethod DefineMyFieldsInitializer(AbcInstance instance, IType type)
         {
-            var myfields = new List<IField>(Algorithms.Filter(type.Fields, f => !f.IsStatic));
+            var myfields = new List<IField>(type.Fields.Where(f => !f.IsStatic));
             if (myfields.Count == 0) return null;
 
             instance = FixInstance(instance);
@@ -463,8 +464,7 @@ namespace DataDynamics.PageFX.FLI
             if (am.IsInitializer) return true;
             if (m.IsGeneric)
                 return true;
-            return Algorithms.Contains(m.Parameters,
-                p => p.IsByRef || p.Type.TypeKind == TypeKind.Pointer || GenericType.HasGenericParams(p.Type));
+            return m.Parameters.Any(p => p.IsByRef || p.Type.TypeKind == TypeKind.Pointer || GenericType.HasGenericParams(p.Type));
         }
 
         AbcMethod DefineMethodsInitializer(AbcInstance instance, IType type, bool ctor)
@@ -477,8 +477,7 @@ namespace DataDynamics.PageFX.FLI
             var name = DefinePfxName(prefix + provname);
 
             var methods =
-                new List<IMethod>(Algorithms.Filter(type.Methods,
-                                                    m => m.IsConstructor == ctor && !IsUnsupportedMethod(m)));
+                new List<IMethod>(type.Methods.Where(m => m.IsConstructor == ctor && !IsUnsupportedMethod(m)));
 
         	var mtype = ctor ? CorlibTypes[CorlibTypeId.ConstructorInfo] : CorlibTypes[CorlibTypeId.MethodInfo];
 

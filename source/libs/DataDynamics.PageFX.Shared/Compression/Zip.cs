@@ -1,5 +1,5 @@
-using System;
 using System.IO;
+using System.Linq;
 using DataDynamics.Compression.Zip;
 using DataDynamics.Compression.Zip.Compression.Streams;
 
@@ -45,22 +45,15 @@ namespace DataDynamics
             return ms.ToArray();
         }
 
-        public static ZipEntry FindEntry(ZipFile zip, Predicate<ZipEntry> p)
+        public static ZipEntry FindEntry(ZipFile zip, System.Func<ZipEntry,bool> p)
         {
-            foreach (ZipEntry e in zip)
-            {
-                if (p(e)) 
-                    return e;
-            }
-            return null;
+        	return zip.Cast<ZipEntry>().FirstOrDefault(p);
         }
 
-        public static Stream Extract(ZipFile zip, Predicate<ZipEntry> p)
+    	public static Stream Extract(ZipFile zip, System.Func<ZipEntry,bool> p)
         {
-            ZipEntry e = FindEntry(zip, p);
-            if (e != null)
-                return ToMemoryStream(e.Data);
-            return null;
+            var e = FindEntry(zip, p);
+            return e != null ? ToMemoryStream(e.Data) : null;
         }
 
         public static Stream Extract(ZipFile zip, string name)

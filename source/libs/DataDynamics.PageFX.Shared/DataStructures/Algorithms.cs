@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.Collections;
 
 namespace DataDynamics
@@ -9,13 +10,7 @@ namespace DataDynamics
 
     public static class Algorithms
     {
-        public static void ForEach<T>(IEnumerable<T> set, Action<T> action)
-        {
-            foreach (var item in set)
-                action(item);
-        }
-
-        #region GetHashCode
+    	#region GetHashCode
         public static int GetHashCode(IEnumerable set)
         {
             if (set == null) return 0;
@@ -77,17 +72,9 @@ namespace DataDynamics
         }
         #endregion
 
-        public static bool IsEmpty<T>(IEnumerable<T> set)
+        public static bool IsEmpty<T>(this IEnumerable<T> set)
         {
-            return !set.GetEnumerator().MoveNext();
-        }
-
-        public static T First<T>(IEnumerable<T> c)
-        {
-            var e = c.GetEnumerator();
-            if (e.MoveNext())
-                return e.Current;
-            return default(T);
+			return !set.GetEnumerator().MoveNext();
         }
 
         #region Generic MaxMin
@@ -294,26 +281,6 @@ namespace DataDynamics
         }
         #endregion
 
-        #region CopyTo
-        public static void CopyTo<T>(IEnumerable<T> collection, T[] array, int index)
-        {
-            //TODO: check params
-            foreach (var value in collection)
-            {
-                array[index++] = value;
-            }
-        }
-
-        public static void CopyTo<T>(IEnumerable collection, T[] array, int index)
-        {
-            //TODO: check params
-            foreach (T value in collection)
-            {
-                array[index++] = value;
-            }
-        }
-        #endregion
-
         #region BinarySearch
         public static int BinarySearch<T>(ISimpleList<T> list, int index, int length, ComparativePredicate<T> p)
         {
@@ -350,166 +317,7 @@ namespace DataDynamics
         }
         #endregion
 
-        public static T[] ToArray<T>(IList<T> list)
-        {
-            int n = list.Count;
-            var result = new T[n];
-            list.CopyTo(result, 0);
-            return result;
-        }
-
-        #region IndexOf, IndexOfAll
-        /// <summary>
-        /// Finds index of item in given set using specified predicate to find item.
-        /// </summary>
-        /// <typeparam name="T">type of item in set</typeparam>
-        /// <param name="set">set in which you want to find item</param>
-        /// <param name="p">predicate to find item</param>
-        /// <returns></returns>
-        public static int IndexOf<T>(IEnumerable<T> set, Predicate<T> p)
-        {
-            if (set == null) return -1;
-            int i = 0;
-            foreach (var item in set)
-            {
-                if (p(item))
-                    return i;
-                ++i;
-            }
-            return -1;
-        }
-
-        public static int IndexOf(IEnumerable<string> set, string s, bool ignoreCase)
-        {
-            return IndexOf(set, i => string.Compare(i, s, ignoreCase) == 0);
-        }
-
-        public static int IndexOf<T>(IEnumerable set, Predicate<T> p)
-        {
-            if (set == null) return -1;
-            int i = 0;
-            foreach (T item in set)
-            {
-                if (p(item))
-                    return i;
-                ++i;
-            }
-            return -1;
-        }
-
-        public static int IndexOf<T>(IEnumerable<T> set, T item)
-        {
-            return IndexOf(set, i => Equals(i, item));
-        }
-
-        public static int[] IndexOfAll<T>(IEnumerable set, Predicate<T> p)
-        {
-            int i = 0;
-            var list = new List<int>();
-            foreach (T item in set)
-            {
-                if (p(item))
-                    list.Add(i);
-                ++i;
-            }
-            return list.ToArray();
-        }
-
-        public static int[] IndexOfAll<T>(IEnumerable<T> set, Predicate<T> p)
-        {
-            int i = 0;
-            var list = new List<int>();
-            foreach (var item in set)
-            {
-                if (p(item))
-                    list.Add(i);
-                ++i;
-            }
-            return list.ToArray();
-        }
-
-        public static int[] IndexOfAll<T>(IEnumerable<T> set, T item)
-        {
-            return IndexOfAll(set, i => Equals(i, item));
-        }
-        #endregion
-
-        #region Contains
-        public static bool Contains<T>(IEnumerable<T> set, Predicate<T> p)
-        {
-            return IndexOf(set, p) >= 0;
-        }
-
-        public static bool Contains(IEnumerable<string> set, string s, bool ignoreCase)
-        {
-            return IndexOf(set, s, ignoreCase) >= 0;
-        }
-
-        public static bool ContainsIgnoreCase(IEnumerable<string> set, string s)
-        {
-            return Contains(set, s, true);
-        }
-
-        public static bool Contains<T>(IEnumerable set, Predicate<T> p)
-        {
-            return IndexOf(set, p) >= 0;
-        }
-
-        public static bool Contains<T>(IEnumerable<T> set, T item)
-        {
-            return IndexOf(set, item) >= 0;
-        }
-        #endregion
-
-        #region Find, FindAll
-        public static T Find<T>(IEnumerable<T> set, Predicate<T> p)
-        {
-            foreach (var item in set)
-            {
-                if (p(item)) 
-                    return item;
-            }
-            return default(T);
-        }
-
-        public static T Find<T>(IEnumerable<T> set, T item)
-        {
-            return Find(set, i => Equals(i, item));
-        }
-
-        public static T Find<T>(IEnumerable set, Predicate<T> p)
-        {
-            foreach (T item in set)
-            {
-                if (p(item))
-                    return item;
-            }
-            return default(T);
-        }
-
-        public static List<T> FindAll<T>(IEnumerable<T> set, Predicate<T> p)
-        {
-            var list = new List<T>();
-            foreach (var item in set)
-            {
-                if (p(item))
-                    list.Add(item);
-            }
-            return list;
-        }
-
-        public static List<T> FindAll<T>(IEnumerable set, Predicate<T> p)
-        {
-            var list = new List<T>();
-            foreach (T item in set)
-            {
-                if (p(item))
-                    list.Add(item);
-            }
-            return list;
-        }
-
-        public static void Split<T>(IEnumerable set, out List<T> tlist, out List<T> flist, Predicate<T> p)
+    	public static void Split<T>(this IEnumerable set, out List<T> tlist, out List<T> flist, Predicate<T> p)
         {
             tlist = new List<T>();
             flist = new List<T>();
@@ -521,158 +329,8 @@ namespace DataDynamics
                     flist.Add(item);
             }
         }
-        #endregion
 
-        #region RemoveAll
-        public static void RemoveAll<T>(IList<T> list, Predicate<T> p)
-        {
-            for (int i = 0; i < list.Count; ++i)
-            {
-                if (p(list[i]))
-                {
-                    list.RemoveAt(i);
-                    --i;
-                }
-            }
-        }
-
-        public static void RemoveAll<T>(IList list, Predicate<T> p)
-        {
-            for (int i = 0; i < list.Count; ++i)
-            {
-                if (p((T)list[i]))
-                {
-                    list.RemoveAt(i);
-                    --i;
-                }
-            }
-        }
-        #endregion
-
-        /// <summary>
-        /// Returns true if one of elemet in given set met given predicate.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="set"></param>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        public static bool TrueAny<T>(IEnumerable<T> set, Predicate<T> p)
-        {
-            foreach (T item in set)
-            {
-                if (p(item))
-                    return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Returns true if all elements in given set met given predicate.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="set"></param>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        public static bool TrueAll<T>(IEnumerable<T> set, Predicate<T> p)
-        {
-            foreach (T item in set)
-            {
-                if (!p(item))
-                    return false;
-            }
-            return true;
-        }
-
-        public static bool TrueAny<T>(IEnumerable<Predicate<T>> predicates, T item)
-        {
-            foreach (var p in predicates)
-            {
-                if (p(item))
-                    return true;
-            }
-            return false;
-        }
-
-        public static bool TrueAll<T>(IEnumerable<Predicate<T>> predicates, T item)
-        {
-            foreach (var p in predicates)
-            {
-                if (!p(item))
-                    return false;
-            }
-            return true;
-        }
-
-        public static IEnumerable<B> Convert<T, B>(IEnumerable<T> original) where T : B
-        {
-            return new BaseTypeEnumerable<T, B>(original);
-        }
-
-        public static IEnumerator<B> Convert<T, B>(IEnumerator<T> original) where T : B
-        {
-            return new BaseTypeEnumerator<T, B>(original);
-        }
-
-        public static IEnumerable<T> Merge<T>(params IEnumerable<T>[] args)
-        {
-            return new MergedEnumerator<T>(args);
-        }
-
-        public static IEnumerable<T> Filter<T>(IEnumerable<T> set, Predicate<T> p)
-        {
-            foreach (var item in set)
-            {
-                if (p(item))
-                    yield return item;
-            }
-        }
-
-        public static T Aggregate<T>(IEnumerable<T> set, Func<T, T, T> f)
-        {
-            T result = default(T);
-            bool first = true;
-            var e = set.GetEnumerator();
-            while (e.MoveNext())
-            {
-                if (first)
-                {
-                    result = e.Current;
-                    first = false;
-                }
-                else
-                {
-                    result = f(result, e.Current);
-                }
-            }
-            return result;
-        }
-
-        public static bool IsUnique<T>(IEnumerable<T> set, Func<bool, T, T> eq)
-        {
-            int i = 0;
-            foreach (var x in set)
-            {
-                int j = 0;
-                foreach (var y in set)
-                {
-                    if (j == i) continue;
-                    if (eq(x, y))
-                        return false;
-                    ++j;
-                }
-                ++i;
-            }
-            return true;
-        }
-        public static List<TOutput> Convert<TInput, TOutput>(IEnumerable<TInput> set, Converter<TInput, TOutput> converter)
-        {
-            var list = new List<TOutput>();
-            foreach (var item in set)
-                list.Add(converter(item));
-            return list;
-        }
-
-        #region Tree Iterators
+    	#region Tree Iterators
         public static IEnumerable<T> IterateTreeTopDown<T>(IEnumerable<T> set, Converter<T, IEnumerable<T>> getKids)
         {
             foreach (var item in set)

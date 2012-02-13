@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using DataDynamics.PageFX.CodeModel;
@@ -130,7 +131,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        class I
+        private sealed class I
         {
             public readonly OpCode OpCode;
             public bool IsUsed;
@@ -323,9 +324,9 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        static IEnumerable<I> GetAllI()
+        static IEnumerable<I> GetAllInstructions()
         {
-            return Algorithms.Merge(_short, _long);
+            return _short.Concat(_long);
         }
 
         public static void DumpCoverage(TextWriter writer)
@@ -336,7 +337,7 @@ namespace DataDynamics.PageFX.CLI.IL
             writer.WriteLine("--------------------------------------------------");
             writer.WriteLine("Not covered instructions:");
             writer.WriteLine("--------------------------------------------------");
-            foreach (var i in GetAllI())
+            foreach (var i in GetAllInstructions())
                 if (i != null && !i.IsUsed)
                     writer.WriteLine(i);
 
@@ -344,7 +345,7 @@ namespace DataDynamics.PageFX.CLI.IL
             writer.WriteLine("--------------------------------------------------");
             writer.WriteLine("Covered instructions:");
             writer.WriteLine("--------------------------------------------------");
-            foreach (var i in GetAllI())
+            foreach (var i in GetAllInstructions())
                 if (i != null && i.IsUsed)
                     writer.WriteLine(i);
         }

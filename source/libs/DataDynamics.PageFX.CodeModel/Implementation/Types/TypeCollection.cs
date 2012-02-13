@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.Collections;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
@@ -109,7 +110,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Convert(_list); }
+            get { return _list.Cast<ICodeNode>(); }
         }
 
     	/// <summary>
@@ -146,7 +147,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Convert(this); }
+            get { return this.Cast<ICodeNode>(); }
         }
 
         public object Tag
@@ -159,7 +160,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                return Algorithms.Find(this, t => t.FullName == fullname);
+                return this.FirstOrDefault(t => t.FullName == fullname);
             }
         }
     }
@@ -220,7 +221,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return Algorithms.Convert<IType, ICodeNode>(this); }
+            get { return this.Cast<ICodeNode>(); }
         }
 
         public object Tag

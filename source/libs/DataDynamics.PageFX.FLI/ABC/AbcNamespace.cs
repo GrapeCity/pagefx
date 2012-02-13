@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.SWF;
@@ -430,6 +431,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region IEnumerable Members
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _list.GetEnumerator();
@@ -442,9 +444,10 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         IEnumerator<IAbcConst> IEnumerable<IAbcConst>.GetEnumerator()
         {
-            return Algorithms.Convert<AbcNamespace, IAbcConst>(GetEnumerator());
+        	return _list.Cast<IAbcConst>().GetEnumerator();
         }
-        #endregion
+
+    	#endregion
     }
     #endregion
 

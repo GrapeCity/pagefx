@@ -327,11 +327,11 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 if (_owner == null) return -1;
                 if (_index < 0)
-                    _index = Algorithms.IndexOf<HandlerBlock>(Owner.Handlers, this);
+                    _index = Owner.Handlers.IndexOf(this);
                 return _index;
             }
         }
-        int _index = -1;
+        private int _index = -1;
 
         protected override void VisitInstruction(Instruction instruction)
         {
@@ -399,7 +399,7 @@ namespace DataDynamics.PageFX.CLI.IL
     }
     #endregion
 
-    internal class HandlerBlockList : List<HandlerBlock>, ISehHandlerCollection
+    internal sealed class HandlerBlockList : List<HandlerBlock>, ISehHandlerCollection
     {
         #region ISimpleList<ISehHandlerBlock> Members
         ISehHandlerBlock ISimpleList<ISehHandlerBlock>.this[int index]

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace DataDynamics.PageFX.CodeModel.Syntax
@@ -663,7 +664,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (type.TypeKind != TypeKind.Delegate) return null;
             var list = type.Methods["Invoke"];
             if (list == null) return null;
-            return Algorithms.First(list);
+			return list.FirstOrDefault();
         }
 
         void WriteType(IType type)
@@ -855,7 +856,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 foreach (var m in members)
                 {
                     var v = m.Visibility;
-                    int i = Algorithms.IndexOf(sets, x => x.Visibility == v);
+					int i = sets.FindIndex(x => x.Visibility == v);
                     MemberSet set;
                     if (i < 0)
                     {
@@ -876,7 +877,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 {
                     if (eol) WriteLine();
                     int len = _length;
-                    WriteNodes(CMHelper.Convert(set.List), set.Visibility + " " + region);
+                    WriteNodes(set.List.Cast<ICodeNode>(), set.Visibility + " " + region);
                     eol = _length > len;
                 }
             }

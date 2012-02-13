@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using System.Linq;
 
 namespace DataDynamics
 {
@@ -109,7 +110,7 @@ namespace DataDynamics
             if (string.IsNullOrEmpty(name))
                 return false;
 
-            return Algorithms.Contains(Names, s => string.Compare(name, s, ignoreCase) == 0);
+        	return Names.Contains(name, StringComparer.CurrentCultureIgnoreCase);
         }
 
         public static void Init(Type options)

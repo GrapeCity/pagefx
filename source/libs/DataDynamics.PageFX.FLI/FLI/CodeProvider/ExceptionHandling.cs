@@ -520,9 +520,7 @@ namespace DataDynamics.PageFX.FLI
         {
             foreach (var tb in _sehsToResolve)
             {
-                var h = Algorithms.Find(
-                    tb.Handlers,
-                    seh => seh.Tag is SehHandlerTag);
+                var h = tb.Handlers.FirstOrDefault(seh => seh.Tag is SehHandlerTag);
 
                 Debug.Assert(h != null);
 

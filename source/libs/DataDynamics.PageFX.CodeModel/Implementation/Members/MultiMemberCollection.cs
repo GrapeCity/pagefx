@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.Collections;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -86,7 +87,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Convert(_list); }
+            get { return _list.Cast<ICodeNode>(); }
         }
     }
 }

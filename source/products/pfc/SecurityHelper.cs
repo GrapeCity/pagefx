@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DataDynamics.PageFX.Flash
 {
@@ -63,7 +65,7 @@ namespace DataDynamics.PageFX.Flash
                         File.WriteAllLines(cfgfile, new[] { path });
                         return;
                     }
-                    if (Algorithms.Contains(lines, l => Contains(l, path)))
+                    if (lines.Any(l => Contains(l, path)))
                         return;
                     Array.Resize(ref lines, n + 1);
                     lines[n] = path;

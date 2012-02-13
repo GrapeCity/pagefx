@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
@@ -265,9 +266,8 @@ namespace DataDynamics.PageFX.FLI
             for (int i = 0; i < list.Count; ++i)
             {
                 var rsl = list[i];
-                var asm = Algorithms.Find(
-                    GetRefs(),
-                    delegate(IAssembly r)
+                var asm = GetRefs().FirstOrDefault(
+                    r =>
                         {
                             string rpath = r.Location;
                             if (!Path.IsPathRooted(rpath))
@@ -485,8 +485,7 @@ namespace DataDynamics.PageFX.FLI
                 {
                     //TODO: Resolve the situation: assembly can have more than one subclasses of mx.core.Application
                     _searchFlexAppType = false;
-                    var apps = Algorithms.FindAll(_assembly.Types,
-                                                  type => TypeHelper.IsFrom(type, "mx.core.Application"));
+                    var apps = _assembly.Types.Where(type => TypeHelper.IsFrom(type, "mx.core.Application")).ToList();
                     int n = apps.Count;
                     if (n > 0)
                     {
@@ -496,7 +495,7 @@ namespace DataDynamics.PageFX.FLI
                         }
                         else
                         {
-                            _typeFlexApp = Algorithms.Find(apps, TypeHelper.IsRootSprite);
+							_typeFlexApp = apps.FirstOrDefault(TypeHelper.IsRootSprite);
                             if (_typeFlexApp == null)
                                 throw new AmbiguousMatchException("Unable to find MX application class");
                         }

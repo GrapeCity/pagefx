@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcTrait Find(string name, AbcTraitKind kind)
         {
-            return Algorithms.Find(_list, t => t.Kind == kind && t.NameString == name);
+			return _list.FirstOrDefault(t => t.Kind == kind && t.NameString == name);
         }
 
         public AbcTrait FindMethod(string name)
@@ -68,7 +68,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcTrait Find(string name)
         {
-            return Algorithms.Find(_list, t => t.NameString == name);
+			return _list.FirstOrDefault(t => t.NameString == name);
         }
 
         public bool Contains(AbcMultiname name, AbcTraitKind kind)

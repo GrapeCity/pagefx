@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Linq;
 using DataDynamics;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
@@ -348,18 +349,16 @@ namespace abc
 
         static char ReplaceInvalidPathChar(char c)
         {
-            switch (c)
+        	switch (c)
             {
                 case '<': return '[';
                 case '>': return ']';
                 case '`': return (char)0;
             }
-            if (Algorithms.Contains(GetInvalidPathChars(), c))
-                return '_';
-            return c;
+        	return GetInvalidPathChars().Contains(c) ? '_' : c;
         }
 
-        static string MakeValidPath(string path)
+    	static string MakeValidPath(string path)
         {
             if (string.IsNullOrEmpty(path)) return path;
             var list = new List<char>();

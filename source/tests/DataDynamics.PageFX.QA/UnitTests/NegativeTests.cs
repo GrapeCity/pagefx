@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.Tests
@@ -45,7 +47,7 @@ namespace DataDynamics.PageFX.Tests
             }
             catch (CompilerException ce)
             {
-                Assert.IsTrue(Algorithms.Contains(errorcodes, ce.ErrorCode), ce.Message);
+                Assert.IsTrue(errorcodes.Contains(ce.ErrorCode), ce.Message);
             }
             catch (Exception e)
             {

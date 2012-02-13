@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -284,7 +285,7 @@ namespace DataDynamics.PageFX.FLI
 
             if (IsSwf)
             {
-                var type = Algorithms.Find(_assembly.Types, IsRootSprite);
+				var type = _assembly.Types.FirstOrDefault(IsRootSprite);
                 if (type != null)
                 {
                     DefineType(type);

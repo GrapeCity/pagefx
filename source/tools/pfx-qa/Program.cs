@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.CodeModel;
@@ -248,7 +249,7 @@ namespace DataDynamics.PageFX
                     elems = FindNUnitElems(test);
                     if (elems == null) continue;
                     if (elems.Length == 0) continue;
-                    if (!Algorithms.Contains(elems, IsExecuted)) continue;
+                    if (!elems.Any(IsExecuted)) continue;
                 }
 
                 string fullname = GetTestCaseFullName(test);

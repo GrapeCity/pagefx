@@ -1163,7 +1163,7 @@ namespace DataDynamics.PageFX.CLI
                 return;
             }
 
-            if (Algorithms.Contains(method.ImplementedMethods, ifaceMethod))
+            if (method.ImplementedMethods.Contains(ifaceMethod))
                 return;
 
             int n = method.ImplementedMethods.Length;

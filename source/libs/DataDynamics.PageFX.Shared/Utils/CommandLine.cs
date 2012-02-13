@@ -603,7 +603,7 @@ namespace DataDynamics
             if (tab == null)
                 tab = "";
 
-            string maxLeft = Algorithms.Max(left, (x, y) => x.Length - y.Length);
+            string maxLeft = MaxLength(left);
 
             int maxleftLen = maxLeft.Length;
             string leftPad = new string(' ', maxleftLen + 1);
@@ -636,6 +636,19 @@ namespace DataDynamics
                 }
             }
         }
+
+		private static string MaxLength(IEnumerable<string> collection)
+		{
+			string max = "";
+			foreach (var s in collection)
+			{
+				if (s.Length > max.Length)
+				{
+					max = s;
+				}
+			}
+			return max;
+		}
 
         public static void Logo(Assembly asm)
         {

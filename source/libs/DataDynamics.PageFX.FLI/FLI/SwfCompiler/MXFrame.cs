@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -52,7 +53,7 @@ namespace DataDynamics.PageFX.FLI
         {
             get
             {
-                return Algorithms.Contains(_options.RslList, rsl => rsl.IsCrossDomain);
+                return _options.RslList.Any(rsl => rsl.IsCrossDomain);
             }
         }
 

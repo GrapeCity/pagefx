@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataDynamics.PageFX.FLI
 {
@@ -225,29 +226,29 @@ namespace DataDynamics.PageFX.FLI
             Image.Jpg
         };
 
-        private static string[] SupportedTypes
+        private static IEnumerable<string> SupportedTypes
         {
             get
 			{
             	return _supportedTypes ??
-            	       (_supportedTypes = new List<string>(Algorithms.Merge(BitmapTypes, JpegTypes)).ToArray());
+            	       (_supportedTypes = BitmapTypes.Concat(JpegTypes).ToArray());
             }
         }
         private static string[] _supportedTypes;
 
         public static bool IsBitmap(string type)
         {
-            return Algorithms.ContainsIgnoreCase(BitmapTypes, type);
+			return BitmapTypes.Contains(type, StringComparer.InvariantCultureIgnoreCase);
         }
 
         public static bool IsJpeg(string type)
         {
-            return Algorithms.ContainsIgnoreCase(JpegTypes, type);
+            return JpegTypes.Contains(type, StringComparer.InvariantCultureIgnoreCase);
         }
 
         public static bool IsSupported(string type)
         {
-            return Algorithms.ContainsIgnoreCase(SupportedTypes, type);
+			return SupportedTypes.Contains(type, StringComparer.InvariantCultureIgnoreCase);
         }
     }
 }

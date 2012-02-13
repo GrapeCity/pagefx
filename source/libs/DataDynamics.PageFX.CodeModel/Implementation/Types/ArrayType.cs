@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -163,8 +164,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IMethod FindConstructor(IType[] types)
         {
-            return Algorithms.Find(Constructors,
-                                   ctor => Signature.Equals(ctor.Parameters, types));
+            return Constructors.FirstOrDefault(ctor => Signature.Equals(ctor.Parameters, types));
         }
 
         public IMethod Getter { get; set; }
@@ -194,8 +194,7 @@ namespace DataDynamics.PageFX.CodeModel
                 throw new ArgumentException("given method is not constructor");
             
             var arrType = (ArrayType)arrayType;
-            var c2 = Algorithms.Find(arrType.Constructors,
-                                     c => Signature.Equals(c.Parameters, method.Parameters));
+            var c2 = arrType.Constructors.FirstOrDefault(c => Signature.Equals(c.Parameters, method.Parameters));
             if (c2 != null) return c2;
 
             var m = new Method

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace DataDynamics.PageFX
@@ -56,9 +57,11 @@ namespace DataDynamics.PageFX
 
         public Argument Find(string name, bool ignoreCase)
         {
-            return Algorithms.Find(_args,
-                                   a => a.Name != null
-                                        && string.Compare(a.Name, name, ignoreCase) == 0);
+        	return _args.FirstOrDefault(a => a.Name != null
+        	                                 && string.Compare(a.Name, name,
+        	                                                   ignoreCase
+        	                                                   	? StringComparison.CurrentCultureIgnoreCase
+        	                                                   	: StringComparison.CurrentCulture) == 0);
         }
 
         public override string ToString()

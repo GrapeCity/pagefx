@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DataDynamics.Tools
 {
@@ -101,8 +102,7 @@ namespace DataDynamics.Tools
                 if (item.Type == CommandLine.ItemType.Option)
                 {
                     string name = item.Name;
-                    if (Algorithms.Contains(NotVars,
-                                            s => string.Compare(s, name, true) == 0))
+					if (NotVars.Any(s => string.Compare(s, name, StringComparison.CurrentCultureIgnoreCase) == 0))
                         continue;
 
                     vars.Add(name);

@@ -1,3 +1,4 @@
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX
@@ -40,8 +41,8 @@ namespace DataDynamics.PageFX
             if (type == SystemTypes.Void) return false;
             if (TypeFilters.IsAttribute(type)) return false;
             if (TypeFilters.IsException(type)) return false;
-            if (Algorithms.Contains(ExcludedNamespaces, type.Namespace)) return false;
-            if (Algorithms.Contains(ExcludedTypes, type.FullName)) return false;
+			if (ExcludedNamespaces.Contains(type.Namespace)) return false;
+			if (ExcludedTypes.Contains(type.FullName)) return false;
             return true;
         }
 

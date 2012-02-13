@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel;
@@ -791,7 +792,7 @@ namespace DataDynamics.PageFX.FLI
         public static IMethod Find(IType type, string name)
         {
             var set = type.Methods[name];
-            return Algorithms.First(set);
+			return set == null ? null : set.FirstOrDefault();
         }
 
         public static IMethod Find(IType type, string name, IType arg1)
@@ -858,13 +859,11 @@ namespace DataDynamics.PageFX.FLI
         public static bool HasABCOrQNameAttribute(ICustomAttributeProvider m)
         {
             if (m == null) return false;
-            return Algorithms.Contains(
-                m.CustomAttributes,
-                attr =>
-                    {
-                        string type = attr.TypeName;
-                        return type == Attrs.ABC || type == Attrs.QName;
-                    });
+            return m.CustomAttributes.Any(attr =>
+                                          	{
+                                          		string type = attr.TypeName;
+                                          		return type == Attrs.ABC || type == Attrs.QName;
+                                          	});
         }
 
         public static bool IsAbcMethod(IMethod m)

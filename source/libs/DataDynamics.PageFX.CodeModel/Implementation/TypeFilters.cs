@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace DataDynamics.PageFX.CodeModel
 {
     public static class TypeFilters
@@ -21,7 +24,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return true;
 
             string fullname = type.FullName;
-            if (Algorithms.Contains(ExcludedTypes, fullname))
+            if (ExcludedTypes.Contains(fullname))
                 return true;
 
             return false;

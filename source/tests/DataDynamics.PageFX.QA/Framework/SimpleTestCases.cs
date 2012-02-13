@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX
@@ -147,7 +148,7 @@ namespace DataDynamics.PageFX
 
         public static TestCase Find(string name)
         {
-            return Algorithms.Find(All, tc => string.Compare(tc.FullName, name, true) == 0);
+			return All.FirstOrDefault(tc => string.Compare(tc.FullName, name, StringComparison.CurrentCultureIgnoreCase) == 0);
         }
 
         /// <summary>

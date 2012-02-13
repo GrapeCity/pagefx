@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -206,7 +207,7 @@ namespace DataDynamics.PageFX.PDB
 
         static IVariable FindVar(IEnumerable<IVariable> vars, string name)
         {
-            return Algorithms.Find(vars, v => v.Name == name);
+            return vars.FirstOrDefault(v => v.Name == name);
         }
 
         static string UnifyName(IEnumerable<IVariable> vars, string name)

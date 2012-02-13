@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Linq;
 
 namespace DataDynamics.PageFX
 {
@@ -206,12 +207,12 @@ namespace DataDynamics.PageFX
 
         public static bool Contains(string name)
         {
-            return Algorithms.Contains(All, o => o.CheckName(name, true));
+            return All.Any(o => o.CheckName(name, true));
         }
 
         public static CLOption Find(string name)
         {
-            return Algorithms.Find(All, o => o.CheckName(name, true));
+            return All.FirstOrDefault(o => o.CheckName(name, true));
         }
     }
 }

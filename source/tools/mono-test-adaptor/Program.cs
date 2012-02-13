@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 using DataDynamics;
 
 namespace mono_test_adaptor
@@ -71,7 +71,7 @@ namespace mono_test_adaptor
 
         static void AdaptVB(string[] lines, string path)
         {
-            int modBegin = Algorithms.IndexOf(lines, VB.IsModuleBegin);
+            int modBegin = Array.FindIndex(lines, 0, VB.IsModuleBegin);
             if (modBegin < 0)
             {
                 Warn(2, "No Module in file {0}", path);

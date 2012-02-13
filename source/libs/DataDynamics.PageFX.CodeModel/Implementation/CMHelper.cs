@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -29,12 +30,7 @@ namespace DataDynamics.PageFX.CodeModel
             return h;
         }
 
-        public static IEnumerable<ICodeNode> Convert<T>(IEnumerable<T> original) where T : ICodeNode
-        {
-            return Algorithms.Convert<T, ICodeNode>(original);
-        }
-
-        public static IEnumerable<ICodeNode> Enumerate<T1>(T1 obj) where T1 : ICodeNode
+    	public static IEnumerable<ICodeNode> Enumerate<T1>(T1 obj) where T1 : ICodeNode
         {
             return new ICodeNode[] {obj};
         }

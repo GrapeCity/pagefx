@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
@@ -531,7 +532,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         bool HasNamespace(AbcNamespace ns)
         {
             if (_nsset == null) return false;
-            return Algorithms.Contains(_nsset, ns);
+            return ((IEnumerable<AbcNamespace>)_nsset).Contains(ns);
         }
 
         public bool IsQName
@@ -720,7 +721,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 if (IsRuntime) return false;
                 if (!HasGlobalPackage) return false;
-                return Algorithms.Contains(GlobalTypes, NameString);
+                return GlobalTypes.Contains(NameString);
             }
         }
 

@@ -155,10 +155,7 @@ namespace DataDynamics.PageFX
 
         static TreeNode FindByText(TreeNodeCollection list, string text)
         {
-            int i = Algorithms.IndexOf(list, (TreeNode node) => node.Text == text);
-            if (i >= 0)
-                return list[i];
-            return null;
+        	return list.Cast<TreeNode>().FirstOrDefault(node => node.Text == text);
         }
 
         static TreeNode FindByPath(TreeNodeCollection list, string path)
@@ -175,15 +172,7 @@ namespace DataDynamics.PageFX
             return node;
         }
 
-        static TreeNode FindTestSuite(TreeNodeCollection list, TestSuite ts)
-        {
-            int i = Algorithms.IndexOf(list, (TreeNode node) => node.Tag == ts);
-            if (i >= 0)
-                return list[i];
-            return null;
-        }
-
-        readonly Hashtable _nodeCache = new Hashtable();
+    	readonly Hashtable _nodeCache = new Hashtable();
 
         void AddTestCases(TestSuite ts, TreeNode tsnode)
         {

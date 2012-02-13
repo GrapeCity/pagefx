@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -11,7 +12,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get 
             {
-                return Algorithms.Find(list, t => t.FullName == fullname);
+                return list.FirstOrDefault(t => t.FullName == fullname);
             }
         }
 
@@ -30,7 +31,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Convert(list); }
+            get { return list.Cast<ICodeNode>(); }
         }
 
         public object Tag

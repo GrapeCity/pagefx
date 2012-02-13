@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 
 namespace DataDynamics
@@ -12,7 +14,7 @@ namespace DataDynamics
             Assert.AreEqual(n, arr.Length);
             for (int i = 0; i < n; ++i)
             {
-                Assert.IsTrue(Algorithms.Contains(arr, i));
+                Assert.IsTrue(arr.Contains(i));
             }
         }
 

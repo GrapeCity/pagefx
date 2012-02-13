@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using DataDynamics;
 using DataDynamics.PageFX.FLI.ABC;
 
@@ -24,7 +25,7 @@ namespace abc
                 if (types != null && types.Length > 0)
                 {
                     string fullname = instance.FullName;
-                    if (Algorithms.Contains(types, type => string.Compare(type, fullname, StringComparison.InvariantCultureIgnoreCase) == 0))
+                    if (types.Any(type => string.Compare(type, fullname, StringComparison.InvariantCultureIgnoreCase) == 0))
                     {
                         List(Console.Out, instance);
                     }

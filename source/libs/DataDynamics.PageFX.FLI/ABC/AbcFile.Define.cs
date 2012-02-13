@@ -582,13 +582,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             return nss;
         }
 
-        public AbcNamespaceSet DefineNamespaceSet(IList<AbcNamespace> list)
-        {
-            var arr = Algorithms.ToArray(list);
-            return DefineNamespaceSet(arr);
-        }
-
-        public AbcMultiname DefineMultiname(AbcConstKind kind, AbcNamespace ns, AbcString name)
+    	public AbcMultiname DefineMultiname(AbcConstKind kind, AbcNamespace ns, AbcString name)
         {
             string key = AbcMultiname.KeyOf(kind, ns, name);
             var mn = _multinames[key];

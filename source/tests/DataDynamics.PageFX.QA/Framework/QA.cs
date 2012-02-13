@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using DataDynamics.PageFX.CodeModel;
@@ -977,7 +978,7 @@ namespace DataDynamics.PageFX
         static bool IsCriticalTest(TestCase tc)
         {
             string fn = tc.FullName;
-            if (Algorithms.Contains(CriticalSubstrings, fn.Contains))
+            if (CriticalSubstrings.Any(fn.Contains))
             {
                 if (fn.Contains("CSharp.Generics.Casting"))
                     return false;
