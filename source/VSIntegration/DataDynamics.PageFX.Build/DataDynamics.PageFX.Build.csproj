@@ -43,18 +43,6 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\ConvertedEnumerator.cs">
-      <Link>ConvertedEnumerator.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\FunctorComparer.cs">
-      <Link>FunctorComparer.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\MergedEnumerator.cs">
-      <Link>MergedEnumerator.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\SimpleList.cs">
-      <Link>SimpleList.cs</Link>
-    </Compile>
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\CompilerException.cs">
       <Link>CompilerException.cs</Link>
     </Compile>

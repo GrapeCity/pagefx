@@ -52,18 +52,6 @@
     <Compile Include="..\..\libs\DataDynamics.PageFX.FLI\FLI\CodeProvider\DebugUtils.cs">
       <Link>Utils\DebugUtils.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\ConvertedEnumerator.cs">
-      <Link>Shared\ConvertedEnumerator.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\FunctorComparer.cs">
-      <Link>Shared\FunctorComparer.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\MergedEnumerator.cs">
-      <Link>Shared\MergedEnumerator.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\DataStructures\SimpleList.cs">
-      <Link>Shared\SimpleList.cs</Link>
-    </Compile>
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Converters.cs">
       <Link>Shared\Converters.cs</Link>
     </Compile>

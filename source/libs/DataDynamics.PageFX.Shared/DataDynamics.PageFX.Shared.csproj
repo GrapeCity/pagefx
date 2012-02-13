@@ -88,13 +88,8 @@
     <Compile Include="Compression\ZLib\Zlib.cs" />
     <Compile Include="Compression\ZLib\ZStream.cs" />
     <Compile Include="DataStructures\Algorithms.cs" />
-    <Compile Include="DataStructures\ConvertedEnumerator.cs" />
     <Compile Include="DataStructures\DeepEnumerator.cs" />
-    <Compile Include="DataStructures\EmptyEnumerator.cs" />
-    <Compile Include="DataStructures\FilteredEnumerator.cs" />
-    <Compile Include="DataStructures\FunctorComparer.cs" />
     <Compile Include="DataStructures\LinkedList.cs" />
-    <Compile Include="DataStructures\MergedEnumerator.cs" />
     <Compile Include="DataStructures\ReadOnlyList.cs" />
     <Compile Include="DataStructures\SimpleList.cs" />
     <Compile Include="DataStructures\Pair.cs" />

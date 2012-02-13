@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using DataDynamics.Collections;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public IEnumerable<Node> CaseNodes
         {
-            get { return new ConvertedEnumerable<Case, Node>(_cases, c => c.Node); }
+			get { return _cases.Cast<Node>(); }
         }
 
         public Case AddCase(Node caseNode, int from, int to, bool detach)

@@ -81,7 +81,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<IMethod> this[string name]
         {
-            get { return EmptyEnumerable<IMethod>.Instance; }
+            get { return Enumerable.Empty<IMethod>(); }
         }
 
         public IMethod this[string name, Predicate<IMethod> predicate]
@@ -136,7 +136,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<IMethod> Constructors
         {
-            get { return EmptyEnumerable<IMethod>.Instance; }
+            get { return Enumerable.Empty<IMethod>(); }
         }
 
         public IMethod StaticConstructor

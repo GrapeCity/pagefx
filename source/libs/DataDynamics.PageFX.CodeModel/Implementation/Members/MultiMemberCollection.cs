@@ -66,9 +66,7 @@ namespace DataDynamics.PageFX.CodeModel
             get
             {
                 var result = _cache[name] as IEnumerable<T>;
-                if (result == null)
-                    return EmptyEnumerable<T>.Instance;
-                return result;
+                return result ?? Enumerable.Empty<T>();
             }
         }
 
