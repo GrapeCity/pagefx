@@ -1,3 +1,5 @@
+using System;
+
 namespace DataDynamics.PageFX
 {
     public class TestDriverSettings
@@ -50,7 +52,7 @@ namespace DataDynamics.PageFX
             get { return CancelCallback != null && CancelCallback(); }
         }
 
-        public CancelCallback CancelCallback;
+        public Func<bool> CancelCallback;
 
         public TestReport Report
         {

@@ -79,9 +79,6 @@
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CompilerConsole.cs">
       <Link>CompilerConsole.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Delegates.cs">
-      <Link>Delegates.cs</Link>
-    </Compile>
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\FormatAttribute.cs">
       <Link>FormatAttribute.cs</Link>
     </Compile>

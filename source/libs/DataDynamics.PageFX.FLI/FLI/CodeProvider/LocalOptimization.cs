@@ -10,8 +10,8 @@ using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI
 {
-    using PatternAction = Func<IInstruction[], AbcFile, IInstruction[], int>;
-    using PatternPredicate = Func<bool, IInstruction[], int, Instruction>;
+	using PatternAction = System.Func<AbcFile, IInstruction[], int, IInstruction[]>;
+	using PatternPredicate = System.Func<IInstruction[], int, Instruction, bool>;
 
     internal partial class AvmCodeProvider
     {

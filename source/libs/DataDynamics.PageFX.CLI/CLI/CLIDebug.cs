@@ -71,10 +71,10 @@ namespace DataDynamics.PageFX.CLI
         public static void DoCancel()
         {
             if (IsCancel)
-                throw new CancelException("Decompiler was canceled");
+                throw new Exception("Decompiler was canceled");
         }
 
-        public static CancelCallback CancelCallback;
+        public static Func<bool> CancelCallback;
 
         public static void Reset()
         {

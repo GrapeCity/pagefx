@@ -1,4 +1,5 @@
 #if DEBUG
+using System;
 using System.IO;
 using DataDynamics.PageFX.CodeModel;
 
@@ -28,10 +29,10 @@ namespace DataDynamics.PageFX.FLI
         public static void DoCancel()
         {
             if (IsCancel)
-                throw new CancelException();
+                throw new Exception("CANCEL");
         }
 
-        public static CancelCallback CancelCallback;
+        public static Func<bool> CancelCallback;
 
         public static TextWriter Log;
 

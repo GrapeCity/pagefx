@@ -70,7 +70,7 @@ namespace DataDynamics.PageFX
             }
         }
 
-        readonly CancelCallback _cancelCallback;
+        readonly Func<bool> _cancelCallback;
 
         static void InitCodeEditor(CodeEditorControl edit)
         {

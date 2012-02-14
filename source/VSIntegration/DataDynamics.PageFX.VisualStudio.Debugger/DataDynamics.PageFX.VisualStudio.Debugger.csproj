@@ -55,9 +55,6 @@
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Converters.cs">
       <Link>Shared\Converters.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Delegates.cs">
-      <Link>Shared\Delegates.cs</Link>
-    </Compile>
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Escaper.cs">
       <Link>Shared\Escaper.cs</Link>
     </Compile>
