@@ -179,15 +179,8 @@ namespace DataDynamics.Compression.Zip.Compression.Streams
 			}
 			return count + length;
 		}
-		
-		/// <summary>
-		/// Constructs a default StreamManipulator with all buffers empty
-		/// </summary>
-		public StreamManipulator()
-		{
-		}
 
-		
+
 		/// <summary>
 		/// resets state and empties internal buffers
 		/// </summary>

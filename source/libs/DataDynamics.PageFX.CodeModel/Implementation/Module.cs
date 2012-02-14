@@ -91,7 +91,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Enumerate(_namespaces); }
+            get { return new ICodeNode[] {_namespaces}; }
         }
 
     	/// <summary>

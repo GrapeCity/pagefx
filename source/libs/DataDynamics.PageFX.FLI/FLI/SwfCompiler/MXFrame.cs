@@ -65,13 +65,7 @@ namespace DataDynamics.PageFX.FLI
             return abc.DefineQName(ns, NameMxSysManager);
         }
 
-		private static class SystemManagerProperties
-		{
-			public const string MainAppClass = "MainAppClass";
-		}
-    	
-
-        void BuildMxSystemManager(AbcFile abc)
+    	void BuildMxSystemManager(AbcFile abc)
         {
             var superType = ImportType(abc, "mx.managers.SystemManager");
         	var flexModuleFactoryInterface = GetFlexModuleFactoryInterface(abc);

@@ -1,13 +1,10 @@
-using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.CLI.CFG;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
-    using Code = List<IInstruction>;
-
-    //STEP2 - Flow Graph Analysis
+	//STEP2 - Flow Graph Analysis
     internal partial class ILTranslator
     {
         /// <summary>

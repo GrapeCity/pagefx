@@ -73,7 +73,6 @@ namespace DataDynamics.PageFX.FLI.ABC
         	EnshureSystemTypes();
 
             AbcFile.FilterMetadata = false;
-            int i = 0;
             AbcFile main = null;
             foreach (var abc in files)
             {
@@ -81,7 +80,6 @@ namespace DataDynamics.PageFX.FLI.ABC
                     main = abc;
                 else
                     main.Import(abc);
-                ++i;
             }
             if (main == null)
                 throw new InvalidOperationException();

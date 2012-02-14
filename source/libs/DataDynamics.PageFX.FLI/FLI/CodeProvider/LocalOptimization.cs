@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -186,7 +184,7 @@ namespace DataDynamics.PageFX.FLI
             return IsCallProperty(instr, Const.Namespaces.PFX, Const.Boxing.MethodUnbox);
         }
 
-        static readonly Pattern[] _patterns =
+        private static readonly Pattern[] Patterns =
             new[]
                 {
                     new Pattern(
@@ -207,14 +205,14 @@ namespace DataDynamics.PageFX.FLI
                     #region Ifeq, Ifstricteq
                     new Pattern(
                         "Ifeq1",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifeq)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifeq)},
                         (code, index, i) => i.Code == InstructionCode.Equals,
                         (code, index, i) => i.Code == InstructionCode.Iftrue
                         ),
 
                     new Pattern(
                         "Ifeq2",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifeq)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifeq)},
                         (code, index, i) => i.Code == InstructionCode.Equals,
                         (code, index, i) => IgnoreBoolCast(i),
                         (code, index, i) => i.Code == InstructionCode.Iftrue
@@ -222,7 +220,7 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifeq3",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifeq)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifeq)},
                         (code, index, i) => i.Code == InstructionCode.Equals,
                         (code, index, i) => i.Code == InstructionCode.Not,
                         (code, index, i) => i.Code == InstructionCode.Iffalse
@@ -230,7 +228,7 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifeq4",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifeq)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifeq)},
                         (code, index, i) => i.Code == InstructionCode.Equals,
                         (code, index, i) => i.Code == InstructionCode.Not,
                         (code, index, i) => IgnoreBoolCast(i),
@@ -239,14 +237,14 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifstricteq1",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifstricteq)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifstricteq)},
                         (code, index, i) => i.Code == InstructionCode.Strictequals,
                         (code, index, i) => i.Code == InstructionCode.Iftrue
                         ),
 
                     new Pattern(
                         "Ifstricteq2",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifstricteq)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifstricteq)},
                         (code, index, i) => i.Code == InstructionCode.Strictequals,
                         (code, index, i) => IgnoreBoolCast(i),
                         (code, index, i) => i.Code == InstructionCode.Iftrue
@@ -254,7 +252,7 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifstricteq3",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifstricteq)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifstricteq)},
                         (code, index, i) => i.Code == InstructionCode.Strictequals,
                         (code, index, i) => i.Code == InstructionCode.Not,
                         (code, index, i) => i.Code == InstructionCode.Iffalse
@@ -262,7 +260,7 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifstricteq4",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifstricteq)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifstricteq)},
                         (code, index, i) => i.Code == InstructionCode.Strictequals,
                         (code, index, i) => i.Code == InstructionCode.Not,
                         (code, index, i) => IgnoreBoolCast(i),
@@ -274,14 +272,14 @@ namespace DataDynamics.PageFX.FLI
                     #region Ifne, Ifstrictne
                     new Pattern(
                         "Ifne1",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifne)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifne)},
                         (code, index, i) => i.Code == InstructionCode.Equals,
                         (code, index, i) => i.Code == InstructionCode.Iffalse
                         ),
 
                     new Pattern(
                         "Ifne2",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifne)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifne)},
                         (code, index, i) => i.Code == InstructionCode.Equals,
                         (code, index, i) => IgnoreBoolCast(i),
                         (code, index, i) => i.Code == InstructionCode.Iffalse
@@ -289,7 +287,7 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifne3",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifne)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifne)},
                         (code, index, i) => i.Code == InstructionCode.Equals,
                         (code, index, i) => i.Code == InstructionCode.Not,
                         (code, index, i) => i.Code == InstructionCode.Iftrue
@@ -297,7 +295,7 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifne4",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifne)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifne)},
                         (code, index, i) => i.Code == InstructionCode.Equals,
                         (code, index, i) => i.Code == InstructionCode.Not,
                         (code, index, i) => IgnoreBoolCast(i),
@@ -306,14 +304,14 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifstrictne1",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifstrictne)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifstrictne)},
                         (code, index, i) => i.Code == InstructionCode.Strictequals,
                         (code, index, i) => i.Code == InstructionCode.Iffalse
                         ),
 
                     new Pattern(
                         "Ifstrictne2",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifstrictne)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifstrictne)},
                         (code, index, i) => i.Code == InstructionCode.Strictequals,
                         (code, index, i) => IgnoreBoolCast(i),
                         (code, index, i) => i.Code == InstructionCode.Iffalse
@@ -321,7 +319,7 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifstrictne3",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifstrictne)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifstrictne)},
                         (code, index, i) => i.Code == InstructionCode.Strictequals,
                         (code, index, i) => i.Code == InstructionCode.Not,
                         (code, index, i) => i.Code == InstructionCode.Iftrue
@@ -329,7 +327,7 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Ifstrictne4",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Ifstrictne)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Ifstrictne)},
                         (code, index, i) => i.Code == InstructionCode.Strictequals,
                         (code, index, i) => i.Code == InstructionCode.Not,
                         (code, index, i) => IgnoreBoolCast(i),
@@ -357,7 +355,7 @@ namespace DataDynamics.PageFX.FLI
                     new Pattern(
                         "Inclocal_i",
                         (abc, code, index) =>
-                        new[]
+                        new IInstruction[]
                             {
                                 new Instruction(InstructionCode.Inclocal_i, ((Instruction)code[index]).LocalIndex)
                             },
@@ -385,7 +383,7 @@ namespace DataDynamics.PageFX.FLI
                     new Pattern(
                         "Inclocal",
                         (abc, code, index) =>
-                        new[]
+                        new IInstruction[]
                             {
                                 new Instruction(InstructionCode.Inclocal, ((Instruction)code[index]).LocalIndex)
                             },
@@ -415,7 +413,7 @@ namespace DataDynamics.PageFX.FLI
                     new Pattern(
                         "Declocal_i",
                         (abc, code, index) =>
-                        new[]
+                        new IInstruction[]
                             {
                                 new Instruction(InstructionCode.Declocal_i, ((Instruction)code[index]).LocalIndex)
                             },
@@ -443,7 +441,7 @@ namespace DataDynamics.PageFX.FLI
                     new Pattern(
                         "Declocal",
                         (abc, code, index) =>
-                        new[]
+                        new IInstruction[]
                             {
                                 new Instruction(InstructionCode.Declocal, ((Instruction)code[index]).LocalIndex)
                             },
@@ -455,7 +453,7 @@ namespace DataDynamics.PageFX.FLI
                     #endregion
                     
                     new Pattern("UnboxPrimitiveThis.Swap",
-                                (abc, code, index) => new[]
+                                (abc, code, index) => new IInstruction[]
                                                           {
                                                               new Instruction(InstructionCode.Getlocal0),
                                                               new Instruction(InstructionCode.Getproperty,
@@ -468,7 +466,7 @@ namespace DataDynamics.PageFX.FLI
                         ),
 
                     new Pattern("UnboxPrimitiveThis",
-                                (abc, code, index) => new[]
+                                (abc, code, index) => new IInstruction[]
                                                           {
                                                               new Instruction(InstructionCode.Getlocal0),
                                                               new Instruction(InstructionCode.Getproperty,
@@ -489,28 +487,28 @@ namespace DataDynamics.PageFX.FLI
 
                     new Pattern(
                         "Increment_i",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Increment_i)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Increment_i)},
                         (code, index, i) => IsOneOnStack(i),
                         (code, index, i) => i.Code == InstructionCode.Add_i
                         ),
 
                     new Pattern(
                         "Increment",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Increment)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Increment)},
                         (code, index, i) => IsOneOnStack(i),
                         (code, index, i) => i.Code == InstructionCode.Add
                         ),
 
                     new Pattern(
                         "Decrement_i",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Decrement_i)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Decrement_i)},
                         (code, index, i) => IsOneOnStack(i),
                         (code, index, i) => i.Code == InstructionCode.Subtract_i
                         ),
 
                     new Pattern(
                         "Decrement",
-                        (abc, code, index) => new[] {new Instruction(InstructionCode.Decrement)},
+                        (abc, code, index) => new IInstruction[] {new Instruction(InstructionCode.Decrement)},
                         (code, index, i) => IsOneOnStack(i),
                         (code, index, i) => i.Code == InstructionCode.Subtract
                         )
@@ -532,9 +530,9 @@ namespace DataDynamics.PageFX.FLI
             for (int index = 0; index < n; ++index)
             {
                 bool add = true;
-                for (int j = 0; j < _patterns.Length; ++j)
+                for (int j = 0; j < Patterns.Length; ++j)
                 {
-                    var p = _patterns[j];
+                    var p = Patterns[j];
                     var r = p.Replace(_abc, code, index);
                     if (r != null)
                     {

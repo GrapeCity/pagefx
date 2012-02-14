@@ -181,10 +181,6 @@ namespace DataDynamics.PageFX.FLI
             return true;
         }
 
-        static bool IsEnumConstant(IField field)
-        {
-            return field.DeclaringType.IsEnum && field.IsStatic;
-        }
-        #endregion
+    	#endregion
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -83,8 +82,7 @@ namespace DataDynamics.UI
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
-            if (g == null) return;
-            if (m_Image == null) return;
+        	if (m_Image == null) return;
 
             int dw = m_Image.Width;
             int dh = m_Image.Height;
@@ -119,11 +117,6 @@ namespace DataDynamics.UI
                 g.DrawRectangle(new Pen(Color.White, 1), dl, dt, dw, dh);
                 g.DrawRectangle(new Pen(Color.Blue, 2), dl - 2, dt - 2, dw + 4, dh + 4);
             }
-        }
-
-        private void OnResize(object sender, EventArgs e)
-        {
-            Invalidate();
         }
     }
 }

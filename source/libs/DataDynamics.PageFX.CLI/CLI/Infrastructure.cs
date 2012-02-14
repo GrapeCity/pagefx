@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI

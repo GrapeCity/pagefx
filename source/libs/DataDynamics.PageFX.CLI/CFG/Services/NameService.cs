@@ -1,23 +1,14 @@
 #if DEBUG
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
-    internal class NameService
+    internal sealed class NameService
     {
-        private char letter = 'a';
-        private int index;
-        private int seqIndex;
-        private int graphIndex;
-        private int whileIndex;
-        private int doWhileIndex;
-        private int loopIndex;
-        private int ifIndex;
-        private int swIndex;
-        private int tryIndex;
-        private int handlerIndex;
+    	private int _index;
 
-        public void SetNames(IEnumerable<Node> list) 
+    	public void SetNames(IEnumerable<Node> list) 
         {
             foreach (var node in list)
                 node.IsVisited = false;
@@ -31,10 +22,9 @@ namespace DataDynamics.PageFX.CLI.CFG
             if (node.IsVisited) return;
             node.IsVisited = true;
             SetName(node);
-            foreach (var suc in node.Successors)
+            foreach (var suc in node.Successors.Where(suc => !suc.IsVisited))
             {
-                if (!suc.IsVisited)
-                    SetNames(suc);
+            	SetNames(suc);
             }
         }
 
@@ -48,7 +38,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             if (!string.IsNullOrEmpty(node.Name))
                 return;
 
-			SetName(node, "B", ref index);
+			SetName(node, "B", ref _index);
         }
     }
 }

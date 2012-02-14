@@ -225,7 +225,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IType[] GenericArguments
         {
-            get { return CMHelper.EmptyTypes; }
+            get { return new IType[0]; }
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace DataDynamics.PageFX.CodeModel
             get
             {
                 if (Body != null)
-                    return CMHelper.Enumerate(Body.Statements);
+                    return new ICodeNode[] {Body.Statements};
                 return null;
             }
         }

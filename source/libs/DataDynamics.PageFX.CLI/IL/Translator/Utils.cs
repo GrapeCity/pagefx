@@ -25,24 +25,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return method.IsConstructor;
         }
 
-        bool CanInitType(ITypeMember m)
-        {
-            if (m.IsStatic || IsCtor(m))
-            {
-                //NOTE: this and base type must have been already intialized
-                var type = m.DeclaringType;
-                var t = _method.DeclaringType;
-                while (t != null)
-                {
-                    if (t == type) return false;
-                    t = t.BaseType;
-                }
-                return true;
-            }
-            return false;
-        }
-
-        bool MustPreventBoxing(IMethod method, IParameter arg)
+    	bool MustPreventBoxing(IMethod method, IParameter arg)
         {
             return _provider.MustPreventBoxing(method, arg);
         }
@@ -241,15 +224,5 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
         #endregion
-
-        IEnumerable<IMethod> GetCalls()
-        {
-            foreach (var instr in _body.Code)
-            {
-                var m = instr.Method;
-                if (m != null)
-                    yield return m;
-            }
-        }
     }
 }

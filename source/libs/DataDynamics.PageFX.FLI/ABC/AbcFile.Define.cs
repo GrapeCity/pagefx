@@ -491,30 +491,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             return DefineNamespace(ns, v, false);
         }
 
-        static bool IsPrivate(Visibility v)
-        {
-            switch (v)
-            {
-                case Visibility.NestedPrivate:
-                case Visibility.Private:
-                case Visibility.PrivateScope:
-                    return true;
-            }
-            return false;
-        }
-
-        static bool IsInternal(Visibility v)
-        {
-            switch (v)
-            {
-                case Visibility.NestedInternal:
-                case Visibility.Internal:
-                    return true;
-            }
-            return false;
-        }
-
-        static string GetNsName(Visibility v)
+    	static string GetNsName(Visibility v)
         {
             switch (v)
             {

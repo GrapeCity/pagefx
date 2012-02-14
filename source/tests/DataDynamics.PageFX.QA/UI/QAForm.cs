@@ -361,23 +361,7 @@ namespace DataDynamics.PageFX
             _checkHandling = false;
         }
 
-        List<TreeNode> GetTestCases(string path)
-        {
-            var node = FindByPath(testCases.Nodes, path);
-            if (node == null) return null;
-            var list = new List<TreeNode>();
-            if (node.Tag is TestCase)
-            {
-                list.Add(node);
-            }
-            else
-            {
-            	list.AddRange(GetDescendants(node).Where(d => d.Tag is TestCase));
-            }
-            return list;
-        }
-
-        static IEnumerable<TreeNode> GetSelectedTestCases(TreeNode node)
+    	static IEnumerable<TreeNode> GetSelectedTestCases(TreeNode node)
         {
             var tc = node.Tag as TestCase;
             if (tc != null)
@@ -958,17 +942,7 @@ namespace DataDynamics.PageFX
             }
         }
 
-        static void CollapseParent(TreeNode node)
-        {
-            var parent = node.Parent;
-            while (parent != null)
-            {
-                parent.Collapse();
-                parent = parent.Parent;
-            }
-        }
-
-        void btnRunAll_Click(object sender, EventArgs e)
+    	void btnRunAll_Click(object sender, EventArgs e)
         {
             if (!worker.IsBusy)
                 worker.RunWorkerAsync(GetAllTestCases());

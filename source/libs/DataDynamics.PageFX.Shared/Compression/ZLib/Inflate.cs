@@ -300,7 +300,7 @@ namespace DataDynamics.ZLib
 			return ReturnCodes.ZLibOk;
 		}
 
-		private byte[] mark = new byte[4]{(byte)0, (byte)0, (byte)0xff, (byte)0xff};
+		private byte[] mark = new[]{(byte)0, (byte)0, (byte)0xff, (byte)0xff};
 
 		public ReturnCodes Sync(ZStream z)
 		{

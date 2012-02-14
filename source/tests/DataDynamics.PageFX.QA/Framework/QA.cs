@@ -798,21 +798,21 @@ namespace DataDynamics.PageFX
                             return null;
                         }
 
-                        lines.Add(line1, line2);
+                        lines.Add(null, line2);
                         lines.SetDiffLine();
 
                         if (notFast)
-                            ReadRestLines(reader1, reader2, line1, line2, lines);
+                            ReadRestLines(reader1, reader2, null, line2, lines);
                         break;
                     }
 
                     if (line2 == null)
                     {
-                        lines.Add(line1, line2);
+                        lines.Add(line1, null);
                         lines.SetDiffLine();
 
                         if (notFast)
-                            ReadRestLines(reader1, reader2, line1, line2, lines);
+                            ReadRestLines(reader1, reader2, line1, null, lines);
                         break;
                     }
 

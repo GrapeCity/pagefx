@@ -296,7 +296,7 @@ namespace DataDynamics.PageFX.FLI
 
             return new[]
                        {
-                           Instruction.SetLocal(GetArgIndex(p))
+                           (IInstruction)Instruction.SetLocal(GetArgIndex(p))
                        };
         }
         #endregion
@@ -313,7 +313,7 @@ namespace DataDynamics.PageFX.FLI
             {
                 return SetSlot(_thisPtr.Slot);
             }
-            return new[] { Instruction.SetLocal(GetThisIndex()) };
+            return new[] { (IInstruction)Instruction.SetLocal(GetThisIndex()) };
         }
 
         public IInstruction[] LoadThis()

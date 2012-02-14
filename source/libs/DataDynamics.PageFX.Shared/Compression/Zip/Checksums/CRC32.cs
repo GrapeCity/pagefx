@@ -94,7 +94,7 @@ namespace DataDynamics.Compression.Checksums
 		/// <summary>
 		/// The crc data checksum so far.
 		/// </summary>
-		uint crc = 0;
+		uint crc;
 		
 		/// <summary>
 		/// Returns the CRC32 data checksum computed so far.

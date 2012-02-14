@@ -584,7 +584,7 @@ namespace DataDynamics.PageFX.CLI.IL
             code.AddRange(_provider.LoadIndirect(vtype));
         }
 
-        bool LoadPtr(Code code, IValue v)
+        private bool LoadPtr(Code code, IValue v)
         {
             if (!v.IsPointer) return false;
 

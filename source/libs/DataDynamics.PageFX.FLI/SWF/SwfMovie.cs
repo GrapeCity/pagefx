@@ -772,18 +772,6 @@ namespace DataDynamics.PageFX.FLI.SWF
                         LinkAsset(a);
                         yield return a;
                     }
-                    continue;
-                }
-
-                var import2 = tag as SwfTagImportAssets2;
-                if (import2 != null)
-                {
-                    foreach (var a in import2.Assets)
-                    {
-                        LinkAsset(a);
-                        yield return a;
-                    }
-                    continue;
                 }
             }
         }
@@ -800,7 +788,6 @@ namespace DataDynamics.PageFX.FLI.SWF
                         LinkAsset(a);
                         yield return a;
                     }
-                    continue;
                 }
             }
         }
@@ -817,7 +804,6 @@ namespace DataDynamics.PageFX.FLI.SWF
                         LinkAsset(a);
                         yield return a;
                     }
-                    continue;
                 }
             }
         }
@@ -846,14 +832,6 @@ namespace DataDynamics.PageFX.FLI.SWF
                 if (import != null)
                 {
                     LinkAssets(import.Assets);
-                    continue;
-                }
-
-                var import2 = tag as SwfTagImportAssets2;
-                if (import2 != null)
-                {
-                    LinkAssets(import2.Assets);
-                    continue;
                 }
             }
         }

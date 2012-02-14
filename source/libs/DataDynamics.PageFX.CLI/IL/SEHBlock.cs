@@ -1,7 +1,9 @@
+using System;
 using System.IO;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
+	[Flags]
     internal enum SEHFlags
     {
         Catch = 0x00,

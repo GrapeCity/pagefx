@@ -799,7 +799,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                     return instance;
             }
 
-            return instance;
+            return null;
         }
 
         internal AbcInstance ImportInstance(AbcMultiname name)

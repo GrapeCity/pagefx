@@ -95,7 +95,7 @@ namespace DataDynamics.PE
 		
 		public PEDebugInfo7(Stream stm)
 		{
-			var rdr = new BufferedBinaryReader(base.ReadBlock(stm, s_Size));
+			var rdr = new BufferedBinaryReader(ReadBlock(stm, s_Size));
 			_signature = rdr.ReadUInt32();
 			_offset = 0;
 			_stamp = new Guid(rdr.ReadBlock(16));
@@ -120,7 +120,7 @@ namespace DataDynamics.PE
 		
 		public PEMiskDebugInfo(Stream stm)
 		{
-			var rdr = new BufferedBinaryReader(base.ReadBlock(stm, 16));
+			var rdr = new BufferedBinaryReader(ReadBlock(stm, 16));
 			_signature = rdr.ReadUInt32();
 			_offset = rdr.ReadInt32();
 			uint isUnicode = rdr.ReadUInt32();

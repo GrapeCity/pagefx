@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DataDynamics.Collections;
 
 namespace DataDynamics.PageFX.CodeModel

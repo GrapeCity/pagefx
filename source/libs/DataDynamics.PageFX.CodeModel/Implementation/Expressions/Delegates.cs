@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Enumerate(_method); }
+            get { return new ICodeNode[] {_method}; }
         }
 
         public override bool Equals(object obj)
@@ -94,7 +94,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Enumerate(_target, _args); }
+            get { return new ICodeNode[] { _target, _args }; }
         }
 
         public override bool Equals(object obj)

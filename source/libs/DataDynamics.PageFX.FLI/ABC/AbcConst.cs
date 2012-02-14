@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 case TypeCode.String:
                     IsString = true;
                     SharedKind = AbcConstKind.String;
-                    Default = new AbcConst<T>((T)(object)null) {Index = 0};
+					Default = new AbcConst<T>(default(T)) { Index = 0 };
                     break;
 
                 default:
@@ -77,11 +77,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public string Key
         {
-            get
-            {
-                if (_value == null) return "";
-                return _value.ToString();
-            }
+            get { return Equals(_value, null) ? "" : _value.ToString(); }
         }
 
         /// <summary>

@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX.CodeModel
         #region ICodeNode Members
         public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Enumerate(_arr, _index); }
+            get { return new ICodeNode[] { _arr, _index }; }
         }
         #endregion
 

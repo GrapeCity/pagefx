@@ -731,26 +731,26 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region BuildType
-        static bool IsExcluded(AbcInstance instance)
-        {
-            AbcClass klass = instance.Class;
-            var t = klass.Trait;
-            if (t == null) return false;
-            if (!t.HasMetadata) return false;
-            bool excludeClass = false;
-            bool embed = false;
-            foreach (var entry in t.Metadata)
-            {
-                string name = entry.NameString;
-                if (!excludeClass && name == "ExcludeClass")
-                    excludeClass = true;
-                if (!embed && name == "Embed")
-                    embed = true;
-                if (excludeClass && embed)
-                    return true;
-            }
-            return false;
-        }
+		//static bool IsExcluded(AbcInstance instance)
+		//{
+		//    AbcClass klass = instance.Class;
+		//    var t = klass.Trait;
+		//    if (t == null) return false;
+		//    if (!t.HasMetadata) return false;
+		//    bool excludeClass = false;
+		//    bool embed = false;
+		//    foreach (var entry in t.Metadata)
+		//    {
+		//        string name = entry.NameString;
+		//        if (!excludeClass && name == "ExcludeClass")
+		//            excludeClass = true;
+		//        if (!embed && name == "Embed")
+		//            embed = true;
+		//        if (excludeClass && embed)
+		//            return true;
+		//    }
+		//    return false;
+		//}
 
         static bool IsVisible(AbcInstance instance)
         {

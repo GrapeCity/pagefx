@@ -7,7 +7,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml;
-using DataDynamics.PageFX.PDB.Interop;
 
 namespace DataDynamics.PageFX.PDB
 {

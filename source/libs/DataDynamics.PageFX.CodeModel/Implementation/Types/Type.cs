@@ -310,7 +310,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Enumerate(Types, Fields, Properties, Events, Methods); }
+            get { return new ICodeNode[] { Types, Fields, Properties, Events, Methods }; }
         }
         #endregion
 

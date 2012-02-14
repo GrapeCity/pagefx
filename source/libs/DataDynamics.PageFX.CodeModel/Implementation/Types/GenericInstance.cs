@@ -130,7 +130,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return;
             }
 
-            var e = method as IEvent;
+			var e = member as IEvent;
             if (e != null)
             {
                 _events.AddInternal(e);
@@ -138,11 +138,11 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
 
-        ReadOnlyMemberCollection _members;
-        FieldCollection _fields;
-        MethodCollection _methods;
-        PropertyCollection _properties;
-        ReadOnlyEventCollection _events;
+        private ReadOnlyMemberCollection _members;
+		private FieldCollection _fields;
+		private MethodCollection _methods;
+		private PropertyCollection _properties;
+		private ReadOnlyEventCollection _events;
         #endregion
 
         #region IGenericTypeInstance Members

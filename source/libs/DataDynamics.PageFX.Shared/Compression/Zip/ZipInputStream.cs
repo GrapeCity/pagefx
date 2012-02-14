@@ -456,7 +456,7 @@ namespace DataDynamics.Compression.Zip
 				avail = 0;
 				while (csize != 0) 
 				{
-					int skipped = (int)base.Skip(csize & 0xFFFFFFFFL);
+					int skipped = (int)Skip(csize & 0xFFFFFFFFL);
 					
 					if (skipped <= 0) 
 					{

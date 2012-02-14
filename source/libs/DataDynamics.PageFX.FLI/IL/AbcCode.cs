@@ -1553,13 +1553,10 @@ namespace DataDynamics.PageFX.FLI.IL
             return label;
         }
 
-        static IType ChangeType(IType type)
+        private static IType ChangeType(IType type)
         {
-            if (type == null)
-                return type;
-            if (type.IsEnum)
-                return type.ValueType;
-            return type;
+            if (type == null) return null;
+            return type.IsEnum ? type.ValueType : type;
         }
 
         static bool IsNative(IType type)

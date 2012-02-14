@@ -1,3 +1,5 @@
+using System;
+
 namespace DataDynamics.PageFX.FLI.SWF
 {
     public enum SwfCapStyle
@@ -14,6 +16,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         Miter
     }
 
+	[Flags]
     public enum SwfLineFlags
     {
         /// <summary>

@@ -397,7 +397,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.EmptyCodeNodes; }
+            get { return new ICodeNode[0]; }
         }
 
     	public object Tag { get; set; }

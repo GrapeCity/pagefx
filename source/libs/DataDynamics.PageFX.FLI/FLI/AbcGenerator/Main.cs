@@ -308,20 +308,18 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region Late Methods
-        readonly AbcLateMethodCollection _lateMethods = new AbcLateMethodCollection();
 
-        void AddLateMethod(AbcMethod method, AbcMethodHandler coder)
+        private readonly AbcLateMethodCollection _lateMethods = new AbcLateMethodCollection();
+
+    	void AddLateMethod(AbcMethod method, AbcCoder coder)
         {
             _lateMethods.Add(method, coder);
         }
 
-        void AddLateMethod(AbcMethod method, AbcCoder coder)
-        {
-            _lateMethods.Add(method, coder);
-        }
         #endregion
 
         #region Utils
+
         IType FindTypeDefOrRef(string fullname)
         {
             return AssemblyIndex.FindType(_assembly, fullname);
@@ -399,11 +397,7 @@ namespace DataDynamics.PageFX.FLI
             return _abc.DefineParam(type, name);
         }
 
-        AbcParameter CreateIntParam(string name)
-        {
-            return CreateParam(_abc.BuiltinTypes.Int32, name);
-        }
-        #endregion
+    	#endregion
 
         #region NativeAPI Extensions
         AbcCode _newAPI;

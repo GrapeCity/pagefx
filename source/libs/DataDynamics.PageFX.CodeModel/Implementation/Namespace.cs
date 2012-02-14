@@ -47,7 +47,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Enumerate(_types); }
+            get { return new ICodeNode[] {_types}; }
         }
 
     	/// <summary>

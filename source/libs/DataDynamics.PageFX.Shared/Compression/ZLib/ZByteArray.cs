@@ -9,10 +9,6 @@ namespace DataDynamics.ZLib
 	/// </summary>
 	internal class ZByteArray
 	{
-		public ZByteArray()
-		{
-		}
-
 		public static byte[] Compress(byte[] data,int level)
 		{
 			MemoryStream sourceStream=new MemoryStream(data);

@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX.CodeModel
         #region ICodeNode Members
         public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return CMHelper.Enumerate(_condition, _body); }
+            get { return new ICodeNode[] { _condition, _body }; }
         }
         #endregion
 
@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.CodeModel
             if (s.LoopType != _loopType) return false;
             if (!Equals(s.Condition, _condition)) return false;
             if (!Equals(s.Body, _body)) return false;
-            return base.Equals(obj);
+            return true;
         }
 
         public override int GetHashCode()

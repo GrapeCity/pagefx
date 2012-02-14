@@ -33,7 +33,7 @@ namespace DataDynamics.Compression.Zip.Compression
 		/// <summary>
 		/// This level won't compress at all but output uncompressed blocks.
 		/// </summary>
-		public static  int NO_COMPRESSION = 0;
+		public static  int NO_COMPRESSION;
 				
 		/// <summary>
 		/// The compression method.  This is the only method supported so far.
