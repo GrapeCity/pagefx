@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.Collections;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -165,7 +164,7 @@ namespace DataDynamics.PageFX.CodeModel
         }
     }
 
-    class EmptyTypeCollection : ITypeCollection
+    internal sealed class EmptyTypeCollection : ITypeCollection
     {
         public static readonly ITypeCollection Instance = new EmptyTypeCollection();
 
@@ -202,7 +201,7 @@ namespace DataDynamics.PageFX.CodeModel
         #region IEnumerable<IType> Members
         public IEnumerator<IType> GetEnumerator()
         {
-            return new EmptyEnumerator<IType>();
+            return Enumerable.Empty<IType>().GetEnumerator();
         }
         #endregion
 

@@ -1,4 +1,4 @@
-using DataDynamics.Collections;
+using System.Linq;
 
 namespace System.Collections.Generic
 {
@@ -62,7 +62,7 @@ namespace System.Collections.Generic
         #region IEnumerable<T> Members
         public IEnumerator<T> GetEnumerator()
         {
-            return new EmptyEnumerator<T>();
+            return Enumerable.Empty<T>().GetEnumerator();
         }
         #endregion
 

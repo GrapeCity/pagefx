@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using DataDynamics.Collections;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -92,7 +92,10 @@ namespace DataDynamics.PageFX.CodeModel
         #region IEnumerable<IInstruction> Members
         IEnumerator<IInstruction> IEnumerable<IInstruction>.GetEnumerator()
         {
-            return new BaseTypeEnumerator<T, IInstruction>(GetEnumerator());
+        	foreach (var item in this)
+        	{
+        		yield return item;
+        	}
         }
         #endregion
 

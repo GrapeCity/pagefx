@@ -48,8 +48,6 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CFG\Enums.cs" />
-    <Compile Include="CFG\Nodes\HandlerNode.cs" />
     <Compile Include="CLI\IOUtils.cs" />
     <Compile Include="GAC\AssemblyCache.cs" />
     <Compile Include="GAC\Structs.cs" />
@@ -72,7 +70,6 @@
     <Compile Include="IL\Values\Arg.cs" />
     <Compile Include="IL\CIL.cs" />
     <Compile Include="CFG\NodeList.cs" />
-    <Compile Include="CFG\Nodes\TryNode.cs" />
     <Compile Include="CFG\Services\DumpService.cs" />
     <Compile Include="CFG\Edge.cs" />
     <Compile Include="IL\CLR.cs" />
@@ -103,15 +100,11 @@
     <Compile Include="IL\Translator\Main.cs" />
     <Compile Include="IL\IMethodContext.cs" />
     <Compile Include="IL\Instruction.cs" />
-    <Compile Include="CFG\Nodes\LoopNode.cs" />
     <Compile Include="IL\LateMethodBody.cs" />
     <Compile Include="IL\MethodBody.cs" />
     <Compile Include="IL\InstructionCode.cs" />
     <Compile Include="CFG\Node.cs" />
     <Compile Include="IL\Block.cs" />
-    <Compile Include="CFG\Nodes\SwitchNode.cs" />
-    <Compile Include="CFG\Nodes\SequenceNode.cs" />
-    <Compile Include="CFG\Nodes\IfNode.cs" />
     <Compile Include="CFG\Services\DotService.cs" />
     <Compile Include="CFG\Services\NameService.cs" />
     <Compile Include="IL\SEHBlock.cs" />
@@ -175,6 +168,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="IL\Translator\todo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CFG\Nodes\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

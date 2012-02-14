@@ -134,12 +134,12 @@ namespace DataDynamics.PageFX.CLI.CFG
                         var f = node.FirstOut;
                         var s = f.NextOut;
                         writer.WriteLine("{0} -> {1} [label=\"{2}\"];",
-                                         node.GetSourceName(subgraph),
-                                         f.To.GetTargetName(subgraph),
+                                         node.Name,
+                                         f.To.Name,
                                          f.Label);
                         writer.WriteLine("{0} -> {1} [label=\"{2}\"];",
-                                         node.GetSourceName(subgraph),
-                                         s.To.GetTargetName(subgraph),
+                                         node.Name,
+                                         s.To.Name,
                                          s.Label);
                     }
                     else
@@ -165,8 +165,8 @@ namespace DataDynamics.PageFX.CLI.CFG
                 col = string.Format(" [color = {0}]", color);
 
             writer.WriteLine("{0} -> {1}{2};",
-                             from.GetSourceName(subgraph),
-                             to.GetTargetName(subgraph),
+                             @from.Name,
+                             to.Name,
                              col);
         }
 
@@ -187,16 +187,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             }
         }
 
-        private static void Write<T>(TextWriter writer, IEnumerable<T> nodes, bool subgraph)
-            where T : Node
-        {
-            foreach (var node in nodes)
-            {
-                WriteNode(writer, node, subgraph);
-            }
-        }
-
-        private static void WriteLabel(TextWriter writer, Node node)
+    	private static void WriteLabel(TextWriter writer, Node node)
         {
             string label = GetLabel(node);
             if (string.IsNullOrEmpty(label)) return;
@@ -207,243 +198,21 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         private static void WriteNode(TextWriter writer, Node node, bool subgraph)
         {
-            var type = node.NodeType;
-            if (type == NodeType.BasicBlock)
-            {
-                WriteNew(writer, node, true);
-                WriteLabel(writer, node);
-            }
-            else if (type == NodeType.Sequence)
-            {
-                var seq = (SequenceNode)node;
-                int n = seq.Kids.Count;
-                if (subgraph)
-                {
-                    writer.WriteLine("subgraph cluster{0}", node.Name);
-                    writer.WriteLine("{");
-
-                    Write(writer, seq.Kids, true);
-
-                    for (int i = 1; i < n; ++i)
-                    {
-                        writer.WriteLine("{0} -> {1} [color=red];",
-                                         seq.Kids[i - 1].GetSourceName(true),
-                                         seq.Kids[i].GetTargetName(true));
-                    }
-                    writer.WriteLine("label = \"{0}({1})\";", node.Name, n);
-                    writer.WriteLine("color = blue;");
-                    WriteNew(writer, node, false);
-                    writer.WriteLine("}");
-                }
-                else
-                {
-                    WriteLabel(writer, node);
-                    WriteNew(writer, node, true);
-                }
-            }
-            else if (type == NodeType.If)
-            {
-                var ifNode = (IfNode)node;
-                if (subgraph)
-                {
-                    writer.WriteLine("subgraph cluster{0}", node.Name);
-                    writer.WriteLine("{");
-
-                    WriteNode(writer, ifNode.Condition, subgraph);
-                    WriteNode(writer, ifNode.True, subgraph);
-                    if (ifNode.False != null)
-                        WriteNode(writer, ifNode.False, subgraph);
-
-                    writer.WriteLine("{0} -> {1} [color=red, label=\"1\"];",
-                                     ifNode.Condition.GetSourceName(true),
-                                     ifNode.True.GetTargetName(true));
-
-                    if (ifNode.False != null)
-                    {
-                        writer.WriteLine("{0} -> {1} [color=red, label=\"0\"];",
-                                         ifNode.Condition.GetSourceName(true),
-                                         ifNode.False.GetTargetName(true));
-                    }
-
-                    writer.WriteLine("label = \"IF\";");
-                    writer.WriteLine("color = blue;");
-                    WriteNew(writer, node, false);
-                    writer.WriteLine("}");
-                }
-                else
-                {
-                    WriteLabel(writer, node);
-                    WriteNew(writer, node, true);
-                }
-            }
-            else if (type == NodeType.Loop)
-            {
-                var loop = (LoopNode)node;
-                if (subgraph)
-                {
-                    writer.WriteLine("subgraph cluster{0}", node.Name);
-                    writer.WriteLine("{");
-
-                    if (loop.Condition != null)
-                    {
-                        WriteNode(writer, loop.Condition, subgraph);
-
-                        if (loop.IsPreTested)
-                        {
-                            string srcName = loop.Condition.GetSourceName(subgraph);
-                            if (loop.FirstChild != null)
-                            {
-                                writer.WriteLine("{0} -> {1} [color=red];", srcName,
-                                                 loop.FirstChild.GetTargetName(true));
-                                writer.WriteLine("{0} -> {1} [color=red];",
-                                                 loop.LastChild.GetSourceName(true),
-                                                 loop.Condition.GetTargetName(true));
-                            }
-                            foreach (var suc in node.Successors)
-                            {
-                                writer.WriteLine("{0} -> {1} [color=red];",
-                                                 srcName,
-                                                 suc.GetTargetName(true));
-                            }
-                        }
-                        else if (loop.FirstChild != null)
-                        {
-                            writer.WriteLine("{0} -> {1} [color=red];",
-                                             loop.LastChild.GetSourceName(true),
-                                             loop.Condition.GetTargetName(true));
-
-                            writer.WriteLine("{0} -> {1} [color=red];",
-                                             loop.Condition.GetSourceName(true),
-                                             loop.FirstChild.GetTargetName(true));
-                        }
-                    }
-
-                    int n = loop.Body.Count;
-                    for (int i = 0; i < n; ++i)
-                    {
-                        WriteNode(writer, loop.Body[i], true);
-                    }
-                    for (int i = 1; i < n; ++i)
-                    {
-                        writer.WriteLine("{0} -> {1} [color=red];",
-                                         loop.Body[i - 1].GetSourceName(true),
-                                         loop.Body[i].GetTargetName(true));
-                    }
-
-                    writer.WriteLine("label = \"{0}\";", node.Name);
-                    writer.WriteLine("color = blue;");
-                    WriteNew(writer, node, false);
-                    writer.WriteLine("}");
-                }
-                else
-                {
-                    WriteLabel(writer, node);
-                    WriteNew(writer, node, true);
-                }
-            }
-            else if (type == NodeType.Switch)
-            {
-                var sw = (SwitchNode)node;
-                if (subgraph)
-                {
-                    writer.WriteLine("subgraph cluster{0}", node.Name);
-                    writer.WriteLine("{");
-
-                    WriteNode(writer, sw.Condition, true);
-                    Write(writer, sw.CaseNodes, true);
-                    
-                    foreach (var c in sw.CaseNodes)
-                    {
-                        writer.WriteLine("{0} -> {1} [color=red];",
-                                         sw.GetSourceName(true),
-                                         c.GetTargetName(true));
-
-                        if (c.Goto != null)
-                        {
-                            writer.WriteLine("{0} -> {1} [color=red];",
-                                         c.GetSourceName(true),
-                                         c.Goto.GetTargetName(true));
-                        }
-                    }
-
-                    writer.WriteLine("label = \"{0}\";", node.Name);
-                    writer.WriteLine("color = blue;");
-                    WriteNew(writer, node, false);
-                    writer.WriteLine("}");
-                }
-                else
-                {
-                    WriteLabel(writer, node);
-                    WriteNew(writer, node, true);
-                }
-            }
-            else if (type == NodeType.Try)
-            {
-                var tryNode = (TryNode)node;
-                string label = tryNode.Name;
-                if (subgraph)
-                {
-                    writer.WriteLine("subgraph cluster{0}", node.Name);
-                    writer.WriteLine("{");
-
-                    Write(writer, tryNode.Body, true);
-                    Write(writer, tryNode.Handlers, true);
-
-                    writer.WriteLine("label = \"{0}\";", label);
-                    writer.WriteLine("color = blue;");
-                    WriteNew(writer, node, false);
-                    writer.WriteLine("}");
-                }
-                else
-                {
-                    WriteLabel(writer, node);
-                    WriteNew(writer, node, true);
-                }
-            }
-            else if (type == NodeType.Handler)
-            {
-                var h = (HandlerNode)node;
-                string label = h.Name;
-                if (subgraph)
-                {
-                    writer.WriteLine("subgraph cluster{0}", node.Name);
-                    writer.WriteLine("{");
-
-                    Write(writer, h.Body, true);
-
-                    writer.WriteLine("label = \"{0}\";", label);
-                    writer.WriteLine("color = blue;");
-                    WriteNew(writer, node, false);
-                    writer.WriteLine("}");
-                }
-                else
-                {
-                    WriteLabel(writer, node);
-                    WriteNew(writer, node, true);
-                }
-            }
+        	WriteNew(writer, node, true);
+        	WriteLabel(writer, node);
         }
 
-        private static string GetLabel(Node node)
+    	private static string GetLabel(Node node)
         {
             if (node == null) return null;
-            switch (node.NodeType)
-            {
-                case NodeType.BasicBlock:
-                    {
-                        var s = new StringBuilder();
-                        s.Append(node.Name);
-                        foreach (var instruction in node.Code)
-                        {
-                            if (s.Length > 0) s.Append("\n");
-                            s.Append(instruction.ToString());
-                        }
-                        return s.ToString();
-                    }
-
-                default:
-                    return node.ToString(true);
-            }
+			var s = new StringBuilder();
+			s.Append(node.Name);
+			foreach (var instruction in node.Code)
+			{
+				if (s.Length > 0) s.Append("\n");
+				s.Append(instruction.ToString());
+			}
+			return s.ToString();
         }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.Collections;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -148,7 +147,7 @@ namespace DataDynamics.PageFX.CodeModel
         #region IEnumerable Members
         public IEnumerator<IMethod> GetEnumerator()
         {
-            return new EmptyEnumerator<IMethod>();
+            return Enumerable.Empty<IMethod>().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

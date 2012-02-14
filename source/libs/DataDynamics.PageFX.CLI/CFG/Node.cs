@@ -12,7 +12,7 @@ namespace DataDynamics.PageFX.CLI.CFG
     /// <summary>
     /// Graph node
     /// </summary>
-    internal class Node
+    internal sealed class Node
     {
         #region Constructors
         public Node()
@@ -26,17 +26,8 @@ namespace DataDynamics.PageFX.CLI.CFG
         #endregion
 
         #region Public Properties
-        public virtual NodeType NodeType
-        {
-            get { return NodeType.BasicBlock; }
-        }
 
-        public bool IsBasicBlock
-        {
-            get { return NodeType == NodeType.BasicBlock; }
-        }
-
-        public Block OwnerBlock { get; set; }
+    	public Block OwnerBlock { get; set; }
 
         public bool IsOneWay
         {
@@ -66,47 +57,12 @@ namespace DataDynamics.PageFX.CLI.CFG
             }
         }
 
-        public bool IsSwitch
-        {
-            get
-            {
-                if (NodeType != NodeType.BasicBlock) return false;
-                int n = CodeLength;
-                if (n == 0) return false;
-                return Code[n - 1].IsSwitch;
-            }
-        }
-
-        public bool IsSwitchCase
-        {
-            get { return InEdges.Any(i => i.From.IsSwitch); }
-        }
-
-        public bool HasZeroIn
-        {
-            get { return _firstIn == null; }
-        }
-
-        public bool HasOneIn
+    	public bool HasOneIn
         {
             get { return _firstIn != null && _firstIn.NextIn == null; }
         }
 
-        public bool HasZeroOrOneIn
-        {
-            get
-            {
-                if (_firstIn == null) return true;
-                return _firstIn.NextIn == null;
-            }
-        }
-
-        public bool HasZeroOut
-        {
-            get { return _firstOut == null; }
-        }
-
-        public bool HasOneOut
+    	public bool HasOneOut
         {
             get { return _firstOut != null && _firstOut.NextOut == null; }
         }
@@ -123,17 +79,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public string Name { get; set; }
 
-        public virtual string GetSourceName(bool subgraph)
-        {
-            return Name;
-        }
-
-        public virtual string GetTargetName(bool subgraph)
-        {
-            return Name;
-        }
-
-        public Node Goto;
+    	public Node Goto;
         public IGotoStatement GotoStatement;
         public ILabeledStatement Label;
 
@@ -955,10 +901,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             }
         }
 
-        public virtual void DetachKids()
-        {
-        }
-        #endregion
+    	#endregion
 
         #region Code
         /// <summary>
@@ -1022,12 +965,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 #if DEBUG
         public string CodeSpan
         {
-            get
-            {
-                if (NodeType == NodeType.BasicBlock || NodeType == NodeType.Sequence)
-                    return string.Format("{0}, {1}", EntryPoint, ExitPoint);
-                return "";
-            }
+            get { return string.Format("{0}, {1}", EntryPoint, ExitPoint); }
         }
 #endif
         #endregion
@@ -1038,7 +976,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             return ToString(true);
         }
 
-        public virtual string ToString(bool full)
+        public string ToString(bool full)
         {
             return FormatService.ToString(this, FormatOptions.Default);
         }

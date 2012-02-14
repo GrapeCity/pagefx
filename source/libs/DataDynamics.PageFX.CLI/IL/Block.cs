@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using DataDynamics.Collections;
-using DataDynamics.PageFX.CLI.CFG;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
@@ -19,9 +17,7 @@ namespace DataDynamics.PageFX.CLI.IL
     #region Block
     internal abstract class Block : ISehBlock
     {
-        public Node Node { get; set; }
-
-        public Instruction EntryPoint
+    	public Instruction EntryPoint
         {
             get { return _entryPoint; }
             set { _entryPoint = value; }
@@ -254,12 +250,6 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        public new TryNode Node
-        {
-            get { return (TryNode)base.Node; }
-            set { base.Node = value; }
-        }
-
         public HandlerBlockList Handlers
         {
             get { return _handlers; }
@@ -411,7 +401,10 @@ namespace DataDynamics.PageFX.CLI.IL
         #region IEnumerable<ISehHandlerBlock> Members
         IEnumerator<ISehHandlerBlock> IEnumerable<ISehHandlerBlock>.GetEnumerator()
         {
-            return new BaseTypeEnumerator<HandlerBlock, ISehHandlerBlock>(this);
+        	foreach (var block in this)
+        	{
+        		yield return block;
+        	}
         }
         #endregion
 
