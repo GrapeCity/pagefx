@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 {
     internal static class AbcHelper
     {
-        public static bool IsNamespace(AbcConstKind k)
+        public static bool IsNamespace(this AbcConstKind k)
         {
             switch (k)
             {
@@ -41,16 +41,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             return value;
         }
 
-        public static bool AreEquals(AbcConst<string> s1, string s2)
-        {
-            if (s1 == null)
-                return string.IsNullOrEmpty(s2);
-            if (string.IsNullOrEmpty(s1.Value))
-                return string.IsNullOrEmpty(s2);
-            return s1.Value == s2;
-        }
-
-        public static int FindEntry(AbcFile file, int offset, IList list, int begin, int end, bool cpool, bool writeN)
+    	public static int FindEntry(AbcFile file, int offset, IList list, int begin, int end, bool cpool, bool writeN)
         {
             if (offset >= begin && offset < end)
             {

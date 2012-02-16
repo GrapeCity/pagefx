@@ -257,7 +257,7 @@ namespace DataDynamics.PageFX.FLI
 
 		private IAssembly FindNUnitFramework()
         {
-			return AssemblyHelper.GetReferences(_assembly, true).FirstOrDefault(IsNUnitFramework);
+			return _assembly.GetReferences(true).FirstOrDefault(IsNUnitFramework);
         }
         
         #region NUnitTypes & Methods

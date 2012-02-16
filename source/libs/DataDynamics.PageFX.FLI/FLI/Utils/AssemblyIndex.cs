@@ -81,14 +81,13 @@ namespace DataDynamics.PageFX.FLI
 
         void Build(IAssembly root)
         {
-            AssemblyHelper.ProcessReferences(
-                root, false,
-                delegate(IAssembly asm)
-                    {
-                        if (asm != root)
-                            Linker.Start(asm);
-                        CacheTypes(asm);
-                    });
+            root.ProcessReferences(false,
+                   delegate(IAssembly asm)
+                   	{
+                   		if (asm != root)
+                   			Linker.Start(asm);
+                   		CacheTypes(asm);
+                   	});
         }
 
         void CacheTypes(IAssembly asm)

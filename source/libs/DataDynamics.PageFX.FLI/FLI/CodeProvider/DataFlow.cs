@@ -424,7 +424,7 @@ namespace DataDynamics.PageFX.FLI
         public IInstruction[] StoreField(IField field)
         {
             var code = new AbcCode(_abc);
-            if (AvmHelper.HasEmbeddedAsset(field))
+            if (field.HasEmbedAttribute())
             {
                 _generator.CheckEmbedAsset(field);
                 code.Pop();

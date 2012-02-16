@@ -346,7 +346,7 @@ namespace DataDynamics.PageFX.FLI
         {
         	try
         	{
-				return AvmHelper.ImportType(_abc, _assembly, fullname);
+				return _abc.ImportType(_assembly, fullname);
         	}
         	catch (Exception)
         	{

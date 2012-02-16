@@ -166,7 +166,7 @@ namespace DataDynamics.PageFX.FLI
             var info = new InitInfo();
             foreach (var field in type.Fields)
             {
-                if (AvmHelper.HasEmbeddedAsset(field))
+                if (field.HasEmbedAttribute())
                     info.Assets.Add(field);
             }
             return info;

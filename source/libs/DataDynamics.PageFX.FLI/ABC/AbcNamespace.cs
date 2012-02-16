@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcNamespace(AbcConst<string> name, AbcConstKind kind, string key)
         {
-            if (!AbcHelper.IsNamespace(kind))
+            if (!kind.IsNamespace())
                 throw new ArgumentException("Invalid namespace kind");
             _name = name;
             _kind = kind;
@@ -62,7 +62,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             get { return _kind; }
             set
             {
-                if (!AbcHelper.IsNamespace(value))
+                if (!value.IsNamespace())
                     throw new ArgumentException("Invalid namespace kind");
                 _kind = value;
             }
@@ -158,7 +158,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         public void Read(SwfReader reader)
         {
             _kind = (AbcConstKind)reader.ReadUInt8();
-            if (!AbcHelper.IsNamespace(_kind))
+            if (!_kind.IsNamespace())
                 throw new BadFormatException("Invalid namespace kind");
             _name = AbcIO.ReadString(reader);
         }

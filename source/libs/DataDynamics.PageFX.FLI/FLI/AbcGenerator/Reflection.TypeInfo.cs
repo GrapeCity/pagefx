@@ -624,7 +624,7 @@ namespace DataDynamics.PageFX.FLI
                         code.SetProperty(Const.EnumInfo.Flags);
                     }
 
-                    var fields = AvmHelper.GetEnumFields(type);
+                    var fields = type.GetEnumFields();
                     var utype = type.ValueType;
 
                     code.GetLocal(varEnumInfo);

@@ -265,7 +265,7 @@ namespace DataDynamics.PageFX.FLI
                     instance.Flags |= AbcClassFlags.Final;
                 instance.Flags |= AbcClassFlags.Sealed;
 
-                if (AvmHelper.HasProtectedNamespace(type))
+                if (type.HasProtectedNamespace())
                 {
                     instance.Flags |= AbcClassFlags.ProtectedNamespace;
                     instance.ProtectedNamespace = _abc.DefineProtectedNamespace(instance.NameString);
@@ -543,7 +543,7 @@ namespace DataDynamics.PageFX.FLI
             var declType = field.DeclaringType;
             if (declType.IsEnum) return true;
             if (field.IsConstant) return false;
-            if (AvmHelper.HasEmbeddedAsset(field)) return true;
+            if (field.HasEmbedAttribute()) return true;
             if (GenericType.HasGenericParams(field.Type)) return false;
             if (Attrs.IsExposed(field)) return true;
             if (Mode == AbcGenMode.Full) return true;

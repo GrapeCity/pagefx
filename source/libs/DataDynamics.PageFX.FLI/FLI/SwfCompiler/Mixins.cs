@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.FLI
 
         private void ImportAppMixins()
         {
-            AssemblyHelper.ProcessReferences(_assembly, true, ImportMixins);
+            _assembly.ProcessReferences(true, ImportMixins);
         }
 
         private void ImportMixins(IAssembly ar)

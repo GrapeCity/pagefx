@@ -141,7 +141,7 @@ namespace DataDynamics.PageFX.FLI
         AbcMultiname DefineFieldName(IField field)
         {
             //NOTE: For enums we will use m_value name for internal value.
-            AvmHelper.RenameField(field);
+            field.Rename();
             var ns = DefineFieldNamespace(field);
             return _abc.DefineQName(ns, field.Name);
         }

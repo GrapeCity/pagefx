@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWF;
 
@@ -19,7 +20,7 @@ namespace DataDynamics.PageFX.FLI
         #region Image Assets
         public Image GetImageResoucre(string source)
         {
-            var res = AvmHelper.FindResource(_assembly, source);
+            var res = _assembly.FindResource(source);
             if (res == null)
                 throw Errors.SWF.UnableToFindImageResource.CreateException(source);
 

@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.FLI
     {
         public void CheckEmbedAsset(IField field)
         {
-            Debug.Assert(AvmHelper.HasEmbeddedAsset(field));
+            Debug.Assert(field.HasEmbedAttribute());
 
             if (!field.IsStatic)
                 throw Errors.EmbedAsset.FieldIsNotStatic.CreateException(field.Name);

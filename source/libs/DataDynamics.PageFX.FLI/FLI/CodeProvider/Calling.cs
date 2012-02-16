@@ -484,7 +484,7 @@ namespace DataDynamics.PageFX.FLI
             if (!_method.IsConstructor) return false;
             if (!IsBaseCtor(method)) return false;
             if (IsAvmString) return true;
-            return AvmHelper.IsInitializer(method);
+            return method.IsInitializer();
         }
 
         void NewObject(AbcCode code, IMethod method)

@@ -80,7 +80,7 @@ namespace DataDynamics.PageFX.FLI
             var t = asm.FindType(fullname);
             if (t == null)
                 throw new InvalidOperationException(
-                    string.Format("Unable to find type {0}.", fullname));
+                    String.Format("Unable to find type {0}.", fullname));
             return t;
         }
 
@@ -158,7 +158,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static bool IsInternalType(this IType type)
         {
-            if (string.IsNullOrEmpty(type.Namespace) && type.Name == "avm")
+            if (String.IsNullOrEmpty(type.Namespace) && type.Name == "avm")
                 return true;
             return false;
         }
@@ -176,7 +176,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static string GetNamespaceForMembers(string ns, string name)
         {
-            if (string.IsNullOrEmpty(ns))
+            if (String.IsNullOrEmpty(ns))
                 return name;
             return ns + ":" + name;
         }
@@ -195,7 +195,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region ctor utils
-        public static IMethod FindConstructor(this IType type, System.Func<IMethod,bool> ctorPredicate)
+        public static IMethod FindConstructor(this IType type, Func<IMethod, bool> ctorPredicate)
         {
             if (type == null) return null;
         	return type.Methods.Constructors.FirstOrDefault(m => !m.IsStatic && ctorPredicate(m));
@@ -531,5 +531,25 @@ namespace DataDynamics.PageFX.FLI
             
             return false;
         }
+
+    	public static IField[] GetEnumFields(this IType type)
+    	{
+    		if (type == null)
+    			throw new ArgumentNullException("type");
+    		if (type.TypeKind != TypeKind.Enum)
+    			throw new ArgumentException("type is not enum");
+    		return type.Fields.Where(f => f.IsStatic).ToArray();
+    	}
+
+    	public static bool HasProtectedNamespace(this IType type)
+    	{
+    		switch (type.TypeKind)
+    		{
+    			case TypeKind.Interface:
+    			case TypeKind.Enum:
+    				return false;
+    		}
+    		return true;
+    	}
     }
 }

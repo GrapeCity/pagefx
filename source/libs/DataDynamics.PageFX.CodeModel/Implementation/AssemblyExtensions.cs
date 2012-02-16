@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public static class AssemblyHelper
+    public static class AssemblyExtensions
     {
-        public static IEnumerable<IAssembly> GetReferences(IAssembly root, bool excludeRoot)
+        public static IEnumerable<IAssembly> GetReferences(this IAssembly root, bool excludeRoot)
         {
             if (root == null)
                 throw new ArgumentNullException("root");
@@ -29,16 +30,25 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
 
-        public static void ProcessReferences(IAssembly root, bool excludeRoot, Action<IAssembly> handler)
+        public static void ProcessReferences(this IAssembly root, bool excludeRoot, Action<IAssembly> handler)
         {
             if (root == null)
                 throw new ArgumentNullException("root");
             if (handler == null)
                 throw new ArgumentNullException("handler");
-            foreach (var assembly in GetReferences(root, excludeRoot))
+            foreach (var assembly in root.GetReferences(excludeRoot))
             {
                 handler(assembly);
             }
         }
+
+    	public static IManifestResource FindResource(this IAssembly asm, string subname)
+    	{
+    		subname = subname.ToLower();
+    		return (from resource in asm.MainModule.Resources
+    		        let name = resource.Name.ToLower()
+    		        where name.Contains(subname)
+    		        select resource).FirstOrDefault();
+    	}
     }
 }

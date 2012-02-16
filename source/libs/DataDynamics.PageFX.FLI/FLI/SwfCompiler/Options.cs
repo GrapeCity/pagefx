@@ -265,7 +265,7 @@ namespace DataDynamics.PageFX.FLI
             var list = new List<string>();
             foreach (string locale in locales)
             {
-            	if (!LocaleHelper.IsValid(locale))
+            	if (!locale.IsValidLocale())
             	{
             		CompilerReport.Add(Warnings.InvalidLocale, locale);
             		continue;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace DataDynamics.PageFX.FLI
@@ -90,7 +91,8 @@ namespace DataDynamics.PageFX.FLI
         /// <returns></returns>
         public static string AutoDetect(string source)
         {
-            string ext = AvmHelper.GetExtension(source);
+        	string ext = Path.GetExtension(source);
+        	ext = string.IsNullOrEmpty(ext) ? null : (ext[0] == '.' ? ext.Substring(1).ToLower() : ext.ToLower());
             if (string.IsNullOrEmpty(ext)) return null;
             switch (ext)
             {

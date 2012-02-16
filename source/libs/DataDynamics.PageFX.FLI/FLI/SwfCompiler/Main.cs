@@ -257,7 +257,7 @@ namespace DataDynamics.PageFX.FLI
 
         IEnumerable<IAssembly> GetRefs()
         {
-            return AssemblyHelper.GetReferences(_assembly, true);
+            return _assembly.GetReferences(true);
         }
 
         void LinkRsls()
