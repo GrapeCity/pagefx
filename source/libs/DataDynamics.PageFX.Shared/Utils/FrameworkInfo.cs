@@ -56,7 +56,7 @@ namespace DataDynamics
             {
                 string regPath = @"Software\Microsoft\.NetFramework";
                 var key = Registry.LocalMachine.OpenSubKey(regPath, false);
-                return key.GetValue("InstallRoot").ToString();
+                return key != null ? key.GetValue("InstallRoot").ToString() : "";
             }
         }
 

@@ -252,8 +252,9 @@ namespace DataDynamics.PageFX.PDB
                         m_writer.WriteEndElement();
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+					Trace.TraceError("{0}", e);
                 }
 
                 m_writer.WriteStartElement("locals");

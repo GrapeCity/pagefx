@@ -861,7 +861,7 @@ namespace DataDynamics.PageFX.FLI
 
         string FindTypeSummary(AbcInstance instance)
         {
-            if (_doc == null) return null;
+			if (_doc == null || _doc.DocumentElement == null) return null;
             if (instance == null) return null;
             XmlElement elem;
             if (_xdoc)
@@ -2169,31 +2169,34 @@ namespace DataDynamics.PageFX.FLI
         }
 
         //Finds xml element with doc for given trait
-        XmlElement FindDocElement(AbcTrait trait)
+        private XmlElement FindDocElement(AbcTrait trait)
         {
-            if (_doc == null) return null;
             string typename = GetTypeName(trait);
             if (string.IsNullOrEmpty(typename))
                 return null;
 
-            if (_xdoc)
-                return FindMember(trait, typename);
+			if (_xdoc)
+			{
+				return FindMember(trait, typename);
+			}
 
-            string xpath = string.Format("type[@name='{0}']/trait[@name='{1}']",
+			if (_doc == null || _doc.DocumentElement == null) return null;
+
+        	string xpath = string.Format("type[@name='{0}']/trait[@name='{1}']",
                                          typename, trait.Name.NameString);
             var elem = _doc.DocumentElement.SelectSingleNode(xpath) as XmlElement;
             return elem;
         }
 
-        XmlElement FindMember(AbcTrait trait, string typename)
+        private XmlElement FindMember(AbcTrait trait, string typename)
         {
             string memberName = GetMemberName(trait, typename);
             return FindMember(memberName);
         }
 
-        XmlElement FindMember(string memberName)
+        private XmlElement FindMember(string memberName)
         {
-            if (_doc == null) return null;
+            if (_doc == null || _doc.DocumentElement == null) return null;
             if (string.IsNullOrEmpty(memberName)) return null;
 
             var members = _doc.DocumentElement["members"];
@@ -2206,7 +2209,7 @@ namespace DataDynamics.PageFX.FLI
 					select elem).FirstOrDefault();
         }
 
-        static string GetMemberName(AbcTrait trait, string typename)
+        private static string GetMemberName(AbcTrait trait, string typename)
         {
             switch (trait.Kind)
             {

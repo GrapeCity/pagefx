@@ -215,7 +215,7 @@ namespace DataDynamics
         #endregion
 
         #region ReplaceVars
-        static readonly Regex[] _rxrv = new Regex[3];
+        private static readonly Regex[] Schemes = new Regex[3];
         
         public static string ReplaceVars(string template, RVScheme scheme, params string[] vars)
         {
@@ -229,7 +229,7 @@ namespace DataDynamics
             if ((n & 1) != 0)
                 throw new ArgumentException("vars.Length is not even", "vars");
 
-            Regex rx = _rxrv[(int)scheme];
+            var rx = Schemes[(int)scheme];
             if (rx == null)
             {
                 switch (scheme)
@@ -245,8 +245,11 @@ namespace DataDynamics
                     case RVScheme.Ant:
                         rx = new Regex(@"\$\{(?<var>(\w|-)+)\}", RegexOptions.Compiled);
                         break;
+
+					default:
+						throw new NotSupportedException();
                 }
-                _rxrv[(int)scheme] = rx;
+                Schemes[(int)scheme] = rx;
             }
             
             var vh = new Hashtable();

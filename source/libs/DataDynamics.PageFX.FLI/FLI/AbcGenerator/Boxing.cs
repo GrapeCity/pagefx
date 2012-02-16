@@ -55,17 +55,17 @@ namespace DataDynamics.PageFX.FLI
                         const int value = 1;
                         code.If(
                             //hasValue?
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    code.Nullable_HasValue(true);
-                                    return code.IfTrue();
-                                },
-                            delegate
-                                {
-                                    code.Box(arg, () => code.GetBoxedValue(value));
-                                    code.ReturnValue();
-                                },
+                        	() =>
+                        		{
+                        			code.GetLocal(value);
+                        			code.Nullable_HasValue(true);
+                        			return code.IfTrue();
+                        		},
+                            () =>
+                            	{
+                            		code.Box(arg, () => code.GetBoxedValue(value));
+                            		code.ReturnValue();
+                            	},
                             () => code.ReturnNull()
                             );
 

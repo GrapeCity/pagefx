@@ -333,9 +333,10 @@ namespace DataDynamics.PageFX.CodeModel
                 if (!field.IsConstant) return;
                 var v = field.Value;
                 if (v == null) return;
-                if (v is Enum)
+            	var e = v as Enum;
+                if (e != null)
                 {
-                    writer.WriteAttributeString("value", ((Enum)v).ToString("D"));
+                    writer.WriteAttributeString("value", e.ToString("D"));
                     return;
                 }
                 if (v is char)
@@ -562,7 +563,7 @@ namespace DataDynamics.PageFX.CodeModel
             return GetMethodName(method, false);
         }
 
-        class Util
+        private static class Util
         {
             public static IEnumerable<IType> GetTypes(ITypeContainer assembly)
             {

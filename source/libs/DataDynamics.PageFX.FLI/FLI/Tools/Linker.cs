@@ -312,7 +312,7 @@ namespace DataDynamics.PageFX.FLI
 #endif
             var instance = owner as AbcInstance;
 
-            if (method.IsConstructor && !isGlobal)
+            if (instance != null && method.IsConstructor && !isGlobal)
             {
                 method.Tag = instance.Initializer;
                 instance.Initializer.SourceMethod = method;

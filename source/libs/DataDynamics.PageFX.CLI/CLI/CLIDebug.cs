@@ -1,5 +1,6 @@
 #if DEBUG
 using System;
+using System.Diagnostics;
 using System.IO;
 using DataDynamics.PageFX.CLI.CFG;
 using DataDynamics.PageFX.CodeModel;
@@ -159,14 +160,19 @@ namespace DataDynamics.PageFX.CLI
         {
             try
             {
-                string name = Path.GetFileName(path);
-                string key = GetKeyName(path);
-                key = key.Substring(HKEY_CURRENT_USER.Length + 1);
-                using (var rk = Registry.CurrentUser.OpenSubKey(key, true))
-                    rk.DeleteValue(name);
+            	string name = Path.GetFileName(path);
+            	string key = GetKeyName(path);
+            	key = key.Substring(HKEY_CURRENT_USER.Length + 1);
+            	var registryKey = Registry.CurrentUser.OpenSubKey(key, true);
+            	if (registryKey == null) return;
+            	using (registryKey)
+            	{
+            		registryKey.DeleteValue(name);
+            	}
             }
-            catch
+            catch (Exception e)
             {
+				Trace.TraceError("{0}", e);
             }
         }
 

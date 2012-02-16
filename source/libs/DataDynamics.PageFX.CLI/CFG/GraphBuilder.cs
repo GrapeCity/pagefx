@@ -55,9 +55,9 @@ namespace DataDynamics.PageFX.CLI.CFG
                     BuildNodeList(ref last, node, ref nodeIndex);
                     if (entry == null)
                         entry = node;
-                    else
-                        prevEntry.AppendEntry(node);
-                    prevEntry = node;
+                    else if (prevEntry != null)
+						prevEntry.AppendEntry(node);
+                	prevEntry = node;
                 }
                 else
                 {

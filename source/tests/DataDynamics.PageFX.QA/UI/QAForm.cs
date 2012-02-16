@@ -912,7 +912,7 @@ namespace DataDynamics.PageFX
         }
         #endregion
 
-        List<TreeNode> LoadTestCases(string path)
+        IEnumerable<TreeNode> LoadTestCases(string path)
         {
             if (File.Exists(path))
             {
@@ -920,6 +920,7 @@ namespace DataDynamics.PageFX
                 {
                 	var doc = new XmlDocument();
                     doc.Load(path);
+					if (doc.DocumentElement == null) return null;
                 	return (from XmlElement e in doc.DocumentElement.GetElementsByTagName("tc")
 							select e.GetAttribute("name") into name
 							select _nodeCache[name]).OfType<TreeNode>().ToList();

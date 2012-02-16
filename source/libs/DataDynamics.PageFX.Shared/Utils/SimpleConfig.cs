@@ -38,8 +38,8 @@ namespace DataDynamics.PageFX
         {
             string s = this[key, defval ? "true" : "false"];
             if (string.IsNullOrEmpty(s)) return defval;
-            if (string.Compare(s, "true", true) == 0) return true;
-            if (string.Compare(s, "false", true) == 0) return true;
+            if (string.Compare(s, "true", StringComparison.OrdinalIgnoreCase) == 0) return true;
+            if (string.Compare(s, "false", StringComparison.OrdinalIgnoreCase) == 0) return true;
             int v;
             if (int.TryParse(s, out v)) return v != 0;
             return defval;

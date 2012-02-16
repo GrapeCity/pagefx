@@ -856,7 +856,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             _data.Write(writer);
 
-            if ((_attrs & AbcTraitAttributes.HasMetadata) != 0)
+            if (_metadata != null)
             {
                 int n = _metadata.Count;
                 writer.WriteUIntEncoded((uint)n);

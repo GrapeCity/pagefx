@@ -369,7 +369,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             if ((_state & SwfStyleState.HasLineStyle) != 0)
                 writer.WriteLineStyle(_lineStyle);
 
-            if ((_state & SwfStyleState.HasNewStyles) != 0)
+            if (_styles != null && (_state & SwfStyleState.HasNewStyles) != 0)
             {
                 _styles.Write(writer, shapeType);
             }

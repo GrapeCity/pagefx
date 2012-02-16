@@ -7,7 +7,7 @@ using DataDynamics.Compression.Zip;
 namespace DataDynamics.PageFX.FLI.ABC
 {
     #region class RBUtil
-    static class RBUtil
+    internal static class RBUtil
     {
         public static string GetName(AbcMetaEntry e)
         {
@@ -173,7 +173,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 string path = entry.Name;
                 string name = Path.GetFileName(path);
-                if (name.EndsWith(".properties", StringComparison.InvariantCultureIgnoreCase))
+                if (name != null && name.EndsWith(".properties", StringComparison.InvariantCultureIgnoreCase))
                 {
                     name = Path.GetFileNameWithoutExtension(name);
                     var rbStream = Stream2.ToMemoryStream(entry.Data);

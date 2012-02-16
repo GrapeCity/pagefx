@@ -1109,11 +1109,11 @@ namespace DataDynamics.PageFX.FLI
 
                     case OperandType.BranchTargets:
                         {
-                            var sw = op.Value as int[];
-                            int n = sw.Length;
+							var switchCases = op.Value as int[] ?? new int[0];
+                            int n = switchCases.Length;
                             writer.WriteInt32(n);
                             for (int i = 0; i < n; ++i)
-                                writer.WriteInt24(sw[i]);
+                                writer.WriteInt24(switchCases[i]);
                         }
                         break;
 

@@ -277,12 +277,12 @@ namespace DataDynamics.PageFX
         #region DumpMdbTableIds
         static void DumpMdbTableIds()
         {
-            var vals = Enum.GetValues(typeof(MdbTableId));
+			var vals = (MdbTableId[])Enum.GetValues(typeof(MdbTableId));
             using (var writer = new StreamWriter("c:\\pfx.mdbtables"))
             {
                 foreach (var o in vals)
                 {
-                    int v = (o as IConvertible).ToInt32(null);
+					int v = ((IConvertible)o).ToInt32(null);
                     writer.WriteLine("{0} - {1} (0x{1:X2})", o, v);
                 }
             }

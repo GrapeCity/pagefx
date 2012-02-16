@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -168,17 +169,23 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public static Instruction GetInstruction(InstructionCode code)
         {
-            if (_list == null)
-                Load();
-            return _list[(int)code].Clone();
+			if (_list == null)
+			{
+				Load();
+				Debug.Assert(_list != null);
+			}
+        	return _list[(int)code].Clone();
         }
 
         public static Instruction[] GetInstructions()
         {
-            if (_list == null)
-                Load();
+			if (_list == null)
+			{
+				Load();
+				Debug.Assert(_list != null);
+			}
 
-            //clone instructions to avoid modifications
+        	//clone instructions to avoid modifications
             int n = _list.Count;
             var res = new Instruction[n];
             for (int i = 0; i < n; ++i)

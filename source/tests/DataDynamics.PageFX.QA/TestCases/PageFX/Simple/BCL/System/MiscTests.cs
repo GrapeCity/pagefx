@@ -22,7 +22,7 @@ class Program
         Console.WriteLine("--- TestStringFormat");
         try
         {
-            Console.WriteLine(string.Format("Abc {0}" + 123));
+            Console.WriteLine(string.Format("Abc {0}", 123));
         }
         catch (Exception e)
         {

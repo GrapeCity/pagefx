@@ -58,13 +58,13 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region BuildSwc
-        class SWCFILE
+        private sealed class FileData
         {
             public string Path;
             public byte[] Data;
         }
 
-        List<SWCFILE> _swcFiles;
+        List<FileData> _swcFiles;
 
         void BuildSwc()
         {
