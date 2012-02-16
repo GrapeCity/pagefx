@@ -93,10 +93,11 @@ namespace DataDynamics.PageFX.PDB
                     Marshal.ReleaseComObject(pDispenser);
                 }
 
-                var reader = new PdbReader();
-                reader.Binder = binder;
-                reader.SymReader = symReader;
-                return reader;
+            	return new PdbReader
+            	       	{
+            	       		Binder = binder,
+            	       		SymReader = symReader
+            	       	};
             }
             catch (Exception)
             {

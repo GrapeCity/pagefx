@@ -456,17 +456,14 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             if (_tokenStorage == null)
             {
-                _tokenStorage = new List<List<int>>();
-                _tokenStorage.Add(null);
-                _tokenStorage.Add(null);
-                return;
+                _tokenStorage = new List<List<int>> {null, null};
+            	return;
             }
             var store = _tokenStorage[(int)kind];
             if (store == null)
             {
-                store = new List<int>();
-                store.Add(token);
-                _tokenStorage[(int)kind] = store;
+                store = new List<int> {token};
+            	_tokenStorage[(int)kind] = store;
                 return;
             }
             if (store.Contains(token))

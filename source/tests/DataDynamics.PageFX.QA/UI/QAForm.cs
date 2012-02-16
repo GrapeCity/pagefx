@@ -248,17 +248,18 @@ namespace DataDynamics.PageFX
                 {
                     var sf = tc.SourceFiles[i];
 
-                    var tab = new TabPage();
-                    tab.Name = string.Format("srcPage{0}", i);
-                    tab.Padding = new Padding(3);
-                    tab.Size = new Size(646, 461);
-                    tab.TabIndex = 0;
-                    tab.Text = sf.Name;
-                    tab.UseVisualStyleBackColor = true;
+                	var tab = new TabPage
+                	          	{
+                	          		Name = string.Format("srcPage{0}", i),
+                	          		Padding = new Padding(3),
+                	          		Size = new Size(646, 461),
+                	          		TabIndex = 0,
+                	          		Text = sf.Name,
+                	          		UseVisualStyleBackColor = true
+                	          	};
 
-                    var edit = new CodeEditorControl();
-                    edit.Dock = DockStyle.Fill;
-                    InitCodeEditor(edit);
+                	var edit = new CodeEditorControl {Dock = DockStyle.Fill};
+                	InitCodeEditor(edit);
 
                     var doc = new SyntaxDocument();
                     edit.Document = doc;
@@ -883,10 +884,8 @@ namespace DataDynamics.PageFX
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
 
-            var xws = new XmlWriterSettings();
-            xws.Indent = true;
-            xws.IndentChars = "  ";
-            using (var writer = XmlWriter.Create(path, xws))
+        	var xws = new XmlWriterSettings {Indent = true, IndentChars = "  "};
+        	using (var writer = XmlWriter.Create(path, xws))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("qa");
@@ -1125,10 +1124,11 @@ namespace DataDynamics.PageFX
             var failedTestCases = new List<TestCase>();
             var suites = GetSelectedTestSuites(failedTestCases);
 
-            var tr = new TestResult();
-            tr.FailedTestCases = failedTestCases;
-            tr.Suites = suites;
-            return tr;
+        	return new TestResult
+        	       	{
+        	       		FailedTestCases = failedTestCases,
+        	       		Suites = suites
+        	       	};
         }
 
         void GenerateHtmlReport(string path)

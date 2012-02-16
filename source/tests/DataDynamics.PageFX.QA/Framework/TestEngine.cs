@@ -307,7 +307,6 @@ namespace DataDynamics.PageFX.FLI
             if (testResults == null)
             {
                 testResults = new TestResult();
-                testResults.Suites = new List<TestSuite>();
             }
 
             var ts = tc.Suite;

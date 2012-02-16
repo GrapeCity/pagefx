@@ -273,10 +273,9 @@ namespace DataDynamics.Compression.Zip
 			ReadFully(buffer);
 			
 			string name = ZipConstants.ConvertToString(buffer);
-			
-			entry = new ZipEntry(name, versionRequiredToExtract);
-			entry.Flags = flags;
-			
+
+			entry = new ZipEntry(name, versionRequiredToExtract) {Flags = flags};
+
 			if (method == (int)CompressionMethod.Stored && (!isCrypted && csize != size || (isCrypted && csize - ZipConstants.CRYPTO_HEADER_SIZE != size))) 
 			{
 				throw new ZipException("Stored, but compressed != uncompressed");

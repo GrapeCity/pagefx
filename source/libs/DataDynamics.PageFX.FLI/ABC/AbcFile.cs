@@ -667,10 +667,8 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public void DumpXml(string path)
         {
-            var xws = new XmlWriterSettings();
-            xws.Indent = true;
-            xws.IndentChars = "  ";
-            using (var writer = XmlWriter.Create(path, xws))
+        	var xws = new XmlWriterSettings {Indent = true, IndentChars = "  "};
+        	using (var writer = XmlWriter.Create(path, xws))
             {
                 DumpXml(writer);
             }

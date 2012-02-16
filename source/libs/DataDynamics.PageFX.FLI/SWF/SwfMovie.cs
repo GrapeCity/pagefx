@@ -437,10 +437,9 @@ namespace DataDynamics.PageFX.FLI.SWF
         /// <param name="options">options to decode tags.</param>
         public void Load(Stream input, SwfTagDecodeOptions options)
         {
-            var reader = new SwfReader(input);
-            reader.TagDecodeOptions = options;
+        	var reader = new SwfReader(input) {TagDecodeOptions = options};
 
-            //File Header
+        	//File Header
             string sig = reader.ReadASCII(3);
             // "FWS" or "CWS" for ZLIB compressed files (v6.0 or later)
             if (sig != "FWS" && sig != "CWS")
@@ -908,10 +907,9 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (mysprite != null)
                 return mysprite;
 
-            mysprite = new SwfSprite();
-            mysprite.FrameCount = sprite.FrameCount;
+        	mysprite = new SwfSprite {FrameCount = sprite.FrameCount};
 
-            _spriteStack.Push(mysprite);
+        	_spriteStack.Push(mysprite);
             foreach (var tag in sprite.Tags)
                 Import(from, tag);
             _spriteStack.Pop();

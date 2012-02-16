@@ -48,10 +48,9 @@ namespace DataDynamics.UI
         {
             if (opt == null) return;
 
-            var node = new TreeNode(opt.Name);
-            node.Tag = opt;
+        	var node = new TreeNode(opt.Name) {Tag = opt};
 
-            if (parent != null)
+        	if (parent != null)
                 parent.Nodes.Add(node);
             else
                 treeOpts.Nodes.Add(node);

@@ -44,18 +44,20 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public void AddSymbol(ushort id, string name)
         {
-            var asset = new SwfAsset(id, name);
-            asset.IsSymbol = true;
-            asset.Name = name;
-            Symbols.Add(asset);
+        	Symbols.Add(new SwfAsset(id, name)
+        	            	{
+        	            		IsSymbol = true,
+        	            		Name = name
+        	            	});
         }
 
         public void AddSymbol(ISwfCharacter obj, string name)
         {
-            var asset = new SwfAsset(obj, name);
-            asset.IsSymbol = true;
-            asset.Name = name;
-            Symbols.Add(asset);
+        	Symbols.Add(new SwfAsset(obj, name)
+        	            	{
+        	            		IsSymbol = true,
+        	            		Name = name
+        	            	});
         }
         #endregion
 

@@ -408,9 +408,8 @@ namespace DataDynamics.PageFX.FLI.ABC
             //U30 param_types[param_count]
             for (int i = 0; i < param_count; ++i)
             {
-                var p = new AbcParameter();
-                p.Type = AbcIO.ReadMultiname(reader);
-                _params.Add(p);
+				var type = AbcIO.ReadMultiname(reader);
+            	_params.Add(new AbcParameter {Type = type});
             }
 
             _beginName = (int)reader.Position;
@@ -420,9 +419,9 @@ namespace DataDynamics.PageFX.FLI.ABC
             _beginParamValues = (int)reader.Position;
             if ((_flags & AbcMethodFlags.HasOptional) != 0)
             {
-                int optional_count = (int)reader.ReadUIntEncoded();
-                int firstOptionalParam = param_count - optional_count;
-                for (int i = 0; i < optional_count; ++i)
+                int optionalCount = (int)reader.ReadUIntEncoded();
+                int firstOptionalParam = param_count - optionalCount;
+                for (int i = 0; i < optionalCount; ++i)
                 {
                     int valueIndex = (int)reader.ReadUIntEncoded();
                     var valueKind = (AbcConstKind)reader.ReadUInt8();

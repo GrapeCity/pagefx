@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -178,20 +179,18 @@ namespace DataDynamics.PageFX.FLI
             if (type == null) return null;
             if (!type.IsEnum) return null;
 
-            var method = new AbcMethod();
-            method.ReturnType = _abc.BuiltinTypes.Void;
-            var body = new AbcMethodBody(method);
+        	var method = new AbcMethod {ReturnType = _abc.BuiltinTypes.Void};
+        	var body = new AbcMethodBody(method);
 
             AddMethod(method);
 
             var code = new AbcCode(_abc);
 
-            foreach (var field in type.Fields)
+            foreach (var field in type.Fields.Where(field => field.IsConstant))
             {
-                if (!field.IsConstant) continue;
-                code.LoadThis();
-                code.LoadConstant(field.Value);
-                code.InitProperty(GetFieldName(field));
+            	code.LoadThis();
+            	code.LoadConstant(field.Value);
+            	code.InitProperty(GetFieldName(field));
             }
 
             code.ReturnVoid();

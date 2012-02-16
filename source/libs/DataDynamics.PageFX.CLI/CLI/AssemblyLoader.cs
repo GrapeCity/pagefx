@@ -855,10 +855,9 @@ namespace DataDynamics.PageFX.CLI
             //var f = GetFile(name);
             //var res = GetResource(name);
 
-            mod = new Module();
-            mod.Name = name;
+        	mod = new Module {Name = name};
 
-            _moduleRef[index] = mod;
+        	_moduleRef[index] = mod;
             _assembly.Modules.Add(mod);
             
             return mod;

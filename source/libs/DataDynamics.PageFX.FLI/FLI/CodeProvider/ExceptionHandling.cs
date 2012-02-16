@@ -340,9 +340,8 @@ namespace DataDynamics.PageFX.FLI
             e.To = -1;
             e.Target = -1;
 
-            var fi = new FinallyInfo();
-            fi.fault = fault;
-            _finallyStack.Push(fi);
+        	var fi = new FinallyInfo {fault = fault};
+        	_finallyStack.Push(fi);
 
             _resolver.Add(tb.EntryPoint, new ExceptionFrom(e));
 

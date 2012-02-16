@@ -94,27 +94,33 @@ namespace DataDynamics.PageFX
                 h = form.ClientSize.Height;
 
                 form.SuspendLayout();
-                int d = 10;
+                int padding = 10;
 
-                var ok = new Button();
-                ok.DialogResult = DialogResult.OK;
-                ok.Text = "OK";
-                ok.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+            	var ok = new Button
+            	         	{
+            	         		DialogResult = DialogResult.OK,
+            	         		Text = "OK",
+            	         		Anchor = AnchorStyles.Right | AnchorStyles.Bottom
+            	         	};
 
-                var cancel = new Button();
-                cancel.DialogResult = DialogResult.Cancel;
-                cancel.Text = "Cancel";
-                cancel.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+            	var cancel = new Button
+            	             	{
+            	             		DialogResult = DialogResult.Cancel,
+            	             		Text = "Cancel",
+            	             		Anchor = AnchorStyles.Right | AnchorStyles.Bottom
+            	             	};
 
-                cancel.Location = new Point(w - d - cancel.Width, h - d - cancel.Height);
-                ok.Location = new Point(cancel.Left - d - ok.Width, cancel.Top);
+            	cancel.Location = new Point(w - padding - cancel.Width, h - padding - cancel.Height);
+                ok.Location = new Point(cancel.Left - padding - ok.Width, cancel.Top);
 
-                var list = new CheckedListBox();
-                list.Location = new Point(d, d);
-                list.Size = new Size(w - 2 * d, ok.Top - d);
-                list.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+            	var list = new CheckedListBox
+            	           	{
+            	           		Location = new Point(padding, padding),
+            	           		Size = new Size(w - 2*padding, ok.Top - padding),
+            	           		Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom
+            	           	};
 
-                foreach (var item in items)
+            	foreach (var item in items)
                 {
                     list.Items.Add(item);
                 }
@@ -178,17 +184,19 @@ namespace DataDynamics.PageFX
 
         public static ColorBlend CreatePalette(params Color[] colors)
         {
-            var res = new ColorBlend();
-            res.Positions = CreatePositions(colors.Length);
-            res.Colors = colors;
-            return res;
+        	return new ColorBlend
+        	       	{
+        	       		Positions = CreatePositions(colors.Length),
+        	       		Colors = colors
+        	       	};
         }
 
         private static LinearGradientBrush CreateGradient(RectangleF r, params Color[] colors)
         {
-            var lg = new LinearGradientBrush(r, Color.Lime, Color.Red, LinearGradientMode.Horizontal);
-            lg.InterpolationColors = CreatePalette(colors);
-            return lg;
+        	return new LinearGradientBrush(r, Color.Lime, Color.Red, LinearGradientMode.Horizontal)
+        	       	{
+        	       		InterpolationColors = CreatePalette(colors)
+        	       	};
         }
 
         private static void SWF_CreateMovingRectangles()

@@ -486,11 +486,10 @@ namespace DataDynamics.PageFX.CLI.Metadata
                         if (type == null)
                             throw new BadSignatureException("Unable to decode type of array.");
 
-                        var info = new ArrayShape();
-                        info.Rank = reader.ReadPackedInt();
-                        int numSizes = reader.ReadPackedInt();
-                        info.Sizes = new int[numSizes];
-                        for (int i = 0; i < numSizes; i++)
+						int rank = reader.ReadPackedInt();
+						int numSizes = reader.ReadPackedInt();
+                    	var info = new ArrayShape {Rank = rank, Sizes = new int[numSizes]};
+                    	for (int i = 0; i < numSizes; i++)
                             info.Sizes[i] = reader.ReadPackedInt();
 
                         int numLoBounds = reader.ReadPackedInt();

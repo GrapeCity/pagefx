@@ -39,9 +39,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (flags == 0) //end of shape
                 return null;
 
-            var r = new SwfShapeSetupRecord();
-            r.State = (SwfStyleState)flags;
-            return r;
+        	return new SwfShapeSetupRecord {State = (SwfStyleState)flags};
         }
 
         public void Write(SwfWriter writer, SwfTagCode shapeType)

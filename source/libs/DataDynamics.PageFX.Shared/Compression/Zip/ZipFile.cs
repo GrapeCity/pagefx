@@ -222,14 +222,16 @@ namespace DataDynamics.Compression.Zip
 				
 				baseStream.Read(buffer, 0, nameLen);
 				string name = ZipConstants.ConvertToString(buffer, nameLen);
-				
-				ZipEntry entry = new ZipEntry(name, versionToExtract, versionMadeBy, baseStream);
-				entry.CompressionMethod = (CompressionMethod)method;
-				entry.Crc = crc & 0xffffffffL;
-				entry.Size = size & 0xffffffffL;
-				entry.CompressedSize = csize & 0xffffffffL;
-				entry.DosTime = (uint)dostime;
-				
+
+				ZipEntry entry = new ZipEntry(name, versionToExtract, versionMadeBy, baseStream)
+				                 	{
+				                 		CompressionMethod = (CompressionMethod)method,
+				                 		Crc = crc & 0xffffffffL,
+				                 		Size = size & 0xffffffffL,
+				                 		CompressedSize = csize & 0xffffffffL,
+				                 		DosTime = (uint)dostime
+				                 	};
+
 				if (extraLen > 0) 
 				{
 					byte[] extra = new byte[extraLen];

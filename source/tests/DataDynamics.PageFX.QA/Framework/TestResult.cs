@@ -6,8 +6,8 @@ namespace DataDynamics.PageFX
 {
     public class TestResult
     {
-        public List<TestCase> FailedTestCases;
-        public List<TestSuite> Suites;
+        public List<TestCase> FailedTestCases = new List<TestCase>();
+        public List<TestSuite> Suites = new List<TestSuite>();
 
         public void Sort()
         {

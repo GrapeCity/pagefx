@@ -19,10 +19,8 @@ namespace DataDynamics.PageFX.CLI.Metadata
 
         private static void ExportTable(MdbReader reader, MdbTable table, string outdir)
         {
-            var xws = new XmlWriterSettings();
-            xws.Indent = true;
-            xws.IndentChars = "  ";
-            string path = Path.Combine(outdir, table.Name + ".htm");
+        	var xws = new XmlWriterSettings {Indent = true, IndentChars = "  "};
+        	string path = Path.Combine(outdir, table.Name + ".htm");
             using (var writer = XmlWriter.Create(path, xws))
             {
                 writer.WriteStartDocument();

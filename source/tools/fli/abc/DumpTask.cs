@@ -271,9 +271,8 @@ namespace abc
             if (ext == "abc")
             {
                 var abc = new AbcFile(path);
-                var list = new List<AbcFile>();
-                list.Add(abc);
-                return list;
+                var list = new List<AbcFile> {abc};
+            	return list;
             }
 
             if (ext == "swf")

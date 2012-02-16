@@ -345,9 +345,8 @@ namespace System.IO
         /// <returns>The stream filled by the data.</returns>
         public static MemoryStream ToMemoryStream(byte[] data)
         {
-            var ms = new MemoryStream(data, false);
-            ms.Position = 0;
-            return ms;
+        	var ms = new MemoryStream(data, false) {Position = 0};
+        	return ms;
         }
 
         public static MemoryStream ToMemoryStream(Stream s)
