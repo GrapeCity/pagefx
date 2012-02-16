@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using DataDynamics.Collections;
 
 namespace DataDynamics
@@ -71,11 +70,6 @@ namespace DataDynamics
             return y == null;
         }
         #endregion
-
-        public static bool IsEmpty<T>(this IEnumerable<T> set)
-        {
-			return !set.GetEnumerator().MoveNext();
-        }
 
     	#region BinarySearch
         public static int BinarySearch<T>(ISimpleList<T> list, int index, int length, ComparativePredicate<T> p)
@@ -179,7 +173,7 @@ namespace DataDynamics
         #endregion
 
         #region Shuffle
-        private static readonly Random random = new Random();
+        private static readonly Random Random = new Random();
 
         public static int[] Shuffle(int n)
         {
@@ -191,7 +185,7 @@ namespace DataDynamics
                 return new[] {0};
             if (n == 2)
             {
-                int i = random.Next(0, 1);
+                int i = Random.Next(0, 1);
                 return new[] {i, 1 - i};
             }
 
@@ -204,7 +198,7 @@ namespace DataDynamics
             {
                 if (list.Count > 1)
                 {
-                    int k = random.Next(0, list.Count - 1);
+                    int k = Random.Next(0, list.Count - 1);
                     arr[i] = list[k];
                     list.RemoveAt(k);
                 }

@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX.FLI
                     return code.ToArray();
                 }
 
-                if (TypeHelper.IsDecimalOrInt64(left))
+                if (left.IsDecimalOrInt64())
                 {
                     var code = new AbcCode(_abc);
                     bool isTrue = op == BranchOperator.True;

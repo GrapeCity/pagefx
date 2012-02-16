@@ -93,7 +93,7 @@ namespace DataDynamics.PageFX.FLI
 
         public AbcMethod DefineUnboxMethod(IType type, bool strict)
         {
-            if (!TypeHelper.IsBoxableTypeOr64(type))
+            if (!type.IsBoxableOrInt64Based())
                 return null;
 
             var instance = DefineAbcInstance(type);
@@ -102,7 +102,7 @@ namespace DataDynamics.PageFX.FLI
             if (type.IsEnum)
                 vtype = type.ValueType;
 
-            bool isInt64 = TypeHelper.IsInt64(vtype);
+            bool isInt64 = vtype.IsInt64();
             if (type.IsEnum && !strict)
                 type = vtype;
 

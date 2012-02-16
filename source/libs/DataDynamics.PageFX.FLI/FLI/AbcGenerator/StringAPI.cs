@@ -57,7 +57,7 @@ namespace DataDynamics.PageFX.FLI
                 AvmTypeCode.String, m,
                 code =>
                     {
-                        var ctor = TypeHelper.FindConstructor(CharEnumerator, 1);
+                        var ctor = CharEnumerator.FindConstructor(1);
                         code.NewObject(ctor, () => code.LoadThis());
                         code.ReturnValue();
                     });

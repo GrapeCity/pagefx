@@ -39,14 +39,9 @@ namespace DataDynamics.PageFX.FLI
         public IInstruction[] EndTry(bool generateExit, out IInstruction jump)
         {
             var code = new AbcCode(_abc);
-            if (generateExit)
-            {
-                jump = code.Goto(); //exit from protected region
-            }
-            else
-            {
-                jump = null;
-            }
+        	jump = generateExit
+					? code.Goto() //exit from protected region
+        	       	: null;
             return code.ToArray();
         }
         #endregion

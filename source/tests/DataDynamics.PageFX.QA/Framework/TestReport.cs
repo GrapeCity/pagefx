@@ -59,10 +59,8 @@ namespace DataDynamics.PageFX
         {
             if (IsXml(format))
             {
-                var xws = new XmlWriterSettings();
-                xws.Indent = true;
-                xws.IndentChars = "\t";
-                using (var writer = XmlWriter.Create(output, xws))
+            	var xws = new XmlWriterSettings {Indent = true, IndentChars = "\t"};
+            	using (var writer = XmlWriter.Create(output, xws))
                 {
                     writer.WriteStartDocument();
                     writer.WriteProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"html.xslt\"");

@@ -2399,7 +2399,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void GetArrayElem(IType elemType, bool item)
         {
-            if (TypeHelper.IsInt64Based(elemType))
+            if (elemType.IsInt64Based())
             {
                 var m = Generator.DefineSystemArray_GetElemInt64(elemType, item);
                 Call(m);
@@ -3285,7 +3285,7 @@ namespace DataDynamics.PageFX.FLI.IL
         /// <param name="checkOverflow"></param>
         public void Op(UnaryOperator op, IType type, bool checkOverflow)
         {
-            if (TypeHelper.IsDecimalOrInt64(type))
+            if (type.IsDecimalOrInt64())
             {
                 var opm = Generator.DefineUnaryOperator(op, type);
                 Call(opm);
@@ -3365,7 +3365,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         static bool NeedCoerce(IType type)
         {
-            var nt = TypeHelper.GetNumberType(type);
+            var nt = type.GetNumberType();
             switch (nt)
             {
                 case NumberType.Int32:

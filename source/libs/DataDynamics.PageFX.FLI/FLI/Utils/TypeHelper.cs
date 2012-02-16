@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
@@ -218,8 +217,7 @@ namespace DataDynamics.PageFX.FLI
         public static IMethod FindParameterlessConstructor(AbcInstance instance)
         {
             var type = instance.Type;
-            if (type == null) return null;
-            return FindParameterlessConstructor(type);
+            return type == null ? null : FindParameterlessConstructor(type);
         }
 
         public static bool AllowNonParameterlessInitializer(IType type)
@@ -295,17 +293,17 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region numeric types
-        public static bool IsInt64(IType type)
+        public static bool IsInt64(this IType type)
         {
             return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
         }
 
-        public static bool IsDecimal(IType type)
+        public static bool IsDecimal(this IType type)
         {
             return type == SystemTypes.Decimal;
         }
 
-        public static bool IsDecimalOrInt64(IType type)
+        public static bool IsDecimalOrInt64(this IType type)
         {
             return IsDecimal(type) || IsInt64(type);
         }
@@ -328,7 +326,7 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        public static NumberType GetNumberType(IType type)
+        public static NumberType GetNumberType(this IType type)
         {
             var st = type.SystemType;
             if (st != null)
@@ -356,12 +354,12 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        public static bool IsBoxableTypeOr64(IType type)
+        public static bool IsBoxableOrInt64Based(this IType type)
         {
             return TypeService.IsBoxableType(type) || IsInt64Based(type);
         }
 
-        public static bool IsInt64Based(IType type)
+        public static bool IsInt64Based(this IType type)
         {
             if (type.IsEnum)
                 type = type.ValueType;
@@ -412,9 +410,7 @@ namespace DataDynamics.PageFX.FLI
                 case TypeKind.Enum:
                     return true;
             }
-            if (IsInitRequired(type)) return true;
-            return false;
-            //return true;
+            return IsInitRequired(type);
         }
 
         public static bool IsInitRequired(IType type)

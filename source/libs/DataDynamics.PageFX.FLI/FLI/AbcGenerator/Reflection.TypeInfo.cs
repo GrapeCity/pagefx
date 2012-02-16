@@ -337,7 +337,7 @@ namespace DataDynamics.PageFX.FLI
             if (param.Type == null)
                 throw new InvalidOperationException("Parametr type is null");
 
-            var ctor = TypeHelper.FindConstructor(pitype, 0);
+            var ctor = pitype.FindConstructor(0);
             if (ctor == null)
                 throw new InvalidOperationException(".ctor not found");
             code.NewObject(ctor, () => { });
@@ -410,7 +410,7 @@ namespace DataDynamics.PageFX.FLI
             int varMethod, int varParams, int varParam,
             IType mtype, int index)
         {
-            var ctor = TypeHelper.FindConstructor(mtype, 0);
+            var ctor = mtype.FindConstructor(0);
             if (ctor == null)
                 throw new InvalidOperationException(".ctor not found");
 
@@ -527,7 +527,7 @@ namespace DataDynamics.PageFX.FLI
         void NewPropertyInfo(AbcCode code, AbcInstance instance, IProperty prop, int varProp)
         {
             var type = CorlibTypes[CorlibTypeId.PropertyInfo];
-            var ctor = TypeHelper.FindConstructor(type, 0);
+            var ctor = type.FindConstructor(0);
             if (ctor == null)
                 throw new InvalidOperationException(".ctor not found");
             code.NewObject(ctor, () => { });
@@ -865,7 +865,7 @@ namespace DataDynamics.PageFX.FLI
                 code.SetProperty(Const.Type.CopyFunction);
             }
 
-            var ctor = TypeHelper.FindParameterlessConstructor(type);
+            var ctor = type.FindParameterlessConstructor();
             if (ctor != null)
             {
                 f = DefineMethod(ctor) as AbcMethod;

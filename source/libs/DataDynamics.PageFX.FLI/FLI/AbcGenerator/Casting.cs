@@ -160,34 +160,34 @@ namespace DataDynamics.PageFX.FLI
 
                         code.Try();
 
-                        code.If(
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    return code.IfNotArray();
-                                },
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    code.Coerce(type, false);
-                                    code.ReturnValue();
-                                },
-                            //array case
-                            () => code.If(
-                                      delegate
-                                          {
-                                              code.HasElemType(elemType, value);
-                                              return code.IfTrue();
-                                          },
-                                      delegate
-                                          {
-                                              //can cast
-                                              code.GetLocal(value);
-                                              code.ReturnValue();
-                                          },
-                                      () => code.ReturnNull()
-                                      )
-                            );
+                    	code.If(
+                    		() =>
+                    			{
+                    				code.GetLocal(value);
+                    				return code.IfNotArray();
+                    			},
+                    		() =>
+                    			{
+                    				code.GetLocal(value);
+                    				code.Coerce(type, false);
+                    				code.ReturnValue();
+                    			},
+                    		//array case
+                    		() => code.If(
+                    			() =>
+                    				{
+                    					code.HasElemType(elemType, value);
+                    					return code.IfTrue();
+                    				},
+                    			() =>
+                    				{
+                    					//can cast
+                    					code.GetLocal(value);
+                    					code.ReturnValue();
+                    				},
+                    			() => code.ReturnNull()
+                    		      	)
+                    		);
 
                         code.CatchReturnNull();
                     },

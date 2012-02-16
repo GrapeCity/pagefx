@@ -802,10 +802,11 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #region IEnumerable<ICodeNode>
         bool _doubleEOL;
 
-        void WriteNodes<T>(IEnumerable<T> list, string region) where T : ICodeNode
+        void WriteNodes<T>(IEnumerable<T> nodes, string region) where T : ICodeNode
         {
             bool reg = !string.IsNullOrEmpty(region);
-            if (Algorithms.IsEmpty(list))
+        	var list = nodes.ToList();
+            if (list.Count == 0)
             {
                 if (reg)
                 {
@@ -846,11 +847,12 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             public readonly List<ITypeMember> List = new List<ITypeMember>();
         }
 
-        void WriteMembers<T>(IEnumerable<T> members, string region) where T : ITypeMember
+        void WriteMembers<T>(IEnumerable<T> collection, string region) where T : ITypeMember
         {
             if (_useRegions)
             {
-                if (Algorithms.IsEmpty(members)) return;
+            	var members = collection.ToList();
+                if (members.Count == 0) return;
 
                 var sets = new List<MemberSet>();
                 foreach (var m in members)
@@ -886,7 +888,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 //Type type = typeof(T);
                 bool old = _doubleEOL;
                 _doubleEOL = true;
-                WriteNodes(members, null);
+                WriteNodes(collection, null);
                 _doubleEOL = old;
             }
         }

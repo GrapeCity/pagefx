@@ -207,11 +207,10 @@ namespace DataDynamics.PageFX.FLI.SWC
             if (string.IsNullOrEmpty(hashType))
                 hashType = HashHelper.TypeSHA256;
 
-            SwfMovie lib;
-            if (string.IsNullOrEmpty(libName))
+        	if (string.IsNullOrEmpty(libName))
                 libName = LIBRARY_SWF;
 
-            lib = GetLibrary(libName);
+            var lib = GetLibrary(libName);
             if (lib == null)
             {
                 libName = libName + ".swf";
@@ -654,9 +653,8 @@ namespace DataDynamics.PageFX.FLI.SWC
                 if (e.Name.EndsWith(".swf", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Stream stream = Stream2.ToMemoryStream(e.Data);
-                    var swf = new SwfMovie(stream);
-                    swf.Name = e.Name;
-                    list.Add(swf);
+                	var swf = new SwfMovie(stream) {Name = e.Name};
+                	list.Add(swf);
                 }
             }
             return list;

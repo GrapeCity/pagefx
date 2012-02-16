@@ -342,11 +342,7 @@ namespace DataDynamics.PageFX.FLI
 
             List<RslItem> cdRsls;
             List<RslItem> rsls;
-            Algorithms.Split(
-                _options.RslList,
-                out cdRsls,
-                out rsls,
-                rsl => rsl.IsCrossDomain);
+            _options.RslList.Split(out cdRsls, out rsls, rsl => rsl.IsCrossDomain);
 
             if (cdRsls != null && cdRsls.Count > 0)
             {

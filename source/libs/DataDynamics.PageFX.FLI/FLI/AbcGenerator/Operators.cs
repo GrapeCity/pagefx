@@ -128,7 +128,7 @@ namespace DataDynamics.PageFX.FLI
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            if (!TypeHelper.IsDecimalOrInt64(type))
+            if (!type.IsDecimalOrInt64())
                 throw new ArgumentException();
 
             var op = FindBooleanOperator(type, isTrue);

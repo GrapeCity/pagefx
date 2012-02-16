@@ -407,10 +407,9 @@ namespace DataDynamics.PageFX.FLI
             _assembly.Location = path;
             _assembly.Name = Path.GetFileName(path);
 
-            _swc = new SwcFile(path);
-            _swc.AddNsRefs = true;
+        	_swc = new SwcFile(path) {AddNsRefs = true};
 
-			foreach (var abc in _swc.GetAbcFiles())
+        	foreach (var abc in _swc.GetAbcFiles())
 				_abcFiles.Add(abc);
 
             ResolveRefs(path);
@@ -461,11 +460,13 @@ namespace DataDynamics.PageFX.FLI
             string fullname = NameHelper.MakeFullName(ns, name);
             var res = _assembly.FindType(fullname);
             if (res != null) return res;
-            var type = new UserDefinedType();
-            type.Namespace = ns;
-            type.Name = name;
-            type.Visibility = Visibility.Public;
-            type.Tag = new GlobalType(type);
+        	var type = new UserDefinedType
+        	           	{
+        	           		Namespace = ns,
+        	           		Name = name,
+        	           		Visibility = Visibility.Public
+        	           	};
+        	type.Tag = new GlobalType(type);
             RegisterType(type);
 
             DefineSwcAbcFileAttribute(type, script.ABC);
@@ -1265,11 +1266,12 @@ namespace DataDynamics.PageFX.FLI
             for (int i = 0; i < n; ++i)
             {
                 var ps = fix[i].Split(' ');
-                var p = new ParamFix();
-                p.index = i;
-                p.type = ps[0];
-                p.name = ps[1];
-                arr[i] = p;
+            	arr[i] = new ParamFix
+            	         	{
+            	         		index = i,
+            	         		type = ps[0],
+            	         		name = ps[1]
+            	         	};
             }
             return arr;
         }

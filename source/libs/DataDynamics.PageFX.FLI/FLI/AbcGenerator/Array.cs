@@ -371,7 +371,7 @@ namespace DataDynamics.PageFX.FLI
             if (elemType == null)
                 throw new ArgumentNullException("elemType");
 
-            if (!TypeHelper.IsInt64Based(elemType))
+            if (!elemType.IsInt64Based())
                 throw new ArgumentException("Invalid elem type");
 
             if (elemType.IsEnum)
@@ -486,7 +486,7 @@ namespace DataDynamics.PageFX.FLI
         		code =>
         			{
         				var ArrayEnumerator = DefineArrayEnumerator(elemType);
-        				var ctor = TypeHelper.FindConstructor(ArrayEnumerator, 1);
+        				var ctor = ArrayEnumerator.FindConstructor(1);
         				code.NewObject(ctor, () => code.LoadThis());
         				code.ReturnValue();
         			});

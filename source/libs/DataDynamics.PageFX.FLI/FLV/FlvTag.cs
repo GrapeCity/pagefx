@@ -99,9 +99,8 @@ namespace DataDynamics.PageFX.FLI.FLV
             for (int i = 0; i < n; ++i)
             {
                 var tag = this[i];
-                var tagWriter = new SwfWriter();
-                tagWriter.FileVersion = writer.FileVersion;
-                tag.Write(tagWriter);
+            	var tagWriter = new SwfWriter {FileVersion = writer.FileVersion};
+            	tag.Write(tagWriter);
                 var tagData = tagWriter.ToByteArray();
                 writer.WriteUInt32BE((uint)tagData.Length);
                 writer.Write(tagData);
