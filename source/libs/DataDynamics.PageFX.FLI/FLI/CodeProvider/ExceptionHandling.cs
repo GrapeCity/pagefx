@@ -149,7 +149,7 @@ namespace DataDynamics.PageFX.FLI
             _resolver.Add(tb.ExitPoint, new ExceptionTo(seh));
 
             bool catchAnyException = MustCatchAnyException(h);
-            seh.Type = catchAnyException ? _abc.BuiltinTypes.Object : TypeHelper.GetTypeMultiname(h.ExceptionType);
+            seh.Type = catchAnyException ? _abc.BuiltinTypes.Object : h.ExceptionType.GetMultiname();
 
             int var = h.ExceptionVariable;
             if (var >= 0)

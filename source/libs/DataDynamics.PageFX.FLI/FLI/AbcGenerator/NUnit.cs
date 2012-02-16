@@ -241,7 +241,7 @@ namespace DataDynamics.PageFX.FLI
         #region NUnitFrameworkAssembly
         private IType FindNUnitType(string fullname)
         {
-            return TypeHelper.FindType(NUnitFrameworkAssembly, fullname);
+            return TypeExtensions.FindType(NUnitFrameworkAssembly, fullname);
         }
 
 		private IAssembly NUnitFrameworkAssembly

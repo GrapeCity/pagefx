@@ -169,7 +169,7 @@
     <Compile Include="FLI\SwfCompiler\Main.cs" />
     <Compile Include="FLI\Utils\AvmHelper.cs" />
     <Compile Include="FLI\SwfCompiler\MXFrame.cs" />
-    <Compile Include="FLI\Utils\TypeHelper.cs" />
+    <Compile Include="FLI\Utils\TypeExtensions.cs" />
     <Compile Include="FLV\Enums.cs" />
     <Compile Include="FLV\FlvAudioTag.cs" />
     <Compile Include="FLV\FlvFile.cs" />

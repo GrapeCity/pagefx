@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX.FLI
                 if (_name == null)
                 {
                     _abc.generator.DefineType(_param);
-                    var paramType = TypeHelper.GetTypeMultiname(_param);
+                    var paramType = _param.GetMultiname();
                     _name = _abc.DefineVectorTypeName(paramType);
                 }
                 return _name;

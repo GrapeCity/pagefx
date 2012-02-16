@@ -438,7 +438,7 @@ namespace DataDynamics.PageFX.FLI
         #region LinkInternalType
         static bool LinkInternalType(IType type)
         {
-            if (TypeHelper.IsInternalType(type))
+            if (type.IsInternalType())
             {
                 var tag = new InternalType(type);
                 Debug.Assert(type.Tag == tag);

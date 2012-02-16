@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (type == null) return null;
             var obj = DefineType(type);
-            return TypeHelper.ToMultiname(obj);
+            return obj.ToMultiname();
         }
 
         #region DefineType
@@ -72,7 +72,7 @@ namespace DataDynamics.PageFX.FLI
         #region RegisterType
         void RegisterType(IType type)
         {
-            if (TypeHelper.IsModuleType(type))
+            if (type.IsModuleType())
                 return;
 
             switch (type.TypeKind)
@@ -144,7 +144,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineTypeCore
         object DefineTypeCore(IType type)
         {
-            if (TypeHelper.CanExclude(type))
+            if (type.CanExclude())
                 return null;
 
             switch (type.TypeKind)
@@ -249,7 +249,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (sfc != null && !string.IsNullOrEmpty(sfc.RootSprite))
                 return type.FullName == sfc.RootSprite;
-            return TypeHelper.IsRootSprite(type);
+            return type.IsRootSprite();
         }
 
         void SetFlags(AbcInstance instance, IType type)
@@ -277,7 +277,7 @@ namespace DataDynamics.PageFX.FLI
         AbcMultiname DefineInstanceName(IType type)
         {
             var ns = DefineTypeNamespace(type);
-            string name = TypeHelper.GetPartialTypeName(type);
+            string name = TypeExtensions.GetPartialTypeName(type);
             return _abc.DefineQName(ns, name);
         }
 
@@ -314,7 +314,7 @@ namespace DataDynamics.PageFX.FLI
             {
                 //NOTE: This fix explicit usage of Avm.Object as base class.
                 //In fact .NET developer will never use this class, or no need to use this class.
-                if (TypeHelper.IsAvmObject(baseType))
+                if (baseType.IsAvmObject())
                     baseType = SystemTypes.Object;
                 superName = DefineTypeName(baseType);
                 superType = baseType.Tag as AbcInstance;

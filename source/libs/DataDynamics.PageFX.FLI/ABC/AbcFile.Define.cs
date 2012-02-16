@@ -427,7 +427,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcNamespace DefinePrivateNamespace(AbcInstance instance)
         {
-            string ns = TypeHelper.GetNamespaceForMembers(instance);
+            string ns = TypeExtensions.GetNamespaceForMembers(instance);
             return DefinePrivateNamespace(ns);
         }
 
@@ -844,11 +844,11 @@ namespace DataDynamics.PageFX.FLI.ABC
                     }
                 }
 
-                if (TypeHelper.UseNativeObject(type))
+                if (type.UseNativeObject())
                     return BuiltinTypes.Object;
             }
 
-            var mn = TypeHelper.GetTypeMultiname(type);
+            var mn = type.GetMultiname();
             if (mn == null)
                 throw new InvalidOperationException("Type is not defined yet");
 

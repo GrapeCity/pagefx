@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FLI
 
         public bool HasCopy(IType type)
         {
-            return TypeHelper.HasCopy(type);
+            return TypeExtensions.HasCopy(type);
         }
 
         //stack transition: ..., this, value -> ...

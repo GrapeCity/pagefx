@@ -756,9 +756,9 @@ namespace DataDynamics.PageFX.FLI
             if (!method.IsConstructor) return false;
             var declType = method.DeclaringType;
             if (method.Parameters.Count > 0
-                && !TypeHelper.AllowNonParameterlessInitializer(declType))
+                && !TypeExtensions.AllowNonParameterlessInitializer(declType))
                 return false;
-            return TypeHelper.HasSingleConstructor(declType);
+            return declType.HasSingleConstructor();
         }
 
         public static bool IsGetter(IMethod method)

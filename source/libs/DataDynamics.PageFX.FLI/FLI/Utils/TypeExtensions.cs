@@ -8,34 +8,34 @@ namespace DataDynamics.PageFX.FLI
     /// <summary>
     /// Contains various type utils.
     /// </summary>
-    internal static class TypeHelper
+    internal static class TypeExtensions
     {
         /// <summary>
-        /// Returns true if given type may be not compiled.
+        /// Returns true if given type should not be compiled.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool CanExclude(IType type)
+        public static bool CanExclude(this IType type)
         {
-            if (IsModuleType(type))
+            if (type.IsModuleType())
                 return true;
 
             if (type.IsSpecialName || type.IsRuntimeSpecialName)
                 return true;
 
-            if (IsArrayInitializer(type))
+            if (type.IsArrayInitializer())
                 return true;
 
-            if (IsPrivateImplementationDetails(type))
+            if (type.IsPrivateImplementationDetails())
             {
-            	return type.Fields.All(field => IsArrayInitializer(field.Type));
+            	return type.Fields.All(field => field.Type.IsArrayInitializer());
             }
 
         	return false;
         }
 
         //class <PrivateImplementationDetails>{C05318BA-D3C5-45BA-8FEC-725F72EE7B81}
-        public static bool IsModuleType(IType type)
+        public static bool IsModuleType(this IType type)
         {
             if (type == null) return false;
             if (!type.IsClass) return false;
@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.FLI
             return type.FullName == "<Module>";
         }
 
-        public static bool IsPrivateImplementationDetails(IType type)
+        public static bool IsPrivateImplementationDetails(this IType type)
         {
             if (type == null) return false;
             if (!type.IsCompilerGenerated) return false;
@@ -60,12 +60,12 @@ namespace DataDynamics.PageFX.FLI
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsArrayInitializer(IType type)
+        public static bool IsArrayInitializer(this IType type)
         {
             if (type == null) return false;
             if (type.TypeKind != TypeKind.Struct) return false;
             if (type.Layout == null) return false;
-            if (IsPrivateImplementationDetails(type.DeclaringType)) return true;
+            if (type.DeclaringType.IsPrivateImplementationDetails()) return true;
             return false;
         }
 
@@ -89,7 +89,7 @@ namespace DataDynamics.PageFX.FLI
         /// </summary>
         /// <param name="type">given type to inspect</param>
         /// <returns></returns>
-        public static bool UseNativeObject(IType type)
+        public static bool UseNativeObject(this IType type)
         {
             if (type == null) return false;
 
@@ -99,7 +99,7 @@ namespace DataDynamics.PageFX.FLI
             if (type == SystemTypes.Object)
                 return true;
 
-            if (AbcGenConfig.UseAvmString && IsStringInterface(type))
+            if (AbcGenConfig.UseAvmString && type.IsStringInterface())
                 return true;
 
             if (type.IsGenericArrayInterface())
@@ -113,22 +113,20 @@ namespace DataDynamics.PageFX.FLI
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool HasSingleConstructor(IType type)
+        public static bool HasSingleConstructor(this IType type)
         {
             if (type == null) return false;
             if (type.IsInterface) return false;
             int n = 0;
-            foreach (var m in type.Methods)
+            foreach (var m in type.Methods.Where(m => !m.IsStatic && m.IsConstructor))
             {
-                if (m.IsStatic) continue;
-                if (!m.IsConstructor) continue;
-                if (n >= 1) return false;
-                ++n;
+            	if (n >= 1) return false;
+            	++n;
             }
             return true;
         }
 
-        public static bool IsNativeType(IType type, string fullname)
+        public static bool IsNativeType(this IType type, string fullname)
         {
             if (type == null) return false;
             var instance = type.Tag as AbcInstance;
@@ -137,7 +135,7 @@ namespace DataDynamics.PageFX.FLI
             return instance.FullName == fullname;
         }
 
-        public static AbcMultiname ToMultiname(object typeTag)
+        public static AbcMultiname ToMultiname(this object typeTag)
         {
             if (typeTag == null) return null;
             var instance = typeTag as AbcInstance;
@@ -147,26 +145,25 @@ namespace DataDynamics.PageFX.FLI
             return typeTag as AbcMultiname;
         }
 
-        public static AbcMultiname GetTypeMultiname(IType type)
+        public static AbcMultiname GetMultiname(this IType type)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
-            return ToMultiname(type.Tag);
+            if (type == null) throw new ArgumentNullException("type");
+            return type.Tag.ToMultiname();
         }
 
-        public static bool IsStringInterface(IType type)
+        public static bool IsStringInterface(this IType type)
         {
             return SystemTypes.String.Implements(type);
         }
 
-        public static bool IsInternalType(IType type)
+        public static bool IsInternalType(this IType type)
         {
             if (string.IsNullOrEmpty(type.Namespace) && type.Name == "avm")
                 return true;
             return false;
         }
 
-        public static bool HasGlobalFunctions(IType type)
+        public static bool HasGlobalFunctions(this IType type)
         {
             return Attrs.Has(type, Attrs.GlobalFunctions);
         }
@@ -417,7 +414,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (type.TypeKind == TypeKind.Struct)
             {
-                return !IsArrayInitializer(type);
+                return !type.IsArrayInitializer();
             }
             if (type.IsEnum)
                 type = type.ValueType;
@@ -450,12 +447,11 @@ namespace DataDynamics.PageFX.FLI
         	return type.Fields.Any(f => !f.IsConstant && f.IsStatic == isStatic && IsInitRequiredField(f.Type));
         }
 
-        public static IType GetElemType(IType type)
+        public static IType GetElementType(this IType type)
         {
-            var ct = type as ICompoundType;
-            if (ct == null)
-                throw new ArgumentException("type");
-            return ct.ElementType;
+            var compoundType = type as ICompoundType;
+            if (compoundType == null) throw new ArgumentException("type");
+            return compoundType.ElementType;
         }
 
         public static bool IsFrom(IType type, string fullname)
@@ -471,7 +467,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        public static bool IsAvmObject(IType type)
+        public static bool IsAvmObject(this IType type)
         {
             if (type == null) return false;
             var instance = type.Tag as AbcInstance;
@@ -482,20 +478,20 @@ namespace DataDynamics.PageFX.FLI
             //return name == "Avm.Object" || name == "Object";
         }
 
-        public static bool IsFromAvmObject(IType type)
+        public static bool IsFromAvmObject(this IType type)
         {
             if (type == null) return false;
             var bt = type.BaseType;
             while (bt != null)
             {
-                if (IsAvmObject(bt))
+                if (bt.IsAvmObject())
                     return true;
                 bt = bt.BaseType;
             }
             return false;
         }
 
-        public static bool IsRootSprite(IType type)
+        public static bool IsRootSprite(this IType type)
         {
             if (type == null) return false;
 
@@ -507,7 +503,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        public static bool IsValueType(IType type)
+        public static bool IsValueType(this IType type)
         {
             if (type == null) return false;
             if (type.TypeKind == TypeKind.Struct) return true;
@@ -521,9 +517,9 @@ namespace DataDynamics.PageFX.FLI
             if (type == null) return false;
             if (type.IsArray) return true;
 
-            if (AbcGenConfig.UseCastToValueType && asop && IsValueType(type)) return true;
+            if (AbcGenConfig.UseCastToValueType && asop && type.IsValueType()) return true;
 
-            if (AbcGenConfig.UseAvmString && IsStringInterface(type))
+            if (AbcGenConfig.UseAvmString && type.IsStringInterface())
                 return true;
 
             if (type.IsGenericArrayInterface())

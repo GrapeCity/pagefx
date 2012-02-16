@@ -36,14 +36,14 @@ namespace DataDynamics.PageFX.FLI
             if (type.IsNullableInstance())
                 return DefineCastToNullable(type, cast);
 
-            if (TypeHelper.IsValueType(type))
+            if (type.IsValueType())
             {
                 if (AbcGenConfig.UseCastToValueType)
                     return DefineCastToValueType(type, cast);
                 return null;
             }
 
-            if (TypeHelper.IsStringInterface(type))
+            if (type.IsStringInterface())
                 return DefineCastToStringInterface(type, cast);
 
             if (type.IsGenericArrayInterface())
@@ -328,7 +328,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineCastToValueType
         AbcMethod DefineCastToValueType(IType type, bool cast)
         {
-            if (!TypeHelper.IsValueType(type))
+            if (!type.IsValueType())
                 return null;
             if (type.IsNullableInstance())
                 return DefineCastToNullable(type, cast);

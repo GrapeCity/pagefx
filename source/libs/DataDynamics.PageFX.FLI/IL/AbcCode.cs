@@ -1313,7 +1313,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public Instruction ConstructProperty(IType type, int argc)
         {
-            var name = TypeHelper.GetTypeMultiname(type);
+            var name = type.GetMultiname();
             return ConstructProperty(name, argc);
         }
 
@@ -1500,7 +1500,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
             EnsureType(type);
 
-            if (TypeHelper.MustUseCastToMethod(type, true))
+            if (TypeExtensions.MustUseCastToMethod(type, true))
             {
                 var m = Generator.DefineCastToMethod(type, false);
                 GetlexSwapCall(m);
@@ -1623,14 +1623,14 @@ namespace DataDynamics.PageFX.FLI.IL
                 return;
             }
 
-            var type = TypeHelper.SelectDecimalOrInt64(source, target);
+            var type = TypeExtensions.SelectDecimalOrInt64(source, target);
             if (type != null && SystemTypes.IsNumeric(target))
             {
                 CallCastOp(source, target, type);
                 return;
             }
 
-            if (AbcGenConfig.UseAvmString && TypeHelper.IsStringInterface(target))
+            if (AbcGenConfig.UseAvmString && target.IsStringInterface())
             {
                 CastToStringInterface(source, target);
                 return;
@@ -1653,7 +1653,7 @@ namespace DataDynamics.PageFX.FLI.IL
             if (TryCastToSystemType(null, target))
                 return;
 
-            if (TypeHelper.MustUseCastToMethod(target, false))
+            if (TypeExtensions.MustUseCastToMethod(target, false))
             {
                 CallCastToMethod(target);
                 return;
@@ -1676,7 +1676,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         static bool IsUnbox(IType source, IType target)
         {
-            if (!TypeHelper.IsValueType(target)) return false;
+            if (!target.IsValueType()) return false;
             if (source == null) return true;
             if (source == SystemTypes.Object) return true;
             return false;
@@ -2109,7 +2109,7 @@ namespace DataDynamics.PageFX.FLI.IL
                     GetLocal(to);
                     GetLocal(from);
                     GetProperty(prop);
-                    if (TypeHelper.HasCopy(t.Type))
+                    if (TypeExtensions.HasCopy(t.Type))
                         CopyValue(t.Type);
                     SetProperty(prop);
                 }
@@ -2129,7 +2129,7 @@ namespace DataDynamics.PageFX.FLI.IL
             //    return;
             //}
 
-            if (TypeHelper.HasCopy(type))
+            if (TypeExtensions.HasCopy(type))
             {
                 var instance = type.Tag as AbcInstance;
                 if (instance != null)
@@ -2157,7 +2157,7 @@ namespace DataDynamics.PageFX.FLI.IL
         {
             EnsureType(type);
 
-            if (TypeHelper.HasCopy(type))
+            if (TypeExtensions.HasCopy(type))
             {
                 var instance = type.Tag as AbcInstance;
                 if (instance != null)
@@ -2537,7 +2537,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
             CastTo(type);
 
-            if (TypeHelper.IsValueType(type))
+            if (type.IsValueType())
                 CopyValue(type);
         }
 
@@ -2933,7 +2933,7 @@ namespace DataDynamics.PageFX.FLI.IL
                             return;
                 }
             }
-            if (TypeHelper.IsInitRequired(type))
+            if (TypeExtensions.IsInitRequired(type))
             {
                 CreateInstance(type, true);
             }
@@ -3032,20 +3032,20 @@ namespace DataDynamics.PageFX.FLI.IL
         {
             if (!method.IsConstructor) return;
             var type = method.DeclaringType;
-            if (!TypeHelper.MustInitValueTypeFields(type)) return;
+            if (!TypeExtensions.MustInitValueTypeFields(type)) return;
             bool isStatic = method.IsStatic;
             InitFields(type, isStatic, false);
         }
 
         public void InitFields(IType type, bool isStatic, bool dup)
         {
-            if (!TypeHelper.MustInitValueTypeFields(type)) return;
+            if (!TypeExtensions.MustInitValueTypeFields(type)) return;
             foreach (var f in type.Fields)
             {
                 if (f.IsConstant) continue;
                 if (f.IsStatic == isStatic)
                 {
-                    if (!TypeHelper.IsInitRequiredField(f.Type)) continue;
+                    if (!TypeExtensions.IsInitRequiredField(f.Type)) continue;
                     if (dup) Dup();
                     else LoadThis();
                     InitObject(f.Type);
@@ -3091,7 +3091,7 @@ namespace DataDynamics.PageFX.FLI.IL
                 }
             }
 
-            if (TypeHelper.IsDecimalOrInt64(left, right))
+            if (TypeExtensions.IsDecimalOrInt64(left, right))
             {
                 CallBinOp(op, left, right, result);
                 return;

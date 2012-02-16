@@ -15,12 +15,12 @@ namespace DataDynamics.PageFX.FLI
             var type = method.DeclaringType;
             if (type.Tag is GlobalType)
                 return true;
-            if (TypeHelper.IsInternalType(type))
+            if (type.IsInternalType())
             {
                 if (method.Name == "trace")
                     return true;
             }
-            if (TypeHelper.IsNativeType(type, "Class"))
+            if (type.IsNativeType("Class"))
             {
                 if (method.Name == "Find")
                     return true;
@@ -37,13 +37,13 @@ namespace DataDynamics.PageFX.FLI
                 code.FindPropertyStrict(mn);
                 return;
             }
-            if (TypeHelper.IsInternalType(type))
+            if (type.IsInternalType())
             {
                 var mn = _abc.DefineGlobalQName(method.Name);
                 code.FindPropertyStrict(mn);
                 return;
             }
-            if (TypeHelper.IsNativeType(type, "Class"))
+            if (type.IsNativeType("Class"))
             {
                 if (method.Name == "Find")
                 {
@@ -415,7 +415,7 @@ namespace DataDynamics.PageFX.FLI
             //In this cases we should add coerce instruction
 
             var declType = method.DeclaringType;
-            if (TypeHelper.UseNativeObject(declType))
+            if (declType.UseNativeObject())
                 return true;
 
             if (MustCoerceReturnType(declType))

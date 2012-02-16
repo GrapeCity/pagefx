@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineCopyMethod
         public AbcMethod DefineStaticCopyMethod(IType type)
         {
-            if (!TypeHelper.HasCopy(type)) return null;
+            if (!TypeExtensions.HasCopy(type)) return null;
             var instance = DefineAbcInstance(type);
             return DefineStaticCopyMethod(instance);
         }
@@ -36,7 +36,7 @@ namespace DataDynamics.PageFX.FLI
 
         public AbcMethod DefineCopyMethod(IType type)
         {
-            if (!TypeHelper.HasCopy(type)) return null;
+            if (!TypeExtensions.HasCopy(type)) return null;
             var instance = DefineAbcInstance(type);
             return DefineCopyMethod(instance);
         }
@@ -50,7 +50,7 @@ namespace DataDynamics.PageFX.FLI
         {
             var type = instance.Type;
             if (type == null) return null;
-            if (!TypeHelper.HasCopy(type)) return null;
+            if (!TypeExtensions.HasCopy(type)) return null;
 
             var name = _abc.DefinePfxName("__copy__");
 
@@ -83,7 +83,7 @@ namespace DataDynamics.PageFX.FLI
         public AbcMethod DefineCopyFromMethod(AbcInstance instance)
         {
             var type = instance.Type;
-            if (!TypeHelper.HasCopy(type)) return null;
+            if (!TypeExtensions.HasCopy(type)) return null;
 
             var name = _abc.DefinePfxName("__copy_from__");
 

@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FLI
             if (type == null)
                 return -1;
 
-            if (TypeHelper.IsModuleType(type))
+            if (type.IsModuleType())
                 return -1;
 
             if (GenericType.HasGenericParams(type))
