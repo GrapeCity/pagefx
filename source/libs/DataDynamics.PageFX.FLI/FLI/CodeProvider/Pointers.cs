@@ -290,7 +290,7 @@ namespace DataDynamics.PageFX.FLI
 
         AbcMultiname DefineMemberType(IType type)
         {
-            type = TypeService.UnwrapRef(type);
+            type = type.UnwrapRef();
             return _abc.generator.DefineMemberType(type);
         }
 

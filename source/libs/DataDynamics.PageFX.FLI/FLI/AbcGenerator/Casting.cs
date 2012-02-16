@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.FLI
             if (type.IsArray)
                 return DefineCastToArray(type, cast);
 
-            if (TypeService.IsNullableInstance(type))
+            if (type.IsNullableInstance())
                 return DefineCastToNullable(type, cast);
 
             if (TypeHelper.IsValueType(type))
@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.FLI
             if (TypeHelper.IsStringInterface(type))
                 return DefineCastToStringInterface(type, cast);
 
-            if (TypeService.IsGenericArrayInterface(type))
+            if (type.IsGenericArrayInterface())
                 return DefineCastToGenericArrayInterface(type, cast);
 
             return DefineCastToDefault(type, cast);
@@ -132,7 +132,7 @@ namespace DataDynamics.PageFX.FLI
         public AbcMethod DefineCastToGenericArrayInterface(IType type, bool cast)
         {
             if (type == null) return null;
-            if (!TypeService.IsGenericArrayInterface(type))
+            if (!type.IsGenericArrayInterface())
                 return null;
 
             const bool me = false;
@@ -238,9 +238,9 @@ namespace DataDynamics.PageFX.FLI
                                 },
                             delegate
                                 {
-                                    if (TypeService.IsIEnumerableInstance(type))
+                                    if (type.IsIEnumerableInstance())
                                     {
-                                        var elemType = TypeService.GetTypeArg(type, 0);
+                                        var elemType = type.GetTypeArgument(0);
                                         
                                         //check array
                                         code.GetLocal(value);
@@ -272,7 +272,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineCastToNullable
         AbcMethod DefineCastToNullable(IType type, bool cast)
         {
-            if (!TypeService.IsNullableInstance(type))
+            if (!type.IsNullableInstance())
                 return null;
 
             const bool me = true;
@@ -330,7 +330,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (!TypeHelper.IsValueType(type))
                 return null;
-            if (TypeService.IsNullableInstance(type))
+            if (type.IsNullableInstance())
                 return DefineCastToNullable(type, cast);
 
             const bool me = true;
@@ -371,7 +371,7 @@ namespace DataDynamics.PageFX.FLI
                                 },
                             delegate
                                 {
-                                    if (TypeService.IsBoxableType(type))
+                                    if (type.IsBoxableType())
                                     {
                                         code.Box(typeName, () => code.GetBoxedValue(value));
                                     }

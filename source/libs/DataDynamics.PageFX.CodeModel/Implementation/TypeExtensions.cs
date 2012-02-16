@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public static class TypeService
+    public static class TypeExtensions
     {
-        public static T FindMember<T>(IType type, bool inherit, Converter<IType, T> finder)
+        public static T FindMember<T>(this IType type, bool inherit, Converter<IType, T> finder)
             where T : class 
         {
             while (type != null)
@@ -20,37 +20,36 @@ namespace DataDynamics.PageFX.CodeModel
             return null;
         }
 
-        public static IField FindField(IType type, string name, bool inherit)
+        public static IField FindField(this IType type, string name, bool inherit)
         {
-            return FindMember(type, inherit, t => t.Fields[name]);
+            return type.FindMember(inherit, t => t.Fields[name]);
         }
 
-        public static IProperty FindProperty(IType type, string name, bool inherit)
+        public static IProperty FindProperty(this IType type, string name, bool inherit)
         {
-            return FindMember(type, inherit,
-                              t => t.Properties.FirstOrDefault(p => !p.IsIndexer && p.Name == name));
+            return type.FindMember(inherit, t => t.Properties.FirstOrDefault(p => !p.IsIndexer && p.Name == name));
         }
 
-        public static IType GetCommonBaseType(IType A, IType B)
+        public static IType GetCommonBaseType(this IType a, IType b)
         {
-            if (A == null) return B;
-            if (B == null) return A;
-            if (A == B) return A;
+            if (a == null) return b;
+            if (b == null) return a;
+            if (a == b) return a;
 
             //A : B
-            if (IsSubclassOf(A, B))
-                return B;
+            if (a.IsSubclassOf(b))
+                return b;
 
             //B : A
-            if (IsSubclassOf(B, A))
-                return A;
+            if (b.IsSubclassOf(a))
+                return a;
 
             //A : C
             //B : C
-            var C = A.BaseType;
+            var C = a.BaseType;
             while (C != null)
             {
-                if (IsSubclassOf(B, C))
+                if (b.IsSubclassOf(C))
                     return C;
                 C = C.BaseType;
             }
@@ -58,66 +57,64 @@ namespace DataDynamics.PageFX.CodeModel
             return SystemTypes.Object;
         }
 
-        private static IType GetCommonInterface(IType A, IType B)
+        private static IType GetCommonInterface(this IType a, IType b)
         {
-            if (A == null) return B;
-            if (B == null) return A;
-            if (A == B) return A;
+            if (a == null) return b;
+            if (b == null) return a;
+            if (a == b) return a;
 
             //A : B
-            if (Implements(A, B))
-                return B;
+            if (a.Implements(b))
+                return b;
 
             //B : A
-            if (Implements(B, A))
-                return A;
+            if (b.Implements(a))
+                return a;
 
             //A : C
             //B : C
 
-            foreach (var C in A.Interfaces)
+            foreach (var C in a.Interfaces)
             {
-                if (Implements(B, C))
+                if (b.Implements(C))
                     return C;
             }
 
             return SystemTypes.Object;
         }
 
-        public static IType GetCommonAncestor(IType A, IType B)
+        public static IType GetCommonAncestor(this IType a, IType b)
         {
-            if (A == null) return B;
-            if (B == null) return A;
-            if (A == B) return A;
+            if (a == null) return b;
+            if (b == null) return a;
+            if (a == b) return a;
 
-            if (A.IsEnum)
+            if (a.IsEnum)
             {
-                if (B.IsEnum)
-                    return GetCommonAncestor(A.ValueType, B.ValueType);
-                if (B.SystemType != null)
-                    return GetCommonAncestor(A.ValueType, B);
+                if (b.IsEnum)
+                    return a.ValueType.GetCommonAncestor(b.ValueType);
+                if (b.SystemType != null)
+                    return a.ValueType.GetCommonAncestor(b);
             }
 
-            if (B.IsEnum)
+            if (b.IsEnum)
             {
-                if (A.SystemType != null)
-                    return GetCommonAncestor(A, B.ValueType);
+                if (a.SystemType != null)
+                    return a.GetCommonAncestor(b.ValueType);
             }
 
-            var a = A.SystemType;
-            if (a != null)
+        	if (a.SystemType != null)
             {
-                var b = B.SystemType;
-                if (b == null) return A;
+            	if (b.SystemType == null) return a;
 
-                var cd = SystemTypes.GetCommonDenominator(A, B);
+                var cd = SystemTypes.GetCommonDenominator(a, b);
                 if (cd != null) return cd;
             }
 
-            if (A.IsInterface)
-                return B.IsInterface ? GetCommonInterface(A, B) : A;
+            if (a.IsInterface)
+                return b.IsInterface ? a.GetCommonInterface(b) : a;
 
-            return B.IsInterface ? B : GetCommonBaseType(A, B);
+            return b.IsInterface ? b : a.GetCommonBaseType(b);
         }
 
         private static readonly string[] GenericArrayInterfaces =
@@ -127,7 +124,7 @@ namespace DataDynamics.PageFX.CodeModel
             CLRNames.Types.IListT
         };
 
-        public static bool IsGenericInstance(IType type, string fullname)
+        public static bool IsGenericInstance(this IType type, string fullname)
         {
             if (type == null) return false;
             var gi = type as IGenericInstance;
@@ -135,40 +132,40 @@ namespace DataDynamics.PageFX.CodeModel
             return gi.Type.FullName == fullname;
         }
 
-        public static bool IsIEnumerableInstance(IType type)
+        public static bool IsIEnumerableInstance(this IType type)
         {
-            return IsGenericInstance(type, CLRNames.Types.IEnumerableT);
+            return type.IsGenericInstance(CLRNames.Types.IEnumerableT);
         }
 
-        public static bool IsIEnumerableInstance(IType type, IType arg)
+        public static bool IsIEnumerableInstance(this IType type, IType arg)
         {
-            if (!IsIEnumerableInstance(type)) return false;
+            if (!type.IsIEnumerableInstance()) return false;
             var gi = (IGenericInstance)type;
             return gi.GenericArguments[0] == arg;
         }
 
-        public static bool IsIEnumerableChar(IType type)
+        public static bool IsIEnumerableChar(this IType type)
         {
-            return IsIEnumerableInstance(type, SystemTypes.Char);
+            return type.IsIEnumerableInstance(SystemTypes.Char);
         }
 
-        public static bool IsIEnumeratorInstance(IType type)
+        public static bool IsIEnumeratorInstance(this IType type)
         {
-            return IsGenericInstance(type, CLRNames.Types.IEnumeratorT);
+            return type.IsGenericInstance(CLRNames.Types.IEnumeratorT);
         }
 
-        public static bool IsIEnumerator(IType type)
+        public static bool IsIEnumerator(this IType type)
         {
             if (type == null) return false;
             return type.FullName == CLRNames.Types.IEnumerator;
         }
 
-        public static bool IsNullableInstance(IType type)
+        public static bool IsNullableInstance(this IType type)
         {
-            return IsGenericInstance(type, CLRNames.Types.NullableT);
+            return type.IsGenericInstance(CLRNames.Types.NullableT);
         }
 
-        public static bool IsGenericArrayInterface(IType type)
+        public static bool IsGenericArrayInterface(this IType type)
         {
             var gi = type as IGenericInstance;
             if (gi == null) return false;
@@ -176,13 +173,13 @@ namespace DataDynamics.PageFX.CodeModel
             return Array.IndexOf(GenericArrayInterfaces, name) >= 0;
         }
 
-        public static bool IsGenericArrayInterface(IType type, IType arg)
+        public static bool IsGenericArrayInterface(this IType type, IType arg)
         {
-            if (!IsGenericArrayInterface(type)) return false;
+            if (!type.IsGenericArrayInterface()) return false;
             return ((IGenericInstance)type).GenericArguments[0] == arg;
         }
 
-        public static IType GetTypeArg(IType type, int arg)
+        public static IType GetTypeArgument(this IType type, int arg)
         {
             var gi = type as IGenericInstance;
             if (gi == null)
@@ -191,7 +188,7 @@ namespace DataDynamics.PageFX.CodeModel
             return gi.GenericArguments[arg];
         }
 
-        public static bool IsImplicitCast(IType source, IType target)
+        public static bool IsImplicitCast(this IType source, IType target)
         {
             if (source == target) return true;
             if (source == null) return true;
@@ -202,11 +199,11 @@ namespace DataDynamics.PageFX.CodeModel
             switch (target.TypeKind)
             {
                 case TypeKind.Interface:
-                    return !Implements(source, target);
+                    return !source.Implements(target);
 
                 case TypeKind.Class:
                 case TypeKind.Delegate:
-                    return !IsSubclassOf(source, target);
+                    return !source.IsSubclassOf(target);
 
                 case TypeKind.Array:
                     {
@@ -216,7 +213,7 @@ namespace DataDynamics.PageFX.CodeModel
                             var to = (IArrayType)target;
                             if (from.Rank != to.Rank)
                                 return false;
-                            if (IsImplicitCast(from.ElementType, to.ElementType))
+                            if (@from.ElementType.IsImplicitCast(to.ElementType))
                                 return true;
                         }
                     }
@@ -294,17 +291,17 @@ namespace DataDynamics.PageFX.CodeModel
         /// <param name="type">given type to inspect</param>
         /// <param name="iface">given interface to take into account</param>
         /// <returns></returns>
-        public static bool Implements(IType type, IType iface)
+        public static bool Implements(this IType type, IType iface)
         {
             if (iface == null) return false;
 
             if (type.IsArray)
             {
                 var elemType = (IArrayType)type;
-                if (IsGenericArrayInterface(iface))
+                if (iface.IsGenericArrayInterface())
                 {
-                    var arg = GetTypeArg(iface, 0);
-                    return IsImplicitCast(elemType, arg);
+                    var arg = iface.GetTypeArgument(0);
+                    return elemType.IsImplicitCast(arg);
                 }
             }
 
@@ -321,7 +318,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsSubclassOf(IType type, IType baseType)
+        public static bool IsSubclassOf(this IType type, IType baseType)
         {
             if (type == null) return false;
             if (baseType == null) return false;
@@ -334,7 +331,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsSubclassOf(IType type, string baseType)
+        public static bool IsSubclassOf(this IType type, string baseType)
         {
             if (type == null) return false;
             if (baseType == null) return false;
@@ -347,7 +344,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static IEnumerable<IType> GetBaseTypes(IType type)
+        public static IEnumerable<IType> GetBaseTypes(this IType type)
         {
             for (var bt = type.BaseType; bt != null; bt = bt.BaseType)
                 yield return bt;
@@ -365,16 +362,16 @@ namespace DataDynamics.PageFX.CodeModel
         private static readonly bool[,] ImplicitNumericConversions;
         private static readonly bool[,] ExplicitNumericConversions;
 
-        static TypeService()
+        static TypeExtensions()
         {
             const int N = (int)SystemTypeCode.Max;
             ImplicitNumericConversions = new bool[N,N];
             ExplicitNumericConversions = new bool[N,N];
 
-            string text = ResourceHelper.GetText(typeof(TypeService), "implicit.txt");
+            string text = ResourceHelper.GetText(typeof(TypeExtensions), "implicit.txt");
             LoadConversions(text, ImplicitNumericConversions);
 
-            text = ResourceHelper.GetText(typeof(TypeService), "explicit.txt");
+            text = ResourceHelper.GetText(typeof(TypeExtensions), "explicit.txt");
             LoadConversions(text, ExplicitNumericConversions);
         }
 
@@ -455,7 +452,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsBoxableType(IType type)
+        public static bool IsBoxableType(this IType type)
         {
             //NOTE: enums is also boxable types
             if (type == null) return false;
@@ -483,7 +480,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static IType UnwrapRef(IType type)
+        public static IType UnwrapRef(this IType type)
         {
             while (type != null)
             {
@@ -493,7 +490,7 @@ namespace DataDynamics.PageFX.CodeModel
             return type;
         }
 
-        public static void CompleteProperty(IProperty prop)
+        public static void ResolveTypeAndParameters(this IProperty prop)
         {
         	if (prop.Type != null) return;
 
@@ -520,7 +517,7 @@ namespace DataDynamics.PageFX.CodeModel
         	}
         }
 
-		public static void CompleteEvent(IEvent e)
+		public static void ResolveType(this IEvent e)
 		{
 			if (e.Type != null) return;
 
@@ -532,7 +529,7 @@ namespace DataDynamics.PageFX.CodeModel
 			}
 		}
 
-        public static bool IsVoid(IMethod method)
+        public static bool IsVoid(this IMethod method)
         {
             if (method.Type == null) return true;
             if (method.IsConstructor) return true;

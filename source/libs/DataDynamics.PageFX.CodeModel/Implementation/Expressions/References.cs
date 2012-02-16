@@ -133,7 +133,7 @@ namespace DataDynamics.PageFX.CodeModel
             get
             {
                 var type = _arg.Type;
-                return TypeService.UnwrapRef(type);
+                return type.UnwrapRef();
             }
         }
         #endregion

@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             if (type == null) return false;
             if (type.FullName == System_Attribute) return true;
-            return TypeService.IsSubclassOf(type, System_Attribute);
+            return type.IsSubclassOf(System_Attribute);
         }
 
         public static bool IsException(IType type)
@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX.CodeModel
             if (type == null) return false;
             if (type.FullName == System_Exception)
                 return false;
-            return TypeService.IsSubclassOf(type, System_Exception);
+            return type.IsSubclassOf(System_Exception);
         }
     }
 }

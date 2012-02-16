@@ -185,7 +185,7 @@ namespace DataDynamics.PageFX.FLI
             code.ThrowException(Corlib.Types.NotImplementedException);
 
             //TODO: Is it needed???
-            if (TypeService.IsVoid(method))
+            if (method.IsVoid())
             {
                 code.ReturnVoid();
             }

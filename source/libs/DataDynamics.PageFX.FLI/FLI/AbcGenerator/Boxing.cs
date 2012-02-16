@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineBoxMethod
         public AbcMethod DefineBoxMethod(IType type)
         {
-            if (TypeService.IsNullableInstance(type))
+            if (type.IsNullableInstance())
                 return DefineBoxNullable(type);
 
             return DefineBoxPrimitive(type);
@@ -19,7 +19,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineBoxPrimitive
         AbcMethod DefineBoxPrimitive(IType type)
         {
-            if (!TypeService.IsBoxableType(type))
+            if (!type.IsBoxableType())
                 return null;
 
             var instance = DefineAbcInstance(type);
@@ -39,13 +39,13 @@ namespace DataDynamics.PageFX.FLI
         #region DefineBoxNullable
         private AbcMethod DefineBoxNullable(IType type)
         {
-            if (!TypeService.IsNullableInstance(type))
+            if (!type.IsNullableInstance())
                 return null;
 
             var instance = DefineAbcInstance(type);
             var name = DefinePfxName(Const.Boxing.MethodBox);
 
-            var arg = TypeService.GetTypeArg(type, 0);
+            var arg = type.GetTypeArgument(0);
             var argInstance = DefineAbcInstance(arg);
 
             return instance.DefineStaticMethod(
@@ -77,7 +77,7 @@ namespace DataDynamics.PageFX.FLI
         #region SelectUnboxMethod
         public AbcMethod SelectUnboxMethod(IType type, bool strict)
         {
-            if (TypeService.IsNullableInstance(type))
+            if (type.IsNullableInstance())
                 return DefineUnboxNullable(type);
             var m = DefineUnboxMethod(type, strict);
             if (m != null) return m;
@@ -191,7 +191,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineUnboxNullable
         public AbcMethod DefineUnboxNullable(IType type)
         {
-            if (!TypeService.IsNullableInstance(type))
+            if (!type.IsNullableInstance())
                 return null;
 
             var instance = DefineAbcInstance(type);

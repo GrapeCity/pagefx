@@ -174,7 +174,7 @@ namespace DataDynamics.PageFX.FLI
         {
             var code = new AbcCode(_abc);
             code.Add(InstructionCode.Call, method.Parameters.Count);
-            if (TypeService.IsVoid(method))
+            if (method.IsVoid())
             {
                 code.Add(InstructionCode.Pop);
             }
@@ -235,7 +235,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (arg == null) return false;
             if (!MethodHelper.IsAbcMethod(method)) return false;
-            var ptype = TypeService.UnwrapRef(arg.Type);
+            var ptype = arg.Type.UnwrapRef();
             return ptype == SystemTypes.Object;
         }
 
@@ -308,7 +308,7 @@ namespace DataDynamics.PageFX.FLI
 
         bool IsBaseMethod(IMethod method)
         {
-            return TypeService.IsBaseMethod(_method, method);
+            return TypeExtensions.IsBaseMethod(_method, method);
         }
         #endregion
 

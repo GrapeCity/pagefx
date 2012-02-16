@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.CodeModel
     {
         private static IType Fix(IType type)
         {
-            type = TypeService.UnwrapRef(type);
+            type = type.UnwrapRef();
             if (type.IsEnum)
                 return type.ValueType;
             return type;

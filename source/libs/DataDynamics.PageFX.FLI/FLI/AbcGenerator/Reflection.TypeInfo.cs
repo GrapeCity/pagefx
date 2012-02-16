@@ -798,7 +798,7 @@ namespace DataDynamics.PageFX.FLI
                 code.GetStaticFunction(init);
                 code.SetProperty(Const.Type.EnumInfoInit);
             }
-            else if (TypeService.IsNullableInstance(type))
+            else if (type.IsNullableInstance())
             {
                 var gi = (IGenericInstance)type;
                 var utype = gi.GenericArguments[0];

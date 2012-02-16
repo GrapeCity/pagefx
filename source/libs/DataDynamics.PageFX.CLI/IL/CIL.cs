@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CLI.IL
             var c = instruction.Code;
             if (c == InstructionCode.Ret)
             {
-                if (TypeService.IsVoid(method))
+                if (method.IsVoid())
                     return 0;
                 return 1;
             }

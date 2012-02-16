@@ -719,7 +719,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 _block.IsFirstAssignment = false;
             }
 
-            type = TypeService.UnwrapRef(type);
+            type = type.UnwrapRef();
 
             if (!FixTernaryAssignment(type))
             {
@@ -744,7 +744,7 @@ namespace DataDynamics.PageFX.CLI.IL
             var p = _instruction.Parameter;
             if (p == null) return;
 
-            var ptype = TypeService.UnwrapRef(p.Type);
+            var ptype = p.Type.UnwrapRef();
 
             var method = _instruction.ParameterFor;
             if (MustPreventBoxing(method, p))
@@ -1577,7 +1577,7 @@ namespace DataDynamics.PageFX.CLI.IL
             var type = _instruction.Type;
             var value = PopValue();
 
-        	PushResult(TypeService.IsNullableInstance(type) ? TypeService.GetTypeArg(type, 0) : type);
+        	PushResult(type.IsNullableInstance() ? type.GetTypeArgument(0) : type);
 
         	var code = new Code();
 
@@ -1674,15 +1674,15 @@ namespace DataDynamics.PageFX.CLI.IL
             if (!thiscall && !virtcall
                 && receiverType != method.DeclaringType
                 && !method.IsStatic && !method.IsConstructor)
-                basecall = TypeService.IsSubclassOf(receiverType, method.DeclaringType);
+                basecall = receiverType.IsSubclassOf(method.DeclaringType);
 
             if (basecall) flags |= CallFlags.Basecall;
 
-            if (!TypeService.IsVoid(method))
+            if (!method.IsVoid())
             {
                 if (type.TypeKind == TypeKind.Reference)
                 {
-                    Push(new ComputedPtr(TypeService.UnwrapRef(type)));
+                    Push(new ComputedPtr(type.UnwrapRef()));
                 }
                 else
                 {
@@ -1939,7 +1939,7 @@ namespace DataDynamics.PageFX.CLI.IL
         IInstruction[] Op_Return()
         {
             var code = new Code();
-            bool isvoid = TypeService.IsVoid(_method);
+            bool isvoid = _method.IsVoid();
             if (!isvoid)
             {
                 var v = Pop();

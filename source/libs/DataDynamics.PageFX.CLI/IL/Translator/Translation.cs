@@ -273,7 +273,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
             if (type1 == type2) return;
 
-            var commonAncestor = TypeService.GetCommonAncestor(type1, type2);
+            var commonAncestor = type1.GetCommonAncestor(type2);
 
             bb.IsFirstAssignment = false;
             InsertCast(e1.From, type1, commonAncestor);
@@ -780,7 +780,7 @@ namespace DataDynamics.PageFX.CLI.IL
         static bool NeedCast(IType source, IType target)
         {
             //if (source == null) return true;
-            if (TypeService.IsImplicitCast(source, target))
+            if (source.IsImplicitCast(target))
                 return false;
             return true;
         }
@@ -1132,7 +1132,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         static IType GetParamType(IParameter p)
         {
-            return TypeService.UnwrapRef(p.Type);
+            return p.Type.UnwrapRef();
         }
 
         bool IsEndOfTryFinally()

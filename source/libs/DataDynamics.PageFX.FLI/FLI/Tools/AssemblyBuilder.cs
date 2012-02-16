@@ -1732,7 +1732,7 @@ namespace DataDynamics.PageFX.FLI
             }
             if (trait.IsGetter) prop.Getter = method;
             else prop.Setter = method;
-            TypeService.CompleteProperty(prop);
+            prop.ResolveTypeAndParameters();
         }
         #endregion
 

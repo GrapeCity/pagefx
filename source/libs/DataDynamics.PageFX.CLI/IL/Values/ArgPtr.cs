@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public IType Type
         {
-            get { return TypeService.UnwrapRef(arg.Type); }
+            get { return arg.Type.UnwrapRef(); }
         }
 
         public ValueKind Kind
@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public IType Type
         {
-            get { return TypeService.UnwrapRef(arg.Type); }
+            get { return arg.Type.UnwrapRef(); }
         }
 
         public ValueKind Kind

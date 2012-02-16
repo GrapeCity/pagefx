@@ -299,7 +299,7 @@ namespace DataDynamics.PageFX.FLI
                     code.PushNull();
                 }
 
-                bool isVoid = TypeService.IsVoid(_entryPoint);
+                bool isVoid = _entryPoint.IsVoid();
                 if (isVoid || IsSwf)
                 {
                     code.Add(InstructionCode.Callpropvoid, main.Trait.Name, n);

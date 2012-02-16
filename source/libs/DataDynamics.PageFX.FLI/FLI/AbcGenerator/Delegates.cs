@@ -93,7 +93,7 @@ namespace DataDynamics.PageFX.FLI
 
             var m = BeginMethod(method, instance);
 
-            bool isVoid = TypeService.IsVoid(method);
+            bool isVoid = method.IsVoid();
             int paramNum = method.Parameters.Count;
             var type = method.DeclaringType;
 

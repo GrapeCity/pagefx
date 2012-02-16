@@ -127,7 +127,7 @@ namespace DataDynamics.PageFX.FLI
             if (type.TypeKind != TypeKind.Class) return false;
             if (type == SystemTypes.String) return false;
             if (type == SystemTypes.Array) return false;
-            if (TypeService.Implements(type, GetType(CorlibTypeId.IEnumerable)))
+            if (type.Implements(GetType(CorlibTypeId.IEnumerable)))
             {
                 //TODO: Do extra filter
                 return true;
@@ -139,7 +139,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (type == null) return false;
             if (type.TypeKind != TypeKind.Class) return false;
-            return TypeService.Implements(type, GetType(CorlibTypeId.IDictionary));
+            return type.Implements(GetType(CorlibTypeId.IDictionary));
         }
         #endregion
     }

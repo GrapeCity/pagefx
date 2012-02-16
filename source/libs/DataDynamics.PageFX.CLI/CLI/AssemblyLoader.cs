@@ -1256,7 +1256,7 @@ namespace DataDynamics.PageFX.CLI
                             		throw new ArgumentOutOfRangeException();
                             }
 
-                            TypeService.CompleteProperty(property);
+                            property.ResolveTypeAndParameters();
 
                             if (property.DeclaringType == null)
                             {
@@ -1285,7 +1285,7 @@ namespace DataDynamics.PageFX.CLI
 									throw new ArgumentOutOfRangeException();
 							}
 
-                        	TypeService.CompleteEvent(e);
+                        	e.ResolveType();
 
                             if (e.DeclaringType == null)
                             {
@@ -1761,14 +1761,14 @@ namespace DataDynamics.PageFX.CLI
         {
             if (arg.Kind == ArgumentKind.Field)
             {
-                var f = TypeService.FindField(declType, arg.Name, true);
+                var f = declType.FindField(arg.Name, true);
                 if (f == null)
                     throw new InvalidOperationException();
                 arg.Type = f.Type;
                 arg.Member = f;
                 return;
             }
-            var p = TypeService.FindProperty(declType, arg.Name, true);
+            var p = declType.FindProperty(arg.Name, true);
             if (p == null)
                 throw new InvalidOperationException();
             arg.Type = p.Type;

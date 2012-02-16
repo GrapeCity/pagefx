@@ -190,7 +190,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void Return(IMethod method)
         {
-            if (TypeService.IsVoid(method))
+            if (method.IsVoid())
                 ReturnVoid();
             else
                 ReturnValue();
@@ -748,7 +748,7 @@ namespace DataDynamics.PageFX.FLI.IL
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            var field = TypeService.FindField(type, name, true);
+            var field = type.FindField(name, true);
             if (field == null)
                 throw new InvalidOperationException(
                     string.Format("Unable to find field {0} in type {1}", name, type.FullName));
@@ -771,7 +771,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void SetProperty(IType type, string prop)
         {
-            var p = TypeService.FindProperty(type, prop, true);
+            var p = type.FindProperty(prop, true);
             if (p == null)
                 throw new InvalidOperationException(
                     string.Format("Unable to find property {0} in type {1}", prop, type.FullName));
@@ -3214,7 +3214,7 @@ namespace DataDynamics.PageFX.FLI.IL
             }
             else
             {
-                if (type != null && TypeService.IsNullableInstance(type))
+                if (type != null && type.IsNullableInstance())
                 {
                     //Nullable_HasValue(true);
                     var m = Generator.DefineIsNullableMethod();
@@ -3616,7 +3616,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void NewNullable(IType type, int value)
         {
-            if (!TypeService.IsNullableInstance(type))
+            if (!type.IsNullableInstance())
                 throw new ArgumentException("type is not nullable");
 
             var typeArg = ((IGenericInstance)type).GenericArguments[0];
@@ -3807,7 +3807,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void ReadPtr(IType type)
         {
-            type = TypeService.UnwrapRef(type);
+            type = type.UnwrapRef();
             ReadPtr();
             Coerce(type, true);
         }

@@ -350,7 +350,7 @@ namespace DataDynamics.PageFX.FLI
             if (MethodHelper.AsStaticCall(method))
                 ++n;
 
-            bool isVoid = TypeService.IsVoid(method);
+            bool isVoid = method.IsVoid();
 
             if (CanUseCallStatic)
             {
@@ -408,7 +408,7 @@ namespace DataDynamics.PageFX.FLI
 
         static bool MustCoerceReturnType(IMethod method)
         {
-            if (TypeService.IsVoid(method)) return false;
+            if (method.IsVoid()) return false;
 
             //NOTE: AVM Verifier uses type info (ABC traits) to determine return type
             //If verifier can not find given method then the method is treated as dynamic and return type is always * (any).

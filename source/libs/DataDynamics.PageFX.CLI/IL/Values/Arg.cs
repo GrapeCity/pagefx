@@ -10,7 +10,7 @@ namespace DataDynamics.PageFX.CLI.IL
         public Arg(IParameter p)
         {
             _arg = p;
-            _type = TypeService.UnwrapRef(p.Type);
+            _type = p.Type.UnwrapRef();
         }
 
         public int Index

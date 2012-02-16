@@ -747,7 +747,7 @@ namespace DataDynamics.PageFX.FLI
             if (m == null) return false;
             if (AsStaticCall(m) && m.IsConstructor)
                 return false;
-            return TypeService.IsVoid(m);
+            return m.IsVoid();
         }
 
         public static bool IsInstanceInitializer(IMethod method)

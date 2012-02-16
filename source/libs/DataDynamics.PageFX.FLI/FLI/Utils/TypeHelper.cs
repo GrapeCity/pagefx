@@ -102,7 +102,7 @@ namespace DataDynamics.PageFX.FLI
             if (AbcGenConfig.UseAvmString && IsStringInterface(type))
                 return true;
 
-            if (TypeService.IsGenericArrayInterface(type))
+            if (type.IsGenericArrayInterface())
                 return true;
 
             return false;
@@ -156,7 +156,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static bool IsStringInterface(IType type)
         {
-            return TypeService.Implements(SystemTypes.String, type);
+            return SystemTypes.String.Implements(type);
         }
 
         public static bool IsInternalType(IType type)
@@ -356,7 +356,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static bool IsBoxableOrInt64Based(this IType type)
         {
-            return TypeService.IsBoxableType(type) || IsInt64Based(type);
+            return type.IsBoxableType() || IsInt64Based(type);
         }
 
         public static bool IsInt64Based(this IType type)
@@ -378,7 +378,7 @@ namespace DataDynamics.PageFX.FLI
         public static bool MustInitValueTypeFields(IType type)
         {
             if (type == null) return false;
-            if (TypeService.IsBoxableType(type)) return false;
+            if (type.IsBoxableType()) return false;
             if (type.IsEnum) return false;
             if (type.IsInterface) return false;
             if (type.IsArray) return false;
@@ -526,10 +526,10 @@ namespace DataDynamics.PageFX.FLI
             if (AbcGenConfig.UseAvmString && IsStringInterface(type))
                 return true;
 
-            if (TypeService.IsGenericArrayInterface(type))
+            if (type.IsGenericArrayInterface())
                 return true;
 
-            if (TypeService.IsNullableInstance(type))
+            if (type.IsNullableInstance())
                 return true;
 
             

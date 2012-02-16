@@ -62,7 +62,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 return true;
             var m = instruction.Method;
             if (m == null) return false;
-            return !TypeService.IsVoid(m);
+            return !m.IsVoid();
         }
         #endregion
 

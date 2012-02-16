@@ -365,7 +365,7 @@ namespace DataDynamics.PageFX.FLI
 
         static LazyField NewLazyField(IType type, string name)
         {
-            return new LazyField(() => TypeService.FindField(type, name, true));
+            return new LazyField(() => type.FindField(name, true));
         }
         #endregion
     }

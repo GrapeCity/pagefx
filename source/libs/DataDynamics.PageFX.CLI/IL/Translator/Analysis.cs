@@ -432,7 +432,7 @@ namespace DataDynamics.PageFX.CLI.IL
         private bool IsBoxableType(IType type)
         {
             return type != null && type != _declType
-                   && TypeService.IsBoxableType(type);
+                   && type.IsBoxableType();
         }
 
         private IType HasConstrainedPrefix(IInstruction instr)

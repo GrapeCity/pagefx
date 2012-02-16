@@ -455,7 +455,7 @@ namespace DataDynamics.PageFX.FLI
             {
                 case CLRNames.Types.IEnumerableT:
                     {
-                        var elemType = TypeService.GetTypeArg(type, 0);
+                        var elemType = type.GetTypeArgument(0);
                         elemType.HasIEnumerableInstance = true;
                         DefineArrayGetEnumerator(elemType);
                     }
@@ -595,7 +595,7 @@ namespace DataDynamics.PageFX.FLI
                         am,
                         code =>
                             {
-                                var type = TypeService.GetTypeArg(im.DeclaringType, 0);
+                                var type = im.DeclaringType.GetTypeArgument(0);
                                 code.LoadThis();
                                 code.GetLocal(1);
                                 code.GetArrayElem(type, true);

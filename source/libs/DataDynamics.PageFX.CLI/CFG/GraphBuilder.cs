@@ -161,12 +161,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             return header;
         }
 
-        public static bool IsVoid(IMethod m)
-        {
-            return TypeService.IsVoid(m);
-        }
-
-        private int GetTargetIndex(int index)
+    	private int GetTargetIndex(int index)
         {
             if (_removeSingleGotos)
                 return _code.GetTargetIndex(index);
@@ -242,7 +237,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                     return null;
                 }
 
-                if (IsVoidCallEnd && instruction.IsCall && IsVoid(instruction.Method))
+                if (IsVoidCallEnd && instruction.IsCall && instruction.Method.IsVoid())
                 {
                     node.AddInstruction(instruction);
                     return Next(i + 1);

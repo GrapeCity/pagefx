@@ -95,7 +95,7 @@ namespace DataDynamics.PageFX.CodeModel
         public static bool IsTest(IMethod method, bool pfx)
         {
             if (method.IsConstructor) return false;
-            if (!TypeService.IsVoid(method)) return false;
+            if (!method.IsVoid()) return false;
             if (method.Visibility != Visibility.Public) return false;
             //I'm not shure about static methods, need to check
             if (method.IsStatic) return false;

@@ -123,7 +123,7 @@ namespace DataDynamics.PageFX.FLI
             if (st != null)
                 return true;
 
-            if (TypeService.IsNullableInstance(declType))
+            if (declType.IsNullableInstance())
                 return true;
 
             return false;
