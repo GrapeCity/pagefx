@@ -225,7 +225,7 @@ namespace DataDynamics.PageFX.FLI
                 return false;
             if (!CanBeDuplicated(ic))
                 return false;
-            if (Algorithms.Equals(x.Operands, y.Operands))
+            if (x.Operands.EqualsTo(y.Operands))
                 return true;
             return false;
         }

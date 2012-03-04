@@ -169,18 +169,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             writer.WriteLine();
         }
 
-        static Block GetRoot(Block block)
-        {
-            var pb = block.Parent;
-            while (pb != null)
-            {
-                block = pb;
-                pb = block.Parent;
-            }
-            return block;
-        }
-
-        static void WriteBlock(TextWriter writer, Block block)
+    	static void WriteBlock(TextWriter writer, Block block)
         {
             string tab = BeginBlock(writer, block);
 

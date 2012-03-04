@@ -4,30 +4,21 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class ConstExpression : Expression, IConstantExpression
     {
-        #region Constructors
-        public ConstExpression(object value)
+    	public ConstExpression(object value)
         {
-            _value = value;
+            Value = value;
         }
-        #endregion
 
-        #region IConstantExpression Members
-        public object Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-        private object _value;
-        #endregion
+    	public object Value { get; set; }
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
             get
             {
-                if (_value == null)
+                if (Value == null)
                     return SystemTypes.Object;
-                var code = Type.GetTypeCode(_value.GetType());
+
+                var code = Type.GetTypeCode(Value.GetType());
                 switch (code)
                 {
                     case TypeCode.Object:
@@ -80,25 +71,22 @@ namespace DataDynamics.PageFX.CodeModel
                 }
             }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             var e = obj as IConstantExpression;
             if (e == null) return false;
-            if (!Equals(e.Value, _value)) return false;
-            return true;
+            return Equals(e.Value, Value);
         }
 
-        private static readonly int _hs = typeof(IConstantExpression).GetHashCode();
+        private static readonly int HashSalt = typeof(IConstantExpression).GetHashCode();
 
-        public override int GetHashCode()
-        {
-            if (_value != null)
-                return _value.GetHashCode() ^ _hs;
-            return base.GetHashCode();
-        }
-        #endregion
+		public override int GetHashCode()
+		{
+			int h = HashSalt;
+			if (Value != null)
+				h ^= Value.GetHashCode();
+			return h;
+		}
     }
 }

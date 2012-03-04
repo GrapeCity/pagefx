@@ -484,14 +484,9 @@ namespace DataDynamics.PageFX
             {
                 tds.OutputFormat = _testDriver == TestDriver.SwfSerialization ? "swf" : "abc";
 
-                tds.SetDecompiledCode = false;
-                TestEngine.RunTestCase(tc, tds);
+            	TestEngine.RunTestCase(tc, tds);
             }
-            else
-            {
-                tds.SetDecompiledCode = true;
-                DecompilerTestEngine.RunTestCase(tc, tds);
-            }
+            
             if (tds.IsCancel)
                 tc.IsCancelled = true;
             else

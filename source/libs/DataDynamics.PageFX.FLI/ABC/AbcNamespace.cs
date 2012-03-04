@@ -237,7 +237,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public override int GetHashCode()
         {
-            return Algorithms.GetHashCode(_kind, _name);
+            return Algorithms.EvalHashCode(_kind, _name);
         }
 
         public override bool Equals(object obj)

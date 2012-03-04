@@ -1500,7 +1500,6 @@
     <Compile Include="UnitTests\NegativeTests.cs" />
     <Compile Include="UnitTests\StrTest.cs" />
     <Compile Include="UnitTests\TreeIteratorsTest.cs" />
-    <Compile Include="Framework\DecompilerTestEngine.cs" />
     <Compile Include="UnitTests\ABCIOTest.cs" />
     <Compile Include="Framework\TestEngine.cs" />
     <Compile Include="UnitTests\SwfIOTest.cs" />

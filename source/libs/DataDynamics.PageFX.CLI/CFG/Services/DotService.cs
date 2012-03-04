@@ -128,7 +128,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                 
                 foreach (var node in graph)
                 {
-                    WriteNode(writer, node, subgraph);
+                    WriteNode(writer, node);
                     if (node.IsTwoWay)
                     {
                         var f = node.FirstOut;
@@ -146,26 +146,26 @@ namespace DataDynamics.PageFX.CLI.CFG
                     {
                         foreach (var suc in node.Successors)
                         {
-                            WriteEdge(writer, node, suc, subgraph, null);
+                            WriteEdge(writer, node, suc, null);
                         }
                     }
                     if (node.Goto != null)
                     {
-                        WriteEdge(writer, node, node.Goto, subgraph, "red");
+                        WriteEdge(writer, node, node.Goto, "red");
                     }
                 }
                 writer.WriteLine("}");
             }
         }
 
-        private static void WriteEdge(TextWriter writer, Node from, Node to, bool subgraph, string color)
+        private static void WriteEdge(TextWriter writer, Node from, Node to, string color)
         {
             string col = "";
             if (!string.IsNullOrEmpty(color))
                 col = string.Format(" [color = {0}]", color);
 
             writer.WriteLine("{0} -> {1}{2};",
-                             @from.Name,
+                             from.Name,
                              to.Name,
                              col);
         }
@@ -196,7 +196,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             writer.WriteLine("{0} [label = \"{1}\"];", node.Name, label);
         }
 
-        private static void WriteNode(TextWriter writer, Node node, bool subgraph)
+        private static void WriteNode(TextWriter writer, Node node)
         {
         	WriteNew(writer, node, true);
         	WriteLabel(writer, node);

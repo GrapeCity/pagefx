@@ -114,12 +114,12 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (obj == this) return true;
             var nss = obj as AbcNamespaceSet;
             if (nss == null) return false;
-            return Algorithms.Equals(this, nss);
+            return this.EqualsTo(nss);
         }
 
         public override int GetHashCode()
         {
-            return Algorithms.GetHashCode(this);
+            return this.EvalHashCode();
         }
 
         public override string ToString()

@@ -5,8 +5,7 @@ namespace DataDynamics.PageFX
     public class TestDriverSettings
     {
         public bool ExportCSharpFile = true;
-        public bool SetDecompiledCode = true;
-        public bool UpdateReport;
+    	public bool UpdateReport;
 
         //abc, swf, swc
         public string OutputFormat

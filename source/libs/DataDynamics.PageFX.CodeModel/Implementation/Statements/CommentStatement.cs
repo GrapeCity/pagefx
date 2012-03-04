@@ -4,53 +4,40 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public class CommentStatement : Statement, ICommentStatement
     {
-        #region Constructors
-        public CommentStatement(string comment)
+    	public CommentStatement(string comment)
         {
-            _comment = comment;
+            Comment = comment;
         }
-        #endregion
 
-        #region ICommentStatement Members
-        public string Comment
-        {
-            get { return _comment; }
-            set { _comment = value; }
-        }
-        private string _comment;
-        #endregion
+    	public string Comment { get; set; }
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var s = obj as ICommentStatement;
             if (s == null) return false;
-            if (s.Comment != _comment) return false;
-            return true;
+            return s.Comment == Comment;
         }
+
+    	private static readonly int HashSalt = typeof(CommentStatement).GetHashCode();
 
         public override int GetHashCode()
         {
-            if (_comment != null)
-                return _comment.GetHashCode();
-            return base.GetHashCode();
+        	int h = HashSalt;
+            if (Comment != null)
+                h ^= Comment.GetHashCode();
+            return h;
         }
-        #endregion
     }
 
-    public class ErrorStatement : CommentStatement
+    public sealed class ErrorStatement : CommentStatement
     {
         public ErrorStatement(Exception e)
             : base(e.ToString())
         {
-            _exception = e;
+            Exception = e;
         }
 
-        public Exception Exception
-        {
-            get { return _exception; }
-        }
-        private readonly Exception _exception;
+    	public Exception Exception { get; private set; }
     }
 }

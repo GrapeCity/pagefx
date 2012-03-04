@@ -340,18 +340,17 @@ namespace DataDynamics.PageFX.FLI
 
             code.PushThisScope();
 
-            List<RslItem> cdRsls;
-            List<RslItem> rsls;
-            _options.RslList.Split(out cdRsls, out rsls, rsl => rsl.IsCrossDomain);
-
-            if (cdRsls != null && cdRsls.Count > 0)
+			var cdRsls = _options.RslList.Where(x => x.IsCrossDomain).ToList();
+			var rsls = _options.RslList.Where(x => !x.IsCrossDomain).ToList();
+            
+            if (cdRsls.Count > 0)
             {
                 code.PushString("cdRsls");
                 CreateCdRslArray(code, cdRsls);
                 ++propertyCount;
             }
 
-            if (rsls != null && rsls.Count > 0)
+            if (rsls.Count > 0)
             {
                 code.PushString("rsls");
                 CreateSimpleRslArray(code, rsls);

@@ -4,17 +4,17 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {
-    internal static class MdbUtils
+    internal static class StrongNameTools
     {
         //HACK!!! MS use this to sign own assemblies!
         private static readonly byte[] s_NeutralPublicKey = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0 };
         private static readonly byte[] s_NeutralPublicKeyToken = new byte[] { 0xb7, 0x7a, 0x5c, 0x56, 0x19, 0x34, 0xe0, 0x89 };
         private const int s_TokenLength = 8;
 
-        public static byte[] ComputePublicKeyToken(byte[] key, HashAlgorithmId algID)
+        public static byte[] ComputePublicKeyToken(this byte[] key, HashAlgorithmId algorithm)
         {
             var arPKT = new byte[0];
-            switch (algID)
+            switch (algorithm)
             {
                 case HashAlgorithmId.None:
                     break;

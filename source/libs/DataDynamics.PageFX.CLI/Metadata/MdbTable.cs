@@ -25,7 +25,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
     	/// <summary>
     	/// Gets the table description.
     	/// </summary>
-    	public string Description { get; private set; }
+    	public string Description { get; set; }
 
     	/// <summary>
         /// Gets or sets table offset.

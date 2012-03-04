@@ -836,101 +836,6 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
         #endregion
 
-        #region InstanceComparer
-        class InstanceComparer : IComparer<AbcInstance>
-        {
-            public InstanceComparer(AbcInstance app)
-            {
-                _app = app;
-            }
-            readonly AbcInstance _app;
-
-            public int Compare(AbcInstance x, AbcInstance y)
-            {
-                if (x == y) return 0;
-                if (x == null) return -1;
-                if (y == null) return 1;
-
-                //if (x.IsFlexInitMixin)
-                //{
-                //    if (Compare(y, _app) <= 0)
-                //        return 1;
-                //    return -1;
-                //}
-
-                //if (y.IsFlexInitMixin)
-                //{
-                //    if (Compare(x, _app) <= 0)
-                //        return -1;
-                //    return 1;
-                //}
-
-                //if (x.IsStyleMixin)
-                //{
-                //    if (y.IsStyleMixin)
-                //        return x.Index - y.Index;
-                //    if (Compare(y, _app) <= 0)
-                //        return 1;
-                //    return -1;
-                //}
-
-                //if (y.IsStyleMixin)
-                //{
-                //    if (Compare(x, _app) <= 0)
-                //        return -1;
-                //    return 1;
-                //}
-
-                int n = x.Index - y.Index;
-                if (n < 0)
-                {
-                    if (x.IsInheritedFrom(y.Name))
-                        return 1;
-                }
-                else
-                {
-                    if (y.IsInheritedFrom(x.Name))
-                        return -1;
-                }
-
-                ////x is base of y
-                //if (x.Name == y.SuperName)
-                //    return -1;
-
-                ////y is base of x
-                //if (y.Name == x.SuperName)
-                //    return 1;
-
-                ////y implements x
-                //if (x.IsInterface)
-                //{
-                //    if (y.HasInterface(x))
-                //        return -1;
-                //}
-
-                ////x implements y
-                //if (y.IsInterface)
-                //{
-                //    if (x.HasInterface(y))
-                //        return 1;
-                //}
-
-                //if (n < 0) //x declared before y
-                //{
-                //    if (x.IsTypeUsed(y.Name))
-                //        return 1;
-                //}
-                //else
-                //{
-                //    if (x.IsTypeUsed(y.Name))
-                //        return -1;
-                //}
-
-                return n;
-            }
-        }
-        #endregion
-
         #region ScriptComparer
         static int CompareScriptInstances(AbcScript s1, AbcScript s2)
         {
@@ -979,31 +884,10 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region FixOrder
         void FixOrder()
         {
-            //FixOrder1();
-            FixOrder2();
+            OrderInstancesByInheritance();
         }
 
-        void FixOrder1()
-        {
-            var app = MainInstance;
-            _instances.Sort(new InstanceComparer(app));
-
-            _classes.Clear();
-
-            int n = _instances.Count;
-            for (int i = 0; i < n; ++i)
-            {
-                var instance = _instances[i];
-                var klass = instance.Class;
-                instance.Index = i;
-                klass.Index = i;
-                _classes.AddInternal(klass);
-            }
-
-            //_scripts.Sort(CreateScriptComparer());
-        }
-
-        bool IsMxApp
+    	bool IsMxApp
         {
             get 
             {
@@ -1011,19 +895,19 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        void FixOrder2()
+        private void OrderInstancesByInheritance()
         {
             _order = new List<AbcInstance>();
 
             if (IsMxApp && generator != null)
             {
                 var app = generator.MainInstance;
-                Order(app);
+                OrderByInheritance(app);
             }
 
             foreach (var instance in _instances)
             {
-                Order(instance);
+                OrderByInheritance(instance);
             }
 
             Debug.Assert(_order.Count == _instances.Count);
@@ -1047,7 +931,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         List<AbcInstance> _order;
 
-        void Order(AbcInstance instance)
+        void OrderByInheritance(AbcInstance instance)
         {
             if (instance == null) return;
             if (instance.Ordered) return;
@@ -1057,7 +941,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 if (other == instance) continue;
                 if (other.Ordered) continue;
                 if (instance.IsInheritedFrom(other.Name))
-                    Order(other);
+                    OrderByInheritance(other);
             }
 
             instance.Ordered = true;

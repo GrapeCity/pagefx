@@ -899,13 +899,13 @@ namespace DataDynamics.PageFX.FLI.IL
             var i = obj as Instruction;
             if (i == null) return false;
             if (i.Code != Code) return false;
-            if (!Algorithms.Equals(i._operands, _operands)) return false;
+            if (!i._operands.EqualsTo(_operands)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return (int)Code ^ Algorithms.GetHashCode(_operands);
+            return (int)Code ^ Algorithms.EvalHashCode(_operands);
         }
         #endregion
 

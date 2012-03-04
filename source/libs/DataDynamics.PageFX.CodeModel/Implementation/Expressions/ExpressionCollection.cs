@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public override int GetHashCode()
         {
-            return Algorithms.GetHashCode(this);
+            return this.EvalHashCode();
         }
         #endregion
     }

@@ -42,10 +42,10 @@ namespace System
         public string s;
         public int pos;
 
-        public bool foundOpenParentheses = false;
-        public bool negative = false;
-        public bool foundSign = false;
-        public bool foundCurrency = false;
+        public bool foundOpenParentheses;
+        public bool negative;
+        public bool foundSign;
+        public bool foundCurrency;
         private bool foundPoint;
 
         #region ctor

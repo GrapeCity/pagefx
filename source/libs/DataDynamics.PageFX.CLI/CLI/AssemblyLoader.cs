@@ -174,7 +174,7 @@ namespace DataDynamics.PageFX.CLI
                 if ((asmref.Flags & AssemblyFlags.PublicKey) != 0)
                 {
                     asmref.PublicKey = row[MDB.Assembly.PublicKey].Blob;
-                    asmref.PublicKeyToken = MdbUtils.ComputePublicKeyToken(asmref.PublicKey, alg);
+                    asmref.PublicKeyToken = asmref.PublicKey.ComputePublicKeyToken(alg);
                 }
 
                 var asm = AssemblyResolver.GetFromCache(asmref);

@@ -1,6 +1,8 @@
+using System;
+
 namespace DataDynamics.PageFX
 {
-    public class SequencePoint
+    public sealed class SequencePoint
     {
         public string File { get; set; }
 
@@ -40,8 +42,10 @@ namespace DataDynamics.PageFX
             if (p.StartColumn != StartColumn) return false;
             if (p.EndRow != EndRow) return false;
             if (p.EndColumn != EndColumn) return false;
-            return string.Compare(p.File, File, true) == 0;
+            return string.Compare(p.File, File, StringComparison.CurrentCultureIgnoreCase) == 0;
         }
+
+    	private static readonly int HashSalt = typeof(SequencePoint).GetHashCode();
 
         /// <summary>
         /// Serves as a hash function for a particular type. 
@@ -52,8 +56,14 @@ namespace DataDynamics.PageFX
         /// <filterpriority>2</filterpriority>
         public override int GetHashCode()
         {
-            return Algorithms.GetHashCode(Offset, StartRow, StartColumn,
-                                          EndRow, EndColumn, File);
+        	int h = Offset ^ StartRow ^ StartColumn ^ EndRow ^ EndColumn;
+
+			if (File != null)
+			{
+				h ^= File.GetHashCode();
+			}
+
+            return h ^ HashSalt;
         }
     }
 }

@@ -179,11 +179,6 @@ namespace DataDynamics.PageFX.FLI
 
             if (tds.IsCancel) return false;
 
-            if (tds.SetDecompiledCode)
-                tc.DecompiledCode = ExportService.ToString(asm, "c#");
-
-            if (tds.IsCancel) return false;
-
 #if DEBUG
             DebugService.DoCancel();
 #endif

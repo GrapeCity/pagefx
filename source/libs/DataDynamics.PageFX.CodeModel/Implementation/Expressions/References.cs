@@ -5,197 +5,142 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class ThisReferenceExpression : Expression, IThisReferenceExpression, ITypeReferenceProvider
     {
-        #region Constructors
-        public ThisReferenceExpression(IType type)
+    	public ThisReferenceExpression(IType type)
         {
-            _type = type;
+            Type = type;
         }
-        #endregion
 
-        #region IThisReferenceExpression Members
-        public IType Type
+    	public IType Type { get; set; }
+
+    	public override IType ResultType
         {
-            get { return _type; }
-            set { _type = value; }
+            get { return Type; }
         }
-        private IType _type;
-        #endregion
 
-        #region IExpression Members
-        public override IType ResultType
+    	public IEnumerable<IType> GetTypeReferences()
         {
-            get { return _type; }
+            return new[] { Type };
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public IEnumerable<IType> GetTypeReferences()
-        {
-            return new[] { _type };
-        }
-        #endregion
-
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IThisReferenceExpression;
             if (e == null) return false;
-            if (e.Type != _type) return false;
-            return true;
+            return e.Type == Type;
         }
 
-        private static readonly int _hs = typeof(IThisReferenceExpression).GetHashCode();
+        private static readonly int HashSalt = typeof(IThisReferenceExpression).GetHashCode();
 
         public override int GetHashCode()
         {
-            if (_type != null)
-                return _type.GetHashCode() ^ _hs;
-            return base.GetHashCode();
+        	int h = HashSalt;
+            if (Type != null)
+                h ^= Type.GetHashCode();
+            return h;
         }
-        #endregion
     }
 
     public sealed class BaseReferenceExpression : Expression, IBaseReferenceExpression, ITypeReferenceProvider
     {
-        #region Constructors
-        public BaseReferenceExpression(IType type)
+    	public BaseReferenceExpression(IType type)
         {
-            _type = type;
+            Type = type;
         }
-        #endregion
 
-        #region IBaseReferenceExpression Members
-        public IType Type
+    	public IType Type { get; set; }
+
+    	public override IType ResultType
         {
-            get { return _type; }
-            set { _type = value; }
+            get { return Type; }
         }
-        private IType _type;
-        #endregion
 
-        #region IExpression Members
-        public override IType ResultType
+    	public IEnumerable<IType> GetTypeReferences()
         {
-            get { return _type; }
+            return new[] { Type };
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public IEnumerable<IType> GetTypeReferences()
-        {
-            return new[] { _type };
-        }
-        #endregion
-
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IBaseReferenceExpression;
             if (e == null) return false;
-            if (e.Type != _type) return false;
-            return true;
+            return e.Type == Type;
         }
 
-        private static readonly int _hs = typeof(IBaseReferenceExpression).GetHashCode();
+        private static readonly int HashSalt = typeof(IBaseReferenceExpression).GetHashCode();
 
         public override int GetHashCode()
         {
-            if (_type != null)
-                return _type.GetHashCode() ^ _hs;
-            return base.GetHashCode();
+        	int h = HashSalt;
+            if (Type != null)
+                h ^= Type.GetHashCode();
+            return h;
         }
-        #endregion
     }
 
     public sealed class ArgumentReferenceExpression : Expression, IArgumentReferenceExpression, ITypeReferenceProvider
     {
-        #region Constructors
-        public ArgumentReferenceExpression(IParameter p)
+    	public ArgumentReferenceExpression(IParameter p)
         {
-            _arg = p;
+            Argument = p;
         }
-        #endregion
 
-        #region IArgumentReferenceExpression Members
-        public IParameter Argument
-        {
-            get { return _arg; }
-            set { _arg = value; }
-        }
-        private IParameter _arg;
-        #endregion
+    	public IParameter Argument { get; set; }
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
             get
             {
-                var type = _arg.Type;
+                var type = Argument.Type;
                 return type.UnwrapRef();
             }
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public IEnumerable<IType> GetTypeReferences()
+    	public IEnumerable<IType> GetTypeReferences()
         {
-            return new[] { _arg.Type };
+            return new[] { Argument.Type };
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IArgumentReferenceExpression;
             if (e == null) return false;
-            if (e.Argument != _arg) return false;
-            return true;
+            return e.Argument == Argument;
         }
 
-        private static readonly int _hs = typeof(IArgumentReferenceExpression).GetHashCode();
+        private static readonly int HashSalt = typeof(IArgumentReferenceExpression).GetHashCode();
 
         public override int GetHashCode()
         {
-            if (_arg != null)
-                return _arg.GetHashCode() ^ _hs;
-            return base.GetHashCode();
+        	int h = HashSalt;
+            if (Argument != null)
+                h ^= Argument.GetHashCode();
+            return h;
         }
-        #endregion
     }
 
     public abstract class MemberReferenceExpression : Expression, IMemberReferenceExpression, ITypeReferenceProvider
     {
-        #region Constructors
-        public MemberReferenceExpression()
+    	protected MemberReferenceExpression()
         {
         }
 
-        public MemberReferenceExpression(IExpression target)
+    	protected MemberReferenceExpression(IExpression target)
         {
-            _target = target;
+            Target = target;
         }
-        #endregion
 
-        #region IMemberReferenceExpression Members
-        public IExpression Target
-        {
-            get { return _target; }
-            set { _target = value; }
-        }
-        private IExpression _target;
+    	public IExpression Target { get; set; }
 
-        public abstract ITypeMember Member
+    	public abstract ITypeMember Member
         {
             get;
             set;
         }
-        #endregion
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
             get
             {
@@ -204,71 +149,54 @@ namespace DataDynamics.PageFX.CodeModel
                 return null;
             }
         }
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] {_target}; }
+            get { return new ICodeNode[] {Target}; }
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public virtual IEnumerable<IType> GetTypeReferences()
+    	public virtual IEnumerable<IType> GetTypeReferences()
         {
             if (Member != null)
                 return new[] { Member.Type };
             return null;
         }
-        #endregion
 
-        #region Object Override Methods
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IMemberReferenceExpression;
             if (e == null) return false;
             if (e.Member != Member) return false;
-            if (!Equals(_target, e.Target)) return false;
+            if (!Equals(Target, e.Target)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
             int h = 0;
-            if (_target != null)
-                h ^= _target.GetHashCode();
+            if (Target != null)
+                h ^= Target.GetHashCode();
             var m = Member;
             if (m != null)
                 h ^= m.GetHashCode();
             return h;
         }
-        #endregion
     }
 
-    public class FieldReferenceExpression : MemberReferenceExpression, IFieldReferenceExpression
+    public sealed class FieldReferenceExpression : MemberReferenceExpression, IFieldReferenceExpression
     {
-        #region Constructors
-        public FieldReferenceExpression(IExpression target, IField field)
+    	public FieldReferenceExpression(IExpression target, IField field)
             : base(target)
         {
-            _field = field;
+            Field = field;
         }
-        #endregion
 
-        #region IFieldReferenceExpression Members
-        public IField Field
-        {
-            get { return _field; }
-            set { _field = value; }
-        }
-        private IField _field;
-        #endregion
+    	public IField Field { get; set; }
 
-        #region IMemberReferenceExpression Members
-        public override ITypeMember Member
+    	public override ITypeMember Member
         {
-            get { return _field; }
+            get { return Field; }
             set
             {
                 if (value != null)
@@ -276,40 +204,36 @@ namespace DataDynamics.PageFX.CodeModel
                     var f = value as IField;
                     if (f == null)
                         throw new InvalidOperationException();
-                    _field = f;
+                    Field = f;
                 }
                 else
                 {
-                    _field = null;
+                    Field = null;
                 }
             }
         }
-        #endregion
+
+    	private static readonly int HashSalt = typeof(FieldReferenceExpression).GetHashCode();
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode() ^ HashSalt;
+		}
     }
 
-    public class PropertyReferenceExpression : MemberReferenceExpression, IPropertyReferenceExpression
+    public sealed class PropertyReferenceExpression : MemberReferenceExpression, IPropertyReferenceExpression
     {
-        #region Constructors
-        public PropertyReferenceExpression(IExpression target, IProperty prop)
+    	public PropertyReferenceExpression(IExpression target, IProperty prop)
             : base(target)
         {
-            _property = prop;
+            Property = prop;
         }
-        #endregion
 
-        #region IPropertyReferenceExpression Members
-        public IProperty Property
-        {
-            get { return _property; }
-            set { _property = value; }
-        }
-        private IProperty _property;
-        #endregion
+    	public IProperty Property { get; set; }
 
-        #region IMemberReferenceExpression Members
-        public override ITypeMember Member
+    	public override ITypeMember Member
         {
-            get { return _property; }
+            get { return Property; }
             set
             {
                 if (value != null)
@@ -317,45 +241,41 @@ namespace DataDynamics.PageFX.CodeModel
                     var p = value as IProperty;
                     if (p == null)
                         throw new InvalidOperationException();
-                    _property = p;
+                    Property = p;
                 }
                 else
                 {
-                    _property = null;
+                    Property = null;
                 }
             }
         }
-        #endregion
+
+    	private static readonly int HashSalt = typeof(PropertyReferenceExpression).GetHashCode();
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode() ^ HashSalt;
+		}
     }
 
-    public class MethodReferenceExpression : MemberReferenceExpression, IMethodReferenceExpression
+    public sealed class MethodReferenceExpression : MemberReferenceExpression, IMethodReferenceExpression
     {
-        #region Constructors
-        public MethodReferenceExpression(IExpression target, IMethod method)
+    	public MethodReferenceExpression(IExpression target, IMethod method)
             : base(target)
         {
-            _method = method;
+            Method = method;
         }
 
         public MethodReferenceExpression(IMethod method)
         {
-            _method = method;
+            Method = method;
         }
-        #endregion
 
-        #region IMethodReferenceExpression Members
-        public IMethod Method
-        {
-            get { return _method; }
-            set { _method = value; }
-        }
-        private IMethod _method;
-        #endregion
+    	public IMethod Method { get; set; }
 
-        #region IMemberReferenceExpression Members
-        public override ITypeMember Member
+    	public override ITypeMember Member
         {
-            get { return _method; }
+            get { return Method; }
             set
             {
                 if (value != null)
@@ -363,55 +283,49 @@ namespace DataDynamics.PageFX.CodeModel
                     var m = value as IMethod;
                     if (m == null)
                         throw new InvalidOperationException();
-                    _method = m;
+                    Method = m;
                 }
                 else
                 {
-                    _method = null;
+                    Method = null;
                 }
             }
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public override IEnumerable<IType> GetTypeReferences()
+    	public override IEnumerable<IType> GetTypeReferences()
         {
-            if (_method != null)
+            if (Method != null)
             {
-                yield return _method.DeclaringType;
-                yield return _method.Type;
-                foreach (var p in _method.Parameters)
+                yield return Method.DeclaringType;
+                yield return Method.Type;
+                foreach (var p in Method.Parameters)
                 {
                     yield return p.Type;
                 }
             }
         }
-        #endregion
+
+    	private static readonly int HashSalt = typeof(MethodReferenceExpression).GetHashCode();
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode() ^ HashSalt;
+		}
     }
 
-    public class EventReferenceExpression : MemberReferenceExpression, IEventReferenceExpression
+    public sealed class EventReferenceExpression : MemberReferenceExpression, IEventReferenceExpression
     {
-        #region Constructors
-        public EventReferenceExpression(IExpression target, IEvent e)
+    	public EventReferenceExpression(IExpression target, IEvent e)
             : base(target)
         {
-            _event = e;
+            Event = e;
         }
-        #endregion
 
-        #region IEventReferenceExpression Members
-        public IEvent Event
-        {
-            get { return _event; }
-            set { _event = value; }
-        }
-        private IEvent _event;
-        #endregion
+    	public IEvent Event { get; set; }
 
-        #region IMemberReferenceExpression Members
-        public override ITypeMember Member
+    	public override ITypeMember Member
         {
-            get { return _event; }
+            get { return Event; }
             set
             {
                 if (value != null)
@@ -419,124 +333,98 @@ namespace DataDynamics.PageFX.CodeModel
                     var e = value as IEvent;
                     if (e == null)
                         throw new InvalidOperationException();
-                    _event = e;
+                    Event = e;
                 }
                 else
                 {
-                    _event = null;
+                    Event = null;
                 }
             }
         }
-        #endregion
+
+    	private static readonly int HashSalt = typeof(EventReferenceExpression).GetHashCode();
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode() ^ HashSalt;
+		}
     }
 
-    public class TypeReferenceExpression : Expression, ITypeReferenceExpression, ITypeReferenceProvider
+    public sealed class TypeReferenceExpression : Expression, ITypeReferenceExpression, ITypeReferenceProvider
     {
-        #region Constructors
-        public TypeReferenceExpression(IType type)
+    	public TypeReferenceExpression(IType type)
         {
-            _type = type;
-        }
-        #endregion
-
-        #region ITypeReferenceExpression Members
-        public IType Type
-        {
-            get { return _type; }
-            set { _type = value; }
+            Type = type;
         }
 
-        private IType _type;
-        #endregion
+    	public IType Type { get; set; }
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
             get { return null; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return false;
             var e = obj as ITypeReferenceExpression;
             if (e == null) return false;
-            if (e.Type != _type) return false;
-            return true;
+            return e.Type == Type;
         }
 
-        private static readonly int _hs = typeof(ITypeReferenceExpression).GetHashCode();
+        private static readonly int HashSalt = typeof(ITypeReferenceExpression).GetHashCode();
 
         public override int GetHashCode()
         {
-            if (_type != null)
-                return _type.GetHashCode() ^ _hs;
-            return base.GetHashCode();
+        	int h = HashSalt;
+            if (Type != null)
+                h ^= Type.GetHashCode();
+            return h;
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public IEnumerable<IType> GetTypeReferences()
+    	public IEnumerable<IType> GetTypeReferences()
         {
-            return new[] { _type };
+			return Type != null ? new[] { Type } : new IType[0];
         }
-        #endregion
     }
 
     public sealed class VariableReferenceExpression : Expression, IVariableReferenceExpression, ITypeReferenceProvider
     {
-        #region Constructors
-        public VariableReferenceExpression(IVariable var)
+    	public VariableReferenceExpression(IVariable var)
         {
-            _var = var;
-        }
-        #endregion
-
-        #region IVariableReferenceExpression Members
-        public IVariable Variable
-        {
-            get { return _var; }
-            set { _var = value; }
+            Variable = var;
         }
 
-        private IVariable _var;
-        #endregion
+    	public IVariable Variable { get; set; }
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
-            get { return _var.Type; }
+            get { return Variable != null ? Variable.Type : null; }
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public IEnumerable<IType> GetTypeReferences()
+    	public IEnumerable<IType> GetTypeReferences()
         {
-            if (_var != null)
-                return new[] { _var.Type };
+            if (Variable != null)
+                return new[] { Variable.Type };
             return null;
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IVariableReferenceExpression;
             if (e == null) return false;
-            if (e.Variable != _var) return false;
-            return true;
+            return e.Variable == Variable;
         }
 
-        private static readonly int _hs = typeof(IVariableReferenceExpression).GetHashCode();
+        private static readonly int HashSalt = typeof(IVariableReferenceExpression).GetHashCode();
 
         public override int GetHashCode()
         {
-            if (_var != null)
-                return _var.GetHashCode() ^ _hs;
-            return base.GetHashCode();
+        	int h = HashSalt;
+            if (Variable != null)
+                h ^= Variable.GetHashCode();
+            return h;
         }
-        #endregion
     }
 }

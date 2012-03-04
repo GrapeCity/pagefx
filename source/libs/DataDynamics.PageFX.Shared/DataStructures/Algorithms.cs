@@ -10,7 +10,7 @@ namespace DataDynamics
     public static class Algorithms
     {
     	#region GetHashCode
-        public static int GetHashCode(IEnumerable set)
+        public static int EvalHashCode(this IEnumerable set)
         {
             if (set == null) return 0;
             int h = 0;
@@ -24,7 +24,7 @@ namespace DataDynamics
             return h ^ n;
         }
 
-        public static int GetHashCode(params object[] args)
+        public static int EvalHashCode(params object[] args)
         {
             if (args == null) return 0;
             int h = 0;
@@ -39,35 +39,61 @@ namespace DataDynamics
         }
         #endregion
 
-        #region Equals
-        public static bool Equals<T>(T[] x, T[] y)
+        #region EqualsTo
+        public static bool EqualsTo<T>(this T[] x, T[] y)
         {
-            if (x != null)
-            {
-                if (y == null) return false;
-                int n = x.Length;
-                if (n != y.Length) return false;
-                for (int i = 0; i < n; ++i)
-                    if (!Equals(x[i], y[i]))
-                        return false;
-                return true;
-            }
-            return y == null;
+        	if (x == null)
+        	{
+        		return y == null;
+        	}
+        	if (y == null)
+        	{
+        		return false;
+        	}
+
+        	int n = x.Length;
+        	if (n != y.Length)
+        	{
+        		return false;
+        	}
+
+			for (int i = 0; i < n; ++i)
+			{
+				if (!Equals(x[i], y[i]))
+				{
+					return false;
+				}
+			}
+
+        	return true;
         }
 
-        public static bool Equals<T>(List<T> x, List<T> y)
+        public static bool EqualsTo<T>(this IList<T> x, IList<T> y)
         {
-            if (x != null)
-            {
-                if (y == null) return false;
-                int n = x.Count;
-                if (n != y.Count) return false;
-                for (int i = 0; i < n; ++i)
-                    if (!Equals(x[i], y[i]))
-                        return false;
-                return true;
-            }
-            return y == null;
+        	if (x == null)
+        	{
+        		return y == null;
+        	}
+        	if (y == null)
+        	{
+        		return false;
+        	}
+
+        	int n = x.Count;
+        	if (n != y.Count)
+        	{
+        		return false;
+        	}
+
+			for (int i = 0; i < n; ++i)
+			{
+				if (!Equals(x[i], y[i]))
+				{
+					return false;
+				}
+			}
+
+        	return true;
         }
         #endregion
 
@@ -106,19 +132,6 @@ namespace DataDynamics
             return BinarySearch(SimpleList.FromList(list), index, length, p);
         }
         #endregion
-
-    	public static void Split<T>(this IEnumerable set, out List<T> tlist, out List<T> flist, Predicate<T> p)
-        {
-            tlist = new List<T>();
-            flist = new List<T>();
-            foreach (T item in set)
-            {
-                if (p(item))
-                    tlist.Add(item);
-                else
-                    flist.Add(item);
-            }
-        }
 
     	#region Tree Iterators
         public static IEnumerable<T> IterateTreeTopDown<T>(IEnumerable<T> set, Converter<T, IEnumerable<T>> getKids)

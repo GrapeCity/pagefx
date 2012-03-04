@@ -129,7 +129,7 @@
     <Compile Include="Metadata\MdbReader.cs" />
     <Compile Include="Metadata\MdbStream.cs" />
     <Compile Include="Metadata\MdbIndex.cs" />
-    <Compile Include="Metadata\MdbUtils.cs" />
+    <Compile Include="Metadata\StrongNameTools.cs" />
     <Compile Include="CLI\AssemblyLoader.cs">
       <SubType>Code</SubType>
     </Compile>

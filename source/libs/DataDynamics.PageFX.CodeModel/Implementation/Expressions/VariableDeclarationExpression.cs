@@ -2,58 +2,41 @@ using System.Collections.Generic;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public class VariableDeclarationExpression : Expression, IVariableDeclarationExpression, ITypeReferenceProvider
+    public sealed class VariableDeclarationExpression : Expression, IVariableDeclarationExpression, ITypeReferenceProvider
     {
-        #region IVariableDeclarationExpression Members
-        public IVariable Variable
-        {
-            get { return _var; }
-            set { _var = value; }
-        }
-        private IVariable _var;
-        #endregion
+    	public IVariable Variable { get; set; }
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] {_var}; }
+            get { return new ICodeNode[] {Variable}; }
         }
-        #endregion
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
-            get { return _var.Type; }
+            get { return Variable != null ? Variable.Type : null; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IVariableDeclarationExpression;
             if (e == null) return false;
-            if (e.Variable != _var) return false;
-            return true;
+            return e.Variable == Variable;
         }
 
-        private static readonly int _hs = typeof(IVariableDeclarationExpression).GetHashCode();
+        private static readonly int HashSalt = typeof(IVariableDeclarationExpression).GetHashCode();
 
         public override int GetHashCode()
         {
-            if (_var != null)
-                return _var.GetHashCode() ^ _hs;
-            return base.GetHashCode();
+        	int h = HashSalt;
+            if (Variable != null)
+                h ^= Variable.GetHashCode();
+            return h;
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public IEnumerable<IType> GetTypeReferences()
-        {
-            if (_var != null)
-                return new[] { _var.Type };
-            return null;
-        }
-        #endregion
+    	public IEnumerable<IType> GetTypeReferences()
+    	{
+    		return Variable != null ? new[] { Variable.Type } : new IType[0];
+    	}
     }
 }
