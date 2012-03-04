@@ -103,16 +103,14 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        #region ctor
-        AbcGenerator _generator;
+    	private readonly AbcGenerator _generator;
 
         public CodeCachingService(AbcGenerator generator)
         {
             _generator = generator;
         }
-        #endregion
 
-        #region Import
+    	#region Import
         public AbcMethodBody Import(AbcMethod method, BodyReferences refs)
         {
             var lib = GetLib(method.SourceMethod);

@@ -2502,7 +2502,7 @@ namespace DataDynamics.PageFX.CLI
             return new BadSignatureException(string.Format("Unable to resolve type signature {0}", sig));            
         }
 
-        IType[] ResolveGenericArgs(MdbTypeSignature sig, IType contextType, IMethod contextMethod)
+        IEnumerable<IType> ResolveGenericArgs(MdbTypeSignature sig, IType contextType, IMethod contextMethod)
         {
             int n = sig.GenericParams.Length;
             var args = new IType[n];

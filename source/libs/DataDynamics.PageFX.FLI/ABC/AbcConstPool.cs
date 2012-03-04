@@ -7,21 +7,17 @@ using DataDynamics.PageFX.FLI.SWF;
 
 namespace DataDynamics.PageFX.FLI.ABC
 {
-    public class AbcConstPool<T> : IEnumerable<AbcConst<T>>, ISwfAtom, ISupportXmlDump, IAbcConstPool
+    public sealed class AbcConstPool<T> : IEnumerable<AbcConst<T>>, ISwfAtom, ISupportXmlDump, IAbcConstPool
     {
-        #region Fields
-        readonly List<AbcConst<T>> _list = new List<AbcConst<T>>();
-        readonly Dictionary<T, int> _index = new Dictionary<T, int>();
-        #endregion
+    	private readonly List<AbcConst<T>> _list = new List<AbcConst<T>>();
+		private readonly Dictionary<T, int> _index = new Dictionary<T, int>();
 
-        #region Contructors
-        public AbcConstPool()
+    	public AbcConstPool()
         {
-            _list.Add(AbcConst<T>.Default);
+            _list.Add(new AbcConst<T>(default(T)) { Index = 0 });
         }
-        #endregion
 
-        #region Public Members
+    	#region Public Members
         public int Count
         {
             get { return _list.Count; }

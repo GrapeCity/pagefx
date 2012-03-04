@@ -6,32 +6,32 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public static class NUnitHelper
     {
-        const string NS = "NUnit.Framework";
-        const string NSPrefix = NS + ".";
+        const string Namespace = "NUnit.Framework";
+        const string NsPrefix = Namespace + ".";
 
         static class Types
         {
-            public const string TestCase = NSPrefix + "TestCase";
-            public const string Assertion = NSPrefix + "Assertion";
+            public const string TestCase = NsPrefix + "TestCase";
+            public const string Assertion = NsPrefix + "Assertion";
         }
 
         static class Attrs
         {
-            public const string Suffix = "Attribute";
+        	private const string Suffix = "Attribute";
 
-            public const string TestFixture = NSPrefix + "TestFixture" + Suffix;
+            public const string TestFixture = NsPrefix + "TestFixture" + Suffix;
 
-            public const string Category = NSPrefix + "Category" + Suffix;
-            public const string Description = NSPrefix + "Description" + Suffix;
-            public const string Ignore = NSPrefix + "Ignore" + Suffix;
+            public const string Category = NsPrefix + "Category" + Suffix;
+            public const string Description = NsPrefix + "Description" + Suffix;
+            public const string Ignore = NsPrefix + "Ignore" + Suffix;
 
-            public const string SetUp = NSPrefix + "SetUp" + Suffix;
-            public const string TearDown = NSPrefix + "TearDown" + Suffix;
+            public const string SetUp = NsPrefix + "SetUp" + Suffix;
+            public const string TearDown = NsPrefix + "TearDown" + Suffix;
 
-            public const string TestFixtureSetUp = NSPrefix + "TestFixtureSetUp" + Suffix;
-            public const string TestFixtureTearDown = NSPrefix + "TestFixtureTearDown" + Suffix;
+            public const string TestFixtureSetUp = NsPrefix + "TestFixtureSetUp" + Suffix;
+            public const string TestFixtureTearDown = NsPrefix + "TestFixtureTearDown" + Suffix;
 
-            public const string ExpectedException = NSPrefix + "ExpectedException" + Suffix;
+            public const string ExpectedException = NsPrefix + "ExpectedException" + Suffix;
         }
 
         public static bool IsTestFixture(IType type)
@@ -127,7 +127,7 @@ namespace DataDynamics.PageFX.CodeModel
         public static bool IsNUnitMethod(IMethod method)
         {
             if (method == null) return false;
-            return method.CustomAttributes.Any(attr => attr.TypeName.StartsWith(NSPrefix));
+            return method.CustomAttributes.Any(attr => attr.TypeName.StartsWith(NsPrefix));
         }
 
         public static IMethod FindSetupMethod(IType type)

@@ -409,7 +409,7 @@ namespace DataDynamics.PageFX.CodeModel
             #endregion
 
             #region WriteParameters
-            static void WriteParameters(XmlWriter writer, IParameterCollection args)
+            static void WriteParameters(XmlWriter writer, IEnumerable<IParameter> args)
             {
                 writer.WriteStartElement("parameters");
                 if (args != null)
@@ -665,7 +665,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return sb.ToString();
             }
 
-            public static bool IsVisibleMember(ITypeMember m)
+        	private static bool IsVisibleMember(ITypeMember m)
             {
                 switch (m.Visibility)
                 {

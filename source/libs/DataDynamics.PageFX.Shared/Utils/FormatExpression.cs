@@ -35,12 +35,12 @@ namespace DataDynamics
         #endregion
 
         #region Parsing
-        static List<IItem> Parse(string exp)
+        static IEnumerable<IItem> Parse(string exp)
         {
             return Parse(new StringReader(exp));
         }
 
-        static List<IItem> Parse(TextReader reader)
+        static IEnumerable<IItem> Parse(TextReader reader)
         {
             var list = new List<IItem>();
             SB.Length = 0;

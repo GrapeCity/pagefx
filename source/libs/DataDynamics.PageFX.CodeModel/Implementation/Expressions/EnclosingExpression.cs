@@ -4,50 +4,38 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public abstract class EnclosingExpression : Expression, IEnclosingExpression
     {
-        #region Constructors
-        public EnclosingExpression()
+    	protected EnclosingExpression()
         {
         }
 
-        public EnclosingExpression(IExpression e)
+    	protected EnclosingExpression(IExpression e)
         {
-            _expression = e;
+            Expression = e;
         }
-        #endregion
 
-        #region IEnclosingExpression Members
-        public IExpression Expression
+    	public IExpression Expression { get; set; }
+
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return _expression; }
-            set { _expression = value; }
+            get { return new ICodeNode[] {Expression}; }
         }
-        private IExpression _expression;
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return new ICodeNode[] {_expression}; }
-        }
-        #endregion
-
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IEnclosingExpression;
             if (e == null) return false;
-            if (!Equals(e.Expression, _expression)) return false;
-            return true;
+            return Equals(e.Expression, Expression);
         }
+
+    	private static readonly int HashSalt = typeof(EnclosingExpression).GetHashCode();
 
         public override int GetHashCode()
         {
-            int h = 0;
-            if (_expression != null)
-                h ^= _expression.GetHashCode();
+            int h = HashSalt;
+            if (Expression != null)
+                h ^= Expression.GetHashCode();
             return h;
         }
-        #endregion
     }
 }

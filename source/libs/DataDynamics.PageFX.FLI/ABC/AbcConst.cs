@@ -4,7 +4,7 @@ using DataDynamics.PageFX.FLI.SWF;
 
 namespace DataDynamics.PageFX.FLI.ABC
 {
-    public class AbcConst<T> : IAbcConst
+    public sealed class AbcConst<T> : IAbcConst
     {
         public AbcConst()
         {
@@ -12,45 +12,39 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcConst(T value)
         {
-            _value = value;
+            Value = value;
         }
 
-        internal static readonly AbcConstKind SharedKind;
-        internal static readonly bool IsString;
-        internal static readonly AbcConst<T> Default;
+    	internal static AbcConstKind SharedKind
+    	{
+    		get
+    		{
+				switch (Type.GetTypeCode(typeof(T)))
+				{
+					case TypeCode.Int32:
+						return AbcConstKind.Int;
 
-        static AbcConst()
-        {
-            switch (Type.GetTypeCode(typeof(T)))
-            {
-                case TypeCode.Int32:
-                    SharedKind = AbcConstKind.Int;
-                    Default = new AbcConst<T>(default(T)) {Index = 0};
-                    break;
+					case TypeCode.UInt32:
+						return AbcConstKind.UInt;
 
-                case TypeCode.UInt32:
-                    SharedKind = AbcConstKind.UInt;
-                    Default = new AbcConst<T>(default(T)) {Index = 0};
-                    break;
+					case TypeCode.Double:
+						return AbcConstKind.Double;
 
-                case TypeCode.Double:
-                    SharedKind = AbcConstKind.Double;
-                    Default = new AbcConst<T>(default(T)) {Index = 0};
-                    break;
+					case TypeCode.String:
+						return AbcConstKind.String;
 
-                case TypeCode.String:
-                    IsString = true;
-                    SharedKind = AbcConstKind.String;
-					Default = new AbcConst<T>(default(T)) { Index = 0 };
-                    break;
+					default:
+						return AbcConstKind.Undefined;
+				}
+    		}
+    	}
 
-                default:
-                    SharedKind = AbcConstKind.Undefined;
-                    break;
-            }
-        }
+    	internal static bool IsString
+    	{
+			get { return SharedKind == AbcConstKind.String; }
+    	}
 
-        public AbcConstKind Kind
+    	public AbcConstKind Kind
         {
             get { return SharedKind; }
         }
@@ -62,22 +56,17 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
         int _index = -1;
 
-        public T Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-        T _value;
+    	public T Value { get; set; }
 
-        object IAbcConst.Value
+    	object IAbcConst.Value
         {
-            get { return _value; }
-            set { _value = (T)value; }
+            get { return Value; }
+            set { Value = (T)value; }
         }
 
         public string Key
         {
-            get { return Equals(_value, null) ? "" : _value.ToString(); }
+            get { return Equals(Value, null) ? "" : Value.ToString(); }
         }
 
         /// <summary>
@@ -87,25 +76,24 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get
             {
-                var tc = Type.GetTypeCode(typeof(T));
-                switch (tc)
+            	switch (Type.GetTypeCode(typeof(T)))
                 {
                     case TypeCode.Int32:
-                        return SwfWriter.SizeOfIntEncoded((int)(object)_value);
+                        return SwfWriter.SizeOfIntEncoded((int)(object)Value);
 
                     case TypeCode.UInt32:
-                        return SwfWriter.SizeOfUIntEncoded((uint)(object)_value);
+                        return SwfWriter.SizeOfUIntEncoded((uint)(object)Value);
 
                     case TypeCode.Double:
                         return 8;
 
-                    case TypeCode.String:
-                        {
-                            string s = (string)(object)_value;
-                            if (s == null) return 1;
-                            return SwfWriter.SizeOfUIntEncoded((uint)s.Length)
-                                + Encoding.UTF8.GetByteCount(s);
-                        }
+					case TypeCode.String:
+                		{
+                			var s = (string)(object)Value;
+                			if (s == null) return 1;
+                			return SwfWriter.SizeOfUIntEncoded((uint)s.Length)
+                			       + Encoding.UTF8.GetByteCount(s);
+                		}
                 }
                 return 0;
             }
@@ -114,12 +102,12 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region IAbcAtom Members
         public void Read(SwfReader reader)
         {
-            _value = AbcIO.ReadConst<T>(reader, SharedKind);
+            Value = AbcIO.ReadConst<T>(reader, SharedKind);
         }
 
         public void Write(SwfWriter writer)
         {
-            AbcIO.WriteConst(writer, _value);
+            AbcIO.WriteConst(writer, Value);
         }
         #endregion
 
@@ -129,7 +117,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             //string s = (object)_value as string;
             //if (s != null) return Escaper.Escape(s);
             //return string.Format("{0}: {1}", _index, _value);
-            return string.Format("{0}", _value);
+            return string.Format("{0}", Value);
         }
 
         public override bool Equals(object obj)
@@ -137,16 +125,16 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (obj == this) return true;
             var c = obj as AbcConst<T>;
             if (c != null)
-                return Equals(c._value, _value);
+                return Equals(c.Value, Value);
             return false;
         }
 
-        private static readonly int hs = typeof(T).GetHashCode();
+        private static readonly int HashSalt = typeof(T).GetHashCode();
 
         public override int GetHashCode()
         {
-            int h = hs;
-            object obj = _value;
+            int h = HashSalt;
+            object obj = Value;
             if (obj != null)
                 h ^= obj.GetHashCode();
             return h;

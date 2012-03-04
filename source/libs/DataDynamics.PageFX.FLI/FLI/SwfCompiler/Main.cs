@@ -350,16 +350,17 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region ProductInfo
-        void SetupProductInfo()
+        private void SetupProductInfo()
         {
-            var productInfo = new SwfTagProductInfo();
-            productInfo.ProductID = 1;
-            productInfo.Edition = 0;
-            productInfo.MajorVersion = 1;
-            productInfo.MinorVersion = 0;
-            productInfo.BuildNumber = 0;
-            productInfo.BuildDate = (ulong)DateTime.Now.Ticks;
-            _swf.Tags.Add(productInfo);
+        	_swf.Tags.Add(new SwfTagProductInfo
+        	              	{
+        	              		ProductID = 1,
+        	              		Edition = 0,
+        	              		MajorVersion = 1,
+        	              		MinorVersion = 0,
+        	              		BuildNumber = 0,
+        	              		BuildDate = (ulong)DateTime.Now.Ticks
+        	              	});
         }
         #endregion
 

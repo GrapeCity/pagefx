@@ -265,7 +265,7 @@ namespace abc
         #endregion
 
         #region DumpInstance
-        static List<AbcFile> GetAbcFiles(string path)
+        private static IEnumerable<AbcFile> GetAbcFiles(string path)
         {
             string ext = Utils.GetExt(path);
             if (ext == "abc")
@@ -289,7 +289,7 @@ namespace abc
                 return list;
             }
 
-            return new List<AbcFile>();
+            return Enumerable.Empty<AbcFile>();
         }
 
         static void DumpInstance(string path, string instanceName, bool fullHierarchy)

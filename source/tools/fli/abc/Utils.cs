@@ -208,7 +208,7 @@ namespace abc
                 h = form.ClientSize.Height;
 
                 form.SuspendLayout();
-                int padding = 10;
+                const int padding = 10;
 
             	var ok = new Button
             	         	{

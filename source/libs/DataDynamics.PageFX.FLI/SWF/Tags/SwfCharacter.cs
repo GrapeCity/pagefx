@@ -7,36 +7,22 @@ namespace DataDynamics.PageFX.FLI.SWF
     /// </summary>
     public abstract class SwfCharacter : SwfTag, ISwfCharacter
     {
-        #region ctors
-        public SwfCharacter()
+    	protected SwfCharacter()
         {
         }
 
-        public SwfCharacter(int id)
+    	protected SwfCharacter(int id)
         {
-            _id = checked((ushort)id);
+            CharacterID = checked((ushort)id);
         }
-        #endregion
 
-        #region ISwfCharacter Members
-        public ushort CharacterID
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
-        private ushort _id;
+    	public ushort CharacterID { get; set; }
 
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
-        #endregion
+    	public string Name { get; set; }
 
-        public override sealed void ReadTagData(SwfReader reader)
+    	public override sealed void ReadTagData(SwfReader reader)
         {
-            _id = reader.ReadUInt16();
+            CharacterID = reader.ReadUInt16();
             ReadBody(reader);
         }
 
@@ -44,7 +30,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public override sealed void WriteTagData(SwfWriter writer)
         {
-            writer.WriteUInt16(_id);
+            writer.WriteUInt16(CharacterID);
             WriteBody(writer);
         }
 
@@ -52,10 +38,10 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteAttributeString("id", _id.ToString());
+            writer.WriteAttributeString("id", CharacterID.ToString());
 
-            if (!string.IsNullOrEmpty(_name))
-                writer.WriteAttributeString("name", _name);
+            if (!string.IsNullOrEmpty(Name))
+                writer.WriteAttributeString("name", Name);
         }
     }
 }

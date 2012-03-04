@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using DataDynamics.PageFX.FLI.IL;
 using DataDynamics.PageFX.FLI.SWC;
@@ -8,14 +9,12 @@ namespace DataDynamics.PageFX.FLI.ABC
 {
     public partial class AbcFile
     {
-        string[] Locales
+        private IEnumerable<string> Locales
         {
             get
             {
                 var sfc = SwfCompiler;
-                if (sfc == null)
-                    return SwfCompilerOptions.DefaultLocales;
-                return sfc.Locales;
+                return sfc == null ? SwfCompilerOptions.DefaultLocales : sfc.Locales;
             }
         }
 

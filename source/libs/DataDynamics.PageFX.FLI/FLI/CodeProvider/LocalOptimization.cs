@@ -13,7 +13,7 @@ namespace DataDynamics.PageFX.FLI
 
     internal partial class AvmCodeProvider
     {
-        class Pattern
+        private sealed class Pattern
         {
             public Pattern(string name,
                 PatternAction action,
@@ -30,15 +30,15 @@ namespace DataDynamics.PageFX.FLI
             public readonly string Name;
             public int Counter;
 #endif
-            readonly PatternAction _action;
-            readonly PatternPredicate[] _predicates;
+            private readonly PatternAction _action;
+			private readonly PatternPredicate[] _predicates;
 
             public int Length
             {
                 get { return _predicates.Length; }
             }
 
-            public IInstruction[] Replace(AbcFile abc, IInstruction[] code, int index)
+            public IEnumerable<IInstruction> Replace(AbcFile abc, IInstruction[] code, int index)
             {
                 int n = code.Length;
                 int pn = Length;
@@ -532,19 +532,21 @@ namespace DataDynamics.PageFX.FLI
                 bool add = true;
                 for (int j = 0; j < Patterns.Length; ++j)
                 {
-                    var p = Patterns[j];
-                    var r = p.Replace(_abc, code, index);
-                    if (r != null)
+                    var pattern = Patterns[j];
+                    var optimizedSet = pattern.Replace(_abc, code, index);
+                    if (optimizedSet != null)
                     {
-                        list.AddRange(r);
-                        index += p.Length - 1;
+                        list.AddRange(optimizedSet);
+                        index += pattern.Length - 1;
                         add = false;
                         noopt = false;
                         break;
                     }
                 }
-                if (add)
-                    list.Add(code[index]);
+				if (add)
+				{
+					list.Add(code[index]);
+				}
             }
             if (noopt) return code;
             return list.ToArray();

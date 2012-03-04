@@ -191,11 +191,10 @@ namespace DataDynamics.PageFX.FLI
         #region class InlineCodeMap
         class InlineCodeMap
         {
-            readonly Hashtable _map = new Hashtable();
+            private readonly Hashtable _map = new Hashtable();
+            private static readonly char[] Separator = { ';' };
 
-            static readonly char[] sep = { ';' };
-
-            public object this[string name]
+        	private object this[string name]
             {
                 get
                 {
@@ -206,7 +205,7 @@ namespace DataDynamics.PageFX.FLI
                     if (value == null)
                         value = (AbcCoder)delegate { };
 
-                    var names = name.Split(sep, StringSplitOptions.RemoveEmptyEntries);
+                    var names = name.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var key in names)
                     {
                         _map[key] = value;

@@ -543,7 +543,7 @@ namespace DataDynamics.PageFX
             }
         }
 
-        static FrameworkVersion[] FrameworkVersions = 
+        private static readonly FrameworkVersion[] FrameworkVersions = 
         {
             FrameworkVersion.NET_3_5, 
             FrameworkVersion.NET_2_0, 
