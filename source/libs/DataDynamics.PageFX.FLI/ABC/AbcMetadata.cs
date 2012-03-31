@@ -129,18 +129,14 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
 
         #region IAbcAtom Members
-        int _begin;
-        int _end;
 
         public void Read(SwfReader reader)
         {
-            _begin = (int)reader.Position;
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 0; i < n; ++i)
             {
                 Add(new AbcMetaEntry(reader));
             }
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -151,11 +147,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 this[i].Write(writer);
         }
 
-        public string FormatOffset(AbcFile file, int offset)
-        {
-            return AbcHelper.FormatOffset(file, offset, this, _begin, _end, "Metadata", false, true);
-        }
-        #endregion
+    	#endregion
 
         #region Dump
         public void DumpXml(XmlWriter writer)

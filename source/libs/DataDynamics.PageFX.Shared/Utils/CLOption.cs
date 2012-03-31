@@ -123,19 +123,19 @@ namespace DataDynamics
                     var opt = fi.GetValue(null) as CLOption;
                     if (opt != null)
                     {
-                        var desc = ReflectionHelper.GetAttribute<DescriptionAttribute>(fi, true);
+                        var desc = fi.GetAttribute<DescriptionAttribute>(true);
                         if (desc != null)
                             opt.Description = desc.Description;
 
-                        var cat = ReflectionHelper.GetAttribute<CategoryAttribute>(fi, true);
+                        var cat = fi.GetAttribute<CategoryAttribute>(true);
                         if (cat != null)
                             opt.Category = cat.Category;
 
-                        var format = ReflectionHelper.GetAttribute<FormatAttribute>(fi, true);
+                        var format = fi.GetAttribute<FormatAttribute>(true);
                         if (format != null)
                             opt.Format = format.Value;
 
-                        var defVal = ReflectionHelper.GetAttribute<DefaultValueAttribute>(fi, true);
+                        var defVal = fi.GetAttribute<DefaultValueAttribute>(true);
                         if (defVal != null)
                             opt.DefaultValue = defVal.Value.ToString();
                     }

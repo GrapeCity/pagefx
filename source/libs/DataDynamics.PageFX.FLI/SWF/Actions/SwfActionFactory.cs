@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.FLI.SWF
                     if (type.IsDefined(typeof(TODOAttribute), true))
                         continue;
 
-                    var attr = ReflectionHelper.GetAttribute<SwfActionAttribute>(type, true);
+                    var attr = type.GetAttribute<SwfActionAttribute>(true);
                     if (attr != null)
                     {
                         ctor = type.GetConstructor(Type.EmptyTypes);

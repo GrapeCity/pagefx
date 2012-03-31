@@ -199,7 +199,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcConst<double> DefineSingle(float value)
         {
-            double v = AbcHelper.ToDouble(value);
+            double v = value.ToDoublePrecisely();
             return _doublePool.Define(v);
         }
 
@@ -335,7 +335,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// <returns></returns>
         public AbcNamespace DefineNamespace(AbcConstKind kind, AbcString name)
         {
-            string key = AbcNamespace.KeyOf(name, kind);
+            string key = name.MakeKey(kind);
             var ns = _nspool[key];
             if (ns != null) return ns;
             ns = new AbcNamespace(name, kind, key);

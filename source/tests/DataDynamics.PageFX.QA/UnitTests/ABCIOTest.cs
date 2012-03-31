@@ -36,8 +36,7 @@ namespace DataDynamics.PageFX.FLI.Tests
             string err = QA.CompareByteArrays(original, result, out index);
             if (!string.IsNullOrEmpty(err))
             {
-                string addr = abc.FormatOffset(index);
-                return "SWC: " + swcName + ". ABC: " + abc.Name + "." + err + "At " + addr;
+                return "SWC: " + swcName + ". ABC: " + abc.Name + "." + err;
             }
 
             //NOTE: Test below is not passed
@@ -70,8 +69,7 @@ namespace DataDynamics.PageFX.FLI.Tests
             string err = QA.CompareByteArrays(original, result, out index);
             if (!string.IsNullOrEmpty(err))
             {
-                string addr = abc.FormatOffset(index);
-                return "SWC: " + swcName + ". ABC: " + abc.Name + "." + err + "At " + addr;
+                return "SWC: " + swcName + ". ABC: " + abc.Name + "." + err;
             }
 
             return err;

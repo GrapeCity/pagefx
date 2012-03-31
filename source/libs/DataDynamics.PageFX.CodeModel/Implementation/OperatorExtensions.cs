@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public static class OpHelper
+    public static class OperatorExtensions
     {
-        public static bool IsArithmetic(BinaryOperator op)
+        public static bool IsArithmetic(this BinaryOperator op)
         {
             switch (op)
             {
@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsBitwise(BinaryOperator op)
+        public static bool IsBitwise(this BinaryOperator op)
         {
             switch (op)
             {
@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsBoolean(BinaryOperator op)
+        public static bool IsBoolean(this BinaryOperator op)
         {
             switch (op)
             {
@@ -52,7 +52,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsRelation(BinaryOperator op)
+        public static bool IsRelation(this BinaryOperator op)
         {
             switch (op)
             {
@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsEquality(BinaryOperator op)
+        public static bool IsEquality(this BinaryOperator op)
         {
             switch (op)
             {
@@ -78,12 +78,12 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsShift(BinaryOperator op)
+        public static bool IsShift(this BinaryOperator op)
         {
             return op == BinaryOperator.LeftShift || op == BinaryOperator.RightShift;
         }
 
-        public static bool IsUnary(BranchOperator op)
+    	public static bool IsUnary(this BranchOperator op)
         {
             switch (op)
             {
@@ -96,7 +96,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsBinary(BranchOperator op)
+        public static bool IsBinary(this BranchOperator op)
         {
             switch (op)
             {
@@ -111,7 +111,7 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static BinaryOperator ToBinaryOperator(BranchOperator op)
+        public static BinaryOperator ToBinaryOperator(this BranchOperator op)
         {
             switch (op)
             {
@@ -132,7 +132,7 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
 
-        public static bool IsTrueOrFalse(BranchOperator op)
+        public static bool IsTrueOrFalse(this BranchOperator op)
         {
             switch (op)
             {
@@ -143,22 +143,22 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        static readonly string[] CastOpNames = { OpNames.Implicit, OpNames.Explicit, OpNames.True, OpNames.False };
+		private static readonly string[] CastOpNames = { OpNames.Implicit, OpNames.Explicit, OpNames.True, OpNames.False };
 
-        static IEnumerable<IMethod> GetCastOperators(IType type)
+        private static IEnumerable<IMethod> GetCastOperators(this IType type)
         {
-        	return CastOpNames.SelectMany(opName => type.Methods[opName]);
+        	return CastOpNames.SelectMany(name => type.Methods[name]);
         }
 
-    	public static IMethod FindCastOperator(IType type, IType source, IType target)
+    	public static IMethod FindCastOperator(this IType type, IType source, IType target)
         {
             return FindCastOperator(type, source, target, true);
         }
 
-        static IMethod FindCastOperator(IType type, IType source, IType target, bool check)
+        private static IMethod FindCastOperator(IType type, IType source, IType target, bool check)
         {
-            var ops = GetCastOperators(type);
-            var op = ops.FirstOrDefault(m => IsCastOperator(m, source, target));
+            var methods = type.GetCastOperators();
+            var op = methods.FirstOrDefault(m => m.IsCastOperator(source, target));
             if (check && op == null)
             {
             	op = FindCastOperator(type == source ? target : source, source, target, false);
@@ -168,101 +168,75 @@ namespace DataDynamics.PageFX.CodeModel
             return op;
         }
 
-        static bool IsCastOperator(IMethod m, IType source, IType target)
+        private static bool IsCastOperator(this IMethod method, IType source, IType target)
         {
-            if (!IsCastOperator(m)) return false;
-            if (m.Type != target) return false;
-            if (m.Parameters[0].Type != source) return false;
+            if (method.Parameters.Count != 1) return false;
+            if (method.Type != target) return false;
+            if (method.Parameters[0].Type != source) return false;
             return true;
         }
 
-        static bool IsCastOperator(IMethod m)
+    	public static IMethod FindOperator(this BinaryOperator op, IType left, IType right)
         {
-            if (m.Parameters.Count != 1) return false;
-            //Name has been already checked.
-            //string name = m.Name;
-            //switch (name)
-            //{
-            //    case OpNames.Implicit:
-            //    case OpNames.Explicit:
-            //    case OpNames.True:
-            //    case OpNames.False:
-            //        return true;
-            //}
+            string name = op.GetMethodName();
+            var set = left.Methods[name];
+            return set.FirstOrDefault(m => m.IsBinaryOperator(op, left, right));
+        }
+
+		public static IMethod FindOperator(this UnaryOperator op, IType type)
+		{
+			string name = op.GetMethodName();
+			var ops = type.Methods[name];
+			return ops.FirstOrDefault(m => IsUnaryOperator(m, type));
+		}
+
+		public static IMethod FindBooleanOperator(this IType type, bool isTrue)
+		{
+			string name = isTrue ? OpNames.True : OpNames.False;
+			var ops = type.Methods[name];
+			return ops.FirstOrDefault(IsBooleanOperator);
+		}
+
+        private static bool IsBinaryOperator(this IMethod method, BinaryOperator op, IType left, IType right)
+        {
+            if (method.Parameters.Count != 2) return false;
+            if (method.Parameters[0].Type != left) return false;
+            if (op.IsShift()) return true;
+            if (method.Parameters[1].Type != right) return false;
             return true;
         }
 
-        public static string GetOpName(BinaryOperator op)
+        private static bool IsUnaryOperator(IMethod method, IType type)
         {
-            return "op_" + op;
-        }
-
-        public static string GetOpName(UnaryOperator op)
-        {
-            switch (op)
-            {
-                case UnaryOperator.BitwiseNot:
-                    return "op_OnesComplement";
-
-                case UnaryOperator.Negate:
-                    return "op_UnaryNegation";
-            }
-            return null;
-        }
-
-        public static bool IsShiftOperator(BinaryOperator op)
-        {
-            return op == BinaryOperator.LeftShift || op == BinaryOperator.RightShift;
-        }
-
-        public static IMethod FindOperator(BinaryOperator op, IType left, IType right)
-        {
-            string opName = GetOpName(op);
-            var set = left.Methods[opName];
-            return set.FirstOrDefault(m => IsBinaryOperator(m, op, left, right));
-        }
-
-        static bool IsBinaryOperator(IMethod m, BinaryOperator op, IType left, IType right)
-        {
-            if (m.Parameters.Count != 2) return false;
-            //if (m.Name != GetOpName(op)) return false; //already checked
-            if (m.Parameters[0].Type != left) return false;
-            if (IsShiftOperator(op)) return true;
-            if (m.Parameters[1].Type != right) return false;
+            if (method.Parameters.Count != 1) return false;
+            if (method.Parameters[0].Type != type) return false;
             return true;
         }
 
-        public static IMethod FindOperator(UnaryOperator op, IType type)
+        private static bool IsBooleanOperator(IMethod method)
         {
-            string opName = GetOpName(op);
-            var ops = type.Methods[opName];
-            return ops.FirstOrDefault(m => IsUnaryOperator(m, op, type));
-        }
-
-        public static bool IsUnaryOperator(IMethod m, UnaryOperator op, IType type)
-        {
-            if (m.Parameters.Count != 1) return false;
-            //if (m.Name != GetOpName(op)) return false; //already checked
-            if (m.Parameters[0].Type != type) return false;
+            if (method.Parameters.Count != 1) return false;
+            if (method.Type != SystemTypes.Boolean) return false;
             return true;
         }
 
-        public static IMethod FindBooleanOperator(IType type, bool isTrue)
-        {
-            string opName = isTrue ? OpNames.True : OpNames.False;
-            var ops = type.Methods[opName];
-            return ops.FirstOrDefault(IsBooleanOperator);
-        }
+		private static string GetMethodName(this BinaryOperator op)
+		{
+			return "op_" + op;
+		}
 
-        static bool IsBooleanOperator(IMethod m)
-        {
-            if (m.Parameters.Count != 1) return false;
-            if (m.Type != SystemTypes.Boolean) return false;
-            //name is already checked.
-            //if (isTrue) return m.Name == OpNames.True;
-            //return m.Name == OpNames.False;
-            return true;
-        }
+		private static string GetMethodName(this UnaryOperator op)
+		{
+			switch (op)
+			{
+				case UnaryOperator.BitwiseNot:
+					return "op_OnesComplement";
+
+				case UnaryOperator.Negate:
+					return "op_UnaryNegation";
+			}
+			return null;
+		}
     }
 
     public static class OpNames

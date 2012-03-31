@@ -53,8 +53,8 @@ namespace DataDynamics.PageFX.FLI.SWF
             writer.Align();
             if (!_read)
             {
-                _fillBits = BitHelper.GetMinBits((uint)_fillStyles.Count);
-                _lineBits = BitHelper.GetMinBits((uint)_lineStyles.Count);
+                _fillBits = ((uint)_fillStyles.Count).GetMinBits();
+                _lineBits = ((uint)_lineStyles.Count).GetMinBits();
             }
             _fillStyles.Write(writer, shapeType);
             _lineStyles.Write(writer, shapeType);

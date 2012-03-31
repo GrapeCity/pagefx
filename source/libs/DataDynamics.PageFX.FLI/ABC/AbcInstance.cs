@@ -1151,17 +1151,13 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region IO
-        private int _begin;
-        private int _end;
 
         public void Read(int n, SwfReader reader)
         {
-            _begin = (int)reader.Position;
             for (int i = 0; i < n; ++i)
             {
                 Add(new AbcInstance(reader));
             }
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -1171,11 +1167,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 this[i].Write(writer);
         }
 
-        public string FormatOffset(AbcFile file, int offset)
-        {
-            return AbcHelper.FormatOffset(file, offset, this, _begin, _end, "AbcInstance Array", false, false);
-        }
-        #endregion
+    	#endregion
 
         #region Dump
         public void DumpXml(XmlWriter writer)

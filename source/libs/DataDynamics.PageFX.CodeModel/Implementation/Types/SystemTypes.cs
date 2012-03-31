@@ -540,9 +540,9 @@ namespace DataDynamics.PageFX.CodeModel
             {
                 var code = (SystemTypeCode)field.GetValue(null);
                 int i = (int)code;
-                var attr = ReflectionHelper.GetAttribute<SystemTypeNameAttribute>(field, false);
+                var attr = field.GetAttribute<SystemTypeNameAttribute>(false);
                 var st = new SystemType(code, attr != null ? attr.Name : code.ToString());
-                var cs_attr = ReflectionHelper.GetAttribute<CSharpAttribute>(field, false);
+                var cs_attr = field.GetAttribute<CSharpAttribute>(false);
                 if (cs_attr != null)
                     st.CSharpKeyword = cs_attr.Value;
                 _types[i] = st;

@@ -443,7 +443,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             writer.WriteBit(true); //StateMoveTo
             int dx = SwfHelper.ToTwips(_dx);
             int dy = SwfHelper.ToTwips(_dy);
-            int bits = BitHelper.GetMinBits(dx, dy);
+            int bits = dx.GetMinBits(dy);
             writer.WriteUB((uint)bits, 5);
             writer.WriteSB(dx, bits);
             writer.WriteSB(dy, bits);
@@ -526,7 +526,7 @@ namespace DataDynamics.PageFX.FLI.SWF
                 int y = SwfHelper.ToTwips(_dy);
                 int bits = _bits;
                 if (!_read)
-                    bits = Math.Max(BitHelper.GetMinBits(x, y), 2);
+                    bits = Math.Max(x.GetMinBits(y), 2);
                 writer.WriteUB((uint)(bits - 2), 4);
                 writer.WriteBit(true); //gl
                 writer.WriteSB(x, bits);
@@ -539,7 +539,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             int v = SwfHelper.ToTwips(value);
             int bits = _bits;
             if (!_read)
-                bits = Math.Max(BitHelper.GetMinBits(v), 2);
+                bits = Math.Max(v.GetMinBits(), 2);
             writer.WriteUB((uint)(bits - 2), 4);
             writer.WriteBit(false); //gl
             writer.WriteBit(vl); //vl
@@ -637,7 +637,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
             int bits = _bits;
             if (!_read)
-                bits = Math.Max(BitHelper.GetMinBits(cx, cy, ax, ay), 2);
+                bits = Math.Max(cx.GetMinBits(cy, ax, ay), 2);
 
             writer.WriteUB((uint)(bits - 2), 4);
             writer.WriteSB(cx, bits);

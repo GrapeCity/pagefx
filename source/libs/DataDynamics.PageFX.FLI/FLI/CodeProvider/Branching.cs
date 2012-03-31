@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.FLI
 
         public IInstruction[] Branch(BranchOperator op, IType left, IType right)
         {
-            if (OpHelper.IsUnary(op))
+            if (op.IsUnary())
             {
                 if (op == BranchOperator.Null)
                 {

@@ -205,7 +205,7 @@ namespace DataDynamics.PageFX.FLI.SWC
         public string GetLibraryDigest(string libName, string hashType, bool isSigned)
         {
             if (string.IsNullOrEmpty(hashType))
-                hashType = HashHelper.TypeSHA256;
+                hashType = HashExtensions.TypeSHA256;
 
         	if (string.IsNullOrEmpty(libName))
                 libName = LIBRARY_SWF;

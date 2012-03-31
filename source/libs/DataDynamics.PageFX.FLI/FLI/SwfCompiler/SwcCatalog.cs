@@ -52,8 +52,8 @@ namespace DataDynamics.PageFX.FLI
             _libraryBytes = ToByteArray(ms => _swf.Save(ms));
 
             var digests = CreateXmlElement(SwcCatalog.Elements.Digests);
-            string digest = HashHelper.GetDigest(HashHelper.TypeSHA256, _libraryBytes);
-            digests.AppendChild(CreateDigestElement(HashHelper.TypeSHA256, false, digest));
+            string digest = _libraryBytes.GetHashString(HashExtensions.TypeSHA256);
+            digests.AppendChild(CreateDigestElement(HashExtensions.TypeSHA256, false, digest));
             lib.AppendChild(digests);
             
             _catalogBytes = ToByteArray(

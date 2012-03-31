@@ -77,7 +77,7 @@ namespace DataDynamics.PageFX.FLI
                 var field = fields[i];
 				var value = field.GetValue(null);
             	var index = (int)value;
-                var attr = ReflectionHelper.GetAttribute<NameAttribute>(field, false);
+                var attr = field.GetAttribute<NameAttribute>(false);
             	Names[index] = attr != null ? attr.Name : field.Name;
             }
         }

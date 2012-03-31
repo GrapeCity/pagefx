@@ -10,7 +10,7 @@ using DataDynamics.PageFX.FLI.SWF;
 namespace DataDynamics.PageFX.FLI.ABC
 {
     #region class AbcNamespace
-    public class AbcNamespace : IAbcConst
+    public sealed class AbcNamespace : IAbcConst
     {
         #region Constructors
         public AbcNamespace()
@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
 
         public AbcNamespace(AbcConst<string> name, AbcConstKind kind)
-            : this(name, kind, KeyOf(name, kind))
+            : this(name, kind, name.MakeKey(kind))
         {
         }
 
@@ -26,9 +26,9 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             if (!kind.IsNamespace())
                 throw new ArgumentException("Invalid namespace kind");
-            _name = name;
+            Name = name;
             _kind = kind;
-            this.key = key;
+            _key = key;
         }
 
         public AbcNamespace(SwfReader reader)
@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             get { return _index; }
             set { _index = value; }
         }
-        int _index = -1;
+        private int _index = -1;
 
         object IAbcConst.Value
         {
@@ -67,37 +67,22 @@ namespace DataDynamics.PageFX.FLI.ABC
                 _kind = value;
             }
         }
-        AbcConstKind _kind;
+        private AbcConstKind _kind;
 
-        /// <summary>
-        /// Gets or sets namespace name.
-        /// </summary>
-        public AbcConst<string> Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        AbcConst<string> _name;
+    	/// <summary>
+    	/// Gets or sets namespace name.
+    	/// </summary>
+    	public AbcConst<string> Name { get; set; }
 
-        public int NameIndex
+    	public int NameIndex
         {
-            get
-            {
-                if (Name != null)
-                    return Name.Index;
-                return 0;
-            }
+            get { return Name != null ? Name.Index : 0; }
         }
 
         public string NameString
 
         {
-            get
-            {
-                if (Name != null)
-                    return Name.Value;
-                return "";
-            }
+            get { return Name != null ? Name.Value : ""; }
         }
 
         /// <summary>
@@ -105,48 +90,20 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         public Visibility Visibility
         {
-            get
-            {
-                switch (Kind)
-                {
-                    case AbcConstKind.PrivateNamespace:
-                        return Visibility.Private;
-                    case AbcConstKind.PublicNamespace:
-                        return Visibility.Public;
-                    case AbcConstKind.PackageNamespace:
-                        return Visibility.Public;
-                    case AbcConstKind.InternalNamespace:
-                        return Visibility.Internal;
-                    case AbcConstKind.ProtectedNamespace:
-                        return Visibility.Protected;
-                    case AbcConstKind.StaticProtectedNamespace:
-                        return Visibility.Protected;
-                    default:
-                        return Visibility.Private;
-                }
-            }
+            get { return Kind.Visibility(); }
         }
 
         public bool IsGlobalPackage
         {
-            get
-            {
-                if (_kind == AbcConstKind.PackageNamespace)
-                    return _name == null || string.IsNullOrEmpty(_name.Value);
-                return false;
-            }
+            get { return _kind == AbcConstKind.PackageNamespace && string.IsNullOrEmpty(NameString); }
         }
 
-        public static string KeyOf(AbcConst<string> name, AbcConstKind kind)
+    	public string Key
         {
-            return name.Value + (int)kind;
+            get { return _key ?? (_key = Name.MakeKey(_kind)); }
+			set { _key = value; }
         }
-
-        public string Key
-        {
-            get { return key ?? (key = _kind == 0 ? "*" : KeyOf(_name, _kind)); }
-        }
-        internal string key;
+        private string _key;
 
         public bool IsAny
         {
@@ -160,7 +117,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             _kind = (AbcConstKind)reader.ReadUInt8();
             if (!_kind.IsNamespace())
                 throw new BadFormatException("Invalid namespace kind");
-            _name = AbcIO.ReadString(reader);
+            Name = AbcIO.ReadString(reader);
         }
 
         public void Write(SwfWriter writer)
@@ -168,7 +125,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (_kind == 0)
                 throw new InvalidOperationException("Invalid namespace kind");
             writer.WriteUInt8((byte)_kind);
-            writer.WriteUIntEncoded((uint)_name.Index);
+            writer.WriteUIntEncoded((uint)Name.Index);
         }
         #endregion
 
@@ -228,16 +185,16 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (IsGlobalPackage) return "global";
             if (format == "s")
             {
-                if (_name != null)
-                    return _name.ToString();
+                if (Name != null)
+                    return Name.ToString();
                 return "";
             }
-            return string.Format("[{0}] {1} {2}", Index, GetShortNsKind(_kind), _name);
+            return string.Format("[{0}] {1} {2}", Index, GetShortNsKind(_kind), Name);
         }
 
         public override int GetHashCode()
         {
-            return Algorithms.EvalHashCode(_kind, _name);
+            return Algorithms.EvalHashCode(_kind, Name);
         }
 
         public override bool Equals(object obj)
@@ -247,7 +204,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (ns != null)
             {
                 if (ns._kind != _kind) return false;
-                if (!Equals(ns._name, _name)) return false;
+                if (!Equals(ns.Name, Name)) return false;
                 return true;
             }
             string s = obj as string;
@@ -273,36 +230,32 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             if (Index == 0)
                 Debugger.Break();
-            if (_name.Index == 0)
+            if (Name.Index == 0)
                 Debugger.Break();
         }
     }
     #endregion
 
-    #region class AbcNamespacePool
-    public class AbcNamespacePool : ISwfAtom, ISupportXmlDump, IAbcConstPool, IEnumerable<AbcNamespace>
+	#region class AbcNamespacePool
+    public sealed class AbcNamespacePool : ISwfAtom, ISupportXmlDump, IAbcConstPool, IEnumerable<AbcNamespace>
     {
-        readonly AbcFile _abc;
-        readonly AbcConstList<AbcNamespace> _list = new AbcConstList<AbcNamespace>();
+        private readonly AbcFile _abc;
+        private readonly AbcConstList<AbcNamespace> _list = new AbcConstList<AbcNamespace>();
         
         public AbcNamespacePool(AbcFile abc)
         {
             _abc = abc;
-            var ns = new AbcNamespace {key = "*"};
+            var ns = new AbcNamespace {Key = "*"};
             Add(ns);
         }
 
         #region IAbcAtom Members
-        private int _begin;
-        private int _end;
 
         public void Read(SwfReader reader)
         {
-            _begin = (int)reader.Position;
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 1; i < n; ++i)
                 Add(new AbcNamespace(reader));
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -322,12 +275,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public string FormatOffset(AbcFile file, int offset)
-        {
-            var list = new List<AbcNamespace>(this);
-            return AbcHelper.FormatOffset(file, offset, list, _begin, _end, "Namespace Pool", true, true);
-        }
-        #endregion
+    	#endregion
 
         #region Dump
         public void DumpXml(XmlWriter writer)
@@ -367,7 +315,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get
             {
-                string key = AbcNamespace.KeyOf(name, kind);
+                string key = name.MakeKey(kind);
                 return _list[key];
             }
         }
@@ -409,7 +357,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             var name = ns.Name;
             var kind = ns.Kind;
-            string key = AbcNamespace.KeyOf(name, kind);
+            string key = name.MakeKey(kind);
             var ns2 = this[key];
             if (ns2 != null) return ns2;
 

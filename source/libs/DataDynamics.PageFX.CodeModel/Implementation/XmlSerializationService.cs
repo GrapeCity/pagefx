@@ -36,7 +36,7 @@ namespace DataDynamics.PageFX.CodeModel
             if (string.IsNullOrEmpty(name))
             {
                 var type = node.GetType();
-                var attr = ReflectionHelper.GetAttribute<XmlElementNameAttribute>(type, false);
+                var attr = type.GetAttribute<XmlElementNameAttribute>(false);
                 name = attr != null ? attr.Name : type.Name;
             }
 

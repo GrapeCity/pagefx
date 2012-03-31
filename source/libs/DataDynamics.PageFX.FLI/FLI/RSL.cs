@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.FLI
 	/// </summary>
 	public class RslItem
 	{
-		private string _hashType = HashHelper.TypeSHA256;
+		private string _hashType = HashExtensions.TypeSHA256;
 		private string _localPath;
 		private string[] _policyFiles;
 
@@ -51,7 +51,7 @@ namespace DataDynamics.PageFX.FLI
 			get
 			{
 				if (string.IsNullOrEmpty(_hashType))
-					return HashHelper.TypeSHA256;
+					return HashExtensions.TypeSHA256;
 				return _hashType;
 			}
 			set { _hashType = value; }

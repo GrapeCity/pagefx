@@ -132,7 +132,7 @@
     <Compile Include="Implementation\Members\ReadOnlyEventCollection.cs" />
     <Compile Include="Implementation\NUnitHelper.cs" />
     <Compile Include="Implementation\TypeBuilder.cs" />
-    <Compile Include="Implementation\OpHelper.cs" />
+    <Compile Include="Implementation\OperatorExtensions.cs" />
     <Compile Include="Implementation\Signature.cs" />
     <Compile Include="Implementation\Statements\Statement.cs" />
     <Compile Include="Implementation\StatementVisitor.cs" />

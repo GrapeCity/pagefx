@@ -12,14 +12,12 @@ namespace DataDynamics.PageFX.FLI.SWF
     /// </summary>
     public sealed class SwfWriter : IDisposable
     {
-        #region Member Variables
-        private Stream _stream;
+    	private Stream _stream;
         private readonly BitWriter _writer;
         private readonly bool _disposeStream;
         private readonly BinaryWriter _binWriter;
-        #endregion
 
-        #region Constructors
+    	#region Constructors
         public SwfWriter(Stream stream, bool disposeStream)
         {
             _stream = stream;
@@ -150,7 +148,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public void WriteFB16(float value, int q, int bits)
         {
-            short v = FloatHelper.ToInt16(value, q);
+            short v = value.FixedToInt16(q);
             WriteUB((uint)v, bits);
         }
         #endregion
@@ -572,7 +570,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         /// <param name="y2">The bottom coordinate of rectangle in twips.</param>
         public void WriteRect(int x1, int y1, int x2, int y2)
         {
-            int len = BitHelper.GetMinBits(x1, x2, y1, y2);
+            int len = x1.GetMinBits(x2, y1, y2);
             WriteUB((uint)len, 5);
             WriteSB(x1, len);
             WriteSB(x2, len);
@@ -634,9 +632,9 @@ namespace DataDynamics.PageFX.FLI.SWF
             WriteBit(hasScale);
             if (hasScale)
             {
-                int scaleX = FloatHelper.ToFixed32(e[SX]);
-                int scaleY = FloatHelper.ToFixed32(e[SY]);
-                int scaleBits = BitHelper.GetMinBits(scaleX, scaleY);
+                int scaleX = e[SX].FixedToInt32();
+                int scaleY = e[SY].FixedToInt32();
+                int scaleBits = scaleX.GetMinBits(scaleY);
                 WriteUB((uint)scaleBits, 5);
                 WriteSB(scaleX, scaleBits);
                 WriteSB(scaleY, scaleBits);
@@ -649,9 +647,9 @@ namespace DataDynamics.PageFX.FLI.SWF
             WriteBit(hasRotate);
             if (hasRotate)
             {
-                int rotateX = FloatHelper.ToFixed32(e[RX]);
-                int rotateY = FloatHelper.ToFixed32(e[RY]);
-                int rotateBits = BitHelper.GetMinBits(rotateX, rotateY);
+                int rotateX = e[RX].FixedToInt32();
+                int rotateY = e[RY].FixedToInt32();
+                int rotateBits = rotateX.GetMinBits(rotateY);
                 WriteUB((uint)rotateBits, 5);
                 WriteSB(rotateX, rotateBits);
                 WriteSB(rotateY, rotateBits);
@@ -691,7 +689,7 @@ namespace DataDynamics.PageFX.FLI.SWF
                 WriteUB(0, 5);
                 return;
             }
-            int bits = BitHelper.GetMinBits(tx, ty);
+            int bits = tx.GetMinBits(ty);
             WriteUB((uint)bits, 5);
             WriteSB(tx, bits);
             WriteSB(ty, bits);

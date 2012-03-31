@@ -653,9 +653,9 @@ namespace DataDynamics
         public static void Logo(Assembly asm)
         {
             var ver = asm.GetName().Version;
-            var title = ReflectionHelper.GetAttribute<AssemblyTitleAttribute>(asm, false);
+            var title = asm.GetAttribute<AssemblyTitleAttribute>(false);
             Console.WriteLine("{0} version {1}", title.Title, ver);
-            var copyright = ReflectionHelper.GetAttribute<AssemblyCopyrightAttribute>(asm, false);
+            var copyright = asm.GetAttribute<AssemblyCopyrightAttribute>(false);
             if (copyright != null)
                 Console.WriteLine(copyright.Copyright);
             Console.WriteLine();

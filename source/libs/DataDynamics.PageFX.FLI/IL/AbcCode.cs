@@ -1160,7 +1160,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void PushFloat(float value)
         {
-            PushDouble(AbcHelper.ToDouble(value));
+            PushDouble(value.ToDoublePrecisely());
         }
 
         public void PushNamespace(AbcNamespace ns)
@@ -1748,7 +1748,7 @@ namespace DataDynamics.PageFX.FLI.IL
             var m = Generator.GetCastOperator(source, target);
             if (m == null)
             {
-                var op = OpHelper.FindCastOperator(type, source, target);
+                var op = type.FindCastOperator(source, target);
                 Debug.Assert(target == op.Type);
 
                 m = DefineAbcMethod(op);
@@ -3080,7 +3080,7 @@ namespace DataDynamics.PageFX.FLI.IL
             if (checkOverflow && OpOvf(op, left, right, result))
                 return;
 
-            if (OpHelper.IsRelation(op))
+            if (op.IsRelation())
             {
                 bool swap = false;
                 if ((left != null && right == null)

@@ -7,7 +7,7 @@ using DataDynamics.PageFX.FLI.SWF;
 
 namespace DataDynamics.PageFX.FLI.ABC
 {
-    public class AbcScript : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
+    public sealed class AbcScript : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
     {
         #region Constructors
         public AbcScript()
@@ -87,15 +87,11 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region IAbcAtom Members
-        int _begin;
-        int _end;
 
         public void Read(SwfReader reader)
         {
-            _begin = (int)reader.Position;
             Initializer = AbcIO.ReadMethod(reader);
             _traits.Read(reader);
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -104,20 +100,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             _traits.Write(writer);
         }
 
-        public string FormatOffset(AbcFile file, int offset, int index)
-        {
-            if (offset >= _begin && offset < _end)
-            {
-                int size = SwfWriter.SizeOfUIntEncoded((uint)_initializer.Index);
-                if (offset < _begin + size)
-                {
-                    return string.Format("Script {0}", index);
-                }
-                return _traits.FormatOffset(file, offset, string.Format("Script {0}", index));
-            }
-            return null;
-        }
-        #endregion
+    	#endregion
 
         #region Dump
         bool ShouldDump()
@@ -207,9 +190,9 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
     }
 
-    public class AbcScriptCollection : List<AbcScript>, ISwfAtom, ISupportXmlDump
+    public sealed class AbcScriptCollection : List<AbcScript>, ISwfAtom, ISupportXmlDump
     {
-        readonly AbcFile _abc;
+        private readonly AbcFile _abc;
 
         public AbcScriptCollection(AbcFile abc)
         {
@@ -234,6 +217,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region IAbcAtom Members
+
         public void Read(SwfReader reader)
         {
             int n = (int)reader.ReadUIntEncoded();
@@ -251,19 +235,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 this[i].Write(writer);
         }
 
-        public string FormatOffset(AbcFile file, int offset)
-        {
-            int n = Count;
-            for (int i = 0; i < n; ++i)
-            {
-                var script = this[i];
-                string s = script.FormatOffset(file, offset, i);
-                if (!string.IsNullOrEmpty(s))
-                    return s;
-            }
-            return null;
-        }
-        #endregion
+    	#endregion
 
         #region Dump
         public void DumpXml(XmlWriter writer)

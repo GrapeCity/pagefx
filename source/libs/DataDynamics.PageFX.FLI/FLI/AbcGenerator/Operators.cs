@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.FLI
             var m = _opCache[key] as IMethod;
             if (m == null)
             {
-                m = OpHelper.FindOperator(op, left, right);
+                m = op.FindOperator(left, right);
                 if (m != null)
                     _opCache[key] = m;
             }
@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FLI
             var m = _opCache[key] as IMethod;
             if (m == null)
             {
-                m = OpHelper.FindOperator(op, type);
+                m = op.FindOperator(type);
                 if (m != null)
                     _opCache[key] = m;
             }
@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX.FLI
             var m = _opCache[key] as IMethod;
             if (m == null)
             {
-                m = OpHelper.FindBooleanOperator(type, isTrue);
+                m = type.FindBooleanOperator(isTrue);
                 if (m != null)
                     _opCache[key] = m;
             }
@@ -84,7 +84,7 @@ namespace DataDynamics.PageFX.FLI
 
         public AbcMethod DefineOperator(BranchOperator op, IType left, IType right)
         {
-            return DefineOperator(OpHelper.ToBinaryOperator(op), left, right);
+            return DefineOperator(op.ToBinaryOperator(), left, right);
         }
         #endregion
 

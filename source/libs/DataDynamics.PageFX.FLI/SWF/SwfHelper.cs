@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             foreach (var fi in fields)
             {
                 var value = (TEnum)fi.GetValue(null);
-                var attr = ReflectionHelper.GetAttribute<TAttr>(fi, false);
+                var attr = fi.GetAttribute<TAttr>(false);
                 if (attr != null)
                 {
                     map.Add(value, cnv(attr));

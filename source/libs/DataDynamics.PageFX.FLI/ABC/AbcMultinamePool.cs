@@ -85,12 +85,9 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region IO
-        int _begin;
-        int _end;
 
         public void Read(SwfReader reader)
         {
-            _begin = (int)reader.Position;
             int n = (int)reader.ReadUIntEncoded();
             reader.MultinameCount = n;
             List<AbcMultiname> ptypes = null;
@@ -115,7 +112,6 @@ namespace DataDynamics.PageFX.FLI.ABC
                     mn.TypeParameter = this[i];
                 }
             }
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -136,12 +132,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public string FormatOffset(AbcFile file, int offset)
-        {
-            var list = new List<AbcMultiname>(this);
-            return AbcHelper.FormatOffset(file, offset, list, _begin, _end, "Multiname Pool", true, true);
-        }
-        #endregion
+    	#endregion
 
         #region Dump
         public void DumpXml(XmlWriter writer)

@@ -1412,9 +1412,9 @@ namespace DataDynamics.PageFX.CLI.IL
             //NOTE: Fix for relation operations.
             //NOTE: Sequence of instructions (isinst, null, cgt) does not work in avm.
             //NOTE: -1 == 4294967295 is false in avm
-            if (OpHelper.IsRelation(op))
+            if (op.IsRelation())
             {
-                if (!OpHelper.IsEquality(op)
+                if (!op.IsEquality()
                     && ((left.IsNull && right.IsInstance) || (right.IsNull && left.IsInstance)))
                 {
                     op = BinaryOperator.Inequality;
@@ -1426,7 +1426,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
             }
 
-            if (OpHelper.IsBoolean(op))
+            if (op.IsBoolean())
             {
 
             }
@@ -1434,7 +1434,7 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 if (unsigned)
                 {
-                    if (OpHelper.IsShift(op))
+                    if (op.IsShift())
                     {
                         CastToInt32(code, ref rt);
                         ToUnsigned(code, ref lt, true);
@@ -1446,7 +1446,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
                 else
                 {
-                    if (OpHelper.IsShift(op))
+                    if (op.IsShift())
                     {
                         CastToInt32(code, ref rt);
                     }

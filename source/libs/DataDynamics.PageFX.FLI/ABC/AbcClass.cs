@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.FLI.ABC
     /// <summary>
     /// Contains traits for static members of user defined type
     /// </summary>
-    public class AbcClass : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
+    public sealed class AbcClass : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
     {
         #region Constructors
         public AbcClass()
@@ -172,7 +172,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
     }
 
-    public class AbcClassCollection : List<AbcClass>, ISupportXmlDump
+    public sealed class AbcClassCollection : List<AbcClass>, ISupportXmlDump
     {
         #region Public Members
         public new void Add(AbcClass klass)
@@ -203,17 +203,13 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region IO
-        int _begin;
-        int _end;
 
         public void Read(int n, SwfReader reader)
         {
-            _begin = (int)reader.Position;
             for (int i = 0; i < n; ++i)
             {
                 Add(new AbcClass(reader));
             }
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -223,11 +219,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 this[i].Write(writer);
         }
 
-        public string FormatOffset(AbcFile file, int offset)
-        {
-            return AbcHelper.FormatOffset(file, offset, this, _begin, _end, "AbcClass Array", false, false);
-        }
-        #endregion
+    	#endregion
 
         #region Dump
         public void DumpXml(XmlWriter writer)

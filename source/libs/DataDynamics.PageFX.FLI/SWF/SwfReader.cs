@@ -492,7 +492,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         public float ReadFB(int bits, int q)
         {
             int v = ReadSB(bits);
-            return FloatHelper.ToSingle(v, q);
+            return v.ToFixedSingle(q);
         }
 
         public float ReadFB32(int bits)

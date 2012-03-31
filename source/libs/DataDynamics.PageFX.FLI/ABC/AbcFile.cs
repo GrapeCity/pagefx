@@ -584,51 +584,6 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
         #endregion
 
-        #region FormatOffset
-        public string FormatOffset(int offset)
-        {
-            string s = _intPool.FormatOffset(offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _uintPool.FormatOffset(offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _doublePool.FormatOffset(offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _stringPool.FormatOffset(offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _nspool.FormatOffset(this, offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _nssets.FormatOffset(this, offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _multinames.FormatOffset(this, offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _methods.FormatOffset(offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _metadata.FormatOffset(this, offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _instances.FormatOffset(this, offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _classes.FormatOffset(this, offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _scripts.FormatOffset(this, offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            s = _methodBodies.FormatOffset(offset);
-            if (!string.IsNullOrEmpty(s)) return s;
-
-            return null;
-        }
-        #endregion
         #endregion
 
         #region Dump

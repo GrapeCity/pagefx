@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.FLI.SWF
     //The factors are saved as 8.8 fixed values (divide by 256 to obtain a proper floating point value).
     //Note that the values are limited to a signed 16 bits value. This allows for any value between -128.0 and +127.98828.
 
-    public class SwfColorTransform
+    public sealed class SwfColorTransform
     {
         public float MulRed = 1;
         public float MulGreen = 1;
@@ -63,6 +63,24 @@ namespace DataDynamics.PageFX.FLI.SWF
             reader.Align();
         }
 
+		const int Q = 8;
+
+		private int MulBits(bool alpha)
+		{
+			int bits = Math.Max(Math.Max(MulRed.FixedToInt16(Q).GetMinBits(),
+			                             MulGreen.FixedToInt16(Q).GetMinBits()),
+			                    MulBlue.FixedToInt16(Q).GetMinBits());
+			return alpha ? Math.Max(bits, MulAlpha.FixedToInt16(Q).GetMinBits()) : bits;
+		}
+
+		private int AddBits(bool alpha)
+		{
+			int bits = Math.Max(Math.Max(AddRed.FixedToInt16(Q).GetMinBits(),
+										 AddGreen.FixedToInt16(Q).GetMinBits()),
+								AddBlue.FixedToInt16(Q).GetMinBits());
+			return alpha ? Math.Max(bits, AddAlpha.FixedToInt16(Q).GetMinBits()) : bits;
+		}
+
         public void Write(SwfWriter writer, bool alpha)
         {
             bool hasAddTerms = HasAddTerms(alpha);
@@ -70,47 +88,37 @@ namespace DataDynamics.PageFX.FLI.SWF
             writer.WriteBit(hasAddTerms);
             writer.WriteBit(hasMulTerms);
 
-            const int q = 8;
             int nbits;
             if (hasMulTerms && hasAddTerms)
             {
-                if (alpha)
-                    nbits = BitHelper.GetMinBits(q, MulRed, MulGreen, MulBlue, MulAlpha,
-                                                 AddRed, AddGreen, AddBlue, AddAlpha);
-                else
-                    nbits = BitHelper.GetMinBits(q, MulRed, MulGreen, MulBlue,
-                                                 AddRed, AddGreen, AddBlue);
+				nbits = Math.Max(MulBits(alpha), AddBits(alpha));
             }
             else if (hasMulTerms)
             {
-            	nbits = alpha
-            	        	? BitHelper.GetMinBits(q, MulRed, MulGreen, MulBlue, MulAlpha)
-            	        	: BitHelper.GetMinBits(q, MulRed, MulGreen, MulBlue);
+				nbits = MulBits(alpha);
             }
             else
             {
-            	nbits = alpha
-            	        	? BitHelper.GetMinBits(q, AddRed, AddGreen, AddBlue, AddAlpha)
-            	        	: BitHelper.GetMinBits(q, AddRed, AddGreen, AddBlue);
+            	nbits = AddBits(alpha);
             }
             writer.WriteUB((uint)nbits, 4);
 
             if (hasMulTerms)
             {
-                writer.WriteFB16(MulRed, q, nbits);
-                writer.WriteFB16(MulGreen, q, nbits);
-                writer.WriteFB16(MulBlue, q, nbits);
+                writer.WriteFB16(MulRed, Q, nbits);
+                writer.WriteFB16(MulGreen, Q, nbits);
+                writer.WriteFB16(MulBlue, Q, nbits);
                 if (alpha)
-                    writer.WriteFB16(MulAlpha, q, nbits);
+                    writer.WriteFB16(MulAlpha, Q, nbits);
             }
 
             if (hasAddTerms)
             {
-                writer.WriteFB16(AddRed, q, nbits);
-                writer.WriteFB16(AddGreen, q, nbits);
-                writer.WriteFB16(AddBlue, q, nbits);
+                writer.WriteFB16(AddRed, Q, nbits);
+                writer.WriteFB16(AddGreen, Q, nbits);
+                writer.WriteFB16(AddBlue, Q, nbits);
                 if (alpha)
-                    writer.WriteFB16(AddAlpha, q, nbits);
+                    writer.WriteFB16(AddAlpha, Q, nbits);
             }
 
             writer.Align();

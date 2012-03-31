@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NUNIT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -37,10 +37,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -50,7 +55,9 @@
     </Compile>
     <Compile Include="ABC\AbcCache.cs" />
     <Compile Include="ABC\AbcConst.cs" />
+    <Compile Include="ABC\AbcConstKind.cs" />
     <Compile Include="ABC\AbcConstList.cs" />
+    <Compile Include="ABC\AbcExtensions.cs" />
     <Compile Include="ABC\AbcFile.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -65,7 +72,6 @@
     <Compile Include="ABC\AbcLateMethodCollection.cs" />
     <Compile Include="ABC\AbcMerger.cs" />
     <Compile Include="ABC\AbcParameter.cs" />
-    <Compile Include="ABC\AbcHelper.cs" />
     <Compile Include="ABC\AbcDumpService.cs" />
     <Compile Include="ABC\AbcExceptionHandler.cs" />
     <Compile Include="ABC\AblAsset.cs">
@@ -111,7 +117,7 @@
     <Compile Include="FLI\CodeProvider\LocalOptimization.cs" />
     <Compile Include="FLI\CodeProvider\Pointers.cs" />
     <Compile Include="FLI\CodeProvider\Reflection.cs" />
-    <Compile Include="FLI\HashHelper.cs" />
+    <Compile Include="FLI\HashExtensions.cs" />
     <Compile Include="FLI\RSL.cs" />
     <Compile Include="FLI\SpecTypes\IVectorType.cs" />
     <Compile Include="FLI\SpecTypes\VectorInstance.cs" />
@@ -235,6 +241,7 @@
     <Compile Include="SWF\Filters\SwfGradientBevelFilter.cs" />
     <Compile Include="SWF\Filters\SwfGradientGlowFilter.cs" />
     <Compile Include="SWF\Interfaces.cs" />
+    <Compile Include="NumericExtensions.cs" />
     <Compile Include="SWF\SwfColorTransform.cs" />
     <Compile Include="SWF\SwfDumpService.cs" />
     <Compile Include="SWF\SwfEvent.cs" />
@@ -320,6 +327,7 @@
     <Compile Include="SWF\Tags\Text\SwfTagDefineFontInfo.cs" />
     <Compile Include="SWF\Tags\Video\SwfTagVideoFrame.cs" />
     <Compile Include="SWF\Tags\Video\SwfTagDefineVideoStream.cs" />
+    <Compile Include="Tests\MiscTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\fp9.abc" />

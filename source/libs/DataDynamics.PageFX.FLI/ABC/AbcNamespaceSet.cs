@@ -171,18 +171,14 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region IAbcAtom Members
-        private int _begin;
-        private int _end;
 
         public void Read(SwfReader reader)
         {
-            _begin = (int)reader.Position;
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 1; i < n; ++i)
             {
                 Add(new AbcNamespaceSet(reader));
             }
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -200,12 +196,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public string FormatOffset(AbcFile file, int offset)
-        {
-            var list = new List<AbcNamespaceSet>(this);
-            return AbcHelper.FormatOffset(file, offset, list, _begin, _end, "NamespaceSet Pool", true, true);
-        }
-        #endregion
+    	#endregion
 
         #region Dump
         public void DumpXml(XmlWriter writer)

@@ -10,11 +10,11 @@ namespace DataDynamics.PageFX.FLI.ABC
     /// <summary>
     /// Represents collection of <see cref="AbcTrait"/>s.
     /// </summary>
-    public class AbcTraitCollection : IEnumerable<AbcTrait>, ISwfAtom, ISupportXmlDump
+    public sealed class AbcTraitCollection : IEnumerable<AbcTrait>, ISwfAtom, ISupportXmlDump
     {
-        readonly List<AbcTrait> _list = new List<AbcTrait>();
-        readonly Hashtable _cache = new Hashtable();
-        readonly IAbcTraitProvider _owner;
+        private readonly List<AbcTrait> _list = new List<AbcTrait>();
+		private readonly Hashtable _cache = new Hashtable();
+		private readonly IAbcTraitProvider _owner;
 
         public AbcTraitCollection(IAbcTraitProvider owner)
         {
@@ -112,18 +112,14 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region ISwfAtom Members
-        int _begin;
-        int _end;
 
         public void Read(SwfReader reader)
         {
-            _begin = (int)reader.Position;
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 0; i < n; ++i)
             {
                 AddInternal(new AbcTrait(reader));
             }
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -134,12 +130,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 this[i].Write(writer);
         }
 
-        public string FormatOffset(AbcFile file, int offset, string prefix)
-        {
-            return AbcHelper.FormatOffset(file, offset, new List<AbcTrait>(this),
-                                          _begin, _end, prefix + " Traits", false, true);
-        }
-        #endregion
+    	#endregion
 
         #region Xml Dump
         public void DumpXml(XmlWriter writer)
