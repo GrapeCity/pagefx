@@ -12,7 +12,7 @@ namespace DataDynamics.PageFX
                 if (_il == null)
                 {
                     _il = new TestCaseCollection();
-                    var stream = ResourceHelper.GetStream(typeof(RotorTestCases), "Rotor.il_bvt.zip");
+                    var stream = typeof(RotorTestCases).GetResourceStream("Rotor.il_bvt.zip");
                     if (stream != null)
                     {
                         var zip = new ZipFile(stream);
@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX
                             string name = zipEntry.Name;
                             if (name.EndsWith(".il"))
                             {
-                                stream = Stream2.ToMemoryStream(zipEntry.Data);
+                                stream = zipEntry.Data.ToMemoryStream();
                                 string text;
                                 using (var reader = new StreamReader(stream))
                                     text = reader.ReadToEnd();

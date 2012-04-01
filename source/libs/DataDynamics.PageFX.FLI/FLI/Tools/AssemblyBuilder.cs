@@ -60,13 +60,13 @@ namespace DataDynamics.PageFX.FLI
         static Stream Unzip(string path)
         {
             var zip = new ZipFile(path);
-            return Stream2.ToMemoryStream(zip[0].Data);
+            return zip[0].Data.ToMemoryStream();
         }
 
         static Stream Unzip(Stream stream)
         {
             var zip = new ZipFile(stream);
-            return Stream2.ToMemoryStream(zip[0].Data);
+            return zip[0].Data.ToMemoryStream();
         }
 
         void Setup(CommandLine cl)
@@ -142,7 +142,7 @@ namespace DataDynamics.PageFX.FLI
 
         void LoadStdDoc()
         {
-            var rs = ResourceHelper.GetStream(typeof(AssemblyBuilder), "apidoc.zip");
+            var rs = typeof(AssemblyBuilder).GetResourceStream("apidoc.zip");
             if (rs == null) return;
 
             try
@@ -701,7 +701,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (_genericVector != null) return _genericVector;
 
-            string src = ResourceHelper.GetText(GetType(), "Resources.Vector.cs");
+            string src = GetType().GetTextResource("Resources.Vector.cs");
 
             var type = new GenericType
                            {
@@ -1088,7 +1088,7 @@ namespace DataDynamics.PageFX.FLI
                 {
                     var rs = asm.GetManifestResourceStream(resName);
                     string name = PathHelper.TrimExtension(resName.Substring(i + 4).Trim());
-                    string text = Stream2.ReadAllText(rs);
+                    string text = rs.ReadText();
                     _customMembers[name] = text;
                 }
             }
@@ -2110,7 +2110,7 @@ namespace DataDynamics.PageFX.FLI
         void LoadFP9()
         {
             if (_fp9 != null) return;
-            var rs = ResourceHelper.GetStream(GetType(), "fp9.abc");
+            var rs = GetType().GetResourceStream("fp9.abc");
             _fp9 = new AbcFile(rs);
         }
 

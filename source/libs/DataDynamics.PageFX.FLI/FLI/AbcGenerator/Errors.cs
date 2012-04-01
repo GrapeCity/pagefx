@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.FLI
             if (m == null) return;
             if (!IsSwf) return;
 
-            int v = MethodHelper.GetPlayerVersion(m);
+            int v = m.GetPlayerVersion();
             if (v < 0) return;
 
             if (v > PlayerVersion)

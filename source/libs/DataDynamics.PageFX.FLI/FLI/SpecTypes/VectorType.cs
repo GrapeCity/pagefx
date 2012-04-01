@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static string GetVectorParam(IType type)
         {
-            var attr = Attrs.Find(type, Attrs.Vector);
+            var attr = type.FindAttribute(Attrs.Vector);
             return GetVectorParam(attr);
         }
 

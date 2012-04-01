@@ -99,7 +99,7 @@ namespace DataDynamics.PageFX.FLI
                 return code.ToArray();
             }
 
-            if (MethodHelper.IsStatic(method))
+            if (method.IsStaticCall())
             {
                 var mn = tag as AbcMemberName;
                 if (mn != null)
@@ -347,15 +347,15 @@ namespace DataDynamics.PageFX.FLI
             }
 
             int n = method.Parameters.Count;
-            if (MethodHelper.AsStaticCall(method))
+            if (method.AsStaticCall())
                 ++n;
 
             bool isVoid = method.IsVoid();
 
             if (CanUseCallStatic)
             {
-                if (MethodHelper.IsStatic(method)
-                    && MethodHelper.IsManaged(method)
+                if (method.IsStaticCall()
+                    && method.IsManaged()
                     && m != null && _abc.IsDefined(m))
                 {
                     code.Add(InstructionCode.Callstatic, m, n);

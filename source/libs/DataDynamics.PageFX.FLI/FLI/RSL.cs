@@ -305,7 +305,7 @@ namespace DataDynamics.PageFX.FLI
 			}
 
 			_localPath = Path.ChangeExtension(_localPath, ".swf");
-			Stream2.SaveStream(lib, _localPath);
+			lib.Save(_localPath);
 		}
 
 		private string ResolvePath(string prefix, string path, bool uri, bool optional)

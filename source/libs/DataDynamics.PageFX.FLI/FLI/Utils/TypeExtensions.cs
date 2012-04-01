@@ -165,7 +165,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static bool HasGlobalFunctions(this IType type)
         {
-            return Attrs.Has(type, Attrs.GlobalFunctions);
+            return type.HasAttribute(Attrs.GlobalFunctions);
         }
 
         #region name utils

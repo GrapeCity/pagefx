@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.FLI
 
             if (!string.IsNullOrEmpty(rootns))
             {
-                if (Attrs.HasRootNamespace(type))
+                if (type.HasRootNamespace())
                 {
                     if (ns.Length == 0) return rootns;
                     return rootns + "." + ns;
@@ -132,7 +132,7 @@ namespace DataDynamics.PageFX.FLI
                 var type = method.DeclaringType;
                 if (type.IsArray) return true;
             }
-            return MethodHelper.IsNew(method);
+            return method.IsNew();
         }
 
         private static bool NeedReturnTypePrefix(IMethod method)
@@ -180,7 +180,7 @@ namespace DataDynamics.PageFX.FLI
                 }
 
                 var prop = method.Association as IProperty;
-                if (prop != null && MethodHelper.IsAccessor(method))
+                if (prop != null && method.IsAccessor())
                 {
                     sb.Append(prop.Name);
                     addParams = false;
@@ -206,7 +206,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static string GetMethodName(IMethod method)
         {
-            var iface = MethodHelper.GetInterfaceOfExplicitImpl(method);
+            var iface = method.GetInterfaceOfExplicitImpl();
             if (iface != null)
                 return GetMethodName(iface);
 
@@ -220,7 +220,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static string GetMethodName(IType type, string name)
         {
-            var m = MethodHelper.Find(type, name);
+            var m = type.FindMethod(name);
             if (m == null)
                 throw new ArgumentException(string.Format("Unable to find method {0} in type {1}", name, type.FullName));
             return GetMethodName(m);
@@ -228,7 +228,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static string GetMethodName(IType type, string name, int argcount)
         {
-            var m = MethodHelper.Find(type, name, argcount);
+            var m = type.FindMethod(name, argcount);
             if (m == null)
                 throw new ArgumentException(string.Format("Unable to find method {0} in type {1}", name, type.FullName));
             return GetMethodName(m);

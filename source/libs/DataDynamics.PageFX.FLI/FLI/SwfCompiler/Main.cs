@@ -319,7 +319,7 @@ namespace DataDynamics.PageFX.FLI
         #region File Metadata
         void SetupMetadata()
         {
-            string rdf = ResourceHelper.GetText(typeof(SwfCompiler), "pfc.rdf");
+            string rdf = typeof(SwfCompiler).GetTextResource("pfc.rdf");
             _swf.Tags.Add(new SwfTagMetadata(rdf));
         }
         #endregion

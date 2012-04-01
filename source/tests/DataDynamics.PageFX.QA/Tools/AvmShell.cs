@@ -167,8 +167,8 @@ namespace DataDynamics
                 string dir = GlobalSettings.ToolsDirectory;
                 _path = Path.Combine(dir, "avmplus.exe");
                 Directory.CreateDirectory(dir);
-                var rs = ResourceHelper.GetStream(typeof(AvmShell), "avmplus.exe");
-                Stream2.SaveStream(rs, _path);
+                var rs = typeof(AvmShell).GetResourceStream("avmplus.exe");
+                rs.Save(_path);
             }
             return _path;
         }

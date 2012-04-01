@@ -590,7 +590,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public string ReadUtf8(int len)
         {
-            return Stream2.ReadUtf8(_stream, len);
+            return _stream.ReadStringUtf8(len);
         }
         #endregion
 

@@ -2,9 +2,9 @@ using System.Text;
 
 namespace System.IO
 {
-    public static class Stream2
+    public static class StreamExtensions
     {
-        public static int SafeReadByte(Stream s)
+        public static int ReadByteSafe(this Stream s)
         {
             int res = s.ReadByte();
             if (res < 0) throw new EndOfStreamException();
@@ -12,168 +12,168 @@ namespace System.IO
         }
 
         #region int16
-        public static short ReadInt16BE(Stream s)
+        public static short ReadInt16BE(this Stream s)
         {
-            return (short)((SafeReadByte(s) << 8) | SafeReadByte(s));
+            return (short)((s.ReadByteSafe() << 8) | s.ReadByteSafe());
         }
 
-        public static short ReadInt16LE(Stream s)
+        public static short ReadInt16LE(this Stream s)
         {
-            return (short)(SafeReadByte(s) | (SafeReadByte(s) << 8));
+            return (short)(s.ReadByteSafe() | (s.ReadByteSafe() << 8));
         }
 
-        public static short ReadInt16(Stream s, bool be)
+        public static short ReadInt16(this Stream s, bool bigEndian)
         {
-            return be ? ReadInt16BE(s) : ReadInt16LE(s);
+            return bigEndian ? s.ReadInt16BE() : s.ReadInt16LE();
         }
 
-        public static ushort ReadUInt16BE(Stream s)
+        public static ushort ReadUInt16BE(this Stream s)
         {
-            return (ushort)((SafeReadByte(s) << 8) | SafeReadByte(s));
+            return (ushort)((s.ReadByteSafe() << 8) | s.ReadByteSafe());
         }
 
-        public static ushort ReadUInt16LE(Stream s)
+        public static ushort ReadUInt16LE(this Stream s)
         {
-            return (ushort)(SafeReadByte(s) | (SafeReadByte(s) << 8));
+            return (ushort)(s.ReadByteSafe() | (s.ReadByteSafe() << 8));
         }
 
-        public static ushort ReadUInt16(Stream s, bool be)
+        public static ushort ReadUInt16(this Stream s, bool bigEndian)
         {
-            return be ? ReadUInt16BE(s) : ReadUInt16LE(s);
+            return bigEndian ? s.ReadUInt16BE() : s.ReadUInt16LE();
         }
         #endregion
 
         #region int32
-        public static uint ReadUInt32BE(Stream s)
+        public static uint ReadUInt32BE(this Stream s)
         {
-            uint v0 = (uint)(SafeReadByte(s) << 24);
-            uint v1 = (uint)(SafeReadByte(s) << 16);
-            uint v2 = (uint)(SafeReadByte(s) << 8);
-            uint v3 = (uint)SafeReadByte(s);
+            uint v0 = (uint)(s.ReadByteSafe() << 24);
+            uint v1 = (uint)(s.ReadByteSafe() << 16);
+            uint v2 = (uint)(s.ReadByteSafe() << 8);
+            uint v3 = (uint)s.ReadByteSafe();
             return v0 | v1 | v2 | v3;
         }
 
-        public static int ReadInt32BE(Stream s)
+        public static int ReadInt32BE(this Stream s)
         {
-            return (int)ReadUInt32BE(s);
+            return (int)s.ReadUInt32BE();
         }
 
-        public static uint ReadUInt32LE(Stream s)
+        public static uint ReadUInt32LE(this Stream s)
         {
-            uint v0 = (uint)SafeReadByte(s);
-            uint v1 = (uint)(SafeReadByte(s) << 8);
-            uint v2 = (uint)(SafeReadByte(s) << 16);
-            uint v3 = (uint)(SafeReadByte(s) << 24);
+            uint v0 = (uint)s.ReadByteSafe();
+            uint v1 = (uint)(s.ReadByteSafe() << 8);
+            uint v2 = (uint)(s.ReadByteSafe() << 16);
+            uint v3 = (uint)(s.ReadByteSafe() << 24);
             return v0 | v1 | v2 | v3;
         }
 
-        public static int ReadInt32LE(Stream s)
+        public static int ReadInt32LE(this Stream s)
         {
-            return (int)ReadUInt32LE(s);
+            return (int)s.ReadUInt32LE();
         }
 
-        public static int ReadInt32(Stream s, bool be)
+        public static int ReadInt32(this Stream s, bool bigEndian)
         {
-            return be ? ReadInt32BE(s) : ReadInt32LE(s);
+            return bigEndian ? s.ReadInt32BE() : s.ReadInt32LE();
         }
 
-        public static uint ReadUInt32(Stream s, bool be)
+        public static uint ReadUInt32(this Stream s, bool bigEndian)
         {
-            return be ? ReadUInt32BE(s) : ReadUInt32LE(s);
+            return bigEndian ? s.ReadUInt32BE() : s.ReadUInt32LE();
         }
         #endregion
 
         #region int64
-        public static ulong ReadUInt64BE(Stream s)
+        public static ulong ReadUInt64BE(this Stream s)
         {
-            ulong v0 = (ulong)SafeReadByte(s) << 56;
-            ulong v1 = (ulong)SafeReadByte(s) << 48;
-            ulong v2 = (ulong)SafeReadByte(s) << 40;
-            ulong v3 = (ulong)SafeReadByte(s) << 32;
-            ulong v4 = (ulong)SafeReadByte(s) << 24;
-            ulong v5 = (ulong)SafeReadByte(s) << 16;
-            ulong v6 = (ulong)SafeReadByte(s) << 8;
-            ulong v7 = (ulong)SafeReadByte(s);
+            ulong v0 = (ulong)s.ReadByteSafe() << 56;
+            ulong v1 = (ulong)s.ReadByteSafe() << 48;
+            ulong v2 = (ulong)s.ReadByteSafe() << 40;
+            ulong v3 = (ulong)s.ReadByteSafe() << 32;
+            ulong v4 = (ulong)s.ReadByteSafe() << 24;
+            ulong v5 = (ulong)s.ReadByteSafe() << 16;
+            ulong v6 = (ulong)s.ReadByteSafe() << 8;
+            ulong v7 = (ulong)s.ReadByteSafe();
             return v0 | v1 | v2 | v3 | v4 | v5 | v6 | v7;
         }
 
-        public static long ReadInt64BE(Stream s)
+        public static long ReadInt64BE(this Stream s)
         {
-            return (long)ReadUInt64BE(s);
+            return (long)s.ReadUInt64BE();
         }
 
-        public static ulong ReadUInt64LE(Stream s)
+        public static ulong ReadUInt64LE(this Stream s)
         {
-            ulong v0 = (ulong)SafeReadByte(s);
-            ulong v1 = (ulong)SafeReadByte(s) << 8;
-            ulong v2 = (ulong)SafeReadByte(s) << 16;
-            ulong v3 = (ulong)SafeReadByte(s) << 24;
-            ulong v4 = (ulong)SafeReadByte(s) << 32;
-            ulong v5 = (ulong)SafeReadByte(s) << 40;
-            ulong v6 = (ulong)SafeReadByte(s) << 48;
-            ulong v7 = (ulong)SafeReadByte(s) << 56;
+            ulong v0 = (ulong)s.ReadByteSafe();
+            ulong v1 = (ulong)s.ReadByteSafe() << 8;
+            ulong v2 = (ulong)s.ReadByteSafe() << 16;
+            ulong v3 = (ulong)s.ReadByteSafe() << 24;
+            ulong v4 = (ulong)s.ReadByteSafe() << 32;
+            ulong v5 = (ulong)s.ReadByteSafe() << 40;
+            ulong v6 = (ulong)s.ReadByteSafe() << 48;
+            ulong v7 = (ulong)s.ReadByteSafe() << 56;
             return  v0 | v1 | v2 | v3 | v4 | v5 | v6 | v7;
         }
 
-        public static long ReadInt64LE(Stream s)
+        public static long ReadInt64LE(this Stream s)
         {
-            return (long)ReadUInt64LE(s);
+            return (long)s.ReadUInt64LE();
         }
 
-        public static long ReadInt64(Stream s, bool be)
+        public static long ReadInt64(this Stream s, bool bigEndian)
         {
-            return be ? ReadInt64BE(s) : ReadInt64LE(s);
+            return bigEndian ? s.ReadInt64BE() : s.ReadInt64LE();
         }
 
-        public static ulong ReadUInt64(Stream s, bool be)
+        public static ulong ReadUInt64(this Stream s, bool bigEndian)
         {
-            return be ? ReadUInt64BE(s) : ReadUInt64LE(s);
+            return bigEndian ? s.ReadUInt64BE() : s.ReadUInt64LE();
         }
         #endregion
 
         #region float
-        public static unsafe float ReadSingleBE(Stream s)
+        public static unsafe float ReadSingleBE(this Stream s)
         {
-            uint v = ReadUInt32BE(s);
+            uint v = s.ReadUInt32BE();
             return *((float*)&v);
         }
 
-        public static unsafe float ReadSingleLE(Stream s)
+        public static unsafe float ReadSingleLE(this Stream s)
         {
-            uint v = ReadUInt32LE(s);
+            uint v = s.ReadUInt32LE();
             return *((float*)&v);
         }
 
-        public static float ReadSingle(Stream s, bool be)
+        public static float ReadSingle(this Stream s, bool bigEndian)
         {
-            return be ? ReadSingleBE(s) : ReadSingleLE(s);
+            return bigEndian ? s.ReadSingleBE() : s.ReadSingleLE();
         }
         #endregion
 
         #region double
-        public static unsafe double ReadDoubleBE(Stream s)
+        public static unsafe double ReadDoubleBE(this Stream s)
         {
-            ulong v = ReadUInt64BE(s);
+            ulong v = s.ReadUInt64BE();
             return *((double*)&v);
         }
 
-        public static unsafe double ReadDoubleLE(Stream s)
+        public static unsafe double ReadDoubleLE(this Stream s)
         {
-            ulong v = ReadUInt64LE(s);
+            ulong v = s.ReadUInt64LE();
             return *((double*)&v);
         }
 
-        public static double ReadDouble(Stream s, bool be)
+        public static double ReadDouble(this Stream s, bool bigEndian)
         {
-            return be ? ReadDoubleBE(s) : ReadDoubleLE(s);
+            return bigEndian ? s.ReadDoubleBE() : s.ReadDoubleLE();
         }
 
-        public static double[] ReadDoubleArray(Stream s, bool be, int n)
+        public static double[] ReadDoubleArray(this Stream s, bool bigEndian, int length)
         {
-            var res = new double[n];
-            for (int i = 0; i < n; ++i)
-                res[i] = ReadDouble(s, be);
-            return res;
+            var array = new double[length];
+            for (int i = 0; i < length; ++i)
+                array[i] = s.ReadDouble(bigEndian);
+            return array;
         }
         #endregion
 
@@ -200,15 +200,15 @@ namespace System.IO
         ///	And the conversion between hexadecimal and decimal? Come on, this is not a math tutorial! In case you don't know, use a calculator.
         /// </summary>
         /// <returns></returns>
-        public static string ReadUtf8(Stream stream, int len) // len==-1 reads string till \0
+        public static string ReadStringUtf8(this Stream stream, int length) // len==-1 reads string till \0
         {
             var s = new StringBuilder();
             int byteCount = 0;
-            while (len < 0 || byteCount < len)
+            while (length < 0 || byteCount < length)
             {
-                int ch0 = SafeReadByte(stream);
+                int ch0 = stream.ReadByteSafe();
                 byteCount++;
-                if (ch0 == 0 && len < 0)
+                if (ch0 == 0 && length < 0)
                     break;
 
                 if ((ch0 & 0x80) == 0)
@@ -218,7 +218,7 @@ namespace System.IO
                 }
 
                 char ch;
-                int ch1 = SafeReadByte(stream);
+                int ch1 = stream.ReadByteSafe();
                 byteCount++;
 
                 if (ch1 == 0)
@@ -234,7 +234,7 @@ namespace System.IO
                 }
                 else
                 {
-                    int ch2 = SafeReadByte(stream);
+                    int ch2 = stream.ReadByteSafe();
                     byteCount++;
                     if (ch2 == 0)
                     {
@@ -252,7 +252,7 @@ namespace System.IO
                     }
                     else
                     {
-                        int ch3 = SafeReadByte(stream);
+                        int ch3 = stream.ReadByteSafe();
                         byteCount++;
                         if (ch3 == 0)
                         {
@@ -289,32 +289,7 @@ namespace System.IO
         #region Utils
         private const int DefaultBufferLength = 4096;
 
-        public static void FillBuffer(Stream s, byte[] buf, int count)
-        {
-            if (s == null)
-                throw new ArgumentNullException("s");
-            if (count == 1)
-            {
-                int res = s.ReadByte();
-                if (res == -1)
-                    throw new EndOfStreamException();
-                buf[0] = (byte)res;
-            }
-            else
-            {
-                int off = 0;
-                do
-                {
-                    int n = s.Read(buf, off, count - off);
-                    if (n == 0)
-                        throw new EndOfStreamException();
-                    off += n;
-                }
-                while (off < count);
-            }
-        }
-
-        public static void CopyTo(Stream input, Stream output)
+    	public static void CopyTo(this Stream input, Stream output)
         {
             int len;
             var buf = new byte[DefaultBufferLength];
@@ -327,12 +302,12 @@ namespace System.IO
         /// </summary>
         /// <param name="stream">The stream to save.</param>
         /// <param name="path">The path to file in which should be saved the stream.</param>
-        public static void SaveStream(Stream stream, string path)
+        public static void Save(this Stream stream, string path)
         {
             stream.Position = 0;
             using (var fs = File.Create(path))
             {
-                CopyTo(stream, fs);
+                stream.CopyTo(fs);
                 fs.Flush();
                 stream.Position = 0;
             }
@@ -343,22 +318,21 @@ namespace System.IO
         /// </summary>
         /// <param name="data">The byte array to fill stream.</param>
         /// <returns>The stream filled by the data.</returns>
-        public static MemoryStream ToMemoryStream(byte[] data)
+        public static MemoryStream ToMemoryStream(this byte[] data)
         {
-        	var ms = new MemoryStream(data, false) {Position = 0};
-        	return ms;
+        	return new MemoryStream(data, false) {Position = 0};
         }
 
-        public static MemoryStream ToMemoryStream(Stream s)
+        public static MemoryStream ToMemoryStream(this Stream s)
         {
             var ms = new MemoryStream();
-            CopyTo(s, ms);
+            s.CopyTo(ms);
             ms.Flush();
             ms.Position = 0;
             return ms;
         }
 
-        public static byte[] ToByteArray(Stream s)
+        public static byte[] ToByteArray(this Stream s)
         {
             var ms = s as MemoryStream;
             if (ms != null)
@@ -366,17 +340,14 @@ namespace System.IO
                 ms.Flush();
                 return ms.ToArray();
             }
-            else
-            {
-                ms = ToMemoryStream(s);
-                ms.Flush();
-                ms.Close();
-                return ms.ToArray();
-            }
+        	ms = s.ToMemoryStream();
+        	ms.Flush();
+        	ms.Close();
+        	return ms.ToArray();
         }
         #endregion
 
-        public static string ReadAllText(Stream s)
+        public static string ReadText(this Stream s)
         {
             using (var reader = new StreamReader(s))
                 return reader.ReadToEnd();

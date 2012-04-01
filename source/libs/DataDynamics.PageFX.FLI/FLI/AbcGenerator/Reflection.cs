@@ -189,7 +189,7 @@ namespace DataDynamics.PageFX.FLI
                     //NOTE: System.Array defines GetType explicitly
                     if (type == SystemTypes.Array)
                     {
-                        var m = MethodHelper.Find(type, "GetType", 0);
+                        var m = type.FindMethod("GetType", 0);
                         if (m == null)
                             throw new InvalidOperationException("Unable to find System.Array.GetType method. Invalid corlib.");
                         DefineAbcMethod(m);

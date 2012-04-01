@@ -48,11 +48,11 @@ namespace DataDynamics.PageFX.FLI
 
 		private void ImportEmbeddedStyleMixins(AbcFile app)
 		{
-			var swcResource = ResourceHelper.GetStream(GetType(), "mixins.swc");
+			var swcResource = GetType().GetResourceStream("mixins.swc");
 			if (swcResource == null)
 				throw new InvalidOperationException("Unable to load mixins");
 
-			var depsResource = ResourceHelper.GetStream(GetType(), "mixins.dep");
+			var depsResource = GetType().GetResourceStream("mixins.dep");
 			var deps = new SwcDepFile(depsResource);
 
 			var swc = new SwcFile(swcResource);

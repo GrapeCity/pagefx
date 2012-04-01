@@ -117,8 +117,8 @@ namespace DataDynamics.PageFX
             if (IsXml(format))
             {
                 path = Path.Combine(dir, "html.xslt");
-                var rs = ResourceHelper.GetStream(typeof(TestReport), "xslt.html.xslt");
-                Stream2.SaveStream(rs, path);
+                var rs = typeof(TestReport).GetResourceStream("xslt.html.xslt");
+                rs.Save(path);
             }
         }
 

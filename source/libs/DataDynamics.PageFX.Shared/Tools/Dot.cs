@@ -13,12 +13,12 @@ namespace DataDynamics
             {
                 Directory.CreateDirectory(dir);
                 var asm = typeof(Dot).Assembly;
-                var rs = ResourceHelper.GetStream(asm, "Tools.dot.zip");
+                var rs = asm.GetResourceStream("Tools.dot.zip");
                 var zip = new ZipFile(rs);
                 foreach (ZipEntry entry in zip)
                 {
-                    var ms = Stream2.ToMemoryStream(entry.Data);
-                    Stream2.SaveStream(ms, Path.Combine(dir, entry.Name));
+                    var ms = entry.Data.ToMemoryStream();
+                    ms.Save(Path.Combine(dir, entry.Name));
                 }
             }
             return path;

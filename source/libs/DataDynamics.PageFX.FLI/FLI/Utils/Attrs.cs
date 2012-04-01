@@ -1,4 +1,3 @@
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.FLI
@@ -33,23 +32,13 @@ namespace DataDynamics.PageFX.FLI
         //user attrs
         public const string RootSprite = "RootAttribute";
         public const string Embed = "EmbedAttribute";
-        public const string NoRootNamespace = "NoRootNamespaceAttribute";
-        public const string NoRootNamespace2 = "IgnoreRootNamespaceAttribute";
-        public const string Expose = "ExposeAttribute";
+        private const string NoRootNamespace = "NoRootNamespaceAttribute";
+		private const string NoRootNamespace2 = "IgnoreRootNamespaceAttribute";
+        private const string Expose = "ExposeAttribute";
 
         public const string DebuggerDisplay = "System.Diagnostics.DebuggerDisplayAttribute";
 
-        public static ICustomAttribute Find(ICustomAttributeProvider cp, string fullTypeName)
-        {
-            return cp.CustomAttributes.FirstOrDefault(attr => attr.TypeName == fullTypeName);
-        }
-
-        public static bool Has(ICustomAttributeProvider cp, string fullTypeName)
-        {
-            return Find(cp, fullTypeName) != null;
-        }
-
-        public static bool HasRootNamespace(IType type)
+        public static bool HasRootNamespace(this IType type)
         {
             if (type == null) return false;
 
@@ -66,10 +55,10 @@ namespace DataDynamics.PageFX.FLI
                     return false;
             }
 
-            return !(Has(type, NoRootNamespace) || Has(type, NoRootNamespace2));
+            return !(type.HasAttribute(NoRootNamespace) || type.HasAttribute(NoRootNamespace2));
         }
 
-        public static bool IsExposed(ITypeMember member)
+        public static bool IsExposed(this ITypeMember member)
         {
             if (member == null) return false;
 
@@ -79,27 +68,27 @@ namespace DataDynamics.PageFX.FLI
                 if (GenericType.HasGenericParams(type))
                     return false;
 
-                if (NUnitHelper.IsTestFixture(type))
+                if (type.IsTestFixture())
                     return true;
             }
 
             var method = member as IMethod;
             if (method != null)
             {
-                if (NUnitHelper.IsTestFixture(method.DeclaringType))
+                if (method.DeclaringType.IsTestFixture())
                 {
                     if (method.IsConstructor)
                         return true;
-                    if (NUnitHelper.IsNUnitMethod(method))
+                    if (NUnitExtensions.IsNUnitMethod(method))
                         return true;
                 }
 
                 if (method.Association != null
-                    && IsExposed(method.Association))
+                    && method.Association.IsExposed())
                     return true;
             }
 
-            return Has(member, Expose);
+            return member.HasAttribute(Expose);
         }
     }
 }

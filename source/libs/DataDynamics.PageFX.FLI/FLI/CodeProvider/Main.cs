@@ -26,7 +26,7 @@ namespace DataDynamics.PageFX.FLI
             _body = abcMethod.Body;
             _declType = _method.DeclaringType;
 
-            _asStatic = MethodHelper.AsStaticCall(_method);
+            _asStatic = _method.AsStaticCall();
 
             //This code enshures initial capacity for local registers 
             _body.LocalCount = _method.Parameters.Count + 1;
@@ -234,7 +234,7 @@ namespace DataDynamics.PageFX.FLI
         public bool MustPreventBoxing(IMethod method, IParameter arg)
         {
             if (arg == null) return false;
-            if (!MethodHelper.IsAbcMethod(method)) return false;
+            if (!method.IsAbcMethod()) return false;
             var ptype = arg.Type.UnwrapRef();
             return ptype == SystemTypes.Object;
         }

@@ -370,10 +370,10 @@ namespace DataDynamics.PageFX.CodeModel
             ImplicitNumericConversions = new bool[N,N];
             ExplicitNumericConversions = new bool[N,N];
 
-            string text = ResourceHelper.GetText(typeof(TypeExtensions), "implicit.txt");
+            string text = typeof(TypeExtensions).GetTextResource("implicit.txt");
             LoadConversions(text, ImplicitNumericConversions);
 
-            text = ResourceHelper.GetText(typeof(TypeExtensions), "explicit.txt");
+            text = typeof(TypeExtensions).GetTextResource("explicit.txt");
             LoadConversions(text, ExplicitNumericConversions);
         }
 

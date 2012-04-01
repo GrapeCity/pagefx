@@ -26,8 +26,8 @@ namespace DataDynamics.PageFX.FLI.Tests
         private static void Test(string inputFile, string outputFile, string path)
         {
             int exitCode;
-            string input1 = ResourceHelper.GetText(typeof (DebugTest), inputFile);
-            string output1 = ResourceHelper.GetText(typeof(DebugTest), outputFile);
+            string input1 = typeof (DebugTest).GetTextResource(inputFile);
+            string output1 = typeof(DebugTest).GetTextResource(outputFile);
             string workdir = Path.Combine(GlobalSettings.HomeDirectory, path);
             if (!Directory.Exists(workdir))
                 throw new DirectoryNotFoundException(workdir);

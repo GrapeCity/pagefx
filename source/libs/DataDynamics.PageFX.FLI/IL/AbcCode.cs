@@ -1467,7 +1467,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         AbcMethod DefineAbcMethod(IType type, string name, int argCount)
         {
-            var m = MethodHelper.Find(type, name, argCount);
+            var m = type.FindMethod(name, argCount);
             if (m == null)
                 throw new InvalidOperationException();
             return DefineAbcMethod(m);
@@ -1714,7 +1714,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
             //var m = DefineAbcMethod(method);
 
-            var id = MethodHelper.GetConvertMethodId(source, target);
+            var id = source.GetConvertMethodId(target);
             if (id == ConvertMethodId.Unknown)
                 throw new InvalidOperationException();
             var m = Generator.GetMethod(id);
@@ -2714,7 +2714,7 @@ namespace DataDynamics.PageFX.FLI.IL
         #region Utils
         public void CloneValue(IType type, IMethod curmethod)
         {
-            var clone = MethodHelper.Find(type, "Clone", 0);
+            var clone = type.FindMethod("Clone", 0);
             if (clone == curmethod) return;
             var m = Generator.DefineAbcMethod(clone);
             Call(m);

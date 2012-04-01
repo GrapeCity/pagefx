@@ -130,11 +130,11 @@ namespace DataDynamics.PageFX
 
         public static bool IsNUnitSession { get; set; }
 
-        public static NUnitHelper.TestRunnerOptions TestRunnerOptions
+        public static TestRunnerGeneratorOptions TestRunnerOptions
         {
             get
             {
-                return new NUnitHelper.TestRunnerOptions
+                return new TestRunnerGeneratorOptions
                 {
                     Protect = ProtectNUnitTest,
                     EndMarker = FlashPlayer.MarkerEnd,
@@ -469,12 +469,12 @@ namespace DataDynamics.PageFX
             const StringComparison cmptype = StringComparison.InvariantCultureIgnoreCase;
             if (name.EndsWith(".abc", cmptype))
             {
-                var rs = ResourceHelper.GetStream(typeof(QA), name);
+                var rs = typeof(QA).GetResourceStream(name);
                 if (rs == null)
                     throw new InvalidOperationException();
 
                 string path = Path.Combine(dir, name);
-                Stream2.SaveStream(rs, path);
+                rs.Save(path);
 
                 string dll = Path.ChangeExtension(name, ".dll");
                 WrapperGenerator.Generate(path, dll, null);

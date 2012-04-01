@@ -213,7 +213,7 @@ namespace DataDynamics.PageFX.NUnit
 
             _tests = new List<Test>();
 
-            var list = new List<IType>(NUnitHelper.GetTestFixtures(asm));
+            var list = new List<IType>(asm.GetTestFixtures());
             foreach (var tf in list)
                 RegisterFixture(tf);
 
@@ -236,7 +236,7 @@ namespace DataDynamics.PageFX.NUnit
             if (!string.IsNullOrEmpty(Fixture) && type.FullName != Fixture)
                 return;
 
-            var list = new List<IMethod>(NUnitHelper.GetTests(type, false));
+            var list = new List<IMethod>(type.GetUnitTests(false));
             foreach (var test in list)
                 RegisterTest(test);
         }
@@ -245,10 +245,10 @@ namespace DataDynamics.PageFX.NUnit
         #region RegisterTest
         static void RegisterTest(IMethod method)
         {
-            string[] cats = NUnitHelper.GetCategories(method);
+            string[] cats = method.GetCategories();
             if (!CategoryFilter.IsIncluded(cats)) return;
 
-            var nunitOptions = new NUnitHelper.TestRunnerOptions
+            var nunitOptions = new TestRunnerGeneratorOptions
                                    {
                                        Protect = true,
                                        EndMarker = FlashPlayer.MarkerEnd,
@@ -261,11 +261,11 @@ namespace DataDynamics.PageFX.NUnit
             var test = new Test
                            {
                                Name = method.FullName,
-                               Description = NUnitHelper.GetDescription(method),
+                               Description = method.GetTestDescription(),
                                SuiteName = testFixture.FullName,
-                               SuiteDescription = NUnitHelper.GetDescription(testFixture),
+                               SuiteDescription = testFixture.GetTestDescription(),
                                AssemblyPath = _asmpath,
-                               MainCode = NUnitHelper.GenerateRunnerCode(method, nunitOptions)
+                               MainCode = method.GenerateTestRunnerCode(nunitOptions)
                            };
 
             if (cats != null && cats.Length > 0)

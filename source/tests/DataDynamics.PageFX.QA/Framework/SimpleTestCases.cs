@@ -74,7 +74,7 @@ namespace DataDynamics.PageFX
 
             foreach (var type in asm.Types)
             {
-                if (NUnitHelper.IsTestFixture(type))
+                if (type.IsTestFixture())
                     LoadNUnitTests(list, type, path);
             }
         }
@@ -83,18 +83,18 @@ namespace DataDynamics.PageFX
         {
             if (QA.RunSuiteAsOneTest)
             {
-                string main = NUnitHelper.GenerateRunnerCode(testSuite, QA.TestRunnerOptions);
+                string main = testSuite.GenerateTestRunnerCode(QA.TestRunnerOptions);
 
-                string name = NUnitHelper.GetMonoTestSuiteName(testSuite);
+                string name = testSuite.GetMonoTestSuiteName();
 
                 RegisterNUnitTest(list, name, path, main);
             }
             else
             {
-                foreach (var test in NUnitHelper.GetTests(testSuite))
+                foreach (var test in testSuite.GetUnitTests())
                 {
-                    string main = NUnitHelper.GenerateRunnerCode(test, QA.TestRunnerOptions);
-                    string name = NUnitHelper.GetMonoTestCaseName(test);
+                    string main = test.GenerateTestRunnerCode(QA.TestRunnerOptions);
+                    string name = test.GetMonoTestCaseName();
 
                     RegisterNUnitTest(list, name, path, main);
                 }

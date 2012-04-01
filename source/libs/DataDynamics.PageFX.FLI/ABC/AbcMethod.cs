@@ -131,7 +131,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 if (SourceMethod != null)
                 {
-                    return MethodHelper.IsVoid(SourceMethod);
+                    return SourceMethod.ReturnsVoid();
                 }
                 if (_returnType == null) //any
                     return false;

@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX.FLI
                 }
             }
 
-            if (!MethodHelper.IsImplemented(method))
+            if (!method.IsImplemented())
             {
                 throw new InvalidOperationException();
             }

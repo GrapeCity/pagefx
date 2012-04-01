@@ -9,12 +9,12 @@ namespace DataDynamics.PageFX.FLI
     {
         void EnshureDelegateMethods(IType type)
         {
-            var m = MethodHelper.Find(type, Const.Delegate.AddEventListeners, 2);
+            var m = type.FindMethod(Const.Delegate.AddEventListeners, 2);
             if (m == null)
                 throw new InvalidOperationException("Invalid corlib");
             DefineAbcMethod(m);
 
-            m = MethodHelper.Find(type, Const.Delegate.RemoveEventListeners, 2);
+            m = type.FindMethod(Const.Delegate.RemoveEventListeners, 2);
             if (m == null)
                 throw new InvalidOperationException("Invalid corlib");
             DefineAbcMethod(m);

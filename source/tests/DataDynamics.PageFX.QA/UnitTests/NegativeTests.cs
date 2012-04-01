@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.Tests
     {
         private void Compile(string resname)
         {
-            string sourceCode = ResourceHelper.GetText(GetType(), resname);
+            string sourceCode = GetType().GetTextResource(resname);
             string dir = Path.Combine(QA.RootTestCases, "NegativeTests");
             Directory.CreateDirectory(dir);
             string csfile = Path.Combine(dir, "src.cs");

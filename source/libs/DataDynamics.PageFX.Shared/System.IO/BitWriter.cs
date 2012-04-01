@@ -83,7 +83,7 @@ namespace System.IO
         public byte[] ToByteArray()
         {
             Align();
-            return Stream2.ToByteArray(_stream);
+            return _stream.ToByteArray();
         }
 
         /// <summary>

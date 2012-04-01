@@ -176,7 +176,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 if (name != null && name.EndsWith(".properties", StringComparison.InvariantCultureIgnoreCase))
                 {
                     name = Path.GetFileNameWithoutExtension(name);
-                    var rbStream = Stream2.ToMemoryStream(entry.Data);
+                    var rbStream = entry.Data.ToMemoryStream();
                     var lines = RBUtil.GetLines(rbStream);
                     string loc = locale;
                     if (auto)

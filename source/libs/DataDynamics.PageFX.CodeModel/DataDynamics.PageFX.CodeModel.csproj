@@ -130,7 +130,8 @@
     <Compile Include="Implementation\Members\PropertyCollection.cs" />
     <Compile Include="Implementation\Members\PropertyProxy.cs" />
     <Compile Include="Implementation\Members\ReadOnlyEventCollection.cs" />
-    <Compile Include="Implementation\NUnitHelper.cs" />
+    <Compile Include="Implementation\NUnitExtensions.cs" />
+    <Compile Include="Implementation\TestRunnerGenerator.cs" />
     <Compile Include="Implementation\TypeBuilder.cs" />
     <Compile Include="Implementation\OperatorExtensions.cs" />
     <Compile Include="Implementation\Signature.cs" />

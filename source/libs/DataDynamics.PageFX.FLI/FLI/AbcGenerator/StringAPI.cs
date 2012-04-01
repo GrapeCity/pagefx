@@ -98,14 +98,13 @@ namespace DataDynamics.PageFX.FLI
             IMethod convertMethod;
             if (name == "ToType")
             {
-                convertMethod = MethodHelper.Find(convertType, method.Name, 3);
+                convertMethod = convertType.FindMethod(method.Name, 3);
             }
             else
             {
                 convertMethod =
-                    MethodHelper.Find(
-                        convertType, method.Name, paramCount + 1,
-                        args => args[0].Type == SystemTypes.String);
+                    convertType.FindMethod(method.Name, paramCount + 1,
+                                  args => args[0].Type == SystemTypes.String);
             }
 
             if (convertMethod == null)
@@ -148,8 +147,7 @@ namespace DataDynamics.PageFX.FLI
             var m = method.Tag as AbcMethod;
             if (m == null) return;
 
-            var cmp = MethodHelper.Find(
-                SystemTypes.String, "CompareTo", SystemTypes.Object);
+            var cmp = SystemTypes.String.FindMethod("CompareTo", SystemTypes.Object);
 
             if (cmp == null)
                 throw new InvalidOperationException("String has no CompareTo(object) method");

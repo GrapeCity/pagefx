@@ -145,7 +145,7 @@
     <Compile Include="Utils\NameHelper.cs" />
     <Compile Include="Utils\ParseHelper.cs" />
     <Compile Include="Utils\ReflectionExtensions.cs" />
-    <Compile Include="Utils\ResourceHelper.cs" />
+    <Compile Include="Utils\ResourceExtensions.cs" />
     <Compile Include="Utils\StringAttribute.cs" />
     <Compile Include="Utils\TextTemplateEngine.cs" />
     <Compile Include="Utils\xml.cs" />
@@ -157,7 +157,7 @@
     <Compile Include="System.IO\BitWriter.cs" />
     <Compile Include="System.IO\BufferedBinaryReader.cs" />
     <Compile Include="System.IO\PathResolver.cs" />
-    <Compile Include="System.IO\Stream2.cs" />
+    <Compile Include="System.IO\StreamExtensions.cs" />
     <Compile Include="System\Object2.cs" />
     <Compile Include="Utils\str.cs" />
     <Compile Include="System\TextFormatter.cs" />

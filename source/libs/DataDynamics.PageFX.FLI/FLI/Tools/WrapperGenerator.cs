@@ -64,9 +64,9 @@ namespace DataDynamics.PageFX.FLI
         static void CopyResourceFile(string dir, string res, string name)
         {
             Directory.CreateDirectory(dir);
-            var rs = ResourceHelper.GetStream(typeof(WrapperGenerator), res);
+            var rs = typeof(WrapperGenerator).GetResourceStream(res);
             string path = Path.Combine(dir, name);
-            Stream2.SaveStream(rs, path);
+            rs.Save(path);
         }
 
         static void CopyAbcAttributes(string dir)

@@ -219,7 +219,7 @@ namespace DataDynamics.PageFX
             g.FillRectangle(lg, r);
 
             r = new RectangleF(500, 100, 200, 250);
-            var bmp = ResourceHelper.GetImage(typeof(QA), "images.bg5.jpg");
+            var bmp = typeof(QA).GetImageResource("images.bg5.jpg");
             var tb = new TextureBrush(bmp);
             g.FillRectangle(tb, r);
 

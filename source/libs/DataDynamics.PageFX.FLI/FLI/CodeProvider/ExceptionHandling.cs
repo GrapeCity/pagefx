@@ -260,7 +260,7 @@ namespace DataDynamics.PageFX.FLI
             var avmErrors = Corlib.FindType("AvmErrors");
             EnsureType(avmErrors);
 
-            var fromError = MethodHelper.Find(avmErrors, "ExceptionFromError", 1);
+            var fromError = avmErrors.FindMethod("ExceptionFromError", 1);
             var m = DefineAbcMethod(fromError);
 
             code.Getlex(m);

@@ -263,9 +263,9 @@ namespace DataDynamics.PageFX.FLI
         {
             foreach (var type in _assembly.Types)
             {
-                if (NUnitHelper.IsTestFixture(type))
+                if (type.IsTestFixture())
                     _testFixtures.Add(type);
-                if (Attrs.IsExposed(type))
+                if (type.IsExposed())
                     DefineType(type);
             }
         }

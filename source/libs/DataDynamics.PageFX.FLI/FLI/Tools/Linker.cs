@@ -362,7 +362,7 @@ namespace DataDynamics.PageFX.FLI
             var e = method.Association as IEvent;
             if (e == null) return false;
             
-            var attr = Attrs.Find(e, Attrs.Event);
+            var attr = e.FindAttribute(Attrs.Event);
             if (attr == null) return false;
 
             string eventName = attr.Arguments[0].Value as string;
@@ -499,7 +499,7 @@ namespace DataDynamics.PageFX.FLI
                             var abc = GetAbcFileCore(cp);
                             if (abc == null) return null;
 
-                            var scriptAttr = Attrs.Find(cp, Attrs.AbcScript);
+                            var scriptAttr = cp.FindAttribute(Attrs.AbcScript);
                             if (scriptAttr == null) return null;
 
                             int scriptIndex = GetIndex(scriptAttr);
@@ -524,7 +524,7 @@ namespace DataDynamics.PageFX.FLI
             if (_abc != null) return _abc;
             if (_swc == null) return null;
 
-            var attr = Attrs.Find(cp, Attrs.SwcAbcFile);
+            var attr = cp.FindAttribute(Attrs.SwcAbcFile);
             if (attr == null) return null;
 
             int lib = 0;

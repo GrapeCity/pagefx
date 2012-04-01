@@ -545,7 +545,7 @@ namespace DataDynamics.PageFX.FLI
             if (field.IsConstant) return false;
             if (field.HasEmbedAttribute()) return true;
             if (GenericType.HasGenericParams(field.Type)) return false;
-            if (Attrs.IsExposed(field)) return true;
+            if (field.IsExposed()) return true;
             if (Mode == AbcGenMode.Full) return true;
             if (field.IsStatic) return false;
             return true;
@@ -569,7 +569,7 @@ namespace DataDynamics.PageFX.FLI
             {
                 if (method.IsInternalCall) continue;
                 if (GenericType.IsGenericContext(method)) continue;
-                if (Mode == AbcGenMode.Full || Attrs.IsExposed(method))
+                if (Mode == AbcGenMode.Full || method.IsExposed())
                     DefineMethod(method);
             }
         }
@@ -717,7 +717,7 @@ namespace DataDynamics.PageFX.FLI
             var instance = type as IGenericInstance;
             if (instance == null) return false;
 
-            if (!Attrs.Has(instance.Type, Attrs.GenericVector))
+            if (!instance.Type.HasAttribute(Attrs.GenericVector))
                 return false;
 
             DefineTypes(instance.GenericArguments);

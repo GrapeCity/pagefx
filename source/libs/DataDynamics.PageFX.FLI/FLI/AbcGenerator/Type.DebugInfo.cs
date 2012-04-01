@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.FLI
             if (type == SystemTypes.Array) return;
 
             //MSDN: DebuggerDisplay attribute takes precedence over the ToString() override
-            var attr = Attrs.Find(type, Attrs.DebuggerDisplay);
+            var attr = type.FindAttribute(Attrs.DebuggerDisplay);
             if (attr != null)
             {
                 if (DefineDebuggerDisplay(type, instance, attr))
@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX.FLI
             }
 
             //Use ToString
-            var toString = MethodHelper.Find(type, Const.Object.MethodToString, 0);
+            var toString = type.FindMethod(Const.Object.MethodToString, 0);
             if (toString != null)
             {
                 var tostr = DefineAbcMethod(toString);

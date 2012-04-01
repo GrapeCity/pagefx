@@ -27,14 +27,14 @@ namespace DataDynamics.PageFX.FLI
             if (declType == SystemTypes.DateTime)
             {
                 //NOTE: Date property can hide global Date type therefore we must rename it.
-                if (MethodHelper.IsAccessor(method)
+                if (method.IsAccessor()
                     && method.Association.Name == "Date")
                     return "DATE";
             }
             else if (declType == SystemTypes.Type)
             {
                 //NOTE: Namespace property can hide global Namespace type therefore we must rename it.
-                if (MethodHelper.IsAccessor(method)
+                if (method.IsAccessor()
                     && method.Association.Name == "Namespace")
                     return "NAMESPACE";
             }
@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.FLI
 
         AbcMultiname GetMethodName(IMethod method, out bool isOverride)
         {
-            isOverride = MethodHelper.IsOverride(method);
+            isOverride = method.IsOverride();
 
             var bm = method.BaseMethod;
             if (isOverride && bm != null)
@@ -91,12 +91,12 @@ namespace DataDynamics.PageFX.FLI
 
             var trait = AbcTrait.CreateMethod(abcMethod, name);
 
-            if (MethodHelper.IsGetter(method))
+            if (method.IsGetter())
                 trait.Kind = AbcTraitKind.Getter;
-            else if (MethodHelper.IsSetter(method))
+            else if (method.IsSetter())
                 trait.Kind = AbcTraitKind.Setter;
 
-            if (MethodHelper.IsStatic(method))
+            if (method.IsStaticCall())
             {
                 trait.Attributes |= AbcTraitAttributes.Final;
             }
@@ -104,7 +104,7 @@ namespace DataDynamics.PageFX.FLI
             {
                 if (method.DeclaringType == SystemTypes.Exception)
                 {
-                    if (MethodHelper.IsObjectOverrideMethod(method))
+                    if (method.IsObjectOverrideMethod())
                         isOverride = false;
                 }
                 trait.IsOverride = isOverride;
@@ -269,7 +269,7 @@ namespace DataDynamics.PageFX.FLI
             if (!GlobalSettings.ReflectionSupport)
             {
                 if (!isMxAppCtor && instance.Initializer == null
-                    && MethodHelper.IsInstanceInitializer(method))
+                    && method.IsInstanceInitializer())
                 {
                     instance.Initializer = abcMethod;
                     //abcMethod.Name = _abc.DefineString(method.DeclaringType.Name);
@@ -280,7 +280,7 @@ namespace DataDynamics.PageFX.FLI
             if (!abcMethod.IsInitializer)
             {
                 var trait = DefineMethodTrait(abcMethod, method);
-                instance.AddTrait(trait, MethodHelper.IsStatic(method));
+                instance.AddTrait(trait, method.IsStaticCall());
                 abcMethod.ReturnType = DefineReturnType(abcMethod, method);
             }
 
@@ -378,7 +378,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineReturnType
         public AbcMultiname DefineReturnType(AbcMethod abcMethod, IMethod method)
         {
-            if (method.IsConstructor && MethodHelper.AsStaticCall(method))
+            if (method.IsConstructor && method.AsStaticCall())
                 return DefineMemberType(method.DeclaringType);
 
             var bm = GetBaseMethod(abcMethod, method);
@@ -413,7 +413,7 @@ namespace DataDynamics.PageFX.FLI
                     return;
             }
 
-            if (MethodHelper.HasPseudoThis(source))
+            if (source.HasPseudoThis())
             {
                 var typeName = DefineMemberType(source.DeclaringType);
                 target.AddParam(CreateParam(typeName, "this"));
@@ -604,7 +604,7 @@ namespace DataDynamics.PageFX.FLI
             if (implType.IsInterface)
                 return;
 
-            var impl = MethodHelper.FindImplementation(implType, method);
+            var impl = implType.FindImplementation(method);
 
             if (impl == null)
             {
@@ -646,7 +646,7 @@ namespace DataDynamics.PageFX.FLI
                 });
 
             //m.SourceMethod = method;
-            m.Trait.IsOverride = MethodHelper.FindImplementation(method.DeclaringType.BaseType, ifaceMethod, true) != null;
+            m.Trait.IsOverride = method.DeclaringType.BaseType.FindImplementation(ifaceMethod, true) != null;
         }
         #endregion
 

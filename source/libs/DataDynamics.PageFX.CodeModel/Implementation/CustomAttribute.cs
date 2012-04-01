@@ -206,4 +206,22 @@ namespace DataDynamics.PageFX.CodeModel
         }
         private readonly CustomAttributeCollection _attributes = new CustomAttributeCollection();
     }
+
+	public static class CustomAttributeProviderExtensions
+	{
+		public static ICustomAttribute FindAttribute(this ICustomAttributeProvider p, string fullname)
+		{
+			return p.CustomAttributes.FirstOrDefault(attr => attr.TypeName == fullname);
+		}
+
+		public static bool HasAttribute(this ICustomAttributeProvider p, string fullname)
+		{
+			return p.FindAttribute(fullname) != null;
+		}
+
+		public static bool HasAttribute(this ICustomAttributeProvider p, params string[] attrs)
+		{
+			return p.CustomAttributes.Any(attr => attrs.Contains(attr.TypeName));
+		}
+	}
 }

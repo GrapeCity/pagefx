@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.FLI
 
         void RunTestFixture(AbcCode code, IType type)
         {
-            foreach (var test in NUnitHelper.GetTests(type, false))
+            foreach (var test in type.GetUnitTests(false))
                 RunTest(code, test);
         }
 
@@ -63,7 +63,7 @@ namespace DataDynamics.PageFX.FLI
             code.PushString(testFixture.FullName);
             code.SetProperty(testType, "SuiteName");
 
-            string desc = NUnitHelper.GetDescription(test);
+            string desc = test.GetTestDescription();
             if (!string.IsNullOrEmpty(desc))
             {
                 code.GetLocal(varTest);
@@ -71,7 +71,7 @@ namespace DataDynamics.PageFX.FLI
                 code.SetProperty(testType, "Description");
             }
 
-            desc = NUnitHelper.GetDescription(testFixture);
+            desc = testFixture.GetTestDescription();
             if (!string.IsNullOrEmpty(desc))
             {
                 code.GetLocal(varTest);
@@ -96,7 +96,7 @@ namespace DataDynamics.PageFX.FLI
             var testABC = DefineAbcMethod(test);
 
             var instance = testABC.Instance;
-            string name = "run_test_" + NUnitHelper.GetMonoTestCaseName(test);
+            string name = "run_test_" + test.GetMonoTestCaseName();
             name = name.Replace('.', '_');
 
             return instance.DefineStaticMethod(
@@ -109,8 +109,8 @@ namespace DataDynamics.PageFX.FLI
                         
                         //TODO: Redirect Console, Debug output
 
-                        var ee = NUnitHelper.GetExpectedExceptionType(test);
-                        var setup = NUnitHelper.FindSetupMethod(testFixture);
+                        var ee = test.GetExpectedExceptionType();
+                        var setup = testFixture.GetUnitTestSetup();
                         AbcMethod setupAM = null;
                         if (setup != null)
                             setupAM = DefineAbcMethod(setup);

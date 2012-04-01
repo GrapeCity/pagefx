@@ -108,7 +108,7 @@ namespace DataDynamics.PageFX.FLI.IL
         {
             _list = new List<Instruction>();
 
-            var rs = ResourceHelper.GetStream(typeof(Instructions), "opcodes.txt");
+            var rs = typeof(Instructions).GetResourceStream("opcodes.txt");
             using (var reader = new StreamReader(rs))
             {
                 bool deprecated = false;
@@ -137,7 +137,7 @@ namespace DataDynamics.PageFX.FLI.IL
                 }
             }
 
-            rs = ResourceHelper.GetStream(typeof(Instructions), "il.xml");
+            rs = typeof(Instructions).GetResourceStream("il.xml");
             var doc = new XmlDocument();
             doc.Load(rs);
 

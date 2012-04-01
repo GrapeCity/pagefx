@@ -652,7 +652,7 @@ namespace DataDynamics.PageFX.FLI.SWC
             {
                 if (e.Name.EndsWith(".swf", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    Stream stream = Stream2.ToMemoryStream(e.Data);
+                    Stream stream = e.Data.ToMemoryStream();
                 	var swf = new SwfMovie(stream) {Name = e.Name};
                 	list.Add(swf);
                 }
@@ -699,7 +699,7 @@ namespace DataDynamics.PageFX.FLI.SWC
                 string name = e.Name;
                 if (string.Compare(name, path, true) == 0)
                 {
-                    var ms = Stream2.ToMemoryStream(e.Data);
+                    var ms = e.Data.ToMemoryStream();
                     image = Image.FromStream(ms);
                     _imageCache[path] = image;
                     return image;

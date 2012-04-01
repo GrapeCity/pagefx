@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX.Tests
 
         static void AssertData(ZipEntry e, byte[] data)
         {
-            var ms = Stream2.ToMemoryStream(e.Data);
+            var ms = e.Data.ToMemoryStream();
             ms.Close();
             byte[] d = ms.ToArray();
             Assert.AreEqual(data, d);

@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineEmbeddedAsset
         void DefineEmbeddedAsset(IField field, AbcTrait trait)
         {
-            var attr = Attrs.Find(field, Attrs.Embed);
+            var attr = field.FindAttribute(Attrs.Embed);
             if (attr == null) return;
 
             CheckEmbedAsset(field);

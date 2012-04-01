@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.FLI.Tests
 
         private static void TestClone(string resname)
         {
-            var rs = ResourceHelper.GetStream(typeof(SwfIOTest), resname);
+            var rs = typeof(SwfIOTest).GetResourceStream(resname);
             if (rs == null) return;
             var swf = new SwfMovie(rs);
             int n = swf.Tags.Count;
@@ -52,10 +52,10 @@ namespace DataDynamics.PageFX.FLI.Tests
 
         private static void TestReadWriteShapes(string resname)
         {
-            var rs = ResourceHelper.GetStream(typeof(SwfIOTest), resname);
+            var rs = typeof(SwfIOTest).GetResourceStream(resname);
             if (rs == null) return;
 
-            var ms = Stream2.ToMemoryStream(rs);
+            var ms = rs.ToMemoryStream();
 
             var swf1 = new SwfMovie(ms, SwfTagDecodeOptions.DonotDecodeTags);
 

@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FLI
 	{
 		public static bool HasEmbedAttribute(this IField field)
 		{
-			var attr = Attrs.Find(field, Attrs.Embed);
+			var attr = field.FindAttribute(Attrs.Embed);
 			return attr != null;
 		}
 

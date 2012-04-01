@@ -47,9 +47,9 @@ namespace DataDynamics.PageFX.FLI.ABC
             var method = member as IMethod;
             if (method != null)
             {
-                if (MethodHelper.IsGetter(method))
+                if (method.IsGetter())
                     return Find(_getters, member);
-                if (MethodHelper.IsSetter(method))
+                if (method.IsSetter())
                     return Find(_setters, member);
             }
             return Find(_other, member);
@@ -72,7 +72,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         public AbcQName(ITypeMember m)
         {
             var type = m as IType;
-            var attr = Attrs.Find(m, Attrs.QName);
+            var attr = m.FindAttribute(Attrs.QName);
             if (attr == null)
             {
                 if (type != null)
