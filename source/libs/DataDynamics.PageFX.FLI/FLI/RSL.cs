@@ -297,7 +297,7 @@ namespace DataDynamics.PageFX.FLI
 
 			CheckFile(_localPath, "RSL");
 
-			Stream lib = SwcHelper.ExtractLibrary(_localPath);
+			Stream lib = _localPath.ExtractSwfLibrary();
 			if (lib == null)
 			{
 				string reason = string.Format(". Unable to extract library.swf from swc file '{0}'", _localPath);

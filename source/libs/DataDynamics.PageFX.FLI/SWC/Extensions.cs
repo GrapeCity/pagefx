@@ -5,9 +5,9 @@ using DataDynamics.PageFX.FLI.ABC;
 
 namespace DataDynamics.PageFX.FLI.SWC
 {
-    public static class SwcHelper
+    public static class Extensions
     {
-        internal static string ToSwcID(AbcMultiname mn)
+        internal static string ToSwcId(this AbcMultiname mn)
         {
             string ns = mn.NamespaceString;
             string name = mn.NameString;
@@ -15,19 +15,19 @@ namespace DataDynamics.PageFX.FLI.SWC
             return ns + ":" + name;
         }
 
-        public static Stream ExtractLibrary(Stream input)
+        public static Stream ExtractSwfLibrary(this Stream input)
         {
             var zip = new ZipFile(input);
-            return ExtractLibrary(zip);
+            return zip.ExtractSwfLibrary();
         }
 
-        public static Stream ExtractLibrary(string path)
+        public static Stream ExtractSwfLibrary(this string path)
         {
             using (var input = File.OpenRead(path))
-                return ExtractLibrary(input);
+                return input.ExtractSwfLibrary();
         }
 
-        public static Stream ExtractLibrary(ZipFile zip)
+        public static Stream ExtractSwfLibrary(this ZipFile zip)
         {
             return Zip.Extract(zip, e => string.Compare(e.Name, SwcFile.LIBRARY_SWF, StringComparison.CurrentCultureIgnoreCase) == 0);
         }

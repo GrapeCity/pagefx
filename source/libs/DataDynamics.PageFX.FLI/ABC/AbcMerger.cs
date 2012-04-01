@@ -89,7 +89,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public static void MergeSwc(string path, string outpath)
         {
-            var lib = SwcHelper.ExtractLibrary(path);
+            var lib = path.ExtractSwfLibrary();
             var mov = new SwfMovie(lib);
             var list = mov.GetAbcFiles();
             Merge(list, outpath);

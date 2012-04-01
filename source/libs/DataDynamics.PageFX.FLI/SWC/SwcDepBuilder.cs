@@ -127,7 +127,7 @@ namespace DataDynamics.PageFX.FLI.SWC
         void Add(AbcMultiname name, string type)
         {
             if (name == null) return;
-            Add(SwcHelper.ToSwcID(name), type);
+            Add(name.ToSwcId(), type);
         }
 
         void Add(string id, string type)

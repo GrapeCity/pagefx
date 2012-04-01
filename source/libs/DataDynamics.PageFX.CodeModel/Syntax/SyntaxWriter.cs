@@ -1400,7 +1400,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
         void WriteXmlComment(string text, string tag, params string[] attrs)
         {
-            XmlHelper.WriteComments(_writer, text, _tab, tag, attrs);
+            _writer.WriteXmlComments(text, _tab, tag, attrs);
         }
 
         void WriteSummary(string text)

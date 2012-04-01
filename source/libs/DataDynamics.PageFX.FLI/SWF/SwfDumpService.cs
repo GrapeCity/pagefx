@@ -100,7 +100,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public static void DumpSwc(string path)
         {
-            var lib = SwcHelper.ExtractLibrary(path);
+            var lib = path.ExtractSwfLibrary();
             var swf = new SwfMovie(lib);
             swf.LinkAssets();
             DumpSwf(swf, path);

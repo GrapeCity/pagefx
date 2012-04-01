@@ -113,7 +113,7 @@ namespace DataDynamics.PageFX.FLI
                 var script = abc.Scripts[0];
                 instance = script.SingleInstance;
                 if (instance != null)
-                    return SwcHelper.ToSwcID(instance.Name);
+                    return instance.Name.ToSwcId();
             }
             return "";
         }

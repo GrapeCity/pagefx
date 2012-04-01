@@ -219,7 +219,7 @@
     <Compile Include="SWC\SwcDepBuilder.cs" />
     <Compile Include="SWC\SwcDepFile.cs" />
     <Compile Include="SWC\SwcFile.cs" />
-    <Compile Include="SWC\SwcHelper.cs" />
+    <Compile Include="SWC\Extensions.cs" />
     <Compile Include="SWF\Actions\SwfActionGotoFrame.cs" />
     <Compile Include="SWF\Actions\SwfActionGotoLabel.cs" />
     <Compile Include="SWF\Actions\SwfActionIf.cs" />

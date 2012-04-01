@@ -251,7 +251,7 @@ namespace abc
 
         static void DumpMain(AbcFile abc, string path)
         {
-            var xws = XmlHelper.DefaultIndentedSettings;
+            var xws = XmlExtensions.DefaultIndentedSettings;
             using (var writer = XmlWriter.Create(path + ".main.xml", xws))
             {
                 var s = abc.LastScript;

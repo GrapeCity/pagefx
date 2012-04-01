@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX
         public static void WriteTemplate(string path, string template, params string[] vars)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
-            var T = ResourceHelper.GetText(typeof(Program), template);
+            var T = typeof(Program).GetTextResource(template);
             string result = Str.ReplaceVars(T, vars);
             File.WriteAllText(path, result);
         }

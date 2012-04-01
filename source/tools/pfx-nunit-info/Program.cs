@@ -72,7 +72,7 @@ namespace DataDynamics.PageFX.Tools
             writer.WriteStartElement("assembly");
             writer.WriteAttributeString("name", assembly.Name);
             writer.WriteAttributeString("version", assembly.Version.ToString());
-            WriteTestFixtures(writer, NUnitHelper.GetTestFixtures(assembly));
+			WriteTestFixtures(writer, assembly.GetTestFixtures());
             writer.WriteEndElement();
             writer.WriteEndDocument();
         }
@@ -98,7 +98,7 @@ namespace DataDynamics.PageFX.Tools
             writer.WriteStartElement("test-suite");
             writer.WriteAttributeString("name", type.FullName);
 
-            foreach (var method in NUnitHelper.GetTests(type))
+			foreach (var method in type.GetUnitTests())
                 WriteTest(writer, method);
 
             writer.WriteEndElement();

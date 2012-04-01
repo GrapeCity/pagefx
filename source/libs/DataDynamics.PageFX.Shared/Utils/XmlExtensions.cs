@@ -8,37 +8,9 @@ using System.Xml;
 
 namespace DataDynamics
 {
-    public static class XmlHelper
+    public static class XmlExtensions
     {
-        public static string ToCodeString(Stream input)
-        {
-            using (var reader = new StreamReader(input))
-                return ToCodeString(reader);
-        }
-
-        public static string ToCodeString(TextReader reader)
-        {
-            var sb = new StringBuilder();
-            bool plus = false;
-            while (true)
-            {
-                string line = reader.ReadLine();
-                if (line == null) break;
-                if (plus) sb.Append("+ ");
-                line = Escaper.EscapeUnquoted(line, true);
-                sb.AppendLine("\"" + line + "\\n\"");
-                plus = true;
-            }
-            sb.AppendLine(";");
-            return sb.ToString();
-        }
-
-        public static string ToCodeString(string text)
-        {
-            return ToCodeString(new StringReader(text));
-        }
-
-        public static XmlWriterSettings DefaultIndentedSettings
+    	public static XmlWriterSettings DefaultIndentedSettings
         {
             get
             {
@@ -104,7 +76,7 @@ namespace DataDynamics
                     else if (ent == "amp") sb.Append('&');
                     else if (ent.StartsWith("#x"))
                     {
-                        c = (char)int.Parse(ent.Substring(2), NumberStyles.HexNumber);
+                        c = (char)int.Parse(ent.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                         sb.Append(c);
                     }
                     else
@@ -121,7 +93,7 @@ namespace DataDynamics
             return sb.ToString();
         }
 
-        public static void WriteBeginTag(TextWriter writer, string tag, params string[] attrs)
+        private static void WriteBeginTag(this TextWriter writer, string tag, params string[] attrs)
         {
             writer.Write("<{0}", tag);
             if (attrs != null)
@@ -135,12 +107,12 @@ namespace DataDynamics
             writer.Write(">");
         }
 
-        public static void WriteEndTag(TextWriter writer, string tag)
+        private static void WriteEndTag(this TextWriter writer, string tag)
         {
             writer.Write("</{0}>", tag);
         }
 
-        public static void WriteComments(TextWriter writer, string text, string tab, string tag, params string[] attrs)
+        public static void WriteXmlComments(this TextWriter writer, string text, string tab, string tag, params string[] attrs)
         {
             if (string.IsNullOrEmpty(text)) return;
 
@@ -156,7 +128,7 @@ namespace DataDynamics
                 tab = string.Empty;
 
             writer.Write("{0}/// ", tab);
-            WriteBeginTag(writer, tag, attrs);
+            writer.WriteBeginTag(tag, attrs);
             if (n > 1)
             {
                 writer.WriteLine();
@@ -165,29 +137,29 @@ namespace DataDynamics
                     writer.WriteLine("{0}/// {1}", tab, line);
                 }
                 writer.Write("{0}/// ", tab);
-                WriteEndTag(writer, tag);
+                writer.WriteEndTag(tag);
                 writer.WriteLine();
             }
             else
             {
                 writer.Write(lines[0]);
-                WriteEndTag(writer, tag);
+                writer.WriteEndTag(tag);
                 writer.WriteLine();
             }
         }
 
-        public static int GetInt32(XmlElement element, string attr, int defval)
+        public static int GetInt32(this XmlElement element, string attr, int defval)
         {
             string s = element.GetAttribute(attr);
             if (string.IsNullOrEmpty(s))
                 return defval;
             int v;
-            if (int.TryParse(s, out v))
+            if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out v))
                 return v;
             return defval;
         }
 
-        public static double GetDouble(XmlElement element, string attr, int defval)
+        public static double GetDouble(this XmlElement element, string attr, int defval)
         {
             string s = element.GetAttribute(attr);
             if (string.IsNullOrEmpty(s))
@@ -195,7 +167,7 @@ namespace DataDynamics
             return XmlConvert.ToDouble(s);
         }
 
-        public static bool GetBool(XmlElement element, string attr, bool defval)
+        public static bool GetBool(this XmlElement element, string attr, bool defval)
         {
             string s = element.GetAttribute(attr);
             if (string.IsNullOrEmpty(s))
@@ -210,30 +182,30 @@ namespace DataDynamics
             return false;
         }
 
-        private static IEnumerable<XmlNode> GetChildNodes(XmlNode parent)
+        private static IEnumerable<XmlNode> GetChildNodes(this XmlNode parent)
         {
         	return parent.ChildNodes.Cast<XmlNode>();
         }
 
-    	public static IEnumerable<XmlNode> GetDescendantNodes(XmlNode parent)
+    	public static IEnumerable<XmlNode> GetDescendantNodes(this XmlNode parent)
     	{
     		return Algorithms.IterateTreeTopDown(parent, GetChildNodes).Where(node => node != parent);
     	}
 
-    	public static IEnumerable<XmlElement> GetDescendantElements(XmlNode parent)
+    	public static IEnumerable<XmlElement> GetDescendantElements(this XmlNode parent)
     	{
-    		return GetDescendantNodes(parent).OfType<XmlElement>();
+    		return parent.GetDescendantNodes().OfType<XmlElement>();
     	}
 
-    	public static void ProcessNodes(XmlNode parent, Action<XmlNode> action)
+    	public static void ProcessNodes(this XmlNode parent, Action<XmlNode> action)
         {
-            foreach (var node in GetDescendantNodes(parent))
+            foreach (var node in parent.GetDescendantNodes())
                 action(node);
         }
 
-        public static void ProcessElements(XmlNode parent, Action<XmlElement> action)
+        public static void ProcessElements(this XmlNode parent, Action<XmlElement> action)
         {
-            foreach (var e in GetDescendantElements(parent))
+            foreach (var e in parent.GetDescendantElements())
                 action(e);
         }
     }

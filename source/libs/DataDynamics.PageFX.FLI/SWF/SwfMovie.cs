@@ -584,7 +584,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public void Dump(string path)
         {
-            using (var xml = XmlWriter.Create(path, XmlHelper.DefaultIndentedSettings))
+            using (var xml = XmlWriter.Create(path, XmlExtensions.DefaultIndentedSettings))
             {
                 xml.WriteStartDocument();
                 Dump(xml);
@@ -594,7 +594,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public void Dump(TextWriter writer)
         {
-            using (var xml = XmlWriter.Create(writer, XmlHelper.DefaultIndentedSettings))
+            using (var xml = XmlWriter.Create(writer, XmlExtensions.DefaultIndentedSettings))
             {
                 xml.WriteStartDocument();
                 Dump(xml);

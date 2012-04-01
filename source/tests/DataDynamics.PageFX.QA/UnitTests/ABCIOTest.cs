@@ -91,7 +91,7 @@ namespace DataDynamics.PageFX.FLI.Tests
 
         public static string RunSwcTestCase(string name, Stream input)
         {
-            input = SwcHelper.ExtractLibrary(input);
+            input = input.ExtractSwfLibrary();
             return RunSwfTestCase(name, input);
         }
 

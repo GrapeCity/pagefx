@@ -235,13 +235,13 @@ namespace DataDynamics.PageFX
 
         static void LoadTestSuites()
         {
-            foreach (var type in NUnitHelper.GetTestFixtures(Global.NUnitAssembly))
+			foreach (var type in Global.NUnitAssembly.GetTestFixtures())
                 LoadTestSuite(type);
         }
 
         static void LoadTestSuite(IType type)
         {
-            foreach (var test in NUnitHelper.GetTests(type))
+			foreach (var test in type.GetUnitTests())
             {
                 XmlElement[] elems = null;
                 if (Global.NUnitReport != null)
@@ -334,7 +334,7 @@ namespace DataDynamics.PageFX
 
         static string GetTestCaseFullName(IMethod method)
         {
-            return NUnitHelper.GetMonoTestCaseName(method);
+			return method.GetMonoTestCaseName();
         }
 
         static readonly string[] TestFixtures =
@@ -345,7 +345,7 @@ namespace DataDynamics.PageFX
 
         static XmlElement[] FindNUnitElems(IMethod method)
         {
-            string name = NUnitHelper.GetMonoTestCaseName(method);
+			string name = method.GetMonoTestCaseName();
             name = name.Replace('.', '_');
 
             //var declType = method.DeclaringType;

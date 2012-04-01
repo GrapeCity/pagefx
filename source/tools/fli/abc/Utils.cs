@@ -13,7 +13,7 @@ namespace abc
     {
         public static XmlWriter CreateXmlWriter(string path)
         {
-            var xws = XmlHelper.DefaultIndentedSettings;
+            var xws = XmlExtensions.DefaultIndentedSettings;
             return XmlWriter.Create(path, xws);
         }
 

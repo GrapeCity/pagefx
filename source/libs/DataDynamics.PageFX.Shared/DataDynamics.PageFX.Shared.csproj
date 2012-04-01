@@ -148,7 +148,7 @@
     <Compile Include="Utils\ResourceExtensions.cs" />
     <Compile Include="Utils\StringAttribute.cs" />
     <Compile Include="Utils\TextTemplateEngine.cs" />
-    <Compile Include="Utils\xml.cs" />
+    <Compile Include="Utils\XmlExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataStructures\EmptyList.cs" />
     <Compile Include="DataStructures\HashedList.cs" />
