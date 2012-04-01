@@ -580,7 +580,7 @@ namespace DataDynamics
 
         static void WriteLines(TextWriter writer, string s, string tab, int maxWidth)
         {
-            var lines = Str.Break(s, maxWidth - 1);
+            var lines = s.Break(maxWidth - 1);
             int n = lines.Count;
             for (int i = 0; i < n; ++i)
             {
@@ -614,7 +614,7 @@ namespace DataDynamics
                 l = l.PadRight(maxleftLen);
 
                 string r = right[i];
-                var lines = Str.Break(r, maxWidth - maxleftLen - 1);
+                var lines = r.Break(maxWidth - maxleftLen - 1);
 
                 writer.Write(tab);
                 writer.Write(l);

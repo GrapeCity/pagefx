@@ -218,8 +218,8 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (shapeType == SwfTagCode.DefineMorphShape)
             {
                 writer.WriteAttributeString("end-width", _endWidth.ToString());
-                writer.WriteAttributeString("color", SwfHelper.ToHtmlHex(_color));
-                writer.WriteAttributeString("end-color", SwfHelper.ToHtmlHex(_endColor));
+                writer.WriteAttributeString("color", _color.ToHtmlHex());
+                writer.WriteAttributeString("end-color", _endColor.ToHtmlHex());
             }
             else if (shapeType == SwfTagCode.DefineShape4 || shapeType == SwfTagCode.DefineMorphShape2)
             {
@@ -240,14 +240,14 @@ namespace DataDynamics.PageFX.FLI.SWF
                 }
                 else
                 {
-                    writer.WriteAttributeString("color", SwfHelper.ToHtmlHex(_color));
+                    writer.WriteAttributeString("color", _color.ToHtmlHex());
                     if (isMorph)
-                        writer.WriteAttributeString("end-color", SwfHelper.ToHtmlHex(_endColor));
+                        writer.WriteAttributeString("end-color", _endColor.ToHtmlHex());
                 }
             }
             else
             {
-                writer.WriteAttributeString("color", SwfHelper.ToHtmlHex(_color, shapeType == SwfTagCode.DefineShape3));
+                writer.WriteAttributeString("color", _color.ToHtmlHex(shapeType == SwfTagCode.DefineShape3));
             }
             writer.WriteEndElement();
         }

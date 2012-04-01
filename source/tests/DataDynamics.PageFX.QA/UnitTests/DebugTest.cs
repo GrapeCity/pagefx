@@ -32,8 +32,8 @@ namespace DataDynamics.PageFX.FLI.Tests
             if (!Directory.Exists(workdir))
                 throw new DirectoryNotFoundException(workdir);
             string[] a = output1.Split('\n');
-            string output = FdbProcessHost.Run("", Str.GetLines(input1), workdir, out exitCode);
-            string[] b = Str.GetLines(output);
+            string output = FdbProcessHost.Run("", input1.ReadLines(), workdir, out exitCode);
+            string[] b = output.ReadLines();
             
             if (b.Length > 3)
             {
@@ -47,15 +47,15 @@ namespace DataDynamics.PageFX.FLI.Tests
             
             if (exitCode != 0)
                 throw new AssertionException(output);
-            else if (Str.ToString(a, "\n").Equals(Str.ToString(b, "\n")))
+            else if (a.Join("\n").Equals(b.Join("\n")))
             //else if (!output.Equals(output1))
                 throw new AssertionException("input and ouput not equals"
                     +"\n expected: \n"
                     + "------------------------------------------------\n " 
-                    + Str.ToString(a, "\n")
+                    + a.Join("\n")
                     + "\n actually: \n"
                     + "------------------------------------------------\n " 
-                    + Str.ToString(b, "\n")
+                    + b.Join("\n")
                     );
         }
     }

@@ -7,24 +7,23 @@ using System.Linq;
 
 namespace DataDynamics
 {
-    public static class ParseHelper
+    public static class ParseExtensions
     {
-        #region Is
-        public static bool IsHexDigit(int c)
+    	public static bool IsHexDigit(this int c)
         {
             return (c >= '0' && c <= '9')
                    || (c >= 'a' && c <= 'z')
                    || (c >= 'A' && c <= 'Z');
         }
 
-        public static bool IsHexDigit(char c)
+        public static bool IsHexDigit(this char c)
         {
             return (c >= '0' && c <= '9')
                    || (c >= 'a' && c <= 'z')
                    || (c >= 'A' && c <= 'Z');
         }
 
-        public static bool IsHex(string s)
+        public static bool IsHexString(this string s)
         {
         	return s != null && s.All(IsHexDigit);
         }
@@ -34,50 +33,53 @@ namespace DataDynamics
             return int.Parse(s, NumberStyles.HexNumber, null);
         }
 
-        public static bool IsNumberStart(int c)
-        {
-            return c == '-' || c == '+' || char.IsDigit((char)c);
-        }
-
-        public static bool IsStringStart(int c)
+    	public static bool IsQuoteChar(this int c)
         {
             return c == '\"' || c == '\'';
         }
 
-        public static bool IsSimpleIdStart(int c)
+        public static bool IsSimpleIdStartChar(this int c)
         {
             return char.IsLetter((char)c) || c == '_';
         }
 
-        public static bool IsSimpleIdChar(int c)
+		public static bool IsSimpleIdStartChar(this char c)
+		{
+			return char.IsLetter(c) || c == '_';
+		}
+
+        public static bool IsSimpleIdChar(this int c)
         {
-            return IsSimpleIdStart(c) || char.IsDigit((char)c);
+            return c.IsSimpleIdStartChar() || char.IsDigit((char)c);
         }
 
-        public static bool IsSimpleId(string s)
+		public static bool IsSimpleIdChar(this char c)
+		{
+			return c.IsSimpleIdStartChar() || char.IsDigit(c);
+		}
+
+        public static bool IsSimpleId(this string s)
         {
-            if (string.IsNullOrEmpty(s))
+			if (string.IsNullOrEmpty(s))
                 return false;
-            if (!IsSimpleIdStart(s[0]))
+            if (!s[0].IsSimpleIdStartChar())
                 return false;
             int n = s.Length;
             for (int i = 1; i < n; ++i)
             {
-                if (!IsSimpleIdChar(s[i]))
+                if (!s[i].IsSimpleIdChar())
                     return false;
             }
             return true;
         }
-        #endregion
 
-        #region SkipWhiteSpace, Skip
-        public static void SkipWhiteSpace(TextReader reader, ref int c)
+    	public static void SkipWhiteSpace(this TextReader reader, ref int c)
         {
             while (char.IsWhiteSpace((char)c))
                 c = reader.Read();
         }
 
-        public static bool SkipOne(TextReader reader, ref int c, IEnumerable<char> set)
+        public static bool SkipChar(this TextReader reader, ref int c, IEnumerable<char> set)
         {
         	if (set == null) return false;
         	if (set.Contains((char)c))
@@ -88,7 +90,7 @@ namespace DataDynamics
         	return false;
         }
 
-        public static int Skip(string s, int index, Predicate<char> p)
+        public static int SkipChars(this string s, int index, Predicate<char> p)
         {
             if (s == null)
                 throw new ArgumentNullException("index");
@@ -100,17 +102,15 @@ namespace DataDynamics
             }
             return -1; //end of string
         }
-        #endregion
 
-        #region ReadSimpleId
-        public static string ReadSimpleId(TextReader reader, ref int c)
+    	public static string ReadSimpleId(this TextReader reader, ref int c)
         {
-            if (IsSimpleIdStart(c))
+            if (c.IsSimpleIdStartChar())
             {
                 string s = "";
                 s += (char)c;
                 c = reader.Read();
-                while (IsSimpleIdChar(c))
+                while (c.IsSimpleIdChar())
                 {
                     s += (char)c;
                     c = reader.Read();
@@ -119,14 +119,12 @@ namespace DataDynamics
             }
             return null;
         }
-        #endregion
 
-        #region ReadSimpleValue
-        public static string ReadSimpleValue(TextReader reader, ref int c, IEnumerable<char> end)
+    	public static string ReadSimpleValue(this TextReader reader, ref int c, IEnumerable<char> end)
         {
             var value = new StringBuilder();
-            SkipWhiteSpace(reader, ref c);
-            if (c == '\"' || c == '\'')
+            reader.SkipWhiteSpace(ref c);
+            if (c.IsQuoteChar())
             {
                 char q = (char)c;
                 value.Append(q);
@@ -148,7 +146,7 @@ namespace DataDynamics
                     value.Append((char)c);
                     c = reader.Read();
                 }
-                return Str.Unquote(value.ToString());
+                return value.ToString().Unquote();
             }
             while (true)
             {
@@ -160,10 +158,8 @@ namespace DataDynamics
             }
             return value.ToString();
         }
-        #endregion
 
-        #region ParseKeyValuePairs
-        public static Dictionary<string, string> ParseKeyValuePairs(string inputString, IEnumerable<char> valueStart, IEnumerable<char> pairEnd)
+    	public static Dictionary<string, string> ParseKeyValuePairs(this string inputString, IEnumerable<char> valueStart, IEnumerable<char> pairEnd)
         {
             if (valueStart == null)
                 throw new ArgumentNullException();
@@ -174,30 +170,30 @@ namespace DataDynamics
             int c = reader.Read();
             while (c >= 0)
             {
-                SkipWhiteSpace(reader, ref c);
+                reader.SkipWhiteSpace(ref c);
                 if (c < 0) break;
 
-                string name = ReadSimpleId(reader, ref c);
+                string name = reader.ReadSimpleId(ref c);
                 if (string.IsNullOrEmpty(name))
                     throw new FormatException();
 
-                SkipWhiteSpace(reader, ref c);
+                reader.SkipWhiteSpace(ref c);
                 if (c < 0)
                 {
                     dic.Add(name, "");
                     break;
                 }
 
-                if (SkipOne(reader, ref c, valueStart))
+                if (reader.SkipChar(ref c, valueStart))
                 {
-                    SkipWhiteSpace(reader, ref c);
+                    reader.SkipWhiteSpace(ref c);
                     if (c < 0)
                     {
                         dic.Add(name, "");
                         break;
                     }
 
-                    string value = ReadSimpleValue(reader, ref c, pairEnd);
+                    string value = reader.ReadSimpleValue(ref c, pairEnd);
                 	dic.Add(name, string.IsNullOrEmpty(value) ? "" : value);
                 }
                 else //key has no value
@@ -205,21 +201,20 @@ namespace DataDynamics
                     dic.Add(name, "");
                 }
 
-                SkipWhiteSpace(reader, ref c);
+                reader.SkipWhiteSpace(ref c);
                 if (c < 0) break;
 
-                SkipOne(reader, ref c, pairEnd);
+                reader.SkipChar(ref c, pairEnd);
             }
 
             return dic;
         }
-        #endregion
 
-        #region ParseString
-        public static string ParseString(TextReader reader, ref int c)
+    	public static string ParseString(this TextReader reader, ref int c)
         {
-            if (!IsStringStart(c))
+            if (!c.IsQuoteChar())
                 return null;
+
             int q = c;
             var sb = new StringBuilder();
             while (true)
@@ -243,7 +238,7 @@ namespace DataDynamics
                             c = reader.Read();
                             if (c < 0)
                                 throw new FormatException("Unexpected end of stream");
-                            if (!IsHexDigit(c))
+                            if (!c.IsHexDigit())
                                 throw new FormatException(
                                     string.Format("Bad unicode symbol. '{0}' is not hex digit.", (char)c));
                             h += Hex.ToDecimal(c);
@@ -259,7 +254,7 @@ namespace DataDynamics
                             c = reader.Read();
                             if (c < 0)
                                 throw new FormatException("Unexpected end of stream");
-                            if (!IsHexDigit(c))
+                            if (!c.IsHexDigit())
                                 break;
                             ++n;
                             h += Hex.ToDecimal(c);
@@ -291,10 +286,8 @@ namespace DataDynamics
 
             return sb.ToString();
         }
-        #endregion
 
-        #region ReadDigitSequence
-        public static string ReadDigitSequence(TextReader reader, ref int c)
+    	public static string ReadDigits(this TextReader reader, ref int c)
         {
             string s = "";
             while (true)
@@ -305,15 +298,13 @@ namespace DataDynamics
             }
             return s;
         }
-        #endregion
 
-        #region CheckFormatBraceBalance
-        /// <summary>
+    	/// <summary>
         /// Checks balance of braces in format string.
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static bool CheckFormatBraceBalance(string s)
+        public static bool CheckFormatBraceBalance(this string s)
         {
             if (string.IsNullOrEmpty(s)) return true;
             int n = s.Length;
@@ -347,6 +338,5 @@ namespace DataDynamics
             }
             return true;
         }
-        #endregion
     }
 }

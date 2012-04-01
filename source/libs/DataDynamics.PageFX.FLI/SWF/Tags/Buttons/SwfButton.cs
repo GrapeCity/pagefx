@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             writer.WriteStartElement("button");
             writer.WriteAttributeString("id", _charID.ToString());
             writer.WriteAttributeString("depth", _placeDepth.ToString());
-            writer.WriteElementString("matrix", SwfHelper.ToString(_placeMatrix));
+            writer.WriteElementString("matrix", _placeMatrix.GetMatrixString());
             _colorTransform.Dump(writer, HasAlpha(tagCode));
             if (_filters.Count > 0)
                 _filters.Dump(writer);

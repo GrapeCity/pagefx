@@ -207,7 +207,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (SwfDumpService.DumpDisplayListTags)
             {
                 if ((_flags & SwfPlaceFlags.HasMatrix) != 0)
-                    writer.WriteElementString("matrix", SwfHelper.ToString(_matrix));
+                    writer.WriteElementString("matrix", _matrix.GetMatrixString());
                 if ((_flags & SwfPlaceFlags.HasColorTransform) != 0)
                     _colorTransform.Dump(writer, true);
                 if ((_flags & SwfPlaceFlags.HasRatio) != 0)

@@ -143,7 +143,7 @@
     <Compile Include="Utils\Indent.cs" />
     <Compile Include="Utils\ISupportXmlDump.cs" />
     <Compile Include="Utils\NameHelper.cs" />
-    <Compile Include="Utils\ParseHelper.cs" />
+    <Compile Include="Utils\ParseExtensions.cs" />
     <Compile Include="Utils\ReflectionExtensions.cs" />
     <Compile Include="Utils\ResourceExtensions.cs" />
     <Compile Include="Utils\StringAttribute.cs" />
@@ -159,7 +159,7 @@
     <Compile Include="System.IO\PathResolver.cs" />
     <Compile Include="System.IO\StreamExtensions.cs" />
     <Compile Include="System\Object2.cs" />
-    <Compile Include="Utils\str.cs" />
+    <Compile Include="Utils\StringExtensions.cs" />
     <Compile Include="System\TextFormatter.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.FLI.Tests
         [Test]
         public void TestTwipConvertions()
         {
-            Assert.AreEqual(99, SwfHelper.ToTwips(4.95f));
+            Assert.AreEqual(99, 4.95f.ToTwips());
         }
 
         private static void TestTwip(float v, int bits)

@@ -98,7 +98,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             {
                 writer.WriteElementString("cid", _cid.ToString());
                 writer.WriteElementString("depth", _depth.ToString());
-                writer.WriteElementString("matrix", SwfHelper.ToString(_matrix));
+                writer.WriteElementString("matrix", _matrix.GetMatrixString());
                 if (_colorTransform != null)
                     _colorTransform.Dump(writer, false);
             }

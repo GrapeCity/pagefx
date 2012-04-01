@@ -39,7 +39,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("color", SwfHelper.ToHtmlHex(_color));
+            writer.WriteElementString("color", _color.ToHtmlHex());
         }
     }
 }

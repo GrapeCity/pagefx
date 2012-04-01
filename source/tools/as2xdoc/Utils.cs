@@ -46,7 +46,7 @@ namespace DataDynamics.Tools
             if (!string.IsNullOrEmpty(tag))
                 writer.WriteStartElement(tag);
 
-            var lines = Str.GetLines(summary, false, true);
+            var lines = summary.ReadLines(false, true);
             if (lines != null && lines.Length > 0)
             {
                 var s = string.Join(" ", lines);

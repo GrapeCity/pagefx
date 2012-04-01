@@ -19,7 +19,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (_mapver == null)
             {
-                _mapver = SwfHelper.GetEnumAttributeMap<SwfTagCode, int, SwfVersionAttribute>(attr => attr.Version);
+                _mapver = EnumReflector.GetAttributeMap<SwfTagCode, int, SwfVersionAttribute>(attr => attr.Version);
             }
             int result;
         	return _mapver.TryGetValue(code, out result) ? result : -1;
@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (_mapcat == null)
             {
-                _mapcat = SwfHelper.GetEnumAttributeMap<SwfTagCode, SwfTagCategory, SwfTagCategoryAttribute>(attr => attr.Category);
+                _mapcat = EnumReflector.GetAttributeMap<SwfTagCode, SwfTagCategory, SwfTagCategoryAttribute>(attr => attr.Category);
             }
             SwfTagCategory result;
             return _mapcat.TryGetValue(code, out result) ? result : SwfTagCategory.Unknown;

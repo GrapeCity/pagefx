@@ -124,7 +124,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public override string ToString()
         {
-            return Str.ToString(this, "\n");
+            return this.Join("\n");
         }
         #endregion
 

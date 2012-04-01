@@ -89,15 +89,15 @@ namespace DataDynamics.PageFX
         {
             int c = reader.Read();
 
-            ParseHelper.SkipWhiteSpace(reader, ref c);
+            reader.SkipWhiteSpace(ref c);
             if (c < 0) return null; //unexpected eof
 
-            string name = ParseHelper.ReadSimpleId(reader, ref c);
+            string name = reader.ReadSimpleId(ref c);
             if (c < 0) return null; //unexpected eof
             if (string.IsNullOrEmpty(name)) //bad name
                 return null;
 
-            ParseHelper.SkipWhiteSpace(reader, ref c);
+            reader.SkipWhiteSpace(ref c);
             if (c < 0) return null; //unexpected eof
 
             if (c != '(') //no function start
@@ -117,7 +117,7 @@ namespace DataDynamics.PageFX
             bool comma = false;
             while (true)
             {
-                ParseHelper.SkipWhiteSpace(reader, ref c);
+                reader.SkipWhiteSpace(ref c);
                 if (c < 0) return null; //unexpected eof
 
                 if (c == ')')
@@ -131,7 +131,7 @@ namespace DataDynamics.PageFX
                     c = reader.Read();
                     if (c < 0) return null; //unexpected eof
 
-                    ParseHelper.SkipWhiteSpace(reader, ref c);
+                    reader.SkipWhiteSpace(ref c);
                     if (c < 0) return null; //unexpected eof
                 }
 
@@ -140,7 +140,7 @@ namespace DataDynamics.PageFX
 
                 if (id != null)
                 {
-                    ParseHelper.SkipWhiteSpace(reader, ref c);
+                    reader.SkipWhiteSpace(ref c);
                     if (c == '=') //name = value
                     {
                         c = reader.Read();
@@ -180,13 +180,13 @@ namespace DataDynamics.PageFX
         static object ParseValue(TextReader reader, ref int c, out string id)
         {
             id = null;
-            ParseHelper.SkipWhiteSpace(reader, ref c);
+            reader.SkipWhiteSpace(ref c);
 
-            if (ParseHelper.IsSimpleIdStart(c))
+            if (c.IsSimpleIdStartChar())
             {
-                id = ParseHelper.ReadSimpleId(reader, ref c);
+                id = reader.ReadSimpleId(ref c);
 
-                ParseHelper.SkipWhiteSpace(reader, ref c);
+                reader.SkipWhiteSpace(ref c);
                 if (c == '(')
                 {
                     string name = id;
@@ -197,15 +197,15 @@ namespace DataDynamics.PageFX
                 return null;
             }
 
-            if (ParseHelper.IsStringStart(c))
-                return ParseHelper.ParseString(reader, ref c);
+            if (c.IsQuoteChar())
+                return reader.ParseString(ref c);
 
             double num;
             if (ParseNumberOrID(reader, ref c, out num, out id))
             {
                 if (id != null)
                 {
-                    ParseHelper.SkipWhiteSpace(reader, ref c);
+                    reader.SkipWhiteSpace(ref c);
                     if (c == '(')
                     {
                         string name = id;
@@ -233,7 +233,7 @@ namespace DataDynamics.PageFX
             if (c == '-')
             {
                 c = reader.Read();
-                id = ParseHelper.ReadSimpleId(reader, ref c);
+                id = reader.ReadSimpleId(ref c);
                 if (id != null)
                 {
                     id = "-" + id;
@@ -269,12 +269,12 @@ namespace DataDynamics.PageFX
 
         static void FinishNumberString(TextReader reader, ref int c, ref string s)
         {
-            s += ParseHelper.ReadDigitSequence(reader, ref c);
+            s += reader.ReadDigits(ref c);
             if (c == '.')
             {
                 c = reader.Read();
                 s += '.';
-                s += ParseHelper.ReadDigitSequence(reader, ref c);
+                s += reader.ReadDigits(ref c);
             }
             if (c == 'e' || c == 'E')
             {
@@ -284,7 +284,7 @@ namespace DataDynamics.PageFX
                 {
                     s += (char)c;
                     c = reader.Read();
-                    s += ParseHelper.ReadDigitSequence(reader, ref c);
+                    s += reader.ReadDigits(ref c);
                 }
                 else
                 {

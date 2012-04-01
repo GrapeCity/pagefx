@@ -232,7 +232,7 @@ namespace DataDynamics.PageFX.PDB
                 char c = name[i];
                 if (i == 0)
                 {
-                    if (ParseHelper.IsSimpleIdStart(c))
+                    if (c.IsSimpleIdStartChar())
                     {
                         sb.Append(c);
                         continue;
@@ -240,7 +240,7 @@ namespace DataDynamics.PageFX.PDB
                 }
                 else
                 {
-                    if (ParseHelper.IsSimpleIdChar(c))
+                    if (c.IsSimpleIdChar())
                     {
                         sb.Append(c);
                         continue;

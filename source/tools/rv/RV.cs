@@ -81,7 +81,7 @@ namespace DataDynamics.Tools
 
                 string template = File.ReadAllText(input);
 
-                string src = Str.ReplaceVars(template, scheme, vars.ToArray());
+                string src = template.ReplaceVars(scheme, vars.ToArray());
                 Directory.CreateDirectory(Path.GetDirectoryName(output));
                 File.WriteAllText(output, src);
             }

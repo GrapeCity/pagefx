@@ -56,7 +56,7 @@ namespace DataDynamics.PageFX
             string dir = GetVar(var);
             if (!string.IsNullOrEmpty(dir))
             {
-                dir = Str.Unquote(dir);
+                dir = dir.Unquote();
                 if (Directory.Exists(dir))
                     return dir;
             }

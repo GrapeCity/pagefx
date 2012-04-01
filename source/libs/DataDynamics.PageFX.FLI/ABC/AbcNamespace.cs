@@ -324,7 +324,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Object Override Methods
         public override string ToString()
         {
-            return Str.ToString<AbcNamespace>(this, "\n");
+            return this.Join<AbcNamespace>("\n");
         }
         #endregion
 

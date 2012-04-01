@@ -70,19 +70,18 @@ namespace DataDynamics.PageFX.FLI
 
         static string ReplaceVars(string template, SwfCompiler sfc, bool hasInstallator)
         {
-            return Str.ReplaceVars(
-                template, RVScheme.Ant,
-                "title", sfc.Title,
-                "application", sfc.Application,
-                "version_major", sfc.PlayerVersion.ToString(),
-                "version_minor", "0",
-                "version_revision", "0",
-                //"expressInstallSwf", (hasInstallator ? PlayerProductInstallSwf : ""),
-                "expressInstallSwf", "",
-                "swf", Path.GetFileNameWithoutExtension(sfc.OutputPath),
-                "width", sfc.Width.ToString(CultureInfo.InvariantCulture),
-                "height", sfc.Height.ToString(CultureInfo.InvariantCulture),
-                "bgcolor", sfc.HexBgColor);
+            return template.ReplaceVars(RVScheme.Ant,
+                              "title", sfc.Title,
+                              "application", sfc.Application,
+                              "version_major", sfc.PlayerVersion.ToString(),
+                              "version_minor", "0",
+                              "version_revision", "0",
+                              //"expressInstallSwf", (hasInstallator ? PlayerProductInstallSwf : ""),
+                              "expressInstallSwf", "",
+                              "swf", Path.GetFileNameWithoutExtension(sfc.OutputPath),
+                              "width", sfc.Width.ToString(CultureInfo.InvariantCulture),
+                              "height", sfc.Height.ToString(CultureInfo.InvariantCulture),
+                              "bgcolor", sfc.HexBgColor);
         }
 
         static void CopyTo(string srcDir, string destDir)

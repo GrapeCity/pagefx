@@ -13,7 +13,7 @@ namespace DataDynamics.Tests
             {
                 string v = values[i];
                 var cl = CommandLine.Parse(string.Format("/o:{0}", v));
-                Assert.AreEqual(Str.Unquote(v), cl.GetOption(null, "o"), "#" + i);
+                Assert.AreEqual(v.Unquote(), cl.GetOption(null, "o"), "#" + i);
             }
         }
 

@@ -205,13 +205,13 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (SwfShape.IsMorph(shapeType))
             {
-                writer.WriteAttributeString("begin-color", SwfHelper.ToHtmlHex(_color));
-                writer.WriteAttributeString("end-color", SwfHelper.ToHtmlHex(_endColor));
+                writer.WriteAttributeString("begin-color", _color.ToHtmlHex());
+                writer.WriteAttributeString("end-color", _endColor.ToHtmlHex());
             }
             else
             {
                 bool hasAlpha = SwfShape.HasAlpha(shapeType);
-                writer.WriteAttributeString("color", SwfHelper.ToHtmlHex(_color, hasAlpha));
+                writer.WriteAttributeString("color", _color.ToHtmlHex(hasAlpha));
             }
         }
     }
@@ -255,7 +255,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
             //All gradients are defined in a standard space called the gradient square.
             //The gradient square is centered at (0,0), and extends from (-16384,-16384) to (16384,16384).
-            float m = SwfHelper.FromTwips(16384);
+            float m = 16384.FromTwips();
             var r = brush.Rectangle;
             var gs = RectangleF.FromLTRB(-m, -m, 2 * m, 2 * m);
 
@@ -327,9 +327,9 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         protected override void DumpBody(XmlWriter writer, SwfTagCode shapeType)
         {
-            writer.WriteElementString("matrix", SwfHelper.ToString(_matrix));
+            writer.WriteElementString("matrix", _matrix.GetMatrixString());
             if (SwfShape.IsMorph(shapeType))
-                writer.WriteElementString("end-matrix", SwfHelper.ToString(_endMatrix));
+                writer.WriteElementString("end-matrix", _endMatrix.GetMatrixString());
             _gradient.Dump(writer, shapeType);
         }
     }
@@ -395,9 +395,9 @@ namespace DataDynamics.PageFX.FLI.SWF
         protected override void DumpBody(XmlWriter writer, SwfTagCode shapeType)
         {
             writer.WriteElementString("bmp-id", _bmpid.ToString());
-            writer.WriteElementString("matrix", SwfHelper.ToString(_matrix));
+            writer.WriteElementString("matrix", _matrix.GetMatrixString());
             if (SwfShape.IsMorph(shapeType))
-                writer.WriteElementString("end-matrix", SwfHelper.ToString(_endMatrix));
+                writer.WriteElementString("end-matrix", _endMatrix.GetMatrixString());
         }
 
         public override void ImportDependencies(SwfMovie from, SwfMovie to)

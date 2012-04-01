@@ -230,6 +230,7 @@
     <Compile Include="SWF\Actions\SwfAction.cs" />
     <Compile Include="SWF\Actions\SwfActionCode.cs" />
     <Compile Include="SWF\Actions\SwfActionFactory.cs" />
+    <Compile Include="SWF\EnumReflector.cs" />
     <Compile Include="SWF\Enums.cs" />
     <Compile Include="SWF\Filters\SwfBevelFilter.cs" />
     <Compile Include="SWF\Filters\SwfBlurFilter.cs" />
@@ -306,7 +307,7 @@
     <Compile Include="SWF\SwfReader.cs" />
     <Compile Include="SWF\Tags\SwfTag.cs" />
     <Compile Include="SWF\Tags\SwfTagCode.cs" />
-    <Compile Include="SWF\SwfHelper.cs" />
+    <Compile Include="SWF\Extensions.cs" />
     <Compile Include="SWF\SwfWriter.cs" />
     <Compile Include="SWF\Tags\Control\SwfTagSetTabIndex.cs" />
     <Compile Include="SWF\Tags\Control\SwfTagSymbolClass.cs" />

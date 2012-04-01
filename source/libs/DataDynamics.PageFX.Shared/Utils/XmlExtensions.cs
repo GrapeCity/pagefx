@@ -116,7 +116,7 @@ namespace DataDynamics
         {
             if (string.IsNullOrEmpty(text)) return;
 
-            var lines = Str.GetLines(text, false, true);
+            var lines = text.ReadLines(false, true);
             if (lines == null) return;
             int n = lines.Length;
             if (n == 0) return;

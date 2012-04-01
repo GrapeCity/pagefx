@@ -366,7 +366,7 @@ namespace abc
                 char c = path[i];
                 if (c == '`')
                 {
-                    i = ParseHelper.Skip(path, i + 1, char.IsDigit);
+                    i = path.SkipChars(i + 1, char.IsDigit);
                     if (i < 0) break;
                     c = path[i];
                 }

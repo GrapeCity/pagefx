@@ -459,8 +459,8 @@ namespace DataDynamics.PageFX.FLI.SWF
 
             //Movie Header
             var frameSize = reader.ReadRect();
-            _frameSize.Width = SwfHelper.FromTwips(frameSize.Width);
-            _frameSize.Height = SwfHelper.FromTwips(frameSize.Height);
+            _frameSize.Width = frameSize.Width.FromTwips();
+            _frameSize.Height = frameSize.Height.FromTwips();
             _frameRate = reader.ReadFixed16();
             _frameCount = reader.ReadUInt16();
 
@@ -479,8 +479,8 @@ namespace DataDynamics.PageFX.FLI.SWF
 
             var writer = new SwfWriter();
 
-            int w = SwfHelper.ToTwips(_frameSize.Width);
-            int h = SwfHelper.ToTwips(_frameSize.Height);
+            int w = _frameSize.Width.ToTwips();
+            int h = _frameSize.Height.ToTwips();
             writer.WriteRect(0, 0, w, h); //frame size
             writer.WriteUFloat16(_frameRate); //frame rate
             writer.WriteUInt16(_frameCount); //frame count

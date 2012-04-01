@@ -14,7 +14,7 @@ namespace DataDynamics
             {
                 s = s.Substring(1);
                 if (string.IsNullOrEmpty(s)) return false;
-                if (!ParseHelper.IsHex(s)) return false;
+                if (!s.IsHexString()) return false;
                 int n = s.Length;
                 switch (n)
                 {

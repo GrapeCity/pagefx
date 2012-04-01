@@ -359,7 +359,7 @@ namespace DataDynamics.PageFX.NUnit
         static string TrimOutput(string s)
         {
             if (string.IsNullOrEmpty(s)) return s;
-            var lines = Str.GetLines(s);
+            var lines = s.ReadLines();
             var list = new List<string>(lines.Where(l => !Markers.Contains(l)));
             return string.Join("\n", list.ToArray());
         }

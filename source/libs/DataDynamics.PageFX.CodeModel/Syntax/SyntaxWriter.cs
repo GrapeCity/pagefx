@@ -372,7 +372,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (format == null)
                 format = "lang = c#";
 
-            var dic = ParseHelper.ParseKeyValuePairs(format, "=", ",;");
+            var dic = format.ParseKeyValuePairs("=", ",;");
 
             string value;
             if (dic.TryGetValue("lang", out value)
@@ -757,7 +757,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (string.IsNullOrEmpty(code)) return;
             WriteLine();
             WriteLine();
-            code = Str.Tabulate(code, _tab);
+            code = code.IndentLines(_tab);
             Write(code);
             WriteLine();
             WriteLine();

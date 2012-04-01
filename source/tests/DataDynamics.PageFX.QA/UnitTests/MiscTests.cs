@@ -69,20 +69,20 @@ namespace DataDynamics.Tests
         [Test]
         public void CheckBraceBalanceInFormatStrings()
         {
-            Assert.IsTrue(ParseHelper.CheckFormatBraceBalance(null));
-            Assert.IsTrue(ParseHelper.CheckFormatBraceBalance(""));
-            Assert.IsTrue(ParseHelper.CheckFormatBraceBalance("{}"));
-            Assert.IsTrue(ParseHelper.CheckFormatBraceBalance("aaa { bbb } ccc"));
-            Assert.IsTrue(ParseHelper.CheckFormatBraceBalance("{{"));
-            Assert.IsTrue(ParseHelper.CheckFormatBraceBalance("}}"));
-            Assert.IsTrue(ParseHelper.CheckFormatBraceBalance("{{{}}}"));
+            Assert.IsTrue(ParseExtensions.CheckFormatBraceBalance(null));
+            Assert.IsTrue("".CheckFormatBraceBalance());
+            Assert.IsTrue("{}".CheckFormatBraceBalance());
+            Assert.IsTrue("aaa { bbb } ccc".CheckFormatBraceBalance());
+            Assert.IsTrue("{{".CheckFormatBraceBalance());
+            Assert.IsTrue("}}".CheckFormatBraceBalance());
+            Assert.IsTrue("{{{}}}".CheckFormatBraceBalance());
 
-            Assert.IsFalse(ParseHelper.CheckFormatBraceBalance("{"));
-            Assert.IsFalse(ParseHelper.CheckFormatBraceBalance("}"));
-            Assert.IsFalse(ParseHelper.CheckFormatBraceBalance("aaa {"));
-            Assert.IsFalse(ParseHelper.CheckFormatBraceBalance("aaa }"));
-            Assert.IsFalse(ParseHelper.CheckFormatBraceBalance("aaa { {{bbb } ccc"));
-            Assert.IsFalse(ParseHelper.CheckFormatBraceBalance("aaa { }}bbb } ccc"));
+            Assert.IsFalse("{".CheckFormatBraceBalance());
+            Assert.IsFalse("}".CheckFormatBraceBalance());
+            Assert.IsFalse("aaa {".CheckFormatBraceBalance());
+            Assert.IsFalse("aaa }".CheckFormatBraceBalance());
+            Assert.IsFalse("aaa { {{bbb } ccc".CheckFormatBraceBalance());
+            Assert.IsFalse("aaa { }}bbb } ccc".CheckFormatBraceBalance());
         }
     }
 }

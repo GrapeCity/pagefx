@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             if (_mapver == null)
             {
-                _mapver = SwfHelper.GetEnumAttributeMap<SwfActionCode, int, SwfVersionAttribute>(attr => attr.Version);
+                _mapver = EnumReflector.GetAttributeMap<SwfActionCode, int, SwfVersionAttribute>(attr => attr.Version);
             }
             int result;
             if (_mapver.TryGetValue(code, out result))

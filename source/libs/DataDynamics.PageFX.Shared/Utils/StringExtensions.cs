@@ -7,21 +7,14 @@ using System.Text.RegularExpressions;
 
 namespace DataDynamics
 {
-    public static class Str
+    public static class StringExtensions
     {
-        public static string ReverseString(string s)
+    	public static string Unquote(this string s)
         {
-            var c = s.ToCharArray();
-            Array.Reverse(c);
-            return new string(c);
+            return s.Unquote(true);
         }
 
-        public static string Unquote(string s)
-        {
-            return Unquote(s, true);
-        }
-
-        public static string Unquote(string s, bool apos)
+        public static string Unquote(this string s, bool apos)
         {
             if (s == null) return null;
             int l = s.Length;
@@ -33,7 +26,7 @@ namespace DataDynamics
             return s;
         }
 
-        public static string[] GetLines(TextReader reader, bool allowEmptyLines, bool trim)
+        public static string[] ReadLines(this TextReader reader, bool allowEmptyLines, bool trim)
         {
             var list = new List<string>();
             string line;
@@ -46,132 +39,76 @@ namespace DataDynamics
             return list.ToArray();
         }
 
-        public static string[] GetLines(TextReader reader)
+        public static string[] ReadLines(this TextReader reader)
         {
-            return GetLines(reader, true, false);
+            return reader.ReadLines(true, false);
         }
 
-        public static string[] GetLines(string text, bool allowEmptyLines, bool trim)
+        public static string[] ReadLines(this string text, bool allowEmptyLines, bool trim)
         {
             if (string.IsNullOrEmpty(text))
                 return new string[0];
             using (var reader = new StringReader(text))
             {
-                return GetLines(reader, allowEmptyLines, trim);
+                return reader.ReadLines(allowEmptyLines, trim);
             }
         }
 
-        public static string[] GetLines(string text)
+        public static string[] ReadLines(this string text)
         {
-            return GetLines(text, true, false);
+            return text.ReadLines(true, false);
         }
 
-        public static string Multiply(string s, int n)
-        {
-            var sb = new StringBuilder();
-            for (int i = 0; i < n; ++i)
-                sb.Append(s);
-            return sb.ToString();
-        }
-
-        public static string Tabulate(string text, string tab)
+    	public static string IndentLines(this string text, string tab)
         {
             if (string.IsNullOrEmpty(tab))
                 return text;
             var sb = new StringBuilder();
-            foreach (var line in GetLines(text))
+            foreach (var line in text.ReadLines())
             {
                 sb.AppendLine(tab + line);
             }
             return sb.ToString();
         }
 
-        public static string[] GetSentences(string s)
+    	public static string Join<T>(this IEnumerable<T> set, string prefix, string suffix, string separator, Converter<T, string> tostr)
         {
-            //usually sentence ends with . and space.
-            var list = new List<string>();
-            if (string.IsNullOrEmpty(s))
-                return list.ToArray();
-            string line = "";
-            int n = s.Length;
-            for (int i = 0; i < n; ++i)
-            {
-                if (s[i] == '.' && i + 1 < n && char.IsWhiteSpace(s[i + 1]))
-                {
-                    ++i;
-                    line = Normalize(line);
-                    if (line.Length > 0)
-                    {
-                        line += ".";
-                        list.Add(line);
-                    }
-                    line = "";
-                }
-                else
-                {
-                    line += s[i];
-                }
-            }
-            line = Normalize(line);
-            if (line.Length > 0)
-            {
-                line += ".";
-                list.Add(line);
-            }
-            return list.ToArray();
-        }
-
-        public static string Normalize(string s)
-        {
-            var lines = GetLines(s, false, false);
-            var res = new StringBuilder();
-            foreach (var line in lines)
-            {
-                string t = line.Trim();
-                if (res.Length > 0)
-                    res.Append(" ");
-                res.Append(t);
-            }
-            return res.ToString().Trim();
-        }
-
-        public static string ToString<T>(IEnumerable<T> set,
-            string prefix, string suffix, string sep,
-            Converter<T, string> tostr)
-        {
+			if (set == null) return "";
             var sb = new StringBuilder();
             bool f = false;
-            if (prefix != null)
-                sb.Append(prefix);
-            foreach (var item in set)
+			if (!string.IsNullOrEmpty(prefix))
+			{
+				sb.Append(prefix);
+			}
+    		foreach (var item in set)
             {
-                if (f) sb.Append(sep);
+                if (f) sb.Append(separator);
                 sb.Append(tostr(item));
                 f = true;
             }
-            if (suffix != null)
-                sb.Append(suffix);
-            return sb.ToString();
+			if (!string.IsNullOrEmpty(suffix))
+			{
+				sb.Append(suffix);
+			}
+    		return sb.ToString();
         }
 
-        public static string ToString<T>(IEnumerable<T> set,
-            string prefix, string suffix, string sep)
+        public static string Join<T>(this IEnumerable<T> set, string prefix, string suffix, string separator)
         {
-            return ToString(set, prefix, suffix, sep, x => x.ToString());
+            return set.Join(prefix, suffix, separator, x => x.ToString());
         }
 
-        public static string ToString<T>(IEnumerable<T> set, string sep)
+        public static string Join<T>(this IEnumerable<T> set, string separator)
         {
-            return ToString(set, "", "", sep);
+            return set.Join("", "", separator);
         }
 
-        public static string ToString<T>(IEnumerable<T> set)
+        public static string Join<T>(this IEnumerable<T> set)
         {
-            return ToString(set, ",");
+            return set.Join(",");
         }
 
-        #region Break
-        public static List<string> Break(string line, int maxWidth)
+    	public static List<string> Break(this string line, int maxWidth)
         {
             var lines = new List<string>();
             if (line == null)
@@ -200,7 +137,7 @@ namespace DataDynamics
             return lines;
         }
 
-        static int LeftWhiteSpace(string s, int i)
+        private static int LeftWhiteSpace(string s, int i)
         {
             while (i >= 0)
             {
@@ -212,12 +149,11 @@ namespace DataDynamics
                 return 0;
             return i;
         }
-        #endregion
 
-        #region ReplaceVars
+    	#region ReplaceVars
         private static readonly Regex[] Schemes = new Regex[3];
         
-        public static string ReplaceVars(string template, RVScheme scheme, params string[] vars)
+        public static string ReplaceVars(this string template, RVScheme scheme, params string[] vars)
         {
             if (string.IsNullOrEmpty(template))
                 throw new ArgumentException("template");
@@ -276,9 +212,9 @@ namespace DataDynamics
                     });
         }
 
-        public static string ReplaceVars(string template, params string[] vars)
+        public static string ReplaceVars(this string template, params string[] vars)
         {
-            return ReplaceVars(template, RVScheme.DollarID, vars);
+            return template.ReplaceVars(RVScheme.DollarID, vars);
         }
         #endregion
     }

@@ -63,7 +63,7 @@ namespace DataDynamics.PageFX.FLI
             if (attr.Arguments.Count != 1) return false;
             var display = attr.Arguments[0].Value as string;
             if (string.IsNullOrEmpty(display)) return false;
-            if (!ParseHelper.CheckFormatBraceBalance(display))
+            if (!display.CheckFormatBraceBalance())
             {
                 CompilerReport.Add(Warnings.InvalidDebuggerDisplayString, display);
                 return false;

@@ -598,10 +598,10 @@ namespace DataDynamics.PageFX.FLI.SWF
         /// <param name="y2">The bottom coordinate of rectangle in app units.</param>
         public void WriteRectTwip(float x1, float y1, float x2, float y2)
         {
-            WriteRect(SwfHelper.ToTwips(x1),
-                      SwfHelper.ToTwips(y1),
-                      SwfHelper.ToTwips(x2),
-                      SwfHelper.ToTwips(y2));
+            WriteRect(x1.ToTwips(),
+                      y1.ToTwips(),
+                      x2.ToTwips(),
+                      y2.ToTwips());
         }
 
         /// <summary>
@@ -664,26 +664,26 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public void WriteTwipU16(float value)
         {
-            ushort v = (ushort)SwfHelper.ToTwips(value);
+            ushort v = (ushort)value.ToTwips();
             WriteUInt16(v);
         }
 
         public void WriteTwipS16(float value)
         {
-            short v = (short)SwfHelper.ToTwips(value);
+            short v = (short)value.ToTwips();
             WriteInt16(v);
         }
 
         public void WriteTwip(float value, int bits)
         {
-            int t = SwfHelper.ToTwips(value);
+            int t = value.ToTwips();
             WriteSB(t, bits);
         }
 
         public void WriteBitwiseTwipPoint(float x, float y, bool checkZero)
         {
-            int tx = SwfHelper.ToTwips(x);
-            int ty = SwfHelper.ToTwips(y);
+            int tx = x.ToTwips();
+            int ty = y.ToTwips();
             if (checkZero && tx == 0 && ty == 0)
             {
                 WriteUB(0, 5);

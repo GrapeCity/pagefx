@@ -441,8 +441,8 @@ namespace DataDynamics.PageFX.FLI.SWF
             writer.WriteBit(false); //StateFillStyle1
             writer.WriteBit(false); //StateFillStyle0
             writer.WriteBit(true); //StateMoveTo
-            int dx = SwfHelper.ToTwips(_dx);
-            int dy = SwfHelper.ToTwips(_dy);
+            int dx = _dx.ToTwips();
+            int dy = _dy.ToTwips();
             int bits = dx.GetMinBits(dy);
             writer.WriteUB((uint)bits, 5);
             writer.WriteSB(dx, bits);
@@ -522,8 +522,8 @@ namespace DataDynamics.PageFX.FLI.SWF
             }
             else
             {
-                int x = SwfHelper.ToTwips(_dx);
-                int y = SwfHelper.ToTwips(_dy);
+                int x = _dx.ToTwips();
+                int y = _dy.ToTwips();
                 int bits = _bits;
                 if (!_read)
                     bits = Math.Max(x.GetMinBits(y), 2);
@@ -536,7 +536,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         private void WriteCoord(SwfWriter writer, float value, bool vl)
         {
-            int v = SwfHelper.ToTwips(value);
+            int v = value.ToTwips();
             int bits = _bits;
             if (!_read)
                 bits = Math.Max(v.GetMinBits(), 2);
@@ -630,10 +630,10 @@ namespace DataDynamics.PageFX.FLI.SWF
             writer.WriteBit(true); //edge flag
             writer.WriteBit(false); //strait flag
 
-            int cx = SwfHelper.ToTwips(_cdx);
-            int cy = SwfHelper.ToTwips(_cdy);
-            int ax = SwfHelper.ToTwips(_adx);
-            int ay = SwfHelper.ToTwips(_ady);
+            int cx = _cdx.ToTwips();
+            int cy = _cdy.ToTwips();
+            int ax = _adx.ToTwips();
+            int ay = _ady.ToTwips();
 
             int bits = _bits;
             if (!_read)

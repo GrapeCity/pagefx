@@ -508,19 +508,19 @@ namespace DataDynamics.PageFX.FLI.SWF
         public float ReadTwip(int bits)
         {
             int v = ReadSB(bits);
-            return SwfHelper.FromTwips(v);
+            return v.FromTwips();
         }
 
         public float ReadTwipS16()
         {
             int v = ReadInt16();
-            return SwfHelper.FromTwips(v);
+            return v.FromTwips();
         }
 
         public float ReadTwipU16()
         {
             int v = ReadUInt16();
-            return SwfHelper.FromTwips(v);
+            return v.FromTwips();
         }
         
         public void Align()

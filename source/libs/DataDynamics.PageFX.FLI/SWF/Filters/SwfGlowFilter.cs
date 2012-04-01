@@ -92,7 +92,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("color", SwfHelper.ToHtmlHex(_color));
+            writer.WriteElementString("color", _color.ToHtmlHex());
             writer.WriteElementString("blur-x", _blurX.ToString());
             writer.WriteElementString("blur-y", _blurY.ToString());
             writer.WriteElementString("strength", _strength.ToString());
