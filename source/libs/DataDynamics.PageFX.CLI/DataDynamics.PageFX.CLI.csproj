@@ -48,7 +48,7 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CLI\IOUtils.cs" />
+    <Compile Include="CLI\Extensions.cs" />
     <Compile Include="GAC\AssemblyCache.cs" />
     <Compile Include="GAC\Structs.cs" />
     <Compile Include="GAC\Enums.cs" />
@@ -135,7 +135,6 @@
     </Compile>
     <Compile Include="CLI\Infrastructure.cs" />
     <Compile Include="CLI\AssemblyResolver.cs" />
-    <Compile Include="CLI\NameUtils.cs" />
     <Compile Include="PDB\Interop\IMetaDataDispenserEx.cs" />
     <Compile Include="PDB\Interop\Guids.cs" />
     <Compile Include="PDB\PdbReader.cs" />

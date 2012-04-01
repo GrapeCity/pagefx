@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.FLI
 
         string GetMethodSuffix(IType type)
         {
-            var suffix = NameUtil.GetSigName(type);
+            var suffix = type.GetSigName();
             if (suffix == null)
             {
                 suffix = NameDummyCounter.ToString();
@@ -163,7 +163,7 @@ namespace DataDynamics.PageFX.FLI
         {
             instance = FixInstance(instance);
 
-            var provname = NameUtil.GetQName(provider);
+            var provname = provider.GetQName();
             if (provname == null)
             {
                 provname = NameDummyCounter.ToString();
@@ -469,7 +469,7 @@ namespace DataDynamics.PageFX.FLI
 
         AbcMethod DefineMethodsInitializer(AbcInstance instance, IType type, bool ctor)
         {
-            var provname = NameUtil.GetSigName(type);
+            var provname = type.GetSigName();
             string prefix = "init_methods_";
             if (ctor)
                 prefix = "init_ctors_";
@@ -567,7 +567,7 @@ namespace DataDynamics.PageFX.FLI
         /// <returns></returns>
         AbcMethod DefinePropertiesInitializer(AbcInstance instance, IType type)
         {
-            var provname = NameUtil.GetSigName(type);
+            var provname = type.GetSigName();
             if (provname == null)
             {
                 provname = NameDummyCounter.ToString();
@@ -607,7 +607,7 @@ namespace DataDynamics.PageFX.FLI
 
             var EnumInfo = DefineAbcInstance(CorlibTypes[CorlibTypeId.EnumInfo]);
 
-            var name = DefinePfxName("init_enum_info_" + NameUtil.GetSigName(type));
+            var name = DefinePfxName("init_enum_info_" + type.GetSigName());
             return enumInstance.DefineStaticMethod(
                 name, EnumInfo,
                 delegate(AbcCode code)

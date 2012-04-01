@@ -224,7 +224,7 @@ namespace DataDynamics.PageFX.FLI
 
             if (TypeExtensions.HasInitFields(type, true))
             {
-                string name = NameUtil.GetStaticCtorName(type);
+                string name = type.GetStaticCtorName();
                 instance.StaticCtor = instance.DefineStaticMethod(
                     name, AvmTypeCode.Void,
                     delegate(AbcCode code)

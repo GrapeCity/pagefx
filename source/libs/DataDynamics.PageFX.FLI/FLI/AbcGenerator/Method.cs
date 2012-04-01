@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.FLI
         #region GetMethodName
         AbcMultiname GetMethodName(IMethod method)
         {
-            string name = NameUtil.GetMethodName(method);
+            string name = method.GetMethodName();
             return _abc.DefineQName(method, name);
         }
 
@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.FLI
                     return GetDefinedMethodName(impl);
             }
 
-            string name = GetFixedName(method) ?? NameUtil.GetMethodName(method);
+            string name = GetFixedName(method) ?? method.GetMethodName();
         	return _abc.DefineQName(method, name);
         }
 

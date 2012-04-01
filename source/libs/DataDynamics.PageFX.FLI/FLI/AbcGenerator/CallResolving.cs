@@ -113,7 +113,7 @@ namespace DataDynamics.PageFX.FLI
                 Debugger.Break();
 #endif
             return new NotSupportedException(string.Format("Unexpected internal call: {0}",
-                                                           NameUtil.GetFullName(method)));
+                                                           method.GetFullName()));
         }
         #endregion
 

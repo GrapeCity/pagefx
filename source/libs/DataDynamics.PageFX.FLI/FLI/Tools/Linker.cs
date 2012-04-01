@@ -395,10 +395,9 @@ namespace DataDynamics.PageFX.FLI
 
         private static string GetDelegateMethodName(bool add)
         {
-            return NameUtil.GetMethodName(SystemTypes.Delegate,
-                                             add
-                                                 ? Const.Delegate.AddEventListeners
-                                                 : Const.Delegate.RemoveEventListeners, 2);
+            return SystemTypes.Delegate.GetMethodName(add
+                                          	? Const.Delegate.AddEventListeners
+                                          	: Const.Delegate.RemoveEventListeners, 2);
         }
         #endregion
 

@@ -2,9 +2,9 @@ using System.IO;
 
 namespace DataDynamics.PageFX.CLI
 {
-    internal static class IOUtils
+    internal static class Extensions
     {
-        public static string ReadCountedUtf8(BufferedBinaryReader reader)
+        public static string ReadCountedUtf8(this BufferedBinaryReader reader)
         {
             int b0 = reader.ReadUInt8();
             if (b0 == 0xFF) return null;

@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.FLI
         {
             string name = "as_";
             if (me) name += "me";
-            else name += NameUtil.GetSigName(type);
+            else name += type.GetSigName();
             return _abc.DefinePfxName(name);
         }
 
@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.FLI
         {
             string name = "cast_to_";
             if (me) name += "me";
-            else name += NameUtil.GetSigName(type);
+            else name += type.GetSigName();
             return _abc.DefinePfxName(name);
         }
 

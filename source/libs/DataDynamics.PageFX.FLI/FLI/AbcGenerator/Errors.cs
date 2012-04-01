@@ -39,14 +39,14 @@ namespace DataDynamics.PageFX.FLI
                 var method = m as IMethod;
                 if (method != null)
                 {
-                    CompilerReport.Add(Errors.ABC.IncompatibleCall, NameUtil.GetFullName(method), v);
+                    CompilerReport.Add(Errors.ABC.IncompatibleCall, method.GetFullName(), v);
                     return;
                 }
 
                 var f = m as IField;
                 if (f != null)
                 {
-                    CompilerReport.Add(Errors.ABC.IncompatibleField, NameUtil.GetFullName(f), v);
+                    CompilerReport.Add(Errors.ABC.IncompatibleField, f.GetFullName(), v);
                     return;
                 }
             }

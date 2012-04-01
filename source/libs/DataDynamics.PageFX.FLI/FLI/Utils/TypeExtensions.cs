@@ -184,7 +184,7 @@ namespace DataDynamics.PageFX.FLI
         public static string GetNamespaceForMembers(IType type)
         {
             string name = GetPartialTypeName(type);
-            string ns = NameUtil.GetTypeNamespace("", type);
+            string ns = type.GetTypeNamespace("");
             return GetNamespaceForMembers(ns, name);
         }
 

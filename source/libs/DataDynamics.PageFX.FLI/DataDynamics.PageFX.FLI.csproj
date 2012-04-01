@@ -170,7 +170,7 @@
     <Compile Include="FLI\Utils\LocaleExtensions.cs" />
     <Compile Include="FLI\Utils\MDTags.cs" />
     <Compile Include="FLI\Utils\MethodExtensions.cs" />
-    <Compile Include="FLI\Utils\NameUtil.cs" />
+    <Compile Include="FLI\Utils\NameExtensions.cs" />
     <Compile Include="FLI\AvmConfig.cs" />
     <Compile Include="FLI\Utils\MimeTypes.cs" />
     <Compile Include="FLI\SwfCompiler\Main.cs" />

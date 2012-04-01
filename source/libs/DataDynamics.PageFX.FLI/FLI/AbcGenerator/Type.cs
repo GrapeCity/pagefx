@@ -283,7 +283,7 @@ namespace DataDynamics.PageFX.FLI
 
         AbcNamespace DefineTypeNamespace(IType type)
         {
-            string ns = NameUtil.GetTypeNamespace(RootNamespace, type);
+            string ns = type.GetTypeNamespace(RootNamespace);
             return _abc.DefineNamespace(AbcConstKind.PackageNamespace, ns);
         }
         #endregion

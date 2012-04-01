@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.FLI
         	           	};
         	DefineParameters(ctor, method);
 
-            var name = _abc.DefineGlobalQName("arrctor_" + NameUtil.GetSigName(type));
+            var name = _abc.DefineGlobalQName("arrctor_" + type.GetSigName());
             var trait = AbcTrait.CreateMethod(ctor, name);
             instance.Traits.Add(trait);
 
@@ -176,7 +176,7 @@ namespace DataDynamics.PageFX.FLI
 
             var instance = GetArrayInstance();
 
-            var name = _abc.DefineGlobalQName("newarr_" + NameUtil.GetSigName(elemType));
+            var name = _abc.DefineGlobalQName("newarr_" + elemType.GetSigName());
 
             return instance.DefineStaticMethod(
                 name, instance.Name,
@@ -285,7 +285,7 @@ namespace DataDynamics.PageFX.FLI
 
             var elemPtr = DefineElemPtr();
 
-            string name = "GetAddr_" + NameUtil.GetParamsString(method);
+            string name = "GetAddr_" + method.GetParametersSignature();
 
             return instance.DefineInstanceMethod(
                 name, elemPtr.Name,
@@ -379,7 +379,7 @@ namespace DataDynamics.PageFX.FLI
 
             var instance = GetArrayInstance();
 
-            string name = (item ? "get_item_"  : "get_elem_") + NameUtil.GetSigName(elemType);
+            string name = (item ? "get_item_"  : "get_elem_") + elemType.GetSigName();
             var elemTypeName = DefineReturnType(elemType);
             var oppositeType = elemType == SystemTypes.Int64 ? SystemTypes.UInt64 : SystemTypes.Int64;
             var oppositeTypeName = DefineReturnType(oppositeType);
@@ -661,7 +661,7 @@ namespace DataDynamics.PageFX.FLI
 
             var instance = GetArrayInstance();
 
-            string name = "init_" + NameUtil.GetSigName(elemType);
+            string name = "init_" + elemType.GetSigName();
             return instance.DefineStaticMethod(
                 name, AvmTypeCode.Void,
                 code =>
@@ -728,7 +728,7 @@ namespace DataDynamics.PageFX.FLI
             if (instance.IsNative)
             {
                 instance = GetObjectInstance();
-                name = DefinePfxName("initobj_" + NameUtil.GetSigName(type));
+                name = DefinePfxName("initobj_" + type.GetSigName());
             }
             else
             {

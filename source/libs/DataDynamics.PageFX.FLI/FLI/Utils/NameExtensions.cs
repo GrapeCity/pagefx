@@ -5,14 +5,14 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.FLI
 {
-    class NameUtil
+    internal static class NameExtensions
     {
         /// <summary>
         /// Removes bad characters from name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string MakeGoodName(string name)
+        public static string ToValidName(this string name)
         {
             var sb = new StringBuilder();
             foreach (var c in name)
@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.FLI
             return sb.ToString();
         }
 
-        public static string GetTypeNamespace(string rootns, IType type)
+        public static string GetTypeNamespace(this IType type, string rootns)
         {
             string ns = type.Namespace;
             if (string.IsNullOrEmpty(ns))
@@ -58,74 +58,61 @@ namespace DataDynamics.PageFX.FLI
             return ns;
         }
 
-        public static string GetFullName(ITypeMember m)
+        public static string GetFullName(this ITypeMember member)
         {
-            var type = m.DeclaringType;
+            var type = member.DeclaringType;
             if (type == null)
                 throw new ArgumentException("Member has no declaring type.");
-            return type.FullName + "." + m.Name;
+            return type.FullName + "." + member.Name;
         }
 
-        public static string GetParamsString(IMethod method)
+        public static string GetParametersSignature(this IMethod method)
         {
             var sb = new StringBuilder();
-            AppendParams(sb, method);
+            AppendParamsSig(sb, method);
             return sb.ToString();
         }
 
-        private static void AppendParams(StringBuilder sb, IMethod method)
+        private static void AppendParamsSig(StringBuilder sb, IMethod method)
         {
-            int n = method.Parameters.Count;
+        	int n = method.Parameters.Count;
             for (int i = 0; i < n; ++i)
             {
                 if (i > 0) sb.Append("_");
                 var p = method.Parameters[i];
-                string pt = GetSigName(p.Type);
+                string pt = p.Type.GetSigName();
                 sb.Append(pt);
             }
         }
 
-        public static string GetTypesString(IEnumerable<IType> types, string prefix, string suffix, string sep)
+        private static string GetSigName(this IEnumerable<IType> types, string prefix, string suffix, string sep)
         {
-            var sb = new StringBuilder();
-            if (prefix != null)
-                sb.Append(prefix);
-            bool f = false;
-            foreach (var type in types)
-            {
-                if (f) sb.Append(sep);
-                sb.Append(GetSigName(type));
-                f = true;
-            }
-            if (suffix != null)
-                sb.Append(suffix);
-            return sb.ToString();
+        	return types.Join(prefix, suffix, sep, type => type.GetSigName());
         }
 
-        public static string GetQName(ICustomAttributeProvider provider)
+        public static string GetQName(this ICustomAttributeProvider provider)
         {
             var type = provider as IType;
             if (type != null)
-                return GetSigName(type);
+                return type.GetSigName();
 
             var method = provider as IMethod;
             if (method != null)
-            return GetSigName(method.DeclaringType) + "_" + GetMethodName(method) ;
+            return method.DeclaringType.GetSigName() + "_" + method.GetMethodName() ;
 
             var field = provider as IField;
             if (field != null)
-                return GetSigName(field.DeclaringType) + "_" + field.Name;
+                return field.DeclaringType.GetSigName() + "_" + field.Name;
 
             return null;
         }
 
-        public static string GetSigName(IType type)
+        public static string GetSigName(this IType type)
         {
-            if (type == null) return "";
-            return type.SigName;
+        	return type == null ? "" : type.SigName;
         }
 
-        private static bool NeedDeclaringTypePrefix(IMethod method)
+    	private static bool NeedDeclaringTypePrefix(this IMethod method)
         {
             if (method.IsInternalCall)
             {
@@ -135,7 +122,7 @@ namespace DataDynamics.PageFX.FLI
             return method.IsNew();
         }
 
-        private static bool NeedReturnTypePrefix(IMethod method)
+        private static bool NeedReturnTypePrefix(this IMethod method)
         {
             //Note: this is fix for cast operators
             if (method.IsStatic && method.Name.StartsWith("op_"))
@@ -149,12 +136,12 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        public static string GetStaticCtorName(IType type)
+        public static string GetStaticCtorName(this IType type)
         {
             return CLRNames.StaticConstructor;
         }
 
-        private static string GetSig(IMethod method)
+        private static string GetSig(this IMethod method)
         {
             var declType = method.DeclaringType;
             var sb = new StringBuilder();
@@ -167,15 +154,15 @@ namespace DataDynamics.PageFX.FLI
             }
             else
             {
-                if (NeedDeclaringTypePrefix(method))
+                if (method.NeedDeclaringTypePrefix())
                 {
-                    sb.Append(GetSigName(declType));
+                    sb.Append(declType.GetSigName());
                     sb.Append("_");
                 }
 
-                if (NeedReturnTypePrefix(method))
+                if (method.NeedReturnTypePrefix())
                 {
-                    sb.Append(GetSigName(method.Type));
+                    sb.Append(method.Type.GetSigName());
                     sb.Append("_");
                 }
 
@@ -193,45 +180,37 @@ namespace DataDynamics.PageFX.FLI
 
             if (method.IsGenericInstance)
             {
-                sb.Append(GetTypesString(method.GenericArguments, "[", "]", ","));
+                sb.Append(method.GenericArguments.GetSigName("[", "]", ","));
             }
 
             if (addParams && method.Parameters.Count > 0)
             {
                 sb.Append("_");
-                AppendParams(sb, method);
+                AppendParamsSig(sb, method);
             }
             return sb.ToString();
         }
 
-        public static string GetMethodName(IMethod method)
+        public static string GetMethodName(this IMethod method)
         {
             var iface = method.GetInterfaceOfExplicitImpl();
             if (iface != null)
-                return GetMethodName(iface);
+                return iface.GetMethodName();
 
-            string sig = GetSig(method);
+            string sig = method.GetSig();
             var type = method.DeclaringType;
             if (type.IsInterface)
-                return GetSigName(type) + "." + sig;
+                return type.GetSigName() + "." + sig;
 
             return sig;
         }
 
-        public static string GetMethodName(IType type, string name)
-        {
-            var m = type.FindMethod(name);
-            if (m == null)
-                throw new ArgumentException(string.Format("Unable to find method {0} in type {1}", name, type.FullName));
-            return GetMethodName(m);
-        }
-
-        public static string GetMethodName(IType type, string name, int argcount)
+    	public static string GetMethodName(this IType type, string name, int argcount)
         {
             var m = type.FindMethod(name, argcount);
             if (m == null)
                 throw new ArgumentException(string.Format("Unable to find method {0} in type {1}", name, type.FullName));
-            return GetMethodName(m);
+            return m.GetMethodName();
         }
     }
 }

@@ -508,36 +508,36 @@ namespace DataDynamics.PageFX
                 return ilasm(tc);
             }
 
-            using (var chdir = DirectoryHelper.Change(tc.Root))
+            using (tc.Root.ChangeCurrentDirectory())
             {
-                var options = new CompilerOptions();
-                try
-                {
-                    ResolveReferences(tc.Root, tc.References, options.References);
-                }
-                catch (Exception exc)
-                {
-                    tc.Error = string.Format("Unable to resolve test case {0} references. Exception:\n{1}",
-                                             tc.Name, exc);
-                    return false;
-                }
+            	var options = new CompilerOptions();
+            	try
+            	{
+            		ResolveReferences(tc.Root, tc.References, options.References);
+            	}
+            	catch (Exception exc)
+            	{
+            		tc.Error = string.Format("Unable to resolve test case {0} references. Exception:\n{1}",
+            		                         tc.Name, exc);
+            		return false;
+            	}
 
-                SetCompilerOptions(tc, lang, options);
+            	SetCompilerOptions(tc, lang, options);
 
-                try
-                {
-                    string cout = CompilerConsole.Run(options, true);
-                    if (CompilerConsole.HasErrors(cout))
-                    {
-                        tc.Error = string.Format("Unable to compile test case {0}.\n{1}", tc.Name, cout);
-                        return false;
-                    }
-                }
-                catch (Exception exc)
-                {
-                    tc.Error = string.Format("Unable to compile test case {0}. Exception:\n{1}", tc.Name, exc);
-                    return false;
-                }
+            	try
+            	{
+            		string cout = CompilerConsole.Run(options, true);
+            		if (CompilerConsole.HasErrors(cout))
+            		{
+            			tc.Error = string.Format("Unable to compile test case {0}.\n{1}", tc.Name, cout);
+            			return false;
+            		}
+            	}
+            	catch (Exception exc)
+            	{
+            		tc.Error = string.Format("Unable to compile test case {0}. Exception:\n{1}", tc.Name, exc);
+            		return false;
+            	}
             }
 
             return true;
@@ -639,24 +639,24 @@ namespace DataDynamics.PageFX
                 args += f.Name;
             }
 
-            using (var chdir = DirectoryHelper.Change(tc.Root))
+            using (tc.Root.ChangeCurrentDirectory())
             {
-                try
-                {
-                    int exitCode;
-                    string cout = CommandPromt.Run(ilasmPath, args, out exitCode);
-                    if (exitCode != 0)
-                    {
-                        tc.Error = "Unable to assembly (ilasm.exe failed).";
-                        return false;
-                    }
-                    //TODO: check ilasm output
-                }
-                catch (Exception exc)
-                {
-                    tc.Error = string.Format("Unable to assembly test case {0}. Exception:{1}\n", tc.Name, exc);
-                    return false;
-                }
+            	try
+            	{
+            		int exitCode;
+            		string cout = CommandPromt.Run(ilasmPath, args, out exitCode);
+            		if (exitCode != 0)
+            		{
+            			tc.Error = "Unable to assembly (ilasm.exe failed).";
+            			return false;
+            		}
+            		//TODO: check ilasm output
+            	}
+            	catch (Exception exc)
+            	{
+            		tc.Error = string.Format("Unable to assembly test case {0}. Exception:{1}\n", tc.Name, exc);
+            		return false;
+            	}
             }
             return true;
         }

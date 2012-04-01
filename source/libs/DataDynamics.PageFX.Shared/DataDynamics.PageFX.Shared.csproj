@@ -115,7 +115,6 @@
     <Compile Include="System\Tricks.cs" />
     <Compile Include="Utils\CLOption.cs" />
     <Compile Include="Utils\Compiler.cs" />
-    <Compile Include="Utils\DirectoryHelper.cs" />
     <Compile Include="Graphics\FastBitmap.cs" />
     <Compile Include="Graphics\PathRendering.cs" />
     <Compile Include="Utils\FormatAttribute.cs" />

@@ -121,7 +121,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 case SystemTypeCode.Char:
                     return reader.ReadChar();
                 case SystemTypeCode.String:
-                    return IOUtils.ReadCountedUtf8(reader);
+                    return reader.ReadCountedUtf8();
                 case SystemTypeCode.Enum:
                     throw new NotImplementedException();
                 default:

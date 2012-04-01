@@ -26,7 +26,7 @@ namespace DataDynamics
 
         public static int ComparePath(this string path1, string path2)
         {
-            return string.Compare(path1, path2, IgnoreCase);
+            return String.Compare(path1, path2, IgnoreCase);
         }
 
         public static string TrimFileExtension(this string name)
@@ -90,7 +90,7 @@ namespace DataDynamics
             int i = 0;
             for (; i < rn && i < fn - 1; ++i)
             {
-                if (string.Compare(f[i], r[i], ignoreCase) != 0)
+                if (String.Compare(f[i], r[i], ignoreCase) != 0)
                     break;
             }
 
@@ -250,5 +250,26 @@ namespace DataDynamics
             }
             return sb.ToString();
         }
+
+    	private sealed class Changer : IDisposable
+    	{
+    		private readonly string _oldDirectory;
+
+    		public Changer(string newdir)
+    		{
+    			_oldDirectory = Directory.GetCurrentDirectory();
+    			Directory.SetCurrentDirectory(newdir);
+    		}
+
+    		public void Dispose()
+    		{
+    			Directory.SetCurrentDirectory(_oldDirectory);
+    		}
+    	}
+
+    	public static IDisposable ChangeCurrentDirectory(this string newdir)
+    	{
+    		return new Changer(newdir);
+    	}
     }
 }

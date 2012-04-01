@@ -327,7 +327,7 @@ namespace DataDynamics.PageFX.FLI
 				var type = TypeFlexApp;
 				if (type == null) return null;
 
-				string ns = NameUtil.GetTypeNamespace(RootNamespace, type);
+				string ns = type.GetTypeNamespace(RootNamespace);
 				return string.IsNullOrEmpty(ns)
 				       	? type.Name
 				       	: ns + "::" + type.Name;

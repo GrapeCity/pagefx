@@ -1502,7 +1502,7 @@ namespace DataDynamics.PageFX.CLI
 
         IType ReadType(BufferedBinaryReader reader)
         {
-            string s = IOUtils.ReadCountedUtf8(reader);
+            string s = reader.ReadCountedUtf8();
             return FindType(s);
         }
 
@@ -1575,7 +1575,7 @@ namespace DataDynamics.PageFX.CLI
                     return reader.ReadDouble();
 
                 case ElementType.String:
-                    return IOUtils.ReadCountedUtf8(reader);
+                    return reader.ReadCountedUtf8();
 
                 case ElementType.Object:
                 case ElementType.CustomArgsBoxedObject:
@@ -1586,7 +1586,7 @@ namespace DataDynamics.PageFX.CLI
 
                 case ElementType.CustomArgsEnum:
                     {
-                        string enumTypeName = IOUtils.ReadCountedUtf8(reader);
+                        string enumTypeName = reader.ReadCountedUtf8();
                         var enumType = FindType(enumTypeName);
                         if (enumType == null)
                         {
@@ -1650,7 +1650,7 @@ namespace DataDynamics.PageFX.CLI
             if (type == SystemTypes.Double)
                 return reader.ReadDouble();
             if (type == SystemTypes.String)
-                return IOUtils.ReadCountedUtf8(reader);
+                return reader.ReadCountedUtf8();
             if (type == SystemTypes.Type)
                 return ReadType(reader);
 
@@ -1721,7 +1721,7 @@ namespace DataDynamics.PageFX.CLI
                 {
                     var enumType = ReadEnumType(reader);
                     arg.Type = enumType;
-                    arg.Name = IOUtils.ReadCountedUtf8(reader);
+                    arg.Name = reader.ReadCountedUtf8();
                     arg.Value = ReadValue(reader, enumType);
                 }
                 else if (elemType == ElementType.ArraySz)
@@ -1730,20 +1730,20 @@ namespace DataDynamics.PageFX.CLI
                     if (elemType == ElementType.CustomArgsEnum)
                     {
                         var enumType = ReadEnumType(reader);
-                        arg.Name = IOUtils.ReadCountedUtf8(reader);
+                        arg.Name = reader.ReadCountedUtf8();
                         ResolveNamedArgType(arg, attr.Type);
                         arg.Value = ReadArray(reader, enumType);
                     }
                     else
                     {
-                        arg.Name = IOUtils.ReadCountedUtf8(reader);
+                        arg.Name = reader.ReadCountedUtf8();
                         ResolveNamedArgType(arg, attr.Type);
                         arg.Value = ReadArray(reader, elemType);
                     }
                 }
                 else
                 {
-                    arg.Name = IOUtils.ReadCountedUtf8(reader);
+                    arg.Name = reader.ReadCountedUtf8();
                     ResolveNamedArgType(arg, attr.Type);
                     arg.Value = ReadValue(reader, elemType);
                 }
@@ -1753,7 +1753,7 @@ namespace DataDynamics.PageFX.CLI
 
         IType ReadEnumType(BufferedBinaryReader reader)
         {
-            string enumTypeName = IOUtils.ReadCountedUtf8(reader);
+            string enumTypeName = reader.ReadCountedUtf8();
             return FindType(enumTypeName);
         }
 

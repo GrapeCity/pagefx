@@ -269,7 +269,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 name += "_";
             }
             name += context.ResolvedSource;
-            return NameUtil.MakeGoodName(name);
+            return name.ToValidName();
         }
 
         static Image ResolveImage(RBContext context, string source)
