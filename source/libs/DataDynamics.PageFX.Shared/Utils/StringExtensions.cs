@@ -26,17 +26,28 @@ namespace DataDynamics
             return s;
         }
 
+		public static string[] ReadLines(this TextReader reader, bool trim, Func<string,bool> lineFilter)
+		{
+			var list = new List<string>();
+			string line;
+			while ((line = reader.ReadLine()) != null)
+			{
+				if (trim) line = line.Trim();
+				if (!lineFilter(line)) continue;
+				list.Add(line);
+			}
+			return list.ToArray();
+		}
+
+		public static string[] ReadLines(this Stream stream, bool trim, Func<string, bool> lineFilter)
+		{
+			using (var reader = new StreamReader(stream))
+				return reader.ReadLines(trim, lineFilter);
+		}
+
         public static string[] ReadLines(this TextReader reader, bool allowEmptyLines, bool trim)
         {
-            var list = new List<string>();
-            string line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                if (trim) line = line.Trim();
-                if (!allowEmptyLines && line.Length == 0) continue;
-                list.Add(line);
-            }
-            return list.ToArray();
+        	return reader.ReadLines(trim, line => line.Length != 0 || allowEmptyLines);
         }
 
         public static string[] ReadLines(this TextReader reader)

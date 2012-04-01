@@ -305,7 +305,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 case MDTags.ResourceBundle:
                     {
-                        string name = RBUtil.GetName(e);
+                        string name = e.GetResourceBundleName();
                         if (string.IsNullOrEmpty(name))
                             throw Errors.RBC.BadMetaEntry.CreateException();
                         abc.AddDep(new DepResourceBundle(name));

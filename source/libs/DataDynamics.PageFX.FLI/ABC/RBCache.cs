@@ -6,51 +6,37 @@ using DataDynamics.Compression.Zip;
 
 namespace DataDynamics.PageFX.FLI.ABC
 {
-    #region class RBUtil
-    internal static class RBUtil
+	internal static class ResourceBundleExtensions
     {
-        public static string GetName(AbcMetaEntry e)
+        public static string GetResourceBundleName(this AbcMetaEntry e)
         {
             if (e.Items.Count <= 0)
                 return null;
             var val = e.Items[0].Value;
             if (val == null) return null;
             string s = val.Value;
-            if (string.IsNullOrEmpty(s))
-                return null;
-            return s;
+            return string.IsNullOrEmpty(s) ? null : s;
         }
 
-        public static bool IsComment(string line)
+        public static bool IsResourceBundleComment(this string line)
         {
             if (string.IsNullOrEmpty(line)) return false;
             return line[0] == '#' || line[0] == '!';
         }
 
-        public static string[] GetLines(Stream stream)
+        public static string[] GetResourceBundleLines(this Stream stream)
         {
             using (var reader = new StreamReader(stream))
-                return GetLines(reader);
+                return reader.GetResourceBundleLines();
         }
 
-        public static string[] GetLines(TextReader reader)
+        public static string[] GetResourceBundleLines(this TextReader reader)
         {
-            var lines = new List<string>();
-            string line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                line = line.Trim();
-                if (string.IsNullOrEmpty(line)) continue;
-                //skip comment
-                if (IsComment(line)) continue;
-                lines.Add(line);
-            }
-            return lines.ToArray();
+        	return reader.ReadLines(true, line => line.Length != 0 && !line.IsResourceBundleComment());
         }
     }
-    #endregion
 
-    #region class RBCache
+	#region class RBCache
     class RB
     {
         public string Name;
@@ -177,7 +163,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 {
                     name = Path.GetFileNameWithoutExtension(name);
                     var rbStream = entry.Data.ToMemoryStream();
-                    var lines = RBUtil.GetLines(rbStream);
+                    var lines = rbStream.GetResourceBundleLines();
                     string loc = locale;
                     if (auto)
                     {

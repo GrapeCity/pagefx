@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (e.NameString != MDTags.ResourceBundle)
                 return false;
 
-            string name = RBUtil.GetName(e);
+            string name = e.GetResourceBundleName();
             if (string.IsNullOrEmpty(name))
                 throw Errors.RBC.BadMetaEntry.CreateException();
 
@@ -163,7 +163,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (string.IsNullOrEmpty(line)) return false;
             line = line.Trim();
             if (string.IsNullOrEmpty(line)) return false;
-            if (RBUtil.IsComment(line)) return false;
+            if (line.IsResourceBundleComment()) return false;
 
             int sep = line.IndexOf('=');
             if (sep >= 0)

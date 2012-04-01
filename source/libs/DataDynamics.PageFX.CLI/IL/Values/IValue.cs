@@ -50,11 +50,11 @@ namespace DataDynamics.PageFX.CLI.IL
         ComputedPtr,
     }
 
-    internal class ValueUtils
+    internal static class ValueKindEnum
     {
-        public static bool IsPointer(ValueKind k)
+        public static bool IsPointer(this ValueKind value)
         {
-            return k >= ValueKind.ThisPtr && k <= ValueKind.ComputedPtr;
+            return value >= ValueKind.ThisPtr && value <= ValueKind.ComputedPtr;
         }
     }
 }
