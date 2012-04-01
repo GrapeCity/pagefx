@@ -138,7 +138,7 @@
     <Compile Include="PDB\Interop\IMetaDataDispenserEx.cs" />
     <Compile Include="PDB\Interop\Guids.cs" />
     <Compile Include="PDB\PdbReader.cs" />
-    <Compile Include="PDB\SymbolUtil.cs" />
+    <Compile Include="PDB\SymbolExtensions.cs" />
     <Compile Include="PDB\PdbDump.cs" />
     <Compile Include="PE\CLIHeader.cs" />
     <Compile Include="PE\COFFHeader.cs" />

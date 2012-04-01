@@ -3,7 +3,7 @@ using System.Diagnostics.SymbolStore;
 
 namespace DataDynamics.PageFX.PDB
 {
-    internal class PdbReader : IDisposable
+    internal sealed class PdbReader : IDisposable
     {
         public SymBinder Binder;
         public ISymbolReader SymReader;

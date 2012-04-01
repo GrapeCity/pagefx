@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.PDB
 
         public static void Write(Assembly assembly, XmlWriter writer)
         {
-            var reader = SymbolUtil.GetPdbReader(assembly);
+            var reader = assembly.GetPdbReader();
             if (reader == null)
             {
                 return;

@@ -11,7 +11,6 @@ using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.PDB;
@@ -197,7 +196,7 @@ namespace DataDynamics.PageFX.CLI.IL
         public void LinkSequencePoints(ISymbolMethod symMethod)
         {
             if (symMethod == null) return;
-            var points = SymbolUtil.ReadSequencePoints(symMethod);
+            var points = symMethod.ReadSequencePoints();
             LinkSequencePoints(points);
         }
         #endregion

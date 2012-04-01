@@ -2848,7 +2848,7 @@ namespace DataDynamics.PageFX.CLI
             string path = _assembly.Location;
             if (string.IsNullOrEmpty(path)) return null; //from stream?
             
-            return SymbolUtil.GetPdbReader(path);
+            return path.GetPdbReader();
         }
 
         public void LinkDebugInfo(IMethodBody body)
@@ -2864,12 +2864,12 @@ namespace DataDynamics.PageFX.CLI
 
             if (_pdbReader == null) return;
 
-            var symMethod = SymbolUtil.GetSymbolMethod(_pdbReader.SymReader, body.Method);
+            var symMethod = _pdbReader.SymReader.GetSymbolMethod(body.Method);
             if (symMethod == null) return;
 
             cilBody.LinkSequencePoints(symMethod);
-            SymbolUtil.LinkLocals(cilBody.LocalVariables, symMethod.RootScope);
-            SymbolUtil.MakeGoodNames(cilBody.LocalVariables);
+            cilBody.LocalVariables.SetNames(symMethod.RootScope);
+            cilBody.LocalVariables.SetGoodNames();
         }
         #endregion
 

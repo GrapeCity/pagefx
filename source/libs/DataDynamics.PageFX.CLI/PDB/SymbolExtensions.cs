@@ -13,22 +13,22 @@ using DataDynamics.PageFX.PDB.Interop;
 
 namespace DataDynamics.PageFX.PDB
 {
-    static class SymbolUtil
+    internal static class SymbolExtensions
     {
         #region GetSymbolReader
-        public static PdbReader GetPdbReader(Assembly assembly)
+        public static PdbReader GetPdbReader(this Assembly assembly)
         {
-            return GetPdbReader(assembly.Location);
+            return assembly.Location.GetPdbReader();
         }
 
-        public static PdbReader GetPdbReader(string pathModule)
+        public static PdbReader GetPdbReader(this string pathModule)
         {
             if (!Path.IsPathRooted(pathModule))
                 pathModule = Path.Combine(Environment.CurrentDirectory, pathModule);
-            return GetPdbReader(pathModule, Path.GetDirectoryName(pathModule));
+            return pathModule.GetPdbReader(Path.GetDirectoryName(pathModule));
         }
 
-        public static PdbReader GetPdbReader(string pathModule, string searchPath)
+        public static PdbReader GetPdbReader(this string pathModule, string searchPath)
         {
             if (!Path.IsPathRooted(pathModule))
                 pathModule = Path.Combine(Environment.CurrentDirectory, pathModule);
@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX.PDB
         #endregion
 
         #region GetSymbolMethod
-        public static ISymbolMethod GetSymbolMethod(ISymbolReader reader, IMethod method)
+        public static ISymbolMethod GetSymbolMethod(this ISymbolReader reader, IMethod method)
         {
             if (method.IsAbstract) return null;
             if (method.IsInternalCall) return null;
@@ -124,7 +124,7 @@ namespace DataDynamics.PageFX.PDB
         #endregion
 
         #region ReadSequencePoints
-        public static List<SequencePoint> ReadSequencePoints(ISymbolMethod symMethod)
+        public static List<SequencePoint> ReadSequencePoints(this ISymbolMethod symMethod)
         {
             try
             {
@@ -173,8 +173,8 @@ namespace DataDynamics.PageFX.PDB
         }
         #endregion
 
-        #region LinkLocals
-        public static void LinkLocals(IVariableCollection vars, ISymbolScope scope)
+        #region Naming Local Variables
+        public static void SetNames(this IVariableCollection vars, ISymbolScope scope)
         {
             if (vars == null) return;
             if (vars.Count <= 0) return;
@@ -190,11 +190,11 @@ namespace DataDynamics.PageFX.PDB
 
             foreach (var child in scope.GetChildren())
             {
-                LinkLocals(vars, child);
+                vars.SetNames(child);
             }
         }
 
-        public static void MakeGoodNames(IVariableCollection vars)
+        public static void SetGoodNames(this IVariableCollection vars)
         {
             foreach (var v in vars)
             {
@@ -206,12 +206,12 @@ namespace DataDynamics.PageFX.PDB
             }
         }
 
-        static IVariable FindVar(IEnumerable<IVariable> vars, string name)
+        private static IVariable FindVar(IEnumerable<IVariable> vars, string name)
         {
             return vars.FirstOrDefault(v => v.Name == name);
         }
 
-        static string UnifyName(IEnumerable<IVariable> vars, string name)
+		private static string UnifyName(IEnumerable<IVariable> vars, string name)
         {
             int n = 1;
             string original = name;
