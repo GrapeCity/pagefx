@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.FLI
                 throw new ArgumentException("field is not static");
 
             var type = field.DeclaringType;
-            string typeName = NameHelper.MakeFullName(type.FullName, field.Name);
+            string typeName = type.FullName.MakeFullName(field.Name);
             var name = _abc.DefinePfxName("sfld_ptr$" + typeName);
 
             var instance = _abc.Instances[name];

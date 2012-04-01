@@ -4,14 +4,14 @@ using System.Linq;
 
 namespace DataDynamics.PageFX.Flash
 {
-    class SecurityHelper
+    internal static class FlashPlayerTrust
     {
-        static bool IsWindows
+        private static bool IsWindows
         {
             get { return Path.DirectorySeparatorChar == '\\'; }
         }
 
-        static string GetSecurityDir()
+		private static string GetSecurityDir()
         {
             if (IsWindows)
             {
@@ -25,12 +25,12 @@ namespace DataDynamics.PageFX.Flash
             }
         }
 
-        static string GetTrustDir()
+		private static string GetTrustDir()
         {
             return Path.Combine(GetSecurityDir(), "FlashPlayerTrust");
         }
 
-        static bool Contains(string parent, string path)
+		private static bool Contains(string parent, string path)
         {
             if (string.IsNullOrEmpty(parent))
                 return false;
@@ -44,7 +44,7 @@ namespace DataDynamics.PageFX.Flash
                                        : StringComparison.Ordinal);
         }
 
-        public static void AddTrustedPath(string path)
+        public static void AddPath(string path)
         {
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentException("path is null or empty", "path");

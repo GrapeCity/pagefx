@@ -2832,7 +2832,7 @@ namespace DataDynamics.PageFX.CLI
         {
             get 
             {
-                if (PathHelper.Compare(_assembly.Location, GlobalSettings.GetCorlibPath(false)) == 0)
+                if (_assembly.Location.ComparePath(GlobalSettings.GetCorlibPath(false)) == 0)
                     return true;
                 return AssemblyResolver.IsFrameworkAssembly(_assembly);
             }

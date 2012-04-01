@@ -65,7 +65,7 @@ namespace DataDynamics.PageFX.FLI
             if (name.NamespaceSet != null)
             {
             	return name.NamespaceSet
-					.Select(ns => NameHelper.MakeFullName(ns.NameString, name.NameString))
+					.Select(ns => ns.NameString.MakeFullName(name.NameString))
 					.Select(fullName => FindInstance(asm, fullName))
 					.FirstOrDefault(instance => instance != null);
             }

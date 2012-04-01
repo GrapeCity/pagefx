@@ -626,7 +626,7 @@ namespace DataDynamics.PageFX.FLI
             {
                 if (_nspfx == null)
                 {
-                    string ns = NameHelper.MakeFullName(RootNamespace, Const.Namespaces.PFX);
+                    string ns = RootNamespace.MakeFullName(Const.Namespaces.PFX);
                     _nspfx = _abc.DefinePackage(ns);
                 }
                 return _nspfx;

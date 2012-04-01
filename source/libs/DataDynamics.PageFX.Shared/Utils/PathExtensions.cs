@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DataDynamics
 {
-    public static class PathHelper
+    public static class PathExtensions
     {
         private static bool IsRunningOnWindows
         {
@@ -24,12 +24,12 @@ namespace DataDynamics
             }
         }
 
-        public static int Compare(string path1, string path2)
+        public static int ComparePath(this string path1, string path2)
         {
             return string.Compare(path1, path2, IgnoreCase);
         }
 
-        public static string TrimExtension(string name)
+        public static string TrimFileExtension(this string name)
         {
             int i = name.LastIndexOf('.');
             if (i >= 0)
@@ -37,9 +37,7 @@ namespace DataDynamics
             return name;
         }
 
-        public static string ReplaceInvalidChars(IEnumerable<char> s,
-            IEnumerable<char> invalidChars,
-            Converter<char, char> replacer)
+        public static string ReplaceInvalidChars(this IEnumerable<char> s, IEnumerable<char> invalidChars, Converter<char, char> replacer)
         {
             var list = new List<char>();
             foreach (char c in s)
@@ -58,19 +56,19 @@ namespace DataDynamics
             return new string(list.ToArray());
         }
 
-        public static string ReplaceInvalidChars(string s, IEnumerable<char> invalidChars, char newChar)
+        public static string ReplaceInvalidChars(this string s, IEnumerable<char> invalidChars, char newChar)
         {
-            return ReplaceInvalidChars(s, invalidChars, c => newChar);
+            return s.ReplaceInvalidChars(invalidChars, c => newChar);
         }
 
-        public static string ReplaceInvalidPathChars(string s)
+        public static string ReplaceInvalidPathChars(this string s)
         {
-            return ReplaceInvalidChars(s, Path.GetInvalidPathChars(), '_');
+            return s.ReplaceInvalidChars(Path.GetInvalidPathChars(), '_');
         }
 
-        public static string ReplaceInvalidFileNameChars(string s)
+        public static string ReplaceInvalidFileNameChars(this string s)
         {
-            return ReplaceInvalidChars(s, Path.GetInvalidFileNameChars(), '_');
+            return s.ReplaceInvalidChars(Path.GetInvalidFileNameChars(), '_');
         }
 
         /// <summary>
@@ -80,7 +78,7 @@ namespace DataDynamics
         /// <param name="path">The full path to file.</param>
         /// <param name="ignoreCase">A flag indicating case-sensitive or insensitive comparison. (true indicates a case-insensitive comparison.)</param>
         /// <returns>relative path.</returns>
-        public static string FindRelativePath(string root, string path, bool ignoreCase)
+        public static string FindRelativePath(this string root, string path, bool ignoreCase)
         {
             var r = root.Split(Path.DirectorySeparatorChar);
             var f = path.Split(Path.DirectorySeparatorChar);
@@ -119,7 +117,7 @@ namespace DataDynamics
         /// <param name="basePath">The base directory path</param>
         /// <param name="absolutePath">An absolute path</param>
         /// <returns>A path to the given absolute path, relative to the base path</returns>
-        public static string AbsoluteToRelativePath(string basePath, string absolutePath)
+        public static string AbsoluteToRelativePath(this string basePath, string absolutePath)
         {
             char[] separators = {
                                     Path.DirectorySeparatorChar,
@@ -178,7 +176,7 @@ namespace DataDynamics
         /// <param name="basePath">The base directory path</param>
         /// <param name="relativePath">A path to the base directory path</param>
         /// <returns>An absolute path</returns>
-        public static string RelativeToAbsolutePath(string basePath, string relativePath)
+        public static string RelativeToAbsolutePath(this string basePath, string relativePath)
         {
             //if the relativePath isn't... 
             if (Path.IsPathRooted(relativePath))
@@ -224,7 +222,7 @@ namespace DataDynamics
             return absPath;
         }
 
-        public static string ToFullPath(string path)
+        public static string ToFullPath(this string path)
         {
             var parts = new List<string>(path.Split('/', '\\'));
             for (int i = 0; i < parts.Count; )

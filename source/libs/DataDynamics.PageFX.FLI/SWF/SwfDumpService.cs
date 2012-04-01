@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.FLI.SWF
                     Directory.CreateDirectory(dir);
                     //abc.DumpDirectory(dir);
                     string name = abc.Name.Replace('/', '.').Replace('\\', '.');
-                    abc.DumpXml(Path.Combine(dir, PathHelper.ReplaceInvalidFileNameChars(name) + ".xml"));
+                    abc.DumpXml(Path.Combine(dir, name.ReplaceInvalidFileNameChars() + ".xml"));
                 }
 
                 if (DumpImages)

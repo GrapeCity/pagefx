@@ -182,7 +182,7 @@ namespace DataDynamics.PageFX
 
             Serialize(asm, format);
 
-            SecurityHelper.AddTrustedPath(Path.GetDirectoryName(outpath));
+            FlashPlayerTrust.AddPath(Path.GetDirectoryName(outpath));
         }
         #endregion
 

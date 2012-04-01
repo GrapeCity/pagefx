@@ -65,7 +65,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public string FullName
         {
-            get { return NameHelper.MakeFullName(ns, name); }
+            get { return ns.MakeFullName(name); }
         }
 
         #region ctor

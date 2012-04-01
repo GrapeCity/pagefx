@@ -316,7 +316,7 @@ namespace DataDynamics.PageFX.FLI
             string map = namemap[name] as string;
             if (map != null) return map;
             name = ReplaceBadChars(name);
-            return clistyle ? NameHelper.Rename(name) : name;
+            return clistyle ? name.ToPascalCase() : name;
         }
 
         static string RenameParam(string name)
@@ -457,7 +457,7 @@ namespace DataDynamics.PageFX.FLI
                 ns = SetNamespacePrefix(ns, NsPrefix);
 
             const string name = "Global";
-            string fullname = NameHelper.MakeFullName(ns, name);
+            string fullname = ns.MakeFullName(name);
             var res = _assembly.FindType(fullname);
             if (res != null) return res;
         	var type = new UserDefinedType
@@ -977,7 +977,7 @@ namespace DataDynamics.PageFX.FLI
             string eventName = name;
             if (HasMember(type, name))
             {
-                eventName = "On" + NameHelper.Rename(name);
+                eventName = "On" + name.ToPascalCase();
             }
 
 			var be = FindBaseEvent(type, eventName);
@@ -1044,7 +1044,7 @@ namespace DataDynamics.PageFX.FLI
                 return null;
             }
 
-            string handlerName = NameHelper.MakeFullName(eventType.Namespace, eventType.Name + "Handler");
+            string handlerName = eventType.Namespace.MakeFullName(eventType.Name + "Handler");
             var handlerType = BuildTypeByName(handlerName);
             if (handlerType != null)
                 return handlerType;
@@ -1087,7 +1087,7 @@ namespace DataDynamics.PageFX.FLI
                 if (i >= 0)
                 {
                     var rs = asm.GetManifestResourceStream(resName);
-                    string name = PathHelper.TrimExtension(resName.Substring(i + 4).Trim());
+                    string name = resName.Substring(i + 4).Trim().TrimFileExtension();
                     string text = rs.ReadText();
                     _customMembers[name] = text;
                 }

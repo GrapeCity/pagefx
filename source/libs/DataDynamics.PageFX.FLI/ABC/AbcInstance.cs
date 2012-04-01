@@ -1122,7 +1122,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (mname.NamespaceSet != null)
             {
             	return mname.NamespaceSet
-					.Select(ns => NameHelper.MakeFullName(ns.NameString, name))
+					.Select(ns => ns.NameString.MakeFullName(name))
 					.Select(fullname => Find(fullname))
 					.FirstOrDefault(instance => instance != null);
             }

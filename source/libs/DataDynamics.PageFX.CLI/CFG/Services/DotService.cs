@@ -72,8 +72,8 @@ namespace DataDynamics.PageFX.CLI.CFG
         public static string GetTestDirectory(this MethodBody body)
         {
         	string dir = string.IsNullOrEmpty(Infrastructure.TestCaseDirectory) ? "c:\\QA\\PageFX" : Infrastructure.TestCaseDirectory;
-            dir = Path.Combine(dir, PathHelper.ReplaceInvalidPathChars(body.Method.DeclaringType.FullName));
-            dir = Path.Combine(dir, PathHelper.ReplaceInvalidFileNameChars(GetFullName(body.Method)));
+            dir = Path.Combine(dir, body.Method.DeclaringType.FullName.ReplaceInvalidPathChars());
+            dir = Path.Combine(dir, GetFullName(body.Method).ReplaceInvalidFileNameChars());
             Directory.CreateDirectory(dir);
             return dir;
         }

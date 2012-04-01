@@ -908,7 +908,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Utils
         public bool ContainsType(string ns, string name)
         {
-            string fn = NameHelper.MakeFullName(ns, name);
+            string fn = ns.MakeFullName(name);
             return Instances[fn] != null;
         }
 

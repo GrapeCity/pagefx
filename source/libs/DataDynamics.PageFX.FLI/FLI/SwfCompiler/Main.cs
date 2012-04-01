@@ -272,7 +272,7 @@ namespace DataDynamics.PageFX.FLI
                             string rpath = r.Location;
                             if (!Path.IsPathRooted(rpath))
                                 rpath = Path.Combine(Environment.CurrentDirectory, rpath);
-                            if (PathHelper.Compare(rpath, rsl.Library) == 0)
+                            if (rpath.ComparePath(rsl.Library) == 0)
                                 return true;
                             return false;
                         });

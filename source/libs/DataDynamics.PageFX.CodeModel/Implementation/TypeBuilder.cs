@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.CodeModel
                 p.Index = i + 1;
             	type.Members.Add(new Field
             	                 	{
-            	                 		Name = NameHelper.Cap(p.Name),
+            	                 		Name = NameExtensions.Capitalize(p.Name),
             	                 		Visibility = Visibility.Public,
             	                 		Type = p.Type
             	                 	});

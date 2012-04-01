@@ -318,7 +318,7 @@ namespace DataDynamics.PageFX.CLI.IL
             if (F == _block) return false;
 
             Node T, C;
-            if (!FlowGraphHelper.IsBranchOfTernaryExpression(F, out T, out C))
+            if (!F.IsBranchOfTernaryExpression(out T, out C))
                 return false;
 
             //NOTE: T or F can be not analysed yet

@@ -56,7 +56,7 @@ namespace DataDynamics.Tests
 
         public void TestToFullPath(string path, string expected)
         {
-            string fp = PathHelper.ToFullPath(path);
+            string fp = path.ToFullPath();
             Assert.AreEqual(expected, fp);
         }
 

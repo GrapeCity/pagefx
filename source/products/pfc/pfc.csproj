@@ -52,7 +52,7 @@
     <Compile Include="DebugSamples.cs" />
     <Compile Include="PFC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SecurityHelper.cs" />
+    <Compile Include="FlashPlayerTrust.cs" />
     <Compile Include="Tests.cs" />
   </ItemGroup>
   <ItemGroup>

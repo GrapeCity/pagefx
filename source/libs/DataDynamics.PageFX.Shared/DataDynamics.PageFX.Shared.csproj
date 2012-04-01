@@ -130,7 +130,7 @@
     <Compile Include="PageFX\PfxCompiler.cs" />
     <Compile Include="Utils\Range.cs" />
     <Compile Include="System.IO\DebugWriter.cs" />
-    <Compile Include="Utils\PathHelper.cs" />
+    <Compile Include="Utils\PathExtensions.cs" />
     <Compile Include="Tools\Dot.cs" />
     <Compile Include="Utils\ActionSelector.cs" />
     <Compile Include="Utils\CommandLine.cs" />
@@ -142,7 +142,7 @@
     <Compile Include="Utils\FrameworkInfo.cs" />
     <Compile Include="Utils\Indent.cs" />
     <Compile Include="Utils\ISupportXmlDump.cs" />
-    <Compile Include="Utils\NameHelper.cs" />
+    <Compile Include="Utils\NameExtensions.cs" />
     <Compile Include="Utils\ParseExtensions.cs" />
     <Compile Include="Utils\ReflectionExtensions.cs" />
     <Compile Include="Utils\ResourceExtensions.cs" />

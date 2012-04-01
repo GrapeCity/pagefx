@@ -284,7 +284,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                         string dir = System.IO.Path.GetDirectoryName(rb.ZipEntry);
                         string imagePath = System.IO.Path.Combine(dir, source);
                         imagePath = imagePath.Replace('\\', '/');
-                        imagePath = PathHelper.ToFullPath(imagePath);
+                        imagePath = imagePath.ToFullPath();
                         context.ResolvedSource = imagePath;
                         return context.SWC.ResolveImage(imagePath);
                     }

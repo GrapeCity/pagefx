@@ -2,26 +2,26 @@ using System.Text;
 
 namespace DataDynamics
 {
-    public static class NameHelper
+    public static class NameExtensions
     {
-        public static string Cap(string s)
+        public static string Capitalize(string s)
         {
-            if (char.IsLower(s[0]))
-            {
-                var arr = s.ToCharArray();
-                arr[0] = char.ToUpper(arr[0]);
-                return new string(arr);
-            }
-            return s;
+        	if (!char.IsLower(s[0]))
+        	{
+        		return s;
+        	}
+        	var arr = s.ToCharArray();
+        	arr[0] = char.ToUpper(arr[0]);
+        	return new string(arr);
         }
 
-        public static void ToLower(char[] c, int begin, int end)
+        private static void ToLower(char[] c, int begin, int end)
         {
             for (int i = begin; i <= end && i < c.Length; ++i)
                 c[i] = char.ToLower(c[i]);
         }
 
-        public static string Recap(string name)
+        private static string Recapitalize(string name)
         {
             if (string.IsNullOrEmpty(name)) return "";
             var c = name.ToCharArray();
@@ -69,7 +69,7 @@ namespace DataDynamics
             return new string(c);
         }
 
-        public static string Rename(string name)
+        public static string ToPascalCase(this string name)
         {
             if (string.IsNullOrEmpty(name)) return name;
             if (name.Length <= 2) return name.ToUpper();
@@ -78,18 +78,18 @@ namespace DataDynamics
             var s = new StringBuilder();
             foreach (string part in parts)
             {
-            	s.Append(string.IsNullOrEmpty(part) ? "_" : Recap(part));
+            	s.Append(string.IsNullOrEmpty(part) ? "_" : Recapitalize(part));
             }
         	return s.ToString();
         }
 
-        public static string MakeFullName(string ns, string name)
+        public static string MakeFullName(this string nameSpace, string name)
         {
-            if (string.IsNullOrEmpty(ns))
+            if (string.IsNullOrEmpty(nameSpace))
                 return name;
             if (string.IsNullOrEmpty(name))
-                return ns;
-            return ns + "." + name;
+                return nameSpace;
+            return nameSpace + "." + name;
         }
     }
 }

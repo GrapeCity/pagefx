@@ -854,7 +854,7 @@ namespace abc
                         if (!string.IsNullOrEmpty(c.Name))
                         {
                             name += "_";
-                            name += PathHelper.ReplaceInvalidFileNameChars(c.Name);
+                            name += c.Name.ReplaceInvalidFileNameChars();
                         }
                         var data = tag.GetData();
                         data = TrimStart(data, 2);
