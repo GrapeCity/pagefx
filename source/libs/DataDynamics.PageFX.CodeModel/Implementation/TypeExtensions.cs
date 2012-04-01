@@ -181,11 +181,13 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static IType GetTypeArgument(this IType type, int arg)
         {
-            var gi = type as IGenericInstance;
-            if (gi == null)
-                throw new InvalidOperationException(
-                    string.Format("given type {0} is not generic instance", type.FullName));
-            return gi.GenericArguments[arg];
+            var genericInstance = type as IGenericInstance;
+			if (genericInstance == null)
+			{
+				throw new InvalidOperationException(
+					string.Format("given type {0} is not generic instance", type.FullName));
+			}
+        	return genericInstance.GenericArguments[arg];
         }
 
         public static bool IsImplicitCast(this IType source, IType target)
@@ -213,7 +215,7 @@ namespace DataDynamics.PageFX.CodeModel
                             var to = (IArrayType)target;
                             if (from.Rank != to.Rank)
                                 return false;
-                            if (@from.ElementType.IsImplicitCast(to.ElementType))
+                            if (from.ElementType.IsImplicitCast(to.ElementType))
                                 return true;
                         }
                     }
@@ -535,5 +537,26 @@ namespace DataDynamics.PageFX.CodeModel
             if (method.IsConstructor) return true;
             return method.Type == SystemTypes.Void;
         }
+
+    	public static bool IsEqual(this IType a, IType b)
+    	{
+    		if (a == null) return b == null;
+    		if (b == null) return false;
+    		if (ReferenceEquals(a, b)) return true;
+    		if (a.TypeKind != b.TypeKind) return false;
+    		if (!a.DeclaringType.IsEqual(b.DeclaringType)) return false;
+    		if (a.DeclaringMethod != b.DeclaringMethod) return false;
+    		if (a.FullName != b.FullName) return false;
+    		return true;
+    	}
+
+    	public static int EvalHashCode(this IType type)
+    	{
+    		int h = 0;
+    		if (type.DeclaringType != null)
+    			h ^= type.DeclaringType.EvalHashCode();
+    		h ^= type.FullName.GetHashCode();
+    		return h;
+    	}
     }
 }

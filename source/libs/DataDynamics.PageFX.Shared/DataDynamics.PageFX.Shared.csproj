@@ -93,7 +93,7 @@
     <Compile Include="DataStructures\ReadOnlyList.cs" />
     <Compile Include="DataStructures\SimpleList.cs" />
     <Compile Include="DataStructures\Pair.cs" />
-    <Compile Include="Graphics\ColorHelper.cs" />
+    <Compile Include="Graphics\ColorExtensions.cs" />
     <Compile Include="Graphics\Enums.cs" />
     <Compile Include="Graphics\GPBuilder.cs" />
     <Compile Include="Graphics\KnownPathes.cs" />
@@ -121,8 +121,7 @@
     <Compile Include="Utils\FormatAttribute.cs" />
     <Compile Include="Utils\Hex.cs" />
     <Compile Include="Utils\IEEEFloat.cs" />
-    <Compile Include="Graphics\ImageIterator.cs" />
-    <Compile Include="Graphics\ImageHelper.cs" />
+    <Compile Include="Graphics\ImageExtensions.cs" />
     <Compile Include="Utils\LazyValue.cs" />
     <Compile Include="Utils\LogWriter.cs" />
     <Compile Include="Utils\Angle.cs" />

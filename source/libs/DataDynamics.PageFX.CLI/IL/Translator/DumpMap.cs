@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             CLIDebug.LogInfo("DumpILMap started. Format = {0}. FileName = {1}.", format, filename);
 
-            string dir = DirHelper.GetDirectory(_body);
+            string dir = _body.GetTestDirectory();
             Directory.CreateDirectory(dir);
             using (var writer = new StreamWriter(Path.Combine(dir, filename)))
             {

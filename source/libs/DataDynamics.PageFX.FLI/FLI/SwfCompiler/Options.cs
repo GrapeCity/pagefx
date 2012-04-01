@@ -173,8 +173,8 @@ namespace DataDynamics.PageFX.FLI
 		void SetBgColor(CommandLine cl)
 		{
 			string s = cl.GetOption(PFCOptions.BackgroundColor);
-			Color backgroundColor = BackgroundColor;
-			if (ColorHelper.TryParse(s, ref backgroundColor))
+			var backgroundColor = BackgroundColor;
+			if (s.TryParseColor(ref backgroundColor))
 			{
 				BackgroundColor = backgroundColor;
 

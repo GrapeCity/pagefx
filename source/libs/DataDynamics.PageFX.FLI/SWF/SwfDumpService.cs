@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using DataDynamics.Imaging;
 using DataDynamics.PageFX.FLI.SWC;
 
 namespace DataDynamics.PageFX.FLI.SWF
@@ -76,7 +77,7 @@ namespace DataDynamics.PageFX.FLI.SWF
 
                         string name = "";
                         name += c.CharacterID;
-                        if (ImageHelper.IsIndexed(img))
+                        if (img.IsIndexed())
                             name += "_indexed";
                         if (!string.IsNullOrEmpty(c.Name))
                         {
@@ -86,7 +87,7 @@ namespace DataDynamics.PageFX.FLI.SWF
                         
                         try
                         {
-                            ImageHelper.Save(img, Path.Combine(dir, name + ".png"));
+                            ImageExtensions.Save(img, Path.Combine(dir, name + ".png"));
                         }
                         catch (Exception e)
                         {

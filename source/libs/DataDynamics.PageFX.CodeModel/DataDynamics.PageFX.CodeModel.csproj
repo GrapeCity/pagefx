@@ -149,7 +149,6 @@
     <Compile Include="Implementation\Assembly.cs" />
     <Compile Include="Implementation\AssemblyReference.cs" />
     <Compile Include="Implementation\CLRNames.cs" />
-    <Compile Include="Implementation\CMHelper.cs" />
     <Compile Include="Syntax\ISyntaxProvider.cs" />
     <Compile Include="Syntax\SyntaxFormatter.cs" />
     <Compile Include="Implementation\CustomAttribute.cs" />

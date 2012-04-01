@@ -9,7 +9,7 @@ using MethodBody=DataDynamics.PageFX.CLI.IL.MethodBody;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
-    internal static class DirHelper
+    internal static class MethodBodyExtensions
     {
         private static string GetTypeName(IType type)
         {
@@ -55,7 +55,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             }
         }
 
-        public static string GetFullName(IMethod m)
+        private static string GetFullName(IMethod m)
         {
             var s = new StringBuilder();
             s.Append(m.Name);
@@ -69,7 +69,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             return s.ToString();
         }
 
-        public static string GetDirectory(MethodBody body)
+        public static string GetTestDirectory(this MethodBody body)
         {
         	string dir = string.IsNullOrEmpty(Infrastructure.TestCaseDirectory) ? "c:\\QA\\PageFX" : Infrastructure.TestCaseDirectory;
             dir = Path.Combine(dir, PathHelper.ReplaceInvalidPathChars(body.Method.DeclaringType.FullName));
@@ -83,7 +83,7 @@ namespace DataDynamics.PageFX.CLI.CFG
     {
         public static string GetDirectory(MethodBody body)
         {
-            return DirHelper.GetDirectory(body);
+            return body.GetTestDirectory();
         }
 
         public static string MakePath(MethodBody body, string name)

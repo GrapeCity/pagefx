@@ -340,12 +340,12 @@ namespace DataDynamics.PageFX.CodeModel
         #region Object Override Members
         public override bool Equals(object obj)
         {
-            return CMHelper.AreEquals(this, obj as IType);
+            return this.IsEqual(obj as IType);
         }
 
         public override int GetHashCode()
         {
-            return CMHelper.GetHashCode(this);
+            return this.EvalHashCode();
         }
 
         public override string ToString()

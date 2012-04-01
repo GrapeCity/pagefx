@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Xml;
+using DataDynamics.Imaging;
 
 namespace DataDynamics.PageFX.FLI.SWF
 {
@@ -182,7 +183,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             if (_image == null)
                 throw new InvalidOperationException();
 
-            var bmp = ImageHelper.ToBitmap(_image);
+            var bmp = _image.ToBitmap();
             if (IsIndexedImage(bmp))
             {
                 WriteIndexed(writer, bmp, alpha);

@@ -8,6 +8,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using DataDynamics.Imaging;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 
@@ -306,7 +307,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         {
             var c = GetCharacter(id) as ISwfImageCharacter;
             if (c != null)
-                return ImageHelper.ToBitmap(c.Image);
+                return c.Image.ToBitmap();
             return null;
         }
 

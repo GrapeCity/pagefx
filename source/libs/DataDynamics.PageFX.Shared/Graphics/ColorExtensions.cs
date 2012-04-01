@@ -1,21 +1,10 @@
-using System;
 using System.Drawing;
 
 namespace DataDynamics
 {
-    public static class ColorHelper
+    public static class ColorExtensions
     {
-        static readonly Random random = new Random();
-
-        public static Color Random()
-        {
-            int r = random.Next(0, 255);
-            int g = random.Next(0, 255);
-            int b = random.Next(0, 255);
-            return Color.FromArgb(r, g, b);
-        }
-
-        public static bool TryParse(string s, ref Color color)
+        public static bool TryParseColor(this string s, ref Color color)
         {
             if (string.IsNullOrEmpty(s)) return false;
             s = s.Trim();
@@ -31,19 +20,19 @@ namespace DataDynamics
                 {
                     case 6:
                         {
-                            int r = ParseHelper.ParseHex(s.Substring(0, 2));
-                            int g = ParseHelper.ParseHex(s.Substring(2, 2));
-                            int b = ParseHelper.ParseHex(s.Substring(4, 2));
+                            int r = s.Substring(0, 2).ParseHexInt32();
+                            int g = s.Substring(2, 2).ParseHexInt32();
+                            int b = s.Substring(4, 2).ParseHexInt32();
                             color = Color.FromArgb(r, g, b);
                         }
                         return true;
 
                     case 8:
                         {
-                            int a = ParseHelper.ParseHex(s.Substring(0, 2));
-                            int r = ParseHelper.ParseHex(s.Substring(2, 2));
-                            int g = ParseHelper.ParseHex(s.Substring(4, 2));
-                            int b = ParseHelper.ParseHex(s.Substring(6, 2));
+                            int a = s.Substring(0, 2).ParseHexInt32();
+                            int r = s.Substring(2, 2).ParseHexInt32();
+                            int g = s.Substring(4, 2).ParseHexInt32();
+                            int b = s.Substring(6, 2).ParseHexInt32();
                             color = Color.FromArgb(a, r, g, b);
                         }
                         return true;

@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.CLI.CFG
     {
         public static void Dump(IEnumerable<Node> cfg, MethodBody body, string root)
         {
-            string dir = DirHelper.GetDirectory(body);
+            string dir = body.GetTestDirectory();
 
             Directory.CreateDirectory(dir);
             string path = Path.Combine(dir, "cil.txt");

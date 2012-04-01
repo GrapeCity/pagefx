@@ -29,7 +29,7 @@ namespace DataDynamics
         	return s != null && s.All(IsHexDigit);
         }
 
-    	public static int ParseHex(string s)
+    	public static int ParseHexInt32(this string s)
         {
             return int.Parse(s, NumberStyles.HexNumber, null);
         }

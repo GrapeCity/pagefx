@@ -71,10 +71,11 @@ namespace DataDynamics.UI
             dh = (int)(dh * z);
 
             m_Image = new Bitmap(dw, dh);
-            var g = Graphics.FromImage(m_Image);
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.DrawImage(tempImage, 0, 0, dw, dh);
-            g.Dispose();
+			using (var g = Graphics.FromImage(m_Image))
+			{
+				g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				g.DrawImage(tempImage, 0, 0, dw, dh);
+			}
 
             tempImage.Dispose();
         }
