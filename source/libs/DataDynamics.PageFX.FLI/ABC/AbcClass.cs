@@ -123,7 +123,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region IAbcAtom Members
         public void Read(SwfReader reader)
         {
-            Initializer = AbcIO.ReadMethod(reader);
+            Initializer = reader.ReadAbcMethod();
             _traits.Read(reader);
         }
 

@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-
-using DataDynamics.Compression.Zip.Compression;
 using DataDynamics.Compression.Checksums;
 
 namespace DataDynamics.Compression.Zip.Compression.Streams 

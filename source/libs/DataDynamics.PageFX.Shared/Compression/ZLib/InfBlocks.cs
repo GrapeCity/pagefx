@@ -1,7 +1,6 @@
 namespace DataDynamics.ZLib
 {
 	using System;
-	using System.Diagnostics;
 
 	internal class InfBlocks
 	{

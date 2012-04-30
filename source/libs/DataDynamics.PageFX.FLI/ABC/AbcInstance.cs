@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -720,23 +719,23 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region IO
         public void Read(SwfReader reader)
         {
-            Name = AbcIO.ReadMultiname(reader);
-            SuperName = AbcIO.ReadMultiname(reader);
+            Name = reader.ReadMultiname();
+            SuperName = reader.ReadMultiname();
             Flags = (AbcClassFlags)reader.ReadUInt8();
 
             if ((Flags & AbcClassFlags.ProtectedNamespace) != 0)
             {
-                _protectedNamespace = AbcIO.ReadNamespace(reader);
+                _protectedNamespace = reader.ReadAbcNamespace();
             }
 
             int intrf_count = (int)reader.ReadUIntEncoded();
             for (int i = 0; i < intrf_count; ++i)
             {
-                var iface = AbcIO.ReadMultiname(reader);
+                var iface = reader.ReadMultiname();
                 _interfaces.Add(iface);
             }
 
-            Initializer = AbcIO.ReadMethod(reader);
+            Initializer = reader.ReadAbcMethod();
 
             _traits.Read(reader);
         }

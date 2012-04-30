@@ -1,7 +1,6 @@
 #if DEBUG
 using System;
 using System.IO;
-using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.FLI
 {

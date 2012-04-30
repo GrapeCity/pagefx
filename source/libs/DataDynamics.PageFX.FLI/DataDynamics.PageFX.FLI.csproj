@@ -68,7 +68,7 @@
     <Compile Include="ABC\AbcTraitCollection.cs" />
     <Compile Include="ABC\AbcFile.Define.cs" />
     <Compile Include="ABC\AbcFile.Import.cs" />
-    <Compile Include="ABC\AbcIO.cs" />
+    <Compile Include="ABC\IOExtensions.cs" />
     <Compile Include="ABC\AbcLateMethodCollection.cs" />
     <Compile Include="ABC\AbcMerger.cs" />
     <Compile Include="ABC\AbcParameter.cs" />

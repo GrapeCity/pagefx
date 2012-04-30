@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using DataDynamics.Compression.Checksums;
-using DataDynamics.Compression.Zip.Compression;
 
 namespace DataDynamics.Compression.Zip.Compression.Streams 
 {

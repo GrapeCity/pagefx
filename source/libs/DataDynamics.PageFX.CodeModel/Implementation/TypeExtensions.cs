@@ -185,7 +185,7 @@ namespace DataDynamics.PageFX.CodeModel
 			if (genericInstance == null)
 			{
 				throw new InvalidOperationException(
-					string.Format("given type {0} is not generic instance", type.FullName));
+					String.Format("given type {0} is not generic instance", type.FullName));
 			}
         	return genericInstance.GenericArguments[arg];
         }
@@ -213,9 +213,9 @@ namespace DataDynamics.PageFX.CodeModel
                         {
                             var from = (IArrayType)source;
                             var to = (IArrayType)target;
-                            if (from.Rank != to.Rank)
+                            if (@from.Rank != to.Rank)
                                 return false;
-                            if (from.ElementType.IsImplicitCast(to.ElementType))
+                            if (@from.ElementType.IsImplicitCast(to.ElementType))
                                 return true;
                         }
                     }
@@ -394,13 +394,13 @@ namespace DataDynamics.PageFX.CodeModel
                     var arr = line.Split(sep, StringSplitOptions.RemoveEmptyEntries);
                     int n = arr.Length;
                     var from = SystemType.ParseCode(arr[0]);
-                    if (from == SystemTypeCode.None)
+                    if (@from == SystemTypeCode.None)
                         throw new InvalidOperationException();
                     for (int i = 1; i < n; ++i)
                     {
                         var to = SystemType.ParseCode(arr[i]);
                         if (to != SystemTypeCode.None)
-                            table[(int)from, (int)to] = true;
+                            table[(int)@from, (int)to] = true;
                     }
                 }
             }
@@ -413,16 +413,16 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static bool HasImplicitConversion(IType from, IType to)
         {
-            if (from == to) return true;
-            var sf = from.SystemType;
+            if (@from == to) return true;
+            var sf = @from.SystemType;
             if (sf == null)
-                return HasCustomImplicitOperator(from, to);
+                return HasCustomImplicitOperator(@from, to);
             var st = to.SystemType;
             if (st == null)
-                return HasCustomImplicitOperator(from, to);
+                return HasCustomImplicitOperator(@from, to);
             if (ImplicitNumericConversions[(int)sf.Code, (int)st.Code])
                 return true;
-            return HasCustomImplicitOperator(from, to);
+            return HasCustomImplicitOperator(@from, to);
         }
         #endregion
 
@@ -557,6 +557,20 @@ namespace DataDynamics.PageFX.CodeModel
     			h ^= type.DeclaringType.EvalHashCode();
     		h ^= type.FullName.GetHashCode();
     		return h;
+    	}
+
+    	public static bool IsAttributeType(this IType type)
+    	{
+    		if (type == null) return false;
+    		const string systemAttribute = "System.Attribute";
+    		return type.FullName == systemAttribute || type.IsSubclassOf(systemAttribute);
+    	}
+
+    	public static bool IsExceptionType(this IType type)
+    	{
+    		if (type == null) return false;
+    		const string systemException = "System.Exception";
+    		return type.FullName == systemException || type.IsSubclassOf(systemException);
     	}
     }
 }

@@ -1,47 +1,36 @@
 using System;
-using System.Diagnostics;
 using System.Text;
 using DataDynamics.PageFX.FLI.SWF;
 
 namespace DataDynamics.PageFX.FLI.ABC
 {
-    public static class AbcIO
+    public static class IOExtensions
     {
-        public static int SizeOf(AbcFile file, ISwfAtom atom)
+    	public static AbcMethod ReadAbcMethod(this SwfReader reader)
         {
-            using (var writer = new SwfWriter())
-            {
-                writer.ABC = file;
-                atom.Write(writer);
-                return writer.ToByteArray().Length;
-            }
-        }
-
-        public static AbcMethod ReadMethod(SwfReader reader)
-        {
-            int index = (int)reader.ReadUIntEncoded();
+            var index = (int)reader.ReadUIntEncoded();
             return reader.ABC.Methods[index];
         }
 
-        public static AbcConst<string> ReadString(SwfReader reader)
+        public static AbcConst<string> ReadAbcString(this SwfReader reader)
         {
-            int index = (int)reader.ReadUIntEncoded();
+            var index = (int)reader.ReadUIntEncoded();
             return reader.ABC.StringPool[index];
         }
 
-        public static AbcNamespace ReadNamespace(SwfReader reader)
+        public static AbcNamespace ReadAbcNamespace(this SwfReader reader)
         {
-            int index = (int)reader.ReadUIntEncoded();
+            var index = (int)reader.ReadUIntEncoded();
             return reader.ABC.Namespaces[index];
         }
 
-        public static AbcMultiname ReadMultiname(SwfReader reader)
+        public static AbcMultiname ReadMultiname(this SwfReader reader)
         {
-            int index = (int)reader.ReadUIntEncoded();
+            var index = (int)reader.ReadUIntEncoded();
             return reader.ABC.Multinames[index];
         }
 
-        public static T ReadConst<T>(SwfReader reader, AbcConstKind kind)
+        public static T ReadAbcConst<T>(this SwfReader reader, AbcConstKind kind)
         {
             switch (kind)
             {
@@ -57,7 +46,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 case AbcConstKind.String:
                     {
                         string s = string.Empty;
-                        int len = (int)reader.ReadUIntEncoded();
+                        var len = (int)reader.ReadUIntEncoded();
                         if (len > 0)
                         {
                             var data = reader.ReadUInt8(len);
@@ -71,7 +60,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public static void WriteConst<T>(SwfWriter writer, T value)
+        public static void WriteAbcConst<T>(this SwfWriter writer, T value)
         {
             var typeCode = Type.GetTypeCode(typeof(T));
             switch (typeCode)
@@ -90,7 +79,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
                 case TypeCode.String:
                     {
-                        string s = value as string;
+                        var s = value as string;
                         if (string.IsNullOrEmpty(s))
                         {
                             writer.WriteUIntEncoded(0);
@@ -109,7 +98,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public static AbcConstKind GetConstantKind(object value)
+        private static AbcConstKind GetConstantKind(object value)
         {
             if (value == null) 
                 return AbcConstKind.Null;
@@ -140,20 +129,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public static bool IsStandardConstant(AbcConstKind kind)
-        {
-            switch (kind)
-            {
-                case AbcConstKind.True:
-                case AbcConstKind.False:
-                case AbcConstKind.Null:
-                case AbcConstKind.Undefined:
-                    return true;
-            }
-            return false;
-        }
-
-        public static void WriteConstIndex(SwfWriter writer, object value)
+    	public static void WriteConstIndex(this SwfWriter writer, object value)
         {
             var c = value as IAbcConst;
             if (c != null)

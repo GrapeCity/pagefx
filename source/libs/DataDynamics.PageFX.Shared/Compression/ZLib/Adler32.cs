@@ -1,7 +1,5 @@
 namespace DataDynamics.ZLib
 {
-	using System;
-
 	internal class Adler32
 	{
 		// largest prime smaller than 65536

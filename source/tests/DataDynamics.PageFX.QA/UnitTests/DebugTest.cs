@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.FLI.Tests

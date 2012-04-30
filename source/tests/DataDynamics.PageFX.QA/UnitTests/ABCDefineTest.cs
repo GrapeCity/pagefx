@@ -1,5 +1,4 @@
-﻿using System;
-using DataDynamics.PageFX.FLI.ABC;
+﻿using DataDynamics.PageFX.FLI.ABC;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.FLI.Tests

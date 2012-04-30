@@ -102,12 +102,12 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region IAbcAtom Members
         public void Read(SwfReader reader)
         {
-            Value = AbcIO.ReadConst<T>(reader, SharedKind);
+            Value = reader.ReadAbcConst<T>(SharedKind);
         }
 
         public void Write(SwfWriter writer)
         {
-            AbcIO.WriteConst(writer, Value);
+            writer.WriteAbcConst(Value);
         }
         #endregion
 

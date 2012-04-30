@@ -1,7 +1,5 @@
 namespace DataDynamics.ZLib
 {
-	using System;
-
 	internal class Inflate
 	{
 		private const int MAX_WBITS=15; // 32K LZ77 window

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -401,19 +400,19 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             int param_count = (int)reader.ReadUIntEncoded();
 
-            _returnType = AbcIO.ReadMultiname(reader); //ret_type
+            _returnType = reader.ReadMultiname(); //ret_type
 
             _beginParamTypes = (int)reader.Position;
 
             //U30 param_types[param_count]
             for (int i = 0; i < param_count; ++i)
             {
-				var type = AbcIO.ReadMultiname(reader);
+				var type = reader.ReadMultiname();
             	_params.Add(new AbcParameter {Type = type});
             }
 
             _beginName = (int)reader.Position;
-            _name = AbcIO.ReadString(reader); //name_index
+            _name = reader.ReadAbcString(); //name_index
             _flags = (AbcMethodFlags)reader.ReadUInt8();
 
             _beginParamValues = (int)reader.Position;
@@ -436,7 +435,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 for (int i = 0; i < param_count; ++i)
                 {
-                    _params[i].Name = AbcIO.ReadString(reader);
+                    _params[i].Name = reader.ReadAbcString();
                 }
             }
             _end = (int)reader.Position;
@@ -485,7 +484,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                     var p = _params[i];
                     if (p.IsOptional)
                     {
-                        AbcIO.WriteConstIndex(writer, p.Value);
+                        writer.WriteConstIndex(p.Value);
                     }
                 }
             }

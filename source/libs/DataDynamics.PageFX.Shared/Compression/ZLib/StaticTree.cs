@@ -1,7 +1,5 @@
 namespace DataDynamics.ZLib
 {
-	using System;
-
 	internal class StaticTree
 	{
 		private const int MAX_BITS = 15;

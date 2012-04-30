@@ -63,7 +63,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region IAbcAtom Members
         public void Read(SwfReader reader)
         {
-            Name = AbcIO.ReadString(reader);
+            Name = reader.ReadAbcString();
             _items.Read(reader);
         }
 
@@ -228,12 +228,12 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 for (int i = 0; i < n; ++i)
                 {
-                    var s = AbcIO.ReadString(reader);
+                    var s = reader.ReadAbcString();
                     _keys.Add(s);
                 }
                 for (int i = 0; i < n; ++i)
                 {
-                    var s = AbcIO.ReadString(reader);
+                    var s = reader.ReadAbcString();
                     _values.Add(s);
                 }
             }

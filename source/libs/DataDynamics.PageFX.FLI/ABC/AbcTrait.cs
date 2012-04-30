@@ -118,7 +118,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             public void Read(SwfReader reader)
             {
                 _slotID = (int)reader.ReadUIntEncoded(); //slod_id
-                _type = AbcIO.ReadMultiname(reader);
+                _type = reader.ReadMultiname();
 
                 _hasValue = false;
                 int index = (int)reader.ReadUIntEncoded(); //vindex
@@ -136,7 +136,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 writer.WriteUIntEncoded((uint)_type.Index);
                 if (_hasValue)
                 {
-                    AbcIO.WriteConstIndex(writer, _value);
+                    writer.WriteConstIndex(_value);
                 }
                 else
                 {
@@ -219,7 +219,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             public void Read(SwfReader reader)
             {
                 _slotID = (int)reader.ReadUIntEncoded(); //slot_id
-                _method = AbcIO.ReadMethod(reader); //function
+                _method = reader.ReadAbcMethod(); //function
             }
 
             public void Write(SwfWriter writer)
@@ -265,7 +265,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             public void Read(SwfReader reader)
             {
                 _dispID = (int)reader.ReadUIntEncoded(); //disp_id
-                _method = AbcIO.ReadMethod(reader); //method
+                _method = reader.ReadAbcMethod(); //method
             }
 
             public void Write(SwfWriter writer)
@@ -808,7 +808,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region ISwfAtom Members
         public void Read(SwfReader reader)
         {
-            Name = AbcIO.ReadMultiname(reader);
+            Name = reader.ReadMultiname();
 
             byte kind = reader.ReadUInt8();
             Kind = (AbcTraitKind)(kind & 0x0F);

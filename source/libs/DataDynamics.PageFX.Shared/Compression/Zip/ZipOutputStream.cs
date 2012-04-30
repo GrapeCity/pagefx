@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Collections;
-using System.Text;
-
 using DataDynamics.Compression.Checksums;
 using DataDynamics.Compression.Zip.Compression;
 using DataDynamics.Compression.Zip.Compression.Streams;

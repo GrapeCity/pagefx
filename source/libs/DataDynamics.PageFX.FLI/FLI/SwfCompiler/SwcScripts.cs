@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using DataDynamics.Compression.Zip;
 using DataDynamics.PageFX.FLI.ABC;

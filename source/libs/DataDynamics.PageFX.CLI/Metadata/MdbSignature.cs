@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {

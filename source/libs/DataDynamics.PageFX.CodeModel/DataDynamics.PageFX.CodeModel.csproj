@@ -138,7 +138,7 @@
     <Compile Include="Implementation\Statements\Statement.cs" />
     <Compile Include="Implementation\StatementVisitor.cs" />
     <Compile Include="Implementation\AssemblyVerifier.cs" />
-    <Compile Include="Implementation\TypeFilters.cs" />
+    <Compile Include="Implementation\PfxTypeExtensions.cs" />
     <Compile Include="Implementation\TypeExtensions.cs" />
     <Compile Include="Implementation\Types\GenericInstance.cs" />
     <Compile Include="Implementation\Members\ReadOnlyMemberCollection.cs" />

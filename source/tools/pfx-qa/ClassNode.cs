@@ -37,10 +37,10 @@ namespace DataDynamics.PageFX
             if (type.IsEnum) return false;
             if (type.TypeKind == TypeKind.Delegate) return false;
             if (type.IsInterface) return false;
-            if (TypeFilters.IsPageFX(type)) return false;
+            if (type.IsPfxSpecific()) return false;
             if (type == SystemTypes.Void) return false;
-            if (TypeFilters.IsAttribute(type)) return false;
-            if (TypeFilters.IsException(type)) return false;
+            if (type.IsAttributeType()) return false;
+            if (type.IsExceptionType()) return false;
 			if (ExcludedNamespaces.Contains(type.Namespace)) return false;
 			if (ExcludedTypes.Contains(type.FullName)) return false;
             return true;

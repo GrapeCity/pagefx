@@ -71,7 +71,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 1; i < n; ++i)
             {
-                Add(AbcIO.ReadConst<T>(reader, AbcConst<T>.SharedKind));
+                Add(reader.ReadAbcConst<T>(AbcConst<T>.SharedKind));
             }
             _end = (int)reader.Position;
         }
@@ -89,7 +89,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 for (int i = 1; i < n; ++i)
                 {
                     var value = this[i].Value;
-                    AbcIO.WriteConst(writer, value);
+                    writer.WriteAbcConst(value);
                 }
             }
         }

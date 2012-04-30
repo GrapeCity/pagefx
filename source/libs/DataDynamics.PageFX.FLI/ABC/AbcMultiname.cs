@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -402,14 +401,14 @@ namespace DataDynamics.PageFX.FLI.ABC
                     //U30 name_index
                 case AbcConstKind.QName:
                 case AbcConstKind.QNameA:
-                    _ns = AbcIO.ReadNamespace(reader);
-                    _name = AbcIO.ReadString(reader);
+                    _ns = reader.ReadAbcNamespace();
+                    _name = reader.ReadAbcString();
                     break;
 
                     //U30 name_index
                 case AbcConstKind.RTQName:
                 case AbcConstKind.RTQNameA:
-                    _name = AbcIO.ReadString(reader);
+                    _name = reader.ReadAbcString();
                     break;
 
                 case AbcConstKind.RTQNameL:
@@ -422,7 +421,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 case AbcConstKind.Multiname:
                 case AbcConstKind.MultinameA:
                     {
-                        _name = AbcIO.ReadString(reader);
+                        _name = reader.ReadAbcString();
 
                         int index = (int)reader.ReadUIntEncoded(); //ns_set
                         if (index == 0)

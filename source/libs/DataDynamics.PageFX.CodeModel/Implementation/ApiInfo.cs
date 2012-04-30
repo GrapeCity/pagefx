@@ -89,7 +89,7 @@ namespace DataDynamics.PageFX.CodeModel
             if (ExcludeGenerics && type is IGenericType) return false;
 
             if (IsExcludedSystemType(type)) return false;
-            if (TypeFilters.IsPageFX(type)) return false;
+            if (type.IsPfxSpecific()) return false;
             //if (TypeFilters.IsAttribute(type)) return false;
             //if (TypeFilters.IsException(type)) return false;
             if (ExcludedNamespaces.Contains(type.Namespace)) return false;
@@ -620,20 +620,16 @@ namespace DataDynamics.PageFX.CodeModel
             }
 
         	private static string GetModifier(IParameter p)
-            {
-                if (p.IsByRef)
-                    return p.IsOut ? "out " : "ref ";
-                return p.IsIn ? "in " : "";
-            }
+        	{
+        		return p.IsByRef ? (p.IsOut ? "out " : "ref ") : (p.IsIn ? "in " : "");
+        	}
 
-            public static string GetDirection(IParameter p)
-            {
-                if (p.IsByRef)
-                    return p.IsOut ? "out" : "ref";
-                return "in";
-            }
+        	public static string GetDirection(IParameter p)
+        	{
+        		return p.IsByRef ? (p.IsOut ? "out" : "ref") : "in";
+        	}
 
-            private static IType UnwrapRefType(IType type)
+        	private static IType UnwrapReference(IType type)
             {
                 while (type.TypeKind == TypeKind.Reference)
                 {
@@ -644,7 +640,7 @@ namespace DataDynamics.PageFX.CodeModel
 
             private static string GetArgTypeName(IType type, bool displayName)
             {
-                type = UnwrapRefType(type);
+                type = UnwrapReference(type);
                 return displayName ? type.DisplayName : type.FullName.Replace('<', '[').Replace('>', ']');
             }
 

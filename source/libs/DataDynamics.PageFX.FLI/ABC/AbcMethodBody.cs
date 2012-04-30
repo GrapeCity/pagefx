@@ -140,7 +140,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         public void Read(SwfReader reader)
         {
             _begin = (int)reader.Position;
-            _method = AbcIO.ReadMethod(reader);
+            _method = reader.ReadAbcMethod();
             _method.Body = this;
 
             _maxStackDepth = (int)reader.ReadUIntEncoded();

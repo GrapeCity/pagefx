@@ -90,7 +90,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public void Read(SwfReader reader)
         {
-            Initializer = AbcIO.ReadMethod(reader);
+            Initializer = reader.ReadAbcMethod();
             _traits.Read(reader);
         }
 

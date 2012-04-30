@@ -1,17 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 
 namespace DataDynamics.PageFX.CodeModel
 {
     public static class TypeFactory
     {
-        static readonly Hashtable _cache = new Hashtable();
+        static readonly Hashtable TypeCache = new Hashtable();
 
         public static void ClearCache()
         {
-            _cache.Clear();
+            TypeCache.Clear();
         }
 
         #region GetKey
@@ -40,11 +39,12 @@ namespace DataDynamics.PageFX.CodeModel
         {
             if (dim == null)
                 dim = new ArrayDimensionCollection();
-            string key = GetKey(type, dim.ToString());
-            var res = (IType)_cache[key];
+        	var dimensionString = dim.ToString();
+        	string key = GetKey(type, dimensionString);
+            var res = (IType)TypeCache[key];
             if (res != null) return res;
             res = new ArrayType(type, dim);
-            _cache[key] = res;
+            TypeCache[key] = res;
             return res;
         }
 
@@ -56,30 +56,30 @@ namespace DataDynamics.PageFX.CodeModel
         public static IType MakePointerType(IType type)
         {
             string key = GetKey(type, CLRNames.Ptr);
-            var res = (IType)_cache[key];
+            var res = (IType)TypeCache[key];
             if (res != null) return res;
             res = new PointerType(type);
-            _cache[key] = res;
+            TypeCache[key] = res;
             return res;
         }
 
         public static IType MakeReferenceType(IType type)
         {
             string key = GetKey(type, CLRNames.Ref);
-            var res = (IType)_cache[key];
+            var res = (IType)TypeCache[key];
             if (res != null) return res;
             res = new ReferenceType(type);
-            _cache[key] = res;
+            TypeCache[key] = res;
             return res;
         }
 
         public static IType MakeGenericType(IGenericType type, IEnumerable<IType> args)
         {
             string key = GetKey(type, args);
-            var res = (IType)_cache[key];
+            var res = (IType)TypeCache[key];
             if (res != null) return res;
             var gi = new GenericInstance(type, args) {Key = key};
-            _cache[key] = gi;
+            TypeCache[key] = gi;
             return gi;
         }
 

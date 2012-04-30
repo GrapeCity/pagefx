@@ -59,8 +59,8 @@ namespace DataDynamics.PageFX.FLI.ABC
             From = (int)reader.ReadUIntEncoded();
             To = (int)reader.ReadUIntEncoded();
             Target = (int)reader.ReadUIntEncoded();
-            Type = AbcIO.ReadMultiname(reader);
-            Variable = AbcIO.ReadMultiname(reader);
+            Type = reader.ReadMultiname();
+            Variable = reader.ReadMultiname();
         }
 
         public void Write(SwfWriter writer)
