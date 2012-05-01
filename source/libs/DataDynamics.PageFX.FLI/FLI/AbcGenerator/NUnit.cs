@@ -7,9 +7,9 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.FLI
 {
-    partial class AbcGenerator
+    internal partial class AbcGenerator
     {
-        readonly List<IType> _testFixtures = new List<IType>();
+        private readonly List<IType> _testFixtures = new List<IType>();
 
         /// <summary>
         /// Returns true if application assembly has nunit tests and does not define custom root sprite.
@@ -93,9 +93,9 @@ namespace DataDynamics.PageFX.FLI
         #region DefineTestRunner
         AbcMethod DefineTestRunner(IMethod test)
         {
-            var testABC = DefineAbcMethod(test);
+            var method = DefineAbcMethod(test);
 
-            var instance = testABC.Instance;
+            var instance = method.Instance;
             string name = "run_test_" + test.GetMonoTestCaseName();
             name = name.Replace('.', '_');
 
@@ -131,8 +131,8 @@ namespace DataDynamics.PageFX.FLI
                                 code.Call(setupAM);
                             }
 
-                            code.Getlex(testABC);
-                            code.Call(testABC);
+                            code.Getlex(method);
+                            code.Call(method);
                         }
                         else
                         {
@@ -147,7 +147,7 @@ namespace DataDynamics.PageFX.FLI
                             }
 
                             code.GetLocal(varTF);
-                            code.Call(testABC);
+                            code.Call(method);
                         }
                         #endregion
 
@@ -289,7 +289,7 @@ namespace DataDynamics.PageFX.FLI
                 new[]
                 {
                     new LazyValue<IType>(()=>FindNUnitType(NS_PFX_NUNIT + "FlashTestRunner")),
-                    new LazyValue<IType>(()=>FindNUnitType(NS_PFX_NUNIT + "Test")),
+                    new LazyValue<IType>(()=>FindNUnitType(NS_PFX_NUNIT + "Test"))
                 };
                 return _nunitTypes;
             }

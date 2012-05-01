@@ -196,7 +196,7 @@ namespace DataDynamics.PageFX
                 HtmlTitle,
 
                 //tools
-                Wrap,
+                Wrap
                 //NUnit
             };
 

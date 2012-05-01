@@ -85,7 +85,7 @@ namespace DataDynamics.PageFX.CodeModel
 				Attrs.SetUp,
 				Attrs.TearDown,
 				Attrs.TestFixtureSetUp,
-				Attrs.TestFixtureTearDown,
+				Attrs.TestFixtureTearDown
 			};
 
 		public static bool IsIgnored(IMethod method)

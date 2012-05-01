@@ -982,7 +982,7 @@ namespace DataDynamics.PageFX.CLI
                 var gparam = _genericParam[index];
                 MdbIndex cid = row[MDB.GenericParamConstraint.Constraint].Value;
 
-                var declType = (IType)gparam.DeclaringType;
+                var declType = gparam.DeclaringType;
                 if (gparam.DeclaringMethod != null)
                     declType = gparam.DeclaringMethod.DeclaringType;
 
@@ -1981,7 +1981,7 @@ namespace DataDynamics.PageFX.CLI
             _currentMethod = method;
             var body = new MethodBody(this, reader);
             method.Body = body;
-            if (Infrastructure.EnableDecompiler)
+            if (CommonLanguageInfrastructure.EnableDecompiler)
             {
                 //Decompiler dc = new Decompiler();
                 //dc.Decompile(body);

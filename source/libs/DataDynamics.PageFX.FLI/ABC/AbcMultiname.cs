@@ -21,38 +21,38 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         public AbcMultiname()
         {
-            _kind = 0;
+            Kind = 0;
         }
 
         public AbcMultiname(AbcConstKind kind)
         {
-            _kind = kind;
+            Kind = kind;
         }
 
         public AbcMultiname(AbcConstKind kind, AbcNamespace ns, AbcString name)
         {
-            _kind = kind;
-            _ns = ns;
+            Kind = kind;
+            Namespace = ns;
             _name = name;
         }
 
         public AbcMultiname(AbcConstKind kind, AbcNamespaceSet nss, AbcString name)
         {
-            _kind = kind;
-            _nsset = nss;
+            Kind = kind;
+            NamespaceSet = nss;
             _name = name;
         }
 
         public AbcMultiname(AbcConstKind kind, AbcString name)
         {
-            _kind = kind;
+            Kind = kind;
             _name = name;
         }
 
         public AbcMultiname(AbcConstKind kind, AbcNamespaceSet nss)
         {
-            _kind = kind;
-            _nsset = nss;
+            Kind = kind;
+            NamespaceSet = nss;
         }
 
         public AbcMultiname(AbcMultiname type, AbcMultiname param)
@@ -61,7 +61,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 throw new ArgumentNullException("type");
             if (param == null)
                 throw new ArgumentNullException("param");
-            _kind = AbcConstKind.TypeName;
+            Kind = AbcConstKind.TypeName;
             _type = type;
             _typeParam = param;
         }
@@ -80,14 +80,9 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
         int _index = -1;
 
-        public AbcConstKind Kind
-        {
-            get { return _kind; }
-            set { _kind = value; }
-        }
-        AbcConstKind _kind;
+    	public AbcConstKind Kind { get; set; }
 
-        public bool IsAny
+    	public bool IsAny
         {
             get { return Index == 0; }
         }
@@ -96,7 +91,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get
             {
-                switch (_kind)
+                switch (Kind)
                 {
                     case AbcConstKind.RTQName:
                     case AbcConstKind.RTQNameA:
@@ -123,7 +118,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get
             {
-                switch (_kind)
+                switch (Kind)
                 {
                         //U30 name_index
                     case AbcConstKind.RTQName:
@@ -140,30 +135,20 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public AbcNamespace Namespace
-        {
-            get { return _ns; }
-            set { _ns = value; }
-        }
-        AbcNamespace _ns;
+    	public AbcNamespace Namespace { get; set; }
 
-        public AbcNamespaceSet NamespaceSet
-        {
-            get { return _nsset; }
-            set { _nsset = value; }
-        }
-        AbcNamespaceSet _nsset;
+    	public AbcNamespaceSet NamespaceSet { get; set; }
 
-        public string NamespaceString
+    	public string NamespaceString
         {
             get
             {
                 if (_type != null)
                     return _type.NamespaceString;
-                if (_ns != null)
-                    return _ns.NameString;
-                if (_nsset != null && _nsset.Count > 0)
-                    return _nsset[0].Name.Value;
+                if (Namespace != null)
+                    return Namespace.NameString;
+                if (NamespaceSet != null && NamespaceSet.Count > 0)
+                    return NamespaceSet[0].Name.Value;
                 return string.Empty;
             }
         }
@@ -174,8 +159,8 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 if (_type != null)
                     return _type.Visibility;
-                if (_ns != null)
-                    return _ns.Visibility;
+                if (Namespace != null)
+                    return Namespace.Visibility;
                 return Visibility.Private;
             }
         }
@@ -224,10 +209,10 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public IEnumerable<string> GetFullNames()
         {
-            if (_nsset != null)
+            if (NamespaceSet != null)
             {
                 string name = NameString;
-                foreach (var ns in _nsset)
+                foreach (var ns in NamespaceSet)
                 {
                     yield return MakeFullName(ns.NameString, name);
                 }
@@ -243,14 +228,14 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public bool HasGlobalPackage
         {
-            get { return _ns != null && _ns.IsGlobalPackage; }
+            get { return Namespace != null && Namespace.IsGlobalPackage; }
         }
 
         public bool IsGlobalName(string name)
         {
-            if (_ns == null || _name == null)
+            if (Namespace == null || _name == null)
                 return false;
-            if (!_ns.IsGlobalPackage)
+            if (!Namespace.IsGlobalPackage)
                 return false;
             return _name.Value == name;
         }
@@ -260,10 +245,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         public bool IsObject
         {
-            get
-            {
-                return IsGlobalName("Object");
-            }
+            get { return IsGlobalName("Object"); }
         }
 
         #region ParameterizedType
@@ -283,7 +265,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public bool IsParameterizedType
         {
-            get { return _kind == AbcConstKind.TypeName; }
+            get { return Kind == AbcConstKind.TypeName; }
         }
         #endregion
         #endregion
@@ -310,31 +292,31 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 if (key == null)
                 {
-                    switch (_kind)
+                    switch (Kind)
                     {
                         case AbcConstKind.QName:
                         case AbcConstKind.QNameA:
-                            key = KeyOf(_kind, _ns, _name);
+                            key = KeyOf(Kind, Namespace, _name);
                             break;
 
                         case AbcConstKind.RTQNameL:
                         case AbcConstKind.RTQNameLA:
-                            key = ((int)_kind).ToString();
+                            key = ((int)Kind).ToString();
                             break;
 
                         case AbcConstKind.RTQName:
                         case AbcConstKind.RTQNameA:
-                            key = _name.Value + ((int)_kind);
+                            key = _name.Value + ((int)Kind);
                             break;
 
                         case AbcConstKind.Multiname:
                         case AbcConstKind.MultinameA:
-                            key = KeyOf(_kind, _nsset, _name);
+                            key = KeyOf(Kind, NamespaceSet, _name);
                             break;
 
                         case AbcConstKind.MultinameL:
                         case AbcConstKind.MultinameLA:
-                            key = KeyOf(_kind, _nsset);
+                            key = KeyOf(Kind, NamespaceSet);
                             break;
 
                         case AbcConstKind.TypeName:
@@ -355,11 +337,11 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         internal void Check()
         {
-            switch (_kind)
+            switch (Kind)
             {
                 case AbcConstKind.QName:
                 case AbcConstKind.QNameA:
-                    _ns.Check();
+                    Namespace.Check();
                     CheckConst(_name);
                     break;
 
@@ -374,13 +356,13 @@ namespace DataDynamics.PageFX.FLI.ABC
 
                 case AbcConstKind.Multiname:
                 case AbcConstKind.MultinameA:
-                    _nsset.Check();
+                    NamespaceSet.Check();
                     CheckConst(_name);
                     break;
 
                 case AbcConstKind.MultinameL:
                 case AbcConstKind.MultinameLA:
-                    _nsset.Check();
+                    NamespaceSet.Check();
                     break;
 
                 case AbcConstKind.TypeName:
@@ -394,14 +376,14 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region IO
         public void Read(SwfReader reader)
         {
-            _kind = (AbcConstKind)reader.ReadUInt8();
-            switch (_kind)
+            Kind = (AbcConstKind)reader.ReadUInt8();
+            switch (Kind)
             {
                     //U30 ns_index
                     //U30 name_index
                 case AbcConstKind.QName:
                 case AbcConstKind.QNameA:
-                    _ns = reader.ReadAbcNamespace();
+                    Namespace = reader.ReadAbcNamespace();
                     _name = reader.ReadAbcString();
                     break;
 
@@ -426,7 +408,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                         int index = (int)reader.ReadUIntEncoded(); //ns_set
                         if (index == 0)
                             throw new BadFormatException("The value of ns_set cannot be zero.");
-                        _nsset = reader.ABC.NamespaceSets[index];
+                        NamespaceSet = reader.ABC.NamespaceSets[index];
                     }
                     break;
 
@@ -437,7 +419,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                         int index = (int)reader.ReadUIntEncoded(); //ns_set
                         if (index == 0)
                             throw new BadFormatException("The value of ns_set cannot be zero.");
-                        _nsset = reader.ABC.NamespaceSets[index];
+                        NamespaceSet = reader.ABC.NamespaceSets[index];
                     }
                     break;
 
@@ -468,13 +450,13 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public void Write(SwfWriter writer)
         {
-            writer.WriteUInt8((byte)_kind);
-            switch(_kind)
+            writer.WriteUInt8((byte)Kind);
+            switch(Kind)
             {
                 case AbcConstKind.QName:
                 case AbcConstKind.QNameA:
                     {
-                        writer.WriteUIntEncoded((uint)_ns.Index);
+                        writer.WriteUIntEncoded((uint)Namespace.Index);
                         writer.WriteUIntEncoded((uint)_name.Index);
                     }
                     break;
@@ -497,14 +479,14 @@ namespace DataDynamics.PageFX.FLI.ABC
                 case AbcConstKind.MultinameA:
                     {
                         writer.WriteUIntEncoded((uint)_name.Index);
-                        writer.WriteUIntEncoded((uint)_nsset.Index);
+                        writer.WriteUIntEncoded((uint)NamespaceSet.Index);
                     }
                     break;
 
                 case AbcConstKind.MultinameL:
                 case AbcConstKind.MultinameLA:
                     {
-                        writer.WriteUIntEncoded((uint)_nsset.Index);
+                        writer.WriteUIntEncoded((uint)NamespaceSet.Index);
                     }
                     break;
 
@@ -525,20 +507,20 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Object Overrides
         public override int GetHashCode()
         {
-            return Algorithms.EvalHashCode(_ns, _nsset, _name) ^ (int)_kind;
+            return Algorithms.EvalHashCode(Namespace, NamespaceSet, _name) ^ (int)Kind;
         }
 
         bool HasNamespace(AbcNamespace ns)
         {
-            if (_nsset == null) return false;
-            return ((IEnumerable<AbcNamespace>)_nsset).Contains(ns);
+            if (NamespaceSet == null) return false;
+            return ((IEnumerable<AbcNamespace>)NamespaceSet).Contains(ns);
         }
 
         public bool IsQName
         {
             get
             {
-                return _kind == AbcConstKind.QName || _kind == AbcConstKind.QNameA; 
+                return Kind == AbcConstKind.QName || Kind == AbcConstKind.QNameA; 
             }
         }
 
@@ -546,8 +528,8 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get
             {
-                return _kind == AbcConstKind.Multiname
-                    || _kind == AbcConstKind.MultinameA;
+                return Kind == AbcConstKind.Multiname
+                    || Kind == AbcConstKind.MultinameA;
             }
         }
 
@@ -557,22 +539,22 @@ namespace DataDynamics.PageFX.FLI.ABC
             var mn = obj as AbcMultiname;
             if (mn != null)
             {
-                if (mn._kind == _kind)
+                if (mn.Kind == Kind)
                 {
                     if (!Equals(mn._name, _name)) return false;
-                    if (!Equals(mn._ns, _ns)) return false;
-                    if (!Equals(mn._nsset, _nsset)) return false;
+                    if (!Equals(mn.Namespace, Namespace)) return false;
+                    if (!Equals(mn.NamespaceSet, NamespaceSet)) return false;
                     return true;
                 }
                 if (IsQName && mn.IsMultiname)
                 {
                     if (!Equals(mn._name, _name)) return false;
-                    return mn.HasNamespace(_ns);
+                    return mn.HasNamespace(Namespace);
                 }
                 if (mn.IsQName && IsMultiname)
                 {
                     if (!Equals(mn._name, _name)) return false;
-                    return HasNamespace(mn._ns);
+                    return HasNamespace(mn.Namespace);
                 }
                 return false;
             }
@@ -593,12 +575,12 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public string ToString(string format)
         {
-            if (_kind == 0) return "*";
+            if (Kind == 0) return "*";
             var sb = new StringBuilder();
             if (format == "s")
             {
                 string fullname = FullName;
-            	sb.Append(string.IsNullOrEmpty(fullname) ? _kind.ToString() : fullname);
+            	sb.Append(string.IsNullOrEmpty(fullname) ? Kind.ToString() : fullname);
             	return sb.ToString();
             }
 
@@ -608,7 +590,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 return sb.ToString();
             }
 
-            sb.Append(_kind.ToString());
+            sb.Append(Kind.ToString());
             sb.AppendFormat("[{0}] ", _index);
             sb.Append("{");
 
@@ -627,25 +609,25 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
             else
             {
-                if (_nsset != null)
+                if (NamespaceSet != null)
                 {
                     sb.Append("nsset[");
-                    sb.Append(_nsset.Index);
+                    sb.Append(NamespaceSet.Index);
                     sb.Append("]{");
-                    int n = _nsset.Count;
+                    int n = NamespaceSet.Count;
                     for (int i = 0; i < n; ++i)
                     {
                         if (i > 0) sb.Append("; ");
-                        sb.Append(_nsset[i].ToString("f"));
+                        sb.Append(NamespaceSet[i].ToString("f"));
                     }
                     sb.Append("} ");
                 }
-                else if (_ns != null)
+                else if (Namespace != null)
                 {
                     sb.Append("ns[");
-                    sb.Append(_ns.Index);
+                    sb.Append(Namespace.Index);
                     sb.Append("]{");
-                    sb.Append(_ns.ToString("f"));
+                    sb.Append(Namespace.ToString("f"));
                     sb.Append("} ");
                 }
                 if (_name != null)
@@ -670,7 +652,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             writer.WriteStartElement(elementName);
             writer.WriteAttributeString("index", _index.ToString());
-            writer.WriteAttributeString("kind", _kind.ToString());
+            writer.WriteAttributeString("kind", Kind.ToString());
             if (IsParameterizedType)
             {
                 if (_type != null)
@@ -682,15 +664,15 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 if (_name != null)
                     writer.WriteAttributeString("name", _name.Value);
-                if (_ns != null)
+                if (Namespace != null)
                 {
-                    writer.WriteAttributeString("ns", _ns.NameString);
-                    writer.WriteAttributeString("nskind", _ns.Kind.ToString());
-                    writer.WriteAttributeString("nsindex", _ns.Index.ToString());
+                    writer.WriteAttributeString("ns", Namespace.NameString);
+                    writer.WriteAttributeString("nskind", Namespace.Kind.ToString());
+                    writer.WriteAttributeString("nsindex", Namespace.Index.ToString());
                 }
-                if (_nsset != null)
+                if (NamespaceSet != null)
                 {
-                    writer.WriteAttributeString("nsset", _nsset.Index.ToString());
+                    writer.WriteAttributeString("nsset", NamespaceSet.Index.ToString());
                     //_nsset.DumpXml(writer);
                 }
             }
@@ -701,7 +683,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Utils
         public bool Equals(string fullname)
         {
-            if (_nsset != null) return false;
+            if (NamespaceSet != null) return false;
             int i = fullname.LastIndexOf('.');
             if (i >= 0)
             {
@@ -716,46 +698,43 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region IsGlobalType
         public bool IsGlobalType
         {
-            get
-            {
-                if (IsRuntime) return false;
-                if (!HasGlobalPackage) return false;
-                return GlobalTypes.Contains(NameString);
-            }
+            get { return !IsRuntime && HasGlobalPackage && GlobalTypes.Contains(NameString); }
         }
 
-        static readonly string[] GlobalTypes =
-            {
-                "void",
-                "int",
-                "uint",
-                "Number",
-                "String",
-                "Object",
-                "Boolean",
-                "Array",
-                "Date",
-                "Class",
-                "Function",
-                "Math",
-                "Namespace",
-                "QName",
-                "XML",
-                "XMLList",
-                "RegExp",
-                "Error",
-                "EvalError",
-                "ReferenceError",
-                "ArgumentError",
-                "DefinitionError",
-                "RangeError",
-                "SecurityError",
-                "SyntaxError",
-                "TypeError",
-                "URIError",
-                "VerifyError",
-            };
-        #endregion
+    	private static readonly HashSet<string> GlobalTypes = new HashSet<string>(
+    		new[]
+    			{
+    				"void",
+    				"int",
+    				"uint",
+    				"Number",
+    				"String",
+    				"Object",
+    				"Boolean",
+    				"Array",
+    				"Date",
+    				"Class",
+    				"Function",
+    				"Math",
+    				"Namespace",
+    				"QName",
+    				"XML",
+    				"XMLList",
+    				"RegExp",
+    				"Error",
+    				"EvalError",
+    				"ReferenceError",
+    				"ArgumentError",
+    				"DefinitionError",
+    				"RangeError",
+    				"SecurityError",
+    				"SyntaxError",
+    				"TypeError",
+    				"URIError",
+    				"VerifyError"
+    			});
+
+    	#endregion
     }
 
     #region class AbcMemberName

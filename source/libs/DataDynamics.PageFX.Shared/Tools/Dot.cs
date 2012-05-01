@@ -7,7 +7,7 @@ namespace DataDynamics
     {
         private static string GetPath()
         {
-            string dir = "c:\\DevTools\\dot";
+            const string dir = "c:\\DevTools\\dot";
             string path = Path.Combine(dir, "dot.exe");
             if (!File.Exists(path))
             {

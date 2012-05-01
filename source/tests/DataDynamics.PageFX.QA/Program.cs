@@ -7,9 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.SWF;
 using DataDynamics.PageFX.PDB;
-using Infrastructure=DataDynamics.PageFX.FLI.Infrastructure;
 
 namespace DataDynamics.PageFX
 {
@@ -59,7 +59,7 @@ namespace DataDynamics.PageFX
                             var errs = CompilerConsole.RunErr(options);
                             if (!errs.HasErrors)
                             {
-                                var asm = DataDynamics.PageFX.CLI.Infrastructure.Deserialize(output, null);
+                                var asm = CLI.CommonLanguageInfrastructure.Deserialize(output, null);
                                 CheckAssembly(asm);
                             }
                         }
@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX
 
                     case 2:
                         {
-                            var asm = DataDynamics.PageFX.CLI.Infrastructure.Deserialize(files[0], null);
+                            var asm = CLI.CommonLanguageInfrastructure.Deserialize(files[0], null);
                             CheckAssembly(asm);
                         }
                         break;
@@ -252,8 +252,8 @@ namespace DataDynamics.PageFX
                 try
                 {
                     string path = dlg.FileName;
-                    var asm = DataDynamics.PageFX.CLI.Infrastructure.Deserialize(path, null);
-                    Infrastructure.Serialize(asm, Path.ChangeExtension(path, ".swf"), "/format:swf");
+                    var asm = DataDynamics.PageFX.CLI.CommonLanguageInfrastructure.Deserialize(path, null);
+                    FlashLanguageInfrastructure.Serialize(asm, Path.ChangeExtension(path, ".swf"), "/format:swf");
                 }
                 catch (Exception exc)
                 {

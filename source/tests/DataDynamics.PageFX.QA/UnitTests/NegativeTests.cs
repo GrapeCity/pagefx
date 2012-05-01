@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.Tests
             var asm = QA.LoadAssembly(asmpath, VM.AVM, dir, ref err);
 
             string swfpath = Path.Combine(dir, "out.swf");
-            FLI.Infrastructure.Serialize(asm, swfpath, "/format:swf");
+            FLI.FlashLanguageInfrastructure.Serialize(asm, swfpath, "/format:swf");
         }
 
         private void Run(string resname, params string[] errorcodes)

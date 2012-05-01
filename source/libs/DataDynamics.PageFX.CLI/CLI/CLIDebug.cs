@@ -119,7 +119,7 @@ namespace DataDynamics.PageFX.CLI
 
             if (Filter || DumpILCode)
             {
-                DumpService.Dump(list, body, Infrastructure.TestCaseDirectory);
+                DumpService.Dump(list, body, CommonLanguageInfrastructure.TestCaseDirectory);
                 LogInfo("IL code dumped");
             }
         }

@@ -2313,8 +2313,8 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
         void WriteMethodArguments(IMethod method, IList<IExpression> args)
         {
-            string prefix = "(";
-            string suffx = ")";
+            const string prefix = "(";
+            const string suffx = ")";
             if (method == null)
             {
                 Write(prefix);

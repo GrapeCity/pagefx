@@ -644,21 +644,15 @@ namespace DataDynamics.PageFX.FLI.SWC
     	#endregion
 
         #region DevUtils
-        public List<SwfMovie> ExtractSwfs()
+        public IEnumerable<SwfMovie> ExtractSwfs()
         {
-            var list = new List<SwfMovie>();
-            foreach (ZipEntry e in _zip)
-            {
-                if (e.Name.EndsWith(".swf", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    Stream stream = e.Data.ToMemoryStream();
-                	var swf = new SwfMovie(stream) {Name = e.Name};
-                	list.Add(swf);
-                }
-            }
-            return list;
+        	return (from ZipEntry e in _zip
+        	        where e.Name.EndsWith(".swf", StringComparison.OrdinalIgnoreCase)
+        	        let stream = e.Data.ToMemoryStream()
+        	        select new SwfMovie(stream) {Name = e.Name}).ToArray();
         }
-        #endregion
+
+    	#endregion
 
         #region Utils
         static string GetDefID(XmlElement scriptElem)

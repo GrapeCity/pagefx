@@ -116,7 +116,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             var method = body.Method;
 
             writer.WriteLine(separator);
-            writer.WriteLine("//{0}: {1}", Infrastructure.Debug ? "DEBUG" : "RELEASE", method);
+            writer.WriteLine("//{0}: {1}", CommonLanguageInfrastructure.Debug ? "DEBUG" : "RELEASE", method);
             writer.WriteLine(separator);
 
             DumpLocalVariables(writer, body);

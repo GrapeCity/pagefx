@@ -163,7 +163,7 @@
     <Compile Include="FLI\Utils\Corlib.cs" />
     <Compile Include="FLI\Utils\Embed.cs" />
     <Compile Include="FLI\Enums.cs" />
-    <Compile Include="FLI\Infrastructure.cs" />
+    <Compile Include="FLI\FlashLanguageInfrastructure.cs" />
     <Compile Include="FLI\SpecTypes\ISpecialType.cs" />
     <Compile Include="FLI\Utils\FieldExtensions.cs" />
     <Compile Include="FLI\Utils\Function.cs" />

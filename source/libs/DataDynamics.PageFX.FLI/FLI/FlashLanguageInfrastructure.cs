@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.FLI
     /// <summary>
     /// Facade to Flash Language Infrastructure
     /// </summary>
-    public static class Infrastructure
+    public static class FlashLanguageInfrastructure
     {
         class Impl : ILanguageInfrastructure
         {
@@ -108,12 +108,16 @@ namespace DataDynamics.PageFX.FLI
             #endregion
         }
 
-        public static ILanguageInfrastructure Instance
+		public static ILanguageInfrastructure Instance
         {
             get { return _instance; }
         }
 
-        static readonly ILanguageInfrastructure _instance = new Impl();
+        private static readonly ILanguageInfrastructure _instance = new Impl();
+
+		public static void Init()
+		{
+		}
 
         public static IAssembly Deserialize(string path, string format)
         {

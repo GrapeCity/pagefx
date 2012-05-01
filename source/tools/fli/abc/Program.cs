@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using DataDynamics;
+using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
@@ -28,7 +29,7 @@ namespace abc
         {
             Application.EnableVisualStyles();
 
-            RefInfrastructures();
+            InitInfrastructures();
 
             if (args.Length < 1)
             {
@@ -61,11 +62,10 @@ namespace abc
             }
         }
 
-        static object RefInfrastructures()
+        static void InitInfrastructures()
         {
-            var i = DataDynamics.PageFX.CLI.Infrastructure.Instance;
-            i = DataDynamics.PageFX.FLI.Infrastructure.Instance;
-            return i;
+            CommonLanguageInfrastructure.Init();
+            FlashLanguageInfrastructure.Init();
         }
 
         static void Run(CommandLine cl)

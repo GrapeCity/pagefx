@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.CodeModel
     				"avm",
     				"AvmErrors",
     				"RootAttribute",
-    				"EmbedAttribute",
+    				"EmbedAttribute"
     			});
 
     	private static readonly string[] PfxNamespaces =

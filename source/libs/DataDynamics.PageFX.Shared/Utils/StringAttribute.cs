@@ -19,7 +19,7 @@ namespace DataDynamics
 
         public static string EnumToString<T>(T value)
         {
-            var bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
+            const BindingFlags bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
             var fields = typeof(T).GetFields(bf);
             foreach (var field in fields)
             {
@@ -41,7 +41,7 @@ namespace DataDynamics
             if (string.IsNullOrEmpty(s))
                 return defval;
 
-            var bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
+            const BindingFlags bf = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField;
             var fields = typeof(T).GetFields(bf);
             foreach (var field in fields)
             {

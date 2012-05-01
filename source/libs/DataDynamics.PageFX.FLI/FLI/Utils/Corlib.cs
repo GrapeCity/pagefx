@@ -263,7 +263,7 @@ namespace DataDynamics.PageFX.FLI
         CompilerUtils,
     }
 
-    enum GenericTypeCode
+    enum GenericTypeId
     {
         ICollectionT,
         IEnumerableT,
@@ -273,9 +273,9 @@ namespace DataDynamics.PageFX.FLI
         ArrayEnumeratorT
     }
 
-    class CorlibTypeCache
+    internal class CorlibTypeCache
     {
-        readonly LazyValue<IType>[] s = new[]
+        private readonly LazyValue<IType>[] _types = new[]
             {
                 new LazyValue<IType>(()=>Corlib.Types.NullReferenceException),
                 new LazyValue<IType>(()=>Corlib.Types.InvalidCastException),
@@ -299,17 +299,17 @@ namespace DataDynamics.PageFX.FLI
                 new LazyValue<IType>(()=>Corlib.Types.ParameterInfo),
                 new LazyValue<IType>(()=>Corlib.Types.PropertyInfo),
                 new LazyValue<IType>(()=>Corlib.Types.Console),
-                new LazyValue<IType>(()=>Corlib.FindType("PageFX.CompilerUtils")),
+                new LazyValue<IType>(()=>Corlib.FindType("PageFX.CompilerUtils"))
             };
 
-        readonly LazyValue<IType>[] g = new[]
+        private readonly LazyValue<IType>[] _generics = new[]
             {
                 new LazyValue<IType>(()=>Corlib.Types.ICollectionT),
                 new LazyValue<IType>(()=>Corlib.Types.IEnumerableT),
                 new LazyValue<IType>(()=>Corlib.Types.IEnumeratorT),
                 new LazyValue<IType>(()=>Corlib.Types.IListT),
                 new LazyValue<IType>(()=>Corlib.Types.NullableT),
-                new LazyValue<IType>(()=>Corlib.Types.ArrayEnumeratorT),
+                new LazyValue<IType>(()=>Corlib.Types.ArrayEnumeratorT)
             };
 
         public IType this[CorlibTypeId c]
@@ -317,16 +317,16 @@ namespace DataDynamics.PageFX.FLI
             get
             {
                 var i = (int)c;
-                return s[i].Value;
+                return _types[i].Value;
             }
         }
 
-        public IGenericType this[GenericTypeCode c]
+        public IGenericType this[GenericTypeId c]
         {
             get
             {
                 var i = (int)c;
-                return (IGenericType)g[i].Value;
+                return (IGenericType)_generics[i].Value;
             }
         }
     }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DataDynamics.PageFX.FLI
 {
-    static class MimeTypes
+    internal static class MimeTypes
     {
         public static class Text
         {
@@ -214,43 +214,39 @@ namespace DataDynamics.PageFX.FLI
                 throw new NotSupportedException("Empty mime-type is not supported");
         }
 
-        static readonly string[] BitmapTypes = 
-        {
-            Image.Png,
-            Image.Gif,
-            Image.Bmp,
-            Image.Ico,
-        };
+    	private static readonly HashSet<string> BitmapTypes = new HashSet<string>(
+    		new[]
+    			{
+    				Image.Png,
+    				Image.Gif,
+    				Image.Bmp,
+    				Image.Ico,
+    			}, StringComparer.InvariantCultureIgnoreCase);
 
-        static readonly string[] JpegTypes = 
-        {
-            Image.Jpeg,
-            Image.Jpg
-        };
+    	private static readonly HashSet<string> JpegTypes = new HashSet<string>(
+    		new[]
+    			{
+    				Image.Jpeg,
+    				Image.Jpg
+    			}, StringComparer.InvariantCultureIgnoreCase);
 
-        private static IEnumerable<string> SupportedTypes
-        {
-            get
-			{
-            	return _supportedTypes ??
-            	       (_supportedTypes = BitmapTypes.Concat(JpegTypes).ToArray());
-            }
-        }
-        private static string[] _supportedTypes;
-
+    	private static readonly HashSet<string> SupportedTypes = new HashSet<string>(
+    		BitmapTypes.Concat(JpegTypes),
+    		StringComparer.InvariantCultureIgnoreCase);
+        
         public static bool IsBitmap(string type)
         {
-			return BitmapTypes.Contains(type, StringComparer.InvariantCultureIgnoreCase);
+			return BitmapTypes.Contains(type);
         }
 
         public static bool IsJpeg(string type)
         {
-            return JpegTypes.Contains(type, StringComparer.InvariantCultureIgnoreCase);
+            return JpegTypes.Contains(type);
         }
 
         public static bool IsSupported(string type)
         {
-			return SupportedTypes.Contains(type, StringComparer.InvariantCultureIgnoreCase);
+			return SupportedTypes.Contains(type);
         }
     }
 }

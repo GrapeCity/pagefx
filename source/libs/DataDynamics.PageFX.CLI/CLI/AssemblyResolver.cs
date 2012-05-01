@@ -24,9 +24,8 @@ namespace DataDynamics.PageFX.CLI
         static string GetCacLocation(IAssemblyReference id)
         {
             IAssemblyCache cache = null;
-            ASSEMBLY_INFO asmInfo;
 
-            try
+        	try
             {
                 cache = AssemblyCache.CreateAssemblyCache();
                 using (var e = new GacEnum(id.Name))
@@ -41,7 +40,7 @@ namespace DataDynamics.PageFX.CLI
                             break;
                     }
 
-                    asmInfo = new ASSEMBLY_INFO();
+                    var asmInfo = new ASSEMBLY_INFO();
                     int hr;
                     try
                     {
@@ -92,7 +91,7 @@ namespace DataDynamics.PageFX.CLI
             var dirs = new[]
                 {
                     GlobalSettings.LibsDirectory,
-                    GlobalSettings.FlexLibsDirectory,
+                    GlobalSettings.FlexLibsDirectory
                 };
         	return dirs.Where(Directory.Exists).ToArray();
         }
@@ -103,7 +102,7 @@ namespace DataDynamics.PageFX.CLI
 
             string refname = asmref.Name;
 
-            if (Infrastructure.SubstituteFrameworkAssemblies && IsFrameworkAssembly(asmref))
+            if (CommonLanguageInfrastructure.SubstituteFrameworkAssemblies && IsFrameworkAssembly(asmref))
             {
                 path = GetPfxLocation(refname);
                 if (!string.IsNullOrEmpty(path))
@@ -166,7 +165,7 @@ namespace DataDynamics.PageFX.CLI
             "mscorlib",
             "System",
             "Microsoft.VisualBasic",
-            "NUnit.Framework",
+            "NUnit.Framework"
         };
 
         public static bool IsFrameworkAssembly(IAssemblyReference asmref)

@@ -285,7 +285,7 @@ namespace DataDynamics.PageFX.FLI
                 "static",
                 "enum",
                 "namespace",
-                "string",
+                "string"
             };
         #endregion
 
@@ -1752,9 +1752,9 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        readonly int MaxRestCount = 10;
+    	private const int MaxRestCount = 10;
 
-        static bool UseArg(AbcMethod m)
+    	static bool UseArg(AbcMethod m)
         {
             if (IsFunctionCall(m)) return true;
             if (IsFunctionApply(m)) return true;

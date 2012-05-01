@@ -4,7 +4,7 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI
 {
-    public static class Infrastructure
+    public static class CommonLanguageInfrastructure
     {
         private class Impl : ILanguageInfrastructure
         {
@@ -51,6 +51,10 @@ namespace DataDynamics.PageFX.CLI
             get { return _instance; }
         }
         private static readonly ILanguageInfrastructure _instance = new Impl();
+
+		public static void Init()
+		{
+		}
 
         public static IAssembly Deserialize(string path, string format)
         {

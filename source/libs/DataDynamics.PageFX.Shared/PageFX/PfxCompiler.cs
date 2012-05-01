@@ -307,7 +307,7 @@ namespace DataDynamics.PageFX
             {
                 "error",
                 "warning",
-                "warn",
+                "warn"
             };
 
         private static int FindError(string s, ref string level, ref string errorNumber)

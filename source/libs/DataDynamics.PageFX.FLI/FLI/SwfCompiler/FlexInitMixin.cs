@@ -47,14 +47,14 @@ namespace DataDynamics.PageFX.FLI
     			"textIndent",
     			"textRollOverColor",
     			"textSelectedColor",
-    			"themeColor",
+    			"themeColor"
     		};
 
 		// inherit style names defined only in flex 3 framework
     	private static readonly string[] Flex3InheritStyles =
     		{
     			"horizontalGridLineColor",
-    			"verticalGridLineColor",
+    			"verticalGridLineColor"
     		};
 
 		// inherit style names defined only in flex 4 framework
@@ -77,7 +77,7 @@ namespace DataDynamics.PageFX.FLI
     			"showErrorTip",
     			"strokeColor",
     			"strokeWidth",
-    			"symbolColor",
+    			"symbolColor"
     		};
 		#endregion
 

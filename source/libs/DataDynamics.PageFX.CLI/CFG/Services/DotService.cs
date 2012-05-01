@@ -71,7 +71,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public static string GetTestDirectory(this MethodBody body)
         {
-        	string dir = string.IsNullOrEmpty(Infrastructure.TestCaseDirectory) ? "c:\\QA\\PageFX" : Infrastructure.TestCaseDirectory;
+        	string dir = string.IsNullOrEmpty(CommonLanguageInfrastructure.TestCaseDirectory) ? "c:\\QA\\PageFX" : CommonLanguageInfrastructure.TestCaseDirectory;
             dir = Path.Combine(dir, body.Method.DeclaringType.FullName.ReplaceInvalidPathChars());
             dir = Path.Combine(dir, GetFullName(body.Method).ReplaceInvalidFileNameChars());
             Directory.CreateDirectory(dir);
@@ -101,7 +101,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             NameService.SetNames(graph);
 
             CLIDebug.LogInfo("WriteDotFile started");
-            WriteDotFile(graph, path, subgraph);
+            WriteDotFile(graph, path);
             CLIDebug.LogInfo("WriteDotFile succeeded");
 
             CLIDebug.LogInfo("dot.exe started");
@@ -111,7 +111,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             CLIDebug.LogInfo("dot.exe succeeded. ellapsed time: {0}", (end - start) + "ms");
         }
 
-        private static void WriteDotFile(IEnumerable<Node> graph, string path, bool subgraph)
+        private static void WriteDotFile(IEnumerable<Node> graph, string path)
         {
             using (var writer = new StreamWriter(path))
             {

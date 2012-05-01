@@ -543,13 +543,13 @@ namespace DataDynamics.PageFX
             }
         }
 
-        private static readonly FrameworkVersion[] FrameworkVersions = 
-        {
-            FrameworkVersion.NET_3_5, 
-            FrameworkVersion.NET_2_0, 
-            //FrameworkVersion.NET_1_1, 
-            //FrameworkVersion.NET_1_0, 
-        };
+    	private static readonly FrameworkVersion[] FrameworkVersions =
+    		{
+    			FrameworkVersion.NET_3_5,
+    			FrameworkVersion.NET_2_0
+    			//FrameworkVersion.NET_1_1, 
+    			//FrameworkVersion.NET_1_0, 
+    		};
 
         /// <summary>
         /// Gets path to compiler.
@@ -624,7 +624,7 @@ namespace DataDynamics.PageFX
             {
                 "error",
                 "warning",
-                "warn",
+                "warn"
             };
 
         static int FindError(string s, ref string level, ref string errorNumber)

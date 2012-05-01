@@ -328,7 +328,7 @@ namespace DataDynamics.PageFX.NUnit
         {
             try
             {
-                Infrastructure.Serialize(assembly, path_swf, FLIOptions);
+                FlashLanguageInfrastructure.Serialize(assembly, path_swf, FLIOptions);
             }
             catch (Exception exc)
             {
@@ -413,14 +413,14 @@ namespace DataDynamics.PageFX.NUnit
         #region Utils
         static IAssembly LoadAssembly(string path)
         {
-            CLI.Infrastructure.ClearCache();
+            CLI.CommonLanguageInfrastructure.ClearCache();
 
             try
             {
                 if (!Path.IsPathRooted(path))
                     path = Path.Combine(Environment.CurrentDirectory, path);
 
-                var asm = CLI.Infrastructure.Deserialize(path, null);
+                var asm = CLI.CommonLanguageInfrastructure.Deserialize(path, null);
                 if (asm == null)
                 {
                     Console.WriteLine("Unable to load assembly '{0}'", path);

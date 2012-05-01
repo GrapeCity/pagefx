@@ -301,15 +301,13 @@ namespace System.Drawing
                 int bezierIdx = 0;
                 var points = path.PathPoints;
                 var types = path.PathTypes;
-                PathPointType type;
-                PathPointType pointType;
-                var start = PointF.Empty;
+            	var start = PointF.Empty;
                 var cur = PointF.Empty;
                 var pt = PointF.Empty;
                 for (int i = 0; i < n; ++i)
                 {
-                    type = (PathPointType)types[i];
-                    pointType = type & PathPointType.PathTypeMask;
+                    var type = (PathPointType)types[i];
+                    var pointType = type & PathPointType.PathTypeMask;
                     pt = points[i];
                     if (type == PathPointType.Start)
                     {

@@ -957,7 +957,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public AbcInstance FindInstance(System.Func<AbcInstance, bool> predicate)
+        public AbcInstance FindInstance(Func<AbcInstance, bool> predicate)
         {
             return Instances.FirstOrDefault(predicate);
         }
@@ -967,7 +967,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             return FindInstance(i => i.FullName == name);
         }
 
-        public static AbcInstance FindInstance(IEnumerable<AbcFile> files, System.Func<AbcInstance,bool> predicate)
+        public static AbcInstance FindInstance(IEnumerable<AbcFile> files, Func<AbcInstance,bool> predicate)
         {
         	return files.Select(abc => abc.FindInstance(predicate)).FirstOrDefault(instance => instance != null);
         }

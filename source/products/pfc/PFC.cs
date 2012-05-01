@@ -2,6 +2,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Linq;
+using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.Flash;
 using DataDynamics.PageFX.FLI;
@@ -52,7 +53,7 @@ namespace DataDynamics.PageFX
         [STAThread]
         static int Main(string[] args)
         {
-            RefInfrastructures();
+            InitInfrastructures();
 
             if (args.Length <= 0)
             {
@@ -104,7 +105,7 @@ namespace DataDynamics.PageFX
 
             if (cl.HasOption("ccs"))
             {
-                Infrastructure.PerformCodeCaching();
+                FlashLanguageInfrastructure.PerformCodeCaching();
                 return 0;
             }
 
@@ -277,7 +278,7 @@ namespace DataDynamics.PageFX
                 "System",
                 "System.Core",
                 "System.Xml",
-                "System.Data",
+                "System.Data"
             };
 
         static bool IsSysRefCore(string r, string sysRef)
@@ -435,7 +436,7 @@ namespace DataDynamics.PageFX
                 if (!Path.IsPathRooted(path))
                     path = Path.Combine(Environment.CurrentDirectory, path);
 
-                var asm = CLI.Infrastructure.Deserialize(path, null);
+                var asm = CLI.CommonLanguageInfrastructure.Deserialize(path, null);
                 if (asm == null)
                 {
                     LogError(Errors.UnableToLoadAssembly, path);
@@ -465,7 +466,7 @@ namespace DataDynamics.PageFX
                 string f = FilterCommandLine();
                 f += string.Format(" /format:{0}", format);
 
-                Infrastructure.Serialize(asm, outpath, f);
+                FlashLanguageInfrastructure.Serialize(asm, outpath, f);
 
                 if (CompilerReport.HasErrors)
                 {
@@ -568,11 +569,10 @@ namespace DataDynamics.PageFX
             }
         }
 
-        static object RefInfrastructures()
+        static void InitInfrastructures()
         {
-            var i = CLI.Infrastructure.Instance;
-            i = FLI.Infrastructure.Instance;
-            return i;
+            CommonLanguageInfrastructure.Init();
+            FlashLanguageInfrastructure.Init();
         }
 
         static string GetTargetExtension(string target)

@@ -493,7 +493,7 @@ namespace DataDynamics.PageFX.FLI
 
         IType DefineArrayEnumerator(IType elemType)
         {
-            var ArrayEnumerator = TypeFactory.MakeGenericType(CorlibTypes[GenericTypeCode.ArrayEnumeratorT], elemType);
+            var ArrayEnumerator = TypeFactory.MakeGenericType(CorlibTypes[GenericTypeId.ArrayEnumeratorT], elemType);
             DefineAbcInstance(ArrayEnumerator);
             foreach (var method in ArrayEnumerator.Methods)
                 DefineAbcMethod(method);

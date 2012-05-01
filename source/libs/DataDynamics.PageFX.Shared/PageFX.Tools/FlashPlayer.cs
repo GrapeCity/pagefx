@@ -258,7 +258,7 @@ namespace DataDynamics.PageFX
         static readonly string[] mm_cfg = 
             {
                 "ErrorReportingEnable=1",
-                "TraceOutputFileEnable=1",
+                "TraceOutputFileEnable=1"
             };
 
         static void BackupMMCfg()

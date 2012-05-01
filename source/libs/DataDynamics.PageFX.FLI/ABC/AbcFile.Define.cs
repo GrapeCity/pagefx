@@ -253,7 +253,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region Known Namespaces
-        LazyValue<AbcNamespace>[] KnownNamespaces
+        private LazyValue<AbcNamespace>[] KnownNamespaces
         {
             get 
             {
@@ -267,11 +267,11 @@ namespace DataDynamics.PageFX.FLI.ABC
                     new LazyValue<AbcNamespace>(() => DefinePublicNamespace(AS3.NS2006)), //AS3
                     new LazyValue<AbcNamespace>(() => DefinePublicNamespace(MX.NamespaceInternal2006)), //MXInternal
                     new LazyValue<AbcNamespace>(() => DefinePackage(Const.Namespaces.PFX)), //PfxPackage
-                    new LazyValue<AbcNamespace>(() => DefinePublicNamespace(Const.Namespaces.PFX)), //PfxPublic
+                    new LazyValue<AbcNamespace>(() => DefinePublicNamespace(Const.Namespaces.PFX)) //PfxPublic
                 };
             }
         }
-        LazyValue<AbcNamespace>[] _knownNamespaces;
+        private LazyValue<AbcNamespace>[] _knownNamespaces;
 
         internal AbcNamespace DefineNamespace(KnownNamespace id)
         {

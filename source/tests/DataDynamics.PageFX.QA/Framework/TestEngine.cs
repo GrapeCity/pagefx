@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.FLI
 #endif
 
             tc.Reset();
-            CLI.Infrastructure.ClearCache();
+            CLI.CommonLanguageInfrastructure.ClearCache();
 
             try
             {
@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.FLI
             }
             finally
             {
-                CLI.Infrastructure.ClearCache();
+                CLI.CommonLanguageInfrastructure.ClearCache();
             }
 
             if (tds.UpdateReport)
@@ -141,7 +141,7 @@ namespace DataDynamics.PageFX.FLI
                         cl += " /framesize:100 /fp:10 /nohtml /exception-break";
                     }
 
-                    Infrastructure.Serialize(asm, tc.OutputPath, cl);
+                    FlashLanguageInfrastructure.Serialize(asm, tc.OutputPath, cl);
                 }
                 catch (Exception e)
                 {

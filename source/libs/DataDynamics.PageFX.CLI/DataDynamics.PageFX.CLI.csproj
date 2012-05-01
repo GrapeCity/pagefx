@@ -133,7 +133,7 @@
     <Compile Include="CLI\AssemblyLoader.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CLI\Infrastructure.cs" />
+    <Compile Include="CLI\CommonLanguageInfrastructure.cs" />
     <Compile Include="CLI\AssemblyResolver.cs" />
     <Compile Include="PDB\Interop\IMetaDataDispenserEx.cs" />
     <Compile Include="PDB\Interop\Guids.cs" />

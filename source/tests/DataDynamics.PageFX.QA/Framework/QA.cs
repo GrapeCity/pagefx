@@ -860,11 +860,11 @@ namespace DataDynamics.PageFX
         #region Utils
         internal static string RemovePrefix(string fullname)
         {
-            string str = ".TestCases.";
-            int i = fullname.IndexOf(str);
+            const string testCases = ".TestCases.";
+            int i = fullname.IndexOf(testCases);
             if (i >= 0)
             {
-                return fullname.Substring(i + str.Length);
+                return fullname.Substring(i + testCases.Length);
             }
             return fullname;
         }
@@ -889,16 +889,16 @@ namespace DataDynamics.PageFX
         {
             if (vm == VM.AVM)
             {
-                CLI.Infrastructure.ResolveLabels = false;
-                CLI.Infrastructure.SubstituteFrameworkAssemblies = true;
-                CLI.Infrastructure.EnableDecompiler = false;
-                CLI.Infrastructure.ClearCache();
+                CLI.CommonLanguageInfrastructure.ResolveLabels = false;
+                CLI.CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = true;
+                CLI.CommonLanguageInfrastructure.EnableDecompiler = false;
+                CLI.CommonLanguageInfrastructure.ClearCache();
             }
             else
             {
-                CLI.Infrastructure.ResolveLabels = true;
-                CLI.Infrastructure.SubstituteFrameworkAssemblies = false;
-                CLI.Infrastructure.EnableDecompiler = true;
+                CLI.CommonLanguageInfrastructure.ResolveLabels = true;
+                CLI.CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = false;
+                CLI.CommonLanguageInfrastructure.EnableDecompiler = true;
             }
         }
 
@@ -909,14 +909,14 @@ namespace DataDynamics.PageFX
             SetupCLI(vm);
 
 #if DEBUG
-            CLI.Infrastructure.Debug = true;
-            CLI.Infrastructure.TestCaseDirectory = tcroot;
+            CLI.CommonLanguageInfrastructure.Debug = true;
+            CLI.CommonLanguageInfrastructure.TestCaseDirectory = tcroot;
 #endif
 
             IAssembly asm;
             try
             {
-                asm = CLI.Infrastructure.Deserialize(path, null);
+                asm = CLI.CommonLanguageInfrastructure.Deserialize(path, null);
             }
             catch (Exception e)
             {
@@ -972,7 +972,7 @@ namespace DataDynamics.PageFX
             "mono.System.ConvertTest",
             "CSharp.Delegates.",
             "CSharp.Generics.",
-            "CSharp.Nullable.",
+            "CSharp.Nullable."
         };
 
         static bool IsCriticalTest(TestCase tc)

@@ -125,7 +125,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
                 MethodDefOrRef,
                 ResolutionScope,
                 TypeDefOrRef,
-                TypeOrMethodDef,
+                TypeOrMethodDef
             };
 
         static MdbCodedIndex()

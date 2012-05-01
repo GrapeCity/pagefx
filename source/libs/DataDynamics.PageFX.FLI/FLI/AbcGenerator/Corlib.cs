@@ -6,244 +6,377 @@ namespace DataDynamics.PageFX.FLI
 {
     using LazyField = LazyValue<IField>;
 
-    partial class AbcGenerator
-    {
-        public readonly CorlibTypeCache CorlibTypes = new CorlibTypeCache();
+	internal partial class AbcGenerator
+	{
+		public readonly CorlibTypeCache CorlibTypes = new CorlibTypeCache();
 
-        public IType GetType(CorlibTypeId id)
+		public IType GetType(CorlibTypeId id)
+		{
+			return CorlibTypes[id];
+		}
+
+		public AbcInstance GetInstance(CorlibTypeId id)
+		{
+			return DefineAbcInstance(GetType(id));
+		}
+
+		public IType MakeInstance(GenericTypeId type, IType arg)
+		{
+			return TypeFactory.MakeGenericType(CorlibTypes[type], arg);
+		}
+
+		public IType MakeNullable(IType arg)
+		{
+			return MakeInstance(GenericTypeId.NullableT, arg);
+		}
+
+		public IType MakeIEnumerable(IType arg)
+		{
+			return MakeInstance(GenericTypeId.IEnumerableT, arg);
+		}
+
+		#region Object Type
+
+		private sealed class ObjectTypeImpl
+		{
+			private readonly AbcGenerator _generator;
+
+			public ObjectTypeImpl(AbcGenerator generator)
+			{
+				_generator = generator;
+			}
+
+			public AbcInstance Instance
+			{
+				get { return _generator.DefineAbcInstance(SystemTypes.Object); }
+			}
+
+			public AbcMethod this[ObjectMethodId id]
+			{
+				get { return Methods[(int)id].Value; }
+			}
+
+			private LazyValue<AbcMethod>[] Methods
+			{
+				get
+				{
+					return _methods ?? (_methods
+					                    = new[]
+					                      	{
+					                      		_generator.LazyMethod(SystemTypes.Object, "GetType"),
+					                      		_generator.LazyMethod(SystemTypes.Object, "Equals", 1),
+					                      		_generator.LazyMethod(SystemTypes.Object, "GetTypeId"),
+					                      		_generator.LazyMethod(SystemTypes.Object, "NewHashCode")
+					                      	});
+				}
+			}
+
+			private LazyValue<AbcMethod>[] _methods;
+		}
+
+		private ObjectTypeImpl ObjectType
+		{
+			get { return _objectType ?? (_objectType = new ObjectTypeImpl(this)); }
+		}
+
+		private ObjectTypeImpl _objectType;
+
+		public AbcInstance GetObjectInstance()
+		{
+			return ObjectType.Instance;
+		}
+
+		public AbcMethod GetMethod(ObjectMethodId id)
+		{
+			return ObjectType[id];
+		}
+
+		#endregion
+
+		#region System Type
+
+		private sealed class SystemTypeImpl
+		{
+			private readonly AbcGenerator _generator;
+			private LazyValue<AbcMethod>[] _methods;
+
+			public SystemTypeImpl(AbcGenerator generator)
+			{
+				_generator = generator;
+			}
+
+			public AbcInstance Instance
+			{
+				get { return _generator.DefineAbcInstance(SystemTypes.Type); }
+			}
+
+			public AbcMethod this[TypeMethodId id]
+			{
+				get { return Methods[(int)id].Value; }
+			}
+
+			private LazyValue<AbcMethod>[] Methods
+			{
+				get
+				{
+					return _methods ?? (_methods =
+					                    new[]
+					                    	{
+					                    		_generator.LazyMethod(SystemTypes.Type, "get_ValueTypeKind")
+					                    	});
+				}
+			}
+		}
+
+		private SystemTypeImpl SystemType
+		{
+			get { return _systemType ?? (_systemType = new SystemTypeImpl(this)); }
+		}
+
+		private SystemTypeImpl _systemType;
+
+		public AbcInstance GetTypeInstance()
+		{
+			return SystemType.Instance;
+		}
+
+		public AbcMethod GetMethod(TypeMethodId id)
+		{
+			return SystemType[id];
+		}
+
+		#endregion
+
+		#region Environment Type
+
+		private sealed class EnvironmentTypeImpl
+		{
+			private readonly AbcGenerator _generator;
+			private LazyValue<AbcMethod>[] _methods;
+
+			public EnvironmentTypeImpl(AbcGenerator generator)
+			{
+				_generator = generator;
+			}
+
+			public AbcMethod this[EnvironmentMethodId id]
+			{
+				get { return EnvironmentMethods[(int)id].Value; }
+			}
+
+			private LazyValue<AbcMethod>[] EnvironmentMethods
+			{
+				get
+				{
+					return _methods ?? (_methods =
+					                    new[]
+					                    	{
+					                    		_generator.LazyMethod(Type, "get_StackTrace")
+					                    	});
+				}
+			}
+
+			private IType Type
+			{
+				get { return _generator.CorlibTypes[CorlibTypeId.Environment]; }
+			}
+		}
+
+		private EnvironmentTypeImpl EnvironmentType
+		{
+			get { return _environmentType ?? (_environmentType = new EnvironmentTypeImpl(this)); }
+		}
+		private EnvironmentTypeImpl _environmentType;
+
+		public AbcMethod GetMethod(EnvironmentMethodId id)
         {
-            return CorlibTypes[id];
+			return EnvironmentType[id];
         }
-
-        public AbcInstance GetInstance(CorlibTypeId id)
-        {
-            return DefineAbcInstance(GetType(id));
-        }
-
-        public IType MakeInstance(GenericTypeCode type, IType arg)
-        {
-            return TypeFactory.MakeGenericType(CorlibTypes[type], arg);
-        }
-
-        public IType MakeNullable(IType arg)
-        {
-            return MakeInstance(GenericTypeCode.NullableT, arg);
-        }
-
-        public IType MakeIEnumerable(IType arg)
-        {
-            return MakeInstance(GenericTypeCode.IEnumerableT, arg);
-        }
-
-        #region Object Methods
-        public AbcInstance GetObjectInstance()
-        {
-            return DefineAbcInstance(SystemTypes.Object);
-        }
-
-        public AbcMethod GetMethod(ObjectMethodId id)
-        {
-            return ObjectMethods[(int)id].Value;
-        }
-
-        LazyValue<AbcMethod>[] ObjectMethods
-        {
-            get 
-            {
-                if (_methodsObject != null)
-                    return _methodsObject;
-
-                _methodsObject =
-                new[]
-                {
-                    LazyMethod(SystemTypes.Object, "GetType"),
-                    LazyMethod(SystemTypes.Object, "Equals", 1),
-                    LazyMethod(SystemTypes.Object, "GetTypeId"),
-                    LazyMethod(SystemTypes.Object, "NewHashCode"),
-                };
-
-                return _methodsObject;
-            }
-        }
-        LazyValue<AbcMethod>[] _methodsObject;
+        
         #endregion
 
-        #region Type Methods
-        public AbcInstance GetTypeInstance()
-        {
-            return DefineAbcInstance(SystemTypes.Type);
-        }
+        #region Array Type
 
-        public AbcMethod GetMethod(TypeMethodId id)
-        {
-            return TypeMethods[(int)id].Value;
-        }
+		private sealed class ArrayTypeImpl
+		{
+			private readonly AbcGenerator _generator;
+			private LazyValue<AbcMethod>[] _methods;
 
-        LazyValue<AbcMethod>[] TypeMethods
-        {
-            get
-            {
-                if (_methodsType != null)
-                    return _methodsType;
+			public ArrayTypeImpl(AbcGenerator generator)
+			{
+				_generator = generator;
+			}
 
-                _methodsType =
-                new[]
-                {
-                    LazyMethod(SystemTypes.Type, "get_ValueTypeKind"),
-                };
+			public AbcInstance Instance
+			{
+				get { return _generator.DefineAbcInstance(SystemTypes.Array); }
+			}
 
-                return _methodsType;
-            }
-        }
-        LazyValue<AbcMethod>[] _methodsType;
-        #endregion
+			public AbcMethod this[ArrayMethodId id]
+			{
+				get { return ArrayMethods[(int)id].Value; }
+			}
 
-        #region Environment Methods
-        public AbcInstance GetEnvironmentInstance()
-        {
-            return GetInstance(CorlibTypeId.Environment);
-        }
+			private LazyValue<AbcMethod>[] ArrayMethods
+			{
+				get
+				{
+					return _methods ?? (_methods =
+					                    new[]
+					                    	{
+					                    		_generator.LazyMethod(SystemTypes.Array, "get_Length"),
+					                    		_generator.LazyMethod(SystemTypes.Array, "GetElem", 1),
+					                    		_generator.LazyMethod(SystemTypes.Array, "SetElem", 2),
+					                    		_generator.LazyMethod(SystemTypes.Array, "GetItem", 1),
+					                    		_generator.LazyMethod(SystemTypes.Array, "SetItem", 2),
+					                    		_generator.LazyMethod(SystemTypes.Array, "ToFlatIndex", t => !t.IsArray),
+					                    		_generator.LazyMethod(SystemTypes.Array, "IsCharArray"),
+					                    		_generator.LazyMethod(SystemTypes.Array, "CastTo", 1),
+					                    		_generator.LazyMethod(SystemTypes.Array, "HasElemType", 2),
+					                    		_generator.LazyMethod(SystemTypes.Array, "Clear"),
+					                    		_generator.LazyMethod(SystemTypes.Array, "IndexOf", 1),
+					                    		_generator.LazyMethod(SystemTypes.Array, "Contains", 1),
+					                    		_generator.LazyMethod(SystemTypes.Array, "CopyTo", 2)
+					                    	});
+				}
+			}
+		}
 
-        public AbcMethod GetMethod(EnvironmentMethodId id)
-        {
-            return EnvironmentMethods[(int)id].Value;
-        }
+		private ArrayTypeImpl ArrayType
+		{
+			get { return _arrayType ?? (_arrayType = new ArrayTypeImpl(this)); }
+		}
+		private ArrayTypeImpl _arrayType;
 
-        LazyValue<AbcMethod>[] EnvironmentMethods
-        {
-            get
-            {
-                if (_methodsEnvironment != null)
-                    return _methodsEnvironment;
-
-                var type = CorlibTypes[CorlibTypeId.Environment];
-
-                _methodsEnvironment =
-                new[]
-                {
-                    LazyMethod(type, "get_StackTrace"),
-                };
-
-                return _methodsEnvironment;
-            }
-        }
-        LazyValue<AbcMethod>[] _methodsEnvironment;
-        #endregion
-
-        #region Array Methods
-        public AbcInstance GetArrayInstance()
-        {
-            return DefineAbcInstance(SystemTypes.Array);
+		public AbcInstance GetArrayInstance()
+		{
+			return ArrayType.Instance;
         }
 
         public AbcMethod GetMethod(ArrayMethodId id)
         {
-            return ArrayMethods[(int)id].Value;
+            return ArrayType[id];
         }
 
-        LazyValue<AbcMethod>[] ArrayMethods
-        {
-            get
-            {
-                if (_methodsArray != null)
-                    return _methodsArray;
-                _methodsArray =
-                new[]
-                {
-                    LazyMethod(SystemTypes.Array, "get_Length"), 
-                    LazyMethod(SystemTypes.Array, "GetElem", 1), 
-                    LazyMethod(SystemTypes.Array, "SetElem", 2), 
-                    LazyMethod(SystemTypes.Array, "GetItem", 1), 
-                    LazyMethod(SystemTypes.Array, "SetItem", 2), 
-                    LazyMethod(SystemTypes.Array, "ToFlatIndex", t => !t.IsArray), 
-                    LazyMethod(SystemTypes.Array, "IsCharArray"),
-                    LazyMethod(SystemTypes.Array, "CastTo", 1),
-                    LazyMethod(SystemTypes.Array, "HasElemType", 2),
-                    LazyMethod(SystemTypes.Array, "Clear"),
-                    LazyMethod(SystemTypes.Array, "IndexOf", 1),
-                    LazyMethod(SystemTypes.Array, "Contains", 1),
-                    LazyMethod(SystemTypes.Array, "CopyTo", 2),
-                };
-                return _methodsArray;
-            }
-        }
-        LazyValue<AbcMethod>[] _methodsArray;
         #endregion
 
-        #region Assembly Methods
-        public AbcInstance GetAssemblyInstance()
-        {
-            return GetInstance(CorlibTypeId.Assembly);
+        #region Assembly Type
+
+		private sealed class AssemblyTypeImpl
+		{
+			private readonly AbcGenerator _generator;
+			private LazyValue<AbcMethod>[] _methods;
+
+			public AssemblyTypeImpl(AbcGenerator generator)
+			{
+				_generator = generator;
+			}
+
+			public AbcInstance Instance
+			{
+				get { return _generator.GetInstance(CorlibTypeId.Assembly); }
+			}
+
+			public AbcMethod this[AssemblyMethodId id]
+			{
+				get { return AssemblyMethods[(int)id].Value; }
+			}
+
+			private LazyValue<AbcMethod>[] AssemblyMethods
+			{
+				get
+				{
+					return _methods ?? (_methods =
+					                    new[]
+					                    	{
+					                    		_generator.LazyMethod(Type, "GetType", 1)
+					                    	});
+				}
+			}
+
+			private IType Type
+			{
+				get { return _generator.CorlibTypes[CorlibTypeId.Assembly]; }
+			}
+		}
+
+		private AssemblyTypeImpl AssemblyType
+		{
+			get { return _assemblyType ?? (_assemblyType = new AssemblyTypeImpl(this)); }
+		}
+		private AssemblyTypeImpl _assemblyType;
+
+		public AbcInstance GetAssemblyInstance()
+		{
+			return AssemblyType.Instance;
         }
 
         public AbcMethod GetMethod(AssemblyMethodId id)
         {
-            return AssemblyMethods[(int)id].Value;
+            return AssemblyType[id];
         }
 
-        LazyValue<AbcMethod>[] AssemblyMethods
-        {
-            get
-            {
-                if (_methodsAssembly != null)
-                    return _methodsAssembly;
-
-                var type = CorlibTypes[CorlibTypeId.Assembly];
-
-                _methodsAssembly =
-                new[]
-                {
-                    LazyMethod(type, "GetType", 1),
-                };
-
-                return _methodsAssembly;
-            }
-        }
-        LazyValue<AbcMethod>[] _methodsAssembly;
         #endregion
 
-        #region Console  Methods
-        public AbcInstance GetConsoleInstance()
+        #region Console Type
+
+		private sealed class ConsoleTypeImpl
+		{
+			private readonly AbcGenerator _generator;
+			private LazyValue<AbcMethod>[] _methods;
+
+			public ConsoleTypeImpl(AbcGenerator generator)
+			{
+				_generator = generator;
+			}
+
+			public AbcMethod this[ConsoleMethodId id]
+			{
+				get { return ConsoleMethods[(int)id].Value; }
+			}
+
+			private LazyValue<AbcMethod>[] ConsoleMethods
+			{
+				get
+				{
+					return _methods ?? (_methods =
+					                    new[]
+					                    	{
+					                    		_generator.LazyMethod(Type, "WriteLine", 0),
+					                    		_generator.LazyMethod(Type, "WriteLine", SystemTypes.String),
+					                    		_generator.LazyMethod(Type, "OpenSW", 0),
+					                    		_generator.LazyMethod(Type, "CloseSW", 0)
+					                    	});
+				}
+			}
+
+			private IType Type
+			{
+				get { return _generator.GetType(CorlibTypeId.Console); }
+			}
+		}
+
+		private ConsoleTypeImpl ConsoleType
+		{
+			get { return _consoleType ?? (_consoleType = new ConsoleTypeImpl(this)); }
+		}
+		private ConsoleTypeImpl _consoleType;
+
+		public AbcMethod GetMethod(ConsoleMethodId id)
         {
-            return GetInstance(CorlibTypeId.Console);
+            return ConsoleType[id];
         }
-
-        public AbcMethod GetMethod(ConsoleMethodId id)
-        {
-            return ConsoleMethods[(int)id].Value;
-        }
-
-        LazyValue<AbcMethod>[] ConsoleMethods
-        {
-            get
-            {
-                if (_methodsConsole != null)
-                    return _methodsConsole;
-
-                var type = GetType(CorlibTypeId.Console);
-
-                _methodsConsole =
-                    new[]
-                        {
-                            LazyMethod(type, "WriteLine", 0),
-                            LazyMethod(type, "WriteLine", SystemTypes.String),
-                            LazyMethod(type, "OpenSW", 0),
-                            LazyMethod(type, "CloseSW", 0),
-                        };
-
-                return _methodsConsole;
-            }
-        }
-        LazyValue<AbcMethod>[] _methodsConsole;
+    	
         #endregion
 
         #region Convert Methods
+
         public AbcMethod GetMethod(ConvertMethodId id)
         {
             return ConvertMethods[(int)id].Value;
         }
 
-        LazyValue<AbcMethod>[] ConvertMethods
+        private LazyValue<AbcMethod>[] ConvertMethods
         {
             get
             {
@@ -269,7 +402,7 @@ namespace DataDynamics.PageFX.FLI
                 return _methodsConvert;
             }
         }
-        LazyValue<AbcMethod>[] _methodsConvert;
+        private LazyValue<AbcMethod>[] _methodsConvert;
 
         void AddConvertMethods(ICollection<LazyValue<AbcMethod>> list, string name)
         {
@@ -291,36 +424,59 @@ namespace DataDynamics.PageFX.FLI
             list.Add(LazyMethod(type, name, SystemTypes.Object));
             list.Add(LazyMethod(type, name, SystemTypes.DateTime));
         }
+
         #endregion
 
         #region PageFX CompilerUtils Methods inside corlib
+
+		private sealed class CompilerTypeImpl
+		{
+			private readonly AbcGenerator _generator;
+			private LazyValue<AbcMethod>[] _methods;
+
+			public CompilerTypeImpl(AbcGenerator generator)
+			{
+				_generator = generator;
+			}
+
+			public AbcMethod this[CompilerMethodId id]
+			{
+				get { return CompilerMethods[(int)id].Value; }
+			}
+
+			private LazyValue<AbcMethod>[] CompilerMethods
+			{
+				get
+				{
+					return _methods ?? (_methods =
+					                    new[]
+					                    	{
+					                    		_generator.LazyMethod(Type, "ToArray", 1)
+					                    	});
+				}
+			}
+
+			private IType Type
+			{
+				get { return _generator.GetType(CorlibTypeId.CompilerUtils); }
+			}
+		}
+
+		private CompilerTypeImpl CompilerType
+		{
+			get { return _compilerType ?? (_compilerType = new CompilerTypeImpl(this)); }
+		}
+		private CompilerTypeImpl _compilerType;
+
         public AbcMethod GetMethod(CompilerMethodId id)
         {
-            return CompilerMethods[(int)id].Value;
+            return CompilerType[id];
         }
-
-        LazyValue<AbcMethod>[] CompilerMethods
-        {
-            get
-            {
-                if (_methodsCompiler != null)
-                    return _methodsCompiler;
-
-                var type = GetType(CorlibTypeId.CompilerUtils);
-
-                _methodsCompiler =
-                    new[]
-                        {
-                            LazyMethod(type, "ToArray", 1),
-                        };
-
-                return _methodsCompiler;
-            }
-        }
-        LazyValue<AbcMethod>[] _methodsCompiler;
+    	
         #endregion
 
         #region Fields
+
         public IField GetField(FieldId id)
         {
             return LazyFields[(int)id].Value;
@@ -354,7 +510,7 @@ namespace DataDynamics.PageFX.FLI
                     NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_name"),
                     NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_propType"),
                     NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_getMethod"),
-                    NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_setMethod"),
+                    NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_setMethod")
                 };
 
                 return _lazyFields;
@@ -366,10 +522,12 @@ namespace DataDynamics.PageFX.FLI
         {
             return new LazyField(() => type.FindField(name, true));
         }
+
         #endregion
     }
 
     #region Method IDs
+
     #region ArrayMethodId
     enum ArrayMethodId
     {
@@ -664,6 +822,7 @@ namespace DataDynamics.PageFX.FLI
         ToArray,
     }
     #endregion
+
     #endregion
 
     #region enum FieldId
