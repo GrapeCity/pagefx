@@ -1484,6 +1484,8 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Bugs\16.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Bugs\17.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Bugs\18.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\TryCatch\ConditionalRethrow.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\TryCatch\EncodingDefault.cs" />
     <Compile Include="UnitTests\ABCALL.cs" />
     <Compile Include="UnitTests\ABCDefineTest.cs" />
     <Compile Include="UnitTests\AbcFileTest.cs" />
