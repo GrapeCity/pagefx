@@ -527,7 +527,7 @@ namespace DataDynamics.PageFX.FLI
             if (attr == null) return null;
 
             int lib = 0;
-            int file = 0;
+            int file;
             if (attr.Arguments.Count == 1)
             {
                 file = GetInt(attr, 0);

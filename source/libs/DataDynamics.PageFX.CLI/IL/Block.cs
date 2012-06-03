@@ -17,26 +17,16 @@ namespace DataDynamics.PageFX.CLI.IL
     #region Block
     internal abstract class Block : ISehBlock
     {
-    	public Instruction EntryPoint
-        {
-            get { return _entryPoint; }
-            set { _entryPoint = value; }
-        }
-        private Instruction _entryPoint;
+    	public Instruction EntryPoint { get; set; }
 
-        public Instruction ExitPoint
-        {
-            get { return _exitPoint; }
-            set { _exitPoint = value; }
-        }
-        private Instruction _exitPoint;
+    	public Instruction ExitPoint { get; set; }
 
-        public int EntryIndex
+    	public int EntryIndex
         {
             get
             {
-                if (_entryPoint != null)
-                    return _entryPoint.Index;
+                if (EntryPoint != null)
+                    return EntryPoint.Index;
                 return -1;
             }
         }
@@ -45,8 +35,8 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get
             {
-                if (_exitPoint != null)
-                    return _exitPoint.Index;
+                if (ExitPoint != null)
+                    return ExitPoint.Index;
                 return -1;
             }
         }
@@ -70,37 +60,17 @@ namespace DataDynamics.PageFX.CLI.IL
             get;
         }
 
-        public bool IsHandler
-        {
-            get
-            {
-                switch(Type)
-                {
-                    case BlockType.Catch:
-                    case BlockType.Filter:
-                    case BlockType.Finally:
-                    case BlockType.Fault:
-                        return true;
-                }
-                return false;
-            }
-        }
+    	public ILStream Code { get; private set; }
 
-        public ILStream Code
-        {
-            get { return _code; }
-        }
-        private ILStream _code;
-
-        public IEnumerable<Instruction> GetInstructions()
+    	public IEnumerable<Instruction> GetInstructions()
         {
             for (int i = EntryIndex; i <= ExitIndex; ++i)
-                yield return _code[i];
+                yield return Code[i];
         }
 
         public void SetupInstructions(ILStream code)
         {
-            _code = code;
+            Code = code;
             int exit = ExitIndex;
             for (int i = EntryIndex; i <= exit; ++i)
             {
@@ -134,87 +104,13 @@ namespace DataDynamics.PageFX.CLI.IL
             return string.Format("{0}({1})", Type, CodeSpan);
         }
 
-        //static Node GetNode(Instruction instruction)
-        //{
-        //    Node node;
-        //    var block = instruction.Block;
-        //    if (block != null && block.Node != null)
-        //    {
-        //        node = block.Node;
-        //    }
-        //    else
-        //    {
-        //        node = instruction.OwnerNode;
-        //    }
-        //    if (node != null)
-        //    {
-        //        while (node.Parent != null)
-        //            node = node.Parent;
-        //    }
-        //    return node;
-        //}
+    	public IInstruction TranslatedEntryPoint { get; set; }
 
-        //public Node GetEntryNode()
-        //{
-        //    foreach (var instruction in GetInstructions())
-        //    {
-        //        var first = _code.GetTarget(instruction.Index);
-        //        var node = GetNode(first);
-        //        if (node != null)
-        //        {
-        //            return node;
-        //        }
-        //    }
-        //    return null;
-        //}
+		public IInstruction TranslatedExitPoint { get; set; }
 
-        //public virtual Node GetExitNode()
-        //{
-        //    for (int i = ExitIndex; i >= EntryIndex; --i)
-        //    {
-        //        var instruction = Code[i];
-        //        if (instruction.Block == this)
-        //        {
-        //            var c = instruction.Code;
-        //            if (c == InstructionCode.Leave_S || c == InstructionCode.Leave)
-        //            {
-        //                instruction = Code.GetTarget(i);
-        //                return GetNode(instruction);
-        //            }
-        //        }
-        //    }
-        //    return null;
-        //}
-        
-        //public NodeList GetNodes()
-        //{
-        //    var list = new NodeList();
-        //    var inList = new Hashtable();
-        //    Node prev = null;
-        //    foreach (var instruction in GetInstructions())
-        //    {
-        //        var node = GetNode(instruction);
-        //        if (node != null)
-        //        {
-        //            if (node != prev)
-        //            {
-        //                prev = node;
-        //                if (inList[node] == null)
-        //                {
-        //                    inList[node] = node;
-        //                    list.Add(node);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return list;
-        //}
+		public object Tag { get; set; }
 
-        public IInstruction TranslatedEntryPoint;
-        public IInstruction TranslatedExitPoint;
-
-        #region ISehBlock Members
-        IInstruction ISehBlock.EntryPoint
+    	IInstruction ISehBlock.EntryPoint
         {
             get { return TranslatedEntryPoint; }
         }
@@ -223,18 +119,20 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get { return TranslatedExitPoint; }
         }
-        #endregion
 
-        internal bool Dumped;
+    	internal bool Dumped;
     }
     #endregion
 
-    internal class BlockList : List<Block>
+    internal sealed class BlockList : List<Block>
     {
     }
 
     #region ProtectedBlock
-    internal class ProtectedBlock : Block, ISehTryBlock
+	/// <summary>
+	/// Represents try block.
+	/// </summary>
+    internal sealed class ProtectedBlock : Block, ISehTryBlock
     {
         public override BlockType Type
         {
@@ -262,36 +160,15 @@ namespace DataDynamics.PageFX.CLI.IL
             _handlers.Add(h);
         }
 
-        #region ISehTryBlock Members
-        ISehHandlerCollection ISehTryBlock.Handlers
+		ISehHandlerCollection ISehTryBlock.Handlers
         {
             get { return _handlers; }
         }
-
-        public int Depth
-        {
-            get
-            {
-                if (_depth < 0)
-                {
-                    _depth = 0;
-                    var parent = Parent;
-                    while (parent != null)
-                    {
-                        ++_depth;
-                        parent = parent.Parent;
-                    }
-                }
-                return _depth;
-            }
-        }
-        private int _depth = -1;
-        #endregion
     }
     #endregion
 
     #region HandlerBlock
-    internal class HandlerBlock : Block, ISehHandlerBlock
+    internal sealed class HandlerBlock : Block, ISehHandlerBlock
     {
         public HandlerBlock(BlockType type)
         {
@@ -302,20 +179,15 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get { return _type; }
         }
-        readonly BlockType _type;
+        private readonly BlockType _type;
 
-        public ProtectedBlock Owner
-        {
-            get { return _owner; }
-            set { _owner = value; }
-        }
-        private ProtectedBlock _owner;
+    	public ProtectedBlock Owner { get; set; }
 
-        public int Index
+    	public int Index
         {
             get
             {
-                if (_owner == null) return -1;
+                if (Owner == null) return -1;
                 if (_index < 0)
                     _index = Owner.Handlers.IndexOf(this);
                 return _index;
@@ -330,7 +202,7 @@ namespace DataDynamics.PageFX.CLI.IL
             //in order to avoid promblems with their translation
             if (instruction.Code == InstructionCode.Endfinally)
             {
-                var p = _owner.ExitPoint;
+                var p = Owner.ExitPoint;
                 while (true)
                 {
                     var hb = p.Block as HandlerBlock;
@@ -341,29 +213,21 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        //public override Node GetExitNode()
-        //{
-        //    return Owner.GetExitNode();
-        //}
-
         public int FilterIndex;
 
-        #region ISehHandlerBlock Members
-        public object Tag { get; set; }
-
-        ISehTryBlock ISehHandlerBlock.Owner
+    	ISehTryBlock ISehHandlerBlock.Owner
         {
-            get { return _owner; }
+            get { return Owner; }
         }
 
         ISehHandlerBlock ISehHandlerBlock.PrevHandler
         {
             get
             {
-                if (_owner == null) return null;
+                if (Owner == null) return null;
                 int index = Index;
                 if (index > 0)
-                    return _owner.Handlers[index - 1];
+                    return Owner.Handlers[index - 1];
                 return null;
             }
         }
@@ -372,10 +236,10 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get
             {
-                if (_owner == null) return null;
+                if (Owner == null) return null;
                 int index = Index + 1;
-                if (index < _owner.Handlers.Count)
-                    return _owner.Handlers[index];
+                if (index < Owner.Handlers.Count)
+                    return Owner.Handlers[index];
                 return null;
             }
         }
@@ -385,34 +249,27 @@ namespace DataDynamics.PageFX.CLI.IL
         public int ExceptionVariable { get; set; }
 
         public IType GenericExceptionType { get; set; }
-        #endregion
     }
     #endregion
 
     internal sealed class HandlerBlockList : List<HandlerBlock>, ISehHandlerCollection
     {
-        #region ISimpleList<ISehHandlerBlock> Members
-        ISehHandlerBlock ISimpleList<ISehHandlerBlock>.this[int index]
+    	ISehHandlerBlock ISimpleList<ISehHandlerBlock>.this[int index]
         {
             get { return this[index]; }
         }
-        #endregion
 
-        #region IEnumerable<ISehHandlerBlock> Members
-        IEnumerator<ISehHandlerBlock> IEnumerable<ISehHandlerBlock>.GetEnumerator()
+    	IEnumerator<ISehHandlerBlock> IEnumerable<ISehHandlerBlock>.GetEnumerator()
         {
         	foreach (var block in this)
         	{
         		yield return block;
         	}
         }
-        #endregion
 
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
+    	IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-        #endregion
     }
 }

@@ -302,11 +302,10 @@ namespace DataDynamics.PageFX.FLI.IL
             if (IsSwitch)
             {
                 int origin = _offset;
-                int offset, index;
 
-                var def = _operands[SW_Default];
-                offset = origin + (int)def.Value;
-                index = list.GetOffsetIndex(offset);
+            	var def = _operands[SW_Default];
+                int offset = origin + (int)def.Value;
+                int index = list.GetOffsetIndex(offset);
                 list[index].IsBranchTarget = true;
                 def.Value = index;
 

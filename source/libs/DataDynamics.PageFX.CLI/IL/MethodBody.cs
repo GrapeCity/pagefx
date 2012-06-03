@@ -325,7 +325,7 @@ namespace DataDynamics.PageFX.CLI.IL
                         if (val == null)
                         {
 #if DEBUG
-                            if (CLIDebug.BreakInvalidMetadataToken)
+                            if (DebugHooks.BreakInvalidMetadataToken)
                             {
                                 Debugger.Break();
                                 val = context.ResolveMetadataToken(token);

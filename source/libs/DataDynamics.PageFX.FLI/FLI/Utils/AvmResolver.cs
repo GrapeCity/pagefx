@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.CodeModel;
 
@@ -8,20 +9,23 @@ namespace DataDynamics.PageFX.FLI
         void Apply(IInstruction instruction);
     }
 
-    internal class AvmResolver
+    internal sealed class AvmResolver
     {
-        private readonly List<Pair<IInstruction, IInstructionSubject>> _list = new List<Pair<IInstruction, IInstructionSubject>>();
+		private readonly List<KeyValuePair<IInstruction, IInstructionSubject>> _list = new List<KeyValuePair<IInstruction, IInstructionSubject>>();
 
         public void Add(IInstruction instruction, IInstructionSubject subject)
         {
-            _list.Add(new Pair<IInstruction, IInstructionSubject>(instruction, subject));
+        	if (instruction == null) throw new ArgumentNullException("instruction");
+        	if (subject == null) throw new ArgumentNullException("subject");
+
+			_list.Add(new KeyValuePair<IInstruction, IInstructionSubject>(instruction, subject));
         }
 
-        public void Resolve()
+    	public void Resolve()
         {
             foreach (var p in _list)
             {
-                p.Second.Apply(p.First);
+                p.Value.Apply(p.Key);
             }
         }
     }

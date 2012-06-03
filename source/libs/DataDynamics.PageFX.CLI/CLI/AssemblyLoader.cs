@@ -932,7 +932,7 @@ namespace DataDynamics.PageFX.CLI
             {
                 //TODO: Report error
 #if DEBUG
-                if (CLIDebug.BreakInvalidTypeReference)
+                if (DebugHooks.BreakInvalidTypeReference)
                 {
                     Debugger.Break();
                     FindType(rs, fullname);
@@ -2362,7 +2362,7 @@ namespace DataDynamics.PageFX.CLI
             {
                 //TODO: Report warning
 #if DEBUG
-                if (CLIDebug.BreakInvalidMemberReference)
+                if (DebugHooks.BreakInvalidMemberReference)
                 {
                     Debugger.Break();
                     GetMemberRef(owner, name, sig);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using DataDynamics.PageFX.CLI.IL;
+using MethodBody = DataDynamics.PageFX.CLI.IL.MethodBody;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
@@ -22,8 +23,10 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         static string GetBlockIndent(Block block)
         {
-            if (block.IsHandler)
-                return GetBlockIndent(((HandlerBlock)block).Owner);
+        	var handler = block as HandlerBlock;
+            if (handler != null)
+                return GetBlockIndent(handler.Owner);
+
             var tab = new Indent();
             while (block.Parent != null)
             {

@@ -239,6 +239,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region NUnitFrameworkAssembly
+
         private IType FindNUnitType(string fullname)
         {
             return TypeExtensions.FindType(NUnitFrameworkAssembly, fullname);
@@ -261,12 +262,13 @@ namespace DataDynamics.PageFX.FLI
         }
         
         #region NUnitTypes & Methods
-        IType GetType(NUnitTypeId id)
+
+		private IType GetType(NUnitTypeId id)
         {
             return NUnitTypes[(int)id].Value;
         }
 
-        AbcInstance GetInstance(NUnitTypeId id)
+		private AbcInstance GetInstance(NUnitTypeId id)
         {
             return DefineAbcInstance(GetType(id));
         }
@@ -279,22 +281,19 @@ namespace DataDynamics.PageFX.FLI
 
         const string NS_PFX_NUNIT = "DataDynamics.PageFX.NUnit.";
 
-        LazyValue<IType>[] NUnitTypes
+		private LazyValue<IType>[] NUnitTypes
         {
             get
             {
-                if (_nunitTypes != null)
-                    return _nunitTypes;
-                _nunitTypes =
-                new[]
-                {
-                    new LazyValue<IType>(()=>FindNUnitType(NS_PFX_NUNIT + "FlashTestRunner")),
-                    new LazyValue<IType>(()=>FindNUnitType(NS_PFX_NUNIT + "Test"))
-                };
-                return _nunitTypes;
+            	return _nunitTypes ?? (_nunitTypes =
+            	                       new[]
+            	                       	{
+            	                       		new LazyValue<IType>(() => FindNUnitType(NS_PFX_NUNIT + "FlashTestRunner")),
+            	                       		new LazyValue<IType>(() => FindNUnitType(NS_PFX_NUNIT + "Test"))
+            	                       	});
             }
         }
-        LazyValue<IType>[] _nunitTypes;
+        private LazyValue<IType>[] _nunitTypes;
 
         enum NUnitMethodId
         {
@@ -302,28 +301,25 @@ namespace DataDynamics.PageFX.FLI
             TestRunner_Run
         }
 
-        AbcMethod GetMethod(NUnitMethodId id)
+		private AbcMethod GetMethod(NUnitMethodId id)
         {
             return NUnitMethods[(int)id].Value;
         }
 
-        LazyValue<AbcMethod>[] NUnitMethods
+        private LazyValue<AbcMethod>[] NUnitMethods
         {
             get
             {
-                if (_methodsNUnit != null)
-                    return _methodsNUnit;
-
-                _methodsNUnit =
-                new[]
-                {
-                    LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Register", 1),
-                    LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Run", 0),
-                };
-                return _methodsNUnit;
+            	return _methodsNUnit ?? (_methodsNUnit =
+            	                         new[]
+            	                         	{
+            	                         		LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Register", 1),
+            	                         		LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Run", 0)
+            	                         	});
             }
         }
-        LazyValue<AbcMethod>[] _methodsNUnit;
+        private LazyValue<AbcMethod>[] _methodsNUnit;
+
         #endregion
         #endregion
     }

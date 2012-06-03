@@ -630,7 +630,7 @@ namespace DataDynamics.PageFX.FLI.SWC
     	}
 
     	private static readonly Dictionary<string, bool> MixinInterfaces =
-    		new Dictionary<string, bool>()
+    		new Dictionary<string, bool>
     			{
 					{"mx.binding.IWatcherSetupUtil", true},
 					{"mx.binding.IWatcherSetupUtil2", true}

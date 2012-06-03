@@ -73,7 +73,6 @@
     <Compile Include="CFG\Services\DumpService.cs" />
     <Compile Include="CFG\Edge.cs" />
     <Compile Include="IL\CLR.cs" />
-    <Compile Include="CLI\CLIDebug.cs" />
     <Compile Include="IL\Values\ComputedValue.cs" />
     <Compile Include="IL\Values\ArgPtr.cs">
       <SubType>Code</SubType>

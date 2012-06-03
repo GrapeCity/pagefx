@@ -2,14 +2,12 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using DataDynamics.PageFX.CLI.CFG;
 using DataDynamics.PageFX.CodeModel;
 using Microsoft.Win32;
-using MethodBody=DataDynamics.PageFX.CLI.IL.MethodBody;
 
-namespace DataDynamics.PageFX.CLI
+namespace DataDynamics.PageFX
 {
-    public static class CLIDebug
+    public static class DebugHooks
     {
         public const string KeyLastErrorType = "LastErrorType";
         public const string KeyLastErrorMethod = "LastErrorMethod";
@@ -34,32 +32,31 @@ namespace DataDynamics.PageFX.CLI
         public static bool BreakInvalidMemberReference;
         public static bool BreakInvalidTypeReference;
 
-        internal static bool Filter;
+        public static bool EvalFilter(IMethod method)
+		{
+			var type = method.DeclaringType;
 
-        public static bool IsBreak
-        {
-            get { return Filter && DebuggerBreak; }
-        }
+			string lastErrorType = GetValue(KeyLastErrorType, "");
+			string lastErrorMethod = GetValue(KeyLastErrorMethod, "");
 
-        internal static void EvalFilter(IMethod method)
-        {
-            var type = method.DeclaringType;
+			if (((string.IsNullOrEmpty(TypeName)
+				|| (type.Name == TypeName || type.FullName == TypeName))
+				&& method.Name == MethodName)
+				|| (type.FullName == lastErrorType
+				&& method.Name == lastErrorMethod))
+			{
+				return true;
+			}
 
-            Filter = false;
-            string lastErrorType = GetValue(KeyLastErrorType, "");
-            string lastErrorMethod = GetValue(KeyLastErrorMethod, "");
+			return false;
+		}
 
-            if (((string.IsNullOrEmpty(TypeName)
-                || (type.Name == TypeName || type.FullName == TypeName))
-                && method.Name == MethodName)
-                || (type.FullName == lastErrorType
-                && method.Name == lastErrorMethod))
-            {
-                Filter = true;
-            }
-        }
+    	public static bool CanBreak(IMethod method)
+    	{
+    		return DebuggerBreak && EvalFilter(method);
+    	}
 
-        public static bool IsCancel
+    	public static bool IsCancel
         {
             get
             {
@@ -98,33 +95,7 @@ namespace DataDynamics.PageFX.CLI
             BreakInvalidTypeReference = false;
         }
 
-        internal static void VisualizeGraph(MethodBody body, Node entry)
-        {
-            if (entry == null) return;
-            var list = entry.GetGraphNodes();
-            VisualizeGraph(body, list);  
-        }
-
-        internal static void VisualizeGraph(MethodBody body, NodeList list)
-        {
-            LogInfo("Flow graph constructed");
-            DoCancel();
-
-            DotService.NameService = null;
-
-            if (Filter || VisualizeGraphBefore)
-            {
-                DotService.Write(list, DotService.MakePath(body, "before"), true);
-            }
-
-            if (Filter || DumpILCode)
-            {
-                DumpService.Dump(list, body, CommonLanguageInfrastructure.TestCaseDirectory);
-                LogInfo("IL code dumped");
-            }
-        }
-
-        private const string HKEY_CURRENT_USER = "HKEY_CURRENT_USER";
+    	private const string HKEY_CURRENT_USER = "HKEY_CURRENT_USER";
 
         internal static string GetKeyName(string path)
         {
@@ -161,10 +132,13 @@ namespace DataDynamics.PageFX.CLI
             try
             {
             	string name = Path.GetFileName(path);
+				if (string.IsNullOrEmpty(name)) return;
+
             	string key = GetKeyName(path);
             	key = key.Substring(HKEY_CURRENT_USER.Length + 1);
             	var registryKey = Registry.CurrentUser.OpenSubKey(key, true);
             	if (registryKey == null) return;
+
             	using (registryKey)
             	{
             		registryKey.DeleteValue(name);
@@ -176,14 +150,9 @@ namespace DataDynamics.PageFX.CLI
             }
         }
 
-        internal static void SetLastError(MethodBody body)
-        {
-            SetLastError(body.Method);
-        }
+		public static bool HasLastError { get; private set; }
 
-        internal static bool HasLastError;
-
-        internal static void SetLastError(IMethod method)
+        public static void SetLastError(IMethod method)
         {
             if (HasLastError) return;
             if (RecordLastError)
@@ -204,7 +173,7 @@ namespace DataDynamics.PageFX.CLI
         #region Logging
         public static TextWriter Log;
 
-        internal static void LogInfo(string msg)
+        public static void LogInfo(string msg)
         {
             if (Log != null)
             {
@@ -212,7 +181,7 @@ namespace DataDynamics.PageFX.CLI
             }
         }
 
-        internal static void LogInfo(string format, params object[] args)
+        public static void LogInfo(string format, params object[] args)
         {
             if (Log != null)
             {
@@ -220,7 +189,7 @@ namespace DataDynamics.PageFX.CLI
             }
         }
 
-        internal static void LogError(string msg)
+        public static void LogError(string msg)
         {
             if (Log != null)
             {
@@ -228,7 +197,7 @@ namespace DataDynamics.PageFX.CLI
             }
         }
 
-        internal static void LogError(string format, params object[] args)
+        public static void LogError(string format, params object[] args)
         {
             if (Log != null)
             {
@@ -237,7 +206,7 @@ namespace DataDynamics.PageFX.CLI
             }
         }
 
-        internal static void LogWarning(string msg)
+        public static void LogWarning(string msg)
         {
             if (Log != null)
             {
@@ -245,7 +214,7 @@ namespace DataDynamics.PageFX.CLI
             }
         }
 
-        internal static void LogWarning(string format, params object[] args)
+        public static void LogWarning(string format, params object[] args)
         {
             if (Log != null)
             {
@@ -254,12 +223,12 @@ namespace DataDynamics.PageFX.CLI
             }
         }
 
-        private static readonly string sep = new string('-', 200);
+        private static readonly string Sep = new string('-', 200);
 
-        internal static void LogSeparator()
+        public static void LogSeparator()
         {
             if (Log != null)
-                Log.WriteLine(sep);
+                Log.WriteLine(Sep);
         }
         #endregion
     }

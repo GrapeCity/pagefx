@@ -23,13 +23,13 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             _phase = Phase.Analysis;
 #if DEBUG
-            CLIDebug.LogInfo("Flowgraph analysis started");
-            CLIDebug.DoCancel();
+            DebugHooks.LogInfo("Flowgraph analysis started");
+            DebugHooks.DoCancel();
 #endif
             foreach (var bb in Blocks)
             {
 #if DEBUG
-                CLIDebug.DoCancel();
+                DebugHooks.DoCancel();
 #endif
                 AnalyzeBlock(bb);
             }
@@ -37,14 +37,14 @@ namespace DataDynamics.PageFX.CLI.IL
             foreach (var bb in Blocks)
             {
 #if DEBUG
-                CLIDebug.DoCancel();
+                DebugHooks.DoCancel();
 #endif
                 bb.Stack = null;
             }
 
 #if DEBUG
-            CLIDebug.LogInfo("Flowgraph analysis succeeded");
-            CLIDebug.DoCancel();
+            DebugHooks.LogInfo("Flowgraph analysis succeeded");
+            DebugHooks.DoCancel();
 #endif
         }
         #endregion
@@ -78,7 +78,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
 
 #if DEBUG
-            CLIDebug.DoCancel();
+            DebugHooks.DoCancel();
 #endif
             var from = e.From;
             var prevStack = from.Stack;
@@ -113,7 +113,7 @@ namespace DataDynamics.PageFX.CLI.IL
             foreach (var e in bb.InEdges)
             {
 #if DEBUG
-                CLIDebug.DoCancel();
+                DebugHooks.DoCancel();
 #endif
                 if (CheckIncomingBlock(e, bb))
                     AnalyzeBlock(e.From);
@@ -131,7 +131,7 @@ namespace DataDynamics.PageFX.CLI.IL
             foreach (var instr in bb.Code)
             {
 #if DEBUG
-                CLIDebug.DoCancel();
+                DebugHooks.DoCancel();
 #endif
                 AnalyzeInstruction(bb, instr);
             }

@@ -102,6 +102,7 @@
     <Compile Include="Implementation\Arithmetic.cs" />
     <Compile Include="Implementation\AssemblyExtensions.cs" />
     <Compile Include="Implementation\BooleanAlgebra.cs" />
+    <Compile Include="Implementation\DebugHooks.cs" />
     <Compile Include="Implementation\ExportService.cs" />
     <Compile Include="Implementation\ExpressionService.cs" />
     <Compile Include="Implementation\Expressions\ArrayIndexerExpression.cs" />

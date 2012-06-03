@@ -2,7 +2,7 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
-    internal class ILStream : InstructionList<Instruction>
+    internal sealed class ILStream : InstructionList<Instruction>
     {
         public int GetTargetIndex(int index)
         {

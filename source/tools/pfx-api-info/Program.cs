@@ -76,10 +76,10 @@ namespace DataDynamics.PageFX.Tools
         {
             try
             {
-                Infrastructure.SubstituteFrameworkAssemblies = false;
+                CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = false;
                 if (!Path.IsPathRooted(path))
                     path = Path.Combine(Environment.CurrentDirectory, path);
-                return Infrastructure.Deserialize(path, null);
+				return CommonLanguageInfrastructure.Deserialize(path, null);
             }
             catch (Exception e)
             {

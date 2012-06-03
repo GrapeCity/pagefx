@@ -8,35 +8,30 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
-    class Instruction : IInstruction
+    internal sealed class Instruction : IInstruction
     {
+		public Instruction()
+		{
+			Index = -1;
+		}
+
         #region IInstruction Members
         int IInstruction.Code
         {
-            get { return _code.Value; }
+            get { return OpCode.Value; }
         }
 
-        /// <summary>
-        /// Gets or sets zero based index of the instruction  in the IL stream.
-        /// </summary>
-        public int Index
-        {
-            get { return _index; }
-            set { _index = value; }
-        }
-        int _index = -1;
+    	/// <summary>
+    	/// Gets or sets zero based index of the instruction  in the IL stream.
+    	/// </summary>
+    	public int Index { get; set; }
 
-        /// <summary>
-        /// Instruction offset from the method begin
-        /// </summary>
-        public int Offset
-        {
-            get { return _offset; }
-            set { _offset = value; }
-        }
-        int _offset;
+    	/// <summary>
+    	/// Instruction offset from the method begin
+    	/// </summary>
+    	public int Offset { get; set; }
 
-        public bool IsBranchTarget { get; set; }
+    	public bool IsBranchTarget { get; set; }
 
         public bool IsEndOfTryFinally
         {
@@ -72,29 +67,25 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region Public Members
-        /// <summary>
-        /// Instruction Code
-        /// </summary>
-        public OpCode OpCode
-        {
-            get { return _code; }
-            set { _code = value; }
-        }
-        OpCode _code;
 
-        public string Name
+    	/// <summary>
+    	/// Instruction Code
+    	/// </summary>
+    	public OpCode OpCode { get; set; }
+
+    	public string Name
         {
-            get { return _code.Name; }
+            get { return OpCode.Name; }
         }
 
         public InstructionCode Code
         {
-            get { return (InstructionCode)_code.Value; }
+            get { return (InstructionCode)OpCode.Value; }
         }
 
         public FlowControl FlowControl
         {
-            get { return _code.FlowControl; }
+            get { return OpCode.FlowControl; }
         }
 
         /// <summary>
@@ -182,6 +173,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region Operand
+
         /// <summary>
         /// Gets or sets instruction operand
         /// </summary>
@@ -225,69 +217,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        public object ConstantValue
-        {
-            get
-            {
-                switch (Code)
-                {
-                    case InstructionCode.Ldc_I4:
-                    case InstructionCode.Ldc_I4_S:
-                        return (int)Value;
-                    case InstructionCode.Ldc_I4_0: return 0;
-                    case InstructionCode.Ldc_I4_1: return 1;
-                    case InstructionCode.Ldc_I4_2: return 2;
-                    case InstructionCode.Ldc_I4_3: return 3;
-                    case InstructionCode.Ldc_I4_4: return 4;
-                    case InstructionCode.Ldc_I4_5: return 5;
-                    case InstructionCode.Ldc_I4_6: return 6;
-                    case InstructionCode.Ldc_I4_7: return 7;
-                    case InstructionCode.Ldc_I4_8: return 8;
-                    case InstructionCode.Ldc_I4_M1: return -1;
-                    case InstructionCode.Ldc_I8: return (long)Value;
-                    case InstructionCode.Ldc_R4: return (float)Value;
-                    case InstructionCode.Ldc_R8: return (double)Value;
-                }
-                return null;
-            }
-        }
-
-        public bool IsZero
-        {
-            get
-            {
-                switch (Code)
-                {
-                    case InstructionCode.Ldc_I4:
-                    case InstructionCode.Ldc_I4_S:
-                        return (int)Value == 0;
-                    case InstructionCode.Ldc_I4_0: return true;
-                    case InstructionCode.Ldc_I8: return (long)Value == 0;
-                    case InstructionCode.Ldc_R4: return (float)Value == 0;
-                    case InstructionCode.Ldc_R8: return (double)Value == 0;
-                }
-                return false;
-            }
-        }
-
-        public bool IsOne
-        {
-            get
-            {
-                switch (Code)
-                {
-                    case InstructionCode.Ldc_I4:
-                    case InstructionCode.Ldc_I4_S:
-                        return (int)Value == 1;
-                    case InstructionCode.Ldc_I4_1: return true;
-                    case InstructionCode.Ldc_I8: return (long)Value == 1;
-                    case InstructionCode.Ldc_R4: return (float)Value == 1;
-                    case InstructionCode.Ldc_R8: return (double)Value == 1;
-                }
-                return false;
-            }
-        }
-        #endregion
+    	#endregion
 
         #region Internal Properties
         public Block Block { get; set; }
@@ -312,7 +242,7 @@ namespace DataDynamics.PageFX.CLI.IL
             _stateStack.Pop();
         }
 
-        readonly Stack<InstructionState> _stateStack = new Stack<InstructionState>();
+        private readonly Stack<InstructionState> _stateStack = new Stack<InstructionState>();
 
         public IParameter Parameter
         {
@@ -353,7 +283,8 @@ namespace DataDynamics.PageFX.CLI.IL
         }
 
         internal bool Dumped;
-        #endregion
+
+    	#endregion
 
         #region DebugInfo
         public SequencePoint SequencePoint
@@ -385,12 +316,12 @@ namespace DataDynamics.PageFX.CLI.IL
                 {
                     case 'I':
                     case 'i':
-                        FormatInt(sb, format, ref i, _index);
+                        FormatInt(sb, format, ref i, Index);
                         break;
 
                     case 'O':
                     case 'o':
-                        FormatInt(sb, format, ref i, _offset);
+                        FormatInt(sb, format, ref i, Offset);
                         break;
 
                     case 'C':
@@ -466,7 +397,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
     }
 
-    class InstructionState
+    internal sealed class InstructionState
     {
         public ITypeMember Member { get; set; }
 

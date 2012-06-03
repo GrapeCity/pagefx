@@ -82,25 +82,23 @@ namespace DataDynamics.PageFX.CLI.IL
                 throw new ILTranslatorException("Not supported");
 
 #if DEBUG
-            CLIDebug.LogSeparator();
-            CLIDebug.LogInfo("ILTranslator started for method: {0}", _method);
-            CLIDebug.EvalFilter(_method);
-            if (CLIDebug.IsBreak)
-                Debugger.Break();
+            DebugHooks.LogSeparator();
+            DebugHooks.LogInfo("ILTranslator started for method: {0}", _method);
+            if (DebugHooks.CanBreak(_method)) Debugger.Break();
 #endif
 
             try
             {
                 Process();
 #if DEBUG
-                CLIDebug.LogInfo("ILTranslator succeeded for method: {0}", _method);
-                CLIDebug.LogSeparator();
+                DebugHooks.LogInfo("ILTranslator succeeded for method: {0}", _method);
+                DebugHooks.LogSeparator();
 #endif
             }
             catch (Exception e)
             {
 #if DEBUG
-                CLIDebug.SetLastError(_method);
+                DebugHooks.SetLastError(_method);
 #endif
                 if (e is CompilerException)
                     throw;
@@ -162,7 +160,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 ConcatBlocks();
                 ResolveBranches();
 #if DEBUG
-                if (CLIDebug.DumpILMap)
+                if (DebugHooks.DumpILMap)
                     DumpILMap("I: N V", "ilmap_i.txt");
 #endif
                 PopState();
@@ -237,16 +235,16 @@ namespace DataDynamics.PageFX.CLI.IL
         void BuildGraph()
         {
 #if DEBUG
-            CLIDebug.LogInfo("CFG Builder started");
-            CLIDebug.DoCancel();
+            DebugHooks.LogInfo("CFG Builder started");
+            DebugHooks.DoCancel();
 #endif
 
             _flowgraph = _body.FlowGraph;
             if (_flowgraph != null)
             {
 #if DEBUG
-                CLIDebug.DoCancel();
-                CLIDebug.VisualizeGraph(_body, _flowgraph.Entry);
+                DebugHooks.DoCancel();
+                _body.VisualizeGraph(_flowgraph.Entry);
 #endif
                 return;
             }
@@ -257,8 +255,8 @@ namespace DataDynamics.PageFX.CLI.IL
                 throw new ILTranslatorException("Unable to build flowgraph");
 
 #if DEBUG
-            CLIDebug.DoCancel();
-            CLIDebug.VisualizeGraph(_body, entry);
+            DebugHooks.DoCancel();
+            _body.VisualizeGraph(entry);
 #endif
 
             //Prepares list of basic blocks in the same order as they are located in code.
@@ -267,7 +265,7 @@ namespace DataDynamics.PageFX.CLI.IL
             foreach (var instruction in _body.Code)
             {
 #if DEBUG
-                CLIDebug.DoCancel();
+                DebugHooks.DoCancel();
 #endif
                 var bb = instruction.OwnerNode;
                 //if (bb == null)
@@ -291,8 +289,8 @@ namespace DataDynamics.PageFX.CLI.IL
         void ConcatBlocks()
         {
 #if DEBUG
-            CLIDebug.LogInfo("ConcatBlocks started");
-            CLIDebug.DoCancel();
+            DebugHooks.LogInfo("ConcatBlocks started");
+            DebugHooks.DoCancel();
 #endif
 
             _brlist = new Code();
@@ -320,7 +318,7 @@ namespace DataDynamics.PageFX.CLI.IL
             foreach (var bb in Blocks)
             {
 #if DEBUG
-                CLIDebug.DoCancel();
+                DebugHooks.DoCancel();
 #endif
                 bb.TranslatedEntryIndex = _outcode.Count;
                 var code = bb.TranslatedCode;
@@ -341,8 +339,8 @@ namespace DataDynamics.PageFX.CLI.IL
             Emit(_endCode);
 
 #if DEBUG
-            CLIDebug.LogInfo("ConcatBlocks succeeded. CodeSize = {0}", _outcode.Count);
-            CLIDebug.DoCancel();
+            DebugHooks.LogInfo("ConcatBlocks succeeded. CodeSize = {0}", _outcode.Count);
+            DebugHooks.DoCancel();
 #endif
         }
 
@@ -389,14 +387,14 @@ namespace DataDynamics.PageFX.CLI.IL
         void ResolveBranches()
         {
 #if DEBUG
-            CLIDebug.LogInfo("ResolveBranches started");
-            CLIDebug.DoCancel();
+            DebugHooks.LogInfo("ResolveBranches started");
+            DebugHooks.DoCancel();
 #endif
             int n = _brlist.Count;
             for (int i = 0; i < n; ++i)
             {
 #if DEBUG
-                CLIDebug.DoCancel();
+                DebugHooks.DoCancel();
 #endif
                 var br = _brlist[i];
                 var bb = _brnodes[i];
@@ -427,8 +425,8 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
             }
 #if DEBUG
-            CLIDebug.LogInfo("ResolveBranches succeeded");
-            CLIDebug.DoCancel();
+            DebugHooks.LogInfo("ResolveBranches succeeded");
+            DebugHooks.DoCancel();
 #endif
         }
         #endregion

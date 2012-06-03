@@ -303,12 +303,11 @@ namespace System.Drawing
                 var types = path.PathTypes;
             	var start = PointF.Empty;
                 var cur = PointF.Empty;
-                var pt = PointF.Empty;
-                for (int i = 0; i < n; ++i)
+            	for (int i = 0; i < n; ++i)
                 {
                     var type = (PathPointType)types[i];
                     var pointType = type & PathPointType.PathTypeMask;
-                    pt = points[i];
+                    var pt = points[i];
                     if (type == PathPointType.Start)
                     {
                         render.Move(cur, pt);

@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX
 
 #if DEBUG
             DebugService.CancelCallback = _cancelCallback;
-            CLIDebug.CancelCallback = _cancelCallback;
+            DebugHooks.CancelCallback = _cancelCallback;
 #endif
             miOptimizeCode.Tag = GlobalOptionName.OptimizeCode;
             miEmitDebugInfo.Tag = GlobalOptionName.EmitDebugInfo;
@@ -577,42 +577,42 @@ namespace DataDynamics.PageFX
             if (btnLogSwitch.Checked)
             {
                 DebugService.Log = _twLog;
-                CLIDebug.Log = _twLog;
+                DebugHooks.Log = _twLog;
             }
             else
             {
                 DebugService.Log = null;
-                CLIDebug.Log = null;
+                DebugHooks.Log = null;
             }
 
-            CLIDebug.DumpILCode = miDumpILCode.Checked;
-            CLIDebug.DumpILMap = miDumpILMap.Checked;
-            CLIDebug.DumpSrc = miDumpSrc.Checked;
-            CLIDebug.VisualizeGraphAfter = miGraphViz.Checked;
-            CLIDebug.VisualizeGraphBefore = miGraphViz.Checked;
-            CLIDebug.VisualizeGraphStructuring = miGraphVizStruct.Checked;
+            DebugHooks.DumpILCode = miDumpILCode.Checked;
+            DebugHooks.DumpILMap = miDumpILMap.Checked;
+            DebugHooks.DumpSrc = miDumpSrc.Checked;
+            DebugHooks.VisualizeGraphAfter = miGraphViz.Checked;
+            DebugHooks.VisualizeGraphBefore = miGraphViz.Checked;
+            DebugHooks.VisualizeGraphStructuring = miGraphVizStruct.Checked;
 
-            CLIDebug.RecordLastError = miRecordLastError.Checked;
-            CLIDebug.DebuggerBreak = miDebuggerBreak.Checked;
-            CLIDebug.BreakWhileLoops = miBreakWhileLoops.Checked;
-            CLIDebug.BreakDoWhileLoops = miBreakDoWhileLoops.Checked;
-            CLIDebug.BreakEndlessLoops = miBreakEndlessLoops.Checked;
-            CLIDebug.BreakInvalidMetadataToken = miBreakInvalidMetadataToken.Checked;
-            CLIDebug.BreakInvalidMemberReference = miBreakInvalidMemberReference.Checked;
-            CLIDebug.BreakInvalidTypeReference = miBreakInvalidTypeReference.Checked;
+            DebugHooks.RecordLastError = miRecordLastError.Checked;
+            DebugHooks.DebuggerBreak = miDebuggerBreak.Checked;
+            DebugHooks.BreakWhileLoops = miBreakWhileLoops.Checked;
+            DebugHooks.BreakDoWhileLoops = miBreakDoWhileLoops.Checked;
+            DebugHooks.BreakEndlessLoops = miBreakEndlessLoops.Checked;
+            DebugHooks.BreakInvalidMetadataToken = miBreakInvalidMetadataToken.Checked;
+            DebugHooks.BreakInvalidMemberReference = miBreakInvalidMemberReference.Checked;
+            DebugHooks.BreakInvalidTypeReference = miBreakInvalidTypeReference.Checked;
 
-            CLIDebug.TypeName = cbTypeName.Text;
-            CLIDebug.MethodName = cbMethodName.Text;
+            DebugHooks.TypeName = cbTypeName.Text;
+            DebugHooks.MethodName = cbMethodName.Text;
 
-            CLIDebug.Phase = -1;
+            DebugHooks.Phase = -1;
             string s = tbPhase.Text;
             int phase;
             if (!string.IsNullOrEmpty(s) && int.TryParse(s, out phase))
-                CLIDebug.Phase = phase;
+                DebugHooks.Phase = phase;
 
             DebugService.AvmDump = miAvmDump.Checked;
             DebugService.AbcDump = miAbcDumpEnabled.Checked;
-            DebugService.DumpILMap = CLIDebug.DumpILMap;
+            DebugService.DumpILMap = DebugHooks.DumpILMap;
             DebugService.BreakInternalCall = miBreakUnresolvedInternalCall.Checked;
 
             AbcDumpService.TextFormat = miAbcDumpTextFormat.Checked;
@@ -974,23 +974,23 @@ namespace DataDynamics.PageFX
         void OnResetDebugHooks(object sender, EventArgs e)
         {
 #if DEBUG
-            CLIDebug.Reset();
-            CLIDebug.ResetLastError();
-            miDumpILCode.Checked = CLIDebug.DumpILCode;
-            miDumpILMap.Checked = CLIDebug.DumpILMap;
-            miDumpSrc.Checked = CLIDebug.DumpSrc;
-            miGraphViz.Checked = CLIDebug.VisualizeGraphAfter;
-            miGraphViz.Checked = CLIDebug.VisualizeGraphBefore ;
-            miGraphVizStruct.Checked = CLIDebug.VisualizeGraphStructuring;
-            cbTypeName.Text = CLIDebug.TypeName;
-            cbMethodName.Text = CLIDebug.MethodName;
-            miDebuggerBreak.Checked = CLIDebug.DebuggerBreak;
-            miBreakWhileLoops.Checked = CLIDebug.BreakWhileLoops;
-            miBreakDoWhileLoops.Checked = CLIDebug.BreakDoWhileLoops;
-            miBreakEndlessLoops.Checked = CLIDebug.BreakEndlessLoops;
-            miBreakInvalidMetadataToken.Checked = CLIDebug.BreakInvalidMetadataToken;
-            miBreakInvalidMemberReference.Checked = CLIDebug.BreakInvalidMemberReference;
-            miBreakInvalidTypeReference.Checked = CLIDebug.BreakInvalidTypeReference;
+            DebugHooks.Reset();
+            DebugHooks.ResetLastError();
+            miDumpILCode.Checked = DebugHooks.DumpILCode;
+            miDumpILMap.Checked = DebugHooks.DumpILMap;
+            miDumpSrc.Checked = DebugHooks.DumpSrc;
+            miGraphViz.Checked = DebugHooks.VisualizeGraphAfter;
+            miGraphViz.Checked = DebugHooks.VisualizeGraphBefore ;
+            miGraphVizStruct.Checked = DebugHooks.VisualizeGraphStructuring;
+            cbTypeName.Text = DebugHooks.TypeName;
+            cbMethodName.Text = DebugHooks.MethodName;
+            miDebuggerBreak.Checked = DebugHooks.DebuggerBreak;
+            miBreakWhileLoops.Checked = DebugHooks.BreakWhileLoops;
+            miBreakDoWhileLoops.Checked = DebugHooks.BreakDoWhileLoops;
+            miBreakEndlessLoops.Checked = DebugHooks.BreakEndlessLoops;
+            miBreakInvalidMetadataToken.Checked = DebugHooks.BreakInvalidMetadataToken;
+            miBreakInvalidMemberReference.Checked = DebugHooks.BreakInvalidMemberReference;
+            miBreakInvalidTypeReference.Checked = DebugHooks.BreakInvalidTypeReference;
 #endif
             tbPhase.Text = "";
         }
@@ -998,7 +998,7 @@ namespace DataDynamics.PageFX
         void btnResetLastError_Click(object sender, EventArgs e)
         {
 #if DEBUG
-            CLIDebug.ResetLastError();
+            DebugHooks.ResetLastError();
 #endif
         }
 

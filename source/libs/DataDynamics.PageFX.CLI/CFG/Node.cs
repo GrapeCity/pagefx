@@ -14,18 +14,17 @@ namespace DataDynamics.PageFX.CLI.CFG
     /// </summary>
     internal sealed class Node
     {
-        #region Constructors
-        public Node()
-        {
-        }
+    	public Node()
+    	{
+    		Index = -1;
+    	}
 
-        public Node(string name)
-        {
-            Name = name;
-        }
-        #endregion
+    	public Node(string name) : this()
+    	{
+    		Name = name;
+    	}
 
-        #region Public Properties
+    	#region Public Properties
 
     	public Block OwnerBlock { get; set; }
 
@@ -38,7 +37,7 @@ namespace DataDynamics.PageFX.CLI.CFG
         {
             get
             {
-                var e = _firstOut;
+                var e = FirstOut;
                 if (e == null) return false;
                 e = e.NextOut;
                 if (e == null) return false;
@@ -51,7 +50,7 @@ namespace DataDynamics.PageFX.CLI.CFG
         {
             get
             {
-                var e = _firstOut;
+                var e = FirstOut;
                 if (e == null) return false;
                 return e.NextOut != null;
             }
@@ -59,25 +58,20 @@ namespace DataDynamics.PageFX.CLI.CFG
 
     	public bool HasOneIn
         {
-            get { return _firstIn != null && _firstIn.NextIn == null; }
+            get { return FirstIn != null && FirstIn.NextIn == null; }
         }
 
     	public bool HasOneOut
         {
-            get { return _firstOut != null && _firstOut.NextOut == null; }
+            get { return FirstOut != null && FirstOut.NextOut == null; }
         }
 
-        /// <summary>
-        /// Gets or sets index of the node in owner graph node set.
-        /// </summary>
-        public int Index
-        {
-            get { return _index; }
-            set { _index = value; }
-        }
-        int _index = -1;
+    	/// <summary>
+    	/// Gets or sets index of the node in owner graph node set.
+    	/// </summary>
+    	public int Index { get; set; }
 
-        public string Name { get; set; }
+    	public string Name { get; set; }
 
     	public Node Goto;
         public IGotoStatement GotoStatement;
@@ -85,24 +79,12 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public int InCount
         {
-            get
-            {
-                int n = 0;
-                for (var e = _firstIn; e != null; e = e.NextIn)
-                    ++n;
-                return n;
-            }
+            get { return InEdges.Count(); }
         }
 
         public int OutCount
         {
-            get
-            {
-                int n = 0;
-                for (var e = _firstOut; e != null; e = e.NextOut)
-                    ++n;
-                return n;
-            }
+            get { return OutEdges.Count(); }
         }
 
 #if DEBUG
@@ -111,22 +93,18 @@ namespace DataDynamics.PageFX.CLI.CFG
         #endregion
 
         #region Flags
-        public NodeFlags Flags
-        {
-            get { return _flags; }
-            set { _flags = value; }
-        }
-        NodeFlags _flags;
 
-        bool IsFlag(NodeFlags f)
+    	public NodeFlags Flags { get; set; }
+
+    	bool IsFlag(NodeFlags f)
         {
-            return (_flags & f) != 0;
+            return (Flags & f) != 0;
         }
 
         void SetFlag(NodeFlags f, bool value)
         {
-            if (value) _flags |= f;
-            else _flags &= ~f;
+            if (value) Flags |= f;
+            else Flags &= ~f;
         }
 
         public bool IsVisited
@@ -165,28 +143,18 @@ namespace DataDynamics.PageFX.CLI.CFG
             set { SetFlag(NodeFlags.PreventDetach, value); }
         }
 
-        public int BackInCount
-        {
-            get { return _backInCount; }
-            set { _backInCount = value; }
-        }
-        int _backInCount;
+    	public int BackInCount { get; set; }
 
-        public int BackOutCount
-        {
-            get { return _backOutCount; }
-            set { _backOutCount = value; }
-        }
-        int _backOutCount;
+    	public int BackOutCount { get; set; }
 
-        public bool HasOutBackEdges
+    	public bool HasOutBackEdges
         {
-            get { return _backOutCount > 0; }
+            get { return BackOutCount > 0; }
         }
 
         public bool HasInBackEdges
         {
-            get { return _backInCount > 0; }
+            get { return BackInCount > 0; }
         }
 
         public Block BeginSehBlock
@@ -229,48 +197,23 @@ namespace DataDynamics.PageFX.CLI.CFG
         #endregion
 
         #region Edges
-        public Edge FirstIn
-        {
-            get { return _firstIn; }
-        }
-        Edge _firstIn;
 
-        public Edge LastIn
-        {
-            get { return _lastIn; }
-        }
-        Edge _lastIn;
+    	public Edge FirstIn { get; private set; }
 
-        public Edge FirstOut
-        {
-            get { return _firstOut; }
-        }
-        Edge _firstOut;
+    	public Edge LastIn { get; private set; }
 
-        public Edge LastOut
-        {
-            get { return _lastOut; }
-        }
-        Edge _lastOut;
+    	public Edge FirstOut { get; private set; }
 
-        public Node FirstPredecessor
+    	public Edge LastOut { get; private set; }
+
+    	public Node FirstPredecessor
         {
-            get
-            {
-                if (_firstIn != null)
-                    return _firstIn.From;
-                return null;
-            }
+            get { return FirstIn != null ? FirstIn.From : null; }
         }
 
         public Node FirstSuccessor
         {
-            get
-            {
-                if (_firstOut != null)
-                    return _firstOut.To;
-                return null;
-            }
+            get { return FirstOut != null ? FirstOut.To : null; }
         }
 
         public Edge FalseEdge
@@ -279,7 +222,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             {
                 if (IsTwoWay)
                 {
-                    var e = _firstOut;
+                    var e = FirstOut;
                     if (e.Label == 0) return e;
                     return e.NextOut;
                 }
@@ -293,13 +236,14 @@ namespace DataDynamics.PageFX.CLI.CFG
             {
                 if (IsTwoWay)
                 {
-                    var e = _firstOut;
+                    var e = FirstOut;
                     if (e.Label == 1) return e;
                     return e.NextOut;
                 }
                 return null;
             }
         }
+
         #endregion
 
         #region Sibling Linked List
@@ -493,59 +437,39 @@ namespace DataDynamics.PageFX.CLI.CFG
         {
             get
             {
-                for (var e = _firstIn; e != null; e = e.NextIn)
+                for (var e = FirstIn; e != null; e = e.NextIn)
                     yield return e;
             }
         }
 
-        public List<Edge> InEdgeList
-        {
-            get { return new List<Edge>(InEdges); }
-        }
-
-        public IEnumerable<Edge> OutEdges
+    	public IEnumerable<Edge> OutEdges
         {
             get
             {
-                for (var e = _firstOut; e != null; e = e.NextOut)
+                for (var e = FirstOut; e != null; e = e.NextOut)
                     yield return e;
             }
         }
 
-        public List<Edge> OutEdgeList
-        {
-            get { return new List<Edge>(OutEdges); }
-        }
-
-        public IEnumerable<Node> InNodes
+    	public IEnumerable<Node> InNodes
         {
             get
             {
-                for (var e = _firstIn; e != null; e = e.NextIn)
+                for (var e = FirstIn; e != null; e = e.NextIn)
                     yield return e.From;
             }
         }
 
-        public List<Node> InNodeList
-        {
-            get { return new List<Node>(InNodes); }
-        }
-
-        public IEnumerable<Node> OutNodes
+    	public IEnumerable<Node> OutNodes
         {
             get
             {
-                for (var e = _firstOut; e != null; e = e.NextOut)
+                for (var e = FirstOut; e != null; e = e.NextOut)
                     yield return e.To;
             }
         }
 
-        public List<Node> OutNodeList
-        {
-            get { return new List<Node>(OutNodes); }
-        }
-
-        public IEnumerable<Node> Predecessors
+    	public IEnumerable<Node> Predecessors
         {
             get { return InNodes; }
         }
@@ -624,7 +548,7 @@ namespace DataDynamics.PageFX.CLI.CFG
         #region Find
         public Edge FindIn(Node node)
         {
-            for (var e = _firstIn; e != null; e = e.NextIn)
+            for (var e = FirstIn; e != null; e = e.NextIn)
                 if (e.From == node)
                     return e;
             return null;
@@ -632,7 +556,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public Edge FindOut(Node node)
         {
-            for (var e = _firstOut; e != null; e = e.NextOut)
+            for (var e = FirstOut; e != null; e = e.NextOut)
                 if (e.To == node)
                     return e;
             return null;
@@ -651,7 +575,7 @@ namespace DataDynamics.PageFX.CLI.CFG
         public bool HasIn(int min)
         {
             int n = 0;
-            for (var e = _firstIn; e != null; e = e.NextIn)
+            for (var e = FirstIn; e != null; e = e.NextIn)
             {
                 ++n;
                 if (n >= min) return true;
@@ -662,7 +586,7 @@ namespace DataDynamics.PageFX.CLI.CFG
         public bool HasOut(int min)
         {
             int n = 0;
-            for (var e = _firstOut; e != null; e = e.NextOut)
+            for (var e = FirstOut; e != null; e = e.NextOut)
             {
                 ++n;
                 if (n >= min) return true;
@@ -674,18 +598,18 @@ namespace DataDynamics.PageFX.CLI.CFG
         #region Append
         public void AppendIn(Edge e)
         {
-            if (_lastIn == null) _firstIn = e;
-            else _lastIn.NextIn = e;
-            _lastIn = e;
-            if (e.IsBack) ++_backInCount;
+            if (LastIn == null) FirstIn = e;
+            else LastIn.NextIn = e;
+            LastIn = e;
+            if (e.IsBack) ++BackInCount;
         }
 
         public void AppendOut(Edge e)
         {
-            if (_lastOut == null) _firstOut = e;
-            else _lastOut.NextOut = e;
-            _lastOut = e;
-            if (e.IsBack) ++_backOutCount;
+            if (LastOut == null) FirstOut = e;
+            else LastOut.NextOut = e;
+            LastOut = e;
+            if (e.IsBack) ++BackOutCount;
         }
 
         public void AppendOut(Node to)
@@ -702,9 +626,9 @@ namespace DataDynamics.PageFX.CLI.CFG
         /// </summary>
         public void RemoveInEdges()
         {
-            while (_firstIn != null)
+            while (FirstIn != null)
             {
-                RemoveIn(_firstIn);
+                RemoveIn(FirstIn);
             }
         }
 
@@ -713,9 +637,9 @@ namespace DataDynamics.PageFX.CLI.CFG
         /// </summary>
         public void RemoveOutEdges()
         {
-            while (_firstOut != null)
+            while (FirstOut != null)
             {
-                RemoveOut(_firstOut);
+                RemoveOut(FirstOut);
             }
         }
 
@@ -735,11 +659,11 @@ namespace DataDynamics.PageFX.CLI.CFG
                     next.PrevIn = prev;
 
                 if (prev == null)
-                    _firstIn = next;
+                    FirstIn = next;
                 if (next == null)
-                    _lastIn = prev;
+                    LastIn = prev;
 
-                if (e.IsBack) --_backInCount;
+                if (e.IsBack) --BackInCount;
 
                 return true;
             }
@@ -762,11 +686,11 @@ namespace DataDynamics.PageFX.CLI.CFG
                     next.PrevOut = prev;
 
                 if (prev == null)
-                    _firstOut = next;
+                    FirstOut = next;
                 if (next == null)
-                    _lastOut = prev;
+                    LastOut = prev;
 
-                if (e.IsBack) --_backOutCount;
+                if (e.IsBack) --BackOutCount;
 
                 return true;
             }
@@ -825,9 +749,9 @@ namespace DataDynamics.PageFX.CLI.CFG
         public void RevertOuts()
         {
             Edge last = null;
-            var e = _firstOut;
-            _firstOut = _lastOut;
-            _lastOut = e;
+            var e = FirstOut;
+            FirstOut = LastOut;
+            LastOut = e;
             while (e != null)
             {
                 var next = e.NextOut;
@@ -891,7 +815,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 //                throw new InvalidOperationException();
 //#endif
             
-            _index = -1;
+            Index = -1;
             Remove();
 
             if (IsEntry)
@@ -970,8 +894,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 #endif
         #endregion
 
-        #region Object Override Methods
-        public override string ToString()
+    	public override string ToString()
         {
             return ToString(true);
         }
@@ -980,9 +903,20 @@ namespace DataDynamics.PageFX.CLI.CFG
         {
             return FormatService.ToString(this, FormatOptions.Default);
         }
-        #endregion
 
-        #region State
+    	#region State
+		private readonly Stack<NodeState> _stateStack = new Stack<NodeState>();
+
+		public void PushState()
+		{
+			_stateStack.Push(new NodeState());
+		}
+
+		public void PopState()
+		{
+			_stateStack.Pop();
+		}
+		
         public NodeState State
         {
             get { return _stateStack.Peek(); }
@@ -1053,48 +987,28 @@ namespace DataDynamics.PageFX.CLI.CFG
             set { State.Parameter = value; }
         }
 
-        public void PushState()
-        {
-            _stateStack.Push(new NodeState());
-        }
-
-        public void PopState()
-        {
-            _stateStack.Pop();
-        }
-        readonly Stack<NodeState> _stateStack = new Stack<NodeState>();
+        
         #endregion
     }
 
     #region class NodeState
-    internal class NodeState
+    internal sealed class NodeState
     {
-        public bool IsAnalysed
-        {
-            get;
-            set;
-        }
+		public NodeState()
+		{
+			TranslationIndex = -1;
+			TranslatedCode = new List<IInstruction>();
+		}
 
-        public bool IsTranslated
-        {
-            get;
-            set;
-        }
+        public bool IsAnalysed { get; set; }
 
-        public int TranslationIndex
-        {
-            get { return _translationIndex; }
-            set { _translationIndex = value; }
-        }
-        int _translationIndex = -1;
+        public bool IsTranslated { get; set; }
 
-        public List<IInstruction> TranslatedCode
-        {
-            get { return _translatedCode ?? (_translatedCode = new List<IInstruction>()); }
-        }
-        private List<IInstruction> _translatedCode;
+    	public int TranslationIndex { get; set; }
 
-        public int TranslatedEntryIndex { get; set; }
+    	public List<IInstruction> TranslatedCode { get; private set; }
+
+    	public int TranslatedEntryIndex { get; set; }
 
         public EvalStack Stack { get; set; }
 
@@ -1106,7 +1020,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public IParameter PartOfTernaryParam;
 
-        public IParameter Parameter { get; set; }
+    	public IParameter Parameter { get; set; }
     }
     #endregion
 

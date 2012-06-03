@@ -436,7 +436,7 @@ namespace DataDynamics.PageFX
                 if (!Path.IsPathRooted(path))
                     path = Path.Combine(Environment.CurrentDirectory, path);
 
-                var asm = CLI.CommonLanguageInfrastructure.Deserialize(path, null);
+                var asm = CommonLanguageInfrastructure.Deserialize(path, null);
                 if (asm == null)
                 {
                     LogError(Errors.UnableToLoadAssembly, path);

@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public void DumpILMap(string format, string filename)
         {
-            CLIDebug.LogInfo("DumpILMap started. Format = {0}. FileName = {1}.", format, filename);
+            DebugHooks.LogInfo("DumpILMap started. Format = {0}. FileName = {1}.", format, filename);
 
             string dir = _body.GetTestDirectory();
             Directory.CreateDirectory(dir);
@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
                 foreach (var bb in Blocks)
                 {
-                    CLIDebug.DoCancel();
+                    DebugHooks.DoCancel();
                     writer.WriteLine("#BASIC BLOCK {0}", bb.Index);
                     DumpStackState(writer, bb);
                     writer.WriteLine(separator);
@@ -65,7 +65,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
             }
 
-            CLIDebug.LogInfo("DumpILMap succeded");
+            DebugHooks.LogInfo("DumpILMap succeded");
         }
 
         static void DumpStackState(TextWriter writer, Node bb)

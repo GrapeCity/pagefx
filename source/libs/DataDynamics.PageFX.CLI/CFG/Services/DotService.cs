@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using DataDynamics.PageFX.CodeModel;
-using MethodBody=DataDynamics.PageFX.CLI.IL.MethodBody;
+using MethodBody = DataDynamics.PageFX.CLI.IL.MethodBody;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
@@ -69,24 +69,51 @@ namespace DataDynamics.PageFX.CLI.CFG
             return s.ToString();
         }
 
-        public static string GetTestDirectory(this MethodBody body)
+        public static string GetTestDirectory(this IMethodBody body)
         {
-        	string dir = string.IsNullOrEmpty(CommonLanguageInfrastructure.TestCaseDirectory) ? "c:\\QA\\PageFX" : CommonLanguageInfrastructure.TestCaseDirectory;
+        	string dir = String.IsNullOrEmpty(CommonLanguageInfrastructure.TestCaseDirectory) ? "c:\\QA\\PageFX" : CommonLanguageInfrastructure.TestCaseDirectory;
             dir = Path.Combine(dir, body.Method.DeclaringType.FullName.ReplaceInvalidPathChars());
             dir = Path.Combine(dir, GetFullName(body.Method).ReplaceInvalidFileNameChars());
             Directory.CreateDirectory(dir);
             return dir;
         }
+
+    	internal static void VisualizeGraph(this MethodBody body, Node entry)
+    	{
+    		if (entry == null) return;
+    		var list = entry.GetGraphNodes();
+    		body.VisualizeGraph(list);  
+    	}
+
+    	internal static void VisualizeGraph(this MethodBody body, NodeList list)
+    	{
+    		DebugHooks.LogInfo("Flow graph constructed");
+    		DebugHooks.DoCancel();
+
+    		DotService.NameService = null;
+
+    		bool filter = DebugHooks.EvalFilter(body.Method);
+    		if (filter || DebugHooks.VisualizeGraphBefore)
+    		{
+    			DotService.Write(list, DotService.MakePath(body, "before"), true);
+    		}
+
+    		if (filter || DebugHooks.DumpILCode)
+    		{
+    			DumpService.Dump(list, body, CommonLanguageInfrastructure.TestCaseDirectory);
+    			DebugHooks.LogInfo("IL code dumped");
+    		}
+    	}
     }
 
     internal static class DotService
     {
-        public static string GetDirectory(MethodBody body)
+        public static string GetDirectory(IMethodBody body)
         {
             return body.GetTestDirectory();
         }
 
-        public static string MakePath(MethodBody body, string name)
+        public static string MakePath(IMethodBody body, string name)
         {
             string dir = GetDirectory(body);
             return Path.Combine(dir, name + ".dot");
@@ -100,15 +127,15 @@ namespace DataDynamics.PageFX.CLI.CFG
                 NameService = new NameService();
             NameService.SetNames(graph);
 
-            CLIDebug.LogInfo("WriteDotFile started");
+            DebugHooks.LogInfo("WriteDotFile started");
             WriteDotFile(graph, path);
-            CLIDebug.LogInfo("WriteDotFile succeeded");
+            DebugHooks.LogInfo("WriteDotFile succeeded");
 
-            CLIDebug.LogInfo("dot.exe started");
+            DebugHooks.LogInfo("dot.exe started");
             int start = Environment.TickCount;
             Dot.Render(path, null);
             int end = Environment.TickCount;
-            CLIDebug.LogInfo("dot.exe succeeded. ellapsed time: {0}", (end - start) + "ms");
+            DebugHooks.LogInfo("dot.exe succeeded. ellapsed time: {0}", (end - start) + "ms");
         }
 
         private static void WriteDotFile(IEnumerable<Node> graph, string path)

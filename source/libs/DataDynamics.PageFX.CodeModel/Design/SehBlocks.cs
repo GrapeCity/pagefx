@@ -4,7 +4,7 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public interface ISehBlock
     {
-        bool IsHandler { get; }
+    	object Tag { get; set; }
 
         IInstruction EntryPoint { get; }
 
@@ -14,13 +14,10 @@ namespace DataDynamics.PageFX.CodeModel
     public interface ISehTryBlock : ISehBlock
     {
         ISehHandlerCollection Handlers { get; }
-        int Depth { get; }
     }
 
     public interface ISehHandlerBlock : ISehBlock
     {
-        object Tag { get; set; }
-
         ISehTryBlock Owner { get; }
 
         ISehHandlerBlock PrevHandler { get; }

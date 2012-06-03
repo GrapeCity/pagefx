@@ -220,7 +220,7 @@ namespace DataDynamics.PageFX.FLI
     				Image.Png,
     				Image.Gif,
     				Image.Bmp,
-    				Image.Ico,
+    				Image.Ico
     			}, StringComparer.InvariantCultureIgnoreCase);
 
     	private static readonly HashSet<string> JpegTypes = new HashSet<string>(

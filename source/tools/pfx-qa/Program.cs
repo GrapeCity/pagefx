@@ -319,10 +319,10 @@ namespace DataDynamics.PageFX
         {
             try
             {
-                Infrastructure.SubstituteFrameworkAssemblies = pfx;
+                CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = pfx;
                 if (!Path.IsPathRooted(path))
                     path = Path.Combine(Environment.CurrentDirectory, path);
-                return Infrastructure.Deserialize(path, null);
+				return CommonLanguageInfrastructure.Deserialize(path, null);
             }
             catch (Exception e)
             {

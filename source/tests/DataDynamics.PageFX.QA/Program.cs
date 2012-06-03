@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI;
@@ -252,7 +253,7 @@ namespace DataDynamics.PageFX
                 try
                 {
                     string path = dlg.FileName;
-                    var asm = DataDynamics.PageFX.CLI.CommonLanguageInfrastructure.Deserialize(path, null);
+                    var asm = CommonLanguageInfrastructure.Deserialize(path, null);
                     FlashLanguageInfrastructure.Serialize(asm, Path.ChangeExtension(path, ".swf"), "/format:swf");
                 }
                 catch (Exception exc)

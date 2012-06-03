@@ -75,10 +75,10 @@ namespace DataDynamics.PageFX
             CommonLanguageInfrastructure.TestCaseDirectory = Path.Combine(Path.GetDirectoryName(SamplePath), "dump");
 
             if (cl.HasOption("dump-cil"))
-                CLIDebug.DumpILCode = true;
+                DebugHooks.DumpILCode = true;
 
             if (cl.HasOption("dump-ilmap"))
-                CLIDebug.DumpILMap = true;
+                DebugHooks.DumpILMap = true;
         }
     }
 }
