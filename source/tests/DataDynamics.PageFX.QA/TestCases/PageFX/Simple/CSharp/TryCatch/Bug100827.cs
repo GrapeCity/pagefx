@@ -25,6 +25,7 @@ internal class Test
         }
         finally
         {
+        	Console.WriteLine("finally");
             _running = false;
         }
     }

@@ -11,6 +11,7 @@ namespace DataDynamics.PageFX.FLI
     internal partial class AvmCodeProvider
     {
         #region Config Properties
+
         /// <summary>
         /// Gets or sets flag indicating whether to pop exception from stack in exception handler blocks.
         /// </summary>
@@ -21,19 +22,15 @@ namespace DataDynamics.PageFX.FLI
         }
         private bool _popException = true;
 
-        public bool PopCatchScope
-        {
-            get { return _popCatchScope; }
-            set { _popCatchScope = value; }
-        }
-        private bool _popCatchScope;
-        #endregion
+    	public bool PopCatchScope { get; set; }
+
+    	#endregion
 
         #region BeginTry, EndTry
+
         public IInstruction[] BeginTry()
         {
-            var code = new AbcCode(_abc);
-            return code.ToArray();
+            return new IInstruction[0];
         }
 
         public IInstruction[] EndTry(bool generateExit, out IInstruction jump)
@@ -44,18 +41,12 @@ namespace DataDynamics.PageFX.FLI
         	       	: null;
             return code.ToArray();
         }
+
         #endregion
 
         #region BeginCatch, EndCatch
-        class CatchInfo
-        {
-            public int ExceptionVar;
-            public bool IsTempVar; //exception var is temp
-            public bool IsVarKilled;
-        }
-        readonly Stack<CatchInfo> _catchStack = new Stack<CatchInfo>();
 
-        int SharedExceptionVar
+        private int SharedExceptionVar
         {
             get
             {
@@ -66,38 +57,50 @@ namespace DataDynamics.PageFX.FLI
         }
         int _sharedExceptionVar = -1;
 
-        void BeginCatch(AbcCode code, AbcExceptionHandler e, ref int var, bool dupException, bool catchAnyException)
-        {
-            Instruction begin = null;
-            Instruction instr;
-
-            var ci = new CatchInfo();
+		void BeginCatch(ISehHandlerBlock block, AbcCode code, AbcExceptionHandler e, ref int var, bool dupException, bool catchAnyException)
+		{
+			var beginIndex = code.Count;
+            
+			var catchInfo = new CatchInfo
+			                	{
+			                		CatchAnyException = catchAnyException
+			                	};
+			bool coerceAny = catchAnyException;
             if (var < 0 || catchAnyException)
             {
+            	coerceAny = true;
                 var = SharedExceptionVar;
-                ci.IsTempVar = true;
+                catchInfo.IsTempVar = true;
             }
-            ci.ExceptionVar = var;
-            _catchStack.Push(ci);
+            catchInfo.ExceptionVar = var;
+			e.LocalVariable = var;
 
+        	var handlerInfo = block.Tag as SehHandlerInfo;
+			if (handlerInfo == null)
+			{
+				handlerInfo = new SehHandlerInfo { CatchInfo = catchInfo };
+				block.Tag = handlerInfo;
+			}
+			else
+			{
+				handlerInfo.CatchInfo = catchInfo;
+			}
+        	
             //NOTE: we store exception in temp variable to use for rethrow operation
             if (dupException && !catchAnyException)
             {
-                instr = code.Dup();
-                begin = instr;
+                code.Dup();
             }
 
-            //store exception in variable to use for rethrow operation
-            if (catchAnyException)
-            {
-                instr = code.CoerceAnyType();
-                if (begin == null) begin = instr;
-            }
+			if (coerceAny)
+			{
+				code.CoerceAnyType();
+			}
 
-            instr = code.SetLocal(var);
-            if (begin == null) begin = instr;
+			//store exception in variable to use for rethrow operation
+			code.SetLocal(var);
 
-            _resolver.Add(begin, new ExceptionTarget(e));
+			_resolver.Add(code[beginIndex], new ExceptionTarget(e));
         }
 
         static bool IsVesException(IType type)
@@ -118,62 +121,61 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        static bool MustCatchAnyException(ISehHandlerBlock h)
+        static bool MustCatchAnyException(ISehHandlerBlock block)
         {
-            var ph = h.PrevHandler;
-            if (ph != null)
-            {
-                if (ph.Tag is SehHandlerTag)
-                    return true;
-            }
+        	var prev = block.PrevHandler;
+			if (prev != null)
+			{
+				var info = prev.Tag as SehHandlerInfo;
+				if (info != null)
+				{
+					return info.CatchInfo.CatchAnyException;
+				}
+			}
 
-            var tb = h.Owner;
-        	return tb.Handlers.Any(handler => IsVesException(handler.ExceptionType));
+        	return block.Owner.Handlers.Any(handler => IsVesException(handler.ExceptionType));
         }
 
-        public IInstruction[] BeginCatch(ISehHandlerBlock h)
+        public IInstruction[] BeginCatch(ISehHandlerBlock handlerBlock)
         {
-            var tb = h.Owner;
-            if (tb.EntryPoint == null)
-                throw new ArgumentNullException();
-            if (tb.ExitPoint == null)
-                throw new ArgumentNullException();
-
-            var exceptionType = h.ExceptionType;
+            var tryBlock = handlerBlock.Owner;
+            
+            var exceptionType = handlerBlock.ExceptionType;
             if (exceptionType != null)
                 EnsureType(exceptionType);
 
             var seh = new AbcExceptionHandler();
             _body.Exceptions.Add(seh);
-            _resolver.Add(tb.EntryPoint, new ExceptionFrom(seh));
-            _resolver.Add(tb.ExitPoint, new ExceptionTo(seh));
+			_resolver.Add(tryBlock, new ExceptionFrom(seh), new ExceptionTo(seh));
+            
+            bool catchAnyException = MustCatchAnyException(handlerBlock);
+            seh.Type = catchAnyException ? _abc.BuiltinTypes.Object : handlerBlock.ExceptionType.GetMultiname();
 
-            bool catchAnyException = MustCatchAnyException(h);
-            seh.Type = catchAnyException ? _abc.BuiltinTypes.Object : h.ExceptionType.GetMultiname();
+            int var = handlerBlock.ExceptionVariable;
+			if (var >= 0)
+			{
+				var = GetVarIndex(var);
+			}
 
-            int var = h.ExceptionVariable;
-            if (var >= 0)
-                var = GetVarIndex(var);
-
-            var code = new AbcCode(_abc);
-            BeginCatch(code, seh, ref var, !_popException, catchAnyException);
+        	var code = new AbcCode(_abc);
+            BeginCatch(handlerBlock, code, seh, ref var, !_popException, catchAnyException);
 
             if (catchAnyException)
             {
-                RouteException(code, h, var);
-                _sehsToResolve.Add(tb);
+                RouteException(code, handlerBlock, var);
+                _sehsToResolve.Add(tryBlock);
             }
 
             return code.ToArray();
         }
 
-        public IInstruction[] EndCatch(bool isLast, bool generateExit, out IInstruction jump)
-        {
-            var ci = _catchStack.Pop();
-
+		public IInstruction[] EndCatch(ISehHandlerBlock handlerBlock, bool isLast, bool generateExit, out IInstruction jump)
+		{
+			var ci = handlerBlock.GetCatchInfo();
+			
             jump = null;
             var code = new AbcCode(_abc);
-            if (_popCatchScope)
+            if (PopCatchScope)
                 code.PopScope(); //pops catch scope
 
             //we now no need in exception variable
@@ -186,11 +188,11 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        void RouteException(AbcCode code, ISehHandlerBlock h, int var)
+        void RouteException(AbcCode code, ISehHandlerBlock block, int var)
         {
-            var exceptionType = h.ExceptionType;
+			var exceptionType = block.ExceptionType;
 
-            if (h.PrevHandler == null)
+            if (block.PrevHandler == null)
             {
                 //if err is AVM error then we translate it to System.Exception.
                 //code.GetLocal(var);
@@ -220,10 +222,9 @@ namespace DataDynamics.PageFX.FLI
 
             code.GetLocal(var);
 
-            var tag = new SehHandlerTag();
-            h.Tag = tag;
-
-            tag.CheckExceptionLabel = code.Label();
+            var handlerInfo = (SehHandlerInfo)block.Tag;
+            
+            handlerInfo.CheckExceptionLabel = code.Label();
             //NOTE: Exception on stack can be routed from previous handlers
             code.SetLocal(var);
             code.GetLocal(var);
@@ -233,7 +234,7 @@ namespace DataDynamics.PageFX.FLI
 
             //Routing to another exception handler or rethrow
             //Instruction routing = Label();
-            if (h.NextHandler == null)
+            if (block.NextHandler == null)
             {
                 code.GetLocal(var);
                 code.Throw();
@@ -241,7 +242,7 @@ namespace DataDynamics.PageFX.FLI
             else
             {
                 code.GetLocal(var);
-                tag.JumpToNextHandler = code.Goto();
+                handlerInfo.JumpToNextHandler = code.Goto();
             }
 
             //Normal Execution: Prepare stack for handler
@@ -269,85 +270,28 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        #region Exception Subjects
-        class ExceptionFrom : IInstructionSubject
-        {
-            public ExceptionFrom(AbcExceptionHandler e)
-            {
-                _e = e;
-            }
-            readonly AbcExceptionHandler _e;
-
-            #region IInstructionSubject Members
-            public void Apply(IInstruction instruction)
-            {
-                _e.From = instruction.Index;
-            }
-            #endregion
-        }
-
-        class ExceptionTo : IInstructionSubject
-        {
-            public ExceptionTo(AbcExceptionHandler e)
-            {
-                _e = e;
-            }
-            readonly AbcExceptionHandler _e;
-
-            #region IInstructionSubject Members
-            public void Apply(IInstruction instruction)
-            {
-                _e.To = instruction.Index;
-            }
-            #endregion
-        }
-
-        class ExceptionTarget : IInstructionSubject
-        {
-            public ExceptionTarget(AbcExceptionHandler e)
-            {
-                _e = e;
-            }
-            readonly AbcExceptionHandler _e;
-
-            #region IInstructionSubject Members
-            public void Apply(IInstruction instruction)
-            {
-                _e.Target = instruction.Index;
-            }
-            #endregion
-        }
-        #endregion
-
         #region BeginFinally, EndFinally, BeginFault, EndFault
-        class FinallyInfo
-        {
-            public int varRethrowFlag;
-            public int varException = -1;
-            public bool fault;
-        }
-        readonly Stack<FinallyInfo> _finallyStack = new Stack<FinallyInfo>();
 
-        IInstruction[] BeginFinally(ISehTryBlock tb, bool fault)
+		IInstruction[] BeginFinally(ISehHandlerBlock block, bool fault)
         {
             var e = new AbcExceptionHandler();
             _body.Exceptions.Add(e);
             e.To = -1;
             e.Target = -1;
 
-        	var fi = new FinallyInfo {fault = fault};
-        	_finallyStack.Push(fi);
+        	var fi = new FinallyInfo {IsFault = fault};
+        	block.Tag = new SehHandlerInfo {FinallyInfo = fi};
 
-            _resolver.Add(tb.EntryPoint, new ExceptionFrom(e));
+			_resolver.Add(block.Owner, new ExceptionFrom(e), null);
 
             var code = new AbcCode(_abc);
 
             if (!fault)
             {
                 //Reset rethrow flag
-                fi.varRethrowFlag = NewTempVar(true);
+                fi.RethrowFlagVariable = NewTempVar(true);
                 code.Add(InstructionCode.Pushfalse);
-                code.SetLocal(fi.varRethrowFlag);
+                code.SetLocal(fi.RethrowFlagVariable);
             }
 
             //Add goto finally body
@@ -357,7 +301,7 @@ namespace DataDynamics.PageFX.FLI
 
             //NOTE: Insert empty handler to catch unhandled or rethrown exception
             //begin catch
-            BeginCatch(code, e, ref fi.varException, false, false);
+            BeginCatch(block, code, e, ref fi.ExceptionVariable, false, false);
 
             var end = (Instruction)code[code.Count - 1];
 
@@ -365,10 +309,10 @@ namespace DataDynamics.PageFX.FLI
             {
                 //Set rethrow flag to true to rethrow exception
                 code.Add(InstructionCode.Pushtrue);
-                end = code.SetLocal(fi.varRethrowFlag);
+                end = code.SetLocal(fi.RethrowFlagVariable);
             }
 
-            if (_popCatchScope)
+            if (PopCatchScope)
             {
                 end = code.PopScope(); //pops catch scope
             }
@@ -379,12 +323,13 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        IInstruction[] EndFinally(bool fault)
+		IInstruction[] EndFinally(ISehHandlerBlock block, bool fault)
         {
-            var ci = _catchStack.Pop();
-            var fi = _finallyStack.Pop();
-            if (fi.fault != fault)
-                throw new InvalidOperationException();
+        	var handlerInfo = block.GetHandlerInfo();
+        	var ci = handlerInfo.CatchInfo;
+        	var fi = handlerInfo.FinallyInfo;
+            if (fi.IsFault != fault)
+                throw new InvalidOperationException("Finally block type mistmatch!");
 
             var code = new AbcCode(_abc);
 
@@ -396,13 +341,13 @@ namespace DataDynamics.PageFX.FLI
             }
             else
             {
-                code.GetLocal(fi.varRethrowFlag);
-                KillTempVar(code, fi.varRethrowFlag);
+				// check if should rethrow exception
+                code.GetLocal(fi.RethrowFlagVariable);
+                KillTempVar(code, fi.RethrowFlagVariable);
                 var br = code.IfFalse();
 
                 code.GetLocal(ci.ExceptionVar);
                 KillExceptionVariable(code, ci);
-
                 var end = code.Throw();
                 
                 br.GotoNext(end);
@@ -411,28 +356,29 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        public IInstruction[] BeginFinally(ISehTryBlock tb)
+		public IInstruction[] BeginFinally(ISehHandlerBlock block)
         {
-            return BeginFinally(tb, false);
+            return BeginFinally(block, false);
         }
 
-        public IInstruction[] EndFinally()
+		public IInstruction[] EndFinally(ISehHandlerBlock block)
         {
-            return EndFinally(false);
+            return EndFinally(block, false);
         }
 
-        public IInstruction[] BeginFault(ISehTryBlock tb)
+		public IInstruction[] BeginFault(ISehHandlerBlock block)
         {
-            return BeginFinally(tb, true);
+            return BeginFinally(block, true);
         }
 
-        public IInstruction[] EndFault()
+		public IInstruction[] EndFault(ISehHandlerBlock block)
         {
-            return EndFinally(true);
+            return EndFinally(block, true);
         }
         #endregion
 
         #region Throw, Rethrow
+
         bool ExceptionBreakEnabled
         {
             get 
@@ -461,9 +407,9 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        public IInstruction[] Rethrow()
+		public IInstruction[] Rethrow(ISehBlock block)
         {
-            var ci = _catchStack.Peek();
+			var ci = block.GetCatchInfo();
             var code = new AbcCode(_abc);
             code.GetLocal(ci.ExceptionVar);
             KillExceptionVariable(code, ci);
@@ -486,9 +432,11 @@ namespace DataDynamics.PageFX.FLI
             code.ThrowException(Corlib.Types.TypeLoadException, message);
             return code.ToArray();
         }
+
         #endregion
 
         #region Utils
+
         void KillExceptionVariable(AbcCode code, CatchInfo ci)
         {
             if (!ci.IsVarKilled)
@@ -507,26 +455,34 @@ namespace DataDynamics.PageFX.FLI
                 }
             }
         }
+
         #endregion
+
+		void FinishExceptionHandlers()
+		{
+			ResolveExceptionHandlers();
+
+			_body.Exceptions.Sort();
+		}
 
         #region ResolveExceptionHandlers
         void ResolveExceptionHandlers()
         {
             foreach (var tb in _sehsToResolve)
             {
-                var h = tb.Handlers.FirstOrDefault(seh => seh.Tag is SehHandlerTag);
+                var h = tb.Handlers.FirstOrDefault(seh => seh.Tag is SehHandlerInfo);
 
                 Debug.Assert(h != null);
 
                 while (true)
                 {
-                    var tag = h.Tag as SehHandlerTag;
+                    var tag = h.Tag as SehHandlerInfo;
                     Debug.Assert(tag != null);
 
                     var next = h.NextHandler;
                     if (next != null)
                     {
-                        var nextTag = next.Tag as SehHandlerTag;
+                        var nextTag = next.Tag as SehHandlerInfo;
                         Debug.Assert(nextTag != null);
                         Debug.Assert(nextTag.CheckExceptionLabel != null);
                         tag.JumpToNextHandler.BranchTarget = nextTag.CheckExceptionLabel;
@@ -545,9 +501,99 @@ namespace DataDynamics.PageFX.FLI
         #endregion
     }
 
-    internal class SehHandlerTag
-    {
-        public Instruction CheckExceptionLabel;
+	internal sealed class SehHandlerInfo
+	{
+		public Instruction CheckExceptionLabel;
         public Instruction JumpToNextHandler;
+
+    	public CatchInfo CatchInfo;
+    	public FinallyInfo FinallyInfo;
     }
+
+	internal sealed class CatchInfo
+	{
+		public bool CatchAnyException;
+		public int ExceptionVar;
+		public bool IsTempVar; //exception var is temp
+		public bool IsVarKilled;
+	}
+
+	internal sealed class FinallyInfo
+	{
+		public int RethrowFlagVariable;
+		public int ExceptionVariable = -1;
+		public bool IsFault;
+	}
+
+	internal static class SehBlockExtensions
+	{
+		public static SehHandlerInfo GetHandlerInfo(this ISehBlock block)
+		{
+			var handlerInfo = block.Tag as SehHandlerInfo;
+			if (handlerInfo == null)
+				throw new InvalidOperationException("Handler info is not set yet!");
+
+			return handlerInfo;
+		}
+
+		public static CatchInfo GetCatchInfo(this ISehBlock block)
+		{
+			var handlerInfo = GetHandlerInfo(block);
+
+			var info = handlerInfo.CatchInfo;
+			if (info == null)
+				throw new InvalidOperationException("Catch info is not set.");
+
+			return info;
+		}
+	}
+
+	#region Exception Subjects
+
+	internal sealed class ExceptionFrom : IInstructionSubject
+	{
+		private readonly AbcExceptionHandler _e;
+
+		public ExceptionFrom(AbcExceptionHandler e)
+		{
+			_e = e;
+		}
+		
+		public void Apply(IInstruction instruction)
+		{
+			_e.From = instruction.Index;
+		}
+	}
+
+	internal sealed class ExceptionTo : IInstructionSubject
+	{
+		private readonly AbcExceptionHandler _e;
+
+		public ExceptionTo(AbcExceptionHandler e)
+		{
+			_e = e;
+		}
+		
+		public void Apply(IInstruction instruction)
+		{
+			_e.To = instruction.Index;
+		}
+	}
+
+	internal sealed class ExceptionTarget : IInstructionSubject
+	{
+		private readonly AbcExceptionHandler _e;
+
+		public ExceptionTarget(AbcExceptionHandler e)
+		{
+			_e = e;
+		}
+
+		public void Apply(IInstruction instruction)
+		{
+			_e.Target = instruction.Index;
+		}
+	}
+
+	#endregion
 }

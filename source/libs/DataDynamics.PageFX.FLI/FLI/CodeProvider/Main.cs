@@ -314,7 +314,7 @@ namespace DataDynamics.PageFX.FLI
         public void Finish()
         {
             _resolver.Resolve();
-            ResolveExceptionHandlers();
+        	FinishExceptionHandlers();
         }
 
         public void CompileMethod(IMethod method)
@@ -330,11 +330,6 @@ namespace DataDynamics.PageFX.FLI
         AbcInstance DefineAbcInstance(IType type)
         {
             return _generator.DefineAbcInstance(type);
-        }
-
-        object DefineType(IType type)
-        {
-            return _generator.DefineType(type);
         }
     }
 }

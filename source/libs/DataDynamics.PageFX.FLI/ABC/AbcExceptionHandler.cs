@@ -50,7 +50,14 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// <summary>
         /// Gets or sets name of exception variable. Used for debugging purposes.
         /// </summary>
-        public AbcMultiname Variable { get; set; }
+        public AbcMultiname VariableName { get; set; }
+
+		//TODO: use it to specify variable type at the begin of method body.
+		/// <summary>
+		/// Gets or sets index of temporary variable assigned during code generation.
+		/// </summary>
+		public int LocalVariable { get; set; }
+
         #endregion
 
         #region IAbcAtom Members
@@ -60,7 +67,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             To = (int)reader.ReadUIntEncoded();
             Target = (int)reader.ReadUIntEncoded();
             Type = reader.ReadMultiname();
-            Variable = reader.ReadMultiname();
+            VariableName = reader.ReadMultiname();
         }
 
         public void Write(SwfWriter writer)
@@ -72,8 +79,8 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (Type == null) writer.WriteUInt8(0);
             else writer.WriteUIntEncoded((uint)Type.Index);
 
-            if (Variable == null) writer.WriteUInt8(0);
-            else writer.WriteUIntEncoded((uint)Variable.Index);
+            if (VariableName == null) writer.WriteUInt8(0);
+            else writer.WriteUIntEncoded((uint)VariableName.Index);
         }
         #endregion
 
@@ -85,7 +92,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             writer.WriteAttributeString("to", To.ToString());
             writer.WriteAttributeString("target", Target.ToString());
             writer.WriteAttributeString("type", Type != null ? Type.ToString() : "*");
-            writer.WriteAttributeString("var", Variable.ToString("s"));
+            writer.WriteAttributeString("var", VariableName != null ? VariableName.ToString("s") : "*");
             writer.WriteEndElement();
         }
         #endregion
@@ -97,10 +104,10 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         	s.Append(Type != null ? Type.ToString() : "*");
 
-        	if (Variable != null)
+        	if (VariableName != null)
             {
                 s.Append(" ");
-                s.Append(Variable);
+                s.Append(VariableName);
             }
 
             return s.ToString();
@@ -110,15 +117,32 @@ namespace DataDynamics.PageFX.FLI.ABC
 
     public class AbcExceptionHandlerCollection : List<AbcExceptionHandler>, ISwfAtom, ISupportXmlDump
     {
-        #region Public Members
-        public new void Add(AbcExceptionHandler e)
+		public new void Sort()
+		{
+			base.Sort((x, y)=>
+			          	{
+			          		int c = x.Target - y.Target;
+							if (c != 0) return c;
+
+			          		c = x.From - y.From;
+							if (c != 0) return c;
+
+			          		return 0;
+			          	});
+
+			for (int i = 0; i < Count; i++)
+			{
+				this[i].Index = i;
+			}
+		}
+
+    	public new void Add(AbcExceptionHandler e)
         {
             e.Index = Count;
             base.Add(e);
         }
-        #endregion
 
-        #region IAbcAtom Members
+    	#region IAbcAtom Members
         public void Read(SwfReader reader)
         {
             int n = (int)reader.ReadUIntEncoded();

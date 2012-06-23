@@ -32,6 +32,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         /// <returns></returns>
         IInstruction[] End();
+
+    	void Finish();
         #endregion
 
         int GetVarIndex(int index, bool tobackend);
@@ -295,9 +297,9 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="h"></param>
+        /// <param name="handlerBlock"></param>
         /// <returns></returns>
-        IInstruction[] BeginCatch(ISehHandlerBlock h);
+		IInstruction[] BeginCatch(ISehHandlerBlock handlerBlock);
 
         /// <summary>
         /// 
@@ -306,33 +308,33 @@ namespace DataDynamics.PageFX.CodeModel
         /// <param name="generateExit"></param>
         /// <param name="jump"></param>
         /// <returns>code to perform given operation</returns>
-        IInstruction[] EndCatch(bool isLast, bool generateExit, out IInstruction jump);
+		IInstruction[] EndCatch(ISehHandlerBlock block, bool isLast, bool generateExit, out IInstruction jump);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tb"></param>
+        /// <param name="block"></param>
         /// <returns>code to perform given operation</returns>
-        IInstruction[] BeginFinally(ISehTryBlock tb);
+		IInstruction[] BeginFinally(ISehHandlerBlock block);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns>code to perform given operation</returns>
-        IInstruction[] EndFinally();
+		IInstruction[] EndFinally(ISehHandlerBlock block);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tb"></param>
+        /// <param name="block"></param>
         /// <returns></returns>
-        IInstruction[] BeginFault(ISehTryBlock tb);
+        IInstruction[] BeginFault(ISehHandlerBlock block);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        IInstruction[] EndFault();
+		IInstruction[] EndFault(ISehHandlerBlock block);
         
         /// <summary>
         /// Returns code to throw value onto the stack.
@@ -344,7 +346,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// Returns code to rethrow exception catched within current exception handler block.
         /// </summary>
         /// <returns>code to perform given operation</returns>
-        IInstruction[] Rethrow();
+		IInstruction[] Rethrow(ISehBlock block);
 
         IInstruction[] ThrowRuntimeError(string message);
 

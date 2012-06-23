@@ -40,15 +40,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// </summary>
         IInstruction[] _endCode;
 
-        /// <summary>
-        /// List of <see cref="IInstruction"/>s for current translated block.
-        /// </summary>
-        Code TranslatedBlockCode
-        {
-            get { return _block.TranslatedCode; }
-        }
-
-        int _bbIndex;
+    	int _bbIndex;
         bool _popScope;
         bool _castToParamType;
         #endregion
@@ -61,20 +53,27 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             _phase = Phase.Translation;
 #if DEBUG
-            CLIDebug.LogInfo("TranslateBlocks started for method: {0}", _method);
+			DebugHooks.DoCancel();
+            DebugHooks.LogInfo("TranslateBlocks started for method: {0}", _method);
 #endif
 
             //Note: CIL pops exception from stack for us if it is not used
             _provider.PopException = false;
             _provider.BeforeTranslation();
 
-            foreach (var bb in Blocks)
-                TranslateBlock(bb);
+			foreach (var bb in Blocks)
+			{
+#if DEBUG
+				DebugHooks.DoCancel();
+				//if (DebugHooks.CanBreak(_method)) Debugger.Break();
+#endif
+				TranslateBlock(bb);
+			}
 
-            _provider.AfterTranslation();
+        	_provider.AfterTranslation();
 
 #if DEBUG
-            CLIDebug.LogInfo("TranslateBlocks succeeded for method: {0}", _method);
+            DebugHooks.LogInfo("TranslateBlocks succeeded for method: {0}", _method);
 #endif
         }
         #endregion
@@ -133,8 +132,8 @@ namespace DataDynamics.PageFX.CLI.IL
             int i = hb.Index;
             if (i == 0) return;
 
-            var prev = hb.Owner.Handlers[i - 1];
-            var node = prev.EntryPoint.OwnerNode;
+            var prev = (HandlerBlock)hb.Owner.Handlers[i - 1];
+            var node = prev.EntryPoint.BasicBlock;
             TranslateBlock(node);
         }
 
@@ -142,7 +141,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             if (bb.CodeLength == 0) return null;
             var first = bb.Code[0];
-            var block = first.Block;
+            var block = first.SehBlock;
             if (block == null) return null;
             if (block.EntryIndex != first.Index) return null;
             return block as HandlerBlock;
@@ -175,61 +174,82 @@ namespace DataDynamics.PageFX.CLI.IL
 
         void EnsureSehBlocks(Node bb)
         {
-            EnsureBlock(bb);
+            EnsureSehBegin(bb);
 
             //For basic blocks that is an end of SEH block
             //we must enshure that basic block for SEH block
             //entry instruction is translated
-            var block = bb.EndSehBlock;
+            var block = bb.SehEnd;
             if (block != null)
             {
                 EnsureInstructionBlock(bb, block.EntryIndex);
-                //EnsureBlock(bb, block);
             }
         }
 
-        void EnsureBlock(Node bb)
+        void EnsureSehBegin(Node bb)
         {
-            var block = bb.BeginSehBlock;
+            var block = bb.SehBegin;
             if (block == null) return;
-            EnsureBlock(bb, block);
+            EnsureSehBlock(bb, block);
         }
 
-        void EnsureBlock(Node bb, Block block)
+        void EnsureSehBlock(Node bb, Block block)
         {
             if (block == null) return;
 
-            if (block.Parent != null)
-                EnsureBlock(bb, block.Parent);
+			if (block.Parent != null)
+			{
+				EnsureSehBlock(bb, block.Parent);
+			}
 
-            var hb = block as HandlerBlock;
-            if (hb != null)
+        	var handler = block as HandlerBlock;
+            if (handler != null)
             {
-                var tb = hb.Owner;
-                EnsureEntryAndExitPoints(bb, tb);
-                //EnsureEntryAndExitPoints(bb, hb);
+            	EnsureEntryPoints(bb, handler.Owner);
+				EnsureInstructionBlock(bb, handler.EntryIndex);
             }
             else
             {
-                EnsureEntryAndExitPoints(bb, block);
+                EnsureEntryPoints(bb, block);
             }
         }
 
-        void EnsureEntryAndExitPoints(Node bb, Block tb)
+        void EnsureEntryPoints(Node bb, Block seh)
         {
-            EnsureInstructionBlock(bb, tb.EntryIndex);
-            EnsureInstructionBlock(bb, tb.ExitIndex);
+            EnsureInstructionBlock(bb, seh.EntryIndex);
+
+			//we should translate begin basic block of SEH clause before exit basic block
+        	var tryBlock = seh as TryCatchBlock;
+			if (tryBlock != null)
+			{
+				foreach (var handler in tryBlock.Handlers.Cast<HandlerBlock>())
+				{
+					EnsureInstructionBlock(bb, handler.EntryIndex);
+				}
+			}
+
+        	//TODO: CHECK MANY TESTS it seems it is required now to translate end basic block
+            // EnsureInstructionBlock(bb, seh.ExitIndex);
         }
 
         void EnsureInstructionBlock(Node bb, int index)
         {
-            var n = GetInstructionBlock(index);
-            if (n == null)
-                throw new ILTranslatorException("Invalid index of SEH block");
-            if (n != bb)
-                TranslateBlock(n);
+        	var n = GetBasicBlockSafe(index);
+			if (n != bb) // avoid stackoverflow!
+			{
+				TranslateBlock(n);
+			}
         }
-        #endregion
+
+    	private Node GetBasicBlockSafe(int index)
+    	{
+    		var n = GetInstructionBasicBlock(index);
+    		if (n == null)
+    			throw new ILTranslatorException("Invalid index of SEH block");
+    		return n;
+    	}
+
+    	#endregion
 
         #region CheckStackBalance
         void CheckStackBalance(Node bb)
@@ -293,17 +313,11 @@ namespace DataDynamics.PageFX.CLI.IL
             int n = bb.Code.Count;
             if (n > 0)
             {
-                TranslateBlockCode();
+                TranslateBlockCode(bb);
                 Optimize(bb);
-                
-                //NOTE:
-                //Now we need to setup translated entry and exit points for protected blocks
-                //They are used in exception handler blocks.
-                TranslateTryEntryPoint();
-                TranslateTryExitPoint();
-
-                
             }
+
+			EnshureNotEmpty(_block);
 
             _block = null;
         }
@@ -326,12 +340,12 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <summary>
         /// Translates code of current translated basic block
         /// </summary>
-        void TranslateBlockCode()
+        void TranslateBlockCode(Node bb)
         {
             BeginBlock();
 
-            int n = _block.Code.Count;
-            var code = _block.Code;
+            int n = bb.Code.Count;
+            var code = bb.Code;
             for (int i = 0; i < n; ++i)
             {
                 _instruction = code[i];
@@ -349,7 +363,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             LabelBlock();
             PushScope();
-            BeginSehBlock();
+            SehBegin();
         }
 
         void EndBlock()
@@ -363,7 +377,7 @@ namespace DataDynamics.PageFX.CLI.IL
             if (first.IsBranchTarget)
                 return true;
             
-            if (_block.IsBeginOfSehBlock)
+            if (_block.IsSehBegin)
                 return false;
 
             //if (first.IsUnconditionalBranch
@@ -396,7 +410,7 @@ namespace DataDynamics.PageFX.CLI.IL
             if (_popScope)
             {
                 _popScope = false;
-                EndSehBlock();
+                SehEnd();
             }
         }
         #endregion
@@ -405,12 +419,13 @@ namespace DataDynamics.PageFX.CLI.IL
 #if DEBUG
         bool IsMain
         {
-            get
-            {
-                return _method.IsStatic
-                    && _method.Name == "Main";
-            }
+            get { return _method.IsStatic && _method.Name == "Main"; }
         }
+
+		bool IsTest
+		{
+			get { return _method.IsStatic && _method.Name == "Test"; }
+		}
 
         bool IsName(string name)
         {
@@ -426,96 +441,57 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region Protected & Handler Blocks
-        void TranslateTryEntryPoint()
+        void EnshureNotEmpty(Node bb)
         {
-            var instr = _block.Code[0];
-            var pb = instr.Block as ProtectedBlock;
-            while (pb != null)
+            if (bb.TranslatedCode.Count == 0)
             {
-                if (pb.EntryIndex == instr.Index)
-                {
-                    EnshureNotEmpty();
-                    pb.TranslatedEntryPoint = TranslatedBlockCode[0];
-                }
-                pb = pb.Parent as ProtectedBlock;
+                AddNop(bb);
             }
         }
 
-        void TranslateTryExitPoint()
+    	private void AddNop(Node bb)
+    	{
+    		var instr = _provider.Nop();
+    		if (instr == null)
+    			throw new NotSupportedException("nop is not supported");
+    		bb.TranslatedCode.Add(instr);
+    	}
+
+    	void SehBegin()
         {
-            int n = _block.Code.Count;
-            var instr = _block.Code[n - 1];
-
-            var b = instr.Block;
-            var hb = b as HandlerBlock;
-            if (hb != null)
-                b = hb.Owner;
-
-            var pb = b as ProtectedBlock;
-            while (pb != null)
-            {
-                if (pb.ExitIndex == instr.Index)
-                {
-                    EnshureNotEmpty();
-                    var tcode = TranslatedBlockCode;
-                    pb.TranslatedExitPoint = tcode[tcode.Count - 1];
-                }
-                pb = pb.Parent as ProtectedBlock;
-            }
-        }
-
-        void EnshureNotEmpty()
-        {
-            if (TranslatedBlockCode.Count == 0)
-            {
-                var instr = _provider.Nop();
-                if (instr == null)
-                    throw new NotSupportedException("nop is not supported");
-                TranslatedBlockCode.Add(instr);
-            }
-        }
-
-        void BeginSehBlock()
-        {
-            var block = _block.BeginSehBlock;
+            var block = _block.SehBegin;
             if (block == null) return;
             switch (block.Type)
             {
                 case BlockType.Protected:
                     {
-                        var code = _provider.BeginTry();
-                        EmitBlockCode(code);
+                        var il = _provider.BeginTry();
+                        EmitBlockCode(il);
                     }
                     break;
 
                 case BlockType.Catch:
                     {
-                        var cb = (HandlerBlock)block;
-                        var tb = cb.Owner;
-                        CheckBlock(tb);
-                        cb.ExceptionVariable = GetExceptionVariable(block);
-                        var code = _provider.BeginCatch(cb);
-                        EmitBlockCode(code);
+                        var handlerBlock = (HandlerBlock)block;
+                    	handlerBlock.ExceptionVariable = GetExceptionVariable(block);
+                        var il = _provider.BeginCatch(handlerBlock);
+                        EmitBlockCode(il);
                     }
                     break;
 
                 case BlockType.Fault:
                     {
-                        var hb = (HandlerBlock)block;
-                        var tb = hb.Owner;
-                        CheckBlock(tb);
-                        var code = _provider.BeginFault(tb);
-                        EmitBlockCode(code);
+                        var handlerBlock = (HandlerBlock)block;
+                    	var il = _provider.BeginFault(handlerBlock);
+                        EmitBlockCode(il);
                     }
                     break;
 
                 case BlockType.Finally:
                     {
-                        var hb = (HandlerBlock)block;
-                        var tb = hb.Owner;
-                        CheckBlock(tb);
-                        var code = _provider.BeginFinally(tb);
-                        EmitBlockCode(code);
+                        var handlerBlock = (HandlerBlock)block;
+                    	var il = _provider.BeginFinally(handlerBlock);
+                        EmitBlockCode(il);
                     }
                     break;
 
@@ -561,17 +537,9 @@ namespace DataDynamics.PageFX.CLI.IL
             return -1;
         }
 
-        static void CheckBlock(Block tb)
+    	void SehEnd()
         {
-            if (tb.TranslatedEntryPoint == null)
-                throw new InvalidOperationException();
-            if (tb.TranslatedExitPoint == null)
-                throw new InvalidOperationException();
-        }
-
-        void EndSehBlock()
-        {
-            var block = _block.EndSehBlock;
+            var block = _block.SehEnd;
             if (block == null) return;
             switch (block.Type)
             {
@@ -585,23 +553,22 @@ namespace DataDynamics.PageFX.CLI.IL
 
                 case BlockType.Catch:
                     {
-                        //CatchBlock cb = (CatchBlock)block;
                         IInstruction jump;
-                        var code = _provider.EndCatch(false, false, out jump);
+                        var code = _provider.EndCatch((HandlerBlock)block, false, false, out jump);
                         EmitBlockCode(code);
                     }
                     break;
 
                 case BlockType.Fault:
                     {
-                        var code = _provider.EndFault();
+						var code = _provider.EndFault((HandlerBlock)block);
                         EmitBlockCode(code);
                     }
                     break;
 
                 case BlockType.Finally:
                     {
-                        var code = _provider.EndFinally();
+						var code = _provider.EndFinally((HandlerBlock)block);
                         EmitBlockCode(code);
                     }
                     break;
@@ -614,13 +581,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void EnsureInstructionBlock(int index)
-        {
-            var node = GetInstructionBlock(index);
-            if (node != null)
-                TranslateBlock(node);
-        }
-        #endregion
+    	#endregion
 
         #region TranslateInstruction
         void TranslateInstruction()
@@ -1046,7 +1007,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             if (instr == null)
                 throw new ArgumentNullException("instr");
-            var list = TranslatedBlockCode;
+            var list = _block.TranslatedCode;
             int n = list.Count;
             if (n > 0)
             {

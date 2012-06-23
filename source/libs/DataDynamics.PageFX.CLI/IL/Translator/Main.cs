@@ -152,18 +152,22 @@ namespace DataDynamics.PageFX.CLI.IL
             }
             else
             {
-                BuildGraph();
-                PushState();
-                ResolveGenerics();
-                AnalyzeGraph();
-                TranslateGraph();
-                ConcatBlocks();
-                ResolveBranches();
+            	BuildGraph();
+            	PushState();
+            	ResolveGenerics();
+            	AnalyzeGraph();
+            	TranslateGraph();
+            	var branches = ConcatBlocks();
+            	ResolveBranches(branches);
+
+				_provider.Finish();
+
 #if DEBUG
-                if (DebugHooks.DumpILMap)
-                    DumpILMap("I: N V", "ilmap_i.txt");
+            	_body.VisualizeGraph(_flowgraph.Entry, true);
+            	DumpILMap("I: N V", "ilmap_i.txt");
 #endif
-                PopState();
+
+            	PopState();
             }
         }
 
@@ -216,10 +220,10 @@ namespace DataDynamics.PageFX.CLI.IL
             return code[index];
         }
 
-        Node GetInstructionBlock(int index)
+        Node GetInstructionBasicBlock(int index)
         {
             var instr = GetInstruction(index);
-            return instr.OwnerNode;
+            return instr.BasicBlock;
         }
 
         IType ReturnType
@@ -244,7 +248,7 @@ namespace DataDynamics.PageFX.CLI.IL
             {
 #if DEBUG
                 DebugHooks.DoCancel();
-                _body.VisualizeGraph(_flowgraph.Entry);
+                _body.VisualizeGraph(_flowgraph.Entry, false);
 #endif
                 return;
             }
@@ -256,7 +260,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
 #if DEBUG
             DebugHooks.DoCancel();
-            _body.VisualizeGraph(entry);
+            _body.VisualizeGraph(entry, false);
 #endif
 
             //Prepares list of basic blocks in the same order as they are located in code.
@@ -267,7 +271,7 @@ namespace DataDynamics.PageFX.CLI.IL
 #if DEBUG
                 DebugHooks.DoCancel();
 #endif
-                var bb = instruction.OwnerNode;
+                var bb = instruction.BasicBlock;
                 //if (bb == null)
                 //    throw new InvalidOperationException();
                 if (bb == null) continue;
@@ -286,15 +290,14 @@ namespace DataDynamics.PageFX.CLI.IL
         /// Concatenates code of all basic blocks in order of basic blocks layout.
         /// Prepares output code (instruction list).
         /// </summary>
-        void ConcatBlocks()
+        IList<KeyValuePair<IInstruction, Node>> ConcatBlocks()
         {
 #if DEBUG
             DebugHooks.LogInfo("ConcatBlocks started");
             DebugHooks.DoCancel();
 #endif
 
-            _brlist = new Code();
-            _brnodes = new List<Node>();
+            var branches = new List<KeyValuePair<IInstruction, Node>>();
 
             _outcode = new List<IInstruction>();
 
@@ -320,20 +323,33 @@ namespace DataDynamics.PageFX.CLI.IL
 #if DEBUG
                 DebugHooks.DoCancel();
 #endif
-                bb.TranslatedEntryIndex = _outcode.Count;
-                var code = bb.TranslatedCode;
-                Emit(code);
+				//UNCOMMENT TO CHECK STACK BALANCE
+				//CheckStackBalance(bb);
 
-                int clen = code.Count;
-                if (clen > 0)
-                {
-                    var last = code[clen - 1];
-                    if (IsBranchOrSwitch(last))
-                    {
-                        _brlist.Add(last);
-                        _brnodes.Add(bb);
-                    }
-                }
+                bb.TranslatedEntryIndex = _outcode.Count;
+                var il = bb.TranslatedCode;
+
+				var last = il[il.Count - 1];
+				if (IsBranchOrSwitch(last))
+				{
+					branches.Add(new KeyValuePair<IInstruction, Node>(last, bb));
+				}
+
+				//TODO: do this only for endfinally
+				//self cycle!
+				if (last.IsUnconditionalBranch && bb.FirstSuccessor == bb)
+				{
+					var label = _provider.Label();
+					if (label != null)
+					{
+						il.Add(label);
+					}
+					il.AddRange(Op_Return());
+				}
+
+                Emit(il);				
+
+				bb.TranslatedExitIndex = _outcode.Count - 1;
             }
 
             Emit(_endCode);
@@ -342,6 +358,7 @@ namespace DataDynamics.PageFX.CLI.IL
             DebugHooks.LogInfo("ConcatBlocks succeeded. CodeSize = {0}", _outcode.Count);
             DebugHooks.DoCancel();
 #endif
+        	return branches;
         }
 
         /// <summary>
@@ -378,26 +395,23 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region STEP5 - Resolving of branch targets
-        Code _brlist;
-        List<Node> _brnodes;
-
         /// <summary>
         /// Resolves branch instructions.
         /// </summary>
-        void ResolveBranches()
+        void ResolveBranches(IList<KeyValuePair<IInstruction,Node>> branches)
         {
 #if DEBUG
             DebugHooks.LogInfo("ResolveBranches started");
             DebugHooks.DoCancel();
 #endif
-            int n = _brlist.Count;
+            int n = branches.Count;
             for (int i = 0; i < n; ++i)
             {
 #if DEBUG
                 DebugHooks.DoCancel();
 #endif
-                var br = _brlist[i];
-                var bb = _brnodes[i];
+				var br = branches[i].Key;
+				var bb = branches[i].Value;
                 if (br.IsSwitch)
                 {
                     var e = bb.FirstOut;
@@ -416,12 +430,22 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
                 else //unconditional branch
                 {
-                    //sanity check
-                    if (!br.IsUnconditionalBranch)
-                        throw new ILTranslatorException("Invalid branch instruction");
+#if DEBUG
+					if (!br.IsUnconditionalBranch) //sanity check
+					{
+						throw new ILTranslatorException("Invalid branch instruction");
+					}
+#endif
 
                     var e = bb.FirstOut;
-                    _provider.SetBranchTarget(br, e.To.TranslatedEntryIndex);
+					if (e.To != bb) //avoid cycle!
+					{
+						_provider.SetBranchTarget(br, e.To.TranslatedEntryIndex);
+					}
+					else
+					{
+						_provider.SetBranchTarget(br, bb.TranslatedExitIndex - 1);
+					}
                 }
             }
 #if DEBUG
