@@ -400,7 +400,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 e.To = code[e.To].Offset;
                 e.Target = code[e.Target].Offset;
                 e.Type = abc.ImportConst(e.Type);
-                e.Variable = abc.ImportConst(e.Variable);
+                e.VariableName = abc.ImportConst(e.VariableName);
             }
         }
 

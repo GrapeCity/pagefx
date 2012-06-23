@@ -9,7 +9,8 @@ namespace DataDynamics.PageFX.FLI
 
         public void DefineDebugInfo(IType type, AbcInstance instance)
         {
-            if (!GlobalSettings.EmitDebugInfo) return;
+			if (!GlobalSettings.EmitDebugInfo) return;
+			if (!GlobalSettings.EmitDebugDisplay) return;
 
             DefineDebuggerDisplay(type, instance);
             
@@ -22,6 +23,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineDebuggerDisplay
         void DefineDebuggerDisplay(IType type, AbcInstance instance)
         {
+			if (type.IsInterface) return;
             if (type == SystemTypes.Object) return;
             if (type == SystemTypes.String) return;
             if (type == SystemTypes.Array) return;

@@ -98,7 +98,7 @@ namespace DataDynamics
         #endregion
 
     	#region BinarySearch
-        public static int BinarySearch<T>(ISimpleList<T> list, int index, int length, ComparativePredicate<T> p)
+        public static int BinarySearch<T>(IReadOnlyList<T> list, int index, int length, ComparativePredicate<T> p)
         {
             int left = index;
             int right = (index + length) - 1;
@@ -124,12 +124,12 @@ namespace DataDynamics
 
         public static int BinarySearch<T>(T[] array, int index, int length, ComparativePredicate<T> p)
         {
-            return BinarySearch(SimpleList.FromArray(array), index, length, p);
+            return BinarySearch(array.AsReadOnlyList(), index, length, p);
         }
 
         public static int BinarySearch<T>(IList<T> list, int index, int length, ComparativePredicate<T> p)
         {
-            return BinarySearch(SimpleList.FromList(list), index, length, p);
+            return BinarySearch(list.AsReadOnlyList(), index, length, p);
         }
         #endregion
 

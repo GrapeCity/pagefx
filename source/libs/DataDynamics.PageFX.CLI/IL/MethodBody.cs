@@ -66,6 +66,9 @@ namespace DataDynamics.PageFX.CLI.IL
                         _code = ReadCode(context, code);
                     }
                     break;
+
+				default:
+					throw new NotSupportedException("Not supported method body format!");
             }
 
             TranslateOffsets();
@@ -337,7 +340,15 @@ namespace DataDynamics.PageFX.CLI.IL
                         instr.Value = val;
                     }
                     break;
+
+				case OperandType.InlineNone:
+					// no operand
+					break;
+
+				case OperandType.InlinePhi:
+					throw new BadOperandException(@"Obsolete. The InlinePhi operand is reserved and should not be used!");
             }
+
             return instr;
         }
         #endregion
@@ -468,29 +479,36 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 SetupInstructions(code, kid);
             }
-            var pb = block as ProtectedBlock;
-            if (pb != null)
+
+            var tryBlock = block as TryCatchBlock;
+            if (tryBlock != null)
             {
-                foreach (var h in pb.Handlers)
+                foreach (var h in tryBlock.Handlers.Cast<HandlerBlock>())
                 {
                     SetupInstructions(code, h);
                 }
             }
+
             block.SetupInstructions(code);
         }
 
         static int GetIndex(ILStream code, int offset, int length)
         {
-            int index = code.GetOffsetIndex(offset + length) - 1;
-            if (index < 0) index = code.Count - 1;
-            return index;
+			int index = code.GetOffsetIndex(offset + length);
+			if (index == code.Count - 1)
+			{
+				return index;
+			}
+
+            index--;
+        	return index >= 0 ? index : code.Count - 1;
         }
 
-        static ProtectedBlock CreateTryBlock(ILStream code, int tryOffset, int tryLength)
+        static TryCatchBlock CreateTryBlock(ILStream code, int tryOffset, int tryLength)
         {
             int entryIndex = code.GetOffsetIndex(tryOffset);
             int exitIndex = GetIndex(code, tryOffset, tryLength);
-            var tryBlock = new ProtectedBlock
+            var tryBlock = new TryCatchBlock
                                {
                                    EntryPoint = code[entryIndex],
                                    ExitPoint = code[exitIndex]
@@ -502,7 +520,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             var list = new BlockList();
             var handlers = new BlockList();
-            ProtectedBlock tryBlock = null;
+            TryCatchBlock tryBlock = null;
             int n = blocks.Count;
             for (int i = 0; i < n; ++i)
             {
@@ -513,7 +531,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 int exitIndex = GetIndex(code, block.HandlerOffset, block.HandlerLength);
                 handler.EntryPoint = code[entryIndex];
                 handler.ExitPoint = code[exitIndex];
-                tryBlock.AddHandler(handler);
+                tryBlock.Handlers.Add(handler);
                 handlers.Add(handler);
             }
 
@@ -538,7 +556,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return list;
         }
 
-        static ProtectedBlock EnshureTryBlock(IList<SEHBlock> blocks, int i, ProtectedBlock tryBlock, ILStream code, SEHBlock block, BlockList list)
+        static TryCatchBlock EnshureTryBlock(IList<SEHBlock> blocks, int i, TryCatchBlock tryBlock, ILStream code, SEHBlock block, BlockList list)
         {
             if (tryBlock == null)
             {

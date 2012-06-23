@@ -28,7 +28,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents collection of <see cref="IEvent"/>s.
     /// </summary>
-    public interface IEventCollection : IList<IEvent>, ICodeNode
+    public interface IEventCollection : IReadOnlyList<IEvent>, ICodeNode
     {
         /// <summary>
         /// Finds event with given name.

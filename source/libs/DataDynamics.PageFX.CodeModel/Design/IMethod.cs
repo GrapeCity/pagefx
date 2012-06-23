@@ -146,7 +146,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents collection of <see cref="IMethod"/>s.
     /// </summary>
-    public interface IMethodCollection : ISimpleList<IMethod>, ICodeNode
+    public interface IMethodCollection : IReadOnlyList<IMethod>, ICodeNode
     {
         void Add(IMethod method);
 

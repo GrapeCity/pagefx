@@ -301,6 +301,7 @@ namespace DataDynamics.PageFX
         #endregion
 
         public static bool EmitDebugInfo = true;
+		public static bool EmitDebugDisplay;
         public static bool EncodeDebugFile = true;
         public static bool ReflectionSupport;
         public static bool EnableOptimization = true;

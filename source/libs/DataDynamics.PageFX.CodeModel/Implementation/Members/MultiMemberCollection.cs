@@ -6,7 +6,7 @@ using DataDynamics.Collections;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public class MultiMemberCollection<T> : ISimpleList<T>
+    public class MultiMemberCollection<T> : IReadOnlyList<T>
         where T: ITypeMember
     {
         readonly List<T> _list = new List<T>();

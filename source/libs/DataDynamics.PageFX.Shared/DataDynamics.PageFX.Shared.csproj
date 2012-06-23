@@ -91,7 +91,7 @@
     <Compile Include="DataStructures\DeepEnumerator.cs" />
     <Compile Include="DataStructures\LinkedList.cs" />
     <Compile Include="DataStructures\ReadOnlyList.cs" />
-    <Compile Include="DataStructures\SimpleList.cs" />
+    <Compile Include="DataStructures\ReadOnlyListExtensions.cs" />
     <Compile Include="Graphics\ColorExtensions.cs" />
     <Compile Include="Graphics\Enums.cs" />
     <Compile Include="Graphics\GPBuilder.cs" />

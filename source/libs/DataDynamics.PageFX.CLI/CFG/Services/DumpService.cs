@@ -132,7 +132,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                 {
                     if (instr.Dumped) continue;
 
-                    var block = instr.Block;
+                    var block = instr.SehBlock;
                     if (block != null)
                     {
                         WriteBlock(writer, block);
@@ -178,9 +178,9 @@ namespace DataDynamics.PageFX.CLI.CFG
 
             foreach (var instr in block.GetInstructions())
             {
-                if (instr.Block != block)
+                if (instr.SehBlock != block)
                 {
-                    WriteBlock(writer, instr.Block);
+                    WriteBlock(writer, instr.SehBlock);
                 }
                 else
                 {

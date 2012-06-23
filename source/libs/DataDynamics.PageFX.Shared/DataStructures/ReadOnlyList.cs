@@ -1,6 +1,6 @@
 namespace System.Collections.Generic
 {
-    public class ReadOnlyList<T> : IList<T>
+    public class ReadOnlyList<T> : IList<T>, IReadOnlyList<T>
     {
         protected readonly List<T> list = new List<T>();
 

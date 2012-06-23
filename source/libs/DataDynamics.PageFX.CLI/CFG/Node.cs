@@ -157,42 +157,42 @@ namespace DataDynamics.PageFX.CLI.CFG
             get { return BackInCount > 0; }
         }
 
-        public Block BeginSehBlock
+        public Block SehBegin
         {
             get
             {
                 int n = Code.Count;
                 if (n <= 0) return null;
                 var first = Code[0];
-                var block = first.Block;
+                var block = first.SehBlock;
                 if (block == null) return null;
                 if (block.EntryIndex != first.Index) return null;
                 return block;
             }
         }
 
-        public Block EndSehBlock
+        public Block SehEnd
         {
             get
             {
                 int n = Code.Count;
                 if (n <= 0) return null;
                 var last = Code[n - 1];
-                var block = last.Block;
+                var block = last.SehBlock;
                 if (block == null) return null;
                 if (block.ExitIndex != last.Index) return null;
                 return block;
             }
         }
 
-        public bool IsBeginOfSehBlock
+        public bool IsSehBegin
         {
-            get { return BeginSehBlock != null; }
+            get { return SehBegin != null; }
         }
 
-        public bool IsEndOfSehBlock
+        public bool IsSehEnd
         {
-            get { return EndSehBlock != null; }
+            get { return SehEnd != null; }
         }
         #endregion
 
@@ -883,15 +883,20 @@ namespace DataDynamics.PageFX.CLI.CFG
         public void AddInstruction(Instruction i)
         {
             Code.Add(i);
-            i.OwnerNode = this;
+            i.BasicBlock = this;
         }
 
 #if DEBUG
         public string CodeSpan
         {
-            get { return string.Format("{0}, {1}", EntryPoint, ExitPoint); }
+            get
+            {
+				if (_code != null) return _code.ToString();
+            	return string.Format("{0}, {1}", EntryPoint, ExitPoint);
+            }
         }
 #endif
+
         #endregion
 
     	public override string ToString()
@@ -951,6 +956,12 @@ namespace DataDynamics.PageFX.CLI.CFG
             set { State.TranslatedEntryIndex = value; }
         }
 
+		public int TranslatedExitIndex
+		{
+			get { return State.TranslatedExitIndex; }
+			set { State.TranslatedExitIndex = value; }
+		}
+
         public EvalStack Stack
         {
             get { return State.Stack; }
@@ -1009,6 +1020,8 @@ namespace DataDynamics.PageFX.CLI.CFG
     	public List<IInstruction> TranslatedCode { get; private set; }
 
     	public int TranslatedEntryIndex { get; set; }
+
+    	public int TranslatedExitIndex { get; set; }
 
         public EvalStack Stack { get; set; }
 

@@ -439,7 +439,7 @@ namespace DataDynamics.PageFX.FLI
 
                 var symTable = new SwfTagSymbolClass();
                 //see http://bugs.adobe.com/jira/browse/ASC-3235
-                DefineAbc(abc);
+                AddAbcTag(abc);
                 ImportLateAssets();
                 FlushAssets(symTable);
 
@@ -457,7 +457,7 @@ namespace DataDynamics.PageFX.FLI
             _swf.ShowFrame();
         }
 
-        void DefineAbc(AbcFile abc)
+        void AddAbcTag(AbcFile abc)
         {
             string frameName = abc.Name;
             if (string.IsNullOrEmpty(frameName))
@@ -538,7 +538,7 @@ namespace DataDynamics.PageFX.FLI
 
                 var symTable = new SwfTagSymbolClass();
                 //FlushAssets(symTable);
-                DefineAbc(FrameMX);
+                AddAbcTag(FrameMX);
                 ImportLateAssets();
                 FlushAssets(symTable);
 

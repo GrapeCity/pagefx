@@ -703,8 +703,6 @@ namespace DataDynamics.PageFX.FLI
                 throw new InvalidOperationException("No IL translator");
             var il = translator.Translate(source, sourceBody, codeProvider);
 
-            codeProvider.Finish();
-
 #if DEBUG
             DebugService.DoCancel();
 #endif

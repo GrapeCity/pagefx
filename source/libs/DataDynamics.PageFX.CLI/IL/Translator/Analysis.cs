@@ -314,7 +314,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         bool FixTernaryParam(Instruction instr, IParameter p)
         {
-            var F = instr.OwnerNode;
+            var F = instr.BasicBlock;
             if (F == _block) return false;
 
             Node T, C;
@@ -390,7 +390,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <returns></returns>
         Instruction FixReceiverInsertPoint(Instruction last, IMethod method)
         {
-            var b = last.OwnerNode;
+            var b = last.BasicBlock;
             if (b == _block) return last;
 
             var e = b.FirstIn;

@@ -1,6 +1,8 @@
 #if DEBUG
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Linq;
@@ -78,14 +80,14 @@ namespace DataDynamics.PageFX.CLI.CFG
             return dir;
         }
 
-    	internal static void VisualizeGraph(this MethodBody body, Node entry)
+		internal static void VisualizeGraph(this MethodBody body, Node entry, bool translatedCode)
     	{
     		if (entry == null) return;
     		var list = entry.GetGraphNodes();
-    		body.VisualizeGraph(list);  
+			body.VisualizeGraph(list, translatedCode);
     	}
 
-    	internal static void VisualizeGraph(this MethodBody body, NodeList list)
+    	internal static void VisualizeGraph(this MethodBody body, NodeList list, bool translatedCode)
     	{
     		DebugHooks.LogInfo("Flow graph constructed");
     		DebugHooks.DoCancel();
@@ -93,9 +95,11 @@ namespace DataDynamics.PageFX.CLI.CFG
     		DotService.NameService = null;
 
     		bool filter = DebugHooks.EvalFilter(body.Method);
-    		if (filter || DebugHooks.VisualizeGraphBefore)
+    		var after = translatedCode;
+    		var before = !translatedCode;
+    		if (filter || (before && DebugHooks.VisualizeGraphBefore) || (after && DebugHooks.VisualizeGraphAfter))
     		{
-    			DotService.Write(list, DotService.MakePath(body, "before"), true);
+    			DotService.Write(list, DotService.MakePath(body, before ? "before" : "after"), true, translatedCode);
     		}
 
     		if (filter || DebugHooks.DumpILCode)
@@ -121,14 +125,14 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         public static NameService NameService;
 
-        public static void Write(IEnumerable<Node> graph, string path, bool subgraph)
+        public static void Write(IEnumerable<Node> graph, string path, bool subgraph, bool translatedCode)
         {
             if (NameService == null)
                 NameService = new NameService();
             NameService.SetNames(graph);
 
             DebugHooks.LogInfo("WriteDotFile started");
-            WriteDotFile(graph, path);
+            WriteDotFile(graph, path, translatedCode);
             DebugHooks.LogInfo("WriteDotFile succeeded");
 
             DebugHooks.LogInfo("dot.exe started");
@@ -138,7 +142,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             DebugHooks.LogInfo("dot.exe succeeded. ellapsed time: {0}", (end - start) + "ms");
         }
 
-        private static void WriteDotFile(IEnumerable<Node> graph, string path)
+        private static void WriteDotFile(IEnumerable<Node> graph, string path, bool translatedCode)
         {
             using (var writer = new StreamWriter(path))
             {
@@ -155,7 +159,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                 
                 foreach (var node in graph)
                 {
-                    WriteNode(writer, node);
+                    WriteNode(writer, node, translatedCode);
                     if (node.IsTwoWay)
                     {
                         var f = node.FirstOut;
@@ -214,32 +218,36 @@ namespace DataDynamics.PageFX.CLI.CFG
             }
         }
 
-    	private static void WriteLabel(TextWriter writer, Node node)
+    	private static void WriteLabel(TextWriter writer, Node node, bool translatedCode)
         {
-            string label = GetLabel(node);
+            string label = GetLabel(node, translatedCode);
             if (string.IsNullOrEmpty(label)) return;
             label = Escaper.EscapeUnquoted(label, true);
             //writer.WriteLine("{0} [label = \"{1}\", labeljust=left];", node.Name, label);
             writer.WriteLine("{0} [label = \"{1}\"];", node.Name, label);
         }
 
-        private static void WriteNode(TextWriter writer, Node node)
+        private static void WriteNode(TextWriter writer, Node node, bool translatedCode)
         {
         	WriteNew(writer, node, true);
-        	WriteLabel(writer, node);
+        	WriteLabel(writer, node, translatedCode);
         }
 
-    	private static string GetLabel(Node node)
+    	private static string GetLabel(Node node, bool translatedCode)
         {
             if (node == null) return null;
-			var s = new StringBuilder();
-			s.Append(node.Name);
-			foreach (var instruction in node.Code)
+			var sb = new StringBuilder();
+			sb.Append(node.Name);
+
+			var code = translatedCode ? (IEnumerable)node.TranslatedCode : node.Code;
+			foreach (var instruction in code)
 			{
-				if (s.Length > 0) s.Append("\n");
-				s.Append(instruction.ToString());
+				if (sb.Length > 0) sb.Append("\n");
+
+				var f = instruction as IFormattable;
+				sb.Append(f != null ? f.ToString("I: N V", CultureInfo.InvariantCulture) : instruction.ToString());
 			}
-			return s.ToString();
+			return sb.ToString();
         }
     }
 }

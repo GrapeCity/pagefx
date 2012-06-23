@@ -1,4 +1,4 @@
-using DataDynamics.Collections;
+using System.Collections.Generic;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.CodeModel
         int ExceptionVariable { get; }
     }
 
-    public interface ISehHandlerCollection : ISimpleList<ISehHandlerBlock>
+    public interface ISehHandlerCollection : IReadOnlyList<ISehHandlerBlock>
     {
     }
 }

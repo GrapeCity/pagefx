@@ -1519,7 +1519,7 @@ namespace DataDynamics.PageFX.CLI.IL
             int ni = _instruction.Index + 1;
             if (ni >= SourceCode.Count) return false;
             var next = GetInstruction(ni);
-            if (next.OwnerNode != _instruction.OwnerNode) return false;
+            if (next.BasicBlock != _instruction.BasicBlock) return false;
             if (next.Code != InstructionCode.Ret) return false;
 
             if (IsUI64(targetType))
@@ -1903,7 +1903,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         IInstruction[] Op_Rethrow()
         {
-            return _provider.Rethrow();
+        	return _provider.Rethrow(_instruction.SehBlock);
         }
 
         IInstruction[] Op_Leave()
@@ -2027,7 +2027,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 {
                     throw new ILTranslatorException("EvalStack is empty");
                 }
-                var cb = _instruction.Block as HandlerBlock;
+                var cb = _instruction.SehBlock as HandlerBlock;
                 if (cb == null)
                     throw new ILTranslatorException();
                 return new EvalItem(null, new ComputedValue(cb.ExceptionType));

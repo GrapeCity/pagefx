@@ -22,6 +22,9 @@ using MethodBody=DataDynamics.PageFX.CLI.IL.MethodBody;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
+	/// <summary>
+	/// Builds control flow graph.
+	/// </summary>
     internal class GraphBuilder
     {
         readonly ILStream _code;
@@ -46,23 +49,28 @@ namespace DataDynamics.PageFX.CLI.CFG
             for (int i = 0; i < n; ++i)
             {
                 var instruction = GetTarget(i);
-                var node = instruction.OwnerNode;
+                var node = instruction.BasicBlock;
                 if (node == null)
                 {
                     node = BuildNode(instruction);
                     node.IsEntry = true;
                     Node last = null;
                     BuildNodeList(ref last, node, ref nodeIndex);
-                    if (entry == null)
-                        entry = node;
-                    else if (prevEntry != null)
+
+					if (entry == null)
+					{
+						entry = node;
+					}
+					else if (prevEntry != null)
+					{
 						prevEntry.AppendEntry(node);
+					}
+
                 	prevEntry = node;
                 }
-                else
+				else if (entry == null)
                 {
-                    if (entry == null)
-                        entry = node;
+					entry = node;
                 }
             }
 
@@ -126,7 +134,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                         if (index < 0 || index >= _code.Count)
                             throw new DecompileException();
                         var instruction = _code[index];
-                        var nextNode = instruction.OwnerNode;
+                        var nextNode = instruction.BasicBlock;
                         if (nextNode != null)
                         {
                             //Note: can be switch
@@ -195,7 +203,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         int[] BuildNode(Node node, Instruction entryPoint)
         {
-            var block = entryPoint.Block;
+            var block = entryPoint.SehBlock;
             node.OwnerBlock = block;
 
             int n = _code.Count;
@@ -203,18 +211,19 @@ namespace DataDynamics.PageFX.CLI.CFG
             for (int i = entryIndex; i < n; ++i)
             {
                 var instruction = _code[i];
-                var ic = instruction.Code;
-                var fc = instruction.FlowControl;
-                if (instruction.OwnerNode != null)
+                var op = instruction.Code;
+                if (instruction.BasicBlock != null)
                     return Next(i);
 
                 if (instruction.IsBranchTarget)
                 {
-                    if (i != entryIndex)
-                        return Next(i);
+					if (i != entryIndex)
+					{
+						return Next(i);
+					}
                 }
 
-                if (ic == InstructionCode.Endfinally)
+                if (op == InstructionCode.Endfinally)
                 {
                     node.AddInstruction(instruction);
                     var v = instruction.Value;
@@ -223,7 +232,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                     return null;
                 }
 
-                if (ic == InstructionCode.Endfilter)
+                if (op == InstructionCode.Endfilter)
                 {
                     //TODO:
                     throw new NotImplementedException();
@@ -243,7 +252,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                     return Next(i + 1);
                 }
 
-                if (instruction.Block != block)
+                if (instruction.SehBlock != block)
                 {
                     return Next(i);
                 }

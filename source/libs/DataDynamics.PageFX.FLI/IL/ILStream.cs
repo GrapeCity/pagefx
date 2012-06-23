@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -175,7 +176,11 @@ namespace DataDynamics.PageFX.FLI.IL
                 instr.Index = i;
                 foreach (var target in instr.GetTargets())
                 {
-                    Debug.Assert(target >= 0 && target < n);
+					if (target < 0 || target >= n)
+					{
+						//Debugger.Break();
+						throw new InvalidOperationException("Bad branch target for instruction.");
+					}
                     this[target].IsBranchTarget = true;
                 }
             }

@@ -1,4 +1,4 @@
-using DataDynamics.Collections;
+using System.Collections.Generic;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -62,7 +62,7 @@ namespace DataDynamics.PageFX.CodeModel
             return true;
         }
 
-        public static bool Equals(ISimpleList<IType> sig1, ISimpleList<IType> sig2)
+        public static bool Equals(IReadOnlyList<IType> sig1, IReadOnlyList<IType> sig2)
         {
             int n = sig1.Count;
             if (n != sig2.Count) return false;

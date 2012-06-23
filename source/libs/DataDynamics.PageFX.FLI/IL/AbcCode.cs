@@ -633,7 +633,7 @@ namespace DataDynamics.PageFX.FLI.IL
             else
                 Swap(); //value is onto the stack
 
-            GetProperty(trait.Name);
+            SetProperty(trait.Name);
         }
 
         public Instruction GetSuper(AbcMultiname name)
@@ -2298,7 +2298,7 @@ namespace DataDynamics.PageFX.FLI.IL
             NewArray(arrVar, elemType, list.Count, list, getItem);
         }
 
-        public void NewArray<T>(int arrVar, IType elemType, ISimpleList<T> list, Action<T, int> getItem)
+        public void NewArray<T>(int arrVar, IType elemType, IReadOnlyList<T> list, Action<T, int> getItem)
         {
             NewArray(arrVar, elemType, list.Count, list, getItem);
         }
@@ -2318,7 +2318,7 @@ namespace DataDynamics.PageFX.FLI.IL
             NewArray(arrVar, elemType, list, (item, index) => getItem(item));
         }
 
-        public void NewArray<T>(int arrVar, IType elemType, ISimpleList<T> list, Action<T> getItem)
+        public void NewArray<T>(int arrVar, IType elemType, IReadOnlyList<T> list, Action<T> getItem)
         {
             NewArray(arrVar, elemType, list, (item, index) => getItem(item));
         }

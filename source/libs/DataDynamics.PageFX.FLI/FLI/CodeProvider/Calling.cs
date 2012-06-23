@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -420,12 +421,12 @@ namespace DataDynamics.PageFX.FLI
             if (MustCoerceReturnType(declType))
                 return true;
             
-            var am = method.Tag as AbcMethod;
-            if (am != null)
+            var abcMethod = method.Tag as AbcMethod;
+            if (abcMethod != null)
             {
-                if (am.IsNative) return true;
-                if (am.IsImported) return true;
-                if (am.OriginalMethod != null) return true;
+                if (abcMethod.IsNative) return true;
+                if (abcMethod.IsImported) return true;
+                if (abcMethod.OriginalMethod != null) return true;
             }
 
             return false;
@@ -435,27 +436,28 @@ namespace DataDynamics.PageFX.FLI
         {
             if (declType.IsInterface)
             {
-                var gi = declType as IGenericInstance;
-                if (gi != null)
-                {
-                    switch (gi.Type.FullName)
-                    {
-                        case CLRNames.Types.IEnumeratorT:
-                        case CLRNames.Types.ICollectionT:
-                        case CLRNames.Types.IListT:
-                            return true;
-                    }
-                }
-                else
-                {
-                    switch (declType.FullName)
-                    {
-                        case CLRNames.Types.IEnumerator:
-                        case CLRNames.Types.ICollection:
-                        case CLRNames.Types.IList:
-                            return true;
-                    }
-                }
+				//var gi = declType as IGenericInstance;
+				//if (gi != null)
+				//{
+				//    switch (gi.Type.FullName)
+				//    {
+				//        case CLRNames.Types.IEnumeratorT:
+				//        case CLRNames.Types.ICollectionT:
+				//        case CLRNames.Types.IListT:
+				//            return true;
+				//    }
+				//}
+				//else
+				//{
+				//    switch (declType.FullName)
+				//    {
+				//        case CLRNames.Types.IEnumerator:
+				//        case CLRNames.Types.ICollection:
+				//        case CLRNames.Types.IList:
+				//            return true;
+				//    }
+				//}
+            	return true;
             }
             return false;
         }

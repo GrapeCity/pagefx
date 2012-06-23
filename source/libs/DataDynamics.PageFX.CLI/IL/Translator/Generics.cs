@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
@@ -87,9 +88,11 @@ namespace DataDynamics.PageFX.CLI.IL
             }
             ResolveGenericExceptions(block.Kids);
 
-            var pb = block as ProtectedBlock;
+            var pb = block as TryCatchBlock;
             if (pb != null)
-                ResolveGenericExceptions(pb.Handlers);
+            {
+				ResolveGenericExceptions(pb.Handlers.Cast<HandlerBlock>());
+            }
         }
 
         void ResolveGenericExceptions(IEnumerable<HandlerBlock> set)

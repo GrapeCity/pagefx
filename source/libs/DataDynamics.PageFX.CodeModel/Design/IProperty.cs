@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents collection of <see cref="IProperty"/>s.
     /// </summary>
-    public interface IPropertyCollection : ISimpleList<IProperty>, ICodeNode
+    public interface IPropertyCollection : IReadOnlyList<IProperty>, ICodeNode
     {
         void Add(IProperty property);
 

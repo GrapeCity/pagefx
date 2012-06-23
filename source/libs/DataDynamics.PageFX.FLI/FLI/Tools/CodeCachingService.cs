@@ -284,7 +284,7 @@ namespace DataDynamics.PageFX.FLI
                                 To = h.To,
                                 Target = h.Target,
                                 Type = (h.Type != null ? h.Type.Import(abc) : null),
-                                Variable = (h.Var != null ? h.Var.Import(abc) : null)
+                                VariableName = (h.Var != null ? h.Var.Import(abc) : null)
                             };
                             body.Exceptions.Add(e);
                         }
@@ -641,8 +641,8 @@ namespace DataDynamics.PageFX.FLI
                         MName.Write(writer, handler.Type);
                     else
                         writer.WriteByte(0); //any
-                    if (handler.Variable != null)
-                        MName.Write(writer, handler.Variable);
+                    if (handler.VariableName != null)
+                        MName.Write(writer, handler.VariableName);
                     else
                         writer.WriteByte(0);
                 }

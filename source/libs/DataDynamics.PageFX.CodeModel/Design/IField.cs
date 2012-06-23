@@ -1,4 +1,4 @@
-using DataDynamics.Collections;
+using System.Collections.Generic;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents collection of <see cref="IField"/>s.
     /// </summary>
-    public interface IFieldCollection : ISimpleList<IField>, ICodeNode
+    public interface IFieldCollection : IReadOnlyList<IField>, ICodeNode
     {
         void Add(IField field);
 

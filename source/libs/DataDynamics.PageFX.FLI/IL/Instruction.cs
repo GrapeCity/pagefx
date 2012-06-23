@@ -990,13 +990,18 @@ namespace DataDynamics.PageFX.FLI.IL
         void AppendValue(StringBuilder sb)
         {
             if (_operands == null) return;
-            int n = _operands.Length;
-            bool valueOnly = IsValueOnly;
-            for (int i = 0; i < n; ++i)
+        	bool valueOnly = IsValueOnly;
+            for (int i = 0; i < _operands.Length; ++i)
             {
                 if (i > 0) sb.Append(", ");
-                var op = _operands[i];
-                sb.Append(op.ToString(valueOnly));
+				var op = _operands[i];
+				//if (op.Value == null && IsBranch && BranchTarget != null)
+				if (IsBranch)
+				{
+					sb.AppendFormat("index = {0}", BranchTargetIndex);
+					continue;
+				}
+				sb.Append(op.ToString(valueOnly));
             }
         }
 

@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.FLI
                 //LogSwc(abc);
 
                 _scripts.Add(abc);
-                DefineAbc(abc);
+                AddAbcTag(abc);
             }
         }
 

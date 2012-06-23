@@ -38,17 +38,12 @@ namespace DataDynamics.PageFX
 
 			string lastErrorType = GetValue(KeyLastErrorType, "");
 			string lastErrorMethod = GetValue(KeyLastErrorMethod, "");
-
-			if (((string.IsNullOrEmpty(TypeName)
-				|| (type.Name == TypeName || type.FullName == TypeName))
-				&& method.Name == MethodName)
-				|| (type.FullName == lastErrorType
-				&& method.Name == lastErrorMethod))
+			if (type.FullName == lastErrorType && method.Name == lastErrorMethod)
 			{
 				return true;
 			}
 
-			return false;
+			return string.Compare(method.Name, MethodName, StringComparison.InvariantCultureIgnoreCase) == 0;
 		}
 
     	public static bool CanBreak(IMethod method)

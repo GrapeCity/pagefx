@@ -42,4 +42,13 @@ namespace DataDynamics
             }
         }
     }
+
+	[Serializable]
+	public sealed class BadOperandException : Exception
+	{
+		public BadOperandException(string message)
+			: base(message)
+		{
+		}
+	}
 }

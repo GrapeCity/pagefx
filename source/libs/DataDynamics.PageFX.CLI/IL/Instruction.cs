@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.CLI.IL
             get
             {
                 if (!IsLeave) return false; //is this check need?
-                var pb = Block as ProtectedBlock;
+                var pb = SehBlock as TryCatchBlock;
                 if (pb == null) return false;
                 if (pb.ExitPoint != this) return false;
                 return pb.IsTryFinally;
@@ -165,7 +165,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get
             {
-                var hb = Block as HandlerBlock;
+                var hb = SehBlock as HandlerBlock;
                 if (hb  == null) return false;
                 return hb.EntryIndex == Index;
             }
@@ -220,12 +220,12 @@ namespace DataDynamics.PageFX.CLI.IL
     	#endregion
 
         #region Internal Properties
-        public Block Block { get; set; }
+        public Block SehBlock { get; set; }
 
         /// <summary>
         /// Gets or sets basic block to which this instruction belongs
         /// </summary>
-        public Node OwnerNode { get; set; }
+        public Node BasicBlock { get; set; }
 
         public InstructionState State
         {

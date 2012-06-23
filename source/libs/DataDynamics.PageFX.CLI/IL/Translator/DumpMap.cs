@@ -16,6 +16,8 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public void DumpILMap(string format, string filename)
         {
+			if (!(DebugHooks.EvalFilter(_method) || DebugHooks.DumpILMap)) return;
+
             DebugHooks.LogInfo("DumpILMap started. Format = {0}. FileName = {1}.", format, filename);
 
             string dir = _body.GetTestDirectory();

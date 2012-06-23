@@ -425,7 +425,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                                  To = GetOffsetIndex(code, h.To),
                                  Target = GetOffsetIndex(code, h.Target),
                                  Index = h.Index,
-                                 Variable = ImportConst(h.Variable),
+                                 VariableName = ImportConst(h.VariableName),
                                  Type = ImportType(h.Type)
                              };
                 body.Exceptions.Add(h2);
