@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using DataDynamics.PageFX.CLI.IL;
-using MethodBody = DataDynamics.PageFX.CLI.IL.MethodBody;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
     internal class DumpService
     {
-        public static void Dump(IEnumerable<Node> cfg, MethodBody body, string root)
+		public static void Dump(IEnumerable<Node> cfg, IClrMethodBody body, string root)
         {
             string dir = body.GetTestDirectory();
 
@@ -99,7 +98,7 @@ namespace DataDynamics.PageFX.CLI.CFG
 
         static readonly string separator = new string('-', 200);
 
-        public static void DumpLocalVariables(TextWriter writer, MethodBody body)
+        public static void DumpLocalVariables(TextWriter writer, IClrMethodBody body)
         {
             if (body.LocalVariables != null)
             {
@@ -114,7 +113,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             }
         }
 
-        public static void Dump(TextWriter writer, IEnumerable<Node> cfg, MethodBody body)
+		public static void Dump(TextWriter writer, IEnumerable<Node> cfg, IClrMethodBody body)
         {
             var method = body.Method;
 

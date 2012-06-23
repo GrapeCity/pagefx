@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region Fields
-        MethodBody _body; //input: body of input method
+        IClrMethodBody _body; //input: body of input method
         ICodeProvider _provider; //input: code provider
         List<IInstruction> _outcode; //output instruction set
         IMethod _method; //input method to translate
@@ -51,18 +51,14 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <returns>translated code.</returns>
         public IInstruction[] Translate(IMethod method, IMethodBody body, ICodeProvider provider)
         {
-            var lb = body as LateMethodBody;
-            if (lb != null)
+            var clrBody = body as IClrMethodBody;
+            if (clrBody == null)
             {
-                _body = lb.RealBody;
-            }
-            else
-            {
-                _body = body as MethodBody;
-                if (_body == null)
-                    throw new NotSupportedException("Unsupported body");
+				throw new NotSupportedException("Unsupported body format");
             }
 
+        	_body = clrBody;
+            
             _provider = provider;
             _method = method;
             _declType = _method.DeclaringType;

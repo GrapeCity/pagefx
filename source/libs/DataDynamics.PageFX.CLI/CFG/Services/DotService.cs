@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Linq;
+using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
 using MethodBody = DataDynamics.PageFX.CLI.IL.MethodBody;
 
@@ -80,14 +81,14 @@ namespace DataDynamics.PageFX.CLI.CFG
             return dir;
         }
 
-		internal static void VisualizeGraph(this MethodBody body, Node entry, bool translatedCode)
+		internal static void VisualizeGraph(this IClrMethodBody body, Node entry, bool translatedCode)
     	{
     		if (entry == null) return;
     		var list = entry.GetGraphNodes();
 			body.VisualizeGraph(list, translatedCode);
     	}
 
-    	internal static void VisualizeGraph(this MethodBody body, NodeList list, bool translatedCode)
+		internal static void VisualizeGraph(this IClrMethodBody body, NodeList list, bool translatedCode)
     	{
     		DebugHooks.LogInfo("Flow graph constructed");
     		DebugHooks.DoCancel();

@@ -17,11 +17,40 @@ using DataDynamics.PageFX.PDB;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
-    /// <summary>
+	internal interface IClrMethodBody : IMethodBody
+	{
+		bool HasProtectedBlocks { get; }
+		BlockList ProtectedBlocks { get; }
+		ILStream Code { get; }
+
+		bool HasGenerics { get; }
+		bool HasGenericVars { get; }
+		bool HasGenericInstructions { get; }
+		bool HasGenericExceptions { get; }
+
+		int InstanceCount { get; set; }
+
+		FlowGraph FlowGraph { get; set; }
+	}
+
+	/// <summary>
     /// Reads method body
     /// </summary>
-    class MethodBody : IMethodBody
-    {
+    internal sealed class MethodBody : IClrMethodBody
+	{
+		private readonly IMethod _method;
+		private readonly int _maxStackSize;
+		private IVariableCollection _vars;
+		private readonly BlockList _protectedBlocks;
+		private readonly ILStream _code;
+
+		private readonly bool _hasGenericVars;
+		private bool _hasGenericInstructions;
+		private bool _hasGenericExceptions;
+
+		private readonly List<int> _tokens = new List<int>();
+		private readonly Hashtable _tokenCache = new Hashtable();
+
         #region ctor
         public MethodBody(IMethodContext context, BufferedBinaryReader reader)
         {
@@ -54,7 +83,7 @@ namespace DataDynamics.PageFX.CLI.IL
                         }
 
                         _code = ReadCode(context, code);
-                        _vars = context.ResolveLocalVariables(localSig, out HasGenericVars);
+                        _vars = context.ResolveLocalVariables(localSig, out _hasGenericVars);
                     }
                     break;
 
@@ -87,20 +116,17 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get { return _method; }
         }
-        readonly IMethod _method;
 
         public int MaxStackSize
         {
             get { return _maxStackSize; }
         }
-        readonly int _maxStackSize;
 
         public IVariableCollection LocalVariables
         {
             get { return _vars ?? (_vars = new VariableCollection()); }
         }
-        private IVariableCollection _vars;
-
+        
         public IStatementCollection Statements { get; set; }
 
         /// <summary>
@@ -121,14 +147,12 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get { return _protectedBlocks; }
         }
-        readonly BlockList _protectedBlocks;
-
+        
         public ILStream Code
         {
             get { return _code; }
         }
-        readonly ILStream _code;
-
+        
         /// <summary>
         /// Gets all calls that can be invocated in the method.
         /// </summary>
@@ -158,9 +182,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             return _tokens.ToArray();
         }
-        readonly List<int> _tokens = new List<int>();
-        readonly Hashtable _tokenCache = new Hashtable();
-
+        
         void AddToken(int token)
         {
             if (_tokenCache.ContainsKey(token))
@@ -171,15 +193,29 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public bool HasGenerics
         {
-            get { return HasGenericInstructions || HasGenericVars || HasGenericExceptions; }
+            get { return _hasGenericInstructions || _hasGenericVars || _hasGenericExceptions; }
         }
 
-        public bool HasGenericVars;
-        public bool HasGenericInstructions;
-        public bool HasGenericExceptions;
+    	public bool HasGenericVars
+    	{
+    		get { return _hasGenericVars; }
+    	}
+
+    	public bool HasGenericInstructions
+    	{
+    		get { return _hasGenericInstructions; }
+    	}
+
+    	public bool HasGenericExceptions
+    	{
+    		get { return _hasGenericExceptions; }
+    	}
 
         //Number of compilations
-        public int InstanceCount;
+    	public int InstanceCount { get; set; }
+
+		public FlowGraph FlowGraph { get; set; }
+
         #endregion
 
         #region DebuInfo
@@ -216,8 +252,8 @@ namespace DataDynamics.PageFX.CLI.IL
                 instr.Index = list.Count;
                 list.Add(instr);
 
-                if (!HasGenericInstructions && instr.IsGenericContext)
-                    HasGenericInstructions = true;
+                if (!_hasGenericInstructions && instr.IsGenericContext)
+                    _hasGenericInstructions = true;
             }
             return list;
         }
@@ -439,8 +475,8 @@ namespace DataDynamics.PageFX.CLI.IL
                         int token = block.Value;
                         AddToken(token);
                         var type = context.ResolveType(token);
-                        if (!HasGenericExceptions && GenericType.IsGenericContext(type))
-                            HasGenericExceptions = true;
+                        if (!_hasGenericExceptions && GenericType.IsGenericContext(type))
+                            _hasGenericExceptions = true;
                         var h = new HandlerBlock(BlockType.Catch)
                                     {
                                         ExceptionType = type
@@ -593,8 +629,6 @@ namespace DataDynamics.PageFX.CLI.IL
             return _method.DeclaringType.FullName + "." + _method.Name;
         }
         #endregion
-
-        internal FlowGraph FlowGraph;
     }
 
     #region enum MethodBodyFlags

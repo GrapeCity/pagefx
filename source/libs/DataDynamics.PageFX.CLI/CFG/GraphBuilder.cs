@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
-using MethodBody=DataDynamics.PageFX.CLI.IL.MethodBody;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
@@ -30,7 +29,7 @@ namespace DataDynamics.PageFX.CLI.CFG
         readonly ILStream _code;
         readonly bool _removeSingleGotos;
 
-        public GraphBuilder(MethodBody body, bool removeSingleGotos)
+        public GraphBuilder(IClrMethodBody body, bool removeSingleGotos)
         {
             _code = body.Code;
             _removeSingleGotos = removeSingleGotos;

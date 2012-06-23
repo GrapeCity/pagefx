@@ -2,7 +2,7 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
-    internal sealed class LateMethodBody : IMethodBody
+    internal sealed class LateMethodBody : IClrMethodBody
     {
         private readonly uint _rva;
         private readonly IMethod _method;
@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CLI.IL
             _rva = rva;
         }
 
-        public MethodBody RealBody
+        private MethodBody Impl
         {
             get { return _body ?? (_body = _loader.Decompile(_method, _rva)); }
         }
@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get
             {
-                return RealBody.MaxStackSize;
+                return Impl.MaxStackSize;
             }
         }
 
@@ -39,7 +39,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get
             {
-                return RealBody.LocalVariables;
+                return Impl.LocalVariables;
             }
         }
 
@@ -47,7 +47,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get
             {
-                return RealBody.Statements;
+                return Impl.Statements;
             }
         }
 
@@ -57,7 +57,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <returns><see cref="ITranslator"/></returns>
         public ITranslator CreateTranslator()
         {
-            return RealBody.CreateTranslator();
+            return Impl.CreateTranslator();
         }
 
         /// <summary>
@@ -66,12 +66,12 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <returns></returns>
         public IMethod[] GetCalls()
         {
-            return RealBody.GetCalls();
+            return Impl.GetCalls();
         }
 
         public int[] GetReferencedMetadataTokens()
         {
-            return RealBody.GetReferencedMetadataTokens();
+            return Impl.GetReferencedMetadataTokens();
         }
         #endregion
 
@@ -79,5 +79,56 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             return _body != null ? _body.ToString() : base.ToString();
         }
+
+    	#region Implementation of IClrMethodBody
+
+    	public bool HasProtectedBlocks
+    	{
+			get { return Impl.HasProtectedBlocks; }
+    	}
+
+    	public BlockList ProtectedBlocks
+    	{
+			get { return Impl.ProtectedBlocks; }
+    	}
+
+    	public ILStream Code
+    	{
+			get { return Impl.Code; }
+    	}
+
+    	public bool HasGenerics
+    	{
+			get { return Impl.HasGenerics; }
+    	}
+
+    	public bool HasGenericVars
+    	{
+			get { return Impl.HasGenericVars; }
+    	}
+
+    	public bool HasGenericInstructions
+    	{
+			get { return Impl.HasGenericInstructions; }
+    	}
+
+    	public bool HasGenericExceptions
+    	{
+			get { return Impl.HasGenericExceptions; }
+    	}
+
+    	public int InstanceCount
+    	{
+			get { return Impl.InstanceCount; }
+			set { Impl.InstanceCount = value; }
+    	}
+
+    	public FlowGraph FlowGraph
+    	{
+			get { return Impl.FlowGraph; }
+			set { Impl.FlowGraph = value; }
+    	}
+
+    	#endregion
     }
 }

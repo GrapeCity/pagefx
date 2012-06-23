@@ -36,12 +36,12 @@ namespace DataDynamics.PageFX.CLI
 
             public void Serialize(IAssembly assembly, string path, string format)
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
 
             public void Serialize(IAssembly assembly, Stream output, string format)
             {
-                throw new Exception("The method or operation is not implemented.");
+				throw new NotImplementedException();
             }
             #endregion
         }
