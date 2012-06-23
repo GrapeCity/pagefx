@@ -43,24 +43,16 @@ namespace System
     {
         internal object m_target;
         internal Function m_function;
+    	private MethodInfo _method;
 
-#if NOT_PFX
         public MethodInfo Method
         {
-            get
-            {
-                //return method_info;
-                return null;
-            }
+            get { return _method ?? (_method = new MethodInfo {m_function = m_function}); }
         }
-#endif
 
         public object Target
         {
-            get
-            {
-                return m_target;
-            }
+            get { return m_target; }
         }
 
         #region CreateDelegate Methods

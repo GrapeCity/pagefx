@@ -127,7 +127,7 @@ namespace System.Diagnostics {
                 
                 public virtual string GetFileName()
                 {
-#if NET_2_0
+#if NET_2_0 && !PFX
 			if (SecurityManager.SecurityEnabled && (fileName != null) && (fileName.Length > 0)) {
 				string fn = Path.GetFullPath (fileName);
 				new FileIOPermission (FileIOPermissionAccess.PathDiscovery, fn).Demand ();

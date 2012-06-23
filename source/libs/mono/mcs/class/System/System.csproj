@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D2D26DF4-6214-4F24-82E3-9190819D9C50}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -60,9 +60,13 @@
       <Link>Assembly\MonoTODOAttribute.cs</Link>
     </Compile>
     <Compile Include="Assembly\AssemblyInfo.cs" />
+    <Compile Include="System.CodeDom.Compiler\GeneratedCodeAttribute.cs" />
     <Compile Include="System.Collections.Generic\LinkedList.cs" />
     <Compile Include="System.Collections.Generic\LinkedListNode.cs" />
     <Compile Include="System.Collections.Generic\Queue.cs" />
+    <Compile Include="System.Collections.Generic\RBTree.cs" />
+    <Compile Include="System.Collections.Generic\SortedDictionary.cs" />
+    <Compile Include="System.Collections.Generic\SortedList.cs" />
     <Compile Include="System.Collections.Generic\Stack.cs" />
     <Compile Include="System.Collections.Specialized\BitVector32.cs" />
     <Compile Include="System.Collections.Specialized\ListDictionary.cs">

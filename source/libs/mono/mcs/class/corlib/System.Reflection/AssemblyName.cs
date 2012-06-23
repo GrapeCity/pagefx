@@ -36,6 +36,7 @@ using System.Globalization;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 #endif
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.IO;
 

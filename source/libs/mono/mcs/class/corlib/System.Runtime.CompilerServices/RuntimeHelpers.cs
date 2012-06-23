@@ -61,13 +61,12 @@ namespace System.Runtime.CompilerServices
 			get;
 		}
 
-#if NOT_PFX
 #if NET_1_1
         public static int GetHashCode (object o) 
         {
-            return Object.InternalGetHashCode (o);
+            return o.GetHashCode();
         }
-#endif
+
         public static new bool Equals (object o1, object o2) {
 			// LAMESPEC: According to MSDN, this is equivalent to 
 			// Object::Equals (). But the MS version of Object::Equals()

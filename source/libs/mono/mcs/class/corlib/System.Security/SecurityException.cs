@@ -64,8 +64,8 @@ namespace System.Security {
 #endif
 		private MethodInfo _method;
 		private string _url;
-#if NOT_PFX
 		private SecurityZone _zone;
+#if NOT_PFX
 		private Evidence _evidence;
 #endif
 

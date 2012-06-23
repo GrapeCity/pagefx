@@ -89,6 +89,11 @@ namespace System.Threading
         {
             get { return _mid; }
         }
-        private int _mid;
+    	private int _mid;
+
+		public static int CurrentThreadId
+		{
+			get { return CurrentThread.ManagedThreadId; }
+		}
     }
 }
