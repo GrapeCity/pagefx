@@ -105,12 +105,12 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ITypeCollection Members
-        int ITypeCollection.Count
+        int IReadOnlyList<IType>.Count
         {
             get { return _modules.Sum(module => module.Types.Count); }
         }
 
-        IType ITypeCollection.this[int index]
+		IType IReadOnlyList<IType>.this[int index]
         {
             get
             {

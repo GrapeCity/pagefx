@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.CodeModel
         #region IEnumerable Members
         public new IEnumerator GetEnumerator()
         {
-            return list.GetEnumerator();
+            return List.GetEnumerator();
         }
         #endregion
 
@@ -30,7 +30,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return list.Cast<ICodeNode>(); }
+            get { return List.Cast<ICodeNode>(); }
         }
 
         public object Tag
@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         internal void AddInternal(IEvent e)
         {
-            list.Add(e);
+            List.Add(e);
         }
     }
 }

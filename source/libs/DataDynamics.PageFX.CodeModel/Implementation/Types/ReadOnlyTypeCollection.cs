@@ -7,31 +7,33 @@ namespace DataDynamics.PageFX.CodeModel
 {
     internal class ReadOnlyTypeCollection : ReadOnlyList<IType>, ITypeCollection
     {
-        #region ITypeCollection Members
-        public IType this[string fullname]
+    	public IType this[string fullname]
         {
             get 
             {
-                return list.FirstOrDefault(t => t.FullName == fullname);
+                return List.FirstOrDefault(t => t.FullName == fullname);
             }
         }
 
-        public void Sort()
+    	public void Add(IType type)
+    	{
+    		throw new NotSupportedException("This collection is readonly.");
+    	}
+
+    	public void Sort()
         {
             //list.Sort((x, y) => string.Compare(x.FullName, y.FullName));
             throw new NotSupportedException();
         }
-        #endregion
 
-        #region ICodeNode Members
-        public CodeNodeType NodeType
+    	public CodeNodeType NodeType
         {
             get { return CodeNodeType.Types; }
         }
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return list.Cast<ICodeNode>(); }
+            get { return List.Cast<ICodeNode>(); }
         }
 
         public object Tag
@@ -39,20 +41,17 @@ namespace DataDynamics.PageFX.CodeModel
             get { return null; }
             set { throw new NotSupportedException(); }
         }
-        #endregion
 
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+    	public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        public void AddInternal(IType type)
+    	public void AddInternal(IType type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            list.Add(type);
+            List.Add(type);
         }
     }
 }

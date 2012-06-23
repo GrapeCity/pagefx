@@ -126,13 +126,14 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
     }
 
-    public interface ITypeCollection : IEnumerable<IType>, ICodeNode
+    public interface ITypeCollection : IReadOnlyList<IType>, ICodeNode
     {
-        int Count { get; }
-        IType this[int index] { get; }
         IType this[string fullname] { get; }
+
         void Add(IType type);
+
         bool Contains(IType type);
+
         void Sort();
     }
 

@@ -1,87 +1,37 @@
 namespace System.Collections.Generic
 {
-    public class ReadOnlyList<T> : IList<T>, IReadOnlyList<T>
+    public class ReadOnlyList<T> : IReadOnlyList<T>
     {
-        protected readonly List<T> list = new List<T>();
-
-        #region IList<T> Members
-        public int IndexOf(T item)
-        {
-            return list.IndexOf(item);
-        }
-
-        public void Insert(int index, T item)
-        {
-            throw new NotSupportedException();
-        }
-
-        public void RemoveAt(int index)
-        {
-            throw new NotSupportedException();
-        }
+        protected readonly List<T> List = new List<T>();
 
         public T this[int index]
         {
-            get
-            {
-                return list[index];
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return List[index]; }
         }
-        #endregion
 
-        #region ICollection<T> Members
-        public void Add(T item)
+    	public int Count
         {
-            throw new NotSupportedException();
+            get { return List.Count; }
         }
 
-        public void Clear()
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool Contains(T item)
-        {
-            return list.Contains(item);
-        }
-
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            list.CopyTo(array, arrayIndex);
-        }
-
-        public int Count
-        {
-            get { return list.Count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return true; }
-        }
-
-        public bool Remove(T item)
-        {
-            throw new NotSupportedException();
-        }
-        #endregion
-
-        #region IEnumerable<T> Members
         public IEnumerator<T> GetEnumerator()
         {
-            return list.GetEnumerator();
+            return List.GetEnumerator();
         }
-        #endregion
 
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
+    	IEnumerator IEnumerable.GetEnumerator()
         {
-            return list.GetEnumerator();
+            return List.GetEnumerator();
         }
-        #endregion
+
+		public int IndexOf(T item)
+		{
+			return List.IndexOf(item);
+		}
+
+		public bool Contains(T item)
+		{
+			return List.Contains(item);
+		}
     }
 }
