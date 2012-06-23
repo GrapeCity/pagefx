@@ -94,10 +94,12 @@ namespace DataDynamics.PageFX
                 return 0;
             }
 
-            if (cl.HasOption("-rv", "--rv"))
-                return RV.Run(cl);
+			if (cl.HasOption("-rv", "--rv"))
+			{
+				return RV.Run(cl);
+			}
 
-            if (cl.HasOption(PFCOptions.Wrap))
+        	if (cl.HasOption(PFCOptions.Wrap))
             {
                 WrapperGenerator.Wrap(cl);
                 return 0;
@@ -118,6 +120,11 @@ namespace DataDynamics.PageFX
 #if PERF
             int start = Environment.TickCount;
 #endif
+			if (cl.HasOption("dot"))
+			{
+				DebugHooks.MethodName = cl.GetOption("", "dot");
+			}
+
             RunCore();
 
 #if PERF
