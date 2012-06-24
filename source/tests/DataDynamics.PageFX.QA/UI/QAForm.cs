@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.UI;
@@ -98,6 +97,8 @@ namespace DataDynamics.PageFX
             miAbcSerialization.Tag = TestDriver.AbcSerialization;
             miSwfSerialization.Tag = TestDriver.SwfSerialization;
             miCliDeserialization.Tag = TestDriver.CliDeserialization;
+            miClrEmulation.Tag = TestDriver.ClrEmulation;
+
             //progressBar.Visible = false;
 
             AddTestCases();
@@ -138,6 +139,7 @@ namespace DataDynamics.PageFX
             AbcSerialization,
             SwfSerialization,
             CliDeserialization,
+			ClrEmulation,
         }
         TestDriver _testDriver;
 
@@ -151,6 +153,7 @@ namespace DataDynamics.PageFX
             miAbcSerialization.Checked = _testDriver == TestDriver.AbcSerialization;
             miSwfSerialization.Checked = _testDriver == TestDriver.SwfSerialization;
             miCliDeserialization.Checked = _testDriver == TestDriver.CliDeserialization;
+            miClrEmulation.Checked = _testDriver == TestDriver.ClrEmulation;
         }
 
         static TreeNode FindByText(TreeNodeCollection list, string text)
@@ -480,14 +483,28 @@ namespace DataDynamics.PageFX
                               ExportCSharpFile = false,
                               CancelCallback = _cancelCallback
                           };
-            if (_testDriver == TestDriver.AbcSerialization || _testDriver == TestDriver.SwfSerialization)
-            {
-                tds.OutputFormat = _testDriver == TestDriver.SwfSerialization ? "swf" : "abc";
 
-            	TestEngine.RunTestCase(tc, tds);
-            }
-            
-            if (tds.IsCancel)
+        	switch (_testDriver)
+        	{
+        		case TestDriver.AbcSerialization:
+					tds.OutputFormat = "abc";
+					TestEngine.RunTestCase(tc, tds);
+        			break;
+        		case TestDriver.SwfSerialization:
+					tds.OutputFormat = "swf";
+					TestEngine.RunTestCase(tc, tds);
+        			break;
+        		case TestDriver.CliDeserialization:
+        			break;
+        		case TestDriver.ClrEmulation:
+					tds.IsClrEmulation = true;
+					TestEngine.RunTestCase(tc, tds);
+        			break;
+        		default:
+        			throw new ArgumentOutOfRangeException();
+        	}
+
+        	if (tds.IsCancel)
                 tc.IsCancelled = true;
             else
                 tc.IsFinished = true;
@@ -786,6 +803,8 @@ namespace DataDynamics.PageFX
                 _testDriver = TestDriver.CliDeserialization;
             else if (string.Compare(str, "SWF", true) == 0)
                 _testDriver = TestDriver.SwfSerialization;
+			else if (string.Compare(str, "CLRE", true) == 0)
+				_testDriver = TestDriver.ClrEmulation;
 
             str = QA.GetValue(KeyAvmShellMode, AvmShellMode.Interpretation);
             if (string.Compare(str, AvmShellMode.JIT, true) == 0)
@@ -834,6 +853,10 @@ namespace DataDynamics.PageFX
                 case TestDriver.SwfSerialization:
                     QA.SetValue(KeyTestDriver, "SWF");
                     break;
+
+				case TestDriver.ClrEmulation:
+					QA.SetValue(KeyTestDriver, "CLRE");
+					break;
             }
 
             SaveFlags(btnOptions.DropDownItems);

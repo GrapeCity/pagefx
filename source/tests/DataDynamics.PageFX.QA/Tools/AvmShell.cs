@@ -1,6 +1,8 @@
+using System;
 using System.IO;
 using System.Text;
 using DataDynamics.PageFX;
+using DataDynamics.PageFX.FLI;
 
 namespace DataDynamics
 {
@@ -145,12 +147,12 @@ namespace DataDynamics
                 if (Error) sb.Append("-error ");
                 if (Log) sb.Append("-log ");
 
-                if (!string.IsNullOrEmpty(JavaRuntimeArguments))
+                if (!String.IsNullOrEmpty(JavaRuntimeArguments))
                 {
                     sb.AppendFormat("-jargs {0}", JavaRuntimeArguments);
                 }
 
-                if (!string.IsNullOrEmpty(ApplicationArguments))
+                if (!String.IsNullOrEmpty(ApplicationArguments))
                 {
                     sb.AppendFormat("-- {0}", ApplicationArguments);
                 }
@@ -181,7 +183,7 @@ namespace DataDynamics
             if (!File.Exists(path))
             {
                 exitCode = -1;
-                return string.Format("Error: File {0} does not exist", path);
+                return String.Format("Error: File {0} does not exist", path);
             }
 
             if (options == null)
@@ -198,5 +200,38 @@ namespace DataDynamics
 
             return CommandPromt.Run(path, args.ToString(), out exitCode);
         }
+
+    	public static string Dump(string path)
+    	{
+#if DEBUG
+    		DebugService.DoCancel();
+    		DebugService.LogInfo("AvmDump started");
+    		int start = Environment.TickCount;
+#endif
+
+    		var opts = new Options
+    		           	{
+    		           		Verbose = true
+    		           	};
+
+    		int exitCode;
+    		string cout = Run(opts, out exitCode, path);
+
+    		string dir = Path.GetDirectoryName(path);
+    		File.WriteAllText(Path.Combine(dir, "avmdump.txt"), cout);
+
+    		//if (exitCode != 0)
+    		//{
+    		//    return string.Format("Unable to play ABC file {0}", path);
+    		//}
+
+#if DEBUG
+    		int end = Environment.TickCount;
+    		DebugService.LogInfo("AvmDump succeeded. Ellapsed Time: {0}", (end - start) + "ms");
+    		DebugService.DoCancel();
+#endif
+
+    		return cout;
+    	}
     }
 }

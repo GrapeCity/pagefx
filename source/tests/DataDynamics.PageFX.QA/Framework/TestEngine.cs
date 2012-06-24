@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using DataDynamics.PageFX.CLI.Execution;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using NUnit.Framework;
@@ -17,16 +18,18 @@ namespace DataDynamics.PageFX.FLI
             if (tc == null)
                 Assert.Fail("Unable to find given test case {0}", name);
 
-            var tds = new TestDriverSettings
-            {
-                UpdateReport = false,
-                OutputFormat = format
-            };
+        	var tds = new TestDriverSettings
+        	          	{
+        	          		UpdateReport = false,
+        	          		OutputFormat = format
+        	          	};
             tc.Optimize = true;
             RunTestCase(tc, tds);
 
-            if (tc.IsFailed)
-                Assert.Fail(tc.Error);
+			if (tc.IsFailed)
+			{
+				Assert.Fail(tc.Error);
+			}
         }
 
         public static void RunTestCase(TestCase tc, TestDriverSettings tds)
@@ -51,8 +54,10 @@ namespace DataDynamics.PageFX.FLI
                 CLI.CommonLanguageInfrastructure.ClearCache();
             }
 
-            if (tds.UpdateReport)
-                UpdateReport(tc);
+			if (tds.UpdateReport)
+			{
+				UpdateReport(tc);
+			}
         }
         #endregion
 
@@ -73,8 +78,13 @@ namespace DataDynamics.PageFX.FLI
 
             if (!Compile(tc)) return;
             if (tds.IsCancel) return;
-            if (!GenerateApp(tc, tds)) return;
-            Execute(tc, tds);
+
+			if (!tds.IsClrEmulation)
+			{
+				if (!GenerateApp(tc, tds)) return;
+			}
+
+        	Execute(tc, tds);
         }
         #endregion
 
@@ -215,7 +225,22 @@ namespace DataDynamics.PageFX.FLI
             }
 
             int exitCode2;
-            if (tds.IsABC)
+			if (tds.IsClrEmulation)
+			{
+				try
+				{
+					var console = new StringWriter();
+					var vm = new VirtualMachine(console);
+					exitCode2 = vm.Run(tc.ExePath, "", new string[0]);
+					tc.Output2 = console.ToString();
+				}
+				catch (Exception e)
+				{
+					exitCode2 = 0;
+					tc.Output2 = e.ToString();
+				}
+			}
+            else if (tds.IsABC)
             {
                 var avmOpts = new AvmShell.Options();
                 tc.Output2 = AvmShell.Run(avmOpts, out exitCode2, tc.OutputPath);
@@ -228,7 +253,7 @@ namespace DataDynamics.PageFX.FLI
                 exitCode2 = results.ExitCode;
                 tc.Output2 = results.Output;
             }
-            else
+			else
             {
                 throw new NotImplementedException();
             }
@@ -271,7 +296,7 @@ namespace DataDynamics.PageFX.FLI
 #if DEBUG
             tc.AvmDump = "";
             if (DebugService.AvmDump)
-                tc.AvmDump = PlayAbc(outpath);
+                tc.AvmDump = AvmShell.Dump(outpath);
 
 #endif
 
@@ -342,6 +367,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region Utils
+
         #region Dump
         static void Dump(string abcPath)
         {
@@ -370,40 +396,6 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        #region PlayAbc
-        static string PlayAbc(string path)
-        {
-#if DEBUG
-            DebugService.DoCancel();
-            DebugService.LogInfo("AvmDump started");
-            int start = Environment.TickCount;
-#endif
-
-        	var opts = new AvmShell.Options
-        	           	{
-        	           		Verbose = true
-        	           	};
-
-        	int exitCode;
-            string cout = AvmShell.Run(opts, out exitCode, path);
-
-            string dir = Path.GetDirectoryName(path);
-            File.WriteAllText(Path.Combine(dir, "avmdump.txt"), cout);
-
-            //if (exitCode != 0)
-            //{
-            //    return string.Format("Unable to play ABC file {0}", path);
-            //}
-
-#if DEBUG
-            int end = Environment.TickCount;
-            DebugService.LogInfo("AvmDump succeeded. Ellapsed Time: {0}", (end - start) + "ms");
-            DebugService.DoCancel();
-#endif
-
-            return cout;
-        }
-        #endregion
         #endregion
     }
 }
