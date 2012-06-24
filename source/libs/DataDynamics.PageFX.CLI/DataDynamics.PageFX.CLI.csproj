@@ -42,6 +42,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +50,17 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CLI\Extensions.cs" />
+    <Compile Include="Execution\Class.cs" />
+    <Compile Include="Execution\ConsoleEmulator.cs" />
+    <Compile Include="Execution\Instance.cs" />
+    <Compile Include="Execution\LocalVariable.cs" />
+    <Compile Include="Execution\MethodContext.cs" />
+    <Compile Include="Execution\NativeClass.cs" />
+    <Compile Include="Execution\ObjectExtensions.cs" />
+    <Compile Include="Execution\Pointers.cs" />
+    <Compile Include="Execution\InternalTypeExtensions.cs" />
+    <Compile Include="Execution\RuntimeType.cs" />
+    <Compile Include="Execution\VirtualMachine.cs" />
     <Compile Include="GAC\AssemblyCache.cs" />
     <Compile Include="GAC\Structs.cs" />
     <Compile Include="GAC\Enums.cs" />

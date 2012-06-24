@@ -1,0 +1,1 @@
+csc /nologo test.cs
