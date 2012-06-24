@@ -659,30 +659,7 @@ namespace DataDynamics.PageFX.CodeModel
     		return type.Methods[name, argc];
     	}
 
-		public static IMethod FindMethodHierarchically(this IType type, string name, IType arg1)
-		{
-			while (type != null)
-			{
-				var method = type.Methods[name, arg1];
-				if (method != null) return method;
-				type = type.BaseType;
-			}
-
-			return null;
-		}
-
-		public static IMethod FindMethodHierarchically(this IType type, string name, int argc)
-		{
-			while (type != null)
-			{
-				var method = type.Methods[name, argc];
-				if (method != null) return method;
-				type = type.BaseType;
-			}
-			return null;
-		}
-
-    	public static IMethod FindMethod(this IType type, string name, int argc, Predicate<IParameterCollection> args)
+		public static IMethod FindMethod(this IType type, string name, int argc, Predicate<IParameterCollection> args)
     	{
     		return type.Methods[name,
     		                    m =>
@@ -692,5 +669,17 @@ namespace DataDynamics.PageFX.CodeModel
     		                    		return args(p);
     		                    	}];
     	}
+
+		public static IMethod FindMethodHierarchically(this IType type, string name, Predicate<IMethod> predicate, Predicate<IType> hierarchyFilter)
+		{
+			while (type != null)
+			{
+				if (hierarchyFilter != null && hierarchyFilter(type)) break;
+				var method = type.Methods[name, predicate];
+				if (method != null) return method;
+				type = type.BaseType;
+			}
+			return null;
+		}
     }
 }

@@ -38,10 +38,27 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 	internal sealed class Class : IFieldStorage
 	{
+		private struct LazyMethod
+		{
+			private IMethod _value;
+
+			public bool Initialized { get; private set; }
+
+			public IMethod Value
+			{
+				get { return _value; }
+				set
+				{
+					_value = value;
+					Initialized = true;
+				}
+			}
+		}
+
 		private readonly FieldSlot[] _fields;
-		private IMethod _toString;
-		private IMethod _equalsMethod;
-		private IMethod _getHashCodeMethod;
+		private LazyMethod _toString;
+		private LazyMethod _equalsMethod;
+		private LazyMethod _getHashCodeMethod;
 		private Type _systemType;
 
 		public FieldSlot[] Fields
@@ -49,17 +66,16 @@ namespace DataDynamics.PageFX.CLI.Execution
 			get { return _fields; }
 		}
 
-		public Class(IType type, Class baseClass)
+		public Class(IType type)
 		{
 			Type = type;
-			BaseClass = baseClass;
 
 			_fields = InitFields(type, true);
 		}
 
 		public IType Type { get; private set; }
 
-		public Class BaseClass { get; private set; }
+		public Class BaseClass { get; set; }
 
 		public Type SystemType
 		{
@@ -68,17 +84,47 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		public IMethod ToStringMethod
 		{
-			get { return _toString ?? (_toString = Type.FindMethodHierarchically("ToString", 0)); }
+			get
+			{
+				if (!_toString.Initialized)
+				{
+					_toString.Value = Type.FindMethodHierarchically(
+						"ToString",
+						x => x.Parameters.Count == 0,
+						x => x == SystemTypes.ValueType || x == SystemTypes.Object);
+				}
+				return _toString.Value;
+			}
 		}
 
 		public IMethod EqualsMethod
 		{
-			get { return _equalsMethod ?? (_equalsMethod = Type.FindMethodHierarchically("Equals", SystemTypes.Object)); }
+			get
+			{
+				if (!_equalsMethod.Initialized)
+				{
+					_equalsMethod.Value = Type.FindMethodHierarchically(
+						"Equals",
+						x => x.Parameters.Count == 1 && x.Parameters[0].Type == SystemTypes.Object,
+						x => x == SystemTypes.ValueType || x == SystemTypes.Object);
+				}
+				return _equalsMethod.Value;
+			}
 		}
 
 		public IMethod GetHashCodeMethod
 		{
-			get { return _getHashCodeMethod ?? (_getHashCodeMethod = Type.FindMethodHierarchically("GetHashCode", 0)); }
+			get
+			{
+				if (!_getHashCodeMethod.Initialized)
+				{
+					_getHashCodeMethod.Value = Type.FindMethodHierarchically(
+						"GetHashCode",
+						x => x.Parameters.Count == 0,
+						x => x == SystemTypes.ValueType || x == SystemTypes.Object);
+				}
+				return _getHashCodeMethod.Value;
+			}
 		}
 
 		public static FieldSlot[] InitFields(IType type, bool isStatic)
@@ -109,7 +155,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			var list = new List<IType>();
 
-			while (type != null)
+			while (type != null && type != SystemTypes.Object && type != SystemTypes.ValueType)
 			{
 				list.Add(type);
 

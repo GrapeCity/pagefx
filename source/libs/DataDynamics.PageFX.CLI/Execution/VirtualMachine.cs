@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 	//TODO: - value types
 	//TODO: - initialization of value type fields
 	//TODO: - nullables
-	//TODO: - reflection: Object.GetType, typeof()
+	//TODO: - reflection: Object.GetType
 	//TODO: - exception handling
 	//TODO: - generics
 	//TODO: - multi dimensional arrays
@@ -149,19 +149,10 @@ namespace DataDynamics.PageFX.CLI.Execution
 				return klass;
 			}
 
-			Class baseClass = null;
-			if (type.BaseType != null)
-			{
-				baseClass = GetClass(type.BaseType);
-			}
-
-			klass = new Class(type, baseClass);
+			klass = new Class(type);
 			type.Tag = klass;
 
-			foreach (var slot in klass.Fields.Where(x => x.IsValueType))
-			{
-				slot.Value = InitObject(slot.Field.Type);
-			}
+			InitFields(klass);
 
 			var cctor = type.Methods.StaticConstructor;
 			if (cctor != null)
@@ -170,7 +161,20 @@ namespace DataDynamics.PageFX.CLI.Execution
 				Call(cctor, new object[0]);
 			}
 
+			if (type.BaseType != null)
+			{
+				klass.BaseClass = GetClass(type.BaseType);
+			}
+
 			return klass;
+		}
+
+		internal void InitFields(IFieldStorage trait)
+		{
+			foreach (var slot in trait.Fields.Where(x => x.IsValueType))
+			{
+				slot.Value = InitObject(slot.Field.Type);
+			}
 		}
 
 		private MethodContext CreateContext(IMethod method, object[] args)
@@ -1186,12 +1190,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private object PopInstance(MethodContext context, IMethod method)
 		{
-			var instance = context.Pop(false);
-			if (instance is IPointer)
-			{
-				instance = ((IPointer)instance).Value;
-			}
-
+			var instance = context.PopObject();
 			return ConvertTo(instance, method.DeclaringType);
 		}
 
@@ -1203,6 +1202,20 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 
 			var declType = method.DeclaringType;
+			if (declType == SystemTypes.Object)
+			{
+				if (method.Name == "GetType")
+				{
+					GetTypeImpl(context);
+					return;
+				}
+
+				if (method.Name == "MemberwiseClone")
+				{
+					MemberwiseCloneImpl(context);
+					return;
+				}
+			}
 
 			if (declType.TypeKind == TypeKind.Delegate)
 			{
@@ -1250,6 +1263,28 @@ namespace DataDynamics.PageFX.CLI.Execution
 			else
 			{
 				CallInstance(context, method, virtcall);
+			}
+		}
+
+		private static void MemberwiseCloneImpl(MethodContext context)
+		{
+			var obj = context.PopInstance();
+			obj = obj.Copy();
+			context.Push(obj);
+		}
+
+		private static void GetTypeImpl(MethodContext context)
+		{
+			var obj = context.PopObject();
+			
+			var instance = obj as Instance;
+			if (instance != null)
+			{
+				context.Push(instance.Class.SystemType);
+			}
+			else
+			{
+				context.Push(obj.GetType());
 			}
 		}
 
@@ -1628,12 +1663,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			//TODO: array, string interfaces
 
-			var value = context.Pop(false);
-			if (value is IPointer)
-			{
-				value = ((IPointer)value).Value;
-			}
-
+			var value = context.PopObject();
 			if (value == null)
 			{
 				context.Push(value);
@@ -1704,12 +1734,8 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private void Op_Isinst(MethodContext context, IType type)
 		{
-			var value = context.Pop(false);
-			if (value is IPointer)
-			{
-				value = ((IPointer)value).Value;
-			}
-
+			var value = context.PopObject();
+			
 			var instance = value as Instance;
 			if (instance != null)
 			{

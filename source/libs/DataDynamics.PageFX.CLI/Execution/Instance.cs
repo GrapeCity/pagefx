@@ -11,8 +11,6 @@ namespace DataDynamics.PageFX.CLI.Execution
 	{
 		private readonly VirtualMachine _engine;
 		private readonly FieldSlot[] _fields;
-		private IMethod _toString;
-		private IMethod _equalsMethod;
 
 		public Instance(VirtualMachine engine, Class klass)
 		{
@@ -31,6 +29,8 @@ namespace DataDynamics.PageFX.CLI.Execution
 			else
 			{
 				_fields = Class.InitFields(klass.Type, false);
+
+				_engine.InitFields(this);
 			}
 		}
 
@@ -84,8 +84,24 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 
 			//TODO: base implementation for value types
+			if (IsValueType)
+			{
+				var other = obj as Instance;
+				if (other == null) return false;
+				if (other.Class != Class) return false;
 
-			return base.Equals(obj);
+				for (int i = 0; i < Fields.Length; i++)
+				{
+					if (!Equals(Fields[i].Value, other.Fields[i].Value))
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
+
+			return obj == this;
 		}
 
 		public override string ToString()

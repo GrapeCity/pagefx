@@ -93,11 +93,16 @@ namespace DataDynamics.PageFX.CLI.Execution
 			Push(EvalStack.Peek(), copy);
 		}
 
-		public Instance PopInstance()
+		public object PopObject()
 		{
 			var obj = Pop(false);
 			var ptr = obj as IPointer;
-			return ptr != null ? ptr.Value as Instance : obj as Instance;
+			return ptr != null ? ptr.Value : obj;
+		}
+
+		public Instance PopInstance()
+		{
+			return PopObject() as Instance;
 		}
 
 		public void LoadLocal(int index)
