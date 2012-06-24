@@ -20,7 +20,9 @@ namespace DataDynamics.PageFX.CLI.IL
 	internal interface IClrMethodBody : IMethodBody
 	{
 		bool HasProtectedBlocks { get; }
-		BlockList ProtectedBlocks { get; }
+
+		IReadOnlyList<TryCatchBlock> ProtectedBlocks { get; }
+
 		ILStream Code { get; }
 
 		bool HasGenerics { get; }
@@ -41,7 +43,7 @@ namespace DataDynamics.PageFX.CLI.IL
 		private readonly IMethod _method;
 		private readonly int _maxStackSize;
 		private IVariableCollection _vars;
-		private readonly BlockList _protectedBlocks;
+		private readonly IReadOnlyList<TryCatchBlock> _protectedBlocks;
 		private readonly ILStream _code;
 
 		private readonly bool _hasGenericVars;
@@ -143,7 +145,7 @@ namespace DataDynamics.PageFX.CLI.IL
             get { return _protectedBlocks != null && _protectedBlocks.Count > 0; }
         }
 
-        public BlockList ProtectedBlocks
+        public IReadOnlyList<TryCatchBlock> ProtectedBlocks
         {
             get { return _protectedBlocks; }
         }
@@ -504,7 +506,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        private static Block FindParent(IEnumerable<Block> list, Block block)
+        private static Block FindParent(IEnumerable<TryCatchBlock> list, Block block)
         {
 			return list.FirstOrDefault(parent => parent != block && (block.EntryIndex >= parent.EntryIndex && block.ExitIndex <= parent.ExitIndex));
         }
@@ -552,9 +554,9 @@ namespace DataDynamics.PageFX.CLI.IL
             return tryBlock;
         }
 
-        BlockList TranslateSehBlocks(IMethodContext context, IList<SEHBlock> blocks, ILStream code)
+        IReadOnlyList<TryCatchBlock> TranslateSehBlocks(IMethodContext context, IList<SEHBlock> blocks, ILStream code)
         {
-            var list = new BlockList();
+        	var list = new List<TryCatchBlock>();
             var handlers = new BlockList();
             TryCatchBlock tryBlock = null;
             int n = blocks.Count;
@@ -589,10 +591,10 @@ namespace DataDynamics.PageFX.CLI.IL
                 SetupInstructions(code, block);
             }
 
-            return list;
+            return list.AsReadOnlyList();
         }
 
-        static TryCatchBlock EnshureTryBlock(IList<SEHBlock> blocks, int i, TryCatchBlock tryBlock, ILStream code, SEHBlock block, BlockList list)
+        static TryCatchBlock EnshureTryBlock(IList<SEHBlock> blocks, int i, TryCatchBlock tryBlock, ILStream code, SEHBlock block, ICollection<TryCatchBlock> list)
         {
             if (tryBlock == null)
             {

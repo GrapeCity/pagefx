@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.FLI
 
 						if (!IsFlex4)
 						{
-							var ctor = TypeExtensions.FindParameterlessConstructor(instance);
+							var ctor = instance.FindParameterlessConstructor();
 							if (ctor != null)
 							{
 								var ctorMethod = DefineAbcMethod(ctor);
@@ -188,7 +188,7 @@ namespace DataDynamics.PageFX.FLI
     					CallInitStyles(code, instance);
 
 						// init application after styles are initialized
-						var ctor = TypeExtensions.FindParameterlessConstructor(instance);
+						var ctor = instance.FindParameterlessConstructor();
 						if (ctor != null)
 						{
 							var ctorMethod = DefineAbcMethod(ctor);

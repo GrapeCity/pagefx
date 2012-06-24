@@ -35,8 +35,10 @@ namespace DataDynamics.PageFX.CLI.IL
                     p.Tag = null;
             }
 
-            if (_body.HasGenericExceptions)
-                ResolveGenericExceptions(_body.ProtectedBlocks);
+			if (_body.HasGenericExceptions)
+			{
+				ResolveGenericExceptions(_body.ProtectedBlocks.Cast<Block>());
+			}
         }
 
         void ResolveGenericVars()

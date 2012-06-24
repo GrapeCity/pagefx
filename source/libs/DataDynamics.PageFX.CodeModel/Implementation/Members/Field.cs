@@ -16,6 +16,8 @@ namespace DataDynamics.PageFX.CodeModel
 
     	public int Offset { get; set; }
 
+    	public int Slot { get; set; }
+
     	public object Value { get; set; }
 
     	public IExpression Initializer { get; set; }

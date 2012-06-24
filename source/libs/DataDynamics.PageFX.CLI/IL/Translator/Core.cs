@@ -1649,7 +1649,7 @@ namespace DataDynamics.PageFX.CLI.IL
         IInstruction[] Op_Call(bool virtcall)
         {
             var method = _instruction.Method;
-            if (CLR.IsInitializeArray(method))
+            if (method.IsInitializeArray())
                 return InitializeArray();
             if (IsGetTypeFromHandle(method))
                 return TypeOf();
@@ -1700,7 +1700,7 @@ namespace DataDynamics.PageFX.CLI.IL
             var arr = Pop();
             var arrType = (IArrayType)arr.Type;
             var elemType = arrType.ElementType;
-            var vals = CLR.ReadArrayValues(f, elemType);
+            var vals = CLR.ReadArrayValues(f, elemType.SystemType.Code);
 
             int n = vals.Count;
             var code = new Code();
@@ -1721,7 +1721,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         bool IsGetTypeFromHandle(IMethod m)
         {
-            if (!CLR.IsGetTypeFromHandle(m)) return false;
+            if (!m.IsGetTypeFromHandle()) return false;
             Debug.Assert(!IsStackEmpty);
             return Peek().IsTypeToken;
         }

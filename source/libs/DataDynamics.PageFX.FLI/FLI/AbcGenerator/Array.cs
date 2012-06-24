@@ -116,7 +116,7 @@ namespace DataDynamics.PageFX.FLI
             var elemType = type.GetElementType();
             InitArrayFields(code, type, elemType, 0);
 
-            if (TypeExtensions.IsInitArray(elemType))
+            if (InternalTypeExtensions.IsInitArray(elemType))
             {
                 code.InitArray(elemType,
                     delegate
@@ -192,7 +192,7 @@ namespace DataDynamics.PageFX.FLI
 
                         InitArrayFields(code, elemType, varArray);
 
-                        if (TypeExtensions.IsInitArray(elemType))
+                        if (InternalTypeExtensions.IsInitArray(elemType))
                         {
                             code.InitArray(elemType,
                                            () =>
@@ -653,7 +653,7 @@ namespace DataDynamics.PageFX.FLI
         #region InitArray Methods
         public AbcMethod DefineInitArrayMethod(IType elemType)
         {
-            if (!TypeExtensions.IsInitArray(elemType)) return null;
+            if (!InternalTypeExtensions.IsInitArray(elemType)) return null;
 
             if (elemType.IsEnum)
                 elemType = elemType.ValueType;

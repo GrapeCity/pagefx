@@ -486,7 +486,7 @@ namespace DataDynamics.PageFX.FLI
                 {
                     //TODO: Resolve the situation: assembly can have more than one subclasses of mx.core.Application
                     _searchFlexAppType = false;
-                    var apps = _assembly.Types.Where(type => TypeExtensions.IsFrom(type, "mx.core.Application")).ToList();
+                    var apps = _assembly.Types.Where(type => InternalTypeExtensions.IsFrom(type, "mx.core.Application")).ToList();
                     int n = apps.Count;
                     if (n > 0)
                     {
@@ -496,7 +496,7 @@ namespace DataDynamics.PageFX.FLI
                         }
                         else
                         {
-							_typeFlexApp = apps.FirstOrDefault(TypeExtensions.IsRootSprite);
+							_typeFlexApp = apps.FirstOrDefault(InternalTypeExtensions.IsRootSprite);
                             if (_typeFlexApp == null)
                                 throw new AmbiguousMatchException("Unable to find MX application class");
                         }

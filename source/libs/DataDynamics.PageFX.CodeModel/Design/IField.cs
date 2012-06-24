@@ -19,6 +19,8 @@ namespace DataDynamics.PageFX.CodeModel
         IExpression Initializer { get; set; }
 
         IField ProxyOf { get; }
+
+		int Slot { get; set; }
     }
 
     /// <summary>

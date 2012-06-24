@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection.Emit;
 using System.Text;
 using DataDynamics.PageFX.CLI.CFG;
@@ -178,6 +179,11 @@ namespace DataDynamics.PageFX.CLI.IL
         /// Gets or sets instruction operand
         /// </summary>
         public object Value { get; set; }
+
+		public int BranchTarget
+		{
+			get { return Convert.ToInt32(Value, CultureInfo.InvariantCulture); }
+		}
 
         public int MetadataToken { get; set; }
 

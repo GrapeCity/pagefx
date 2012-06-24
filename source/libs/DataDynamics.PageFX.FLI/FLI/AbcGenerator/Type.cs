@@ -276,7 +276,7 @@ namespace DataDynamics.PageFX.FLI
         AbcMultiname DefineInstanceName(IType type)
         {
             var ns = DefineTypeNamespace(type);
-            string name = TypeExtensions.GetPartialTypeName(type);
+            string name = InternalTypeExtensions.GetPartialTypeName(type);
             return _abc.DefineQName(ns, name);
         }
 

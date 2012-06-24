@@ -39,7 +39,7 @@ namespace DataDynamics.PageFX.FLI
 
             if (!GlobalSettings.ReflectionSupport)
             {
-                var ctor = TypeExtensions.FindInitializer(instance);
+                var ctor = InternalTypeExtensions.FindInitializer(instance);
                 if (ctor != null)
                 {
                     DefineAbcMethod(ctor);
@@ -218,11 +218,11 @@ namespace DataDynamics.PageFX.FLI
             if (instance.StaticCtor != null)
                 return instance.StaticCtor;
 
-            var ctor = TypeExtensions.FindStaticCtor(type);
+            var ctor = InternalTypeExtensions.FindStaticCtor(type);
             if (ctor != null)
                 return instance.StaticCtor = DefineAbcMethod(ctor);
 
-            if (TypeExtensions.HasInitFields(type, true))
+            if (InternalTypeExtensions.HasInitFields(type, true))
             {
                 string name = type.GetStaticCtorName();
                 instance.StaticCtor = instance.DefineStaticMethod(

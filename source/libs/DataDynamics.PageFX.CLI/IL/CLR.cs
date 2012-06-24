@@ -26,7 +26,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return es.Expression as ICallExpression;
         }
 
-        public static bool IsInitializeArray(IMethod method)
+        public static bool IsInitializeArray(this IMethod method)
         {
             if (!method.IsStatic) return false;
             if (method.Name != "InitializeArray") return false;
@@ -39,10 +39,56 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             call = ToCallExpression(s);
             if (call == null) return false;
-            return IsInitializeArray(call.Method.Method);
+            return call.Method.Method.IsInitializeArray();
         }
 
-        public static List<object> ReadArrayValues(IField f, IType elemType)
+		public static SystemTypeCode ToSystemTypeCode(this TypeCode type)
+		{
+			switch (type)
+			{
+				case TypeCode.Object:
+					return SystemTypeCode.Object;
+				case TypeCode.Boolean:
+					return SystemTypeCode.Boolean;
+				case TypeCode.Char:
+					return SystemTypeCode.Char;
+				case TypeCode.SByte:
+					return SystemTypeCode.Int8;
+				case TypeCode.Byte:
+					return SystemTypeCode.UInt8;
+				case TypeCode.Int16:
+					return SystemTypeCode.Int16;
+				case TypeCode.UInt16:
+					return SystemTypeCode.UInt16;
+				case TypeCode.Int32:
+					return SystemTypeCode.Int32;
+				case TypeCode.UInt32:
+					return SystemTypeCode.UInt32;
+				case TypeCode.Int64:
+					return SystemTypeCode.Int64;
+				case TypeCode.UInt64:
+					return SystemTypeCode.UInt64;
+				case TypeCode.Single:
+					return SystemTypeCode.Single;
+				case TypeCode.Double:
+					return SystemTypeCode.Double;
+				case TypeCode.Decimal:
+					return SystemTypeCode.Decimal;
+				case TypeCode.DateTime:
+					return SystemTypeCode.DateTime;
+				case TypeCode.String:
+					return SystemTypeCode.String;
+				default:
+					throw new ArgumentOutOfRangeException("type");
+			}
+		}
+
+		public static List<object> ReadArrayValues(IField f, TypeCode type)
+		{
+			return ReadArrayValues(f, type.ToSystemTypeCode());
+		}
+
+        public static List<object> ReadArrayValues(IField f, SystemTypeCode type)
         {
             var blob = f.Value as byte[];
             if (blob == null)
@@ -52,9 +98,10 @@ namespace DataDynamics.PageFX.CLI.IL
             var reader = new BufferedBinaryReader(blob);
             while (reader.Position < reader.Length)
             {
-                var value = ReadValue(reader, elemType);
+                var value = ReadValue(reader, type);
                 vals.Add(value);
             }
+
             return vals;
         }
 
@@ -73,7 +120,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 throw new DecompileException();
 
             var f = fe.Field;
-            var vals = ReadArrayValues(f, arrType.ElementType);
+            var vals = ReadArrayValues(f, arrType.ElementType.SystemType.Code);
             
             int n = vals.Count;
             for (int i = 0; i < n; ++i)
@@ -82,15 +129,9 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        private static object ReadValue(BufferedBinaryReader reader, IType type)
+        private static object ReadValue(BufferedBinaryReader reader, SystemTypeCode type)
         {
-            if (type == null)
-                throw new ArgumentNullException("type");
-            var st = type.SystemType;
-            if (st == null)
-                throw new InvalidOperationException();
-
-            switch (st.Code)
+            switch (type)
             {
                 case SystemTypeCode.Boolean:
                     return reader.ReadBoolean();
@@ -131,7 +172,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region TypeOf
-        public static bool IsGetTypeFromHandle(IMethod method)
+        public static bool IsGetTypeFromHandle(this IMethod method)
         {
             if (!method.IsStatic) return false;
             if (method.Name != "GetTypeFromHandle") return false;
@@ -141,7 +182,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public static IExpression TypeOf(ICallExpression call)
         {
-            if (IsGetTypeFromHandle(call.Method.Method))
+            if (call.Method.Method.IsGetTypeFromHandle())
             {
                 if (call.Arguments.Count != 1)
                     throw new InvalidOperationException();
@@ -158,8 +199,8 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public static bool IsSpecialMethod(IMethod method)
         {
-            if (IsInitializeArray(method)) return true;
-            if (IsGetTypeFromHandle(method)) return true;
+            if (method.IsInitializeArray()) return true;
+            if (method.IsGetTypeFromHandle()) return true;
             return false;
         }
     }

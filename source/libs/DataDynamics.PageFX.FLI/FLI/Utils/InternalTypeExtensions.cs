@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.FLI
     /// <summary>
     /// Contains various type utils.
     /// </summary>
-    internal static class TypeExtensions
+    internal static class InternalTypeExtensions
     {
         /// <summary>
         /// Returns true if given type should not be compiled.
@@ -34,42 +34,7 @@ namespace DataDynamics.PageFX.FLI
         	return false;
         }
 
-        //class <PrivateImplementationDetails>{C05318BA-D3C5-45BA-8FEC-725F72EE7B81}
-        public static bool IsModuleType(this IType type)
-        {
-            if (type == null) return false;
-            if (!type.IsClass) return false;
-            if (type.DeclaringType != null) return false;
-            return type.FullName == "<Module>";
-        }
-
-        public static bool IsPrivateImplementationDetails(this IType type)
-        {
-            if (type == null) return false;
-            if (!type.IsCompilerGenerated) return false;
-            if (!type.IsClass) return false;
-            if (type.DeclaringType != null) return false;
-            string name = type.FullName;
-            int n = name.Length;
-            if (n == 0) return false;
-            return name.StartsWith("<PrivateImplementationDetails>{") && name[n - 1] == '}';
-        }
-
-        /// <summary>
-        /// Determines whether given type is array initializer struct.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsArrayInitializer(this IType type)
-        {
-            if (type == null) return false;
-            if (type.TypeKind != TypeKind.Struct) return false;
-            if (type.Layout == null) return false;
-            if (type.DeclaringType.IsPrivateImplementationDetails()) return true;
-            return false;
-        }
-
-        /// <summary>
+    	/// <summary>
         /// Finds type in given assembly.
         /// </summary>
         /// <param name="asm"></param>
@@ -108,25 +73,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        /// <summary>
-        /// Determines whether the given type has only one instance constructor
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool HasSingleConstructor(this IType type)
-        {
-            if (type == null) return false;
-            if (type.IsInterface) return false;
-            int n = 0;
-            foreach (var m in type.Methods.Where(m => !m.IsStatic && m.IsConstructor))
-            {
-            	if (n >= 1) return false;
-            	++n;
-            }
-            return true;
-        }
-
-        public static bool IsNativeType(this IType type, string fullname)
+    	public static bool IsNativeType(this IType type, string fullname)
         {
             if (type == null) return false;
             var instance = type.Tag as AbcInstance;
@@ -195,26 +142,11 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region ctor utils
-        public static IMethod FindConstructor(this IType type, Func<IMethod, bool> ctorPredicate)
-        {
-            if (type == null) return null;
-        	return type.Methods.Constructors.FirstOrDefault(m => !m.IsStatic && ctorPredicate(m));
-        }
 
-        public static IMethod FindConstructor(this IType type, int argCount)
-        {
-            return FindConstructor(type, ctor => ctor.Parameters.Count == argCount);
-        }
-
-        public static IMethod FindParameterlessConstructor(this IType type)
-        {
-            return FindConstructor(type, 0);
-        }
-
-        public static IMethod FindParameterlessConstructor(AbcInstance instance)
+    	public static IMethod FindParameterlessConstructor(this AbcInstance instance)
         {
             var type = instance.Type;
-            return type == null ? null : FindParameterlessConstructor(type);
+            return type == null ? null : type.FindParameterlessConstructor();
         }
 
         public static bool AllowNonParameterlessInitializer(IType type)
@@ -447,14 +379,7 @@ namespace DataDynamics.PageFX.FLI
         	return type.Fields.Any(f => !f.IsConstant && f.IsStatic == isStatic && IsInitRequiredField(f.Type));
         }
 
-        public static IType GetElementType(this IType type)
-        {
-            var compoundType = type as ICompoundType;
-            if (compoundType == null) throw new ArgumentException("type");
-            return compoundType.ElementType;
-        }
-
-        public static bool IsFrom(IType type, string fullname)
+    	public static bool IsFrom(IType type, string fullname)
         {
             if (type == null) return false;
             var bt = type.BaseType;

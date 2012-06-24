@@ -28,6 +28,12 @@ namespace DataDynamics.PageFX.CodeModel
             set { throw new NotSupportedException(); }
         }
 
+		public int Slot
+		{
+			get { return _field.Slot; }
+			set { throw new NotSupportedException(); }
+		}
+
         public bool IsConstant
         {
             get { return _field.IsConstant; }

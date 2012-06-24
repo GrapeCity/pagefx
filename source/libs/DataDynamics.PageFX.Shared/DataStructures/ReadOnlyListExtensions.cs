@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace System.Collections.Generic
 {
     public interface IReadOnlyList<T> : IEnumerable<T>
@@ -76,5 +78,10 @@ namespace System.Collections.Generic
         {
             return new ListAdapter<T>(list);
         }
+
+		public static IReadOnlyList<T> AsReadOnlyList<T>(this IEnumerable<T> seq)
+		{
+			return new ListAdapter<T>(seq.ToList());
+		}
     }
 }

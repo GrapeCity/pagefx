@@ -1,12 +1,11 @@
 using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 
 namespace DataDynamics.PageFX.FLI
 {
-	internal static class MethodExtensions
+	internal static class InternalMethodExtensions
 	{
 		public static bool IsInitializer(this IMethod method)
 		{
@@ -566,33 +565,6 @@ namespace DataDynamics.PageFX.FLI
 			return ConvertMethodId.Unknown;
 		}
 
-		public static IMethod FindImplementation(this IType type, IMethod method, bool inherited)
-		{
-			if (method.IsGenericInstance)
-				method = method.InstanceOf;
-
-			while (type != null)
-			{
-				var impl = (from candidate in type.Methods
-				            where candidate.ImplementedMethods != null &&
-				                  candidate.ImplementedMethods.Any(x => x == method || x.ProxyOf == method)
-				            select candidate).FirstOrDefault();
-				if (impl != null)
-				{
-					return impl;
-				}
-				if (!inherited) break;
-				type = type.BaseType;
-			}
-
-			return null;
-		}
-
-		public static IMethod FindImplementation(this IType type, IMethod method)
-		{
-			return type.FindImplementation(method, true);
-		}
-
 		private static bool HasBaseExplicitImpl(this IMethod method)
 		{
 			if (method == null) return false;
@@ -612,49 +584,6 @@ namespace DataDynamics.PageFX.FLI
 			if (impl == null || impl.Length != 1)
 				throw new InvalidOperationException("bad explicit implementation");
 			return impl[0];
-		}
-
-		public static bool IsNew(this IMethod method)
-		{
-			if (method == null) return false;
-			if (method.IsStatic) return false;
-			if (method.IsConstructor) return false;
-			if (method.IsVirtual)
-			{
-				if (method.IsNewSlot)
-				{
-					if (method.IsExplicitImplementation)
-						return false;
-					return method.HasBaseDef();
-				}
-				return false;
-			}
-			return method.HasBaseDef();
-		}
-
-		private static bool HasBaseDef(this IMethod method)
-		{
-			if (method.BaseMethod != null)
-				return true;
-			if (method.Parameters.Count == 0)
-			{
-				switch (method.Visibility)
-				{
-					case Visibility.Private:
-					case Visibility.NestedPrivate:
-						return false;
-				}
-				string name = method.Name;
-				var bt = method.DeclaringType.BaseType;
-				while (bt != null)
-				{
-					var f = bt.Fields[name];
-					if (f != null)
-						return true;
-					bt = bt.BaseType;
-				}
-			}
-			return false;
 		}
 
 		public static bool IsOverride(this IMethod method)
@@ -719,21 +648,6 @@ namespace DataDynamics.PageFX.FLI
 			return false;
 		}
 
-		public static bool IsImplemented(this IMethod method)
-		{
-			if (method.IsInternalCall)
-			{
-				return false;
-			}
-			switch (method.CodeType)
-			{
-				case MethodCodeType.Native:
-				case MethodCodeType.Runtime:
-					return false;
-			}
-			return true;
-		}
-
 		public static bool IsStaticCall(this IMethod m)
 		{
 			return m.IsStatic || m.AsStaticCall();
@@ -768,7 +682,7 @@ namespace DataDynamics.PageFX.FLI
 			if (!method.IsConstructor) return false;
 			var declType = method.DeclaringType;
 			if (method.Parameters.Count > 0
-			    && !TypeExtensions.AllowNonParameterlessInitializer(declType))
+			    && !InternalTypeExtensions.AllowNonParameterlessInitializer(declType))
 				return false;
 			return declType.HasSingleConstructor();
 		}
@@ -798,43 +712,6 @@ namespace DataDynamics.PageFX.FLI
 			if (method.Association != prop) return false;
 			if (prop.Parameters.Count > 0) return false;
 			return true;
-		}
-
-		public static IMethod FindMethod(this IType type, string name)
-		{
-			var set = type.Methods[name];
-			return set == null ? null : set.FirstOrDefault();
-		}
-
-		public static IMethod FindMethod(this IType type, string name, IType arg1)
-		{
-			return type.Methods[name, arg1];
-		}
-
-		public static IMethod FindMethod(this IType type, string name, IType arg1, IType arg2)
-		{
-			return type.Methods[name, arg1, arg2];
-		}
-
-		public static IMethod FindMethod(this IType type, string name, IType arg1, IType arg2, IType arg3)
-		{
-			return type.Methods[name, arg1, arg2, arg3];
-		}
-
-		public static IMethod FindMethod(this IType type, string name, int argc)
-		{
-			return type.Methods[name, argc];
-		}
-
-		public static IMethod FindMethod(this IType type, string name, int argc, Predicate<IParameterCollection> args)
-		{
-			return type.Methods[name,
-			                    m =>
-			                    	{
-			                    		var p= m.Parameters;
-			                    		if (p.Count != argc) return false;
-			                    		return args(p);
-			                    	}];
 		}
 
 		public static IMethod FindImplementedMethod(this IMethod method)

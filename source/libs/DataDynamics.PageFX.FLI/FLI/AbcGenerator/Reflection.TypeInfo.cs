@@ -750,7 +750,7 @@ namespace DataDynamics.PageFX.FLI
             code.SetProperty(Const.Type.NamespaceObject);
 
             code.GetLocal(varType);
-            code.PushString(TypeExtensions.GetPartialTypeName(type));
+            code.PushString(InternalTypeExtensions.GetPartialTypeName(type));
             code.SetProperty(Const.Type.Name);
 
             int baseIndex = GetTypeId(type.BaseType);

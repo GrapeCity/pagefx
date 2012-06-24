@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
@@ -87,7 +88,7 @@ namespace DataDynamics.PageFX.CLI.IL
 			get { return Impl.HasProtectedBlocks; }
     	}
 
-    	public BlockList ProtectedBlocks
+    	public IReadOnlyList<TryCatchBlock> ProtectedBlocks
     	{
 			get { return Impl.ProtectedBlocks; }
     	}

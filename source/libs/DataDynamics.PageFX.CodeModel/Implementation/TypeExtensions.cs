@@ -572,5 +572,125 @@ namespace DataDynamics.PageFX.CodeModel
     		const string systemException = "System.Exception";
     		return type.FullName == systemException || type.IsSubclassOf(systemException);
     	}
+
+    	public static IMethod FindConstructor(this IType type, Func<IMethod, bool> ctorPredicate)
+    	{
+    		if (type == null) return null;
+    		return type.Methods.Constructors.FirstOrDefault(m => !m.IsStatic && ctorPredicate(m));
+    	}
+
+    	public static IMethod FindConstructor(this IType type, int argCount)
+    	{
+    		return FindConstructor(type, ctor => ctor.Parameters.Count == argCount);
+    	}
+
+    	public static IMethod FindParameterlessConstructor(this IType type)
+    	{
+    		return FindConstructor(type, 0);
+    	}
+
+    	public static bool IsModuleType(this IType type)
+    	{
+    		if (type == null) return false;
+    		if (!type.IsClass) return false;
+    		if (type.DeclaringType != null) return false;
+    		return type.FullName == "<Module>";
+    	}
+
+		//e.g. class <PrivateImplementationDetails>{C05318BA-D3C5-45BA-8FEC-725F72EE7B81}
+    	public static bool IsPrivateImplementationDetails(this IType type)
+    	{
+    		if (type == null) return false;
+    		if (!type.IsCompilerGenerated) return false;
+    		if (!type.IsClass) return false;
+    		if (type.DeclaringType != null) return false;
+    		string name = type.FullName;
+    		int n = name.Length;
+    		if (n == 0) return false;
+    		return name.StartsWith("<PrivateImplementationDetails>{") && name[n - 1] == '}';
+    	}
+
+    	/// <summary>
+    	/// Determines whether given type is array initializer struct.
+    	/// </summary>
+    	/// <param name="type"></param>
+    	/// <returns></returns>
+    	public static bool IsArrayInitializer(this IType type)
+    	{
+    		if (type == null) return false;
+    		if (type.TypeKind != TypeKind.Struct) return false;
+    		if (type.Layout == null) return false;
+    		if (type.DeclaringType.IsPrivateImplementationDetails()) return true;
+    		return false;
+    	}
+
+    	/// <summary>
+    	/// Determines whether the given type has only one instance constructor
+    	/// </summary>
+    	/// <param name="type"></param>
+    	/// <returns></returns>
+    	public static bool HasSingleConstructor(this IType type)
+    	{
+    		if (type == null) return false;
+    		if (type.IsInterface) return false;
+    		int n = 0;
+    		foreach (var m in type.Methods.Where(m => !m.IsStatic && m.IsConstructor))
+    		{
+    			if (n >= 1) return false;
+    			++n;
+    		}
+    		return true;
+    	}
+
+    	public static IType GetElementType(this IType type)
+    	{
+    		var compoundType = type as ICompoundType;
+    		if (compoundType == null) throw new ArgumentException("type");
+    		return compoundType.ElementType;
+    	}
+
+    	public static IMethod FindMethod(this IType type, string name, IType arg1)
+    	{
+    		return type.Methods[name, arg1];
+    	}
+
+		public static IMethod FindMethod(this IType type, string name, int argc)
+    	{
+    		return type.Methods[name, argc];
+    	}
+
+		public static IMethod FindMethodHierarchically(this IType type, string name, IType arg1)
+		{
+			while (type != null)
+			{
+				var method = type.Methods[name, arg1];
+				if (method != null) return method;
+				type = type.BaseType;
+			}
+
+			return null;
+		}
+
+		public static IMethod FindMethodHierarchically(this IType type, string name, int argc)
+		{
+			while (type != null)
+			{
+				var method = type.Methods[name, argc];
+				if (method != null) return method;
+				type = type.BaseType;
+			}
+			return null;
+		}
+
+    	public static IMethod FindMethod(this IType type, string name, int argc, Predicate<IParameterCollection> args)
+    	{
+    		return type.Methods[name,
+    		                    m =>
+    		                    	{
+    		                    		var p= m.Parameters;
+    		                    		if (p.Count != argc) return false;
+    		                    		return args(p);
+    		                    	}];
+    	}
     }
 }

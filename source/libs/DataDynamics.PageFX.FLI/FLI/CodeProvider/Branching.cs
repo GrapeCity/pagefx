@@ -56,7 +56,7 @@ namespace DataDynamics.PageFX.FLI
                     return code.ToArray();
                 }
             }
-            else if (TypeExtensions.IsDecimalOrInt64(left, right))
+            else if (InternalTypeExtensions.IsDecimalOrInt64(left, right))
             {
                 var code = new AbcCode(_abc);
                 var opm = _generator.DefineOperator(op, left, right);

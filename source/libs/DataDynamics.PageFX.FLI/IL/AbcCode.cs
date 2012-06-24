@@ -1500,7 +1500,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
             EnsureType(type);
 
-            if (TypeExtensions.MustUseCastToMethod(type, true))
+            if (InternalTypeExtensions.MustUseCastToMethod(type, true))
             {
                 var m = Generator.DefineCastToMethod(type, false);
                 GetlexSwapCall(m);
@@ -1623,7 +1623,7 @@ namespace DataDynamics.PageFX.FLI.IL
                 return;
             }
 
-            var type = TypeExtensions.SelectDecimalOrInt64(source, target);
+            var type = InternalTypeExtensions.SelectDecimalOrInt64(source, target);
             if (type != null && SystemTypes.IsNumeric(target))
             {
                 CallCastOp(source, target, type);
@@ -1653,7 +1653,7 @@ namespace DataDynamics.PageFX.FLI.IL
             if (TryCastToSystemType(null, target))
                 return;
 
-            if (TypeExtensions.MustUseCastToMethod(target, false))
+            if (InternalTypeExtensions.MustUseCastToMethod(target, false))
             {
                 CallCastToMethod(target);
                 return;
@@ -2109,7 +2109,7 @@ namespace DataDynamics.PageFX.FLI.IL
                     GetLocal(to);
                     GetLocal(from);
                     GetProperty(prop);
-                    if (TypeExtensions.HasCopy(t.Type))
+                    if (InternalTypeExtensions.HasCopy(t.Type))
                         CopyValue(t.Type);
                     SetProperty(prop);
                 }
@@ -2129,7 +2129,7 @@ namespace DataDynamics.PageFX.FLI.IL
             //    return;
             //}
 
-            if (TypeExtensions.HasCopy(type))
+            if (InternalTypeExtensions.HasCopy(type))
             {
                 var instance = type.Tag as AbcInstance;
                 if (instance != null)
@@ -2157,7 +2157,7 @@ namespace DataDynamics.PageFX.FLI.IL
         {
             EnsureType(type);
 
-            if (TypeExtensions.HasCopy(type))
+            if (InternalTypeExtensions.HasCopy(type))
             {
                 var instance = type.Tag as AbcInstance;
                 if (instance != null)
@@ -2933,7 +2933,7 @@ namespace DataDynamics.PageFX.FLI.IL
                             return;
                 }
             }
-            if (TypeExtensions.IsInitRequired(type))
+            if (InternalTypeExtensions.IsInitRequired(type))
             {
                 CreateInstance(type, true);
             }
@@ -3032,20 +3032,20 @@ namespace DataDynamics.PageFX.FLI.IL
         {
             if (!method.IsConstructor) return;
             var type = method.DeclaringType;
-            if (!TypeExtensions.MustInitValueTypeFields(type)) return;
+            if (!InternalTypeExtensions.MustInitValueTypeFields(type)) return;
             bool isStatic = method.IsStatic;
             InitFields(type, isStatic, false);
         }
 
         public void InitFields(IType type, bool isStatic, bool dup)
         {
-            if (!TypeExtensions.MustInitValueTypeFields(type)) return;
+            if (!InternalTypeExtensions.MustInitValueTypeFields(type)) return;
             foreach (var f in type.Fields)
             {
                 if (f.IsConstant) continue;
                 if (f.IsStatic == isStatic)
                 {
-                    if (!TypeExtensions.IsInitRequiredField(f.Type)) continue;
+                    if (!InternalTypeExtensions.IsInitRequiredField(f.Type)) continue;
                     if (dup) Dup();
                     else LoadThis();
                     InitObject(f.Type);
@@ -3091,7 +3091,7 @@ namespace DataDynamics.PageFX.FLI.IL
                 }
             }
 
-            if (TypeExtensions.IsDecimalOrInt64(left, right))
+            if (InternalTypeExtensions.IsDecimalOrInt64(left, right))
             {
                 CallBinOp(op, left, right, result);
                 return;

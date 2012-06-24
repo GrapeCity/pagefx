@@ -210,7 +210,7 @@ namespace DataDynamics.PageFX.CLI.IL
             int n = method.Parameters.Count;
             var type = method.DeclaringType;
 
-            bool isGetTypeFromHandle = CLR.IsGetTypeFromHandle(method);
+            bool isGetTypeFromHandle = method.IsGetTypeFromHandle();
 
             var last = instr;
             for (int i = n - 1; i >= 0; --i)
@@ -237,7 +237,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
 
             last = FixReceiverInsertPoint(last, method);
-            if (!(CLR.IsInitializeArray(method) || isGetTypeFromHandle))
+            if (!(method.IsInitializeArray() || isGetTypeFromHandle))
             {
                 Instruction dup;
                 if (IsDup(stack, out dup))

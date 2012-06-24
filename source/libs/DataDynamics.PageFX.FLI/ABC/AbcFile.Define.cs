@@ -427,7 +427,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcNamespace DefinePrivateNamespace(AbcInstance instance)
         {
-            string ns = TypeExtensions.GetNamespaceForMembers(instance);
+            string ns = InternalTypeExtensions.GetNamespaceForMembers(instance);
             return DefinePrivateNamespace(ns);
         }
 
