@@ -31,6 +31,17 @@ namespace System
                 //}
 
                 avm.trace(s);
+
+#if CONSOLE_READ
+				if (Console.HasReadCalls)
+				{
+					var terminal = Console.In as ConsoleReader;
+					if (terminal != null)
+					{
+						terminal.WriteLine(s);
+					}
+				}
+#endif
             }
             else
             {

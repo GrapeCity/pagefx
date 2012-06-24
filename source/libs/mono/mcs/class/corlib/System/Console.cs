@@ -31,9 +31,8 @@
 //
 
 using System.IO;
-#if NOT_PFX
 using System.Security.Permissions;
-#endif
+using System.Text;
 
 namespace System
 {
@@ -47,12 +46,15 @@ namespace System
     {
         internal static TextWriter stdout;
         private static TextWriter stderr;
-        //private static TextReader stdin;
+        private static TextReader stdin;
+    	private static bool _hasReadCalls;
 
-        static Console()
+    	static Console()
         {
             stdout = ConsoleWriter.Instance;
             stderr = stdout;
+
+        	ResetColor();
         }
 
 #if !NET_2_0
@@ -77,17 +79,18 @@ namespace System
             }
         }
 
-#if NOT_PFX
-        public static TextReader In
+#if CONSOLE_READ
+		public static TextReader In
         {
-            get
-            {
-                return stdin;
-            }
+            get { return stdin ?? (stdin = new ConsoleReader()); }
+        }
+#else
+		public static TextReader In
+        {
+            get { return stdin ?? (stdin = new StringReader("")); }
         }
 #endif
 
-#if NOT_PFX
         [SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]
         public static void SetError(TextWriter newError)
         {
@@ -114,9 +117,7 @@ namespace System
 
             stdout = newOut;
         }
-#endif
 
-#if NOT_PFX
         public static void Write(bool value)
         {
             stdout.Write(value);
@@ -203,7 +204,6 @@ namespace System
         {
             stdout.Write(format, arg0, arg1, arg2);
         }
-#endif
 
         internal static void OpenSW()
         {
@@ -309,39 +309,90 @@ namespace System
             stdout.WriteLine(format, arg0, arg1, arg2);
         }
 
-#if NOT_PFX
-#if NET_2_0
-		public static int Read ()
+		public static int Read()
 		{
-			if ((stdin is CStreamReader) && ConsoleDriver.IsConsole) {
-				return ConsoleDriver.Read ();
-			} else {
-				return stdin.Read ();
-			}
-		}
-
-		public static string ReadLine ()
-		{
-			if ((stdin is CStreamReader) && ConsoleDriver.IsConsole) {
-				return ConsoleDriver.ReadLine ();
-			} else {
-				return stdin.ReadLine ();
-			}
-		}
-#else
-        public static int Read()
-        {
-            return stdin.Read();
+			_hasReadCalls = true;
+            return In.Read();
         }
 
         public static string ReadLine()
         {
-            return stdin.ReadLine();
+        	_hasReadCalls = true;
+            return In.ReadLine();
         }
-#endif
 
-#endif
+		//TODO:
+		public static Encoding InputEncoding { get; set; }
+		public static Encoding OutputEncoding { get; set; }
+		public static ConsoleColor BackgroundColor { get; set; }
+		public static ConsoleColor ForegroundColor { get; set; }
+		public static int BufferHeight { get; set; }
+		public static int BufferWidth { get; set; }
+		public static int WindowHeight { get; set; }
+		public static int WindowWidth { get; set; }
+		public static int LargestWindowWidth
+		{
+			get { return 800; }
+		}
+		public static int LargestWindowHeight
+		{
+			get { return 600; }
+		}
+		public static int WindowLeft { get; set; }
+		public static int WindowTop { get; set; }
+		public static int CursorLeft { get; set; }
+		public static int CursorTop { get; set; }
+		public static int CursorSize { get; set; }
+		public static bool CursorVisible { get; set; }
+		public static string Title { get; set; }
 
+    	public static bool KeyAvailable
+    	{
+			get { return true; }
+    	}
+
+    	public static bool NumberLock
+    	{
+			get { return false; }
+    	}
+    	public static bool CapsLock
+    	{
+			get { return false; }
+    	}
+
+		public static bool TreatControlCAsInput { get; set; }
+
+    	public static bool HasReadCalls
+    	{
+    		get { return _hasReadCalls; }
+    	}
+
+    	public static void Clear()
+		{
+#if CONSOLE_READ
+			var console = In as ConsoleReader;
+			if (console != null)
+			{
+				console.Clear();
+			}
+#endif
+		}
+
+		public static void ResetColor()
+		{
+			BackgroundColor = ConsoleColor.Black;
+			ForegroundColor = ConsoleColor.White;
+		}
+
+    	public static event ConsoleCancelEventHandler CancelKeyPress;
+
+		internal static void FireCancelKeyPress()
+		{
+			if (CancelKeyPress != null)
+			{
+				CancelKeyPress(In, new ConsoleCancelEventArgs(ConsoleSpecialKey.ControlBreak));
+			}
+		}
     }
 }
 

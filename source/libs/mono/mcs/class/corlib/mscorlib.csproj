@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>c:\pfx\framework\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_1_1;INSIDE_CORLIB;PFX;PTR32;AVM;NET_2_0;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_1_1;INSIDE_CORLIB;PFX;PTR32;AVM;NET_2_0;CONSOLE_READ</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -485,6 +485,7 @@
     <Compile Include="PageFX\Core\FP10.2\__AS3__.vec\Vector_object.cs" />
     <Compile Include="PageFX\Core\FP10.2\__AS3__.vec\Vector_uint.cs" />
     <Compile Include="PageFX\Core\Vector.cs" />
+    <Compile Include="PageFX\System\ConsoleReader.cs" />
     <Compile Include="PageFX\System\ConsoleWriter.cs" />
     <Compile Include="PageFX\System\PfxIO.cs" />
     <Compile Include="System.Collections\ArrayList.cs">
@@ -532,6 +533,9 @@
     <Compile Include="System.Diagnostics\DebuggerTypeProxyAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="System.Diagnostics\DebuggerVisualizerAttribute.cs" />
+    <Compile Include="System.Diagnostics\StackFrame.cs" />
+    <Compile Include="System.Diagnostics\StackTrace.cs" />
     <Compile Include="System.Globalization\CultureInfo.auto.cs" />
     <Compile Include="System.Globalization\DateTimeFormatInfo.auto.cs" />
     <Compile Include="System.Globalization\DaylightTime.cs">
@@ -542,10 +546,12 @@
     <Compile Include="System.Globalization\TextInfo.auto.cs" />
     <Compile Include="System.IO\CheckPermission.cs" />
     <Compile Include="System.IO\DirectoryNotFoundException.cs" />
+    <Compile Include="System.IO\FileLoadException.cs" />
     <Compile Include="System.IO\FileNotFoundException.cs" />
     <Compile Include="System.Reflection\Assembly.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="System.Reflection\AssemblyName.cs" />
     <Compile Include="System.Reflection\AssemblyNameFlags.cs" />
     <Compile Include="System.Reflection\Binder.cs" />
     <Compile Include="System.Reflection\CustomAttributeProvider.cs" />
@@ -554,6 +560,11 @@
     <Compile Include="System.Resources\NeutralResourcesLanguageAttribute.cs" />
     <Compile Include="System.Resources\UltimateResourceFallbackLocation.cs" />
     <Compile Include="System.Runtime.CompilerServices\IsConst.cs" />
+    <Compile Include="System.Runtime.ConstrainedExecution\CER.cs" />
+    <Compile Include="System.Runtime.ConstrainedExecution\Consistency.cs" />
+    <Compile Include="System.Runtime.ConstrainedExecution\CriticialFinalizerObject.cs" />
+    <Compile Include="System.Runtime.ConstrainedExecution\PrePrepareMethodAttribute.cs" />
+    <Compile Include="System.Runtime.ConstrainedExecution\ReliabilityContractAttribute.cs" />
     <Compile Include="System.Runtime.InteropServices\BStrWrapper.cs" />
     <Compile Include="System.Runtime.InteropServices\ClassInterfaceAttribute.cs" />
     <Compile Include="System.Runtime.InteropServices\ClassInterfaceType.cs" />
@@ -565,6 +576,10 @@
     <Compile Include="System.Runtime.InteropServices\MarshalDirectiveException.cs" />
     <Compile Include="System.Runtime.InteropServices\SEHException.cs" />
     <Compile Include="System.Runtime.Serialization\ISerializable.cs" />
+    <Compile Include="System.Runtime.Serialization\OnDeserializedAttribute.cs" />
+    <Compile Include="System.Runtime.Serialization\OnDeserializingAttribute.cs" />
+    <Compile Include="System.Runtime.Serialization\OnSerializedAttribute.cs" />
+    <Compile Include="System.Runtime.Serialization\OnSerializingAttribute.cs" />
     <Compile Include="System.Runtime.Serialization\SerializationException.cs" />
     <Compile Include="System.Runtime.Serialization\SerializationInfo.cs" />
     <Compile Include="System.Runtime.Serialization\StreamingContext.cs" />
@@ -579,6 +594,8 @@
     <Compile Include="System.Security.Permissions\SecurityPermissionAttribute.cs" />
     <Compile Include="System.Security.Permissions\SecurityPermissionFlag.cs" />
     <Compile Include="System.Security\AllowPartiallyTrustedCallersAttribute.cs" />
+    <Compile Include="System.Security\SecurityException.cs" />
+    <Compile Include="System.Security\SecurityZone.cs" />
     <Compile Include="System.Text\ASCIIEncoding.cs" />
     <Compile Include="System.Text\UTF7Encoding.cs" />
     <Compile Include="System.Text\UTF8Encoding.cs" />
@@ -990,9 +1007,12 @@
     <Compile Include="System.Threading\Interlocked.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="System.Threading\LockCookie.cs" />
+    <Compile Include="System.Threading\LockQueue.cs" />
     <Compile Include="System.Threading\Monitor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="System.Threading\ReaderWriterLock.cs" />
     <Compile Include="System.Threading\SynchronizationLockException.cs" />
     <Compile Include="System.Threading\Thread.cs" />
     <Compile Include="System.Threading\ThreadAbortException.cs" />
