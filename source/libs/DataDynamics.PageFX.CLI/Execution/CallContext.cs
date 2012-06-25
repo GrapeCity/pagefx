@@ -5,7 +5,10 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.Execution
 {
-	internal sealed class MethodContext
+	/// <summary>
+	/// Defines call context.
+	/// </summary>
+	internal sealed class CallContext
 	{
 		private readonly VirtualMachine _engine;
 
@@ -18,7 +21,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		public Exception Exception;
 
-		public MethodContext(VirtualMachine engine, IMethod method, IReadOnlyList<ILocalVariable> locals, object[] args)
+		public CallContext(VirtualMachine engine, IMethod method, IReadOnlyList<ILocalVariable> locals, object[] args)
 		{
 			_engine = engine;
 
@@ -170,10 +173,10 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private sealed class LocalPtr : IPointer
 		{
-			private readonly MethodContext _context;
+			private readonly CallContext _context;
 			private readonly int _index;
 
-			public LocalPtr(MethodContext context, int index)
+			public LocalPtr(CallContext context, int index)
 			{
 				_context = context;
 				_index = index;
@@ -188,10 +191,10 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private sealed class ArgumentPtr : IPointer
 		{
-			private readonly MethodContext _context;
+			private readonly CallContext _context;
 			private readonly int _index;
 
-			public ArgumentPtr(MethodContext context, int index)
+			public ArgumentPtr(CallContext context, int index)
 			{
 				_context = context;
 				_index = index;

@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 		private static readonly Dictionary<string, NativeInvoker> SharedNativeInvokers = new Dictionary<string, NativeInvoker>();
 		private readonly Dictionary<string, NativeInvoker> _nativeInvokers = new Dictionary<string, NativeInvoker>();
 
-		private readonly Stack<MethodContext> _callStack = new Stack<MethodContext>();
+		private readonly Stack<CallContext> _callStack = new Stack<CallContext>();
 
 		static VirtualMachine()
 		{
@@ -186,7 +186,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private MethodContext CreateContext(IMethod method, object[] args)
+		private CallContext CreateContext(IMethod method, object[] args)
 		{
 			var body = method.Body as IClrMethodBody;
 			if (body == null)
@@ -194,7 +194,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 				throw new NotSupportedException("Not supported method format.");
 			}
 
-			var context = new MethodContext(this, method, GetLocals(body), args);
+			var context = new CallContext(this, method, GetLocals(body), args);
 
 			//TODO: resolve generics
 
@@ -208,7 +208,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return vars;
 		}
 
-		private object Call(MethodContext context)
+		private object Call(CallContext context)
 		{
 			_callStack.Push(context);
 
@@ -230,7 +230,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return Call(context);
 		}
 
-		private void CallPush(MethodContext context, IMethod method, object[] args)
+		private void CallPush(CallContext context, IMethod method, object[] args)
 		{
 			var result = Call(method, args);
 
@@ -240,7 +240,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void EvalWithSeh(MethodContext context)
+		private void EvalWithSeh(CallContext context)
 		{
 			try
 			{
@@ -275,7 +275,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private static TryCatchBlock FindTryCatchBlock(MethodContext context)
+		private static TryCatchBlock FindTryCatchBlock(CallContext context)
 		{
 			if (!context.Body.HasProtectedBlocks) return null;
 
@@ -327,7 +327,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return null;
 		}
 
-		private void Eval(MethodContext context)
+		private void Eval(CallContext context)
 		{
 			while (context.IP < context.Code.Count)
 			{
@@ -335,7 +335,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void EvalInstruction(MethodContext context)
+		private void EvalInstruction(CallContext context)
 		{
 			var i = context.Code[context.IP];
 
@@ -993,7 +993,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			context.IP++;
 		}
 
-		private void Op_Cpobj(MethodContext context, IType type)
+		private void Op_Cpobj(CallContext context, IType type)
 		{
 			var dest = context.Pop() as IPointer;
 			var src = context.Pop() as IPointer;
@@ -1001,7 +1001,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			dest.Value = value;
 		}
 
-		private void Op_Ldfld(MethodContext context, IField field)
+		private void Op_Ldfld(CallContext context, IField field)
 		{
 			if (field.IsStatic)
 			{
@@ -1019,7 +1019,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return GetClass(member.DeclaringType);
 		}
 
-		private void Op_Ldflda(MethodContext context, IField field)
+		private void Op_Ldflda(CallContext context, IField field)
 		{
 			if (field.IsStatic)
 			{
@@ -1033,33 +1033,33 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void Op_Stfld(MethodContext context, IField field)
+		private void Op_Stfld(CallContext context, IField field)
 		{
 			var value = context.Pop(true);
 			var instance = context.PopInstance();
 			instance.Fields[field.Slot].Value = value;
 		}
 
-		private void Op_Stsfld(MethodContext context, IField field)
+		private void Op_Stsfld(CallContext context, IField field)
 		{
 			var value = context.Pop(true);
 			GetClass(field).Fields[field.Slot].Value = value;
 		}
 
-		private void Op_Ldind(MethodContext context)
+		private void Op_Ldind(CallContext context)
 		{
 			var ptr = context.Pop(false) as IPointer;
 			context.Push(ptr.Value);
 		}
 
-		private void Op_Stind(MethodContext context)
+		private void Op_Stind(CallContext context)
 		{
 			var value = context.Pop(true);
 			var ptr = context.Pop(false) as IPointer;
 			ptr.Value = value;
 		}
 
-		private void Op_Ldftn(MethodContext context, IMethod method)
+		private void Op_Ldftn(CallContext context, IMethod method)
 		{
 			object instance = null;
 			if (!method.IsStatic)
@@ -1070,7 +1070,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			context.Push(new MethodPtr(instance, method));
 		}
 
-		private void Op_Ldvirtftn(MethodContext context, IMethod method)
+		private void Op_Ldvirtftn(CallContext context, IMethod method)
 		{
 			if (method.IsStatic)
 			{
@@ -1083,7 +1083,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			context.Push(new MethodPtr(obj, method));
 		}
 
-		private void Op_Branch(MethodContext context, BranchOperator op, bool unsigned, int target)
+		private void Op_Branch(CallContext context, BranchOperator op, bool unsigned, int target)
 		{
 			if (IsBranch(context, op, unsigned))
 			{
@@ -1095,7 +1095,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private static bool IsBranch(MethodContext context, BranchOperator op, bool unsigned)
+		private static bool IsBranch(CallContext context, BranchOperator op, bool unsigned)
 		{
 			object x, y;
 			switch (op)
@@ -1167,7 +1167,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return c > 0 ? 1 : c < 0 ? -1 : 0;
 		}
 
-		private void Op_Switch(MethodContext context, int[] targets)
+		private void Op_Switch(CallContext context, int[] targets)
 		{
 			var value = context.Pop();
 			var index = Convert.ToInt32(value);
@@ -1182,14 +1182,14 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private object[] PopArgs(MethodContext context, IMethod method)
+		private object[] PopArgs(CallContext context, IMethod method)
 		{
 			object[] args = new object[method.Parameters.Count];
 			PopArgs(context, method, args);
 			return args;
 		}
 
-		private void PopArgs(MethodContext context, IMethod method, object[] args)
+		private void PopArgs(CallContext context, IMethod method, object[] args)
 		{
 			for (int i = args.Length - 1, j = method.Parameters.Count - 1; j >= 0; i--, j--)
 			{
@@ -1199,13 +1199,13 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private object PopInstance(MethodContext context, IMethod method)
+		private object PopInstance(CallContext context, IMethod method)
 		{
 			var instance = context.PopObject();
 			return ConvertTo(instance, method.DeclaringType);
 		}
 
-		private void Op_Call(MethodContext context, IMethod method, bool virtcall)
+		private void Op_Call(CallContext context, IMethod method, bool virtcall)
 		{
 			if (method.IsConstructor && method.DeclaringType == SystemTypes.Object)
 			{
@@ -1277,14 +1277,14 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private static void MemberwiseCloneImpl(MethodContext context)
+		private static void MemberwiseCloneImpl(CallContext context)
 		{
 			var obj = context.PopInstance();
 			obj = obj.Copy();
 			context.Push(obj);
 		}
 
-		private static void GetTypeImpl(MethodContext context)
+		private static void GetTypeImpl(CallContext context)
 		{
 			var obj = context.PopObject();
 			
@@ -1299,7 +1299,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void TypeOf(MethodContext context)
+		private void TypeOf(CallContext context)
 		{
 			var type = context.Pop(false) as IType;
 			context.Push(TypeOf(type));
@@ -1317,7 +1317,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return klass.SystemType;
 		}
 
-		private void InitializeArray(MethodContext context)
+		private void InitializeArray(CallContext context)
 		{
 			var field = context.Pop(false) as IField;
 			var arr = context.PopArray();
@@ -1332,7 +1332,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void CallDelegate(MethodContext context, IMethod method)
+		private void CallDelegate(CallContext context, IMethod method)
 		{
 			if (method.Name != "Invoke")
 				throw new NotImplementedException("BeginInvoke and EndInvoke are not implemented.");
@@ -1348,7 +1348,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			CallImpl(context, method, instance, args, false);
 		}
 
-		private void CallImpl(MethodContext context, IMethod method, object instance, object[] args, bool virtcall)
+		private void CallImpl(CallContext context, IMethod method, object instance, object[] args, bool virtcall)
 		{
 			if (method.IsStatic)
 			{
@@ -1368,7 +1368,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void CallStatic(MethodContext context, IMethod method)
+		private void CallStatic(CallContext context, IMethod method)
 		{
 			GetClass(method);
 
@@ -1377,7 +1377,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			CallPush(context, method, args);
 		}
 
-		private void CallInstance(MethodContext context, IMethod method, bool virtcall)
+		private void CallInstance(CallContext context, IMethod method, bool virtcall)
 		{
 			var args = new object[method.Parameters.Count + 1];
 			PopArgs(context, method, args);
@@ -1393,7 +1393,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void CallInstance(MethodContext context, IMethod method, object[] args, bool virtcall)
+		private void CallInstance(CallContext context, IMethod method, object[] args, bool virtcall)
 		{
 			var obj = args[0];
 
@@ -1491,7 +1491,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return null;
 		}
 
-		private void CallIndirect(MethodContext context)
+		private void CallIndirect(CallContext context)
 		{
 			var f = context.Pop(false) as MethodPtr;
 
@@ -1513,7 +1513,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			CallPush(context, f.Method, args);
 		}
 
-		private void NewObject(MethodContext context, IMethod ctor)
+		private void NewObject(CallContext context, IMethod ctor)
 		{
 			var nativeClass = GetInvoker(ctor);
 			if (nativeClass != null)
@@ -1586,14 +1586,14 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return instance;
 		}
 
-		private void Op_Initobj(MethodContext context, IType type)
+		private void Op_Initobj(CallContext context, IType type)
 		{
 			var addr = context.Pop() as IPointer;
 			
 			addr.Value = InitObject(type);
 		}
 
-		private void Op(MethodContext context, BinaryOperator op, bool unsigned, bool checkOverflow)
+		private void Op(CallContext context, BinaryOperator op, bool unsigned, bool checkOverflow)
 		{
 			if (checkOverflow)
 			{
@@ -1670,7 +1670,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void Op(MethodContext context, UnaryOperator op, bool checkOverflow)
+		private void Op(CallContext context, UnaryOperator op, bool checkOverflow)
 		{
 			var x = context.Pop();
 			switch (op)
@@ -1689,7 +1689,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void ConvertTo(MethodContext context, IType targetType, bool checkOverflow, bool unsigned)
+		private void ConvertTo(CallContext context, IType targetType, bool checkOverflow, bool unsigned)
 		{
 			var value = context.Pop();
 
@@ -1741,7 +1741,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void Op_Castclass(MethodContext context, IType type)
+		private void Op_Castclass(CallContext context, IType type)
 		{
 			//TODO: array, string interfaces
 
@@ -1814,7 +1814,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void Op_Isinst(MethodContext context, IType type)
+		private void Op_Isinst(CallContext context, IType type)
 		{
 			var value = context.PopObject();
 			
@@ -1931,17 +1931,17 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void Op_Box(MethodContext context, IType type)
+		private void Op_Box(CallContext context, IType type)
 		{
 			ConvertTo(context, type, false, false);
 		}
 
-		private void Op_Unbox(MethodContext context, IType type)
+		private void Op_Unbox(CallContext context, IType type)
 		{
 			ConvertTo(context, type, false, false);
 		}
 
-		private void NewArray(MethodContext context, IType type)
+		private void NewArray(CallContext context, IType type)
 		{
 			var len = Convert.ToInt32(context.Pop(false));
 			Array array = NewArraySz(type, len);
@@ -2040,7 +2040,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 				throw new IndexOutOfRangeException();
 		}
 
-		private void Op_Ldelema(MethodContext context)
+		private void Op_Ldelema(CallContext context)
 		{
 			var index = Convert.ToInt64(context.Pop(false));
 			var array = context.PopArray();
@@ -2048,7 +2048,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			context.Push(new ArrayElementPtr(array, index));
 		}
 
-		private void Op_Ldelem(MethodContext context)
+		private void Op_Ldelem(CallContext context)
 		{
 			var index = Convert.ToInt64(context.Pop(false));
 			var array = context.PopArray();
@@ -2056,7 +2056,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			context.Push(array.GetValue(index));
 		}
 
-		private void Op_Stelem(MethodContext context)
+		private void Op_Stelem(CallContext context)
 		{
 			var value = context.Pop(true);
 			var index = Convert.ToInt64(context.Pop(false));
@@ -2065,16 +2065,16 @@ namespace DataDynamics.PageFX.CLI.Execution
 			array.SetValue(value, index);
 		}
 
-		private void Op_Endfinally(MethodContext context)
+		private void Op_Endfinally(CallContext context)
 		{
 			//TODO: auto rethrow
 		}
 
-		private void Op_Endfilter(MethodContext context)
+		private void Op_Endfilter(CallContext context)
 		{
 		}
 
-		private void Op_Sizeof(MethodContext context)
+		private void Op_Sizeof(CallContext context)
 		{
 			throw new NotImplementedException();
 		}
