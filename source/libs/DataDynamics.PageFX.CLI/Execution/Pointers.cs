@@ -39,6 +39,24 @@ namespace DataDynamics.PageFX.CLI.Execution
 		}
 	}
 
+	internal sealed class MdArrayElementPtr : IPointer
+	{
+		private readonly Array _array;
+		private readonly int[] _index;
+
+		public MdArrayElementPtr(Array array, int[] index)
+		{
+			_array = array;
+			_index = index;
+		}
+
+		public object Value
+		{
+			get { return _array.GetValue(_index); }
+			set { _array.SetValue(value, _index); }
+		}
+	}
+
 	internal sealed class MethodPtr
 	{
 		private readonly object _instance;

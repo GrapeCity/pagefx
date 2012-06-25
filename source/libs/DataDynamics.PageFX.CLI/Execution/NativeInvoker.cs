@@ -8,13 +8,13 @@ namespace DataDynamics.PageFX.CLI.Execution
 {
 	using Methods = IReadOnlyList<MethodBase>;
 
-	internal class NativeClass
+	internal class NativeInvoker
 	{
 		private Dictionary<string, Dictionary<int, Methods>> _methods;
 
 		public Type Type { get; private set; }
 
-		public NativeClass(Type type)
+		public NativeInvoker(Type type)
 		{
 			if (type == null) throw new ArgumentNullException("type");
 

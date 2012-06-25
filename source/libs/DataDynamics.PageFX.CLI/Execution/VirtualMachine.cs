@@ -21,74 +21,74 @@ namespace DataDynamics.PageFX.CLI.Execution
 	/// </summary>
 	public sealed class VirtualMachine
 	{
-		private static readonly Dictionary<string, NativeClass> SharedNativeClasses = new Dictionary<string, NativeClass>();
-		private readonly Dictionary<string, NativeClass> _nativeClasses = new Dictionary<string, NativeClass>();
+		private static readonly Dictionary<string, NativeInvoker> SharedNativeInvokers = new Dictionary<string, NativeInvoker>();
+		private readonly Dictionary<string, NativeInvoker> _nativeInvokers = new Dictionary<string, NativeInvoker>();
 
 		private readonly Stack<MethodContext> _callStack = new Stack<MethodContext>();
 
 		static VirtualMachine()
 		{
-			RegiterSharedNative(typeof(Boolean));
-			RegiterSharedNative(typeof(SByte));
-			RegiterSharedNative(typeof(Byte));
-			RegiterSharedNative(typeof(Int16));
-			RegiterSharedNative(typeof(UInt16));
-			RegiterSharedNative(typeof(Int32));
-			RegiterSharedNative(typeof(UInt32));
-			RegiterSharedNative(typeof(Int64));
-			RegiterSharedNative(typeof(UInt64));
-			RegiterSharedNative(typeof(Single));
-			RegiterSharedNative(typeof(Double));
-			RegiterSharedNative(typeof(Decimal));
-			RegiterSharedNative(typeof(DateTime));
-			RegiterSharedNative(typeof(Object));
-			RegiterSharedNative(typeof(String));
-			RegiterSharedNative(typeof(Char));
-			RegiterSharedNative(typeof(Array));
-			RegiterSharedNative(typeof(Type));
-			RegiterSharedNative(typeof(Exception));
-			RegiterSharedNative(typeof(Math));
-			RegiterSharedNative(typeof(Random));
-			RegiterSharedNative(typeof(Console));
-			RegiterSharedNative(typeof(File));
-			RegiterSharedNative(typeof(Directory));
+			RegiterSni(typeof(Boolean));
+			RegiterSni(typeof(SByte));
+			RegiterSni(typeof(Byte));
+			RegiterSni(typeof(Int16));
+			RegiterSni(typeof(UInt16));
+			RegiterSni(typeof(Int32));
+			RegiterSni(typeof(UInt32));
+			RegiterSni(typeof(Int64));
+			RegiterSni(typeof(UInt64));
+			RegiterSni(typeof(Single));
+			RegiterSni(typeof(Double));
+			RegiterSni(typeof(Decimal));
+			RegiterSni(typeof(DateTime));
+			RegiterSni(typeof(Object));
+			RegiterSni(typeof(String));
+			RegiterSni(typeof(Char));
+			RegiterSni(typeof(Array));
+			RegiterSni(typeof(Type));
+			RegiterSni(typeof(Exception));
+			RegiterSni(typeof(Math));
+			RegiterSni(typeof(Random));
+			RegiterSni(typeof(Console));
+			RegiterSni(typeof(File));
+			RegiterSni(typeof(Directory));
 			//TODO: add all native classes
 		}
 
-		private static void RegiterSharedNative(Type type)
+		private static void RegiterSni(Type type)
 		{
-			SharedNativeClasses.Add(type.FullName, new NativeClass(type));
+			SharedNativeInvokers.Add(type.FullName, new NativeInvoker(type));
 		}
 
-		private void RegiterNative(Type type, NativeClass native)
+		private void RegiterNi(Type type, NativeInvoker native)
 		{
-			_nativeClasses.Add(type.FullName, native);
+			_nativeInvokers.Add(type.FullName, native);
 		}
 
-		private NativeClass GetNative(IMethod method)
+		private NativeInvoker GetInvoker(IMethod method)
 		{
-			return GetNative(method.DeclaringType);
+			return GetInvoker(method.DeclaringType);
 		}
 
-		private NativeClass GetNative(Type type)
+		private NativeInvoker GetInvoker(Type type)
 		{
-			return GetNative(type.FullName);
+			return GetInvoker(type.FullName);
 		}
 
-		private NativeClass GetNative(IType type)
+		private NativeInvoker GetInvoker(IType type)
 		{
-			return GetNative(type.FullName);
+			return GetInvoker(type.FullName);
 		}
 
-		private NativeClass GetNative(string fullName)
+		private NativeInvoker GetInvoker(string fullName)
 		{
-			NativeClass value;
-			if (_nativeClasses.TryGetValue(fullName, out value))
+			NativeInvoker value;
+			if (_nativeInvokers.TryGetValue(fullName, out value))
 			{
 				return value;
 			}
 
-			if (SharedNativeClasses.TryGetValue(fullName, out value))
+			if (SharedNativeInvokers.TryGetValue(fullName, out value))
 			{
 				return value;
 			}
@@ -111,7 +111,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			if (console != null)
 			{
-				RegiterNative(typeof(Console), new ConsoleEmulator(console));
+				RegiterNi(typeof(Console), new ConsoleEmulator(console));
 			}
 		}
 
@@ -1246,7 +1246,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 				return;
 			}
 
-			NativeClass native = GetNative(method);
+			NativeInvoker native = GetInvoker(method);
 			if (native != null)
 			{
 				object[] args = PopArgs(context, method);
@@ -1302,16 +1302,19 @@ namespace DataDynamics.PageFX.CLI.Execution
 		private void TypeOf(MethodContext context)
 		{
 			var type = context.Pop(false) as IType;
+			context.Push(TypeOf(type));
+		}
 
-			var native = GetNative(type);
+		private Type TypeOf(IType type)
+		{
+			var native = GetInvoker(type);
 			if (native != null)
 			{
-				context.Push(native.Type);
-				return;
+				return native.Type;
 			}
 			
 			var klass = GetClass(type);
-			context.Push(klass.SystemType);
+			return klass.SystemType;
 		}
 
 		private void InitializeArray(MethodContext context)
@@ -1394,17 +1397,52 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			var obj = args[0];
 
-			NativeClass native = GetNative(obj.GetType());
-			if (native != null)
+			NativeInvoker invoker = GetInvoker(obj.GetType());
+			if (invoker != null)
 			{
 				object[] copy = new object[args.Length - 1];
-				Array.Copy(args, copy, args.Length - 1);
+				Array.Copy(args, 1, copy, 0, args.Length - 1);
 
-				var result = native.Invoke(method.Name, obj, copy);
+				var result = invoker.Invoke(method.Name, obj, copy);
 
 				if (!method.IsVoid())
 				{
 					context.Push(result);
+				}
+				return;
+			}
+
+			var array = obj as Array;
+			if (array != null)
+			{
+				object[] copy;
+				int[] index;
+				switch (method.Name)
+				{
+					case "Get":
+						copy = new object[args.Length - 1];
+						Array.Copy(args, 1, copy, 0, args.Length - 1);
+						index = Array.ConvertAll<object, int>(copy, Convert.ToInt32);
+						context.Push(array.GetValue(index));
+						break;
+
+					case "Address":
+						copy = new object[args.Length - 1];
+						Array.Copy(args, 1, copy, 0, args.Length - 1);
+						index = Array.ConvertAll<object, int>(copy, Convert.ToInt32);
+						context.Push(new MdArrayElementPtr(array, index));
+						break;
+
+					case "Set":
+						object value = args[args.Length - 1];
+						copy = new object[args.Length - 2];
+						Array.Copy(args, 1, copy, 0, args.Length - 2);
+						index = Array.ConvertAll<object, int>(copy, Convert.ToInt32);
+						array.SetValue(value, index);
+						break;
+
+					default:
+						throw new NotImplementedException();
 				}
 				return;
 			}
@@ -1477,7 +1515,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private void NewObject(MethodContext context, IMethod ctor)
 		{
-			var nativeClass = GetNative(ctor);
+			var nativeClass = GetInvoker(ctor);
 			if (nativeClass != null)
 			{
 				var args = PopArgs(context, ctor);
@@ -1486,36 +1524,52 @@ namespace DataDynamics.PageFX.CLI.Execution
 				return;
 			}
 
-			var klass = GetClass(ctor);
-			var instance = new Instance(this, klass);
-
-			if (ctor.DeclaringType.TypeKind == TypeKind.Delegate)
+			var declType = ctor.DeclaringType;
+			if (declType.TypeKind == TypeKind.Delegate)
 			{
 				var f = context.Pop() as MethodPtr;
 				if (f == null)
 					throw new InvalidOperationException("Current instruction requires method pointer.");
 
+				var klass = GetClass(ctor);
+				var instance = new Instance(this, klass);
+
 				instance.Fields[0].Value = f.Instance;
 				instance.Fields[1].Value = f.Method;
+
+				context.Push(instance);
+			}
+			else if (declType.TypeKind == TypeKind.Array)
+			{
+				var args = PopArgs(context, ctor);
+				int[] lengths = Array.ConvertAll<object, int>(args, Convert.ToInt32);
+
+				var arrayType = (IArrayType)declType;
+				var array = NewArray(arrayType.ElementType, lengths);
+
+				context.Push(array);
 			}
 			else
 			{
+				var klass = GetClass(ctor);
+				var instance = new Instance(this, klass);
+
 				var args = new object[1 + ctor.Parameters.Count];
 				PopArgs(context, ctor, args);
 				args[0] = instance;
 
 				Call(ctor, args);
-			}
 
-			context.Push(instance);
+				context.Push(instance);
+			}
 		}
 
 		internal object InitObject(IType type)
 		{
-			var nativeClass = GetNative(type);
-			if (nativeClass != null)
+			var invoker = GetInvoker(type);
+			if (invoker != null)
 			{
-				var obj = nativeClass.Invoke(".ctor", null, new object[0]);
+				var obj = invoker.Invoke(".ctor", null, new object[0]);
 				return obj;
 			}
 
@@ -1890,91 +1944,125 @@ namespace DataDynamics.PageFX.CLI.Execution
 		private void NewArray(MethodContext context, IType type)
 		{
 			var len = Convert.ToInt32(context.Pop(false));
+			Array array = NewArraySz(type, len);
+			context.Push(array);
+		}
 
-			Array array;
-			switch (SystemTypes.GetTypeCode(type))
+		private Array NewArray(IType elemType, int[] lengths)
+		{
+			switch (lengths.Length)
+			{
+				case 1:
+					return NewArraySz(elemType, lengths[0]);
+				default:
+					var type = TypeOf(elemType);
+					if (type is RuntimeType)
+					{
+						type = typeof(object);
+						var array = Array.CreateInstance(type, lengths);
+						GetClass(elemType);
+						if (elemType.TypeKind == TypeKind.Struct)
+						{
+							//TODO: init value type MD array
+
+							int[] index = new int[array.Rank];
+							for (int dim = 0; dim < array.Rank; dim++)
+							{
+								for (int i = 0; i < array.GetLength(dim); i++)
+								{
+									index[dim] = i;
+								}
+							}
+
+							for (int i = 0; i < array.Length; i++)
+							{
+								array.SetValue(InitObject(elemType), i);
+							}
+						}
+						return array;
+					}
+					return Array.CreateInstance(type, lengths);
+			}
+		}
+
+		private Array NewArraySz(IType elemType, int len)
+		{
+			switch (SystemTypes.GetTypeCode(elemType))
 			{
 				case TypeCode.Boolean:
-					array = new Boolean[len];
-					break;
+					return new Boolean[len];
 				case TypeCode.Char:
-					array = new Char[len];
-					break;
+					return new Char[len];
 				case TypeCode.SByte:
-					array = new SByte[len];
-					break;
+					return new SByte[len];
 				case TypeCode.Byte:
-					array = new Byte[len];
-					break;
+					return new Byte[len];
 				case TypeCode.Int16:
-					array = new Int16[len];
-					break;
+					return new Int16[len];
 				case TypeCode.UInt16:
-					array = new UInt16[len];
-					break;
+					return new UInt16[len];
 				case TypeCode.Int32:
-					array = new Int32[len];
-					break;
+					return new Int32[len];
 				case TypeCode.UInt32:
-					array = new UInt32[len];
-					break;
+					return new UInt32[len];
 				case TypeCode.Int64:
-					array = new Int64[len];
-					break;
+					return new Int64[len];
 				case TypeCode.UInt64:
-					array = new UInt64[len];
-					break;
+					return new UInt64[len];
 				case TypeCode.Single:
-					array = new Single[len];
-					break;
+					return new Single[len];
 				case TypeCode.Double:
-					array = new Double[len];
-					break;
+					return new Double[len];
 				case TypeCode.Decimal:
-					array = new Decimal[len];
-					break;
+					return new Decimal[len];
 				case TypeCode.DateTime:
-					array = new DateTime[len];
-					break;
+					return new DateTime[len];
 				case TypeCode.String:
-					array = new String[len];
-					break;
+					return new String[len];
 				default:
-					GetClass(type);
-					array = new object[len];
-					if (type.TypeKind == TypeKind.Struct)
+					//TODO: other native types like Guid, TimeSpan, etc.
+					GetClass(elemType);
+					var array = new object[len];
+					if (elemType.TypeKind == TypeKind.Struct)
 					{
 						for (int i = 0; i < len; i++)
 						{
-							array.SetValue(InitObject(type), i);
+							array.SetValue(InitObject(elemType), i);
 						}
 					}
-					break;
+					return array;
 			}
+		}
 
-			context.Push(array);
+		private static void CheckBounds(Array array, long index)
+		{
+			if (index < 0 || index >= array.LongLength)
+				throw new IndexOutOfRangeException();
 		}
 
 		private void Op_Ldelema(MethodContext context)
 		{
 			var index = Convert.ToInt64(context.Pop(false));
 			var array = context.PopArray();
+			CheckBounds(array, index);
 			context.Push(new ArrayElementPtr(array, index));
 		}
 
 		private void Op_Ldelem(MethodContext context)
 		{
 			var index = Convert.ToInt64(context.Pop(false));
-			var arr = context.PopArray();
-			context.Push(arr.GetValue(index));
+			var array = context.PopArray();
+			CheckBounds(array, index);
+			context.Push(array.GetValue(index));
 		}
 
 		private void Op_Stelem(MethodContext context)
 		{
 			var value = context.Pop(true);
 			var index = Convert.ToInt64(context.Pop(false));
-			var arr = context.PopArray();
-			arr.SetValue(value, index);
+			var array = context.PopArray();
+			CheckBounds(array, index);
+			array.SetValue(value, index);
 		}
 
 		private void Op_Endfinally(MethodContext context)

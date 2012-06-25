@@ -3,7 +3,7 @@ using System.IO;
 
 namespace DataDynamics.PageFX.CLI.Execution
 {
-	internal sealed class ConsoleEmulator : NativeClass
+	internal sealed class ConsoleEmulator : NativeInvoker
 	{
 		private readonly TextWriter _output;
 

@@ -55,7 +55,7 @@
     <Compile Include="Execution\Instance.cs" />
     <Compile Include="Execution\LocalVariable.cs" />
     <Compile Include="Execution\MethodContext.cs" />
-    <Compile Include="Execution\NativeClass.cs" />
+    <Compile Include="Execution\NativeInvoker.cs" />
     <Compile Include="Execution\ObjectExtensions.cs" />
     <Compile Include="Execution\Pointers.cs" />
     <Compile Include="Execution\InternalTypeExtensions.cs" />
