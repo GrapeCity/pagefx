@@ -43,6 +43,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			RegiterSharedNative(typeof(DateTime));
 			RegiterSharedNative(typeof(Object));
 			RegiterSharedNative(typeof(String));
+			RegiterSharedNative(typeof(Char));
 			RegiterSharedNative(typeof(Array));
 			RegiterSharedNative(typeof(Type));
 			RegiterSharedNative(typeof(Exception));
@@ -69,19 +70,27 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return GetNative(method.DeclaringType);
 		}
 
+		private NativeClass GetNative(Type type)
+		{
+			return GetNative(type.FullName);
+		}
+
 		private NativeClass GetNative(IType type)
 		{
-			NativeClass nativeClass;
+			return GetNative(type.FullName);
+		}
 
-			var key = type.FullName;
-			if (_nativeClasses.TryGetValue(key, out nativeClass))
+		private NativeClass GetNative(string fullName)
+		{
+			NativeClass value;
+			if (_nativeClasses.TryGetValue(fullName, out value))
 			{
-				return nativeClass;
+				return value;
 			}
 
-			if (SharedNativeClasses.TryGetValue(key, out nativeClass))
+			if (SharedNativeClasses.TryGetValue(fullName, out value))
 			{
-				return nativeClass;
+				return value;
 			}
 
 			return null;
@@ -253,6 +262,8 @@ namespace DataDynamics.PageFX.CLI.Execution
 						context.Push(e);
 
 						context.Handler = handler;
+						context.IP = handler.EntryIndex;
+
 						EvalWithSeh(context);
 					}
 				}
@@ -272,7 +283,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 			foreach (var block in context.Body.ProtectedBlocks)
 			{
-				if (block.EntryIndex >= context.IP && context.IP <= block.ExitIndex)
+				if (block.EntryIndex <= context.IP && context.IP <= block.ExitIndex)
 				{
 					if (tryCatch == null)
 					{
@@ -303,7 +314,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 						{
 							return handler;
 						}
-						if (handler.ExceptionType.FullName == e.GetType().FullName)
+						if (e.GetType().IsInstanceOf(handler.ExceptionType))
 						{
 							return handler;
 						}
@@ -862,7 +873,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 					NewArray(context, i.Type);
 					break;
 				case InstructionCode.Ldlen:
-					Op_Ldlen(context);
+					context.Push(context.PopArray().Length);
 					break;
 
 				case InstructionCode.Ldelema:
@@ -899,16 +910,16 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 				#region exception handling
 				case InstructionCode.Throw:
-					Op_Throw(context);
+					throw (context.PopObject() as Exception);
 					break;
 
 				case InstructionCode.Rethrow:
-					Op_Rethrow(context);
+					throw context.Exception;
 					break;
 
 				case InstructionCode.Leave:
 				case InstructionCode.Leave_S:
-					Op_Leave(context, i.BranchTarget);
+					context.IP = i.BranchTarget;
 					return;
 
 				case InstructionCode.Endfinally:
@@ -1235,8 +1246,8 @@ namespace DataDynamics.PageFX.CLI.Execution
 				return;
 			}
 
-			NativeClass nativeClass = GetNative(method);
-			if (nativeClass != null)
+			NativeClass native = GetNative(method);
+			if (native != null)
 			{
 				object[] args = PopArgs(context, method);
 
@@ -1246,7 +1257,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 					instance = PopInstance(context, method);
 				}
 
-				var result = nativeClass.Invoke(method.Name, instance, args);
+				var result = native.Invoke(method.Name, instance, args);
 
 				if (!method.IsVoid())
 				{
@@ -1306,7 +1317,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 		private void InitializeArray(MethodContext context)
 		{
 			var field = context.Pop(false) as IField;
-			var arr = context.Pop(false) as Array;
+			var arr = context.PopArray();
 			var elemType = arr.GetType().GetElementType();
 			
 			var vals = CLR.ReadArrayValues(field, Type.GetTypeCode(elemType));
@@ -1381,17 +1392,34 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private void CallInstance(MethodContext context, IMethod method, object[] args, bool virtcall)
 		{
+			var obj = args[0];
+
+			NativeClass native = GetNative(obj.GetType());
+			if (native != null)
+			{
+				object[] copy = new object[args.Length - 1];
+				Array.Copy(args, copy, args.Length - 1);
+
+				var result = native.Invoke(method.Name, obj, copy);
+
+				if (!method.IsVoid())
+				{
+					context.Push(result);
+				}
+				return;
+			}
+
 			//TODO: introduce vtable to optimize virtual call
-			var instance = args[0] as Instance;
+			var instance = obj as Instance;
 
 			var type = instance.Type;
 
-			//bool basecall = false;
-			//if (!virtcall && type != method.DeclaringType
-			//    && !method.IsStatic && !method.IsConstructor)
-			//    basecall = type.IsSubclassOf(method.DeclaringType);
+			bool basecall = false;
+			if (!virtcall && type != method.DeclaringType
+				&& !method.IsStatic && !method.IsConstructor)
+				basecall = type.IsSubclassOf(method.DeclaringType);
 
-			if (virtcall && (method.IsAbstract || method.IsVirtual))
+			if (!basecall && virtcall && (method.IsAbstract || method.IsVirtual))
 			{
 				var impl = FindImpl(type, method);
 				if (impl != null)
@@ -1805,7 +1833,8 @@ namespace DataDynamics.PageFX.CLI.Execution
 					context.Push(value is String);
 					break;
 				default:
-					throw new NotImplementedException();
+					context.Push(value.GetType().IsInstanceOf(type));
+					break;
 			}
 		}
 
@@ -1815,6 +1844,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			switch (Type.GetTypeCode(type))
 			{
 				case TypeCode.Object:
+					//TODO: array element type
 					return true;
 				case TypeCode.Boolean:
 					return code == TypeCode.Boolean;
@@ -1843,7 +1873,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 				case TypeCode.String:
 					return code == TypeCode.String;
 				default:
-					return type.FullName == itype.FullName;
+					return type.IsInstanceOf(itype);
 			}
 		}
 
@@ -1925,23 +1955,17 @@ namespace DataDynamics.PageFX.CLI.Execution
 			context.Push(array);
 		}
 
-		private void Op_Ldlen(MethodContext context)
-		{
-			var value = context.Pop(false) as Array;
-			context.Push(value.Length);
-		}
-
 		private void Op_Ldelema(MethodContext context)
 		{
 			var index = Convert.ToInt64(context.Pop(false));
-			var array = context.Pop(false) as Array;
+			var array = context.PopArray();
 			context.Push(new ArrayElementPtr(array, index));
 		}
 
 		private void Op_Ldelem(MethodContext context)
 		{
 			var index = Convert.ToInt64(context.Pop(false));
-			var arr = context.Pop(false) as Array;
+			var arr = context.PopArray();
 			context.Push(arr.GetValue(index));
 		}
 
@@ -1949,24 +1973,8 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			var value = context.Pop(true);
 			var index = Convert.ToInt64(context.Pop(false));
-			var arr = context.Pop(false) as Array;
+			var arr = context.PopArray();
 			arr.SetValue(value, index);
-		}
-
-		private void Op_Throw(MethodContext context)
-		{
-			var value = context.PopInstance();
-			throw value;
-		}
-
-		private void Op_Rethrow(MethodContext context)
-		{
-			throw context.Exception;
-		}
-
-		private void Op_Leave(MethodContext context, int target)
-		{
-			context.IP = target;
 		}
 
 		private void Op_Endfinally(MethodContext context)

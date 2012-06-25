@@ -317,8 +317,46 @@ namespace DataDynamics.PageFX.CodeModel
                     return true;
                 type = type.BaseType;
             }
+
             return false;
         }
+
+		/// <summary>
+		/// Determines whether given type implements given interface.
+		/// </summary>
+		/// <param name="type">given type to inspect</param>
+		/// <param name="iface">given interface to take into account</param>
+		/// <returns></returns>
+		public static bool Implements(this Type type, IType iface)
+		{
+			if (iface == null) return false;
+
+			//TODO: complete
+			//if (type.IsArray)
+			//{
+			//    var elemType = type.GetElementType();
+			//    if (iface.IsGenericArrayInterface())
+			//    {
+			//        var arg = iface.GetTypeArgument(0);
+			//        return elemType.IsImplicitCast(arg);
+			//    }
+			//}
+
+			if (type.IsInterface)
+			{
+				return type.GetInterfaces().Any(i => i.FullName == iface.FullName);
+			}
+
+			while (type != null)
+			{
+				if (type == SystemTypes.Object) break;
+				if (type.GetInterfaces().Any(i => i.FullName == iface.FullName))
+					return true;
+				type = type.BaseType;
+			}
+
+			return false;
+		}
 
         public static bool IsSubclassOf(this IType type, IType baseType)
         {
@@ -346,7 +384,39 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static IEnumerable<IType> GetBaseTypes(this IType type)
+		public static bool IsInstanceOf(this Type type, IType itype)
+		{
+			if (type == null) return false;
+			if (itype == null) return false;
+
+			if (itype.IsInterface)
+			{
+				return type.Implements(itype);
+			}
+
+			while (type != null)
+			{
+				if (type.FullName == itype.FullName) return true;
+				type = type.BaseType;
+			}
+
+			return false;
+		}
+
+		public static bool IsSubclassOf(this Type type, IType baseType)
+		{
+			if (type == null) return false;
+			if (baseType == null) return false;
+			var bt = type.BaseType;
+			while (bt != null)
+			{
+				if (bt.FullName == baseType.FullName) return true;
+				bt = bt.BaseType;
+			}
+			return false;
+		}
+
+		public static IEnumerable<IType> GetBaseTypes(this IType type)
         {
             for (var bt = type.BaseType; bt != null; bt = bt.BaseType)
                 yield return bt;

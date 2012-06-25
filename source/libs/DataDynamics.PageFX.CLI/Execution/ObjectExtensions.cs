@@ -29,6 +29,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		public static object ToUnsigned(this object x)
 		{
+			if (x == null) return x;
 			switch (Type.GetTypeCode(x.GetType()))
 			{
 				case TypeCode.Boolean:

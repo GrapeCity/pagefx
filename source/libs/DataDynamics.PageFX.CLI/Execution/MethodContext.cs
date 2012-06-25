@@ -100,6 +100,11 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return ptr != null ? ptr.Value : obj;
 		}
 
+		public Array PopArray()
+		{
+			return PopObject() as Array;
+		}
+
 		public Instance PopInstance()
 		{
 			return PopObject() as Instance;
