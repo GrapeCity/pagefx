@@ -50,8 +50,11 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CLI\Extensions.cs" />
+    <Compile Include="Execution\ArrayIterator.cs" />
+    <Compile Include="Execution\ArrayInvoker.cs" />
     <Compile Include="Execution\Class.cs" />
-    <Compile Include="Execution\ConsoleEmulator.cs" />
+    <Compile Include="Execution\ConsoleInvoker.cs" />
+    <Compile Include="Execution\DelegateInvoker.cs" />
     <Compile Include="Execution\Instance.cs" />
     <Compile Include="Execution\LocalVariable.cs" />
     <Compile Include="Execution\CallContext.cs" />

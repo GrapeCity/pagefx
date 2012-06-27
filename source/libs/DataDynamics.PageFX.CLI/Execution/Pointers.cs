@@ -57,25 +57,24 @@ namespace DataDynamics.PageFX.CLI.Execution
 		}
 	}
 
-	internal sealed class MethodPtr
+	internal sealed class MethodPtr : IPointer
 	{
-		private readonly object _instance;
-		private readonly IMethod _method;
+		private IMethod _method;
 
-		public MethodPtr(object instance, IMethod method)
+		public MethodPtr(IMethod method)
 		{
-			_instance = instance;
 			_method = method;
-		}
-
-		public object Instance
-		{
-			get { return _instance; }
 		}
 
 		public IMethod Method
 		{
 			get { return _method; }
+		}
+
+		public object Value
+		{
+			get { return _method; }
+			set { _method = (IMethod)value; }
 		}
 	}
 }

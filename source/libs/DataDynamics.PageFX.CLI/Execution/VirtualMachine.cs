@@ -8,8 +8,6 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.Execution
 {
-	//TODO: - value types
-	//TODO: - initialization of value type fields
 	//TODO: - nullables
 	//TODO: - reflection: Object.GetType
 	//TODO: - exception handling
@@ -44,11 +42,11 @@ namespace DataDynamics.PageFX.CLI.Execution
 			RegiterSni(typeof(Object));
 			RegiterSni(typeof(String));
 			RegiterSni(typeof(Char));
-			RegiterSni(typeof(Array));
 			RegiterSni(typeof(Type));
 			RegiterSni(typeof(Exception));
 			RegiterSni(typeof(Math));
 			RegiterSni(typeof(Random));
+			RegiterSni(typeof(Convert));
 			RegiterSni(typeof(Console));
 			RegiterSni(typeof(File));
 			RegiterSni(typeof(Directory));
@@ -77,6 +75,10 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private NativeInvoker GetInvoker(IType type)
 		{
+			if (type.IsArray)
+				return GetInvoker(typeof(Array));
+			if (type.TypeKind == TypeKind.Delegate)
+				return GetInvoker(typeof(Delegate));
 			return GetInvoker(type.FullName);
 		}
 
@@ -111,8 +113,11 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			if (console != null)
 			{
-				RegiterNi(typeof(Console), new ConsoleEmulator(console));
+				RegiterNi(typeof(Console), new ConsoleInvoker(console));
 			}
+
+			RegiterNi(typeof(Array), new ArrayInvoker(this));
+			RegiterNi(typeof(Delegate), new DelegateInvoker(this));
 		}
 
 		public int Run(string path, string options, string[] args)
@@ -232,7 +237,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private void CallPush(CallContext context, IMethod method, object[] args)
 		{
-			var result = Call(method, args);
+			object result = Call(method, args);
 
 			if (!method.IsVoid())
 			{
@@ -1014,7 +1019,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private Class GetClass(ITypeMember member)
+		internal Class GetClass(ITypeMember member)
 		{
 			return GetClass(member.DeclaringType);
 		}
@@ -1061,13 +1066,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private void Op_Ldftn(CallContext context, IMethod method)
 		{
-			object instance = null;
-			if (!method.IsStatic)
-			{
-				instance = context.Pop(false);
-			}
-
-			context.Push(new MethodPtr(instance, method));
+			context.Push(new MethodPtr(method));
 		}
 
 		private void Op_Ldvirtftn(CallContext context, IMethod method)
@@ -1079,8 +1078,18 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 			//TODO: vtable
 
-			var obj = context.Pop(false);
-			context.Push(new MethodPtr(obj, method));
+			var obj = context.PopObject();
+			
+			var instance = obj as Instance;
+			if (instance != null)
+			{
+				var impl = FindImpl(instance.Type, method);
+				context.Push(new MethodPtr(impl));
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
 		}
 
 		private void Op_Branch(CallContext context, BranchOperator op, bool unsigned, int target)
@@ -1228,15 +1237,11 @@ namespace DataDynamics.PageFX.CLI.Execution
 				}
 			}
 
-			if (declType.TypeKind == TypeKind.Delegate)
-			{
-				CallDelegate(context, method);
-				return;
-			}
-
 			if (method.IsInitializeArray())
 			{
-				InitializeArray(context);
+				var field = context.Pop(false) as IField;
+				var array = context.PopArray();
+				ArrayInvoker.InitializeArray(array, field);
 				return;
 			}
 
@@ -1246,7 +1251,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 				return;
 			}
 
-			NativeInvoker native = GetInvoker(method);
+			var native = GetInvoker(method);
 			if (native != null)
 			{
 				object[] args = PopArgs(context, method);
@@ -1257,7 +1262,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 					instance = PopInstance(context, method);
 				}
 
-				var result = native.Invoke(method.Name, instance, args);
+				var result = native.Invoke(method, instance, args);
 
 				if (!method.IsVoid())
 				{
@@ -1317,55 +1322,22 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return klass.SystemType;
 		}
 
-		private void InitializeArray(CallContext context)
-		{
-			var field = context.Pop(false) as IField;
-			var arr = context.PopArray();
-			var elemType = arr.GetType().GetElementType();
-			
-			var vals = CLR.ReadArrayValues(field, Type.GetTypeCode(elemType));
-
-			int n = vals.Count;
-			for (int i = 0; i < n; ++i)
-			{
-				arr.SetValue(vals[i], i);
-			}
-		}
-
-		private void CallDelegate(CallContext context, IMethod method)
-		{
-			if (method.Name != "Invoke")
-				throw new NotImplementedException("BeginInvoke and EndInvoke are not implemented.");
-
-			var args = PopArgs(context, method);
-
-			var delegateInstance = context.PopInstance();
-			//TODO: check delegate
-
-			method = delegateInstance.Fields[1].Value as IMethod;
-			var instance = delegateInstance.Fields[0].Value;
-
-			CallImpl(context, method, instance, args, false);
-		}
-
-		private void CallImpl(CallContext context, IMethod method, object instance, object[] args, bool virtcall)
+		internal object Call(IMethod method, object instance, object[] args, bool virtcall)
 		{
 			if (method.IsStatic)
 			{
 				GetClass(method);
 
-				CallPush(context, method, args);
+				return Call(method, args);
 			}
-			else
-			{
-				instance = ConvertTo(instance, method.DeclaringType);
 
-				var all = new object[args.Length + 1];
-				Array.Copy(args, 0, all, 1, args.Length);
-				all[0] = instance;
+			instance = ConvertTo(instance, method.DeclaringType);
 
-				CallInstance(context, method, all, virtcall);
-			}
+			var all = new object[args.Length + 1];
+			Array.Copy(args, 0, all, 1, args.Length);
+			all[0] = instance;
+
+			return CallInstance(method, all, virtcall);
 		}
 
 		private void CallStatic(CallContext context, IMethod method)
@@ -1389,62 +1361,26 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 			else
 			{
-				CallInstance(context, method, args, virtcall);
-			}
-		}
-
-		private void CallInstance(CallContext context, IMethod method, object[] args, bool virtcall)
-		{
-			var obj = args[0];
-
-			NativeInvoker invoker = GetInvoker(obj.GetType());
-			if (invoker != null)
-			{
-				object[] copy = new object[args.Length - 1];
-				Array.Copy(args, 1, copy, 0, args.Length - 1);
-
-				var result = invoker.Invoke(method.Name, obj, copy);
+				var result = CallInstance(method, args, virtcall);
 
 				if (!method.IsVoid())
 				{
 					context.Push(result);
 				}
-				return;
 			}
+		}
 
-			var array = obj as Array;
-			if (array != null)
+		internal object CallInstance(IMethod method, object[] args, bool virtcall)
+		{
+			var obj = args[0];
+
+			var invoker = GetInvoker(obj.GetType());
+			if (invoker != null)
 			{
-				object[] copy;
-				int[] index;
-				switch (method.Name)
-				{
-					case "Get":
-						copy = new object[args.Length - 1];
-						Array.Copy(args, 1, copy, 0, args.Length - 1);
-						index = Array.ConvertAll<object, int>(copy, Convert.ToInt32);
-						context.Push(array.GetValue(index));
-						break;
+				object[] copy = new object[args.Length - 1];
+				Array.Copy(args, 1, copy, 0, args.Length - 1);
 
-					case "Address":
-						copy = new object[args.Length - 1];
-						Array.Copy(args, 1, copy, 0, args.Length - 1);
-						index = Array.ConvertAll<object, int>(copy, Convert.ToInt32);
-						context.Push(new MdArrayElementPtr(array, index));
-						break;
-
-					case "Set":
-						object value = args[args.Length - 1];
-						copy = new object[args.Length - 2];
-						Array.Copy(args, 1, copy, 0, args.Length - 2);
-						index = Array.ConvertAll<object, int>(copy, Convert.ToInt32);
-						array.SetValue(value, index);
-						break;
-
-					default:
-						throw new NotImplementedException();
-				}
-				return;
+				return invoker.Invoke(method, obj, copy);
 			}
 
 			//TODO: introduce vtable to optimize virtual call
@@ -1466,7 +1402,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 				}
 			}
 
-			CallPush(context, method, args);
+			return Call(method, args);
 		}
 
 		private static IMethod FindImpl(IType type, IMethod method)
@@ -1507,7 +1443,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			
 			if (!f.Method.IsStatic)
 			{
-				args[0] = f.Instance;
+				args[0] = context.PopObject();
 			}
 
 			CallPush(context, f.Method, args);
@@ -1519,35 +1455,9 @@ namespace DataDynamics.PageFX.CLI.Execution
 			if (nativeClass != null)
 			{
 				var args = PopArgs(context, ctor);
-				var obj = nativeClass.Invoke(".ctor", null, args);
+				var obj = nativeClass.Invoke(ctor, null, args);
 				context.Push(obj);
 				return;
-			}
-
-			var declType = ctor.DeclaringType;
-			if (declType.TypeKind == TypeKind.Delegate)
-			{
-				var f = context.Pop() as MethodPtr;
-				if (f == null)
-					throw new InvalidOperationException("Current instruction requires method pointer.");
-
-				var klass = GetClass(ctor);
-				var instance = new Instance(this, klass);
-
-				instance.Fields[0].Value = f.Instance;
-				instance.Fields[1].Value = f.Method;
-
-				context.Push(instance);
-			}
-			else if (declType.TypeKind == TypeKind.Array)
-			{
-				var args = PopArgs(context, ctor);
-				int[] lengths = Array.ConvertAll<object, int>(args, Convert.ToInt32);
-
-				var arrayType = (IArrayType)declType;
-				var array = NewArray(arrayType.ElementType, lengths);
-
-				context.Push(array);
 			}
 			else
 			{
@@ -1569,7 +1479,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			var invoker = GetInvoker(type);
 			if (invoker != null)
 			{
-				var obj = invoker.Invoke(".ctor", null, new object[0]);
+				var obj = invoker.Invoke(type.FindParameterlessConstructor(), null, new object[0]);
 				return obj;
 			}
 
@@ -1747,6 +1657,13 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 			var value = context.PopObject();
 			if (value == null)
+			{
+				context.Push(value);
+				return;
+			}
+
+			//TODO: casting of delegates
+			if (value is DelegateImpl)
 			{
 				context.Push(value);
 				return;
@@ -1948,7 +1865,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			context.Push(array);
 		}
 
-		private Array NewArray(IType elemType, int[] lengths)
+		internal Array NewArray(IType elemType, int[] lengths)
 		{
 			switch (lengths.Length)
 			{
@@ -1963,20 +1880,10 @@ namespace DataDynamics.PageFX.CLI.Execution
 						GetClass(elemType);
 						if (elemType.TypeKind == TypeKind.Struct)
 						{
-							//TODO: init value type MD array
-
-							int[] index = new int[array.Rank];
-							for (int dim = 0; dim < array.Rank; dim++)
+							var it = new ArrayIterator(array);
+							while (it.MoveNext())
 							{
-								for (int i = 0; i < array.GetLength(dim); i++)
-								{
-									index[dim] = i;
-								}
-							}
-
-							for (int i = 0; i < array.Length; i++)
-							{
-								array.SetValue(InitObject(elemType), i);
+								array.SetValue(InitObject(elemType), it.Indices);
 							}
 						}
 						return array;

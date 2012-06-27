@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.Execution
 {
@@ -75,9 +76,11 @@ namespace DataDynamics.PageFX.CLI.Execution
 			return false;
 		}
 
-		public virtual object Invoke(string name, object instance, object[] args)
+		public virtual object Invoke(IMethod methodInfo, object instance, object[] args)
 		{
 			Init();
+
+			var name = methodInfo != null ? methodInfo.Name : ".ctor";
 
 			//TODO: optional parameters
 

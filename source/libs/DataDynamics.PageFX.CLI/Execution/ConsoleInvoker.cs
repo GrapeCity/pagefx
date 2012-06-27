@@ -1,13 +1,14 @@
 ﻿using System;
 using System.IO;
+using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.Execution
 {
-	internal sealed class ConsoleEmulator : NativeInvoker
+	internal sealed class ConsoleInvoker : NativeInvoker
 	{
 		private readonly TextWriter _output;
 
-		public ConsoleEmulator(TextWriter output)
+		public ConsoleInvoker(TextWriter output)
 			: base(typeof(Console))
 		{
 			if (output == null) throw new ArgumentNullException("output");
@@ -15,9 +16,9 @@ namespace DataDynamics.PageFX.CLI.Execution
 			_output = output;
 		}
 
-		public override object Invoke(string name, object instance, object[] args)
+		public override object Invoke(IMethod method, object instance, object[] args)
 		{
-			switch (name)
+			switch (method.Name)
 			{
 				case "WriteLine":
 					switch (args.Length)
