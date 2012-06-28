@@ -99,12 +99,15 @@ namespace DataDynamics.PageFX.CLI.Execution
 					{
 						bool exact;
 						var method = ResolveMethod(methods, args, out exact);
-						if (exact)
-						{
-							return Invoke(method, instance, args);
-						}
 
-						ConvertArgs(method, args, args.Length);
+						if (HasParamsArgument(method))
+						{
+							args = ToParamsArgs(method, args, !exact);
+						}
+						else if (!exact)
+						{
+							ConvertArgs(method, args, args.Length);
+						}
 
 						return Invoke(method, instance, args);
 					}
@@ -115,21 +118,9 @@ namespace DataDynamics.PageFX.CLI.Execution
 				{
 					var method = methods[0];
 
-					var paramCount = method.GetParameters().Length;
-					ConvertArgs(method, args, paramCount - 1);
-					
-					var methodArgs = new object[paramCount];
-					Array.Copy(args, methodArgs, paramCount - 1);
+					args = ToParamsArgs(method, args, true);
 
-					var last = new List<object>();
-					for (int i = paramCount - 1; i < args.Length; i++)
-					{
-						last.Add(args[i]);
-					}
-
-					methodArgs[paramCount - 1] = last.ToArray();
-					
-					return Invoke(method, instance, methodArgs);
+					return Invoke(method, instance, args);
 				}
 			}
 
@@ -139,6 +130,40 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 
 			throw new InvalidOperationException(string.Format("Method {0}.{1} was not found.", Type.FullName, name));
+		}
+
+		private static object[] ToParamsArgs(MethodBase method, object[] args, bool convert)
+		{
+			var paramCount = method.GetParameters().Length;
+
+			if (paramCount == args.Length && args[args.Length - 1] is Array)
+			{
+				if (convert)
+				{
+					ConvertArgs(method, args, args.Length);
+				}
+				return args;
+			}
+
+			if (convert)
+			{
+				ConvertArgs(method, args, paramCount - 1);
+			}
+
+			var lastParam = method.GetParameters()[paramCount - 1];
+
+			var convertedArgs = new object [paramCount];
+			Array.Copy(args, convertedArgs, paramCount - 1);
+
+			var last = Array.CreateInstance(lastParam.ParameterType.GetElementType(), args.Length - paramCount + 1);
+			for (int i = paramCount - 1, j = 0; i < args.Length; i++, j++)
+			{
+				last.SetValue(args[i], j);
+			}
+
+			convertedArgs[paramCount - 1] = last;
+
+			return convertedArgs;
 		}
 
 		private static object Invoke(MethodBase method, object instance, object[] args)
@@ -170,13 +195,16 @@ namespace DataDynamics.PageFX.CLI.Execution
 				}
 
 				//If this is a narrowing method, try and convert the argument to the expected type
-				if (CanNarrow(argType.ToString(), parameterType.ToString()))
+				if (arg is IConvertible)
 				{
-					args[i] = Convert.ChangeType(arg, parameterType);
-				}
-				else if (CanWiden(argType.ToString(), parameterType.ToString()))
-				{
-					args[i] = Convert.ChangeType(arg, parameterType);
+					if (CanNarrow(argType.ToString(), parameterType.ToString()))
+					{
+						args[i] = Convert.ChangeType(arg, parameterType);
+					}
+					else if (CanWiden(argType.ToString(), parameterType.ToString()))
+					{
+						args[i] = Convert.ChangeType(arg, parameterType);
+					}
 				}
 			}
 		}
@@ -198,6 +226,18 @@ namespace DataDynamics.PageFX.CLI.Execution
 					//Note: There is problem with duplicate functions loaded from custom code assemblies.
 					if (method.GetParameters().Length == args.Length)
 					{
+						if (HasParamsArgument(method))
+						{
+							if (args[args.Length - 1] is Array)
+							{
+								exact = true;
+								return method;
+							}
+							// function with params, continue search to find function with exact match without params
+							matches.Add(method);
+							continue;
+						}
+						
 						exact = true;
 						return method;
 					}

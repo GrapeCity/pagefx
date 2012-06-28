@@ -49,18 +49,5 @@ namespace DataDynamics.PageFX.CLI.Execution
 					return base.Invoke(method, instance, args);
 			}			
 		}
-
-		public static void InitializeArray(Array array, IField field)
-		{
-			var elemType = array.GetType().GetElementType();
-
-			var vals = CLR.ReadArrayValues(field, Type.GetTypeCode(elemType));
-
-			int n = vals.Count;
-			for (int i = 0; i < n; ++i)
-			{
-				array.SetValue(vals[i], i);
-			}
-		}
 	}
 }

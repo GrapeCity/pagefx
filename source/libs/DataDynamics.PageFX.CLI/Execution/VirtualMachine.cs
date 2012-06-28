@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
 
@@ -118,6 +119,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 			RegiterNi(typeof(Array), new ArrayInvoker(this));
 			RegiterNi(typeof(Delegate), new DelegateInvoker(this));
+			RegiterNi(typeof(RuntimeHelpers), new RuntimeHelpersInvoker(this));
 		}
 
 		public int Run(string path, string options, string[] args)
@@ -1237,20 +1239,6 @@ namespace DataDynamics.PageFX.CLI.Execution
 				}
 			}
 
-			if (method.IsInitializeArray())
-			{
-				var field = context.Pop(false) as IField;
-				var array = context.PopArray();
-				ArrayInvoker.InitializeArray(array, field);
-				return;
-			}
-
-			if (method.IsGetTypeFromHandle())
-			{
-				TypeOf(context);
-				return;
-			}
-
 			var native = GetInvoker(method);
 			if (native != null)
 			{
@@ -1304,13 +1292,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void TypeOf(CallContext context)
-		{
-			var type = context.Pop(false) as IType;
-			context.Push(TypeOf(type));
-		}
-
-		private Type TypeOf(IType type)
+		internal Type TypeOf(IType type)
 		{
 			var native = GetInvoker(type);
 			if (native != null)

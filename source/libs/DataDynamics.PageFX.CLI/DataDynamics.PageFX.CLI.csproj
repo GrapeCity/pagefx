@@ -62,6 +62,7 @@
     <Compile Include="Execution\ObjectExtensions.cs" />
     <Compile Include="Execution\Pointers.cs" />
     <Compile Include="Execution\InternalTypeExtensions.cs" />
+    <Compile Include="Execution\RuntimeHelpersInvoker.cs" />
     <Compile Include="Execution\RuntimeType.cs" />
     <Compile Include="Execution\VirtualMachine.cs" />
     <Compile Include="GAC\AssemblyCache.cs" />
