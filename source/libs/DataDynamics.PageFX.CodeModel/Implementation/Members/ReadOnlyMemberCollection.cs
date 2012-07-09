@@ -6,69 +6,55 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    internal class ReadOnlyMemberCollection : ITypeMemberCollection
+    internal sealed class ReadOnlyMemberCollection : ITypeMemberCollection
     {
-        private readonly List<ITypeMember> list = new List<ITypeMember>();
+		private readonly IReadOnlyList<ITypeMember> _members;
 
-        internal void AddInternal(ITypeMember member)
+        public ReadOnlyMemberCollection(IReadOnlyList<ITypeMember> members)
         {
-            list.Add(member);
+        	_members = members;
         }
 
-        #region ITypeMemberCollection Members
-        public int Count
+    	public int Count
         {
-            get { return list.Count; }
+            get { return _members.Count; }
         }
 
         public ITypeMember this[int index]
         {
-            get { return list[index]; }
+            get { return _members[index]; }
         }
 
         public void Add(ITypeMember m)
         {
             throw new NotSupportedException();
         }
-        #endregion
 
-        #region IEnumerable<ITypeMember> Members
-        public IEnumerator<ITypeMember> GetEnumerator()
+    	public IEnumerator<ITypeMember> GetEnumerator()
         {
-            return list.GetEnumerator();
+            return _members.GetEnumerator();
         }
-        #endregion
 
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
+    	IEnumerator IEnumerable.GetEnumerator()
         {
-            return list.GetEnumerator();
+            return _members.GetEnumerator();
         }
-        #endregion
 
-        #region ICodeNode Members
-        public CodeNodeType NodeType
+    	public CodeNodeType NodeType
         {
             get { return CodeNodeType.TypeMembers; }
         }
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return list.Cast<ICodeNode>(); }
+            get { return _members.Cast<ICodeNode>(); }
         }
 
-        public object Tag
-        {
-            get { return null; }
-            set { throw new NotSupportedException(); }
-        }
-        #endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+    	public object Tag { get; set; }
+        
+    	public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
     }
 }

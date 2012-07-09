@@ -7,8 +7,7 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class ExpressionCollection : List<IExpression>, IExpressionCollection
     {
-        #region ICodeNode Members
-        public CodeNodeType NodeType
+    	public CodeNodeType NodeType
         {
             get { return CodeNodeType.Expression; }
         }
@@ -23,17 +22,12 @@ namespace DataDynamics.PageFX.CodeModel
     	/// </summary>
     	public object Tag { get; set; }
 
-    	#endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+    	public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        #region IExpression Members
-        public IType ResultType
+    	public IType ResultType
         {
             get
             {
@@ -42,10 +36,8 @@ namespace DataDynamics.PageFX.CodeModel
                 return null;
             }
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+    	public override string ToString()
         {
             return ToString(null, null);
         }
@@ -69,6 +61,5 @@ namespace DataDynamics.PageFX.CodeModel
         {
             return this.EvalHashCode();
         }
-        #endregion
     }
 }

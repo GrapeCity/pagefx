@@ -4,45 +4,30 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public class UnboxExpression : EnclosingExpression, IUnboxExpression, ITypeReferenceProvider
     {
-        #region Constructors
-        public UnboxExpression(IType type, IExpression e) : base(e)
+    	public UnboxExpression(IType type, IExpression e) : base(e)
         {
-            _targetType = type;
+            TargetType = type;
         }
-        #endregion
 
-        #region IUnboxExpression Members
-        public IType TargetType
+    	public IType TargetType { get; set; }
+
+    	public override IType ResultType
         {
-            get { return _targetType; }
-            set { _targetType = value; }
+            get { return TargetType; }
         }
-        private IType _targetType;
-        #endregion
 
-        #region IExpression Members
-        public override IType ResultType
-        {
-            get { return _targetType; }
-        }
-        #endregion
-
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IUnboxExpression;
             if (e == null) return false;
-            if (e.TargetType != _targetType) return false;
+            if (e.TargetType != TargetType) return false;
             return base.Equals(obj);
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public IEnumerable<IType> GetTypeReferences()
+    	public IEnumerable<IType> GetTypeReferences()
         {
-            return new[] { _targetType };
+            return new[] { TargetType };
         }
-        #endregion
     }
 }

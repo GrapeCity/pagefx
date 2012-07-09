@@ -507,7 +507,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Object Overrides
         public override int GetHashCode()
         {
-            return Algorithms.EvalHashCode(Namespace, NamespaceSet, _name) ^ (int)Kind;
+			return new object[] { Namespace, NamespaceSet, _name }.EvalHashCode() ^ (int)Kind;
         }
 
         bool HasNamespace(AbcNamespace ns)

@@ -94,12 +94,6 @@ namespace abc
                 return;
             }
 
-            if (cl.HasOption("test"))
-            {
-                Test(cl);
-                return;
-            }
-
             Dump(cl);
         }
         #endregion
@@ -226,28 +220,6 @@ namespace abc
                 }
             }
             swf.Save(path + ".noexports.swf");
-        }
-        #endregion
-
-        #region Test
-        static void Test(CommandLine cl)
-        {
-            foreach (var path in cl.GetInputFiles())
-                Test(path);
-        }
-
-        static void Test(string path)
-        {
-            var swf = new SwfMovie(path, SwfTagDecodeOptions.DonotDecodeCharacters);
-            foreach (var t in swf.Tags)
-            {
-            	var export = t as SwfTagExportAssets;
-            	if (export != null)
-            	{
-            		Algorithms.Shuffle(export.Assets);
-            	}
-            }
-            swf.Save(path + ".shuffle.swf");
         }
         #endregion
     }

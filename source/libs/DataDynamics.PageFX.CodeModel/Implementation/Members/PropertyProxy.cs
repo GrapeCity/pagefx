@@ -131,9 +131,9 @@ namespace DataDynamics.PageFX.CodeModel
             set { throw new NotSupportedException(); }
         }
 
-        public TypeMemberType MemberType
+        public MemberType MemberType
         {
-            get { return TypeMemberType.Property; }
+            get { return MemberType.Property; }
         }
 
         public string Name

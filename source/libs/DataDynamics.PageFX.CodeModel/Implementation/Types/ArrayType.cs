@@ -412,12 +412,12 @@ namespace DataDynamics.PageFX.CodeModel
             if (obj == this) return false;
             var c = obj as IArrayDimensionCollection;
             if (c == null) return false;
-            return Object2.Equals(this, c);
+            return this.EqualsTo(c);
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(this);
+            return this.EvalHashCode();
         }
 
         public override string ToString()

@@ -147,7 +147,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         private static IEnumerable<IMethod> GetCastOperators(this IType type)
         {
-        	return CastOpNames.SelectMany(name => type.Methods[name]);
+        	return CastOpNames.SelectMany(name => type.Methods.Find(name));
         }
 
     	public static IMethod FindCastOperator(this IType type, IType source, IType target)
@@ -179,21 +179,21 @@ namespace DataDynamics.PageFX.CodeModel
     	public static IMethod FindOperator(this BinaryOperator op, IType left, IType right)
         {
             string name = op.GetMethodName();
-            var set = left.Methods[name];
+            var set = left.Methods.Find(name);
             return set.FirstOrDefault(m => m.IsBinaryOperator(op, left, right));
         }
 
 		public static IMethod FindOperator(this UnaryOperator op, IType type)
 		{
 			string name = op.GetMethodName();
-			var ops = type.Methods[name];
+			var ops = type.Methods.Find(name);
 			return ops.FirstOrDefault(m => IsUnaryOperator(m, type));
 		}
 
 		public static IMethod FindBooleanOperator(this IType type, bool isTrue)
 		{
 			string name = isTrue ? OpNames.True : OpNames.False;
-			var ops = type.Methods[name];
+			var ops = type.Methods.Find(name);
 			return ops.FirstOrDefault(IsBooleanOperator);
 		}
 

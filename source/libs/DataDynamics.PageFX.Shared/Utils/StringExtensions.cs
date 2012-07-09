@@ -26,7 +26,7 @@ namespace DataDynamics
             return s;
         }
 
-		public static string[] ReadLines(this TextReader reader, bool trim, Func<string,bool> lineFilter)
+		public static string[] ReadLines(this TextReader reader, bool trim, Func<string, bool> lineFilter)
 		{
 			var list = new List<string>();
 			string line;
@@ -57,7 +57,7 @@ namespace DataDynamics
 
         public static string[] ReadLines(this string text, bool allowEmptyLines, bool trim)
         {
-            if (string.IsNullOrEmpty(text))
+            if (String.IsNullOrEmpty(text))
                 return new string[0];
             using (var reader = new StringReader(text))
             {
@@ -72,7 +72,7 @@ namespace DataDynamics
 
     	public static string IndentLines(this string text, string tab)
         {
-            if (string.IsNullOrEmpty(tab))
+            if (String.IsNullOrEmpty(tab))
                 return text;
             var sb = new StringBuilder();
             foreach (var line in text.ReadLines())
@@ -87,7 +87,7 @@ namespace DataDynamics
 			if (set == null) return "";
             var sb = new StringBuilder();
             bool f = false;
-			if (!string.IsNullOrEmpty(prefix))
+			if (!String.IsNullOrEmpty(prefix))
 			{
 				sb.Append(prefix);
 			}
@@ -97,7 +97,7 @@ namespace DataDynamics
                 sb.Append(tostr(item));
                 f = true;
             }
-			if (!string.IsNullOrEmpty(suffix))
+			if (!String.IsNullOrEmpty(suffix))
 			{
 				sb.Append(suffix);
 			}
@@ -152,7 +152,7 @@ namespace DataDynamics
         {
             while (i >= 0)
             {
-                if (char.IsWhiteSpace(s[i]))
+                if (Char.IsWhiteSpace(s[i]))
                     break;
                 --i;
             }
@@ -166,7 +166,7 @@ namespace DataDynamics
         
         public static string ReplaceVars(this string template, RVScheme scheme, params string[] vars)
         {
-            if (string.IsNullOrEmpty(template))
+            if (String.IsNullOrEmpty(template))
                 throw new ArgumentException("template");
             if (vars == null)
                 throw new ArgumentNullException("vars");
@@ -215,7 +215,7 @@ namespace DataDynamics
                         string v = vh[var] as string;
                         if (v != null)
                         {
-                            if (string.Compare(v, "newguid()", true) == 0)
+                            if (String.Compare(v, "newguid()", true) == 0)
                                 v = Guid.NewGuid().ToString("D");
                             return v;
                         }
@@ -228,6 +228,29 @@ namespace DataDynamics
             return template.ReplaceVars(RVScheme.DollarID, vars);
         }
         #endregion
+
+    	public static string ToXmlString(this string s)
+    	{
+    		if (String.IsNullOrEmpty(s)) return s;
+    		var sb = new StringBuilder();
+    		foreach (var c in s)
+    		{
+    			if (c == '<') sb.Append("&lt;");
+    			else if (c == '>') sb.Append("&gt;");
+    			else if (c == '&') sb.Append("&amp;");
+    			else if (c == '\'') sb.Append("&apos;");
+    			else if (c == '\"') sb.Append("&quot;");
+    			else if (c == 0x1B || c == 0x0C) //TODO: find/include other invalid chars
+    			{
+    				sb.AppendFormat("&#x{0:X};", (int)c);
+    			}
+    			else
+    			{
+    				sb.Append(c);
+    			}
+    		}
+    		return sb.ToString();
+    	}
     }
 
     public enum RVScheme

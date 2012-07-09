@@ -10,51 +10,35 @@ namespace DataDynamics.PageFX.CodeModel
             _body = new StatementCollection(this);
         }
 
-        #region ILoopStatement Members
-        public LoopType LoopType
-        {
-            get { return _loopType; }
-            set { _loopType = value; }
-        }
-        private LoopType _loopType;
+    	public LoopType LoopType { get; set; }
 
-        public IExpression Condition
-        {
-            get { return _condition; }
-            set { _condition = value; }
-        }
-        private IExpression _condition;
-        
-        public IStatementCollection Body
+    	public IExpression Condition { get; set; }
+
+    	public IStatementCollection Body
         {
             get { return _body; }
         }
         private readonly StatementCollection _body;
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] { _condition, _body }; }
+            get { return new ICodeNode[] { Condition, _body }; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return false;
             var s = obj as ILoopStatement;
             if (s == null) return false;
-            if (s.LoopType != _loopType) return false;
-            if (!Equals(s.Condition, _condition)) return false;
+            if (s.LoopType != LoopType) return false;
+            if (!Equals(s.Condition, Condition)) return false;
             if (!Equals(s.Body, _body)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return _loopType.GetHashCode() ^ Object2.GetHashCode(_condition, _body);
+            return LoopType.GetHashCode() ^ new object[]{Condition, _body}.EvalHashCode();
         }
-        #endregion
     }
 }

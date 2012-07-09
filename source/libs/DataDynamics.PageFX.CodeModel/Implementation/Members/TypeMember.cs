@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
-        public abstract TypeMemberType MemberType { get; }
+        public abstract MemberType MemberType { get; }
 
         /// <summary>
         /// Gets or sets member name

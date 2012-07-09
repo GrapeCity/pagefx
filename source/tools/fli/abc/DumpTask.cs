@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Linq;
 using DataDynamics;
@@ -251,7 +252,12 @@ namespace abc
 
         static void DumpMain(AbcFile abc, string path)
         {
-            var xws = XmlExtensions.DefaultIndentedSettings;
+            var xws = new XmlWriterSettings
+                      	{
+                      		Indent = true,
+                      		IndentChars = "  ",
+                      		Encoding = Encoding.UTF8
+                      	};
             using (var writer = XmlWriter.Create(path + ".main.xml", xws))
             {
                 var s = abc.LastScript;

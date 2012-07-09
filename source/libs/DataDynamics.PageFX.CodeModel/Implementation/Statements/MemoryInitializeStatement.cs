@@ -5,52 +5,31 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public class MemoryInitializeStatement : Statement, IMemoryInitializeStatement
     {
-        #region IMemoryInitializeStatement Members
-        public IExpression Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-        private IExpression _value;
+    	public IExpression Value { get; set; }
 
-        public IExpression Offset
-        {
-            get { return _offset; }
-            set { _offset = value; }
-        }
-        private IExpression _offset;
+    	public IExpression Offset { get; set; }
 
-        public IExpression Size
-        {
-            get { return _size; }
-            set { _size = value; }
-        }
-        private IExpression _size;
-        #endregion
+    	public IExpression Size { get; set; }
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] { _value, _offset, _size }; }
+            get { return new ICodeNode[] { Value, Offset, Size }; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var s = obj as IMemoryInitializeStatement;
             if (s == null) return false;
-            if (!Equals(s.Value, _value)) return false;
-            if (!Equals(s.Offset, _offset)) return false;
-            if (!Equals(s.Size, _size)) return false;
+            if (!Equals(s.Value, Value)) return false;
+            if (!Equals(s.Offset, Offset)) return false;
+            if (!Equals(s.Size, Size)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_value, _offset, _size);
+            return new []{Value, Offset, Size}.EvalHashCode();
         }
-        #endregion
     }
 }

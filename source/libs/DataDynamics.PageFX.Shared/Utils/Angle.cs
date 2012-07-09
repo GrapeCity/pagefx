@@ -4,18 +4,17 @@ namespace DataDynamics
 {
     public class Angle
     {
-        #region Angle Conversion methods
-        public const double PI2 = Math.PI * 2;
+    	public const double PI2 = Math.PI * 2;
 
         internal static double RadPerDeg = Math.PI / 180.0;
         internal static double DegPerRad = 180.0 / Math.PI;
 
-        public static float ClampAngle(float value)
+        public static float Clamp(float value)
         {
             return ((value % 360) + 360) % 360;
         }
 
-        public static double ClampAngle(double value)
+        public static double Clamp(double value)
         {
             return ((value % 360) + 360) % 360;
         }
@@ -90,6 +89,5 @@ namespace DataDynamics
         {
             return degrees % 360;
         }
-        #endregion
     }
 }

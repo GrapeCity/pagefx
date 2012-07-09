@@ -4,7 +4,7 @@ namespace DataDynamics
 {
     public static class NameExtensions
     {
-        public static string Capitalize(string s)
+        public static string Capitalize(this string s)
         {
         	if (!char.IsLower(s[0]))
         	{
@@ -80,6 +80,7 @@ namespace DataDynamics
             {
             	s.Append(string.IsNullOrEmpty(part) ? "_" : Recapitalize(part));
             }
+
         	return s.ToString();
         }
 

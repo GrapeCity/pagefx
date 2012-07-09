@@ -5,47 +5,25 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class BinaryExpression : Expression, IBinaryExpression
     {
-        #region Constructors
-        public BinaryExpression(IExpression left, IExpression right, BinaryOperator op)
+    	public BinaryExpression(IExpression left, IExpression right, BinaryOperator op)
         {
-            _left = left;
-            _right = right;
-            _op = op;
+            Left = left;
+            Right = right;
+            Operator = op;
         }
-        #endregion
 
-        #region IBinaryExpression Members
-        public IExpression Left
+    	public IExpression Left { get; set; }
+
+    	public IExpression Right { get; set; }
+
+    	public BinaryOperator Operator { get; set; }
+
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return _left; }
-            set { _left = value; }
+            get { return new ICodeNode[] { Left, Right }; }
         }
-        private IExpression _left;
 
-        public IExpression Right
-        {
-            get { return _right; }
-            set { _right = value; }
-        }
-        private IExpression _right;
-
-        public BinaryOperator Operator
-        {
-            get { return _op; }
-            set { _op = value; }
-        }
-        private BinaryOperator _op;
-        #endregion
-
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return new ICodeNode[] { _left, _right }; }
-        }
-        #endregion
-
-        #region IExpression Members
-        public static IType GetResultType(IType left, IType right, BinaryOperator op)
+    	public static IType GetResultType(IType left, IType right, BinaryOperator op)
         {
             switch (op)
             {
@@ -83,27 +61,24 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                return GetResultType(_left.ResultType, _right.ResultType, _op);
+                return GetResultType(Left.ResultType, Right.ResultType, Operator);
             }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IBinaryExpression;
             if (e == null) return false;
-            if (e.Operator != _op) return false;
-            if (!Equals(e.Left, _left)) return false;
-            if (!Equals(e.Right, _right)) return false;
+            if (e.Operator != Operator) return false;
+            if (!Equals(e.Left, Left)) return false;
+            if (!Equals(e.Right, Right)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return _op.GetHashCode() ^ Object2.GetHashCode(_left, _right);
+            return Operator.GetHashCode() ^ new[]{Left, Right}.EvalHashCode();
         }
-        #endregion
     }
 }

@@ -1006,11 +1006,11 @@ namespace DataDynamics.PageFX.FLI.ABC
         internal void AddNsRef(string ns)
         {
             if (_nsrefs == null)
-                _nsrefs = new HashedList<string, string>(s => s);
+                _nsrefs = new HashList<string, string>(s => s);
             if (!_nsrefs.Contains(ns))
                 _nsrefs.Add(ns);
         }
-        HashedList<string, string> _nsrefs;
+        HashList<string, string> _nsrefs;
 
         internal IEnumerable<string> GetNsRefs()
         {

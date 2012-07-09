@@ -10,12 +10,12 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
-        public override TypeMemberType MemberType
+        public override MemberType MemberType
         {
             get
             {
-                if (IsConstructor) return TypeMemberType.Constructor;
-                return TypeMemberType.Method;
+                if (IsConstructor) return MemberType.Constructor;
+                return MemberType.Method;
             }
         }
 
@@ -217,11 +217,15 @@ namespace DataDynamics.PageFX.CodeModel
         }
         #endregion
 
-        public IGenericParameterCollection GenericParameters
+    	IGenericParameterCollection IMethod.GenericParameters
         {
             get { return _genericParams; }
         }
-        readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
+		public GenericParameterCollection GenericParameters
+		{
+			get { return _genericParams; }
+		}
+        private readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
 
         public IType[] GenericArguments
         {
@@ -358,7 +362,7 @@ namespace DataDynamics.PageFX.CodeModel
         public static IEnumerable<IMethod> GetSameMethods(IType type, IMethod method, bool compareReturnTypes)
         {
             bool isGeneric = method.IsGeneric;
-            var set = type.Methods[method.Name];
+            var set = type.Methods.Find(method.Name);
             foreach (var m in set)
             {
                 if (isGeneric)

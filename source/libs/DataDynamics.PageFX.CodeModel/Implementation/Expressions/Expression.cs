@@ -6,15 +6,12 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public abstract class Expression : IExpression
     {
-        #region IExpression Members
-        public abstract IType ResultType
+    	public abstract IType ResultType
         {
             get;
         }
-        #endregion
 
-        #region ICodeNode Members
-        public CodeNodeType NodeType
+    	public CodeNodeType NodeType
         {
             get { return CodeNodeType.Expression; }
         }
@@ -29,20 +26,14 @@ namespace DataDynamics.PageFX.CodeModel
     	/// </summary>
     	public object Tag { get; set; }
 
-    	#endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+    	public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+    	public override string ToString()
         {
             return ToString(null, null);
         }
-        #endregion
     }
 }

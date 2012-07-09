@@ -13,7 +13,7 @@ namespace DataDynamics.PageFX.CodeModel
         long ID { get; set; }
     }
 
-    public interface IGenericParameterCollection : IList<IGenericParameter>, ICodeNode
+    public interface IGenericParameterCollection : IReadOnlyList<IGenericParameter>, ICodeNode
     {
         IGenericParameter this[string name] { get; }
     }

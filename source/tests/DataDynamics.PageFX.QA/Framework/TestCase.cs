@@ -445,7 +445,7 @@ namespace DataDynamics.PageFX
         #endregion
     }
 
-    public class TestCaseCollection : SimpleHashedList<string, TestCase>
+    public class TestCaseCollection : HashList<string, TestCase>
     {
         public TestCaseCollection()
             : base(x => x.Name)

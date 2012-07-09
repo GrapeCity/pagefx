@@ -580,16 +580,16 @@ namespace DataDynamics.PageFX.FLI
 
             switch (member.MemberType)
             {
-                case TypeMemberType.Constructor:
-                case TypeMemberType.Method:
+                case MemberType.Constructor:
+                case MemberType.Method:
                     DefineMethod((IMethod)member);
                     break;
 
-                case TypeMemberType.Field:
+                case MemberType.Field:
                     DefineField((IField)member);
                     break;
 
-                case TypeMemberType.Type:
+                case MemberType.Type:
                     DefineType((IType)member);
                     break;
             }

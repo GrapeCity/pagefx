@@ -104,20 +104,20 @@ namespace DataDynamics.PageFX.CodeModel
 
             switch (m.MemberType)
             {
-                case TypeMemberType.Field:
+                case MemberType.Field:
                     _fields.Add((IField)m);
                     break;
 
-                case TypeMemberType.Method:
-                case TypeMemberType.Constructor:
+                case MemberType.Method:
+                case MemberType.Constructor:
                     _methods.Add((IMethod)m);
                     break;
 
-                case TypeMemberType.Property:
+                case MemberType.Property:
                     _properties.Add((IProperty)m);
                     break;
 
-                case TypeMemberType.Event:
+                case MemberType.Event:
                     _events.Add((IEvent)m);
                     break;
             }

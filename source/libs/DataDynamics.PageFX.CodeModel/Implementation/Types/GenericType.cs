@@ -7,15 +7,18 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public class GenericType : UserDefinedType, IGenericType
     {
-        #region IGenericType Members
-        public IGenericParameterCollection GenericParameters
+    	IGenericParameterCollection IGenericType.GenericParameters
+    	{
+			get { return _genericParams; }
+    	}
+
+		public GenericParameterCollection GenericParameters
         {
             get { return _genericParams; }
         }
-        readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
-        #endregion
+        private readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
 
-        #region Resolver
+    	#region Resolver
         public static IType Resolve(IType contextType, IType type)
         {
             return Resolve(contextType, null, type);

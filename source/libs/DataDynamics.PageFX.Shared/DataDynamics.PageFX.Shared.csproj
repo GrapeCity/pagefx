@@ -7,7 +7,7 @@
     <ProjectGuid>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataDynamics.PageFX.Shared</RootNamespace>
+    <RootNamespace>DataDynamics</RootNamespace>
     <AssemblyName>DataDynamics.PageFX.Shared</AssemblyName>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>
@@ -87,11 +87,7 @@
     <Compile Include="Compression\ZLib\ZByteArray.cs" />
     <Compile Include="Compression\ZLib\Zlib.cs" />
     <Compile Include="Compression\ZLib\ZStream.cs" />
-    <Compile Include="DataStructures\Algorithms.cs" />
-    <Compile Include="DataStructures\DeepEnumerator.cs" />
-    <Compile Include="DataStructures\LinkedList.cs" />
-    <Compile Include="DataStructures\ReadOnlyList.cs" />
-    <Compile Include="DataStructures\ReadOnlyListExtensions.cs" />
+    <Compile Include="System.Collections.Generic\ReadOnlyList.cs" />
     <Compile Include="Graphics\ColorExtensions.cs" />
     <Compile Include="Graphics\Enums.cs" />
     <Compile Include="Graphics\GPBuilder.cs" />
@@ -113,7 +109,6 @@
     <Compile Include="Utils\SimpleConfig.cs" />
     <Compile Include="System\Tricks.cs" />
     <Compile Include="Utils\CLOption.cs" />
-    <Compile Include="Utils\Compiler.cs" />
     <Compile Include="Graphics\FastBitmap.cs" />
     <Compile Include="Graphics\PathRendering.cs" />
     <Compile Include="Utils\FormatAttribute.cs" />
@@ -126,7 +121,6 @@
     <Compile Include="Utils\NameAttribute.cs" />
     <Compile Include="Utils\FdbProcessHost.cs" />
     <Compile Include="PageFX\PfxCompiler.cs" />
-    <Compile Include="Utils\Range.cs" />
     <Compile Include="System.IO\DebugWriter.cs" />
     <Compile Include="Utils\PathExtensions.cs" />
     <Compile Include="Tools\Dot.cs" />
@@ -148,15 +142,13 @@
     <Compile Include="Utils\TextTemplateEngine.cs" />
     <Compile Include="Utils\XmlExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DataStructures\EmptyList.cs" />
-    <Compile Include="DataStructures\HashedList.cs" />
-    <Compile Include="DataStructures\IKeyProvider.cs" />
+    <Compile Include="System.Collections.Generic\HashList.cs" />
     <Compile Include="System.IO\BitReader.cs" />
     <Compile Include="System.IO\BitWriter.cs" />
     <Compile Include="System.IO\BufferedBinaryReader.cs" />
     <Compile Include="System.IO\PathResolver.cs" />
     <Compile Include="System.IO\StreamExtensions.cs" />
-    <Compile Include="System\Object2.cs" />
+    <Compile Include="System\EnumerableExtensions.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
     <Compile Include="System\TextFormatter.cs" />
   </ItemGroup>

@@ -1493,7 +1493,6 @@
     <Compile Include="UnitTests\AbcFileTest.cs" />
     <Compile Include="UnitTests\ABCImportTest.cs" />
     <Compile Include="UnitTests\AILTest.cs" />
-    <Compile Include="UnitTests\AlgorithmTests.cs" />
     <Compile Include="UnitTests\ArithmeticTest.cs" />
     <Compile Include="UnitTests\BitReaderTest.cs" />
     <Compile Include="UnitTests\BitWriterTest.cs" />
@@ -1503,7 +1502,6 @@
     <Compile Include="UnitTests\FunctionTests.cs" />
     <Compile Include="UnitTests\NegativeTests.cs" />
     <Compile Include="UnitTests\StrTest.cs" />
-    <Compile Include="UnitTests\TreeIteratorsTest.cs" />
     <Compile Include="UnitTests\ABCIOTest.cs" />
     <Compile Include="Framework\TestEngine.cs" />
     <Compile Include="UnitTests\SwfIOTest.cs" />

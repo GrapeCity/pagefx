@@ -20,7 +20,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
-        TypeMemberType MemberType { get; }
+        MemberType MemberType { get; }
 
         /// <summary>
         /// Gets or sets the name of type member.
@@ -64,20 +64,8 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents collection of <see cref="ITypeMember"/>s.
     /// </summary>
-    public interface ITypeMemberCollection : IEnumerable<ITypeMember>, ICodeNode
+    public interface ITypeMemberCollection : IReadOnlyList<ITypeMember>, ICodeNode
     {
-        /// <summary>
-        /// Gets number of members.
-        /// </summary>
-        int Count { get; }
-
-        /// <summary>
-        /// Gets member at specified index.
-        /// </summary>
-        /// <param name="index">zero-baded index of member to get</param>
-        /// <returns></returns>
-        ITypeMember this[int index] { get; }
-
         /// <summary>
         /// Adds member to collection.
         /// </summary>

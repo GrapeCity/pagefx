@@ -108,8 +108,8 @@ namespace DataDynamics.PageFX.CodeModel
     }
     #endregion
 
-    #region enum TypeMemberType
-    public enum TypeMemberType
+    #region enum MemberType
+    public enum MemberType
     {
         Field,
         Method,

@@ -5,39 +5,24 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public class NewDelegateExpression : Expression, INewDelegateExpression
     {
-        #region Constructors
-        public NewDelegateExpression(IType type, IMethodReferenceExpression method)
+    	public NewDelegateExpression(IType type, IMethodReferenceExpression method)
         {
-            _delegateType = type;
-            _method = method;
+            DelegateType = type;
+            Method = method;
         }
-        #endregion
 
-        #region IDelegateCreateExpression Members
-        public IType DelegateType
-        {
-            get { return _delegateType; }
-            set { _delegateType = value; }
-        }
-        private IType _delegateType;
+    	public IType DelegateType { get; set; }
 
-        public IMethodReferenceExpression Method
-        {
-            get { return _method; }
-            set { _method = value; }
-        }
-        private IMethodReferenceExpression _method;
-        #endregion
+    	public IMethodReferenceExpression Method { get; set; }
 
-        #region Override Members
-        public override IType ResultType
+    	public override IType ResultType
         {
-            get { return _delegateType; }
+            get { return DelegateType; }
         }
 
         public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] {_method}; }
+            get { return new ICodeNode[] {Method}; }
         }
 
         public override bool Equals(object obj)
@@ -45,56 +30,42 @@ namespace DataDynamics.PageFX.CodeModel
             if (obj == this) return true;
             var e = obj as INewDelegateExpression;
             if (e == null) return false;
-            if (e.DelegateType != _delegateType) return false;
-            if (!Equals(e.Method, _method)) return false;
+            if (e.DelegateType != DelegateType) return false;
+            if (!Equals(e.Method, Method)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_delegateType, _method);
+            return new object[]{DelegateType, Method}.EvalHashCode();
         }
-        #endregion
     }
 
     public class DelegateInvokeExpression : Expression, IDelegateInvokeExpression
     {
-        #region IDelegateInvokeExpression Members
-        public IExpression Target
-        {
-            get { return _target; }
-            set { _target = value; }
-        }
-        private IExpression _target;
+    	public IExpression Target { get; set; }
 
-        public IMethod Method
-        {
-            get { return _method; }
-            set { _method = value; }
-        }
-        private IMethod _method;
+    	public IMethod Method { get; set; }
 
-        public IExpressionCollection Arguments
+    	public IExpressionCollection Arguments
         {
             get { return _args; }
         }
         private readonly ExpressionCollection _args = new ExpressionCollection();
-        #endregion
 
-        #region Override Members
-        public override IType ResultType
+    	public override IType ResultType
         {
             get
             {
-                if (_method != null)
-                    return _method.Type;
+                if (Method != null)
+                    return Method.Type;
                 return null;
             }
         }
 
         public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] { _target, _args }; }
+            get { return new ICodeNode[] { Target, _args }; }
         }
 
         public override bool Equals(object obj)
@@ -102,7 +73,7 @@ namespace DataDynamics.PageFX.CodeModel
             if (obj == this) return true;
             var e = obj as IDelegateInvokeExpression;
             if (e == null) return false;
-            if (!Equals(e.Target, _target)) return false;
+            if (!Equals(e.Target, Target)) return false;
             if (!Equals(e.Arguments, _args)) return false;
             return true;
         }
@@ -111,8 +82,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_target, _args) ^ _hs;
+            return new object[]{Target, _args}.EvalHashCode() ^ _hs;
         }
-        #endregion
     }
 }

@@ -13,8 +13,7 @@ namespace DataDynamics.PageFX.CodeModel
             _finally = new StatementCollection(this);
         }
 
-        #region ITryCatchStatement Members
-        public IStatementCollection Try
+    	public IStatementCollection Try
         {
             get { return _try; }
         }
@@ -37,10 +36,8 @@ namespace DataDynamics.PageFX.CodeModel
             get { return _finally; }
         }
         private readonly StatementCollection _finally;
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
             get
             {
@@ -53,10 +50,8 @@ namespace DataDynamics.PageFX.CodeModel
                 yield return _finally;
             }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var s = obj as ITryCatchStatement;
@@ -70,9 +65,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_try, _fault, _finally, _catch);
+            return new object[]{_try, _fault, _finally, _catch}.EvalHashCode();
         }
-        #endregion
     }
 
     public class CatchClause : Statement, ICatchClause
@@ -82,44 +76,24 @@ namespace DataDynamics.PageFX.CodeModel
             _body = new StatementCollection(this);
         }
 
-        #region ICatchClause Members
-        public IType ExceptionType
-        {
-            get { return _exceptionType; }
-            set { _exceptionType = value; }
-        }
-        private IType _exceptionType;
+    	public IType ExceptionType { get; set; }
 
-        public IExpression Condition
-        {
-            get { return _condition; }
-            set { _condition = value; }
-        }
-        private IExpression _condition;
+    	public IExpression Condition { get; set; }
 
-        public IVariable Variable
-        {
-            get { return _var; }
-            set { _var = value; }
-        }
-        private IVariable _var;
-        
-        public IStatementCollection Body
+    	public IVariable Variable { get; set; }
+
+    	public IStatementCollection Body
         {
             get { return _body; }
         }
         private readonly StatementCollection _body;
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] { _condition, _var, _body }; }
+            get { return new ICodeNode[] { Condition, Variable, _body }; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+    	public override string ToString()
         {
             return ToString(null, null);
         }
@@ -129,17 +103,16 @@ namespace DataDynamics.PageFX.CodeModel
             if (obj == this) return true;
             var c = obj as ICatchClause;
             if (c == null) return false;
-            if (c.ExceptionType != _exceptionType) return false;
-            if (!Equals(c.Variable, _var)) return false;
-            if (!Equals(c.Condition, _condition)) return false;
+            if (c.ExceptionType != ExceptionType) return false;
+            if (!Equals(c.Variable, Variable)) return false;
+            if (!Equals(c.Condition, Condition)) return false;
             if (!Equals(c.Body, _body)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_exceptionType, _var, _condition, _body);
+            return new object[]{ExceptionType, Variable, Condition, _body}.EvalHashCode();
         }
-        #endregion
     }
 }

@@ -172,7 +172,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             {
                 writer.WriteStartElement("item");
                 writer.WriteAttributeString("index", i.ToString());
-                writer.WriteAttributeString("value", XmlExtensions.EntifyString(this[i].ToString()));
+                writer.WriteAttributeString("value", this[i].ToString().ToXmlString());
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();

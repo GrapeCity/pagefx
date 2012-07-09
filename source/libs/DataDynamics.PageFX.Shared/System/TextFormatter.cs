@@ -3,9 +3,7 @@ using System.IO;
 
 namespace System
 {
-    public delegate string Stringer<T>(T value);
-
-    public static class TextFormatter
+	public static class TextFormatter
     {
         public static string ToString<T>(IEnumerable<T> list)
         {
@@ -21,7 +19,7 @@ namespace System
             }
         }
 
-        public static void WriteList<T>(TextWriter writer, IEnumerable<T> list, Stringer<T> stringer, string prefix, string suffix, string separator)
+        public static void WriteList<T>(TextWriter writer, IEnumerable<T> list, Func<T,string> stringer, string prefix, string suffix, string separator)
         {
             if (list != null)
             {

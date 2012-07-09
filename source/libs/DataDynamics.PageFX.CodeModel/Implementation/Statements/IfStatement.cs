@@ -5,15 +5,9 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public class IfStatement : Statement, IIfStatement
     {
-        #region IIfStatement Members
-        public IExpression Condition
-        {
-            get { return _condition; }
-            set { _condition = value; }
-        }
-        private IExpression _condition;
+    	public IExpression Condition { get; set; }
 
-        public IStatementCollection Then
+    	public IStatementCollection Then
         {
             get { return _then ?? (_then = new StatementCollection(this)); }
         	set
@@ -50,22 +44,18 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
         private IStatementCollection _else;
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] { _condition, _then, _else }; }
+            get { return new ICodeNode[] { Condition, _then, _else }; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var s = obj as IIfStatement;
             if (s == null) return false;
-            if (!Equals(s.Condition, _condition)) return false;
+            if (!Equals(s.Condition, Condition)) return false;
             if (!Equals(s.Then, _then)) return false;
             if (!Equals(s.Else, _else)) return false;
             return true;
@@ -73,8 +63,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_condition, _then, _else);
+            return new object[]{Condition, _then, _else}.EvalHashCode();
         }
-        #endregion
     }
 }

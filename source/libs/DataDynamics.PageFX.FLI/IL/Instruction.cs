@@ -904,7 +904,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public override int GetHashCode()
         {
-            return (int)Code ^ Algorithms.EvalHashCode(_operands);
+			return (int)Code ^ _operands.EvalHashCode();
         }
         #endregion
 

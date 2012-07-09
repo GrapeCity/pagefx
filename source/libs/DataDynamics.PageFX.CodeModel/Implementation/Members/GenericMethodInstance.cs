@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel.Syntax;
+using Enumerable = System.Linq.Enumerable;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -202,8 +205,55 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IGenericParameterCollection GenericParameters
         {
-            get { return EmptyGenericParamaterCollection.Instance; }
+			get { return EmptyGenericParameterCollection.Instance; }
         }
+
+		private sealed class EmptyGenericParameterCollection : IGenericParameterCollection
+		{
+			public static readonly IGenericParameterCollection Instance = new EmptyGenericParameterCollection();
+
+			public IEnumerator<IGenericParameter> GetEnumerator()
+			{
+				yield break;
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			public int Count
+			{
+				get { return 0; }
+			}
+
+			public IGenericParameter this[int index]
+			{
+				get { return null; }
+			}
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				return "";
+			}
+
+			public CodeNodeType NodeType
+			{
+				get { return CodeNodeType.GenericParameters; }
+			}
+
+			public IEnumerable<ICodeNode> ChildNodes
+			{
+				get { return Enumerable.Empty<ICodeNode>(); }
+			}
+
+			public object Tag { get; set; }
+
+			public IGenericParameter this[string name]
+			{
+				get { return null; }
+			}
+		}
 
         public IType[] GenericArguments
         {
@@ -367,7 +417,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
-        public TypeMemberType MemberType
+        public MemberType MemberType
         {
             get { return _method.MemberType; }
         }

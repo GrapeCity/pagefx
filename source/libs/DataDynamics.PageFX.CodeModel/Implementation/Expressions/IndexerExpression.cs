@@ -5,59 +5,45 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class IndexerExpression : Expression, IIndexerExpression
     {
-        #region Constructors
-        public IndexerExpression()
+    	public IndexerExpression()
         {    
         }
 
         public IndexerExpression(IPropertyReferenceExpression property)
         {
-            _property = property;
+            Property = property;
         }
 
         public IndexerExpression(IPropertyReferenceExpression property, IExpression index)
         {
-            _property = property;
+            Property = property;
             _index.Add(index);
         }
-        #endregion
 
-        #region IIndexerExpression Members
-        public IPropertyReferenceExpression Property
-        {
-            get { return _property; }
-            set { _property = value; }
-        }
-        private IPropertyReferenceExpression _property;
+    	public IPropertyReferenceExpression Property { get; set; }
 
-        public IExpressionCollection Index
+    	public IExpressionCollection Index
         {
             get { return _index; }
         }
         private readonly ExpressionCollection _index = new ExpressionCollection();
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] { _property, _index }; }
+            get { return new ICodeNode[] { Property, _index }; }
         }
-        #endregion
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
-            get { return _property.ResultType; }
+            get { return Property.ResultType; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IIndexerExpression;
             if (e == null) return false;
-            if (!Equals(e.Property, _property)) return false;
+            if (!Equals(e.Property, Property)) return false;
             if (!Equals(e.Index, _index)) return false;
             return true;
         }
@@ -66,8 +52,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_property, _index) ^ _hs;
+            return new object[]{Property, _index}.EvalHashCode() ^ _hs;
         }
-        #endregion
     }
 }

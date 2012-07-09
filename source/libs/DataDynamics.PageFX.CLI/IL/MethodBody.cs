@@ -163,17 +163,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             if (_code == null)
                 return new IMethod[0];
-            var list = new HashedList<string, IMethod>(ApiInfo.GetFullMethodName);
-            foreach (var instr in _code)
-            {
-                if (instr.FlowControl == FlowControl.Call)
-                {
-                    var call = instr.Method;
-                    if (!list.Contains(call))
-                        list.Add(call);
-                }
-            }
-            return list.ToArray();
+			return _code.Where<Instruction>(x => x.FlowControl == FlowControl.Call).Select(x => x.Method).ToArray();
         }
 
         /// <summary>

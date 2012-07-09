@@ -47,7 +47,7 @@ namespace DataDynamics.PageFX.CLI
 		private IType[] _typeSpec;
 		private IType[] _interfaceImpl;
 		private IField[] _field;
-		private IMethod[] _methodDef;
+		private Method[] _methodDef;
 		private ITypeMember[] _memberRef;
 		private IMethod[] _methodSpec;
 		private IParameter[] _param;
@@ -396,7 +396,7 @@ namespace DataDynamics.PageFX.CLI
             bool checkEntryPoint = entryPoint.Table == tableId;
 
             int methodNum = _mdb.GetRowCount(tableId);
-            _methodDef = new IMethod[methodNum];
+            _methodDef = new Method[methodNum];
             for (int i = 0; i < methodNum; ++i)
             {
                 var row = _mdb.GetRow(tableId, i);
@@ -679,9 +679,9 @@ namespace DataDynamics.PageFX.CLI
             return type;
         }
 
-        IGenericType GetGenericType(int index)
+        GenericType GetGenericType(int index)
         {
-            return (IGenericType)GetTypeDef(index, true);
+            return (GenericType)GetTypeDef(index, true);
         }
 
         void LoadTypeDefTable()
@@ -1136,7 +1136,7 @@ namespace DataDynamics.PageFX.CLI
             string mname = ifaceMethod.Name;
             while (type != null)
             {
-                var candidates = type.Methods[mname];
+                var candidates = type.Methods.Find(mname);
                 foreach (var method in candidates)
                 {
                     if (method.IsExplicitImplementation) continue;
@@ -2015,11 +2015,11 @@ namespace DataDynamics.PageFX.CLI
             return ResolveMethodSignature(sig, type, CurrentMethod);
         }
 
-        static ITypeMember FindMember(IType type, TypeMemberType kind, string name, IType[] types)
+        static ITypeMember FindMember(IType type, MemberType kind, string name, IType[] types)
         {
             switch (kind)
             {
-                case TypeMemberType.Field:
+                case MemberType.Field:
                     {
                         var field = type.Fields[name];
                         if (field != null)
@@ -2027,7 +2027,7 @@ namespace DataDynamics.PageFX.CLI
                     }
                     break;
 
-                case TypeMemberType.Property:
+                case MemberType.Property:
                     {
                         foreach (var property in type.Properties)
                         {
@@ -2179,7 +2179,7 @@ namespace DataDynamics.PageFX.CLI
         IEnumerable<IMethod> GetMatchedMethods(IType type, string name, MdbMethodSignature sig)
         {
             int paramNum = sig.Params.Length;
-            var set = type.Methods[name];
+            var set = type.Methods.Find(name);
             foreach (var method in set)
             {
                 if (method.Parameters.Count != paramNum) continue;
@@ -2274,11 +2274,11 @@ namespace DataDynamics.PageFX.CLI
             }
 
             IType[] types = null;
-            TypeMemberType kind;
+            MemberType kind;
             switch (sig.Kind)
             {
                 case MdbSignatureKind.Field:
-                    kind = TypeMemberType.Field;
+                    kind = MemberType.Field;
                     break;
 
                 case MdbSignatureKind.Method:
@@ -2286,7 +2286,7 @@ namespace DataDynamics.PageFX.CLI
 
                 case MdbSignatureKind.Property:
                     types = ResolveMethodSignature((MdbMethodSignature)sig, type);
-                    kind = TypeMemberType.Property;
+                    kind = MemberType.Property;
                     break;
 
                 default:

@@ -4,37 +4,18 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class StackAllocateExpression : Expression, IStackAllocateExpression
     {
-        #region IStackAllocateExpression Members
-        public IType Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
-        private IType _type;
+    	public IType Type { get; set; }
 
-        public IExpression Expression
-        {
-            get { return _expression; }
-            set { _expression = value; }
-        }
-        private IExpression _expression;
-        #endregion
+    	public IExpression Expression { get; set; }
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] {_expression}; }
+            get { return new ICodeNode[] {Expression}; }
         }
-        #endregion
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
-            get { return _type; }
+            get { return Type; }
         }
-        #endregion
-
-        #region Object Override Members
-        #endregion
     }
 }

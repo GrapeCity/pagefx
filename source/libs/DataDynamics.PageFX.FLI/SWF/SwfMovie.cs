@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using DataDynamics.Imaging;
 using DataDynamics.PageFX.FLI.ABC;
@@ -25,7 +26,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         /// </summary>
         public SwfMovie()
         {
-            _displayList = new HashedList<ushort, ISwfDisplayObject>(obj => obj.Depth);
+            _displayList = new HashList<ushort, ISwfDisplayObject>(obj => obj.Depth);
         }
 
         /// <summary>
@@ -387,7 +388,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             return false;
         }
 
-        private readonly HashedList<ushort, ISwfDisplayObject> _displayList;
+        private readonly HashList<ushort, ISwfDisplayObject> _displayList;
         #endregion
 
         #region Graphics
@@ -584,7 +585,12 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public void Dump(string path)
         {
-            using (var xml = XmlWriter.Create(path, XmlExtensions.DefaultIndentedSettings))
+            using (var xml = XmlWriter.Create(path, new XmlWriterSettings
+                                                    	{
+                                                    		Indent = true,
+                                                    		IndentChars = "  ",
+                                                    		Encoding = Encoding.UTF8
+                                                    	}))
             {
                 xml.WriteStartDocument();
                 Dump(xml);
@@ -594,7 +600,12 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public void Dump(TextWriter writer)
         {
-            using (var xml = XmlWriter.Create(writer, XmlExtensions.DefaultIndentedSettings))
+            using (var xml = XmlWriter.Create(writer, new XmlWriterSettings
+                                                      	{
+                                                      		Indent = true,
+                                                      		IndentChars = "  ",
+                                                      		Encoding = Encoding.UTF8
+                                                      	}))
             {
                 xml.WriteStartDocument();
                 Dump(xml);

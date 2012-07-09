@@ -662,7 +662,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         static IMethod IsDelegate(IType type)
         {
             if (type.TypeKind != TypeKind.Delegate) return null;
-            var list = type.Methods["Invoke"];
+            var list = type.Methods.Find("Invoke");
             if (list == null) return null;
 			return list.FirstOrDefault();
         }

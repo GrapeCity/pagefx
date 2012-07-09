@@ -723,7 +723,7 @@ namespace DataDynamics.PageFX.FLI
             return m;
         }
 
-        public AbcMethod DefineAbcMethod(IType type, Predicate<IMethod> p)
+        public AbcMethod DefineAbcMethod(IType type, Func<IMethod,bool> p)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -737,43 +737,43 @@ namespace DataDynamics.PageFX.FLI
 
         public AbcMethod DefineAbcMethod(IType type, string name, int argc)
         {
-            var source = type.Methods[name, argc];
+            var source = type.Methods.Find(name, argc);
             return DefineAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, Predicate<IType> arg1)
+        public AbcMethod DefineAbcMethod(IType type, string name, Func<IType,bool> arg1)
         {
-            var source = type.Methods[name, arg1];
+            var source = type.Methods.Find(name, arg1);
             return DefineAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, Predicate<IType> arg1, Predicate<IType> arg2)
+        public AbcMethod DefineAbcMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2)
         {
-            var source = type.Methods[name, arg1, arg2];
+            var source = type.Methods.Find(name, arg1, arg2);
             return DefineAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, Predicate<IType> arg1, Predicate<IType> arg2, Predicate<IType> arg3)
+        public AbcMethod DefineAbcMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2, Func<IType,bool> arg3)
         {
-            var source = type.Methods[name, arg1, arg2, arg3];
+            var source = type.Methods.Find(name, arg1, arg2, arg3);
             return DefineAbcMethod(source);
         }
 
         public AbcMethod DefineAbcMethod(IType type, string name, IType arg1)
         {
-            var source = type.Methods[name, arg1];
+            var source = type.Methods.Find(name, arg1);
             return DefineAbcMethod(source);
         }
 
         public AbcMethod DefineAbcMethod(IType type, string name, IType arg1, IType arg2)
         {
-            var source = type.Methods[name, arg1, arg2];
+            var source = type.Methods.Find(name, arg1, arg2);
             return DefineAbcMethod(source);
         }
 
         public AbcMethod DefineAbcMethod(IType type, string name, IType arg1, IType arg2, IType arg3)
         {
-            var source = type.Methods[name, arg1, arg2, arg3];
+            var source = type.Methods.Find(name, arg1, arg2, arg3);
             return DefineAbcMethod(source);
         }
 
@@ -782,7 +782,7 @@ namespace DataDynamics.PageFX.FLI
             return DefineAbcMethod(type, name, 0);
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, Predicate<IMethod> p)
+        LazyValue<AbcMethod> LazyMethod(IType type, Func<IMethod,bool> p)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, p));
         }
@@ -797,17 +797,17 @@ namespace DataDynamics.PageFX.FLI
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, Predicate<IType> arg1)
+        LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType,bool> arg1)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, Predicate<IType> arg1, Predicate<IType> arg2)
+        LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, Predicate<IType> arg1, Predicate<IType> arg2, Predicate<IType> arg3)
+        LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2, Func<IType,bool> arg3)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2, arg3));
         }

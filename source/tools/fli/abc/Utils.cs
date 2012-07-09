@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Linq;
@@ -13,7 +14,12 @@ namespace abc
     {
         public static XmlWriter CreateXmlWriter(string path)
         {
-            var xws = XmlExtensions.DefaultIndentedSettings;
+            var xws = new XmlWriterSettings
+                      	{
+                      		Indent = true,
+                      		IndentChars = "  ",
+                      		Encoding = Encoding.UTF8
+                      	};
             return XmlWriter.Create(path, xws);
         }
 

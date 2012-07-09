@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FLI.SWC
         public SwcFile(Stream input)
         {
             _zip = new ZipFile(input);
-            _libs = new HashedList<string, SwfMovie>(lib => lib.Name);
+            _libs = new HashList<string, SwfMovie>(lib => lib.Name);
         }
 
         public SwcFile(byte[] data)
@@ -178,7 +178,7 @@ namespace DataDynamics.PageFX.FLI.SWC
         {
             if (_libElems != null) return;
 
-            _libElems = new HashedList<string, XmlElement>(GetLibName);
+            _libElems = new HashList<string, XmlElement>(GetLibName);
 
             var cat = Catalog;
             if (cat == null)
@@ -189,8 +189,8 @@ namespace DataDynamics.PageFX.FLI.SWC
                 _libElems.Add(libElem);
         }
 
-        readonly HashedList<string, SwfMovie> _libs;
-        HashedList<string, XmlElement> _libElems;
+        readonly HashList<string, SwfMovie> _libs;
+        HashList<string, XmlElement> _libElems;
         #endregion
 
         #region Digests

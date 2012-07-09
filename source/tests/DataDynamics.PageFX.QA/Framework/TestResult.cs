@@ -83,8 +83,8 @@ namespace DataDynamics.PageFX
                 {
                     writer.WriteLine("<tr>");
                     writer.WriteLine("<td>{0}</td>", tc.FullDisplayName);
-                    writer.WriteLine("<td><pre>\n{0}\n</pre></td>", XmlExtensions.EntifyString(tc.Output1));
-                    writer.WriteLine("<td><pre>\n{0}\n</pre></td>", XmlExtensions.EntifyString(tc.Output2));
+                    writer.WriteLine("<td><pre>\n{0}\n</pre></td>", tc.Output1.ToXmlString());
+                    writer.WriteLine("<td><pre>\n{0}\n</pre></td>", tc.Output2.ToXmlString());
                     writer.WriteLine("</tr>");
                 }
 

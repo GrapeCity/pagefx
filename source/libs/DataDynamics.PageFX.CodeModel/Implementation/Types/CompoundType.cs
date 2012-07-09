@@ -258,9 +258,9 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
-        public TypeMemberType MemberType
+        public MemberType MemberType
         {
-            get { return TypeMemberType.Type; }
+            get { return MemberType.Type; }
         }
 
         public virtual string NameSuffix

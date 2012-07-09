@@ -10,9 +10,9 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
-        public override TypeMemberType MemberType
+        public override MemberType MemberType
         {
-            get { return TypeMemberType.Property; }
+            get { return MemberType.Property; }
         }
 
         public override Visibility Visibility

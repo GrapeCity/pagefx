@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.CodeModel
     	#endregion
     }
 
-    public sealed class ManifestFileCollection : HashedList<string, IManifestFile>, IManifestFileCollection
+    public sealed class ManifestFileCollection : HashList<string, IManifestFile>, IManifestFileCollection
     {
         public ManifestFileCollection()
             : base(f => f.Name)

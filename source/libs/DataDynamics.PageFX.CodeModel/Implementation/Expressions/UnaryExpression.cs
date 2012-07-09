@@ -4,24 +4,14 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class UnaryExpression : EnclosingExpression, IUnaryExpression
     {
-        #region Constructors
-        public UnaryExpression(IExpression e, UnaryOperator op) : base(e)
+    	public UnaryExpression(IExpression e, UnaryOperator op) : base(e)
         {
-            _op = op;
+            Operator = op;
         }
-        #endregion
 
-        #region IUnaryExpression Members
-        public UnaryOperator Operator
-        {
-            get { return _op; }
-            set { _op = value; }
-        }
-        private UnaryOperator _op;
-        #endregion
+    	public UnaryOperator Operator { get; set; }
 
-        #region IExpression Members
-        public static IType GetResultType(IType type, UnaryOperator op)
+    	public static IType GetResultType(IType type, UnaryOperator op)
         {
             switch (op)
             {
@@ -50,13 +40,11 @@ namespace DataDynamics.PageFX.CodeModel
             get
             {
                 var type = Expression.ResultType;
-                return GetResultType(type, _op);
+                return GetResultType(type, Operator);
             }
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+    	public override string ToString()
         {
             return ToString(null, null);
         }
@@ -66,14 +54,13 @@ namespace DataDynamics.PageFX.CodeModel
             if (obj == this) return true;
             var e = obj as IUnaryExpression;
             if (e == null) return false;
-            if (e.Operator != _op) return false;
+            if (e.Operator != Operator) return false;
             return base.Equals(obj);
         }
 
         public override int GetHashCode()
         {
-            return _op.GetHashCode() ^ base.GetHashCode();
+            return Operator.GetHashCode() ^ base.GetHashCode();
         }
-        #endregion
     }
 }

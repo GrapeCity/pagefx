@@ -1,17 +1,20 @@
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using DataDynamics.Collections;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public interface IParameterizedMember
+    public interface IParameterizedMember : ITypeMember
     {
         /// <summary>
         /// Gets the parameters for this member.
         /// </summary>
         IParameterCollection Parameters { get; }
-    }
+	}
+
+	public interface IParameterizedMemberCollection<T> : IReadOnlyList<T>, ICodeNode where T:IParameterizedMember
+	{
+		IEnumerable<T> Find(string name);
+	}
 
     /// <summary>
     /// Represents type method
@@ -143,36 +146,14 @@ namespace DataDynamics.PageFX.CodeModel
         bool SignatureChanged { get; }
     }
 
-    /// <summary>
+	/// <summary>
     /// Represents collection of <see cref="IMethod"/>s.
     /// </summary>
-    public interface IMethodCollection : IReadOnlyList<IMethod>, ICodeNode
+	public interface IMethodCollection : IParameterizedMemberCollection<IMethod>
     {
         void Add(IMethod method);
 
-        IEnumerable<IMethod> this[string name] { get; }
-
-        IMethod this[string name, Predicate<IMethod> predicate] { get; }
-
-        IMethod this[string name, int argc] { get; }
-
-        IMethod this[string name, IType arg1] { get; }
-
-        IMethod this[string name, IType arg1, IType arg2] { get; }
-
-        IMethod this[string name, IType arg1, IType arg2, IType arg3] { get; }
-
-        IMethod this[string name, params IType[] args] { get; }
-
-        IMethod this[string name, Predicate<IParameterCollection> predicate] { get; }
-
-        IMethod this[string name, Predicate<IType> arg1] { get; }
-
-        IMethod this[string name, Predicate<IType> arg1, Predicate<IType> arg2] { get; }
-
-        IMethod this[string name, Predicate<IType> arg1, Predicate<IType> arg2, Predicate<IType> arg3] { get; }
-
-        IEnumerable<IMethod> Constructors { get; }
+    	IEnumerable<IMethod> Constructors { get; }
 
         IMethod StaticConstructor { get; }
     }

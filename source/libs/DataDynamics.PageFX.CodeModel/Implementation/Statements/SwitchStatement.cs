@@ -10,30 +10,20 @@ namespace DataDynamics.PageFX.CodeModel
             _cases = new StatementCollection<ISwitchCase>(this);
         }
 
-        #region ISwitchStatement Members
-        public IExpression Expression
-        {
-            get { return _expression; }
-            set { _expression = value; }
-        }
-        private IExpression _expression;
+    	public IExpression Expression { get; set; }
 
-        public IStatementCollection<ISwitchCase> Cases
+    	public IStatementCollection<ISwitchCase> Cases
         {
             get { return _cases; }
         }
         private readonly StatementCollection<ISwitchCase> _cases;
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] { _expression, _cases }; }
+            get { return new ICodeNode[] { Expression, _cases }; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+    	public override string ToString()
         {
             return ToString(null, null);
         }
@@ -43,16 +33,15 @@ namespace DataDynamics.PageFX.CodeModel
             if (obj == this) return true;
             var s = obj as ISwitchStatement;
             if (s == null) return false;
-            if (!Equals(s.Expression, _expression)) return false;
+            if (!Equals(s.Expression, Expression)) return false;
             if (!Equals(s.Cases, _cases)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_expression, _cases);
+            return new object[]{Expression, _cases}.EvalHashCode();
         }
-        #endregion
     }
 
     public class SwitchCase : Statement, ISwitchCase
@@ -62,54 +51,38 @@ namespace DataDynamics.PageFX.CodeModel
             _body = new StatementCollection(this);
         }
 
-        #region ISwitchCase Members
-        public int From
-        {
-            get { return _from; }
-            set { _from = value; }
-        }
-        private int _from;
+    	public int From { get; set; }
 
-        public int To
-        {
-            get { return _to; }
-            set { _to = value; }
-        }
-        private int _to;
+    	public int To { get; set; }
 
-        public IStatementCollection Body
+    	public IStatementCollection Body
         {
             get { return _body; }
         }
         private readonly StatementCollection _body;
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
             get { return new ICodeNode[] {_body}; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var c = obj as ISwitchCase;
             if (c == null) return false;
-            if (c.From != _from) return false;
-            if (c.To != _to) return false;
+            if (c.From != From) return false;
+            if (c.To != To) return false;
             if (!Equals(c.Body, _body)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            int h = _from ^ _to;
+            int h = From ^ To;
             if (_body != null)
                 h ^= _body.GetHashCode();
             return h;
         }
-        #endregion
     }
 }

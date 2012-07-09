@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CodeModel
             if (offset >= max)
                 return n - 1;
 
-            int i = Algorithms.BinarySearch<T>(this, 0, n, item => item.Offset - offset);
+            int i = this.BinarySearch<T>(0, n, item => item.Offset - offset);
             return i;
         }
 

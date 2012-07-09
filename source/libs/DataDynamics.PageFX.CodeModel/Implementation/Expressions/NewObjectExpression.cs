@@ -5,65 +5,45 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public class NewObjectExpression : Expression, INewObjectExpression, ITypeReferenceProvider
     {
-        #region INewObjectExpression Members
-        public IMethod Constructor
-        {
-            get { return _ctor; }
-            set { _ctor = value; }
-        }
-        private IMethod _ctor;
+    	public IMethod Constructor { get; set; }
 
-        public IType ObjectType
-        {
-            get { return _objectType; }
-            set { _objectType = value; }
-        }
-        private IType _objectType;
+    	public IType ObjectType { get; set; }
 
-        public IExpressionCollection Arguments
+    	public IExpressionCollection Arguments
         {
             get { return _args; }
         }
         private readonly ExpressionCollection _args = new ExpressionCollection();
-        #endregion
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
-            get { return _objectType; }
+            get { return ObjectType; }
         }
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
             get { return new ICodeNode[] {_args}; }
         }
-        #endregion
 
-        #region ITypeReferenceProvider Members
-        public IEnumerable<IType> GetTypeReferences()
+    	public IEnumerable<IType> GetTypeReferences()
         {
-            return new[] { _objectType };
+            return new[] { ObjectType };
         }
-        #endregion
 
-        #region Object Override Methods
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as INewObjectExpression;
             if (e == null) return false;
-            if (e.ObjectType != _objectType) return false;
-            if (e.Constructor != _ctor) return false;
+            if (e.ObjectType != ObjectType) return false;
+            if (e.Constructor != Constructor) return false;
             if (!Equals(e.Arguments, _args)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_objectType, _ctor, _args);
+            return new object[]{ ObjectType, Constructor, _args}.EvalHashCode();
         }
-        #endregion
     }
 }

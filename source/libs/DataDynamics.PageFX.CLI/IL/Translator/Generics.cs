@@ -121,20 +121,20 @@ namespace DataDynamics.PageFX.CLI.IL
 
             switch (member.MemberType)
             {
-                case TypeMemberType.Constructor:
-                case TypeMemberType.Method:
+                case MemberType.Constructor:
+                case MemberType.Method:
                     instr.Member = ResolveMethod((IMethod)member);
                     break;
 
-                case TypeMemberType.Field:
+                case MemberType.Field:
                     instr.Member = ResolveField((IField)member, instr);
                     break;
 
-                case TypeMemberType.Event:
-                case TypeMemberType.Property:
+                case MemberType.Event:
+                case MemberType.Property:
                     throw new NotSupportedException();
 
-                case TypeMemberType.Type:
+                case MemberType.Type:
                     {
                         var type = (IType)member;
                         type = ResolveType(type, instr);

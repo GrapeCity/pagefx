@@ -7,9 +7,9 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
-        public override TypeMemberType MemberType
+        public override MemberType MemberType
         {
-            get { return TypeMemberType.Field; }
+            get { return MemberType.Field; }
         }
 
         #region IField Members

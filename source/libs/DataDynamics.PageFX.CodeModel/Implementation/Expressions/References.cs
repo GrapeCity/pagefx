@@ -134,11 +134,7 @@ namespace DataDynamics.PageFX.CodeModel
 
     	public IExpression Target { get; set; }
 
-    	public abstract ITypeMember Member
-        {
-            get;
-            set;
-        }
+    	public abstract ITypeMember Member { get; set; }
 
     	public override IType ResultType
         {

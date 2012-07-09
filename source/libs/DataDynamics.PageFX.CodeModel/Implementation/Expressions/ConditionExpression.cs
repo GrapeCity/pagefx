@@ -5,67 +5,44 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class ConditionExpression : Expression, IConditionExpression
     {
-        #region IConditionExpression Members
-        public IExpression Condition
-        {
-            get { return _condition; }
-            set { _condition = value; }
-        }
-        private IExpression _condition;
+    	public IExpression Condition { get; set; }
 
-        public IExpression TrueExpression
-        {
-            get { return _true; }
-            set { _true = value; }
-        }
-        private IExpression _true;
+    	public IExpression TrueExpression { get; set; }
 
-        public IExpression FalseExpression
-        {
-            get { return _false; }
-            set { _false = value; }
-        }
-        private IExpression _false;
-        #endregion
+    	public IExpression FalseExpression { get; set; }
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] { _condition, _true, _false }; }
+            get { return new ICodeNode[] { Condition, TrueExpression, FalseExpression }; }
         }
-        #endregion
 
-        #region IExpression Members
-        public override IType ResultType
+    	public override IType ResultType
         {
             get
             {
-                if (_true is IConstantExpression)
+                if (TrueExpression is IConstantExpression)
                 {
-                    if (_false != null)
-                        return _false.ResultType;
+                    if (FalseExpression != null)
+                        return FalseExpression.ResultType;
                 }
-                return _true.ResultType;
+                return TrueExpression.ResultType;
             }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var e = obj as IConditionExpression;
             if (e == null) return false;
-            if (!Equals(e.Condition, _condition)) return false;
-            if (!Equals(e.TrueExpression, _true)) return false;
-            if (!Equals(e.FalseExpression, _false)) return false;
+            if (!Equals(e.Condition, Condition)) return false;
+            if (!Equals(e.TrueExpression, TrueExpression)) return false;
+            if (!Equals(e.FalseExpression, FalseExpression)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_condition, _true, _true);
+            return new []{Condition, TrueExpression, FalseExpression}.EvalHashCode();
         }
-        #endregion
     }
 }

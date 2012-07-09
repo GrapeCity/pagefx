@@ -1,25 +1,22 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.Collections;
 
 namespace DataDynamics.PageFX.CodeModel
 {
     public class MultiMemberCollection<T> : IReadOnlyList<T>
         where T: ITypeMember
     {
-        readonly List<T> _list = new List<T>();
-        readonly Hashtable _cache = new Hashtable();
-        readonly IType _owner;
+        private readonly List<T> _list = new List<T>();
+		private readonly Hashtable _cache = new Hashtable();
+		private readonly IType _owner;
 
         public MultiMemberCollection(IType owner)
         {
             _owner = owner;
         }
 
-        #region IEnumerable Members
-        public IEnumerator<T> GetEnumerator()
+    	public IEnumerator<T> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
@@ -28,9 +25,8 @@ namespace DataDynamics.PageFX.CodeModel
         {
             return GetEnumerator();
         }
-        #endregion
 
-        #region ISimpleList Members
+    	#region ISimpleList Members
         public int Count
         {
             get { return _list.Count; }
@@ -61,29 +57,13 @@ namespace DataDynamics.PageFX.CodeModel
         {
         }
 
-        public IEnumerable<T> this[string name]
-        {
-            get
-            {
-                var result = _cache[name] as IEnumerable<T>;
-                return result ?? Enumerable.Empty<T>();
-            }
-        }
+    	public IEnumerable<T> Find(string name)
+    	{
+    		var result = _cache[name] as IEnumerable<T>;
+    		return result ?? Enumerable.Empty<T>();
+    	}
 
-        public T this[string name, Predicate<T> predicate]
-        {
-            get
-            {
-                foreach (var m in this[name])
-                {
-                    if (predicate(m))
-                        return m;
-                }
-                return default(T);
-            }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+    	public IEnumerable<ICodeNode> ChildNodes
         {
             get { return _list.Cast<ICodeNode>(); }
         }

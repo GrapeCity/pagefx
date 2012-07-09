@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using DataDynamics.Collections;
-
 namespace DataDynamics.PageFX.CodeModel
 {
     /// <summary>
@@ -34,23 +31,8 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents collection of <see cref="IProperty"/>s.
     /// </summary>
-    public interface IPropertyCollection : IReadOnlyList<IProperty>, ICodeNode
+    public interface IPropertyCollection : IParameterizedMemberCollection<IProperty>
     {
         void Add(IProperty property);
-
-        /// <summary>
-        /// Finds properties by given name.
-        /// </summary>
-        /// <param name="name">name of properties to find.</param>
-        /// <returns>set of properties with given name</returns>
-        IEnumerable<IProperty> this[string name] { get; }
-
-        IProperty this[string name, IType arg1] { get; }
-
-        IProperty this[string name, IType arg1, IType arg2] { get; }
-
-        IProperty this[string name, IType arg1, IType arg2, IType arg3] { get; }
-
-        IProperty this[string name, params IType[] types] { get; }
     }
 }

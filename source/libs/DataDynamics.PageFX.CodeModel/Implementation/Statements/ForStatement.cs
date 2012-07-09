@@ -10,59 +10,38 @@ namespace DataDynamics.PageFX.CodeModel
             _body = new StatementCollection(this);
         }
 
-        #region IForStatement Members
-        public IStatement Initializer
-        {
-            get { return _initializer; }
-            set { _initializer = value; }
-        }
-        private IStatement _initializer;
+    	public IStatement Initializer { get; set; }
 
-        public IExpression Condition
-        {
-            get { return _condition; }
-            set { _condition = value; }
-        }
-        private IExpression _condition;
+    	public IExpression Condition { get; set; }
 
-        public IStatement Increment
-        {
-            get { return _increment; }
-            set { _increment = value; }
-        }
-        private IStatement _increment;
-        
-        public IStatementCollection Body
+    	public IStatement Increment { get; set; }
+
+    	public IStatementCollection Body
         {
             get { return _body; }
         }
         private readonly StatementCollection _body;
-        #endregion
 
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+    	public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] { _initializer, _condition, _increment, _body }; }
+            get { return new ICodeNode[] { Initializer, Condition, Increment, _body }; }
         }
-        #endregion
 
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var s = obj as IForStatement;
             if (s == null) return false;
-            if (!Equals(s.Initializer, _initializer)) return false;
-            if (!Equals(s.Condition, _condition)) return false;
-            if (!Equals(s.Increment, _increment)) return false;
+            if (!Equals(s.Initializer, Initializer)) return false;
+            if (!Equals(s.Condition, Condition)) return false;
+            if (!Equals(s.Increment, Increment)) return false;
             if (!Equals(s.Body, _body)) return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(_initializer, _condition, _increment, _body);
+            return new object[]{Initializer, Condition, Increment, _body}.EvalHashCode();
         }
-        #endregion
     }
 }

@@ -2,8 +2,7 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public class GotoStatement : Statement, IGotoStatement
     {
-        #region Constructors
-        public GotoStatement()
+    	public GotoStatement()
         {
         }
 
@@ -11,16 +10,10 @@ namespace DataDynamics.PageFX.CodeModel
         {
             Label = label;
         }
-        #endregion
-
-        #region IGotoStatement Members
 
     	public ILabeledStatement Label { get; set; }
 
-    	#endregion
-
-        #region Object Override Members
-        public override bool Equals(object obj)
+    	public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var go = obj as IGotoStatement;
@@ -29,33 +22,24 @@ namespace DataDynamics.PageFX.CodeModel
             return true;
         }
 
-        private static readonly int _hs = typeof(IGotoStatement).GetHashCode();
+        private static readonly int HashSalt = typeof(IGotoStatement).GetHashCode();
 
         public override int GetHashCode()
         {
-            int h = _hs;
+            int h = HashSalt;
             if (Label != null)
                 h ^= Label.GetHashCode();
             return h;
         }
-        #endregion
     }
 
     public class BreakStatement : Statement, IBreakStatement
     {
-        #region IGotoStatement Members
-
     	public ILabeledStatement Label { get; set; }
-
-    	#endregion
     }
 
     public class ContinueStatement : Statement, IContinueStatement
     {
-        #region IGotoStatement Members
-
     	public ILabeledStatement Label { get; set; }
-
-    	#endregion
     }
 }

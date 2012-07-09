@@ -53,8 +53,7 @@ namespace DataDynamics.PageFX
         {
             get { return _childSuites; }
         }
-        private readonly SimpleHashedList<string, TestSuite> _childSuites
-            = new SimpleHashedList<string, TestSuite>(t => t.Name);
+        private readonly HashList<string, TestSuite> _childSuites = new HashList<string, TestSuite>(t => t.Name);
 
         public void Add(TestSuite ts)
         {

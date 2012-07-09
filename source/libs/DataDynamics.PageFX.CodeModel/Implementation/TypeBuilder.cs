@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.CodeModel
                 p.Index = i + 1;
             	type.Members.Add(new Field
             	                 	{
-            	                 		Name = NameExtensions.Capitalize(p.Name),
+            	                 		Name = p.Name.Capitalize(),
             	                 		Visibility = Visibility.Public,
             	                 		Type = p.Type
             	                 	});
@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.CodeModel
 
             var code = new MethodCode(body);
 
-            var baseCtor = baseType.Methods[".ctor", 0];
+            var baseCtor = baseType.Methods.Find(".ctor", 0);
 
             code.Call(baseCtor);
 

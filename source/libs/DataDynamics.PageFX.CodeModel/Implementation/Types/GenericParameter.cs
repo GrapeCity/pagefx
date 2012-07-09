@@ -11,9 +11,9 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
-        public TypeMemberType MemberType
+        public MemberType MemberType
         {
-            get { return TypeMemberType.Type; }
+            get { return MemberType.Type; }
         }
 
         public string Name { get; set; }
@@ -204,12 +204,12 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IFieldCollection Fields
         {
-            get { return EmptyFieldCollection.Instance; }
+            get { return FieldCollection.Empty; }
         }
 
         public IMethodCollection Methods
         {
-            get { return EmptyMethodCollection.Instance; }
+            get { return MethodCollection.Empty; }
         }
 
         public IPropertyCollection Properties
@@ -398,37 +398,5 @@ namespace DataDynamics.PageFX.CodeModel
             return ToString(null, null);
         }
         #endregion
-    }
-
-    internal class EmptyGenericParamaterCollection : EmptyList<IGenericParameter>,
-        IGenericParameterCollection
-    {
-        public static readonly IGenericParameterCollection Instance = new EmptyGenericParamaterCollection();
-
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return SyntaxFormatter.Format(this, format, formatProvider);
-        }
-
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.GenericParameters; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return this.Cast<ICodeNode>(); }
-        }
-
-        public object Tag
-        {
-            get;
-            set;
-        }
-
-        public IGenericParameter this[string name]
-        {
-            get { return null; }
-        }
     }
 }

@@ -7,8 +7,7 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class StatementCollection : List<IStatement>, IStatementCollection
     {
-        #region Constructors
-        public StatementCollection()
+    	public StatementCollection()
         {
             ParentStatement = null;
         }
@@ -17,7 +16,6 @@ namespace DataDynamics.PageFX.CodeModel
         {
             ParentStatement = parent;
         }
-        #endregion
 
     	/// <summary>
     	/// Gets or sets parent statement
@@ -38,9 +36,7 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
 
-        #region ICodeNode Members
-
-        public CodeNodeType NodeType
+    	public CodeNodeType NodeType
         {
             get { return CodeNodeType.Statement; }
         }
@@ -55,17 +51,12 @@ namespace DataDynamics.PageFX.CodeModel
     	/// </summary>
     	public object Tag { get; set; }
 
-    	#endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+    	public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+    	public override string ToString()
         {
             return ToString(null, null);
         }
@@ -75,20 +66,18 @@ namespace DataDynamics.PageFX.CodeModel
             if (obj == this) return true;
             var s = obj as IStatementCollection;
             if (s == null) return false;
-            return Object2.Equals(this, s);
+            return this.EqualsTo(s);
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(this);
+            return this.EvalHashCode();
         }
-        #endregion
     }
 
     public class StatementCollection<T> : List<T>, IStatementCollection<T> where T : IStatement
     {
-        #region Constructors
-        public StatementCollection()
+    	public StatementCollection()
         {
             ParentStatement = null;
         }
@@ -97,7 +86,6 @@ namespace DataDynamics.PageFX.CodeModel
         {
             ParentStatement = parent;
         }
-        #endregion
 
     	/// <summary>
     	/// Gets or sets parent statement
@@ -118,9 +106,7 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
 
-        #region ICodeNode Members
-
-        public CodeNodeType NodeType
+    	public CodeNodeType NodeType
         {
             get { return CodeNodeType.Statement; }
         }
@@ -135,17 +121,12 @@ namespace DataDynamics.PageFX.CodeModel
     	/// </summary>
     	public object Tag { get; set; }
 
-    	#endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+    	public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+    	public override string ToString()
         {
             return ToString(null, null);
         }
@@ -155,13 +136,12 @@ namespace DataDynamics.PageFX.CodeModel
             if (obj == this) return true;
             var s = obj as IStatementCollection;
             if (s == null) return false;
-            return Object2.Equals(this, s);
+            return this.EqualsTo(s);
         }
 
         public override int GetHashCode()
         {
-            return Object2.GetHashCode(this);
+            return this.EvalHashCode();
         }
-        #endregion
     }
 }

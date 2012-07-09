@@ -721,31 +721,30 @@ namespace DataDynamics.PageFX.CodeModel
 
     	public static IMethod FindMethod(this IType type, string name, IType arg1)
     	{
-    		return type.Methods[name, arg1];
+    		return type.Methods.Find(name, arg1);
     	}
 
 		public static IMethod FindMethod(this IType type, string name, int argc)
     	{
-    		return type.Methods[name, argc];
+    		return type.Methods.Find(name, argc);
     	}
 
-		public static IMethod FindMethod(this IType type, string name, int argc, Predicate<IParameterCollection> args)
+		public static IMethod FindMethod(this IType type, string name, int argc, Func<IParameterCollection,bool> args)
     	{
-    		return type.Methods[name,
-    		                    m =>
-    		                    	{
-    		                    		var p= m.Parameters;
-    		                    		if (p.Count != argc) return false;
-    		                    		return args(p);
-    		                    	}];
+    		return type.Methods.Find(name, m =>
+    		                               	{
+    		                               		var p= m.Parameters;
+    		                               		if (p.Count != argc) return false;
+    		                               		return args(p);
+    		                               	});
     	}
 
-		public static IMethod FindMethodHierarchically(this IType type, string name, Predicate<IMethod> predicate, Predicate<IType> hierarchyFilter)
+		public static IMethod FindMethodHierarchically(this IType type, string name, Func<IMethod,bool> predicate, Func<IType,bool> hierarchyFilter)
 		{
 			while (type != null)
 			{
 				if (hierarchyFilter != null && hierarchyFilter(type)) break;
-				var method = type.Methods[name, predicate];
+				var method = type.Methods.Find(name, predicate);
 				if (method != null) return method;
 				type = type.BaseType;
 			}

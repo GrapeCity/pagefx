@@ -5,9 +5,9 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
-        public override TypeMemberType MemberType
+        public override MemberType MemberType
         {
-            get { return TypeMemberType.Event; }
+            get { return MemberType.Event; }
         }
 
         public bool IsFlash { get; set; }

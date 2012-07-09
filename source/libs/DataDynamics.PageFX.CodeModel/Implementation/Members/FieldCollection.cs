@@ -9,9 +9,8 @@ namespace DataDynamics.PageFX.CodeModel
     [XmlElementName("Fields")]
     public sealed class FieldCollection : IFieldCollection
     {
-        readonly List<IField> _list = new List<IField>();
-        readonly Hashtable _cache = new Hashtable();
-        readonly IType _owner;
+    	private readonly HashList<string, IField> _list = new HashList<string, IField>(x => x.Name);
+		private readonly IType _owner;
 
         public FieldCollection(IType owner)
         {
@@ -28,22 +27,20 @@ namespace DataDynamics.PageFX.CodeModel
             get { return _list[index]; }
         }
 
-        #region IFieldCollection Members
-        public void Add(IField field)
+    	public void Add(IField field)
         {
-            field.DeclaringType = _owner;
+    		if (field == null) throw new ArgumentNullException("field");
+
+    		field.DeclaringType = _owner;
             _list.Add(field);
-            _cache[field.Name] = field;
         }
 
         public IField this[string name]
         {
-            get { return _cache[name] as IField; }
+            get { return _list[name]; }
         }
-        #endregion
 
-        #region IEnumerable Members
-        public IEnumerator<IField> GetEnumerator()
+    	public IEnumerator<IField> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
@@ -52,10 +49,8 @@ namespace DataDynamics.PageFX.CodeModel
         {
             return GetEnumerator();
         }
-        #endregion
 
-        #region ICodeNode Members
-        public CodeNodeType NodeType
+    	public CodeNodeType NodeType
         {
             get { return CodeNodeType.Methods; }
         }
@@ -66,81 +61,70 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _list.Cast<ICodeNode>(); }
         }
-        #endregion
 
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+    	public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        public override string ToString()
+    	public override string ToString()
         {
             return ToString(null, null);
         }
-    }
 
-    class EmptyFieldCollection : IFieldCollection
-    {
-        public static readonly IFieldCollection Instance = new EmptyFieldCollection();
+    	public static readonly IFieldCollection Empty = new EmptyFieldCollection();
 
-        public int Count
-        {
-            get { return 0; }
-        }
+		private sealed class EmptyFieldCollection : IFieldCollection
+		{
+			public int Count
+			{
+				get { return 0; }
+			}
 
-        public IField this[int index]
-        {
-            get { return null; }
-        }
+			public IField this[int index]
+			{
+				get { return null; }
+			}
 
-        public void Add(IField field)
-        {
-        }
+			public void Add(IField field)
+			{
+			}
 
-        #region IFieldCollection Members
-        public IField this[string name]
-        {
-            get { return null; }
-        }
-        #endregion
+			public IField this[string name]
+			{
+				get { return null; }
+			}
 
-        #region ICodeNode Members
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Fields; }
-        }
+			public CodeNodeType NodeType
+			{
+				get { return CodeNodeType.Fields; }
+			}
 
-        public IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return this.Cast<ICodeNode>(); }
-        }
+			public IEnumerable<ICodeNode> ChildNodes
+			{
+				get { return this.Cast<ICodeNode>(); }
+			}
 
-        public object Tag
-        {
-            get { return null; }
-            set { }
-        }
-        #endregion
+			public object Tag
+			{
+				get { return null; }
+				set { }
+			}
 
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return "";
-        }
-        #endregion
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				return "";
+			}
 
-        #region IEnumerable Members
-        public IEnumerator<IField> GetEnumerator()
-        {
-            return Enumerable.Empty<IField>().GetEnumerator();
-        }
+			public IEnumerator<IField> GetEnumerator()
+			{
+				return Enumerable.Empty<IField>().GetEnumerator();
+			}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-        #endregion
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+		}
     }
 }
