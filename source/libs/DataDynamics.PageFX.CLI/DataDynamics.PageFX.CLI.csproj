@@ -44,6 +44,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\CommonAssemblyInfo.cs">
@@ -179,9 +182,6 @@
       <Project>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</Project>
       <Name>DataDynamics.PageFX.Shared</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="IL\Translator\todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CFG\Nodes\" />

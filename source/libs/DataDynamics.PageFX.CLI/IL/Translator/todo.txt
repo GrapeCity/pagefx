@@ -1,4 +1,0 @@
-2008-07-30 sergeyt
-
-	+1. Optimize sequence: getptr, loadind -> getvalue [2008-10-03]
-	+2. Add to ICodeProvider local optimization pass.

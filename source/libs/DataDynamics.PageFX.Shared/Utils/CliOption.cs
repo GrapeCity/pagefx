@@ -6,15 +6,18 @@ using System.Linq;
 
 namespace DataDynamics
 {
-    public class CLOption
+	/// <summary>
+	/// Represents command line option.
+	/// </summary>
+    public class CliOption
     {
         #region ctors
-        public CLOption(string name)
+        public CliOption(string name)
         {
             Name = name;
         }
 
-        public CLOption(string name, string aliases)
+        public CliOption(string name, string aliases)
         {
             Name = name;
             Aliases = aliases;
@@ -118,9 +121,9 @@ namespace DataDynamics
             var fields = options.GetFields(BindingFlags.Public | BindingFlags.Static);
             foreach (var fi in fields)
             {
-                if (fi.FieldType == typeof(CLOption))
+                if (fi.FieldType == typeof(CliOption))
                 {
-                    var opt = fi.GetValue(null) as CLOption;
+                    var opt = fi.GetValue(null) as CliOption;
                     if (opt != null)
                     {
                         var desc = fi.GetAttribute<DescriptionAttribute>(true);

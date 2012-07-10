@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace DataDynamics.PageFX.FLI.IL
 {
@@ -76,7 +77,7 @@ namespace DataDynamics.PageFX.FLI.IL
             }
         }
 
-        static Operand CreateOperand(XmlElement opElem)
+        static Operand CreateOperand(XElement opElem)
         {
             var op = new Operand
                          {
@@ -138,13 +139,12 @@ namespace DataDynamics.PageFX.FLI.IL
             }
 
             rs = typeof(Instructions).GetResourceStream("il.xml");
-            var doc = new XmlDocument();
-            doc.Load(rs);
+            var doc = XDocument.Load(XmlReader.Create(rs));
 
-            foreach (XmlElement catElem in doc.DocumentElement.GetElementsByTagName("cat"))
+            foreach (var catElem in doc.Root.Elements("cat"))
             {
                 string catName = catElem.GetAttribute("name");
-                foreach (XmlElement insElem in catElem.GetElementsByTagName("i"))
+                foreach (var insElem in catElem.Elements("i"))
                 {
                     string name = insElem.GetAttribute("name");
                     var instruction = Find(name);
@@ -152,13 +152,13 @@ namespace DataDynamics.PageFX.FLI.IL
                     {
                         instruction.Category = catName;
                         instruction.Description = insElem.GetAttribute("desc");
-                        var ops = insElem.GetElementsByTagName("op");
+                        var ops = insElem.Elements("op").ToList();
                         if (ops.Count > 0)
                         {
                             instruction.Operands = new Operand[ops.Count];
                             for (int i = 0; i < ops.Count; ++i)
                             {
-                                var opElem = (XmlElement)ops[i];
+                                var opElem = ops[i];
                                 instruction.Operands[i] = CreateOperand(opElem);
                             }
                         }
@@ -200,4 +200,13 @@ namespace DataDynamics.PageFX.FLI.IL
         	return all.Where(i => i.IsUsed).ToArray();
         }
     }
+
+	internal static class XLinqExtensions
+	{
+		public static string GetAttribute(this XElement e, string name)
+		{
+			var attr = e.Attribute(name);
+			return attr != null ? attr.Value : "";
+		}
+	}
 }

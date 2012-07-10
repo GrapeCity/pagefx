@@ -120,14 +120,14 @@ namespace DataDynamics
         	return Options.Any(item => Match(item.Name, true, names));
         }
 
-    	public bool HasOption(CLOption opt)
+    	public bool HasOption(CliOption opt)
         {
             if (opt == null)
                 throw new ArgumentNullException("opt");
             return HasOption(opt.Names);
         }
 
-        public bool IsMinus(CLOption opt)
+        public bool IsMinus(CliOption opt)
         {
             if (opt == null)
                 throw new ArgumentNullException("opt");
@@ -192,7 +192,7 @@ namespace DataDynamics
             return defval;
         }
 
-        public string GetOption(CLOption o)
+        public string GetOption(CliOption o)
         {
             if (o == null)
                 throw new ArgumentNullException("o");
@@ -426,17 +426,17 @@ namespace DataDynamics
         #endregion
 
         #region Usage
-        public static void Usage(IEnumerable<CLOption> options, string tab, int maxWidth)
+        public static void Usage(IEnumerable<CliOption> options, string tab, int maxWidth)
         {
             Usage(Console.Out, options, tab, maxWidth);
         }
 
-        public static void Usage(IEnumerable<CLOption> options, string tab)
+        public static void Usage(IEnumerable<CliOption> options, string tab)
         {
             Usage(Console.Out, options, tab, Console.BufferWidth);
         }
 
-        public static void Usage(TextWriter writer, IEnumerable<CLOption> options, string tab, int maxWidth)
+        public static void Usage(TextWriter writer, IEnumerable<CliOption> options, string tab, int maxWidth)
         {
             if (options == null) return;
 
@@ -464,9 +464,9 @@ namespace DataDynamics
             }
         }
 
-        static List<List<CLOption>> GroupByCategory(IEnumerable<CLOption> options, out bool descOnNewLine, int maxWidth)
+        static List<List<CliOption>> GroupByCategory(IEnumerable<CliOption> options, out bool descOnNewLine, int maxWidth)
         {
-            var cats = new List<List<CLOption>>();
+            var cats = new List<List<CliOption>>();
             int emptyIndex = -1;
             var catcache = new Hashtable();
             descOnNewLine = false;
@@ -483,16 +483,16 @@ namespace DataDynamics
                     if (emptyIndex < 0)
                     {
                         emptyIndex = 0;
-                        cats.Add(new List<CLOption>());
+                        cats.Add(new List<CliOption>());
                     }
                     cats[emptyIndex].Add(opt);
                 }
                 else
                 {
-                    var list = catcache[cat] as List<CLOption>;
+                    var list = catcache[cat] as List<CliOption>;
                     if (list == null)
                     {
-                        list = new List<CLOption>();
+                        list = new List<CliOption>();
                         cats.Add(list);
                         catcache[cat] = list;
                     }
@@ -502,7 +502,7 @@ namespace DataDynamics
             return cats;
         }
 
-        static void UsageCore(TextWriter writer, IEnumerable<CLOption> options, string tab, int maxWidth, bool descOnNewLine)
+        static void UsageCore(TextWriter writer, IEnumerable<CliOption> options, string tab, int maxWidth, bool descOnNewLine)
         {
             var left = new List<string>();
             var right = new List<string>();
@@ -536,7 +536,7 @@ namespace DataDynamics
             }
         }
 
-        static string LeftOf(CLOption opt)
+        static string LeftOf(CliOption opt)
         {
             string l = string.Format("/{0}", opt.Name);
             if (!string.IsNullOrEmpty(opt.Format))

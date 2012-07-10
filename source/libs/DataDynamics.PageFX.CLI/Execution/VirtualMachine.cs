@@ -353,7 +353,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 					context.Push(null);
 					break;
 				case InstructionCode.Ldc_I4_M1:
-					context.Push(- 1);
+					context.Push(-1);
 					break;
 				case InstructionCode.Ldc_I4_0:
 					context.Push(0);
@@ -531,7 +531,12 @@ namespace DataDynamics.PageFX.CLI.Execution
 				#endregion
 
 				case InstructionCode.Cpobj:
-					Op_Cpobj(context, i.Type);
+					{
+						var dest = context.Pop() as IPointer;
+						var src = context.Pop() as IPointer;
+						var value = ConvertTo(src.Value.Copy(), i.Type);
+						dest.Value = value;
+					}
 					break;
 
 				#region stack operations
@@ -858,7 +863,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 					break;
 
 				case InstructionCode.Box:
-					Op_Box(context, i.Type);
+					ConvertTo(context, i.Type, false, false);
 					break;
 
 				//NOTE:
@@ -871,7 +876,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 				case InstructionCode.Unbox:
 				case InstructionCode.Unbox_Any:
-					Op_Unbox(context, i.Type);
+					ConvertTo(context, i.Type, false, false);
 					break;
 				#endregion
 
@@ -884,7 +889,12 @@ namespace DataDynamics.PageFX.CLI.Execution
 					break;
 
 				case InstructionCode.Ldelema:
-					Op_Ldelema(context);
+					{
+						var index = Convert.ToInt64(context.Pop(false));
+						var array = context.PopArray();
+						CheckBounds(array, index);
+						context.Push(new ArrayElementPtr(array, index));
+					}
 					break;
 
 				case InstructionCode.Ldelem:
@@ -899,7 +909,12 @@ namespace DataDynamics.PageFX.CLI.Execution
 				case InstructionCode.Ldelem_R4:
 				case InstructionCode.Ldelem_R8:
 				case InstructionCode.Ldelem_Ref:
-					Op_Ldelem(context);
+					{
+						var index = Convert.ToInt64(context.Pop(false));
+						var array = context.PopArray();
+						CheckBounds(array, index);
+						context.Push(array.GetValue(index));
+					}
 					break;
 
 				case InstructionCode.Stelem_I:
@@ -911,7 +926,13 @@ namespace DataDynamics.PageFX.CLI.Execution
 				case InstructionCode.Stelem_R8:
 				case InstructionCode.Stelem_Ref:
 				case InstructionCode.Stelem:
-					Op_Stelem(context);
+					{
+						var value = context.Pop(true);
+						var index = Convert.ToInt64(context.Pop(false));
+						var array = context.PopArray();
+						CheckBounds(array, index);
+						array.SetValue(value, index);
+					}
 					break;
 				#endregion
 
@@ -998,14 +1019,6 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 
 			context.IP++;
-		}
-
-		private void Op_Cpobj(CallContext context, IType type)
-		{
-			var dest = context.Pop() as IPointer;
-			var src = context.Pop() as IPointer;
-			var value = ConvertTo(src.Value.Copy(), type);
-			dest.Value = value;
 		}
 
 		private void Op_Ldfld(CallContext context, IField field)
@@ -1830,16 +1843,6 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 		}
 
-		private void Op_Box(CallContext context, IType type)
-		{
-			ConvertTo(context, type, false, false);
-		}
-
-		private void Op_Unbox(CallContext context, IType type)
-		{
-			ConvertTo(context, type, false, false);
-		}
-
 		private void NewArray(CallContext context, IType type)
 		{
 			var len = Convert.ToInt32(context.Pop(false));
@@ -1927,31 +1930,6 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			if (index < 0 || index >= array.LongLength)
 				throw new IndexOutOfRangeException();
-		}
-
-		private void Op_Ldelema(CallContext context)
-		{
-			var index = Convert.ToInt64(context.Pop(false));
-			var array = context.PopArray();
-			CheckBounds(array, index);
-			context.Push(new ArrayElementPtr(array, index));
-		}
-
-		private void Op_Ldelem(CallContext context)
-		{
-			var index = Convert.ToInt64(context.Pop(false));
-			var array = context.PopArray();
-			CheckBounds(array, index);
-			context.Push(array.GetValue(index));
-		}
-
-		private void Op_Stelem(CallContext context)
-		{
-			var value = context.Pop(true);
-			var index = Convert.ToInt64(context.Pop(false));
-			var array = context.PopArray();
-			CheckBounds(array, index);
-			array.SetValue(value, index);
 		}
 
 		private void Op_Endfinally(CallContext context)

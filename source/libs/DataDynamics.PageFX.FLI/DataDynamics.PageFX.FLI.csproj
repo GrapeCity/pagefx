@@ -48,6 +48,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\CommonAssemblyInfo.cs">
@@ -327,6 +330,7 @@
     <Compile Include="SWF\Tags\Text\SwfTagDefineFontInfo.cs" />
     <Compile Include="SWF\Tags\Video\SwfTagVideoFrame.cs" />
     <Compile Include="SWF\Tags\Video\SwfTagDefineVideoStream.cs" />
+    <Compile Include="Tests\InstructionsTest.cs" />
     <Compile Include="Tests\MiscTests.cs" />
   </ItemGroup>
   <ItemGroup>

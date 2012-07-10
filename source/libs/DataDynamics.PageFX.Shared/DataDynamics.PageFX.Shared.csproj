@@ -108,7 +108,7 @@
     <Compile Include="Utils\Converters.cs" />
     <Compile Include="Utils\SimpleConfig.cs" />
     <Compile Include="System\Tricks.cs" />
-    <Compile Include="Utils\CLOption.cs" />
+    <Compile Include="Utils\CliOption.cs" />
     <Compile Include="Graphics\FastBitmap.cs" />
     <Compile Include="Graphics\PathRendering.cs" />
     <Compile Include="Utils\FormatAttribute.cs" />
