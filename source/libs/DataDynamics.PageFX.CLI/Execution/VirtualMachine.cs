@@ -446,12 +446,35 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 				case InstructionCode.Ldfld:
 				case InstructionCode.Ldsfld:
-					Op_Ldfld(context, i.Field);
+					{
+						var field = i.Field;
+						if (field.IsStatic)
+						{
+							context.Push(GetClass(field).Fields[field.Slot].Value);
+						}
+						else
+						{
+							var instance = context.PopInstance();
+							context.Push(instance.Fields[field.Slot].Value);
+						}
+					}
 					break;
 
 				case InstructionCode.Ldflda:
 				case InstructionCode.Ldsflda:
-					Op_Ldflda(context, i.Field);
+					{
+						var field = i.Field;
+						if (field.IsStatic)
+						{
+							var klass = GetClass(field);
+							context.Push(new FieldPtr(klass, field));
+						}
+						else
+						{
+							var instance = context.PopInstance();
+							context.Push(new FieldPtr(instance, field));
+						}
+					}
 					break;
 
 				case InstructionCode.Ldind_I1:
@@ -465,11 +488,14 @@ namespace DataDynamics.PageFX.CLI.Execution
 				case InstructionCode.Ldind_R4:
 				case InstructionCode.Ldind_R8:
 				case InstructionCode.Ldind_Ref:
-					Op_Ldind(context);
+					{
+						var ptr = context.PopPtr();
+						context.Push(ptr.Value);
+					}
 					break;
 
 				case InstructionCode.Ldftn:
-					Op_Ldftn(context, i.Method);
+					context.Push(new MethodPtr(i.Method));
 					break;
 				case InstructionCode.Ldvirtftn:
 					Op_Ldvirtftn(context, i.Method);
@@ -480,7 +506,10 @@ namespace DataDynamics.PageFX.CLI.Execution
 					break;
 
 				case InstructionCode.Ldobj:
-					Op_Ldind(context);
+					{
+						var ptr = context.PopPtr();
+						context.Push(ptr.Value);
+					}
 					break;
 				#endregion
 
@@ -508,10 +537,17 @@ namespace DataDynamics.PageFX.CLI.Execution
 					break;
 
 				case InstructionCode.Stfld:
-					Op_Stfld(context, i.Field);
+					{
+						var value = context.Pop(true);
+						var instance = context.PopInstance();
+						instance.Fields[i.Field.Slot].Value = value;
+					}
 					break;
 				case InstructionCode.Stsfld:
-					Op_Stsfld(context, i.Field);
+					{
+						var value = context.Pop(true);
+						GetClass(i.Field).Fields[i.Field.Slot].Value = value;
+					}
 					break;
 
 				case InstructionCode.Stind_Ref:
@@ -522,18 +558,26 @@ namespace DataDynamics.PageFX.CLI.Execution
 				case InstructionCode.Stind_R4:
 				case InstructionCode.Stind_R8:
 				case InstructionCode.Stind_I:
-					Op_Stind(context);
+					{
+						var value = context.Pop(true);
+						var ptr = context.PopPtr();
+						ptr.Value = value;
+					}
 					break;
 
 				case InstructionCode.Stobj:
-					Op_Stind(context);
+					{
+						var value = context.Pop(true);
+						var ptr = context.PopPtr();
+						ptr.Value = value;
+					}
 					break;
 				#endregion
 
 				case InstructionCode.Cpobj:
 					{
-						var dest = context.Pop() as IPointer;
-						var src = context.Pop() as IPointer;
+						var dest = context.PopPtr();
+						var src = context.PopPtr();
 						var value = ConvertTo(src.Value.Copy(), i.Type);
 						dest.Value = value;
 					}
@@ -573,63 +617,111 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 				case InstructionCode.Brfalse_S:
 				case InstructionCode.Brfalse:
-					Op_Branch(context, BranchOperator.False, false, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.False, false))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Brtrue_S:
 				case InstructionCode.Brtrue:
-					Op_Branch(context, BranchOperator.True, false, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.True, false))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Beq_S:
 				case InstructionCode.Beq:
-					Op_Branch(context, BranchOperator.Equality, false, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.Equality, false))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Bge_S:
 				case InstructionCode.Bge:
-					Op_Branch(context, BranchOperator.GreaterThanOrEqual, false, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.GreaterThanOrEqual, false))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Bgt_S:
 				case InstructionCode.Bgt:
-					Op_Branch(context, BranchOperator.GreaterThan, false, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.GreaterThan, false))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Ble_S:
 				case InstructionCode.Ble:
-					Op_Branch(context, BranchOperator.LessThanOrEqual, false, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.LessThanOrEqual, false))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Blt_S:
 				case InstructionCode.Blt:
-					Op_Branch(context, BranchOperator.LessThan, false, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.LessThan, false))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Bne_Un_S:
 				case InstructionCode.Bne_Un:
-					Op_Branch(context, BranchOperator.Inequality, true, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.Inequality, true))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Bge_Un_S:
 				case InstructionCode.Bge_Un:
-					Op_Branch(context, BranchOperator.GreaterThanOrEqual, true, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.GreaterThanOrEqual, true))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Bgt_Un_S:
 				case InstructionCode.Bgt_Un:
-					Op_Branch(context, BranchOperator.GreaterThan, true, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.GreaterThan, true))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Ble_Un_S:
 				case InstructionCode.Ble_Un:
-					Op_Branch(context, BranchOperator.LessThanOrEqual, true, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.LessThanOrEqual, true))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Blt_Un_S:
 				case InstructionCode.Blt_Un:
-					Op_Branch(context, BranchOperator.LessThan, true, i.BranchTarget);
-					return;
+					if (IsBranch(context, BranchOperator.LessThan, true))
+					{
+						context.IP = i.BranchTarget;
+						return;
+					}
+					break;
 
 				case InstructionCode.Br_S:
 				case InstructionCode.Br:
@@ -939,11 +1031,9 @@ namespace DataDynamics.PageFX.CLI.Execution
 				#region exception handling
 				case InstructionCode.Throw:
 					throw (context.PopObject() as Exception);
-					break;
 
 				case InstructionCode.Rethrow:
 					throw context.Exception;
-					break;
 
 				case InstructionCode.Leave:
 				case InstructionCode.Leave_S:
@@ -1021,67 +1111,9 @@ namespace DataDynamics.PageFX.CLI.Execution
 			context.IP++;
 		}
 
-		private void Op_Ldfld(CallContext context, IField field)
-		{
-			if (field.IsStatic)
-			{
-				context.Push(GetClass(field).Fields[field.Slot].Value);
-			}
-			else
-			{
-				var instance = context.PopInstance();
-				context.Push(instance.Fields[field.Slot].Value);
-			}
-		}
-
 		internal Class GetClass(ITypeMember member)
 		{
 			return GetClass(member.DeclaringType);
-		}
-
-		private void Op_Ldflda(CallContext context, IField field)
-		{
-			if (field.IsStatic)
-			{
-				var klass = GetClass(field);
-				context.Push(new FieldPtr(klass, field));
-			}
-			else
-			{
-				var instance = context.PopInstance();
-				context.Push(new FieldPtr(instance, field));
-			}
-		}
-
-		private void Op_Stfld(CallContext context, IField field)
-		{
-			var value = context.Pop(true);
-			var instance = context.PopInstance();
-			instance.Fields[field.Slot].Value = value;
-		}
-
-		private void Op_Stsfld(CallContext context, IField field)
-		{
-			var value = context.Pop(true);
-			GetClass(field).Fields[field.Slot].Value = value;
-		}
-
-		private void Op_Ldind(CallContext context)
-		{
-			var ptr = context.Pop(false) as IPointer;
-			context.Push(ptr.Value);
-		}
-
-		private void Op_Stind(CallContext context)
-		{
-			var value = context.Pop(true);
-			var ptr = context.Pop(false) as IPointer;
-			ptr.Value = value;
-		}
-
-		private void Op_Ldftn(CallContext context, IMethod method)
-		{
-			context.Push(new MethodPtr(method));
 		}
 
 		private void Op_Ldvirtftn(CallContext context, IMethod method)
@@ -1104,18 +1136,6 @@ namespace DataDynamics.PageFX.CLI.Execution
 			else
 			{
 				throw new NotImplementedException();
-			}
-		}
-
-		private void Op_Branch(CallContext context, BranchOperator op, bool unsigned, int target)
-		{
-			if (IsBranch(context, op, unsigned))
-			{
-				context.IP = target;
-			}
-			else
-			{
-				context.IP++;
 			}
 		}
 
@@ -1493,7 +1513,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private void Op_Initobj(CallContext context, IType type)
 		{
-			var addr = context.Pop() as IPointer;
+			var addr = context.PopPtr();
 			
 			addr.Value = InitObject(type);
 		}

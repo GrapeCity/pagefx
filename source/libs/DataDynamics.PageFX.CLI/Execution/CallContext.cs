@@ -96,6 +96,11 @@ namespace DataDynamics.PageFX.CLI.Execution
 			Push(EvalStack.Peek(), copy);
 		}
 
+		public IPointer PopPtr()
+		{
+			return Pop(false) as IPointer;
+		}
+
 		public object PopObject()
 		{
 			var obj = Pop(false);
