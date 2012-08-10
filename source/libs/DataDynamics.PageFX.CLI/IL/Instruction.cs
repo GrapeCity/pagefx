@@ -308,7 +308,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+		public string ToString(string format, IFormatProvider formatProvider)
         {
             if (string.IsNullOrEmpty(format))
                 format = "I: N V";

@@ -248,13 +248,10 @@ namespace DataDynamics.PageFX.CodeModel
         {
 			get
 			{
-				if (_ifaces == null)
-				{
-					_ifaces = Type.Interfaces != null
-					          	? new ReadOnlyTypeCollection(Type.Interfaces.Select(x => GenericType.Resolve(this, null, x)))
-					          	: new ReadOnlyTypeCollection(Enumerable.Empty<IType>());
-				}
-				return _ifaces;
+				return _ifaces ?? (_ifaces = Type.Interfaces != null
+					                             ? new ReadOnlyTypeCollection(
+						                               Type.Interfaces.Select(x => GenericType.Resolve(this, null, x)))
+					                             : ReadOnlyTypeCollection.Empty);
 			}
         }
         private ReadOnlyTypeCollection _ifaces;
@@ -750,6 +747,8 @@ namespace DataDynamics.PageFX.CodeModel
 
 		private sealed class ReadOnlyTypeCollection : ITypeCollection
 		{
+			public static readonly ReadOnlyTypeCollection Empty = new ReadOnlyTypeCollection(Enumerable.Empty<IType>());
+			
 			private readonly IReadOnlyList<IType> _types;
 
 			public ReadOnlyTypeCollection(IEnumerable<IType> types)
@@ -769,7 +768,11 @@ namespace DataDynamics.PageFX.CodeModel
 
 			public IType this[string fullname]
 			{
-				get { return _types.FirstOrDefault(t => t.FullName == fullname); }
+				get
+				{
+					//TODO PERF: add dictionary for quick search types by fullname
+					return _types.FirstOrDefault(t => t.FullName == fullname);
+				}
 			}
 
 			public void Add(IType type)

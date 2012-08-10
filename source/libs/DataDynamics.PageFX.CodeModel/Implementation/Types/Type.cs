@@ -487,7 +487,7 @@ namespace DataDynamics.PageFX.CodeModel
             var st = type.SystemType;
             if (st != null)
             {
-                string name = SyntaxFormatter.FormatEnum(lang, st.Code);
+                string name = st.Code.EnumString(lang);
                 if (!string.IsNullOrEmpty(name))
                     return name;
             }

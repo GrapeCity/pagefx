@@ -103,6 +103,7 @@
     <Compile Include="PageFX\PFCOptions.cs" />
     <Compile Include="PageFX\Warnings.cs" />
     <Compile Include="Utils\CodeTextWriter.cs" />
+    <Compile Include="Utils\EnumExtensions.cs" />
     <Compile Include="Utils\Filters.cs" />
     <Compile Include="Utils\FormatExpression.cs" />
     <Compile Include="Utils\Converters.cs" />

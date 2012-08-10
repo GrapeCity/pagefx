@@ -1,26 +1,30 @@
 namespace DataDynamics
 {
-    public class Indent
+    public sealed class Indent
     {
+		private readonly string _one;
+		private string _value = "";
+
         public Indent(string one)
         {
             _one = one;
         }
 
-        public Indent()
-            : this("\t")
+        public Indent() : this("\t")
         {
         }
-
-        private readonly string _one;
 
         public string Value
         {
             get { return _value; }
         }
-        private string _value = "";
 
-        public static implicit operator string(Indent i)
+	    public int Length
+	    {
+			get { return _value.Length; }
+	    }
+
+	    public static implicit operator string(Indent i)
         {
             return i._value;
         }

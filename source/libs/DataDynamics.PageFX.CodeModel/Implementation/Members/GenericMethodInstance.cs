@@ -1,19 +1,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel.Syntax;
 using Enumerable = System.Linq.Enumerable;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public class GenericMethodInstance : IMethod
+    public sealed class GenericMethodInstance : IMethod
     {
-        private readonly IType _retType;
+		private readonly string[] _sigNames = new string[2];
+	    private readonly IType _retType;
         private readonly IMethod _method;
         private readonly IType[] _args;
         private readonly ParameterCollection _params = new ParameterCollection();
+		private IMethod[] _implMethods;
+		private IMethod _baseMethod;
+		private bool _resolveBaseMethod = true;
+		private readonly bool _signatureChanged;
 
         public GenericMethodInstance(IType declType, IMethod method, IType[] args)
         {
@@ -54,8 +58,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _signatureChanged; }
         }
-        private readonly bool _signatureChanged;
-
+        
         //public IType ContextType { get; set; }
 
         //public IMethod ContextMethod { get; set; }
@@ -80,7 +83,13 @@ namespace DataDynamics.PageFX.CodeModel
         }
 
         #region IMethod Members
-        public bool IsEntryPoint
+
+	    public string GetSigName(SigKind kind)
+	    {
+			return _sigNames[(int)kind] ?? (_sigNames[(int)kind] = this.BuildSigName(kind));
+	    }
+
+	    public bool IsEntryPoint
         {
             get { return _method.IsEntryPoint; }
         }
@@ -306,14 +315,8 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsExplicitImplementation
         {
-            get
-            {
-                return _method.IsExplicitImplementation;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return _method.IsExplicitImplementation; }
+            set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -348,8 +351,7 @@ namespace DataDynamics.PageFX.CodeModel
                 throw new NotSupportedException();
             }
         }
-        private IMethod[] _implMethods;
-
+        
         public IMethodBody Body
         {
             get { return _method.Body; }
@@ -382,8 +384,7 @@ namespace DataDynamics.PageFX.CodeModel
             }
             set { throw new NotSupportedException(); }
         }
-        private IMethod _baseMethod;
-        private bool _resolveBaseMethod = true;
+        
 
         public IMethod ProxyOf
         {
@@ -439,10 +440,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public string DisplayName
         {
-            get
-            {
-                return Name;
-            }
+            get { return Name; }
         }
 
         public IType DeclaringType { get; set; }

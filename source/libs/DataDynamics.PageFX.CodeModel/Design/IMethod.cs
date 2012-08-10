@@ -16,12 +16,20 @@ namespace DataDynamics.PageFX.CodeModel
 		IEnumerable<T> Find(string name);
 	}
 
+	public enum SigKind { Avm, Js }
+
     /// <summary>
     /// Represents type method
     /// </summary>
     public interface IMethod : IPolymorphicMember, IParameterizedMember
     {
-        #region Flags
+	    /// <summary>
+	    /// Gets qualified name.
+	    /// </summary>
+	    /// <param name="kind"> </param>
+	    string GetSigName(SigKind kind);
+
+	    #region Flags
         /// <summary>
         /// Gets the flag specifying whether the method is entry point.
         /// </summary>

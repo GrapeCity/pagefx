@@ -11,11 +11,6 @@ namespace DataDynamics.PageFX.CodeModel
         //bool EmitDebugInfo { get; set; }
 
         /// <summary>
-        /// Gets the method is being compiled
-        /// </summary>
-        IMethod Method { get; }
-
-        /// <summary>
         /// Translates given <see cref="IMethodBody"/> using given  <see cref="ICodeProvider"/>.
         /// </summary>
         /// <param name="method"></param>

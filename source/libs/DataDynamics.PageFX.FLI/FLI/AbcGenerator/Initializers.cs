@@ -218,7 +218,7 @@ namespace DataDynamics.PageFX.FLI
             if (instance.StaticCtor != null)
                 return instance.StaticCtor;
 
-            var ctor = InternalTypeExtensions.FindStaticCtor(type);
+            var ctor = type.GetStaticCtor();
             if (ctor != null)
                 return instance.StaticCtor = DefineAbcMethod(ctor);
 

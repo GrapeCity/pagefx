@@ -132,8 +132,6 @@ namespace DataDynamics.PageFX.FLI
 
         void InitStringInlines()
         {
-            if (!AbcGenConfig.UseAvmString) return;
-
             AddStringInline(
                 "GetChar",
                 code => code.GetChar());

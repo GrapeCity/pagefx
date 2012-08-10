@@ -46,9 +46,7 @@ namespace DataDynamics.PageFX.FLI
 
         public IInstruction[] UnwrapString()
         {
-            var code = new AbcCode(_abc);
-            code.UnwrapSystemString();
-            return code.ToArray();
+	        return new IInstruction[0];
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -63,21 +64,21 @@ namespace DataDynamics.PageFX.CodeModel
             if (b == null) return a;
             if (a == b) return a;
 
-            //A : B
+            //a : b
             if (a.Implements(b))
                 return b;
 
-            //B : A
+            //b : a
             if (b.Implements(a))
                 return a;
 
-            //A : C
-            //B : C
+            //a : c
+            //b : c
 
-            foreach (var C in a.Interfaces)
+            foreach (var c in a.Interfaces)
             {
-                if (b.Implements(C))
-                    return C;
+                if (b.Implements(c))
+                    return c;
             }
 
             return SystemTypes.Object;
@@ -729,7 +730,7 @@ namespace DataDynamics.PageFX.CodeModel
     		return type.Methods.Find(name, argc);
     	}
 
-		public static IMethod FindMethod(this IType type, string name, int argc, Func<IParameterCollection,bool> args)
+		public static IMethod FindMethod(this IType type, string name, int argc, Func<IParameterCollection, bool> args)
     	{
     		return type.Methods.Find(name, m =>
     		                               	{
@@ -739,7 +740,7 @@ namespace DataDynamics.PageFX.CodeModel
     		                               	});
     	}
 
-		public static IMethod FindMethodHierarchically(this IType type, string name, Func<IMethod,bool> predicate, Func<IType,bool> hierarchyFilter)
+		public static IMethod FindMethodHierarchically(this IType type, string name, Func<IMethod, bool> predicate, Func<IType, bool> hierarchyFilter)
 		{
 			while (type != null)
 			{
@@ -750,5 +751,105 @@ namespace DataDynamics.PageFX.CodeModel
 			}
 			return null;
 		}
+
+	    public static string GetSigName(this IType type)
+	    {
+		    return type == null ? "" : type.SigName;
+	    }
+
+	    public static void AppendSigName(this StringBuilder sb, IEnumerable<IType> types)
+	    {
+		    sb.Append(types, x => x.GetSigName(), "_");
+		}
+
+	    public static IEnumerable<IMethod> GetSameMethods(this IType type, IMethod method, bool compareReturnTypes)
+	    {
+		    bool isGeneric = method.IsGeneric;
+		    var set = type.Methods.Find(method.Name);
+		    foreach (var m in set)
+		    {
+			    if (isGeneric)
+			    {
+				    if (!m.IsGeneric) continue;
+				    if (m.GenericParameters.Count != method.GenericParameters.Count)
+					    continue;
+			    }
+			    else
+			    {
+				    if (m.IsGeneric) continue;
+			    }
+			    if (Signature.Equals(m, method, compareReturnTypes, false))
+				    yield return m;
+		    }
+	    }
+
+	    public static IMethod FindSameMethod(this IType type, IMethod method, bool compareReturnTypes)
+	    {
+		    IMethod result = null;
+		    int curSpec = 0;
+		    foreach (var candidate in type.GetSameMethods(method, compareReturnTypes))
+		    {
+			    if (!candidate.SignatureChanged)
+				    return candidate;
+
+			    int spec = Method.GetSpecificity(candidate);
+			    if (result == null || spec > curSpec)
+			    {
+				    result = candidate;
+				    curSpec = spec;
+			    }
+		    }
+		    return result;
+	    }
+
+	    public static IMethod FindOverrideMethod(this IType type, IMethod method)
+	    {
+		    if (method.IsGenericInstance)
+		    {
+			    var gm = method.InstanceOf;
+			    var m = type.FindSameMethod(gm, false);
+			    if (m == null) return null;
+			    m = GenericType.CreateMethodInstance(type, m, method.GenericArguments);
+			    if (m == null)
+				    throw new InvalidOperationException();
+			    return m;
+		    }
+		    return type.FindSameMethod(method, false);
+	    }
+
+	    public static IMethod FindImplementation(this IType type, IMethod method, bool inherited)
+	    {
+		    if (method.IsGenericInstance)
+			    method = method.InstanceOf;
+
+		    while (type != null)
+		    {
+			    var impl = (from candidate in type.Methods
+			                where candidate.ImplementedMethods != null &&
+			                      candidate.ImplementedMethods.Any(x => x == method || x.ProxyOf == method)
+			                select candidate).FirstOrDefault();
+			    if (impl != null)
+			    {
+				    return impl;
+			    }
+			    if (!inherited) break;
+			    type = type.BaseType;
+		    }
+
+		    return null;
+	    }
+
+	    public static IMethod FindImplementation(this IType type, IMethod method)
+	    {
+		    return type.FindImplementation(method, true);
+	    }
+
+	    public static IMethod GetStaticCtor(this IType type)
+	    {
+		    if (type == null) return null;
+		    if (type.IsArray)
+			    type = SystemTypes.Array;
+		    return type.Methods.StaticConstructor;
+	    }
     }
 }

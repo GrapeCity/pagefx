@@ -770,9 +770,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                         return BuiltinTypes.Void;
 
                     case SystemTypeCode.String:
-                        if (AbcGenConfig.UseAvmString)
-                            return BuiltinTypes.String;
-                        break;
+                        return BuiltinTypes.String;
                 }
             }
             

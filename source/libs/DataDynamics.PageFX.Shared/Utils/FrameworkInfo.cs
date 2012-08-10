@@ -120,12 +120,12 @@ namespace DataDynamics
 
         public static string ToString(FrameworkVersion v)
         {
-            return StringAttribute.EnumToString(v);
+            return v.EnumString();
         }
 
         public static FrameworkVersion ParseVersion(string s, FrameworkVersion defval)
         {
-            return StringAttribute.ParseEnum(s, defval);
+            return s.EnumParse(defval);
         }
     }
 }

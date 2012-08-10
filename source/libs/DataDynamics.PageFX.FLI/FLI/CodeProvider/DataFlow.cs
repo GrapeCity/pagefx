@@ -199,8 +199,8 @@ namespace DataDynamics.PageFX.FLI
         public IInstruction[] PushSystemString(string s)
         {
             var code = new AbcCode(_abc);
-            code.PushSystemString(s);
-            return code.ToArray();
+	        code.PushString(s);
+	        return code.ToArray();
         }
 
         public IInstruction[] LoadConstant(object value)

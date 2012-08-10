@@ -5,8 +5,15 @@ using System.Runtime.CompilerServices;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public class Method : TypeMember, IMethod
+    public sealed class Method : TypeMember, IMethod
     {
+		private readonly string[] _sigNames = new string[2];
+	    private bool _resolveBaseMethod = true;
+	    private IMethod _baseMethod;
+		private readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
+		private readonly ParameterCollection _parameters = new ParameterCollection();
+		private readonly CustomAttributeCollection _returnAttrs = new CustomAttributeCollection();
+
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
@@ -20,7 +27,13 @@ namespace DataDynamics.PageFX.CodeModel
         }
 
         #region IMethod Members
-        public bool IsEntryPoint
+
+	    public string GetSigName(SigKind kind)
+	    {
+		    return _sigNames[(int)kind] ?? (_sigNames[(int)kind] = this.BuildSigName(kind));
+	    }
+
+	    public bool IsEntryPoint
         {
             get { return GetModifier(Modifiers.EntryPoint); }
             set { SetModifier(value, Modifiers.EntryPoint); }
@@ -225,7 +238,6 @@ namespace DataDynamics.PageFX.CodeModel
 		{
 			get { return _genericParams; }
 		}
-        private readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
 
         public IType[] GenericArguments
         {
@@ -249,7 +261,6 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _parameters; }
         }
-        readonly ParameterCollection _parameters = new ParameterCollection();
 
         /// <summary>
         /// Gets collection of custom attributes for return type.
@@ -258,9 +269,9 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _returnAttrs; }
         }
-        readonly CustomAttributeCollection _returnAttrs = new CustomAttributeCollection();
-
-        public ITypeMember Association { get; set; }
+        
+	    
+	    public ITypeMember Association { get; set; }
 
         public bool IsGetter
         {
@@ -309,25 +320,20 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public string ReturnDocumentation { get; set; }
 
-        #region BaseMethod
-        public IMethod BaseMethod
+	    public IMethod BaseMethod
         {
             get
             {
-                if (_baseMethod == null && _findBaseMethod)
+                if (_baseMethod == null && _resolveBaseMethod)
                 {
-                    _findBaseMethod = false;
-                    _baseMethod = FindBaseMethod(this);
+                    _resolveBaseMethod = false;
+                    _baseMethod = ResolveBaseMethod(this);
                 }
                 return _baseMethod;
             }
         }
 
-        bool _findBaseMethod = true;
-        IMethod _baseMethod;
-        #endregion
-
-        public IMethod ProxyOf
+	    public IMethod ProxyOf
         {
             get { return null; }
         }
@@ -344,6 +350,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return false; }
         }
+
         #endregion
 
         #region ICodeNode Members
@@ -358,48 +365,7 @@ namespace DataDynamics.PageFX.CodeModel
         }
         #endregion
 
-        #region Utils
-        public static IEnumerable<IMethod> GetSameMethods(IType type, IMethod method, bool compareReturnTypes)
-        {
-            bool isGeneric = method.IsGeneric;
-            var set = type.Methods.Find(method.Name);
-            foreach (var m in set)
-            {
-                if (isGeneric)
-                {
-                    if (!m.IsGeneric) continue;
-                    if (m.GenericParameters.Count != method.GenericParameters.Count)
-                        continue;
-                }
-                else
-                {
-                    if (m.IsGeneric) continue;
-                }
-                if (Signature.Equals(m, method, compareReturnTypes, false))
-                    yield return m;
-            }
-        }
-
-        public static IMethod FindMethod(IType type, IMethod method, bool compareReturnTypes)
-        {
-            IMethod result = null;
-            int curSpec = 0;
-            foreach (var m in GetSameMethods(type, method, compareReturnTypes))
-            {
-                if (!m.SignatureChanged)
-                    return m;
-
-                int spec = GetSpecificity(m);
-                if (result == null || spec > curSpec)
-                {
-                    result = m;
-                    curSpec = spec;
-                }
-            }
-            return result;
-        }
-
-        public static IMethod FindBaseMethod(IMethod method)
+	    private static IMethod ResolveBaseMethod(IMethod method)
         {
             if (method.IsStatic) return null;
             if (method.IsConstructor) return null;
@@ -411,7 +377,7 @@ namespace DataDynamics.PageFX.CodeModel
             var baseType = declType.BaseType;
             while (baseType != null)
             {
-                var bm = FindMethod(baseType, method, false);
+                var bm = baseType.FindSameMethod(method, false);
                 if (bm != null)
                     return bm;
                 baseType = baseType.BaseType;
@@ -424,7 +390,5 @@ namespace DataDynamics.PageFX.CodeModel
         {
         	return method.Parameters.Count(p => !p.HasResolvedType);
         }
-
-    	#endregion
     }
 }

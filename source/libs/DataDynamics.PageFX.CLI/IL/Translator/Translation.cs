@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #region fields
         FlowGraph _flowgraph;
 
-        internal NodeList Blocks
+	    private IEnumerable<Node> Blocks
         {
             get { return _flowgraph.Blocks; }
         }

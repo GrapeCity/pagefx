@@ -121,12 +121,8 @@ namespace DataDynamics.PageFX.FLI.IL
                     if (string.IsNullOrEmpty(line)) continue;
                     if (line.StartsWith("//"))
                     {
-                        deprecated = false;
-                        if (line.Substring(2).Trim().StartsWith("deprecated"))
-                        {
-                            deprecated = true;
-                        }
-                        continue;
+                        deprecated = line.Substring(2).Trim().StartsWith("deprecated");
+	                    continue;
                     }
 
                     var i = ParseInstruction(line);

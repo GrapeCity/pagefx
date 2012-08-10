@@ -101,7 +101,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         {
         }
 
-        static readonly Hashtable _keywords = new Hashtable();
+        private static readonly Hashtable Keywords = new Hashtable();
 
         static SyntaxWriter()
         {
@@ -120,7 +120,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         {
             foreach (var k in keywords)
             {
-                _keywords[k] = 1;
+                Keywords[k] = 1;
             }
         }
         #endregion
@@ -145,19 +145,19 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region Common API
-        readonly Stack<ICodeNode> _scopeStack = new Stack<ICodeNode>();
+        private readonly Stack<ICodeNode> _scopeStack = new Stack<ICodeNode>();
 
-        void PushScope(ICodeNode node)
+		private void PushScope(ICodeNode node)
         {
             _scopeStack.Push(node);
         }
 
-        void PopScope()
+		private void PopScope()
         {
             _scopeStack.Pop();
         }
 
-        ICodeNode Scope
+        private ICodeNode Scope
         {
             get
             {
@@ -172,7 +172,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             get { return _indentChars; }
             set { _indentChars = value; }
         }
-        string _indentChars = "    ";
+        private string _indentChars = "    ";
 
         public void Indent()
         {
@@ -224,24 +224,24 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write(_tab);
         }
 
-        public string FormatEnum<T>(T value)
+        public string FormatEnum<T>(T value) where T:struct 
         {
-            return SyntaxFormatter.FormatEnum(_lang, value);
+            return value.EnumString(_lang);
         }
 
-        string GetKeyword<T>(T value)
+        private string GetKeyword<T>(T value) where T:struct 
         {
             return FormatEnum(value);
         }
 
-        public void WriteEnum<T>(T value)
+        public void WriteEnum<T>(T value) where T:struct 
         {
             string s = FormatEnum(value);
             Debug.Assert(s != null);
             Write(s);
         }
 
-        public bool WriteKeyword<T>(T value, bool space)
+        public bool WriteKeyword<T>(T value, bool space) where T:struct 
         {
             string s = FormatEnum(value);
             if (!string.IsNullOrEmpty(s))
@@ -253,7 +253,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return false;
         }
 
-        public bool WriteKeyword<T>(T value)
+        public bool WriteKeyword<T>(T value) where T:struct 
         {
             return WriteKeyword(value, true);
         }
@@ -383,9 +383,9 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
             if (dic.TryGetValue("mode", out value))
             {
-                if (string.Compare(value, "short", true) == 0)
+                if (string.Compare(value, "short", StringComparison.OrdinalIgnoreCase) == 0)
                     Mode = FormatMode.ShortDeclaration;
-                else if (string.Compare(value, "decl", true) == 0)
+				else if (string.Compare(value, "decl", StringComparison.OrdinalIgnoreCase) == 0)
                     Mode = FormatMode.FullDeclaration;
                 else
                     Mode = FormatMode.Full;
@@ -393,7 +393,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
             if (dic.TryGetValue("region", out value))
             {
-                if (value == "+" || value == "1" || string.Compare(value, "true", true) == 0)
+                if (value == "+" || value == "1" || string.Compare(value, "true", StringComparison.OrdinalIgnoreCase) == 0)
                     _useRegions = true;
             }
         }
@@ -529,7 +529,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
         void WriteID(string name)
         {
-            if (_keywords.Contains(name))
+            if (Keywords.Contains(name))
                 Write("@");
             Write(name);
         }

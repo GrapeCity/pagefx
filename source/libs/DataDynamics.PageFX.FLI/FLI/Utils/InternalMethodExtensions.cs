@@ -568,22 +568,12 @@ namespace DataDynamics.PageFX.FLI
 		private static bool HasBaseExplicitImpl(this IMethod method)
 		{
 			if (method == null) return false;
-			var ifaceMethod = method.GetInterfaceOfExplicitImpl();
+			var ifaceMethod = method.GetExplicitImpl();
 			if (ifaceMethod == null) return false;
 			var declType = method.DeclaringType;
 			if (declType.BaseType.FindImplementation(ifaceMethod, true) != null)
 				return true;
 			return false;
-		}
-
-		public static IMethod GetInterfaceOfExplicitImpl(this IMethod method)
-		{
-			if (method == null) return null;
-			if (!method.IsExplicitImplementation) return null;
-			var impl = method.ImplementedMethods;
-			if (impl == null || impl.Length != 1)
-				throw new InvalidOperationException("bad explicit implementation");
-			return impl[0];
 		}
 
 		public static bool IsOverride(this IMethod method)
@@ -656,14 +646,9 @@ namespace DataDynamics.PageFX.FLI
 		public static bool AsStaticCall(this IMethod m)
 		{
 			if (m.IsStatic) return false;
-			if (AbcGenConfig.UseAvmString)
+			if (m.DeclaringType == SystemTypes.String)
 			{
-				if (m.DeclaringType == SystemTypes.String)
-				{
-					if (m.IsInternalCall)
-						return false;
-					return true;
-				}
+				return !m.IsInternalCall;
 			}
 			return false;
 		}
@@ -705,15 +690,6 @@ namespace DataDynamics.PageFX.FLI
 			return true;
 		}
 
-		public static bool IsAccessor(this IMethod method)
-		{
-			var prop = method.Association as IProperty;
-			if (prop == null) return false;
-			if (method.Association != prop) return false;
-			if (prop.Parameters.Count > 0) return false;
-			return true;
-		}
-
 		public static IMethod FindImplementedMethod(this IMethod method)
 		{
 			var impl = method.ImplementedMethods;
@@ -726,7 +702,7 @@ namespace DataDynamics.PageFX.FLI
 #if DEBUG
 				DebugService.DoCancel();
 #endif
-				var bm = Method.FindMethod(bt, method, false);
+				var bm = bt.FindSameMethod(method, false);
 				if (bm != null)
 				{
 					impl = bm.ImplementedMethods;

@@ -31,14 +31,6 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region Translate - Entry Point
-        /// <summary>
-        /// Gets the method is being compiled
-        /// </summary>
-        public IMethod Method
-        {
-            get { return _method; }
-        }
-
 #if PERF
         public static int CallCount;
 #endif

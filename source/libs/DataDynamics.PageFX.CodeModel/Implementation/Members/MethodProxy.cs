@@ -5,17 +5,19 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public class MethodProxy : IMethod
+    public sealed class MethodProxy : IMethod
     {
-        #region Fields
-        private readonly IGenericInstance _instance;
+		private readonly bool _signatureChanged;
+		private readonly string[] _sigNames = new string[2];
+	    private readonly IGenericInstance _instance;
         private readonly IMethod _method;
         private readonly IType _type;
         private readonly ParameterCollection _params;
+		private IMethod[] _implMethods;
+		private IMethod _baseMethod;
+		private bool _resolveBaseMethod = true;
 
-    	#endregion
-
-        #region ctor
+	    #region ctor
         public MethodProxy(IGenericInstance instance, IMethod method)
         {
             _instance = instance;
@@ -41,7 +43,13 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region IMethod Members
-        public bool IsEntryPoint
+
+	    public string GetSigName(SigKind kind)
+	    {
+			return _sigNames[(int)kind] ?? (_sigNames[(int)kind] = this.BuildSigName(kind));
+	    }
+
+	    public bool IsEntryPoint
         {
             get { return _method.IsEntryPoint; }
         }
@@ -112,10 +120,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IType[] GenericArguments
         {
-            get
-            {
-                return _method.GenericArguments;
-            }
+            get { return _method.GenericArguments; }
         }
 
         /// <summary>
@@ -123,18 +128,12 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsGeneric
         {
-            get 
-            {
-                return _method.IsGeneric;
-            }
+            get { return _method.IsGeneric; }
         }
 
         public bool IsGenericInstance
         {
-            get
-            {
-                return _method.IsGenericInstance;
-            }
+            get { return _method.IsGenericInstance; }
         }
 
         public IParameterCollection Parameters
@@ -212,8 +211,7 @@ namespace DataDynamics.PageFX.CodeModel
                 _implMethods = value;
             }
         }
-        private IMethod[] _implMethods;
-
+        
         public IMethodBody Body
         {
             get { return _method.Body; }
@@ -238,9 +236,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return _baseMethod;
             }
         }
-        private IMethod _baseMethod;
-        private bool _resolveBaseMethod = true;
-
+        
         public IMethod ProxyOf
         {
             get { return _method; }
@@ -258,8 +254,8 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _signatureChanged; }
         }
-        private readonly bool _signatureChanged;
-        #endregion
+        
+	    #endregion
 
         #region IOverridableMember Members
         public bool IsAbstract

@@ -64,7 +64,7 @@ namespace DataDynamics.PageFX.FLI
             if (type == SystemTypes.Object)
                 return true;
 
-            if (AbcGenConfig.UseAvmString && type.IsStringInterface())
+            if (type.IsStringInterface())
                 return true;
 
             if (type.IsGenericArrayInterface())
@@ -184,42 +184,7 @@ namespace DataDynamics.PageFX.FLI
             return ctor;
         }
 
-        public static IMethod FindStaticCtor(IType type)
-        {
-            if (type == null) return null;
-            if (type.IsArray)
-                type = SystemTypes.Array;
-            return type.Methods.StaticConstructor;
-        }
-
-        public static int GetCtorCount(IType type)
-        {
-        	return type.Methods.Constructors.Count(m => !m.IsStatic);
-        }
-
-    	public static bool CanUseEmptyCtor(IType type)
-        {
-            if (type == null) return false;
-            var st = type.SystemType;
-            if (st == null) return false;
-            switch (st.Code)
-            {
-                case SystemTypeCode.Int8:
-                case SystemTypeCode.Int16:
-                case SystemTypeCode.Int32:
-                case SystemTypeCode.Int64:
-                case SystemTypeCode.UInt8:
-                case SystemTypeCode.UInt16:
-                case SystemTypeCode.UInt32:
-                case SystemTypeCode.UInt64:
-                case SystemTypeCode.Single:
-                case SystemTypeCode.Double:
-                case SystemTypeCode.Decimal:
-                    return true;
-            }
-            return false;
-        }
-        #endregion
+	    #endregion
 
         #region numeric types
         public static bool IsInt64(this IType type)
@@ -444,7 +409,7 @@ namespace DataDynamics.PageFX.FLI
 
             if (AbcGenConfig.UseCastToValueType && asop && type.IsValueType()) return true;
 
-            if (AbcGenConfig.UseAvmString && type.IsStringInterface())
+            if (type.IsStringInterface())
                 return true;
 
             if (type.IsGenericArrayInterface())
@@ -452,7 +417,6 @@ namespace DataDynamics.PageFX.FLI
 
             if (type.IsNullableInstance())
                 return true;
-
             
             return false;
         }
@@ -476,5 +440,18 @@ namespace DataDynamics.PageFX.FLI
     		}
     		return true;
     	}
+
+	    public static string GetStaticCtorName(this IType type)
+	    {
+		    return CLRNames.StaticConstructor;
+	    }
+
+	    public static string GetMethodName(this IType type, string name, int argcount)
+	    {
+		    var m = type.FindMethod(name, argcount);
+		    if (m == null)
+			    throw new ArgumentException(String.Format("Unable to find method {0} in type {1}", name, type.FullName));
+		    return m.GetSigName(SigKind.Avm);
+	    }
     }
 }

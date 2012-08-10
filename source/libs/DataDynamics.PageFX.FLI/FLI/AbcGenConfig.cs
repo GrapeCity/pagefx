@@ -13,9 +13,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static bool FlexAppCtorAsHandler = true;
 
-        public static bool UseAvmString = true;
-
-        public static bool UseActivationTraits = true;
+	    public static bool UseActivationTraits = true;
 
         public static bool UseFuncPointers;
 

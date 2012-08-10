@@ -484,7 +484,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (!_method.IsConstructor) return false;
             if (!IsBaseCtor(method)) return false;
-            if (IsAvmString) return true;
+            if (IsString) return true;
             return method.IsInitializer();
         }
 
@@ -501,7 +501,7 @@ namespace DataDynamics.PageFX.FLI
                     return;
                 }
 
-                if (AbcGenConfig.UseAvmString && type == SystemTypes.String)
+                if (type == SystemTypes.String)
                 {
                     code.Call(abcMethod);
                     return;
@@ -577,17 +577,14 @@ namespace DataDynamics.PageFX.FLI
         {
             if (AbcGenConfig.FlexAppCtorAsHandler && IsMxAppBaseCtor(method))
                 return true;
-            if (IsAvmString)
+            if (IsString)
                 return true;
             return false;
         }
 
-        bool IsAvmString
+        private bool IsString
         {
-            get 
-            {
-                return AbcGenConfig.UseAvmString && _declType == SystemTypes.String;
-            }
+            get { return _declType == SystemTypes.String; }
         }
 
         static AbcMultiname GetCallName(object tag)

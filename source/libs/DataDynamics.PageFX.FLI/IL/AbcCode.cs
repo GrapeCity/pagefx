@@ -1085,22 +1085,7 @@ namespace DataDynamics.PageFX.FLI.IL
             Add(InstructionCode.Newarray, n);
         }
 
-        public void PushSystemString(string value)
-        {
-            if (AbcGenConfig.UseAvmString)
-            {
-                PushString(value);
-            }
-            else
-            {
-                CreateInstance(SystemTypes.String, true);
-                Dup();
-                PushString(value);
-                SetProperty(Const.String.Value);
-            }
-        }
-
-        public void PushBool(bool value)
+	    public void PushBool(bool value)
         {
             if (AvmConfig.BooleanAsInt)
             {
@@ -1243,11 +1228,11 @@ namespace DataDynamics.PageFX.FLI.IL
                     }
 
                 case TypeCode.String:
-                    {
-                        PushSystemString((string)value);
-                        //return Arr(PushString((string)value));
-                    }
-                    break;
+		            {
+			            PushString((string)value);
+			            //return Arr(PushString((string)value));
+		            }
+		            break;
 
                 default:
                     throw new NotSupportedException();
@@ -1629,7 +1614,7 @@ namespace DataDynamics.PageFX.FLI.IL
                 return;
             }
 
-            if (AbcGenConfig.UseAvmString && target.IsStringInterface())
+            if (target.IsStringInterface())
             {
                 CastToStringInterface(source, target);
                 return;
@@ -3500,40 +3485,8 @@ namespace DataDynamics.PageFX.FLI.IL
         #endregion
 
         #region System.String
-        public void UnwrapSystemString()
-        {
-            if (AbcGenConfig.UseAvmString)
-                return;
 
-            var instance = DefineAbcInstance(SystemTypes.String);
-            var name = abc.DefinePfxName("unwrap");
-            var m = instance.DefineStaticMethod(
-                name, AvmTypeCode.String,
-                delegate(AbcCode code)
-                    {
-                        int s = 1;
-                        code.GetLocal(s);
-                        var br = code.IfNotNull();
-
-                        //null
-                        code.PushNull();
-                        code.CoerceString();
-                        code.ReturnValue();
-
-                        br.BranchTarget = code.Label();
-
-                        code.GetLocal(s);
-                        code.GetProperty(Const.String.Value);
-                        code.ReturnValue();
-                    },
-                    instance.Name, "s");
-
-            Getlex(instance);
-            Swap();
-            Call(m);
-        }
-
-        public void GetChar()
+	    public void GetChar()
         {
             CallAS3("charCodeAt", 1);
             CoerceChar();

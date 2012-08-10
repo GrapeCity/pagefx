@@ -147,6 +147,7 @@
     <Compile Include="Implementation\Types\GenericType.cs" />
     <Compile Include="Syntax\Attributes.cs" />
     <Compile Include="Design\Statements\Basic.cs" />
+    <Compile Include="Syntax\EnumExtensions.cs" />
     <Compile Include="Syntax\Enums.cs" />
     <Compile Include="Implementation\Assembly.cs" />
     <Compile Include="Implementation\AssemblyReference.cs" />

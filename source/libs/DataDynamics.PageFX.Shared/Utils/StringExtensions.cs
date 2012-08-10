@@ -80,18 +80,20 @@ namespace DataDynamics
                 sb.AppendLine(tab + line);
             }
             return sb.ToString();
-        }
+		}
 
-    	public static string Join<T>(this IEnumerable<T> set, string prefix, string suffix, string separator, Converter<T, string> tostr)
+		#region Join
+
+		public static string Join<T>(this IEnumerable<T> seq, string prefix, string suffix, string separator, Converter<T, string> tostr)
         {
-			if (set == null) return "";
+			if (seq == null) return "";
             var sb = new StringBuilder();
             bool f = false;
 			if (!String.IsNullOrEmpty(prefix))
 			{
 				sb.Append(prefix);
 			}
-    		foreach (var item in set)
+    		foreach (var item in seq)
             {
                 if (f) sb.Append(separator);
                 sb.Append(tostr(item));
@@ -104,22 +106,39 @@ namespace DataDynamics
     		return sb.ToString();
         }
 
-        public static string Join<T>(this IEnumerable<T> set, string prefix, string suffix, string separator)
+        public static string Join<T>(this IEnumerable<T> seq, string prefix, string suffix, string separator)
         {
-            return set.Join(prefix, suffix, separator, x => x.ToString());
+            return seq.Join(prefix, suffix, separator, x => x.ToString());
         }
 
-        public static string Join<T>(this IEnumerable<T> set, string separator)
+        public static string Join<T>(this IEnumerable<T> seq, string separator)
         {
-            return set.Join("", "", separator);
+            return seq.Join("", "", separator);
         }
 
-        public static string Join<T>(this IEnumerable<T> set)
+        public static string Join<T>(this IEnumerable<T> seq)
         {
-            return set.Join(",");
-        }
+            return seq.Join(",");
+		}
 
-    	public static List<string> Break(this string line, int maxWidth)
+		#endregion
+
+		public static void Append<T>(this StringBuilder sb, IEnumerable<T> seq, Func<T,string> convert, string separator)
+		{
+			bool sep = false;
+			foreach (var item in seq)
+			{
+				if (sep && !string.IsNullOrEmpty(separator))
+					sb.Append(separator);
+				if (convert == null)
+					sb.Append(item);
+				else
+					sb.Append(convert(item));
+				sep = true;
+			}
+		}
+
+		public static List<string> Break(this string line, int maxWidth)
         {
             var lines = new List<string>();
             if (line == null)

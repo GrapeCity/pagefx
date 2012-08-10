@@ -9,6 +9,10 @@ namespace System.Collections.Generic
         T this[int index] { get; }
     }
 
+	public class ListEx<T> : List<T>, IReadOnlyList<T>
+	{
+	}
+
     public static class ReadOnlyListExtensions
     {
         private class ArrayAdapter<T> : IReadOnlyList<T>

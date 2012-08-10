@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FLI
         #region GetMethodName
         AbcMultiname GetMethodName(IMethod method)
         {
-            string name = method.GetMethodName();
+            string name = method.GetSigName(SigKind.Avm);
             return _abc.DefineQName(method, name);
         }
 
@@ -59,7 +59,7 @@ namespace DataDynamics.PageFX.FLI
                     return GetDefinedMethodName(impl);
             }
 
-            string name = GetFixedName(method) ?? method.GetMethodName();
+            string name = GetFixedName(method) ?? method.GetSigName(SigKind.Avm);
         	return _abc.DefineQName(method, name);
         }
 
@@ -570,28 +570,15 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineOverrideMethod
-        static IMethod FindOverrideMethod(IType implType, IMethod method)
-        {
-            if (method.IsGenericInstance)
-            {
-                var gm = method.InstanceOf;
-                var m = Method.FindMethod(implType, gm, false);
-                if (m == null) return null;
-                m = GenericType.CreateMethodInstance(implType, m, method.GenericArguments);
-                if (m == null)
-                    throw new InvalidOperationException();
-                return m;
-            }
-            return Method.FindMethod(implType, method, false);
-        }
 
-        void DefineOverrideMethod(IType implType, IMethod method)
+	    void DefineOverrideMethod(IType implType, IMethod method)
         {
             if (implType == null) return;
-            var m = FindOverrideMethod(implType, method);
+            var m = implType.FindOverrideMethod(method);
             if (m != null)
                 DefineMethod(m);
         }
+
         #endregion
 
         #region DefineImplementation
@@ -614,16 +601,8 @@ namespace DataDynamics.PageFX.FLI
                                   method.FullName, implType.FullName));
             }
 
-            if (impl.IsGeneric)
-            {
-                if (!method.IsGenericInstance)
-                    throw new InvalidOperationException("invalid context");
-                //IMethod gmi = new GenericMethodInstance(implType, m, method.GenericArguments);
-                //gmi = GenericType.ResolveMethodInstance(implType, null, gmi);
-                //impl = gmi;
-                impl = GenericType.CreateMethodInstance(implType, impl, method.GenericArguments);
-            }
-
+	        impl = impl.ResolveGenericInstance(implType, method);
+            
             DefineMethod(impl);
         }
         #endregion

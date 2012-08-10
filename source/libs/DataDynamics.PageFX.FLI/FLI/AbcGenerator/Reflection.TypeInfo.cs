@@ -643,7 +643,10 @@ namespace DataDynamics.PageFX.FLI
 
                     code.GetLocal(varEnumInfo);
                     code.NewArray(varArr, SystemTypes.String, fields,
-                                  field => code.PushSystemString(field.Name));
+                                  field =>
+	                                  {
+		                                  code.PushString(field.Name);
+	                                  });
                     code.SetProperty(Const.EnumInfo.Names);
 
                     code.GetLocal(varEnumInfo);

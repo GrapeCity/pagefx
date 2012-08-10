@@ -413,7 +413,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineInterfaces
         static bool OnlyDeclareInterfaces(IType type)
         {
-            if (AbcGenConfig.UseAvmString && type == SystemTypes.String)
+            if (type == SystemTypes.String)
                 return true;
             return false;
         }

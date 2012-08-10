@@ -64,7 +64,7 @@ namespace DataDynamics.PageFX.CLI.IL
 		/// <summary>
 		/// Gets the child blocks.
 		/// </summary>
-        public BlockList Kids
+        public IEnumerable<Block> Kids
         {
             get { return _kids; }
         }
