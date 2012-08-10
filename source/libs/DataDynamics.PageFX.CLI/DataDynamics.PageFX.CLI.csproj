@@ -132,6 +132,24 @@
     <Compile Include="IL\Values\VarPtr.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="JavaScript\JsArray.cs" />
+    <Compile Include="JavaScript\JsBlock.cs" />
+    <Compile Include="JavaScript\JsClass.cs" />
+    <Compile Include="JavaScript\JsCompiler.cs" />
+    <Compile Include="JavaScript\JsExtensions.cs" />
+    <Compile Include="JavaScript\JsField.cs" />
+    <Compile Include="JavaScript\JsFunction.cs" />
+    <Compile Include="JavaScript\JsInstruction.cs" />
+    <Compile Include="JavaScript\JsInterface.cs" />
+    <Compile Include="JavaScript\JsMethod.cs" />
+    <Compile Include="JavaScript\JsNamespace.cs" />
+    <Compile Include="JavaScript\JsNode.cs" />
+    <Compile Include="JavaScript\JsObject.cs" />
+    <Compile Include="JavaScript\JsProgram.cs" />
+    <Compile Include="JavaScript\JsResource.cs" />
+    <Compile Include="JavaScript\JsExpressions.cs" />
+    <Compile Include="JavaScript\JsPool.cs" />
+    <Compile Include="JavaScript\JsTypeExtensions.cs" />
     <Compile Include="Metadata\Enums.cs" />
     <Compile Include="Metadata\MdbHtmlExport.cs" />
     <Compile Include="Metadata\MdbCell.cs" />
@@ -182,6 +200,9 @@
       <Project>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</Project>
       <Name>DataDynamics.PageFX.Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="JavaScript\core.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CFG\Nodes\" />
