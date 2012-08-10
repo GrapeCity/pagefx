@@ -98,6 +98,7 @@ namespace DataDynamics.PageFX
             miSwfSerialization.Tag = TestDriver.SwfSerialization;
             miCliDeserialization.Tag = TestDriver.CliDeserialization;
             miClrEmulation.Tag = TestDriver.ClrEmulation;
+            miJavaScript.Tag = TestDriver.JavaScript;
 
             //progressBar.Visible = false;
 
@@ -136,10 +137,16 @@ namespace DataDynamics.PageFX
 
         enum TestDriver
         {
+			[String("ABC")]
             AbcSerialization,
+			[String("SWF")]
             SwfSerialization,
+			[String("CLI")]
             CliDeserialization,
+			[String("CLRE")]
 			ClrEmulation,
+			[String("JS")]
+			JavaScript,
         }
         TestDriver _testDriver;
 
@@ -154,6 +161,7 @@ namespace DataDynamics.PageFX
             miSwfSerialization.Checked = _testDriver == TestDriver.SwfSerialization;
             miCliDeserialization.Checked = _testDriver == TestDriver.CliDeserialization;
             miClrEmulation.Checked = _testDriver == TestDriver.ClrEmulation;
+            miJavaScript.Checked = _testDriver == TestDriver.JavaScript;
         }
 
         static TreeNode FindByText(TreeNodeCollection list, string text)
@@ -478,7 +486,7 @@ namespace DataDynamics.PageFX
             tc.Optimize = QA.OptimizeCode;
             tc.Debug = QA.EmitDebugInfo;
             tc.IsStarted = true;
-            var tds = new TestDriverSettings
+            var settings = new TestDriverSettings
                           {
                               ExportCSharpFile = false,
                               CancelCallback = _cancelCallback
@@ -487,24 +495,29 @@ namespace DataDynamics.PageFX
         	switch (_testDriver)
         	{
         		case TestDriver.AbcSerialization:
-					tds.OutputFormat = "abc";
-					TestEngine.RunTestCase(tc, tds);
+					settings.OutputFormat = "abc";
+					TestEngine.RunTestCase(tc, settings);
         			break;
         		case TestDriver.SwfSerialization:
-					tds.OutputFormat = "swf";
-					TestEngine.RunTestCase(tc, tds);
+					settings.OutputFormat = "swf";
+					TestEngine.RunTestCase(tc, settings);
         			break;
+				case TestDriver.JavaScript:
+					settings.OutputFormat = "js";
+					TestEngine.RunTestCase(tc, settings);
+					break;
         		case TestDriver.CliDeserialization:
         			break;
         		case TestDriver.ClrEmulation:
-					tds.IsClrEmulation = true;
-					TestEngine.RunTestCase(tc, tds);
+					settings.IsClrEmulation = true;
+					TestEngine.RunTestCase(tc, settings);
         			break;
+				
         		default:
         			throw new ArgumentOutOfRangeException();
         	}
 
-        	if (tds.IsCancel)
+        	if (settings.IsCancel)
                 tc.IsCancelled = true;
             else
                 tc.IsFinished = true;
@@ -799,13 +812,8 @@ namespace DataDynamics.PageFX
         {
             _testDriver = TestDriver.AbcSerialization;
             string str = QA.GetValue(KeyTestDriver, "ABC");
-            if (string.Compare(str, "CLI", true) == 0)
-                _testDriver = TestDriver.CliDeserialization;
-            else if (string.Compare(str, "SWF", true) == 0)
-                _testDriver = TestDriver.SwfSerialization;
-			else if (string.Compare(str, "CLRE", true) == 0)
-				_testDriver = TestDriver.ClrEmulation;
-
+	        _testDriver = str.EnumParse(TestDriver.AbcSerialization);
+            
             str = QA.GetValue(KeyAvmShellMode, AvmShellMode.Interpretation);
             if (string.Compare(str, AvmShellMode.JIT, true) == 0)
                 cbAvmShellMode.SelectedIndex = 1;
@@ -840,24 +848,7 @@ namespace DataDynamics.PageFX
 
         void SaveSettings()
         {
-            switch (_testDriver)
-            {
-                case TestDriver.CliDeserialization:
-                    QA.SetValue(KeyTestDriver, "CLI");
-                    break;
-
-                case TestDriver.AbcSerialization:
-                    QA.SetValue(KeyTestDriver, "ABC");
-                    break;
-
-                case TestDriver.SwfSerialization:
-                    QA.SetValue(KeyTestDriver, "SWF");
-                    break;
-
-				case TestDriver.ClrEmulation:
-					QA.SetValue(KeyTestDriver, "CLRE");
-					break;
-            }
+			QA.SetValue(KeyTestDriver, _testDriver.EnumString());
 
             SaveFlags(btnOptions.DropDownItems);
 

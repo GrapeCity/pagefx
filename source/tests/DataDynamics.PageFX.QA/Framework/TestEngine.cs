@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using DataDynamics.PageFX.CLI.Execution;
+using DataDynamics.PageFX.CLI.JavaScript;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
+using DataDynamics.PageFX.Tools;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.FLI
@@ -14,49 +16,49 @@ namespace DataDynamics.PageFX.FLI
         #region RunTestCase
         public static void RunTestCase(string name, string format)
         {
-            var tc = SimpleTestCases.Find(name);
-            if (tc == null)
+            var test = SimpleTestCases.Find(name);
+            if (test == null)
                 Assert.Fail("Unable to find given test case {0}", name);
 
-        	var tds = new TestDriverSettings
+        	var settings = new TestDriverSettings
         	          	{
         	          		UpdateReport = false,
         	          		OutputFormat = format
         	          	};
-            tc.Optimize = true;
-            RunTestCase(tc, tds);
+            test.Optimize = true;
+            RunTestCase(test, settings);
 
-			if (tc.IsFailed)
+			if (test.IsFailed)
 			{
-				Assert.Fail(tc.Error);
+				Assert.Fail(test.Error);
 			}
         }
 
-        public static void RunTestCase(TestCase tc, TestDriverSettings tds)
+        public static void RunTestCase(TestCase test, TestDriverSettings settings)
         {
-            if (tds == null)
-                tds = new TestDriverSettings();
+            if (settings == null)
+                settings = new TestDriverSettings();
 
 #if DEBUG
-            DebugService.LogInfo("TestCase {0} started", tc.Name);
+            DebugService.LogInfo("TestCase {0} started", test.Name);
             DebugService.DoCancel();
 #endif
 
-            tc.Reset();
+            test.Reset();
             CLI.CommonLanguageInfrastructure.ClearCache();
 
             try
             {
-                RunCore(tc, tds);
+                RunCore(test, settings);
             }
             finally
             {
                 CLI.CommonLanguageInfrastructure.ClearCache();
             }
 
-			if (tds.UpdateReport)
+			if (settings.UpdateReport)
 			{
-				UpdateReport(tc);
+				UpdateReport(test);
 			}
         }
         #endregion
@@ -76,10 +78,9 @@ namespace DataDynamics.PageFX.FLI
                 GlobalSettings.EmitDebugInfo = tc.Debug = QA.TestDebugSupport;
             }
 
-            if (!Compile(tc)) return;
-            if (tds.IsCancel) return;
-
-			if (!tds.IsClrEmulation)
+            if (!Compile(tc) || tds.IsCancel) return;
+            
+			if (!(tds.IsClrEmulation))
 			{
 				if (!GenerateApp(tc, tds)) return;
 			}
@@ -114,33 +115,48 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region GenerateApp
-        static bool GenerateApp(TestCase tc, TestDriverSettings tds)
+        static bool GenerateApp(TestCase test, TestDriverSettings tds)
         {
-            tc.VM = VM.AVM;
-            tc.OutputPath = Path.Combine(tc.Root, "test." + tds.OutputExtension);
+			test.VM = VM.AVM;
+			test.OutputPath = Path.Combine(test.Root, "test." + tds.OutputExtension);
 
-            bool refl = tc.FullName.Contains("Reflection");
+			if (tds.IsJavaScript)
+			{
+				try
+				{
+					var compiler = new JsCompiler(new FileInfo(test.ExePath));
+					compiler.Compile(new FileInfo(test.OutputPath));
+					return true;
+				}
+				catch (Exception e)
+				{
+					test.Error = string.Format("Unable to generate {0} file.\nException: {1}", tds.OutputFormat, e);
+					return false;
+				}				
+			}
+
+            bool refl = test.FullName.Contains("Reflection");
             GlobalSettings.ReflectionSupport = refl;
 
-            if (tc.UsePfc)
+            if (test.UsePfc)
             {
                 var options = new PfxCompilerOptions
                                   {
                                       Nologo = true,
-                                      Input = tc.ExePath,
-                                      Output = tc.OutputPath,
+                                      Input = test.ExePath,
+                                      Output = test.OutputPath,
                                       Reflection = refl
                                   };
                 string err = PfxCompiler.Run(options);
                 if (CompilerConsole.HasErrors(err))
                 {
-                    throw new InvalidOperationException("Unable to compile " + tc.Name + ".\n" + err);
+                    throw new InvalidOperationException("Unable to compile " + test.Name + ".\n" + err);
                 }
             }
             else
             {
                 IAssembly asm;
-                if (!LoadAssembly(tc, tds, out asm)) return false;
+                if (!LoadAssembly(test, tds, out asm)) return false;
                 
                 try
                 {
@@ -151,11 +167,11 @@ namespace DataDynamics.PageFX.FLI
                         cl += " /framesize:100 /fp:10 /nohtml /exception-break";
                     }
 
-                    FlashLanguageInfrastructure.Serialize(asm, tc.OutputPath, cl);
+                    FlashLanguageInfrastructure.Serialize(asm, test.OutputPath, cl);
                 }
                 catch (Exception e)
                 {
-                    tc.Error = string.Format("Unable to generate {0} file.\nException: {1}", tds.OutputFormat, e);
+                    test.Error = string.Format("Unable to generate {0} file.\nException: {1}", tds.OutputFormat, e);
                     return false;
                 }
 
@@ -197,14 +213,14 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region Execute
-        static void Execute(TestCase tc, TestDriverSettings tds)
+        static void Execute(TestCase test, TestDriverSettings settings)
         {
-            if (tc.IsBenchmark)
+            if (test.IsBenchmark)
             {
-                if (tds.IsSWF)
+                if (settings.IsSWF)
                 {
-                    var results = FlashPlayer.Run(tc.OutputPath);
-                    tc.Output2 = results.Output;
+                    var results = FlashPlayer.Run(test.OutputPath);
+                    test.Output2 = results.Output;
                     return;
                 }
                 else
@@ -214,75 +230,87 @@ namespace DataDynamics.PageFX.FLI
             }
 
             int exitCode1 = 0;
-            if (!tc.HasOutput)
+            if (!test.HasOutput)
             {
-                tc.VM = VM.CLR;
-                tc.Output1 = CommandPromt.Run(tc.ExePath, "", out exitCode1);
+                test.VM = VM.CLR;
+                test.Output1 = CommandPromt.Run(test.ExePath, "", out exitCode1);
             }
             else
             {
-                tc.Output1 = tc.Output;
+                test.Output1 = test.Output;
             }
 
             int exitCode2;
-			if (tds.IsClrEmulation)
+			if (settings.IsClrEmulation)
 			{
 				try
 				{
 					var console = new StringWriter();
 					var vm = new VirtualMachine(console);
-					exitCode2 = vm.Run(tc.ExePath, "", new string[0]);
-					tc.Output2 = console.ToString();
+					exitCode2 = vm.Run(test.ExePath, "", new string[0]);
+					test.Output2 = console.ToString();
 				}
 				catch (Exception e)
 				{
 					exitCode2 = 0;
-					tc.Output2 = e.ToString();
+					test.Output2 = e.ToString();
 				}
 			}
-            else if (tds.IsABC)
+			else if (settings.IsJavaScript)
+			{
+				try
+				{
+					test.Output2 = JsRunner.Run(test.OutputPath, null, out exitCode2);
+				}
+				catch (Exception e)
+				{
+					exitCode2 = 0;
+					test.Output2 = e.ToString();
+				}
+			}
+            else if (settings.IsABC)
             {
                 var avmOpts = new AvmShell.Options();
-                tc.Output2 = AvmShell.Run(avmOpts, out exitCode2, tc.OutputPath);
+                test.Output2 = AvmShell.Run(avmOpts, out exitCode2, test.OutputPath);
             }
-            else if (tds.IsSWF)
+            else if (settings.IsSWF)
             {
                 //tc.Output2 = FlashShell.Run(outpath, out exitCode2);
                 FlashPlayer.Path = @"c:\pfx\tools\fp10.exe";
-                var results = FlashPlayer.Run(tc.OutputPath);
+                var results = FlashPlayer.Run(test.OutputPath);
                 exitCode2 = results.ExitCode;
-                tc.Output2 = results.Output;
+                test.Output2 = results.Output;
             }
 			else
             {
                 throw new NotImplementedException();
             }
 
-            CreateDebugHooks(tc, tds, tc.OutputPath);
+            CreateDebugHooks(test, settings, test.OutputPath);
 
-            if (tc.CheckExitCode)
+            if (test.CheckExitCode)
             {
                 if (exitCode2 != 0)
                 {
-                    tc.Error = string.Format("{0} returned non zero exit code {1}.",
-                                             tc.OutputPath, exitCode2);
+                    test.Error = string.Format("{0} returned non zero exit code {1}.",
+                                             test.OutputPath, exitCode2);
                     return;
                 }
                 if (exitCode1 != 0)
                 {
-                    tc.Error = string.Format("{0} returned non zero exit code {1}.",
-                                             tc.ExePath, exitCode1);
+                    test.Error = string.Format("{0} returned non zero exit code {1}.",
+                                             test.ExePath, exitCode1);
                     return;
                 }
             }
 
-            if (tc.CompareOutputs)
-                tc.Error = QA.CompareLines(tc.Output1, tc.Output2, true);
+            if (test.CompareOutputs)
+                test.Error = QA.CompareLines(test.Output1, test.Output2, true);
         }
         #endregion
 
         #region CreateDebugHooks
-        static void CreateDebugHooks(TestCase tc, TestDriverSettings tds, string outpath)
+        static void CreateDebugHooks(TestCase test, TestDriverSettings settings, string outpath)
         {
             if (QA.IsNUnitSession) return;
 
@@ -291,19 +319,28 @@ namespace DataDynamics.PageFX.FLI
                 Dump(outpath);
 #endif
 
-            if (tds.IsCancel) return;
+            if (settings.IsCancel) return;
 
 #if DEBUG
-            tc.AvmDump = "";
+            test.AvmDump = "";
             if (DebugService.AvmDump)
-                tc.AvmDump = AvmShell.Dump(outpath);
-
+                test.AvmDump = AvmShell.Dump(outpath);
 #endif
 
-            string dir = tc.Root;
+            string dir = test.Root;
             //WriteFile(dir, "play.bat", "avmplus.exe -Dinterp -Dverbose %1");
             WriteFile(dir, "run.bat", "avmplus.exe -Dinterp test.abc");
             WriteFile(dir, "avmdump.bat", "avmplus.exe -Dinterp -Dverbose test.abc > avmdump.txt");
+			WriteFile(dir, "test.js.html", @"
+<html>
+<head>
+<script src=""test.js""></script>
+</head>
+<body>
+<p>Hello!<p>
+</body>
+</html>
+");
         }
 
         static void WriteFile(string dir, string name, params string[] lines)

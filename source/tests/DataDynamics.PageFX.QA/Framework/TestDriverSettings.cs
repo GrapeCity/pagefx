@@ -32,6 +32,11 @@ namespace DataDynamics.PageFX
             }
         }
 
+		public bool IsJavaScript
+		{
+			get { return string.Compare(OutputFormat, "js", true) == 0; }
+		}
+
         public bool IsABC
         {
             get { return string.Compare(OutputFormat, "abc", true) == 0; }

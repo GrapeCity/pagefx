@@ -46,7 +46,7 @@ namespace DataDynamics
                     {
                         string err = "";
                         string stdout = ReadProcessOutput(process, ref err, out exitCode);
-                        return stdout;
+						return stdout + err;
                     }
 
                     if (!process.WaitForExit(WaitTimeout))

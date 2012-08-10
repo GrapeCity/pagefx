@@ -30,8 +30,8 @@ namespace DataDynamics.PageFX
         {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QAForm));
-			Fireball.Windows.Forms.LineMarginRender lineMarginRender3 = new Fireball.Windows.Forms.LineMarginRender();
 			Fireball.Windows.Forms.LineMarginRender lineMarginRender1 = new Fireball.Windows.Forms.LineMarginRender();
+			Fireball.Windows.Forms.LineMarginRender lineMarginRender2 = new Fireball.Windows.Forms.LineMarginRender();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
 			this.btnSaveSettings = new System.Windows.Forms.ToolStripButton();
 			this.btnRunAll = new System.Windows.Forms.ToolStripButton();
@@ -44,6 +44,8 @@ namespace DataDynamics.PageFX
 			this.miAbcSerialization = new System.Windows.Forms.ToolStripMenuItem();
 			this.miSwfSerialization = new System.Windows.Forms.ToolStripMenuItem();
 			this.miCliDeserialization = new System.Windows.Forms.ToolStripMenuItem();
+			this.miClrEmulation = new System.Windows.Forms.ToolStripMenuItem();
+			this.miJavaScript = new System.Windows.Forms.ToolStripMenuItem();
 			this.btnOptions = new System.Windows.Forms.ToolStripDropDownButton();
 			this.miUseCommonDirectory = new System.Windows.Forms.ToolStripMenuItem();
 			this.miCompilerOptions = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,7 +125,6 @@ namespace DataDynamics.PageFX
 			this.miGenerateSelectedNUnitTests = new System.Windows.Forms.ToolStripMenuItem();
 			this.miOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.docOutput = new Fireball.Syntax.SyntaxDocument(this.components);
-			this.miClrEmulation = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar.SuspendLayout();
 			this.splitMain.Panel1.SuspendLayout();
 			this.splitMain.Panel2.SuspendLayout();
@@ -252,7 +253,8 @@ namespace DataDynamics.PageFX
             this.miAbcSerialization,
             this.miSwfSerialization,
             this.miCliDeserialization,
-            this.miClrEmulation});
+            this.miClrEmulation,
+            this.miJavaScript});
 			this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
 			this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
@@ -281,6 +283,20 @@ namespace DataDynamics.PageFX
 			this.miCliDeserialization.Size = new System.Drawing.Size(170, 22);
 			this.miCliDeserialization.Text = "CLI Deserialization";
 			this.miCliDeserialization.Click += new System.EventHandler(this.OnSelectTestDriver);
+			// 
+			// miClrEmulation
+			// 
+			this.miClrEmulation.Name = "miClrEmulation";
+			this.miClrEmulation.Size = new System.Drawing.Size(170, 22);
+			this.miClrEmulation.Text = "Interpretation";
+			this.miClrEmulation.Click += new System.EventHandler(this.OnSelectTestDriver);
+			// 
+			// miJavaScript
+			// 
+			this.miJavaScript.Name = "miJavaScript";
+			this.miJavaScript.Size = new System.Drawing.Size(170, 22);
+			this.miJavaScript.Text = "JavaScript";
+			this.miJavaScript.Click += new System.EventHandler(this.OnSelectTestDriver);
 			// 
 			// btnOptions
 			// 
@@ -746,8 +762,8 @@ namespace DataDynamics.PageFX
 			this.editDecompiledCode.InfoTipPosition = null;
 			this.editDecompiledCode.InfoTipSelectedIndex = 1;
 			this.editDecompiledCode.InfoTipVisible = false;
-			lineMarginRender3.Bounds = new System.Drawing.Rectangle(19, 0, 19, 16);
-			this.editDecompiledCode.LineMarginRender = lineMarginRender3;
+			lineMarginRender1.Bounds = new System.Drawing.Rectangle(19, 0, 19, 16);
+			this.editDecompiledCode.LineMarginRender = lineMarginRender1;
 			this.editDecompiledCode.Location = new System.Drawing.Point(3, 3);
 			this.editDecompiledCode.LockCursorUpdate = false;
 			this.editDecompiledCode.Name = "editDecompiledCode";
@@ -795,8 +811,8 @@ namespace DataDynamics.PageFX
 			this.editOutput1.InfoTipPosition = null;
 			this.editOutput1.InfoTipSelectedIndex = 1;
 			this.editOutput1.InfoTipVisible = false;
-			lineMarginRender1.Bounds = new System.Drawing.Rectangle(19, 0, 19, 16);
-			this.editOutput1.LineMarginRender = lineMarginRender1;
+			lineMarginRender2.Bounds = new System.Drawing.Rectangle(19, 0, 19, 16);
+			this.editOutput1.LineMarginRender = lineMarginRender2;
 			this.editOutput1.Location = new System.Drawing.Point(3, 3);
 			this.editOutput1.LockCursorUpdate = false;
 			this.editOutput1.Name = "editOutput1";
@@ -844,7 +860,7 @@ namespace DataDynamics.PageFX
 			this.editOutput2.InfoTipPosition = null;
 			this.editOutput2.InfoTipSelectedIndex = 1;
 			this.editOutput2.InfoTipVisible = false;
-			this.editOutput2.LineMarginRender = lineMarginRender1;
+			this.editOutput2.LineMarginRender = lineMarginRender2;
 			this.editOutput2.Location = new System.Drawing.Point(3, 3);
 			this.editOutput2.LockCursorUpdate = false;
 			this.editOutput2.Name = "editOutput2";
@@ -892,7 +908,7 @@ namespace DataDynamics.PageFX
 			this.editError.InfoTipPosition = null;
 			this.editError.InfoTipSelectedIndex = 1;
 			this.editError.InfoTipVisible = false;
-			this.editError.LineMarginRender = lineMarginRender1;
+			this.editError.LineMarginRender = lineMarginRender2;
 			this.editError.Location = new System.Drawing.Point(3, 3);
 			this.editError.LockCursorUpdate = false;
 			this.editError.Name = "editError";
@@ -1135,13 +1151,6 @@ namespace DataDynamics.PageFX
 			this.docOutput.Modified = false;
 			this.docOutput.UndoStep = 0;
 			// 
-			// miClrEmulation
-			// 
-			this.miClrEmulation.Name = "miClrEmulation";
-			this.miClrEmulation.Size = new System.Drawing.Size(170, 22);
-			this.miClrEmulation.Text = "Interpretation";
-			this.miClrEmulation.Click += new System.EventHandler(this.OnSelectTestDriver);
-			// 
 			// QAForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1277,5 +1286,6 @@ namespace DataDynamics.PageFX
         private System.Windows.Forms.ToolStripMenuItem miPDBTestMode;
         private System.Windows.Forms.ToolStripButton btnNUnitSession;
 		private System.Windows.Forms.ToolStripMenuItem miClrEmulation;
+		private System.Windows.Forms.ToolStripMenuItem miJavaScript;
     }
 }
