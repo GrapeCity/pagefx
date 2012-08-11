@@ -192,8 +192,7 @@ namespace DataDynamics.PageFX.FLI
                 {
                     code.Add(InstructionCode.Equals);
                     code.FixBool();
-                }
-                );
+                });
 
             AddStringInline(
                 "op_Inequality",
@@ -202,8 +201,7 @@ namespace DataDynamics.PageFX.FLI
                     code.Add(InstructionCode.Equals);
                     code.Add(InstructionCode.Not);
                     code.FixBool();
-                }
-                );
+                });
         }
         #endregion
 
@@ -515,10 +513,6 @@ namespace DataDynamics.PageFX.FLI
             if (_icmAVM != null) return;
             _icmAVM = new InlineCodeMap();
             _icmAVM.Register(
-
-                "get_EmptyString",
-                (AbcCoder)
-                (code => code.PushString("")),
 
                 "get_GlobalPackage",
                 (AbcCoder)

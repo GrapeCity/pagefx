@@ -5,7 +5,7 @@ namespace System.Diagnostics
         public override void Write(string message)
         {
             if (string.IsNullOrEmpty(message))
-                avm.trace(avm.EmptyString);
+                avm.trace("");
             else
                 avm.trace(message);
         }
@@ -13,7 +13,7 @@ namespace System.Diagnostics
         public override void WriteLine(string message)
         {
             if (string.IsNullOrEmpty(message))
-                avm.trace(avm.EmptyString);
+                avm.trace("");
             else
                 avm.trace(message);
         }

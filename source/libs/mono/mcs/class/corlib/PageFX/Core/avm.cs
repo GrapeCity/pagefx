@@ -1,16 +1,12 @@
 using System.Runtime.CompilerServices;
+using PageFX;
 
 //Contains:
 //1. low level inline code
 public static class avm
 {
     #region String API
-    public static extern Avm.String EmptyString
-    {
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        get;
-    }
-
+	[InlineOperator("+")]
     [MethodImpl(MethodImplOptions.InternalCall)]
 	public static extern Avm.String Concat(Avm.String s1, int value);
 
