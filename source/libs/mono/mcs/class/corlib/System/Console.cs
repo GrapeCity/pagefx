@@ -82,8 +82,20 @@ namespace System
 #if CONSOLE_READ
 		public static TextReader In
         {
-            get { return stdin ?? (stdin = new ConsoleReader()); }
+            get
+            {
+	            return stdin ?? (stdin = CreateIn());
+            }
         }
+
+		private static TextReader CreateIn()
+		{
+			//TODO: fix verify ReferenceError on flash.text.textField in ConsoleReader running in avm shell
+			//TODO: introduce a way (conditional classes) to stub classes like ConsoleReader in avm shell case
+			if (avm.IsFlashPlayer)
+				return new ConsoleReader();
+			return new StringReader("");
+		}
 #else
 		public static TextReader In
         {

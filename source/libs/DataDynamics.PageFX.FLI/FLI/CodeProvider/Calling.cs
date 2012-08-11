@@ -12,6 +12,7 @@ namespace DataDynamics.PageFX.FLI
         #region LoadReceiver
         static bool HasGlobalReceiver(IMethod method)
         {
+			//TODO: simplify using custom attributes
             var type = method.DeclaringType;
             if (type.Tag is GlobalType)
                 return true;
@@ -20,6 +21,11 @@ namespace DataDynamics.PageFX.FLI
                 if (method.Name == "trace")
                     return true;
             }
+			if (type == SystemTypes.String)
+			{
+				if (method.Name == "fromCharCode")
+					return true;
+			}
             if (type.IsNativeType("Class"))
             {
                 if (method.Name == "Find")
@@ -31,18 +37,27 @@ namespace DataDynamics.PageFX.FLI
         void LoadGlobalReceiver(AbcCode code, IMethod method)
         {
             var type = method.DeclaringType;
+
             if (type.Tag is GlobalType)
             {
                 var mn = GetMethodName(method);
                 code.FindPropertyStrict(mn);
                 return;
             }
+
             if (type.IsInternalType())
             {
                 var mn = _abc.DefineGlobalQName(method.Name);
                 code.FindPropertyStrict(mn);
                 return;
             }
+
+			if (type == SystemTypes.String)
+			{
+				code.Getlex(AvmTypeCode.String);
+				return;
+			}
+
             if (type.IsNativeType("Class"))
             {
                 if (method.Name == "Find")
@@ -52,7 +67,8 @@ namespace DataDynamics.PageFX.FLI
                     return;
                 }
             }
-            throw new InvalidOperationException();
+
+			throw new InvalidOperationException();
         }
 
         static bool HasReceiver(IMethod method, bool newobj)

@@ -3484,34 +3484,6 @@ namespace DataDynamics.PageFX.FLI.IL
         #endregion
         #endregion
 
-        #region System.String
-
-	    public void GetChar()
-        {
-            CallAS3("charCodeAt", 1);
-            CoerceChar();
-        }
-
-        public void Substring(int argCount)
-        {
-            if (argCount <= 0 || argCount > 2)
-                throw new ArgumentOutOfRangeException("argCount");
-            CallAS3("substring", argCount);
-        }
-
-        public void Substr(int argCount)
-        {
-            if (argCount <= 0 || argCount > 2)
-                throw new ArgumentOutOfRangeException("argCount");
-            CallAS3("substr", argCount);
-        }
-
-        public void GetStringLength()
-        {
-            GetProperty("length");
-        }
-        #endregion
-
         #region NewObject
         /// <summary>
         /// Creates new native AVM object.

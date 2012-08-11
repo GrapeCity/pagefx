@@ -38,7 +38,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
+using PageFX;
 using avmstr = Avm.String;
 
 namespace System
@@ -59,11 +59,11 @@ namespace System
                 throw new ArgumentOutOfRangeException("length", "< 0");
             if (startIndex > value.Length - length)
                 throw new ArgumentOutOfRangeException("startIndex", "startIndex + length > value.Length");
-            avmstr s = avm.EmptyString;
+            string s = "";
             while (length-- > 0)
             {
                 char c = value[startIndex];
-                s = avm.Concat(s, avmstr.fromCharCode(c));
+                s += fromCharCode(c);
                 ++startIndex;
             }
             avm.ReturnValue(s);
@@ -73,11 +73,11 @@ namespace System
         {
             if (value == null)
                 throw new ArgumentNullException("value");
-            avmstr s = avm.EmptyString;
+            string s = "";
             int n = value.Length;
             for (int i = 0; i < n; ++i)
             {
-                s = avm.Concat(s, avmstr.fromCharCode(value[i]));
+                s += fromCharCode(value[i]);
             }
             avm.ReturnValue(s);
         }
@@ -86,11 +86,11 @@ namespace System
         {
             if (count < 0)
                 throw new ArgumentOutOfRangeException("count", "count < 0");
-            avmstr s = avm.EmptyString;
-            avmstr s2 = avmstr.fromCharCode(c);
+            string s = "";
+            string s2 = fromCharCode(c);
             while (count-- > 0)
             {
-                s = avm.Concat(s, s2);
+                s += s2;
             }
             avm.ReturnValue(s);
         }
@@ -98,16 +98,30 @@ namespace System
 
         public static readonly String Empty = "";
 
-        #region Inline Methods
+        #region Native API (Inline Methods)
+
+	    [AS3]
+		[InlineFunction]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+	    extern internal static String fromCharCode(char c);
+
+		[AS3]
+		[InlineFunction("charCodeAt")]
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern char GetChar(int index);
 
+		[AS3]
+		[InlineFunction]
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern String substring(int startIndex);
 
+		[AS3]
+		[InlineFunction]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern String substring2(int startIndex, int endIndex);
+        internal extern String substring(int startIndex, int endIndex);
 
+		[AS3]
+		[InlineFunction]
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern String substr(int startIndex, int length);
 
@@ -120,6 +134,7 @@ namespace System
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
         [IndexerName("Chars")]
@@ -145,6 +160,7 @@ namespace System
         //will be inlined by pfc: redirected to AVM String.length
         public extern int Length
         {
+			[InlineProperty("length")]
             [MethodImpl(MethodImplOptions.InternalCall)]
             get;
         }
@@ -531,7 +547,7 @@ namespace System
                 --end;
             }
 
-            return substring2(start, end + 1);
+            return substring(start, end + 1);
         }
 
         public String TrimStart(params char[] trimChars)
@@ -577,7 +593,7 @@ namespace System
             if (i <= 0)
                 return "";
 
-            return substring2(0, i + 1);
+            return substring(0, i + 1);
         }
         #endregion
 

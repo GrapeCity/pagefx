@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -58,7 +59,7 @@ namespace DataDynamics.PageFX.FLI
                 return code;
             }
 
-            return GetInlineCode(typeName, method.Name);
+            return GetInlineCode(type, method);
         }
         #endregion
 
@@ -108,18 +109,46 @@ namespace DataDynamics.PageFX.FLI
             t[method] = coder;
         }
 
-        AbcCode GetInlineCode(string type, string method)
+        AbcCode GetInlineCode(IType type, IMethod method)
         {
-            InitInlineCodeMap();
-            var t = _sharedICM[type] as Hashtable;
+	        var info = method.GetInlineInfo();
+			if (info != null)
+			{
+				var code = new AbcCode(_abc);
+				if (info.IsProperty)
+				{
+					//TODO: support setters
+					code.GetProperty(info.Name.Define(_abc));
+					code.Coerce(method.Type, true);
+				}
+				else if (method.IsVoid())
+				{
+					code.CallVoid(info.Name.Define(_abc), method.Parameters.Count);
+				}
+				else
+				{
+					code.Call(info.Name.Define(_abc), method.Parameters.Count);
+					code.Coerce(method.Type, true);
+				}
+				return code;
+			}
+
+			InitInlineCodeMap();
+
+			string typeName = type.FullName;
+			string methodName = method.Name;
+
+            var t = _sharedICM[typeName] as Hashtable;
             if (t == null) return null;
-            var coder = t[method] as AbcCoder;
+
+            var coder = t[methodName] as AbcCoder;
             if (coder != null)
             {
                 var code = new AbcCode(_abc);
                 coder(code);
                 return code;
             }
+
             return null;
         }
         #endregion
@@ -132,26 +161,6 @@ namespace DataDynamics.PageFX.FLI
 
         void InitStringInlines()
         {
-            AddStringInline(
-                "GetChar",
-                code => code.GetChar());
-
-            AddStringInline(
-                "get_Length",
-                code => code.GetStringLength());
-
-            AddStringInline(
-                "substring",
-                code => code.Substring(1));
-
-            AddStringInline(
-                "substring2",
-                code => code.Substring(2));
-
-            AddStringInline(
-                "substr",
-                code => code.Substr(2));
-
             AddStringInline(
                 "Equals",
                 code =>
@@ -720,4 +729,53 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
     }
+
+	internal static class InlineMethodExtensions
+	{
+		public static InlineMethodInfo GetInlineInfo(this IMethod method)
+		{
+			string name = null;
+			string ns = null;
+
+			var kns = KnownNamespace.Global;
+			bool isProperty = false;
+
+			foreach (var attr in method.CustomAttributes)
+			{
+				switch (attr.TypeName)
+				{
+					case Attrs.InlineFunction:
+						name = attr.Arguments.Count == 0 ? method.Name : (string)attr.Arguments[0].Value;
+						break;
+
+					case Attrs.InlineProperty:
+						name = attr.Arguments.Count == 0 ? method.Name : (string)attr.Arguments[0].Value;
+						isProperty = true;
+						break;
+
+					case Attrs.AS3:
+						kns = KnownNamespace.AS3;
+						break;
+				}
+			}
+
+			if (name == null)
+				return null;
+
+			var qname = ns != null ? new QName(name, ns) : new QName(name, kns);
+			return new InlineMethodInfo(qname, isProperty);
+		}
+	}
+
+	internal sealed class InlineMethodInfo
+	{
+		public readonly QName Name;
+		public readonly bool IsProperty;
+
+		public InlineMethodInfo(QName name, bool isProperty)
+		{
+			Name = name;
+			IsProperty = isProperty;
+		}
+	}
 }

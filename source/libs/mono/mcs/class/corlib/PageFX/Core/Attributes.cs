@@ -1,19 +1,47 @@
 using System;
 
-#region pfc attrs
+#region Compiler Attributes
 namespace PageFX
 {
-    #region class ABCAttribute
-    /// <summary>
+	/// <summary>
     /// Defines that member is defined within ABC.
     /// </summary>
     public sealed class ABCAttribute : Attribute
     {
     }
-    #endregion
 
-    #region class QNameAttribute
-    /// <summary>
+	/// <summary>
+	/// Specifies AS3 namespace.
+	/// </summary>
+	public sealed class AS3Attribute : Attribute
+	{
+	}
+
+	public sealed class InlineFunctionAttribute : Attribute
+	{
+		public string Name;
+
+		public InlineFunctionAttribute()
+		{
+		}
+
+		public InlineFunctionAttribute(string name)
+		{
+			Name = name;
+		}
+	}
+
+	public sealed class InlinePropertyAttribute : Attribute
+	{
+		public string Name;
+
+		public InlinePropertyAttribute(string name)
+		{
+			Name = name;
+		}
+	}
+
+	/// <summary>
     /// Used to explicitly define full member name
     /// </summary>
     public sealed class QNameAttribute : Attribute
@@ -34,19 +62,15 @@ namespace PageFX
             NamespaceKind = nskind;
         }
     }
-    #endregion
 
-    #region class GlobalFunctionsAttribute
-    /// <summary>
+	/// <summary>
     /// Used to mark class that contains global ABC functions.
     /// </summary>
     public sealed class GlobalFunctionsAttribute : Attribute
     {
     }
-    #endregion
 
-    #region class EventAttribute
-    /// <summary>
+	/// <summary>
     /// Used to mark named flash event.
     /// </summary>
     public sealed class EventAttribute : Attribute
@@ -58,10 +82,8 @@ namespace PageFX
             Name = name;
         }
     }
-    #endregion
 
-    #region class VectorAttribute
-    public sealed class VectorAttribute : Attribute
+	public sealed class VectorAttribute : Attribute
     {
         public string Parameter;
 
@@ -70,16 +92,12 @@ namespace PageFX
             Parameter = param;
         }
     }
-    #endregion
 
-    #region class GenericVectorAttribute
-    public sealed class GenericVectorAttribute : Attribute
+	public sealed class GenericVectorAttribute : Attribute
     {
     }
-    #endregion
 
-    #region class AIRAttribute
-    /// <summary>
+	/// <summary>
     /// Used to mark AIR API element.
     /// </summary>
     public sealed class AIRAttribute : Attribute
@@ -96,10 +114,8 @@ namespace PageFX
             Version = version;
         }
     }
-    #endregion
 
-    #region class FPAttribute
-    /// <summary>
+	/// <summary>
     /// Used to mark Flash API member.
     /// </summary>
     public sealed class FPAttribute : Attribute
@@ -111,28 +127,22 @@ namespace PageFX
             Version = version;
         }
     }
-    #endregion
 
-    #region class FP9Attribute
-    /// <summary>
+	/// <summary>
     /// Used to mark FP9 API member.
     /// </summary>
     public sealed class FP9Attribute : Attribute
     {
     }
-    #endregion
 
-    #region class FP10Attribute
-    /// <summary>
+	/// <summary>
     /// Used to mark FP10 API member.
     /// </summary>
     public sealed class FP10Attribute : Attribute
     {
     }
-    #endregion
 
-    #region class AVMAttribute
-    /// <summary>
+	/// <summary>
     /// Used to mark AVM API member.
     /// </summary>
     public sealed class AVMAttribute : Attribute
@@ -149,9 +159,8 @@ namespace PageFX
             Version = version;
         }
     }
-    #endregion
 
-    public sealed class AbcInstanceAttribute : Attribute
+	public sealed class AbcInstanceAttribute : Attribute
     {
         public int Index;
 
