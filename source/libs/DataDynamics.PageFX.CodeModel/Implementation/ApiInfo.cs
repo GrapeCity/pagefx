@@ -113,15 +113,15 @@ namespace DataDynamics.PageFX.CodeModel
             impl.Write(writer, assembly);
         }
 
-        class Impl
+        private sealed class Impl
         {
-            class Namespace
+			private sealed class Namespace
             {
                 public string Name { get; set; }
                 public readonly List<IType> Types = new List<IType>();
             }
-            readonly Hashtable _nscache = new Hashtable();
-            readonly List<Namespace> _namespaces = new List<Namespace>();
+            private readonly Hashtable _nscache = new Hashtable();
+			private readonly List<Namespace> _namespaces = new List<Namespace>();
             public Predicate<IType> typeFilter;
 
             public void Write(XmlWriter writer, IAssembly assembly)
@@ -138,7 +138,7 @@ namespace DataDynamics.PageFX.CodeModel
             #region WriteTypes
             void WriteTypes(XmlWriter writer, IAssembly assembly)
             {
-                foreach (var type in Util.GetTypes(assembly))
+                foreach (var type in assembly.GetVisibleTypes())
                 {
                     if (typeFilter != null && !typeFilter(type))
                         continue;
@@ -217,7 +217,7 @@ namespace DataDynamics.PageFX.CodeModel
             {
                 writer.WriteStartElement("class");
                 writer.WriteAttributeString("name", type.DisplayName);
-                writer.WriteAttributeString("type", Util.GetClassType(type));
+                writer.WriteAttributeString("type", type.TypeKeyword());
                 
                 WriteClassAttrs(writer, type);
 
@@ -299,7 +299,7 @@ namespace DataDynamics.PageFX.CodeModel
             static void WriteFields(XmlWriter writer, IType type)
             {
                 bool parentTag = false;
-                foreach (var field in Util.GetFields(type))
+                foreach (var field in type.VisibleFields())
                 {
                     if (!parentTag)
                     {
@@ -323,7 +323,7 @@ namespace DataDynamics.PageFX.CodeModel
 
             static void WriteAttrib(XmlWriter writer, ITypeMember m)
             {
-                string s = Util.GetAttrib(m);
+                string s = ApiInfoExtensions.GetAttrib(m);
                 if (string.IsNullOrEmpty(s)) return;
                 writer.WriteAttributeString("attrib", s);
             }
@@ -352,7 +352,7 @@ namespace DataDynamics.PageFX.CodeModel
             static void WriteConstructors(XmlWriter writer, IType type)
             {
                 bool parentTag = false;
-                foreach (var ctor in Util.GetConstructors(type))
+                foreach (var ctor in ApiInfoExtensions.VisibleConstructors(type))
                 {
                     if (!parentTag)
                     {
@@ -386,7 +386,7 @@ namespace DataDynamics.PageFX.CodeModel
             static void WriteMethod(XmlWriter writer, IMethod method, string tag)
             {
                 writer.WriteStartElement(tag);
-                writer.WriteAttributeString("name", GetMethodName(method, true));
+                writer.WriteAttributeString("name", method.ApiName(true));
                 WriteAttrib(writer, method);
                 if (method.IsAbstract)
                     writer.WriteAttributeString("abstract", "true");
@@ -430,7 +430,7 @@ namespace DataDynamics.PageFX.CodeModel
 
                 //TODO: optional params
 
-                string dir = Util.GetDirection(p);
+                string dir = p.Direction();
                 if (dir != "in")
                     writer.WriteAttributeString("direction", dir);
 
@@ -442,7 +442,7 @@ namespace DataDynamics.PageFX.CodeModel
             static void WriteProperties(XmlWriter writer, IType type)
             {
                 bool parent = false;
-                foreach (var prop in Util.GetProperties(type))
+                foreach (var prop in type.VisibleProperties())
                 {
                     if (!parent)
                     {
@@ -463,7 +463,7 @@ namespace DataDynamics.PageFX.CodeModel
                 writer.WriteAttributeString("ptype", prop.Type.FullName);
 
                 //NOTE: in mono-api-diff params attribute is required.
-                string sig = Util.GetSignature(prop.Parameters, false);
+                string sig = prop.Parameters.GetSignature(false);
                 if (string.IsNullOrEmpty(sig))
                     sig = "";
                 writer.WriteAttributeString("params", sig);
@@ -483,7 +483,7 @@ namespace DataDynamics.PageFX.CodeModel
             static void WriteEvents(XmlWriter writer, IType type)
             {
                 bool parent = false;
-                foreach (var e in Util.GetEvents(type))
+                foreach (var e in type.VisibleEvents())
                 {
                     if (!parent)
                     {
@@ -517,7 +517,7 @@ namespace DataDynamics.PageFX.CodeModel
             #region WriteMethods
             static void WriteMethods(XmlWriter writer, IType type)
             {
-                WriteMethods(writer, Util.GetMethods(type));
+                WriteMethods(writer, type.VisibleMethods());
             }
             #endregion
 
@@ -536,171 +536,171 @@ namespace DataDynamics.PageFX.CodeModel
             }
             #endregion
         }
-
-        public static string GetFullMethodName(IMethod method, bool displayName)
-        {
-            return method.DeclaringType.FullName + "." + GetMethodName(method, displayName);
-        }
-
-        public static string GetFullMethodName(IMethod method)
-        {
-            return GetFullMethodName(method, false);
-        }
-
-        public static string GetMethodName(IMethod method, bool displayName)
-        {
-            string name = method.Name;
-            if (method.GenericParameters.Count > 0)
-            {
-                name += GenericType.Format(method.GenericParameters, TypeNameKind.DisplayName, false);
-            }
-            string parms = Util.GetSignature(method.Parameters, displayName);
-            return String.Format("{0}({1})", name, parms);
-        }
-
-        public static string GetMethodName(IMethod method)
-        {
-            return GetMethodName(method, false);
-        }
-
-        private static class Util
-        {
-            public static IEnumerable<IType> GetTypes(ITypeContainer assembly)
-            {
-            	return assembly.Types.Where(type => type.DeclaringType == null && type.IsVisible).ToArray();
-            }
-
-        	private static T[] GetVisibleMembers<T>(IEnumerable<T> set)
-                where T:ITypeMember
-            {
-				// we're only interested in public or protected members
-                var list = set.Where(m => IsVisibleMember(m)).ToList();
-            	list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
-                return list.ToArray();
-            }
-
-            public static IEnumerable<IField> GetFields(IType type)
-            {
-                return GetVisibleMembers(type.Fields);
-            }
-
-            public static IEnumerable<IProperty> GetProperties(IType type)
-            {
-                return GetVisibleMembers(type.Properties);
-            }
-
-            public static IEnumerable<IEvent> GetEvents(IType type)
-            {
-                return GetVisibleMembers(type.Events);
-            }
-
-            public static IEnumerable<IMethod> GetConstructors(IType type)
-            {
-                var list = (from method in type.Methods
-							where method.IsConstructor && !type.IsAbstract && IsVisibleMember(method)
-							select method).ToList();
-            	list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
-                return list.ToArray();
-            }
-
-            private static bool FilterMethod(IMethod m)
-            {
-                if (!IsVisibleMember(m)) return false;
-                if (m.IsConstructor) return false;
-                if (ExcludeGenerics && m.GenericParameters.Count > 0) return false;
-                if (m.Association != null) return false;
-                return true;
-            }
-
-            public static IEnumerable<IMethod> GetMethods(IType type)
-            {
-                var list = type.Methods.Where(FilterMethod).ToList();
-            	list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
-                return list.ToArray();
-            }
-
-        	private static string GetModifier(IParameter p)
-        	{
-        		return p.IsByRef ? (p.IsOut ? "out " : "ref ") : (p.IsIn ? "in " : "");
-        	}
-
-        	public static string GetDirection(IParameter p)
-        	{
-        		return p.IsByRef ? (p.IsOut ? "out" : "ref") : "in";
-        	}
-
-        	private static IType UnwrapReference(IType type)
-            {
-                while (type.TypeKind == TypeKind.Reference)
-                {
-                    type = ((ICompoundType)type).ElementType;
-                }
-                return type;
-            }
-
-            private static string GetArgTypeName(IType type, bool displayName)
-            {
-                type = UnwrapReference(type);
-                return displayName ? type.DisplayName : type.FullName.Replace('<', '[').Replace('>', ']');
-            }
-
-            public static string GetSignature(IEnumerable<IParameter> args, bool displayName)
-            {
-                if (args == null) return "";
-                
-                var sb = new StringBuilder();
-                foreach (var p in args)
-                {
-                    string modifier = GetModifier(p);
-                    string type_name = GetArgTypeName(p.Type, displayName);
-                    sb.AppendFormat("{0}{1}, ", modifier, type_name);
-                }
-
-                if (sb.Length > 0)
-                    sb.Length -= 2; // remove ", "
-                return sb.ToString();
-            }
-
-        	private static bool IsVisibleMember(ITypeMember m)
-            {
-                switch (m.Visibility)
-                {
-                    case Visibility.NestedProtected:
-                    case Visibility.NestedProtectedInternal:
-                    case Visibility.Protected:
-                    case Visibility.ProtectedInternal:
-                    case Visibility.Public:
-                    case Visibility.NestedPublic:
-                        return true;
-                }
-                return false;
-            }
-
-            public static string GetClassType(IType type)
-            {
-                switch (type.TypeKind)
-                {
-                    case TypeKind.Class:
-                        return "class";
-                    case TypeKind.Delegate:
-                        return "delegate";
-                    case TypeKind.Enum:
-                        return "enum";
-                    case TypeKind.Interface:
-                        return "interface";
-                    case TypeKind.Struct:
-                    case TypeKind.Primitive:
-                        return "struct";
-                    default:
-                        return "";
-                }
-            }
-
-            public static string GetAttrib(ITypeMember m)
-            {
-                //TODO:
-                return "0";
-            }
-        }
     }
+
+	public static class ApiInfoExtensions
+	{
+		internal static IEnumerable<IType> GetVisibleTypes(this ITypeContainer assembly)
+		{
+			return assembly.Types.Where(type => type.DeclaringType == null && type.IsVisible).ToArray();
+		}
+
+		private static T[] GetVisibleMembers<T>(this IEnumerable<T> set)
+			where T:ITypeMember
+		{
+			// we're only interested in public or protected members
+			var list = set.Where(m => m.IsVisible()).ToList();
+			list.Sort((x, y) => String.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
+			return list.ToArray();
+		}
+
+		internal static IEnumerable<IField> VisibleFields(this IType type)
+		{
+			return type.Fields.GetVisibleMembers();
+		}
+
+		internal static IEnumerable<IProperty> VisibleProperties(this IType type)
+		{
+			return type.Properties.GetVisibleMembers();
+		}
+
+		internal static IEnumerable<IEvent> VisibleEvents(this IType type)
+		{
+			return type.Events.GetVisibleMembers();
+		}
+
+		internal static IEnumerable<IMethod> VisibleConstructors(IType type)
+		{
+			var list = (from method in type.Methods
+			            where method.IsConstructor && !type.IsAbstract && method.IsVisible()
+			            select method).ToList();
+			list.Sort((x, y) => String.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
+			return list.ToArray();
+		}
+
+		private static bool FilterMethod(IMethod m)
+		{
+			if (!m.IsVisible()) return false;
+			if (m.IsConstructor) return false;
+			if (ApiInfo.ExcludeGenerics && m.GenericParameters.Count > 0) return false;
+			if (m.Association != null) return false;
+			return true;
+		}
+
+		internal static IEnumerable<IMethod> VisibleMethods(this IType type)
+		{
+			var list = type.Methods.Where(FilterMethod).ToList();
+			list.Sort((x, y) => String.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
+			return list.ToArray();
+		}
+
+		private static string Modifier(this IParameter p)
+		{
+			return p.IsByRef ? (p.IsOut ? "out " : "ref ") : (p.IsIn ? "in " : "");
+		}
+
+		internal static string Direction(this IParameter p)
+		{
+			return p.IsByRef ? (p.IsOut ? "out" : "ref") : "in";
+		}
+
+		private static IType UnwrapRef(this IType type)
+		{
+			while (type.TypeKind == TypeKind.Reference)
+			{
+				type = ((ICompoundType)type).ElementType;
+			}
+			return type;
+		}
+
+		private static string GetArgTypeName(this IType type, bool displayName)
+		{
+			type = UnwrapRef(type);
+			return displayName ? type.DisplayName : type.FullName.Replace('<', '[').Replace('>', ']');
+		}
+
+		internal static string GetSignature(this IEnumerable<IParameter> args, bool displayName)
+		{
+			if (args == null) return "";
+                
+			var sb = new StringBuilder();
+			foreach (var p in args)
+			{
+				string modifier = p.Modifier();
+				string type_name = p.Type.GetArgTypeName(displayName);
+				sb.AppendFormat("{0}{1}, ", modifier, type_name);
+			}
+
+			if (sb.Length > 0)
+				sb.Length -= 2; // remove ", "
+			return sb.ToString();
+		}
+
+		private static bool IsVisible(this ITypeMember m)
+		{
+			switch (m.Visibility)
+			{
+				case Visibility.NestedProtected:
+				case Visibility.NestedProtectedInternal:
+				case Visibility.Protected:
+				case Visibility.ProtectedInternal:
+				case Visibility.Public:
+				case Visibility.NestedPublic:
+					return true;
+			}
+			return false;
+		}
+
+		internal static string TypeKeyword(this IType type)
+		{
+			switch (type.TypeKind)
+			{
+				case TypeKind.Class:
+					return "class";
+				case TypeKind.Delegate:
+					return "delegate";
+				case TypeKind.Enum:
+					return "enum";
+				case TypeKind.Interface:
+					return "interface";
+				case TypeKind.Struct:
+				case TypeKind.Primitive:
+					return "struct";
+				default:
+					return "";
+			}
+		}
+
+		internal static string GetAttrib(ITypeMember m)
+		{
+			//TODO:
+			return "0";
+		}
+
+		public static string ApiFullName(this IMethod method, bool displayName)
+		{
+			return method.DeclaringType.FullName + "." + method.ApiName(displayName);
+		}
+
+		public static string ApiFullName(this IMethod method)
+		{
+			return method.ApiFullName(false);
+		}
+
+		public static string ApiName(this IMethod method, bool displayName)
+		{
+			string name = method.Name;
+			if (method.GenericParameters.Count > 0)
+			{
+				name += GenericType.Format(method.GenericParameters, TypeNameKind.DisplayName, false);
+			}
+			string parms = method.Parameters.GetSignature(displayName);
+			return String.Format("{0}({1})", name, parms);
+		}
+
+		public static string ApiName(this IMethod method)
+		{
+			return method.ApiName(false);
+		}
+	}
 }

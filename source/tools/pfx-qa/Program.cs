@@ -189,7 +189,7 @@ namespace DataDynamics.PageFX
             return true;
         }
 
-        static IMethod[] GetCalls(IMethod method)
+        private static IEnumerable<IMethod> GetCalls(IMethod method)
         {
             if (method == null) return null;
 
@@ -199,14 +199,9 @@ namespace DataDynamics.PageFX
             var calls = body.GetCalls();
             if (calls == null) return null;
             
-            var list = new List<IMethod>();
-            foreach (var call in calls)
-            {
-                if (!FilterCall(call)) continue;
-                list.Add(call);
-            }
+            var list = calls.Where(FilterCall).ToList();
 
-            if (list.Count <= 0) return null;
+	        if (list.Count <= 0) return null;
 
             return list.ToArray();
         }
@@ -220,7 +215,7 @@ namespace DataDynamics.PageFX
 
                 foreach (var call in calls)
                 {
-                    string name = ApiInfo.GetFullMethodName(call);
+                    string name = call.ApiFullName();
                     var list = Global.TestCache[name] as List<TestNode>;
                     if (list == null)
                     {

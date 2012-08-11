@@ -114,7 +114,7 @@ namespace DataDynamics.PageFX.Tools
             if (calls.Length <= 0) return;
 
             writer.WriteStartElement("test");
-            writer.WriteAttributeString("name", ApiInfo.GetMethodName(method));
+            writer.WriteAttributeString("name", method.ApiName());
 
             WriteCalls(writer, calls);
 
@@ -142,7 +142,7 @@ namespace DataDynamics.PageFX.Tools
                 }
                 writer.WriteStartElement("call");
                 writer.WriteAttributeString("type", call.DeclaringType.FullName);
-                writer.WriteAttributeString("name", ApiInfo.GetMethodName(call));
+                writer.WriteAttributeString("name", call.ApiName());
                 writer.WriteEndElement();
             }
             if (parent)

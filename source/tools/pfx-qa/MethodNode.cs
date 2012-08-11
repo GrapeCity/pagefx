@@ -3,13 +3,13 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX
 {
-    class MethodNode : ApiNode
+    internal class MethodNode : ApiNode
     {
         public MethodNode(IMethod method)
         {
             Method = method;
-            Name = ApiInfo.GetMethodName(method, true);
-            FullName = ApiInfo.GetFullMethodName(method);
+            Name = method.ApiName(true);
+            FullName = method.ApiFullName();
         }
 
         public string FullName;
