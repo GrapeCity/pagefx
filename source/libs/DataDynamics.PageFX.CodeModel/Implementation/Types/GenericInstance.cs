@@ -64,6 +64,14 @@ namespace DataDynamics.PageFX.CodeModel
 						}
         			};
 
+	        Func<IMethod, IMethod> addMethod = m =>
+		        {
+			        if (m == null) return null;
+			        var proxy = new MethodProxy(this, m);
+			        addMember(proxy);
+			        return proxy;
+		        };
+
             foreach (var member in Type.Members)
             {
                 var f = member as IField;
@@ -86,39 +94,18 @@ namespace DataDynamics.PageFX.CodeModel
 
             foreach (var prop in Type.Properties)
             {
-            	if (prop.Getter != null)
-                {
-                	addMember(new MethodProxy(this, prop.Getter));
-                }
-
-            	if (prop.Setter != null)
-                {
-                	addMember(new MethodProxy(this, prop.Setter));
-                }
-
-                var proxy = new PropertyProxy(this, prop, prop.Getter, prop.Setter);
-                addMember(proxy);
+	            var getter = addMethod(prop.Getter);
+	            var setter = addMethod(prop.Setter);
+	            addMember(new PropertyProxy(this, prop, getter, setter));
             }
 
             foreach (var e in Type.Events)
             {
-            	if (e.Adder != null)
-                {
-                	addMember(new MethodProxy(this, e.Adder));
-                }
+	            var adder = addMethod(e.Adder);
+	            var remover = addMethod(e.Remover);
+	            var raiser = addMethod(e.Raiser);
 
-            	if (e.Remover != null)
-                {
-                	addMember(new MethodProxy(this, e.Remover));
-                }
-
-            	if (e.Raiser != null)
-                {
-                	addMember(new MethodProxy(this, e.Raiser));
-                }
-
-                var proxy = new EventProxy(this, e, e.Adder, e.Remover, e.Raiser);
-                addMember(proxy);
+	            addMember(new EventProxy(this, e, adder, remover, raiser));
             }
 
         	var all = fields.Concat(methods).Concat(properties).Concat(events).AsReadOnlyList();
