@@ -89,7 +89,7 @@
     <Compile Include="ABC\Interfaces.cs" />
     <Compile Include="ABC\AbcNamespaceSet.cs" />
     <Compile Include="ABC\AbcProperty.cs" />
-    <Compile Include="ABC\KnownQNames.cs" />
+    <Compile Include="ABC\QName.cs" />
     <Compile Include="ABC\RBCache.cs" />
     <Compile Include="ABC\TypeRef.cs" />
     <Compile Include="FLI\AbcGenConfig.cs" />

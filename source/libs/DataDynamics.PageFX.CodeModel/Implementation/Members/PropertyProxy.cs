@@ -4,17 +4,16 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public class PropertyProxy : IProperty
+    public sealed class PropertyProxy : IProperty
     {
-        readonly IGenericInstance _instance;
-        readonly IProperty _property;
-        readonly IMethod _getter;
-        readonly IMethod _setter;
-        readonly IType _type;
-        readonly ParameterCollection _params;
+        private readonly IGenericInstance _instance;
+		private readonly IProperty _property;
+		private readonly IMethod _getter;
+		private readonly IMethod _setter;
+		private readonly IType _type;
+		private readonly ParameterCollection _params;
 
-        public PropertyProxy(IGenericInstance instance, IProperty property,
-            IMethod getter, IMethod setter)
+        public PropertyProxy(IGenericInstance instance, IProperty property, IMethod getter, IMethod setter)
         {
             if (getter == null && setter == null)
                 throw new InvalidOperationException("property must have getter or setter");
@@ -30,6 +29,7 @@ namespace DataDynamics.PageFX.CodeModel
                 setter.Association = this;
 
             _params = new ParameterCollection();
+
             if (getter != null)
             {
                 _type = getter.Type;

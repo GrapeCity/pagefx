@@ -90,11 +90,8 @@ namespace DataDynamics.PageFX.FLI
 
             var trait = AbcTrait.CreateMethod(abcMethod, name);
 
-            if (method.IsGetter())
-                trait.Kind = AbcTraitKind.Getter;
-            else if (method.IsSetter())
-                trait.Kind = AbcTraitKind.Setter;
-
+	        trait.Kind = method.ResolveTraitKind();
+            
             if (method.IsStaticCall())
             {
                 trait.Attributes |= AbcTraitAttributes.Final;

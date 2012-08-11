@@ -78,10 +78,7 @@ namespace DataDynamics.PageFX.CodeModel
 		public static bool IsAccessor(this IMethod method)
 		{
 			var prop = method.Association as IProperty;
-			if (prop == null) return false;
-			if (method.Association != prop) return false;
-			if (prop.Parameters.Count > 0) return false;
-			return true;
+			return prop != null && prop.Parameters.Count <= 0;
 		}
 
 		public static string BuildSigName(this IMethod method, SigKind kind)
@@ -96,7 +93,7 @@ namespace DataDynamics.PageFX.CodeModel
 
 			if (declType.IsInterface)
 			{
-				sb.Append(declType.SigName + "_");
+				sb.Append(declType.SigName + ".");
 			}
 
 			bool addParams = true;

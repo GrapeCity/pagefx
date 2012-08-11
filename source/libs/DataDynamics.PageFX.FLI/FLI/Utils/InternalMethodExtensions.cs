@@ -672,22 +672,29 @@ namespace DataDynamics.PageFX.FLI
 			return declType.HasSingleConstructor();
 		}
 
+		public static AbcTraitKind ResolveTraitKind(this IMethod method)
+		{
+			var prop = method.Association as IProperty;
+			if (prop != null && prop.Parameters.Count == 0)
+			{
+				if (method == prop.Getter)
+					return AbcTraitKind.Getter;
+				if (method == prop.Setter)
+					return AbcTraitKind.Setter;
+			}
+			return AbcTraitKind.Method;
+		}
+
 		public static bool IsGetter(this IMethod method)
 		{
 			var prop = method.Association as IProperty;
-			if (prop == null) return false;
-			if (prop.Getter != method) return false;
-			if (prop.Parameters.Count > 0) return false;
-			return true;
+			return prop != null && prop.Parameters.Count == 0 && prop.Getter == method;
 		}
 
 		public static bool IsSetter(this IMethod method)
 		{
 			var prop = method.Association as IProperty;
-			if (prop == null) return false;
-			if (prop.Setter != method) return false;
-			if (prop.Parameters.Count > 0) return false;
-			return true;
+			return prop != null && prop.Parameters.Count == 0 && prop.Setter == method;
 		}
 
 		public static IMethod FindImplementedMethod(this IMethod method)
@@ -773,6 +780,7 @@ namespace DataDynamics.PageFX.FLI
 					case Attrs.FP10: return 10;
 				}
 			}
+
 			return -1;
 		}
 	}

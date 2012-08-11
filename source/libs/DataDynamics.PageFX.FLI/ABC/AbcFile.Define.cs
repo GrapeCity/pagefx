@@ -711,9 +711,9 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (s != null)
                 return DefineGlobalQName(s);
 
-            var kqn = name as KnownQName;
-            if (kqn != null)
-                return kqn.Define(this);
+            var qn = name as QName;
+            if (qn != null)
+                return qn.Define(this);
 
             throw new NotSupportedException("invalid name object");
         }
