@@ -685,18 +685,6 @@ namespace DataDynamics.PageFX.FLI
 			return AbcTraitKind.Method;
 		}
 
-		public static bool IsGetter(this IMethod method)
-		{
-			var prop = method.Association as IProperty;
-			return prop != null && prop.Parameters.Count == 0 && prop.Getter == method;
-		}
-
-		public static bool IsSetter(this IMethod method)
-		{
-			var prop = method.Association as IProperty;
-			return prop != null && prop.Parameters.Count == 0 && prop.Setter == method;
-		}
-
 		public static IMethod FindImplementedMethod(this IMethod method)
 		{
 			var impl = method.ImplementedMethods;

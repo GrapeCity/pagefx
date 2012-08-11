@@ -47,10 +47,13 @@ namespace DataDynamics.PageFX.FLI.ABC
             var method = member as IMethod;
             if (method != null)
             {
-                if (method.IsGetter())
-                    return Find(_getters, member);
-                if (method.IsSetter())
-                    return Find(_setters, member);
+	            switch (method.ResolveTraitKind())
+	            {
+		            case AbcTraitKind.Getter:
+						return Find(_getters, member);
+		            case AbcTraitKind.Setter:
+						return Find(_setters, member);
+	            }
             }
             return Find(_other, member);
         }
