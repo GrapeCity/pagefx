@@ -16,14 +16,13 @@ namespace DataDynamics.PageFX.FLI.ABC
     internal class QName
     {
 	    private readonly KnownNamespace _knownNamespace;
-	    private readonly string _name;
 	    private readonly string _namespace;
 
 		public QName(string name)
 		{
 			if (name == null) throw new ArgumentNullException("name");
 
-			_name = name;
+			Name = name;
 		}
 
         public QName(string name, KnownNamespace ns) : this(name)
@@ -36,10 +35,12 @@ namespace DataDynamics.PageFX.FLI.ABC
 			_namespace = ns;
 		}
 
+	    public string Name { get; private set; }
+
 	    public AbcMultiname Define(AbcFile abc)
         {
 			var ns = string.IsNullOrEmpty(_namespace) ? abc.DefineNamespace(_knownNamespace) : abc.DefinePublicNamespace(_namespace);
-            return abc.DefineQName(ns, _name);
+            return abc.DefineQName(ns, Name);
         }
     }
 

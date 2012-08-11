@@ -115,10 +115,22 @@ namespace DataDynamics.PageFX.FLI
 			if (info != null)
 			{
 				var code = new AbcCode(_abc);
-				if (info.IsProperty)
+				if (info.Kind == InlineKind.Property)
 				{
 					//TODO: support setters
 					code.GetProperty(info.Name.Define(_abc));
+					code.Coerce(method.Type, true);
+				}
+				else if (info.Kind == InlineKind.Operator)
+				{
+					int n = method.Parameters.Count;
+					if (n <= 1)
+						throw new InvalidOperationException();
+					var op = info.Op;
+					for (int i = 1; i < n; ++i)
+					{
+						code.Add(op);
+					}
 					code.Coerce(method.Type, true);
 				}
 				else if (method.IsVoid())
@@ -738,7 +750,7 @@ namespace DataDynamics.PageFX.FLI
 			string ns = null;
 
 			var kns = KnownNamespace.Global;
-			bool isProperty = false;
+			var kind = InlineKind.Function;
 
 			foreach (var attr in method.CustomAttributes)
 			{
@@ -750,7 +762,12 @@ namespace DataDynamics.PageFX.FLI
 
 					case Attrs.InlineProperty:
 						name = attr.Arguments.Count == 0 ? method.Name : (string)attr.Arguments[0].Value;
-						isProperty = true;
+						kind = InlineKind.Property;
+						break;
+
+					case Attrs.InlineOperator:
+						name = attr.Arguments.Count == 0 ? method.Name : (string)attr.Arguments[0].Value;
+						kind = InlineKind.Operator;
 						break;
 
 					case Attrs.AS3:
@@ -763,19 +780,46 @@ namespace DataDynamics.PageFX.FLI
 				return null;
 
 			var qname = ns != null ? new QName(name, ns) : new QName(name, kns);
-			return new InlineMethodInfo(qname, isProperty);
+			return new InlineMethodInfo(qname, kind);
 		}
 	}
 
 	internal sealed class InlineMethodInfo
 	{
 		public readonly QName Name;
-		public readonly bool IsProperty;
+		public readonly InlineKind Kind;
 
-		public InlineMethodInfo(QName name, bool isProperty)
+		public InlineMethodInfo(QName name, InlineKind kind)
 		{
 			Name = name;
-			IsProperty = isProperty;
+			Kind = kind;
 		}
+
+		public InstructionCode Op
+		{
+			get
+			{
+				switch (Name.Name)
+				{
+					case "+":
+						return InstructionCode.Add;
+					case "-":
+						return InstructionCode.Subtract;
+					case "/":
+						return InstructionCode.Divide;
+					case "*":
+						return InstructionCode.Multiply;
+					default:
+						throw new InvalidOperationException();
+				}
+			}
+		}
+	}
+
+	internal enum InlineKind
+	{
+		Function,
+		Property,
+		Operator
 	}
 }

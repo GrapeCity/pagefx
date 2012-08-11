@@ -12,16 +12,7 @@ public static class avm
     }
 
     [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern Avm.String Concat(Avm.String s1, Avm.String s2);
-
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern Avm.String Concat(Avm.String s1, int value);
-
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern Avm.String Concat(Avm.String s1, Avm.String s2, Avm.String s3);
-
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern Avm.String Concat(Avm.String s1, Avm.String s2, Avm.String s3, Avm.String s4);
+	public static extern Avm.String Concat(Avm.String s1, int value);
 
     [MethodImpl(MethodImplOptions.InternalCall)]
     public static extern Avm.String ToString(sbyte value);

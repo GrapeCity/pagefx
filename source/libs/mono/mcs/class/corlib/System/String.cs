@@ -1715,11 +1715,24 @@ namespace System
         #endregion
 
         #region Concat
+
+		[InlineOperator("+")]
+	    [MethodImpl(MethodImplOptions.InternalCall)]
+	    extern internal static String ConcatInternal(String s1, String s2);
+
+		[InlineOperator("+")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		extern internal static String ConcatInternal(String s1, String s2, String s3);
+
+		[InlineOperator("+")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		extern internal static String ConcatInternal(String s1, String s2, String s3, String s4);
+		
         public static String Concat(String s1, String s2)
         {
             if (s1 == null) s1 = "";
             if (s2 == null) s2 = "";
-            return avm.Concat(s1, s2);
+			return ConcatInternal(s1, s2);
         }
 
         public static String Concat(String s1, String s2, String s3)
@@ -1727,7 +1740,7 @@ namespace System
             if (s1 == null) s1 = "";
             if (s2 == null) s2 = "";
             if (s3 == null) s3 = "";
-            return avm.Concat(s1, s2, s3);
+			return ConcatInternal(s1, s2, s3);
         }
 
         public static String Concat(String s1, String s2, String s3, String s4)
@@ -1736,7 +1749,7 @@ namespace System
             if (s2 == null) s2 = "";
             if (s3 == null) s3 = "";
             if (s4 == null) s4 = "";
-            return avm.Concat(s1, s2, s3, s4);
+			return ConcatInternal(s1, s2, s3, s4);
         }
 
         public static String Concat(object obj)

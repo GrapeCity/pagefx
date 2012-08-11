@@ -41,6 +41,17 @@ namespace PageFX
 		}
 	}
 
+	public sealed class InlineOperatorAttribute : Attribute
+	{
+		//TODO: use enum instead of string
+		public string Name;
+
+		public InlineOperatorAttribute(string name)
+		{
+			Name = name;
+		}
+	}
+
 	/// <summary>
     /// Used to explicitly define full member name
     /// </summary>
