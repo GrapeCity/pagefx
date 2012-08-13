@@ -38,6 +38,8 @@ using System.Runtime.Serialization;
 #endif
 using System.Security.Permissions;
 using System.Text;
+using PageFX;
+
 //using System.Runtime.InteropServices;
 
 namespace System
@@ -67,7 +69,7 @@ namespace System
 
         public Exception(string msg)
         {
-            avm_setMessage(msg);
+	        InternalMessage = msg;
         }
 
         public Exception(string msg, Exception e)
@@ -117,11 +119,11 @@ namespace System
         {
             get
             {
-                string msg = avm_getMessage();
-                if (string.IsNullOrEmpty(avm_getMessage()))
+                string msg = InternalMessage;
+                if (string.IsNullOrEmpty(msg))
                 {
                     msg = FormatMessage();
-                    avm_setMessage(msg);
+					InternalMessage = msg;
                 }
                 return msg;
             }
@@ -144,21 +146,27 @@ namespace System
             }
         }
 
+		[InlineFunction("getStackTrace")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern string avm_getStackTrace();
+        internal extern string GetInternalStackTrace();
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern string avm_getMessage();
+	    internal string InternalMessage
+	    {
+			[InlineProperty("message")]
+		    [MethodImpl(MethodImplOptions.InternalCall)]
+			get;
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern void avm_setMessage(string msg);
+			[InlineProperty("message")]
+			[MethodImpl(MethodImplOptions.InternalCall)]
+			set;
+	    }
 
         public virtual string StackTrace
         {
             get
             {
                 if (string.IsNullOrEmpty(stack_trace))
-                    return avm_getStackTrace();
+                    stack_trace = GetInternalStackTrace();
                 return stack_trace;
             }
         }

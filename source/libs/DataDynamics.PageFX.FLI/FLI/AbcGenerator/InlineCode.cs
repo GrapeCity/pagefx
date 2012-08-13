@@ -14,7 +14,6 @@ namespace DataDynamics.PageFX.FLI
 			    {
 				    {"System.Object", new SystemObjectInlines()},
 				    {"System.String", new StringInlines()},
-				    {"System.Exception", new ExceptionInlines()},
 				    {"System.Diagnostics.Debugger", new DebuggerInlines()},
 				    {"avm", new AvmInlines()},
 			    };
@@ -60,35 +59,7 @@ namespace DataDynamics.PageFX.FLI
 			var info = method.GetInlineInfo();
 			if (info != null)
 			{
-				var code = new AbcCode(_abc);
-				if (info.Kind == InlineKind.Property)
-				{
-					//TODO: support setters
-					code.GetProperty(info.Name.Define(_abc));
-					code.Coerce(method.Type, true);
-				}
-				else if (info.Kind == InlineKind.Operator)
-				{
-					int n = method.Parameters.Count;
-					if (n <= 1)
-						throw new InvalidOperationException();
-					var op = info.Op;
-					for (int i = 1; i < n; ++i)
-					{
-						code.Add(op);
-					}
-					code.Coerce(method.Type, true);
-				}
-				else if (method.IsVoid())
-				{
-					code.CallVoid(info.Name.Define(_abc), method.Parameters.Count);
-				}
-				else
-				{
-					code.Call(info.Name.Define(_abc), method.Parameters.Count);
-					code.Coerce(method.Type, true);
-				}
-				return code;
+				return DefineInlineCode(method, info);
 			}
 
 		    InlineCodeProvider provider;
@@ -99,6 +70,55 @@ namespace DataDynamics.PageFX.FLI
 
 		    return null;
         }
+
+	    private AbcCode DefineInlineCode(IMethod method, InlineMethodInfo info)
+	    {
+		    var code = new AbcCode(_abc);
+		    var name = info.Name.Define(_abc);
+
+		    switch (info.Kind)
+		    {
+			    case InlineKind.Property:
+				    if (method.IsSetter)
+				    {
+					    code.SetProperty(name);
+				    }
+				    else
+				    {
+					    code.GetProperty(name);
+					    code.Coerce(method.Type, true);
+				    }
+				    break;
+
+			    case InlineKind.Operator:
+				    {
+					    int n = method.Parameters.Count;
+					    if (n <= 1)
+						    throw new InvalidOperationException();
+					    var op = info.Op;
+					    for (int i = 1; i < n; ++i)
+					    {
+						    code.Add(op);
+					    }
+					    code.Coerce(method.Type, true);
+				    }
+				    break;
+
+			    default:
+				    if (method.IsVoid())
+				    {
+					    code.CallVoid(name, method.Parameters.Count);
+				    }
+				    else
+				    {
+					    code.Call(name, method.Parameters.Count);
+					    code.Coerce(method.Type, true);
+				    }
+				    break;
+		    }
+
+		    return code;
+	    }
     }
 
 	internal static class InlineMethodExtensions

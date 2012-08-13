@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.FLI
                 return tag;
             }
 
-            tag = DefineInlineCode(method, null);
+            tag = DefineInlineCode(method, (AbcInstance)null);
             if (tag != null)
             {
                 method.Tag = tag;
