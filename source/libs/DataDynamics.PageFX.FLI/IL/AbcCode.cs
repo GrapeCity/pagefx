@@ -11,16 +11,14 @@ namespace DataDynamics.PageFX.FLI.IL
     /// </summary>
     class AbcCode : List<IInstruction>
     {
-        #region ctor
-        public AbcFile abc;
+	    public AbcFile abc;
 
         public AbcCode(AbcFile abc)
         {
             this.abc = abc;
         }
-        #endregion
 
-        #region Add
+	    #region Add
         public Instruction Add(InstructionCode code)
         {
             var instr = new Instruction(code);

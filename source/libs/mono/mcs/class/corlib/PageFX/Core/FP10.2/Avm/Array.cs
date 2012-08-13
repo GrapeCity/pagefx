@@ -1157,6 +1157,7 @@ namespace Avm
         
         public extern int Length
         {
+			[PageFX.InlineProperty("length")]
             [MethodImpl(MethodImplOptions.InternalCall)]
             get;
         }

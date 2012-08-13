@@ -16,6 +16,7 @@ public extern virtual uint push(Avm.String arg);
 
 public extern int Length
 {
+	[PageFX.InlineProperty("length")]
     [MethodImpl(MethodImplOptions.InternalCall)]
     get;
 }

@@ -59,6 +59,7 @@ namespace System
                 throw new ArgumentOutOfRangeException("length", "< 0");
             if (startIndex > value.Length - length)
                 throw new ArgumentOutOfRangeException("startIndex", "startIndex + length > value.Length");
+
             string s = "";
             while (length-- > 0)
             {
@@ -66,39 +67,47 @@ namespace System
                 s += fromCharCode(c);
                 ++startIndex;
             }
-            avm.ReturnValue(s);
+
+            ReturnValue(s);
         }
 
         public String(char[] value)
         {
             if (value == null)
                 throw new ArgumentNullException("value");
+
             string s = "";
             int n = value.Length;
             for (int i = 0; i < n; ++i)
             {
                 s += fromCharCode(value[i]);
             }
-            avm.ReturnValue(s);
+
+            ReturnValue(s);
         }
 
         public String(char c, int count)
         {
             if (count < 0)
                 throw new ArgumentOutOfRangeException("count", "count < 0");
+
             string s = "";
             string s2 = fromCharCode(c);
             while (count-- > 0)
             {
                 s += s2;
             }
-            avm.ReturnValue(s);
+
+            ReturnValue(s);
         }
         #endregion
 
         public static readonly String Empty = "";
 
         #region Native API (Inline Methods)
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		extern internal static void ReturnValue(string value);
 
 	    [AS3]
 		[InlineFunction]

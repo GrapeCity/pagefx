@@ -110,9 +110,6 @@ public static class avm
     [MethodImpl(MethodImplOptions.InternalCall)]
     internal static extern void set_m_value(object obj, object value);
 
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    internal static extern void ReturnValue(object obj);
-
     #region NewObject
     [MethodImpl(MethodImplOptions.InternalCall)]
     public static extern Avm.Object NewObject(string key, object value);
