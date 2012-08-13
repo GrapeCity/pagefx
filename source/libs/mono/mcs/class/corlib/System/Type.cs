@@ -477,16 +477,6 @@ namespace System
             }
         }
 
-#if NOT_PFX
-public bool IsContextful
-        {
-            get
-            {
-                return IsContextfulImpl();
-            }
-        }
-#endif
-
         public bool IsEnum
         {
             get { return kind == KIND_ENUM; }
@@ -522,7 +512,6 @@ public bool IsContextful
         }
 
 #if NOT_PFX
-
         public bool IsMarshalByRef
         {
             get
