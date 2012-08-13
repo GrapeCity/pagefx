@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.FLI
 				InlineCodeProvider provider;
 				if (NativeInlines.TryGetValue(name, out provider))
 				{
-					return provider.GetInlineCode(_abc, method);
+					return provider.GetImplementation(_abc, method);
 				}
 
 				if (name.StartsWith(AS3.Vector.FullName))
@@ -65,7 +65,7 @@ namespace DataDynamics.PageFX.FLI
 		    InlineCodeProvider provider;
 	        if (Inlines.TryGetValue(type.FullName, out provider))
 	        {
-		        return provider.GetInlineCode(_abc, method);
+		        return provider.GetImplementation(_abc, method);
 	        }
 
 		    return null;

@@ -75,7 +75,7 @@ namespace DataDynamics.PageFX.FLI.Inlining
 			}
 		}
 
-		public AbcCode GetInlineCode(AbcFile abc, IMethod method)
+		public AbcCode GetImplementation(AbcFile abc, IMethod method)
 		{
 			IList<KeyValuePair<Match, InlineFunc>> list;
 			if (!_impls.TryGetValue(method.Name, out list))

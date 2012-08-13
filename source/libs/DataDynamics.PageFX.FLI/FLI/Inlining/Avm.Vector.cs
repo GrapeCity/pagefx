@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.FLI.Inlining
 
 		public static AbcCode Get(AbcFile abc, IMethod method)
 		{
-			var code = Instance.GetInlineCode(abc, method);
+			var code = Instance.GetImplementation(abc, method);
 			if (code != null)
 			{
 				return code;
