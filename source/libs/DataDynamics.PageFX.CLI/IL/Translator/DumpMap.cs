@@ -11,8 +11,8 @@ namespace DataDynamics.PageFX.CLI.IL
 
     internal partial class ILTranslator
     {
-        static readonly string separator = new string('-', 200);
-        int _beginSize;
+		private static readonly string separator = new string('-', 200);
+		private int _beginSize;
 
         public void DumpILMap(string format, string filename)
         {
@@ -70,7 +70,7 @@ namespace DataDynamics.PageFX.CLI.IL
             DebugHooks.LogInfo("DumpILMap succeded");
         }
 
-        static void DumpStackState(TextWriter writer, Node bb)
+        private static void DumpStackState(TextWriter writer, Node bb)
         {
             if (!bb.IsTranslated)
                 throw new InvalidOperationException();

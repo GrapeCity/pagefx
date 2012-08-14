@@ -13,24 +13,15 @@ namespace DataDynamics.PageFX.CLI.IL
     /// </summary>
     internal partial class ILTranslator : ITranslator
     {
-        #region enum Phase
-        enum Phase
-        {
-            Analysis,
-            Translation
-        }
-        #endregion
+	    private enum Phase { Analysis, Translation }
 
-        #region Fields
-        IClrMethodBody _body; //input: body of input method
-        ICodeProvider _provider; //input: code provider
-        List<IInstruction> _outcode; //output instruction set
-        IMethod _method; //input method to translate
-        IType _declType; //declaring type of input method
-        Phase _phase; //current translation phase
-        #endregion
+	    private IClrMethodBody _body; //input: body of input method
+		private ICodeProvider _provider; //input: code provider
+		private List<IInstruction> _outcode; //output instruction set
+		private IMethod _method; //input method to translate
+		private IType _declType; //declaring type of input method
+		private Phase _phase; //current translation phase
 
-        #region Translate - Entry Point
 #if PERF
         public static int CallCount;
 #endif
@@ -64,7 +55,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return _outcode.ToArray();
         }
 
-        void TranslateCore()
+        private void TranslateCore()
         {
             if (_declType is IGenericType)
                 throw new ILTranslatorException("Not supported");
@@ -94,19 +85,14 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        string FullMethodName
+        private string FullMethodName
         {
-            get
-            {
-                return _declType.FullName + "." + _method.Name;
-            }
+            get { return _declType.FullName + "." + _method.Name; }
         }
-        #endregion
 
-        #region Process
-        public const int MaxGenericNesting = 100;
+	    public const int MaxGenericNesting = 100;
 
-        static void CalcGenericNesting(IGenericInstance gi, ref int depth)
+		private static void CalcGenericNesting(IGenericInstance gi, ref int depth)
         {
             foreach (var type in gi.GenericArguments)
             {
@@ -119,7 +105,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        bool CheckGenericNesting()
+        private bool CheckGenericNesting()
         {
             var gi = _declType as IGenericInstance;
             if (gi == null) return false;
@@ -128,7 +114,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return depth > MaxGenericNesting;
         }
 
-        void Process()
+		private void Process()
         {
             _body.InstanceCount++;
 
@@ -159,20 +145,22 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void PushState()
+		private void PushState()
         {
             foreach (var bb in Blocks)
                 bb.PushState();
+
             foreach (var instr in _body.Code)
             {
                 instr.PushState();
+
                 var member = instr.Value as ITypeMember;
                 if (member != null)
                     instr.Member = member;
             }
         }
 
-        bool IsGenericInstance
+		private bool IsGenericInstance
         {
             get 
             {
@@ -184,7 +172,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void PopState()
+		private void PopState()
         {
             if (!IsGenericInstance) return;
             foreach (var instr in _body.Code)
@@ -192,39 +180,31 @@ namespace DataDynamics.PageFX.CLI.IL
             foreach (var bb in Blocks)
                 bb.PopState();
         }
-        #endregion
 
-        #region Utils
-        ILStream SourceCode
+	    private Instruction GetInstruction(int index)
         {
-            get { return _body.Code; }
-        }
-
-        Instruction GetInstruction(int index)
-        {
-            var code = SourceCode;
+            var code = _body.Code;
             if (index < 0 || index >= code.Count)
                 throw new ArgumentOutOfRangeException("index");
             return code[index];
         }
 
-        Node GetInstructionBasicBlock(int index)
+		private Node GetInstructionBasicBlock(int index)
         {
             var instr = GetInstruction(index);
             return instr.BasicBlock;
         }
 
-        IType ReturnType
+		private IType ReturnType
         {
             get { return _method.Type; }
         }
-        #endregion
 
-        #region STEP1 - Builds Flow Graph
+	    #region STEP1 - Builds Flow Graph
         /// <summary>
         /// Builds flowgraph. Prepares list of basic blocks to translate.
         /// </summary>
-        void BuildGraph()
+        private void BuildGraph()
         {
 #if DEBUG
             DebugHooks.LogInfo("CFG Builder started");
@@ -278,7 +258,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// Concatenates code of all basic blocks in order of basic blocks layout.
         /// Prepares output code (instruction list).
         /// </summary>
-        IList<KeyValuePair<IInstruction, Node>> ConcatBlocks()
+        private IList<KeyValuePair<IInstruction, Node>> ConcatBlocks()
         {
 #if DEBUG
             DebugHooks.LogInfo("ConcatBlocks started");
@@ -318,7 +298,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 var il = bb.TranslatedCode;
 
 				var last = il[il.Count - 1];
-				if (IsBranchOrSwitch(last))
+				if (last.IsBranchOrSwitch())
 				{
 					branches.Add(new KeyValuePair<IInstruction, Node>(last, bb));
 				}
@@ -353,7 +333,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// Adds set of instruction to output instruction set
         /// </summary>
         /// <param name="code"></param>
-        void Emit(IEnumerable<IInstruction> code)
+        private void Emit(IEnumerable<IInstruction> code)
         {
             if (code != null)
             {
@@ -367,7 +347,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void DeclareVariables()
+        private void DeclareVariables()
         {
             if (_body.LocalVariables != null)
             {
@@ -386,7 +366,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <summary>
         /// Resolves branch instructions.
         /// </summary>
-        void ResolveBranches(IList<KeyValuePair<IInstruction,Node>> branches)
+        private void ResolveBranches(IList<KeyValuePair<IInstruction,Node>> branches)
         {
 #if DEBUG
             DebugHooks.LogInfo("ResolveBranches started");

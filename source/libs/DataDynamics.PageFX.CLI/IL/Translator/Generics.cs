@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.CLI.IL
     internal partial class ILTranslator
     {
         #region ResolveGenerics
-        void ResolveGenerics()
+        private void ResolveGenerics()
         {
             ResolveBaseTypes();
 
@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.CLI.IL
 			}
         }
 
-        void ResolveGenericVars()
+		private void ResolveGenericVars()
         {
             foreach (var var in _body.LocalVariables)
             {
@@ -64,7 +64,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void ResolveBaseTypes()
+		private void ResolveBaseTypes()
         {
             var t = _declType;
             while (t != null)
@@ -73,7 +73,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region ResolveGenericExceptions
-        void ResolveGenericExceptions(Block block)
+		private void ResolveGenericExceptions(Block block)
         {
             var hb = block as HandlerBlock;
             if (hb != null)
@@ -97,14 +97,14 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void ResolveGenericExceptions(IEnumerable<HandlerBlock> set)
+		private void ResolveGenericExceptions(IEnumerable<HandlerBlock> set)
         {
             if (set == null) return;
             foreach (var block in set)
                 ResolveGenericExceptions(block);
         }
 
-        void ResolveGenericExceptions(IEnumerable<Block> set)
+		private void ResolveGenericExceptions(IEnumerable<Block> set)
         {
             if (set == null) return;
             foreach (var block in set)
@@ -113,7 +113,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region ResolveInstructionGenerics
-        void ResolveInstructionGenerics(Instruction instr)
+		private void ResolveInstructionGenerics(Instruction instr)
         {
             var member = instr.Member;
             if (member == null) return;
@@ -146,7 +146,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region ResolveMethod
-        IMethod ResolveMethod(IMethod method)
+		private IMethod ResolveMethod(IMethod method)
         {
             if (method.IsGenericInstance)
                 return ResolveGenericMethodInstance(method);
@@ -172,14 +172,14 @@ namespace DataDynamics.PageFX.CLI.IL
             return method;
         }
 
-        IMethod ResolveGenericMethodInstance(IMethod method)
+		private IMethod ResolveGenericMethodInstance(IMethod method)
         {
             return GenericType.ResolveMethodInstance(_declType, _method, method);
         }
         #endregion
 
         #region ResolveField
-        IField ResolveField(IField field, Instruction instr)
+		private IField ResolveField(IField field, Instruction instr)
         {
             var declType = field.DeclaringType;
             declType = ResolveType(declType, instr);
@@ -201,12 +201,12 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region ResolveType
-        IType ResolveType(IType type)
+		private IType ResolveType(IType type)
         {
             return ResolveType(type, null);
         }
 
-        IType ResolveType(IType type, Instruction instr)
+		private IType ResolveType(IType type, Instruction instr)
         {
             if (instr != null && instr.Code == InstructionCode.Ldtoken)
             {
@@ -225,7 +225,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region Utils
-        static void CheckInstantiation(IType t, Instruction instr)
+		private static void CheckInstantiation(IType t, Instruction instr)
         {
             if (GenericType.HasGenericParams(t))
             {

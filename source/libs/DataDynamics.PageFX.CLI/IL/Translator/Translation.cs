@@ -13,7 +13,7 @@ namespace DataDynamics.PageFX.CLI.IL
     partial class ILTranslator
     {
         #region fields
-        FlowGraph _flowgraph;
+        private FlowGraph _flowgraph;
 
 	    private IEnumerable<Node> Blocks
         {
@@ -23,33 +23,32 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <summary>
         /// current analysed or translated basic block
         /// </summary>
-        Node _block;
+        private Node _block;
 
         /// <summary>
         /// Current translated instruction
         /// </summary>
-        Instruction _instruction;
+        private Instruction _instruction;
 
         /// <summary>
         /// Header of method body code.
         /// </summary>
-        IInstruction[] _beginCode;
+        private IInstruction[] _beginCode;
 
         /// <summary>
         /// Footer of method body code.
         /// </summary>
-        IInstruction[] _endCode;
+		private IInstruction[] _endCode;
 
-    	int _bbIndex;
-        bool _popScope;
-        bool _castToParamType;
+		private int _bbIndex;
+		private bool _popScope;
+		private bool _castToParamType;
         #endregion
 
-        #region TranslateGraph
-        /// <summary>
+	    /// <summary>
         /// Translates all basic blocks in flow graph.
         /// </summary>
-        void TranslateGraph()
+		private void TranslateGraph()
         {
             _phase = Phase.Translation;
 #if DEBUG
@@ -76,10 +75,8 @@ namespace DataDynamics.PageFX.CLI.IL
             DebugHooks.LogInfo("TranslateBlocks succeeded for method: {0}", _method);
 #endif
         }
-        #endregion
 
-        #region TranslateBlock
-        /// <summary>
+	    /// <summary>
         /// Translates given basic block.
         /// </summary>
         /// <param name="bb">basic block to translate.</param>
@@ -87,7 +84,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// Also enshures translation of blocks that should be translated before the given block.
         /// It includes incoming blocks, previous handler blocks.
         /// </remarks>
-        void TranslateBlock(Node bb)
+		private void TranslateBlock(Node bb)
         {
             if (bb.IsTranslated) return;
 
@@ -113,10 +110,10 @@ namespace DataDynamics.PageFX.CLI.IL
 
             TranslateBlockCore(bb);
         }
-        #endregion
 
-        #region TranslateBeforeBlock
-        void TranslateBeforeBlock(Node bb)
+	    #region TranslateBeforeBlock
+
+		private void TranslateBeforeBlock(Node bb)
         {
             EnsurePrevHandlerBlock(bb);
             TranslateIncomingBlocks(bb);
@@ -124,7 +121,7 @@ namespace DataDynamics.PageFX.CLI.IL
             ReconcileTypes(bb);
         }
 
-        void EnsurePrevHandlerBlock(Node bb)
+		private void EnsurePrevHandlerBlock(Node bb)
         {
             var hb = GetHandlerBlock(bb);
             if (hb == null) return;
@@ -137,7 +134,7 @@ namespace DataDynamics.PageFX.CLI.IL
             TranslateBlock(node);
         }
 
-        static HandlerBlock GetHandlerBlock(Node bb)
+		private static HandlerBlock GetHandlerBlock(Node bb)
         {
             if (bb.CodeLength == 0) return null;
             var first = bb.Code[0];
@@ -147,7 +144,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return block as HandlerBlock;
         }
 
-        void TranslateIncomingBlocks(Node bb)
+		private void TranslateIncomingBlocks(Node bb)
         {
             //NOTE:
             //First we must translate predecessors. Why?
@@ -160,7 +157,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        bool CheckIncomingBlock(Edge e, Node bb)
+		private bool CheckIncomingBlock(Edge e, Node bb)
         {
             if (e == null) return false;
             if (e.IsBack) return false;
@@ -172,7 +169,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return true;
         }
 
-        void EnsureSehBlocks(Node bb)
+		private void EnsureSehBlocks(Node bb)
         {
             EnsureSehBegin(bb);
 
@@ -186,14 +183,14 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void EnsureSehBegin(Node bb)
+		private void EnsureSehBegin(Node bb)
         {
             var block = bb.SehBegin;
             if (block == null) return;
             EnsureSehBlock(bb, block);
         }
 
-        void EnsureSehBlock(Node bb, Block block)
+		private void EnsureSehBlock(Node bb, Block block)
         {
             if (block == null) return;
 
@@ -214,7 +211,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void EnsureEntryPoints(Node bb, Block seh)
+		private void EnsureEntryPoints(Node bb, Block seh)
         {
             EnsureInstructionBlock(bb, seh.EntryIndex);
 
@@ -232,7 +229,7 @@ namespace DataDynamics.PageFX.CLI.IL
             // EnsureInstructionBlock(bb, seh.ExitIndex);
         }
 
-        void EnsureInstructionBlock(Node bb, int index)
+		private void EnsureInstructionBlock(Node bb, int index)
         {
         	var n = GetBasicBlockSafe(index);
 			if (n != bb) // avoid stackoverflow!
@@ -252,7 +249,7 @@ namespace DataDynamics.PageFX.CLI.IL
     	#endregion
 
         #region CheckStackBalance
-        void CheckStackBalance(Node bb)
+		private void CheckStackBalance(Node bb)
         {
             int nbefore = bb.StackBefore.Count;
             if (bb.InEdges.Select(e => e.From).Any(from => from.IsTranslated && nbefore != from.Stack.Count))
@@ -269,7 +266,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region ReconcileTypes
-        static bool PeekType(Edge e, ref IType type)
+		private static bool PeekType(Edge e, ref IType type)
         {
             if (e == null) return false;
             var b = e.From;
@@ -281,7 +278,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return true;
         }
 
-        void ReconcileTypes(Node bb)
+		private void ReconcileTypes(Node bb)
         {
             var e1 = bb.FirstIn;
             IType type1 = null;
@@ -302,7 +299,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region TranslateBlockCore
-        void TranslateBlockCore(Node bb)
+		private void TranslateBlockCore(Node bb)
         {
             bb.IsTranslated = true;
             _block = bb;
@@ -322,7 +319,7 @@ namespace DataDynamics.PageFX.CLI.IL
             _block = null;
         }
 
-        void Optimize(Node bb)
+		private void Optimize(Node bb)
         {
             if (!GlobalSettings.EnableOptimization) return;
             var code = bb.TranslatedCode;
@@ -340,7 +337,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <summary>
         /// Translates code of current translated basic block
         /// </summary>
-        void TranslateBlockCode(Node bb)
+		private void TranslateBlockCode(Node bb)
         {
             BeginBlock();
 
@@ -359,19 +356,19 @@ namespace DataDynamics.PageFX.CLI.IL
         }
 
         //Prepares translator for current block.
-        void BeginBlock()
+		private void BeginBlock()
         {
             LabelBlock();
             PushScope();
             SehBegin();
         }
 
-        void EndBlock()
+		private void EndBlock()
         {
             PopScope();
         }
 
-        bool CanLabel()
+		private bool CanLabel()
         {
             var first = _block.Code[0];
             if (first.IsBranchTarget)
@@ -388,7 +385,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return _block.IsNWay || _block.Predecessors.Any(p => p.IsNWay);
         }
 
-        void LabelBlock()
+		private void LabelBlock()
         {
             int n = _block.CodeLength;
             if (n == 0) return;
@@ -400,12 +397,12 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void PushScope()
+		private void PushScope()
         {
             _popScope = true;
         }
 
-        void PopScope()
+		private void PopScope()
         {
             if (_popScope)
             {
@@ -415,24 +412,24 @@ namespace DataDynamics.PageFX.CLI.IL
         }
         #endregion
 
-        #region Debug Hooks
+        #region Debug Utils
 #if DEBUG
-        bool IsMain
+		private bool IsMain
         {
             get { return _method.IsStatic && _method.Name == "Main"; }
         }
 
-		bool IsTest
+		private bool IsTest
 		{
 			get { return _method.IsStatic && _method.Name == "Test"; }
 		}
 
-        bool IsName(string name)
+		private bool IsName(string name)
         {
             return _method.Name == name;
         }
 
-        bool IsType(string name)
+		private bool IsType(string name)
         {
             var type = _method.DeclaringType;
             return type.FullName == name || type.Name == name;
@@ -441,7 +438,8 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region Protected & Handler Blocks
-        void EnshureNotEmpty(Node bb)
+
+		private void EnshureNotEmpty(Node bb)
         {
             if (bb.TranslatedCode.Count == 0)
             {
@@ -457,7 +455,7 @@ namespace DataDynamics.PageFX.CLI.IL
     		bb.TranslatedCode.Add(instr);
     	}
 
-    	void SehBegin()
+		private void SehBegin()
         {
             var block = _block.SehBegin;
             if (block == null) return;
@@ -503,7 +501,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        int GetExceptionVariable(Block b)
+		private int GetExceptionVariable(Block b)
         {
             if (b.Code == null) return -1;
             int entryIndex = b.EntryIndex;
@@ -537,7 +535,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return -1;
         }
 
-    	void SehEnd()
+		private void SehEnd()
         {
             var block = _block.SehEnd;
             if (block == null) return;
@@ -584,7 +582,7 @@ namespace DataDynamics.PageFX.CLI.IL
     	#endregion
 
         #region TranslateInstruction
-        void TranslateInstruction()
+		private void TranslateInstruction()
         {
             _provider.SourceInstruction = _instruction;
 
@@ -600,7 +598,7 @@ namespace DataDynamics.PageFX.CLI.IL
             //if (!rboxed)
             //    AdjustReceiverType(ref code);
             
-            if (IsEndOfBlock(_instruction))
+            if (_instruction.IsEndOfBasicBlock())
             {
                 CastToBlockParam();
                 PopScope();
@@ -615,7 +613,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void AdjustReceiverType(ref IInstruction[] code)
+		private void AdjustReceiverType(ref IInstruction[] code)
         {
             var call = _instruction.ReceiverFor;
             if (call == null) return;
@@ -633,7 +631,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        bool BoxReceiver(ref IInstruction[] code)
+		private bool BoxReceiver(ref IInstruction[] code)
         {
             IValue ptr;
             var type = GetReceiverBoxingType(out ptr);
@@ -670,15 +668,11 @@ namespace DataDynamics.PageFX.CLI.IL
             return false;
         }
 
-        static bool IsEndOfBlock(IInstruction instr)
-        {
-            return instr.IsBranch || instr.IsSwitch || instr.IsReturn || instr.IsThrow;
-        }
-        #endregion
+	    #endregion
 
         #region CastToParamType, CastToBlockParam
         //FIX: For ternary params
-        void CastToBlockParam()
+        private void CastToBlockParam()
         {
             if (_block.Parameter != null)
             {
@@ -691,12 +685,12 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void CastToParamType()
+		private void CastToParamType()
         {
             CastToParamType(_instruction, _instruction.Parameter, false);
         }
 
-        bool CastToParamType(Instruction instr, IParameter p, bool force)
+		private bool CastToParamType(Instruction instr, IParameter p, bool force)
         {
             if (p == null) return false;
 
@@ -738,7 +732,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return true;
         }
 
-        static bool NeedCast(IType source, IType target)
+		private static bool NeedCast(IType source, IType target)
         {
             //if (source == null) return true;
             if (source.IsImplicitCast(target))
@@ -748,7 +742,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region CheckCast
-        static void CheckCast(IType source, IType target)
+		private static void CheckCast(IType source, IType target)
         {
             if (IsInvalidCast(source, target))
             {
@@ -756,7 +750,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        static bool IsInvalidCast(IType source, IType target)
+		private static bool IsInvalidCast(IType source, IType target)
         {
             if (SystemTypes.IsNumeric(source))
             {
@@ -771,7 +765,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return false;
         }
 
-        static bool IsNumEnumOrObject(IType type)
+		private static bool IsNumEnumOrObject(IType type)
         {
             if (type == null) return false;
             return SystemTypes.IsNumeric(type)
@@ -785,7 +779,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <summary>
         /// Adds some code before current translated instruction
         /// </summary>
-        void AddInstructionPrefix()
+		private void AddInstructionPrefix()
         {
             var stack = _instruction.BeginStack;
             while (stack.Count > 0)
@@ -809,7 +803,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <summary>
         /// Adds some code after current translated instruction.
         /// </summary>
-        void AddInstructionSuffix()
+		private void AddInstructionSuffix()
         {
             var stack = _instruction.EndStack;
             while (stack.Count > 0)
@@ -830,7 +824,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region BeginCall
-        void BeginCall(CallInfo call)
+		private void BeginCall(CallInfo call)
         {
             var code = _provider.LoadReceiver(call.Method, call.IsNewobj);
 
@@ -850,11 +844,11 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region EmitSequencePoint
-        string _debugFile;
-        string _curDebugFile;
-        int _curDebugLine = -1;
+		private string _debugFile;
+		private string _curDebugFile;
+		private int _curDebugLine = -1;
 
-        void EmitSequencePoint()
+		private void EmitSequencePoint()
         {
             var sp = _instruction.SequencePoint;
             if (sp == null) return;
@@ -885,7 +879,7 @@ namespace DataDynamics.PageFX.CLI.IL
         //NOTE: Fix of avm verify error, 
         //when type of trueValue or falseValue in ternary assignment does not equal 
         //to left part of assignment
-        bool FixTernaryAssignment(IType type)
+		private bool FixTernaryAssignment(IType type)
         {
             if (!_block.IsFirstAssignment) return false;
             _block.IsFirstAssignment = false;
@@ -986,7 +980,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 if (n == 0)
                     throw new ILTranslatorException("Translated code is empty");
 
-                if (IsBranchOrSwitch(code[n - 1]))
+                if (code[n - 1].IsBranchOrSwitch())
                 {
                     code.InsertRange(n - 1, cast);
                 }
@@ -1002,27 +996,27 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <summary>
         /// Emits given instruction to current block.
         /// </summary>
-        /// <param name="instr">instruction to add.</param>
-        void EmitBlockInstruction(IInstruction instr)
+        /// <param name="i">instruction to add.</param>
+		private void EmitBlockInstruction(IInstruction i)
         {
-            if (instr == null)
-                throw new ArgumentNullException("instr");
+            if (i == null)
+                throw new ArgumentNullException("i");
             var list = _block.TranslatedCode;
             int n = list.Count;
             if (n > 0)
             {
                 //Remove duplicate instructions
-                if (_provider.IsDuplicate(list[n - 1], instr))
+                if (_provider.IsDuplicate(list[n - 1], i))
                     return;
             }
-            list.Add(instr);
+            list.Add(i);
         }
 
         /// <summary>
         /// Adds specified code to current block.
         /// </summary>
         /// <param name="code">set of instructions to add.</param>
-        void EmitBlockCode(IEnumerable<IInstruction> code)
+		private void EmitBlockCode(IEnumerable<IInstruction> code)
         {
             if (code != null)
             {
@@ -1031,7 +1025,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void EmitCast(IType source, IType target)
+		private void EmitCast(IType source, IType target)
         {
             if (target != source)
             {
@@ -1042,7 +1036,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void EmitSwap()
+		private void EmitSwap()
         {
             var i = _provider.Swap();
             if (i == null)
@@ -1050,13 +1044,13 @@ namespace DataDynamics.PageFX.CLI.IL
             EmitBlockInstruction(i);
         }
 
-        IType PeekType()
+		private IType PeekType()
         {
             var v = Peek();
             return v.Type;
         }
 
-        IType GetReceiverBoxingType(out IValue ptr)
+		private IType GetReceiverBoxingType(out IValue ptr)
         {
             ptr = null;
             if (_instruction.Code == InstructionCode.Box)
@@ -1091,17 +1085,17 @@ namespace DataDynamics.PageFX.CLI.IL
             return null;
         }
 
-        static IType GetParamType(IParameter p)
+		private static IType GetParamType(IParameter p)
         {
             return p.Type.UnwrapRef();
         }
 
-        bool IsEndOfTryFinally()
+		private bool IsEndOfTryFinally()
         {
             return _instruction.IsEndOfTryFinally;
         }
 
-        bool FilterInstruction()
+		private bool FilterInstruction()
         {
             if (IsEndOfTryFinally()) return false;
             return true;

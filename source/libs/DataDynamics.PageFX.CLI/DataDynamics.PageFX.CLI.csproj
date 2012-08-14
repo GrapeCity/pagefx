@@ -80,6 +80,7 @@
     <Compile Include="GAC\IInstallReferenceItem.cs" />
     <Compile Include="CFG\GraphBuilder.cs" />
     <Compile Include="CFG\FlowGraphExtensions.cs" />
+    <Compile Include="IL\InstructionExtensions.cs" />
     <Compile Include="IL\Translator\Analysis.cs" />
     <Compile Include="IL\Translator\Core.cs" />
     <Compile Include="IL\Translator\DumpMap.cs" />

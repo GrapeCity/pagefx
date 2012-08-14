@@ -10,16 +10,15 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <summary>
         /// Returns true if current phase is analysis
         /// </summary>
-        bool IsAnalysis
+        private bool IsAnalysis
         {
             get { return _phase == Phase.Analysis; }
         }
 
-        #region AnalyzeGraph - entry point to analysis phase
-        /// <summary>
+	    /// <summary>
         /// Performs flowgraph analysis.
         /// </summary>
-        void AnalyzeGraph()
+        private void AnalyzeGraph()
         {
             _phase = Phase.Analysis;
 #if DEBUG
@@ -47,14 +46,12 @@ namespace DataDynamics.PageFX.CLI.IL
             DebugHooks.DoCancel();
 #endif
         }
-        #endregion
 
-        #region EnshureEvalStack
-        /// <summary>
+	    /// <summary>
         /// Called in analysis and translation phases to prepare eval stack for given basic block.
         /// </summary>
         /// <param name="bb">given basic block</param>
-        void EnshureEvalStack(Node bb)
+        private void EnshureEvalStack(Node bb)
         {
             //NOTE:
             //Taking into account that stack state must be the same before and after 
@@ -84,14 +81,12 @@ namespace DataDynamics.PageFX.CLI.IL
             var prevStack = from.Stack;
             bb.Stack = prevStack != null ? prevStack.Clone() : new EvalStack();
         }
-        #endregion
 
-        #region AnalyzeBlock
-        /// <summary>
+	    /// <summary>
         /// Performs analysis for given basic block.
         /// </summary>
         /// <param name="bb">block to analyse</param>
-        void AnalyzeBlock(Node bb)
+        private void AnalyzeBlock(Node bb)
         {
             if (bb.IsAnalysed) return;
             AnalyzePredecessors(bb);
@@ -101,14 +96,12 @@ namespace DataDynamics.PageFX.CLI.IL
 
             AnalyzeBlockCore(bb);
         }
-        #endregion
 
-        #region AnalyzePredecessors
-        /// <summary>
+	    /// <summary>
         /// Performs analysis of predecessors of given basic block.
         /// </summary>
         /// <param name="bb"></param>
-        void AnalyzePredecessors(Node bb)
+        private void AnalyzePredecessors(Node bb)
         {
             foreach (var e in bb.InEdges)
             {
@@ -119,10 +112,8 @@ namespace DataDynamics.PageFX.CLI.IL
                     AnalyzeBlock(e.From);
             }
         }
-        #endregion
 
-        #region AnalyzeBlockCore
-        void AnalyzeBlockCore(Node bb)
+	    private void AnalyzeBlockCore(Node bb)
         {
             EnshureEvalStack(bb);
 
@@ -136,20 +127,18 @@ namespace DataDynamics.PageFX.CLI.IL
                 AnalyzeInstruction(bb, instr);
             }
         }
-        #endregion
 
-        #region AnalyzeInstruction
-        /// <summary>
+	    /// <summary>
         /// Performs analysis of given instruction.
         /// </summary>
         /// <param name="bb"></param>
         /// <param name="instr"></param>
-        void AnalyzeInstruction(Node bb, Instruction instr)
+        private void AnalyzeInstruction(Node bb, Instruction instr)
         {
             var stack = bb.Stack;
 
             //NOTE: Can not use instruction.IsCall because it excludes Newobj instruction
-            if (IsCall(instr))
+            if (instr.IsCall())
             {
                 AnalyzeCallInstruction(instr, stack);
             }
@@ -173,10 +162,9 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
             }
         }
-        #endregion
 
-        #region class CallInfo
-        class CallInfo
+	    #region class CallInfo
+        private class CallInfo
         {
             public readonly IMethod Method;
             public readonly Instruction Instruction;
@@ -228,7 +216,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
             }
 
-            if (HasReceiver(instr))
+            if (instr.HasReceiver())
             {
                 var r = stack.Pop();
                 last = r.last;
@@ -254,7 +242,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
             }
 
-            if (HasReturnValue(instr))
+            if (instr.HasReturnValue())
             {
                 stack.Push(new EvalItem(instr, last));
             }

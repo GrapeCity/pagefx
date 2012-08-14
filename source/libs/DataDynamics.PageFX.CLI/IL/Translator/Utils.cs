@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection.Emit;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
@@ -9,8 +8,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
     internal partial class ILTranslator
     {
-        #region utils
-        void Swap(ICollection<IInstruction> code)
+	    private void Swap(ICollection<IInstruction> code)
         {
             var i = _provider.Swap();
             if (i == null)
@@ -18,56 +16,12 @@ namespace DataDynamics.PageFX.CLI.IL
             code.Add(i);
         }
 
-        static bool IsCtor(ITypeMember m)
-        {
-            var method = m as IMethod;
-            if (method == null) return false;
-            return method.IsConstructor;
-        }
-
-    	bool MustPreventBoxing(IMethod method, IParameter arg)
+	    private bool MustPreventBoxing(IMethod method, IParameter arg)
         {
             return _provider.MustPreventBoxing(method, arg);
         }
 
-        static bool IsBranchOrSwitch(IInstruction i)
-        {
-            return i.IsBranch || i.IsSwitch;
-        }
-
-        static bool IsCall(Instruction i)
-        {
-            if (i == null) return false;
-            return i.FlowControl == FlowControl.Call;
-        }
-
-        /// <summary>
-        /// Determines whether given instruction performs call of non static method
-        /// </summary>
-        /// <param name="instruction"></param>
-        /// <returns></returns>
-        static bool HasReceiver(Instruction instruction)
-        {
-            if (instruction.Code == InstructionCode.Newobj)
-                return false;
-            var m = instruction.Method;
-            if (m == null)
-                return false;
-            return !m.IsStatic;
-        }
-
-        static bool HasReturnValue(Instruction instruction)
-        {
-            if (instruction.Code == InstructionCode.Newobj)
-                return true;
-            var m = instruction.Method;
-            if (m == null) return false;
-            return !m.IsVoid();
-        }
-        #endregion
-
-        #region type utils
-        void Cast(Code code, IType source, IType target)
+	    private void Cast(Code code, IType source, IType target)
         {
             if (target != source)
             {
@@ -77,7 +31,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void Cast(Code code, IType source, IType target, bool swap)
+		private void Cast(Code code, IType source, IType target, bool swap)
         {
             if (target != source)
             {
@@ -87,7 +41,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        static IType GetBitwiseCD(IType lt, IType rt)
+		private static IType GetBitwiseCD(IType lt, IType rt)
         {
             if (lt.IsEnum)
                 lt = lt.ValueType;
@@ -162,7 +116,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void ReduceToCD(Code code, BinaryOperator op, ref IType lt, ref IType rt)
+		private void ReduceToCD(Code code, BinaryOperator op, ref IType lt, ref IType rt)
         {
             if (op == BinaryOperator.BitwiseAnd
                 || op == BinaryOperator.BitwiseOr
@@ -177,7 +131,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void ReduceToCD(Code code, ref IType lt, ref IType rt)
+		private void ReduceToCD(Code code, ref IType lt, ref IType rt)
         {
             var d = SystemTypes.GetCommonDenominator(lt, rt);
             if (d == null)
@@ -186,7 +140,7 @@ namespace DataDynamics.PageFX.CLI.IL
             Cast(code, ref lt, ref rt, d);
         }
 
-        void Cast(Code code, ref IType lt, ref IType rt, IType d)
+		private void Cast(Code code, ref IType lt, ref IType rt, IType d)
         {
             Cast(code, rt, d, false);
             Cast(code, lt, d, true);
@@ -194,13 +148,13 @@ namespace DataDynamics.PageFX.CLI.IL
             rt = d;
         }
 
-        static bool IsSignedUnsigned(IType ltype, IType rtype)
+        private static bool IsSignedUnsigned(IType ltype, IType rtype)
         {
             return (SystemTypes.IsSigned(ltype) && SystemTypes.IsUnsigned(rtype))
                    || (SystemTypes.IsUnsigned(ltype) && SystemTypes.IsSigned(rtype));
         }
 
-        void ToUnsigned(Code code, ref IType type, bool swap)
+		private void ToUnsigned(Code code, ref IType type, bool swap)
         {
             var ut = SystemTypes.ToUnsigned(type);
             if (ut != null)
@@ -212,7 +166,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void ToUnsigned(Code code, ref IType ltype, ref IType rtype)
+		private void ToUnsigned(Code code, ref IType ltype, ref IType rtype)
         {
             var u = SystemTypes.UInt32OR64(ltype, rtype);
             if (u != null)
@@ -223,6 +177,5 @@ namespace DataDynamics.PageFX.CLI.IL
                 rtype = u;
             }
         }
-        #endregion
     }
 }

@@ -714,7 +714,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             var valType = value.Type;
 
-            if (_block.IsFirstAssignment && IsCall(value.instruction))
+            if (_block.IsFirstAssignment && value.instruction.IsCall())
             {
                 _block.IsFirstAssignment = false;
             }
@@ -1517,7 +1517,7 @@ namespace DataDynamics.PageFX.CLI.IL
         bool Opt_Conv_Ret(Code code, IType sourceType, IType targetType)
         {
             int ni = _instruction.Index + 1;
-            if (ni >= SourceCode.Count) return false;
+            if (ni >= _body.Code.Count) return false;
             var next = GetInstruction(ni);
             if (next.BasicBlock != _instruction.BasicBlock) return false;
             if (next.Code != InstructionCode.Ret) return false;
@@ -1619,7 +1619,7 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 var arg = Pop();
             }
-            if (HasReceiver(_instruction))
+            if (_instruction.HasReceiver())
             {
                 var obj = Pop();
                 rtype = obj.Type;
