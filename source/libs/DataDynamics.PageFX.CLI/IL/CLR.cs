@@ -8,25 +8,8 @@ namespace DataDynamics.PageFX.CLI.IL
     internal static class CLR
     {
         #region InitializeArray
-        public static bool InitializeArray(IStatement st)
-        {
-            ICallExpression call;
-            if (IsInitializeArray(st, out call))
-            {
-                InitializeArray(call);
-                return true;
-            }
-            return false;
-        }
 
-        private static ICallExpression ToCallExpression(IStatement s)
-        {
-            var es = s as IExpressionStatement;
-            if (es == null) return null;
-            return es.Expression as ICallExpression;
-        }
-
-        public static bool IsInitializeArray(this IMethod method)
+	    public static bool IsInitializeArray(this IMethod method)
         {
             if (!method.IsStatic) return false;
             if (method.Name != "InitializeArray") return false;
@@ -35,99 +18,27 @@ namespace DataDynamics.PageFX.CLI.IL
             return true;
         }
 
-        private static bool IsInitializeArray(IStatement s, out ICallExpression call)
-        {
-            call = ToCallExpression(s);
-            if (call == null) return false;
-            return call.Method.Method.IsInitializeArray();
-        }
-
-		public static SystemTypeCode ToSystemTypeCode(this TypeCode type)
-		{
-			switch (type)
-			{
-				case TypeCode.Object:
-					return SystemTypeCode.Object;
-				case TypeCode.Boolean:
-					return SystemTypeCode.Boolean;
-				case TypeCode.Char:
-					return SystemTypeCode.Char;
-				case TypeCode.SByte:
-					return SystemTypeCode.Int8;
-				case TypeCode.Byte:
-					return SystemTypeCode.UInt8;
-				case TypeCode.Int16:
-					return SystemTypeCode.Int16;
-				case TypeCode.UInt16:
-					return SystemTypeCode.UInt16;
-				case TypeCode.Int32:
-					return SystemTypeCode.Int32;
-				case TypeCode.UInt32:
-					return SystemTypeCode.UInt32;
-				case TypeCode.Int64:
-					return SystemTypeCode.Int64;
-				case TypeCode.UInt64:
-					return SystemTypeCode.UInt64;
-				case TypeCode.Single:
-					return SystemTypeCode.Single;
-				case TypeCode.Double:
-					return SystemTypeCode.Double;
-				case TypeCode.Decimal:
-					return SystemTypeCode.Decimal;
-				case TypeCode.DateTime:
-					return SystemTypeCode.DateTime;
-				case TypeCode.String:
-					return SystemTypeCode.String;
-				default:
-					throw new ArgumentOutOfRangeException("type");
-			}
-		}
-
-		public static List<object> ReadArrayValues(IField f, TypeCode type)
+	    public static List<object> ReadArrayValues(IField f, TypeCode type)
 		{
 			return ReadArrayValues(f, type.ToSystemTypeCode());
 		}
 
-        public static List<object> ReadArrayValues(IField f, SystemTypeCode type)
-        {
-            var blob = f.Value as byte[];
-            if (blob == null)
-                throw new ArgumentException("Invalid value of field. Value must be blob.", "f");
+		public static List<object> ReadArrayValues(IField f, SystemTypeCode type)
+		{
+			var blob = f.Value as byte[];
+			if (blob == null)
+				throw new ArgumentException("Invalid value of field. Value must be blob.", "f");
 
-            var vals = new List<object>();
-            var reader = new BufferedBinaryReader(blob);
-            while (reader.Position < reader.Length)
-            {
-                var value = ReadValue(reader, type);
-                vals.Add(value);
-            }
+			var vals = new List<object>();
+			var reader = new BufferedBinaryReader(blob);
+			while (reader.Position < reader.Length)
+			{
+				var value = ReadValue(reader, type);
+				vals.Add(value);
+			}
 
-            return vals;
-        }
-
-        private static void InitializeArray(ICallExpression call)
-        {
-            var arr = call.Arguments[0] as INewArrayExpression;
-            if (arr == null)
-                throw new DecompileException();
-
-            var arrType = call.Arguments[0].ResultType as IArrayType;
-            if (arrType == null)
-                throw new DecompileException();
-
-            var fe = call.Arguments[1] as IFieldReferenceExpression;
-            if (fe == null)
-                throw new DecompileException();
-
-            var f = fe.Field;
-            var vals = ReadArrayValues(f, arrType.ElementType.SystemType.Code);
-            
-            int n = vals.Count;
-            for (int i = 0; i < n; ++i)
-            {
-                arr.Initializers.Add(new ConstExpression(vals[i]));
-            }
-        }
+			return vals;
+		}
 
         private static object ReadValue(BufferedBinaryReader reader, SystemTypeCode type)
         {

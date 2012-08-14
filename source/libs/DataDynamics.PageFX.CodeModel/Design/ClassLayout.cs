@@ -4,20 +4,12 @@ namespace DataDynamics.PageFX.CodeModel
     {
         public ClassLayout(int size, int pack)
         {
-            _size = size;
-            _pack = pack;
+            Size = size;
+            PackingSize = pack;
         }
 
-        public int Size
-        {
-            get { return _size; }
-        }
-        private readonly int _size; 
+	    public int Size { get; private set; }
 
-        public int PackingSize
-        {
-            get { return _pack; }
-        }
-        private readonly int _pack;
+	    public int PackingSize { get; private set; }
     }
 }

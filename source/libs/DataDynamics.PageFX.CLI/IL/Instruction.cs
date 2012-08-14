@@ -292,13 +292,8 @@ namespace DataDynamics.PageFX.CLI.IL
 
     	#endregion
 
-        #region DebugInfo
-        public SequencePoint SequencePoint
-        {
-            get;
-            set;
-        }
-        #endregion
+        //DebugInfo
+        public SequencePoint SequencePoint { get; set; }
 
         #region Object Override Members
         public override string ToString()

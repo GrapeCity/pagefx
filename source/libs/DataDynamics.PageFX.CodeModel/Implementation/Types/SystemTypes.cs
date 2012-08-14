@@ -925,6 +925,47 @@ namespace DataDynamics.PageFX.CodeModel
                 return UInt64;
             return UInt32;
         }
+
+	    public static SystemTypeCode ToSystemTypeCode(this TypeCode type)
+	    {
+		    switch (type)
+		    {
+			    case TypeCode.Object:
+				    return SystemTypeCode.Object;
+			    case TypeCode.Boolean:
+				    return SystemTypeCode.Boolean;
+			    case TypeCode.Char:
+				    return SystemTypeCode.Char;
+			    case TypeCode.SByte:
+				    return SystemTypeCode.Int8;
+			    case TypeCode.Byte:
+				    return SystemTypeCode.UInt8;
+			    case TypeCode.Int16:
+				    return SystemTypeCode.Int16;
+			    case TypeCode.UInt16:
+				    return SystemTypeCode.UInt16;
+			    case TypeCode.Int32:
+				    return SystemTypeCode.Int32;
+			    case TypeCode.UInt32:
+				    return SystemTypeCode.UInt32;
+			    case TypeCode.Int64:
+				    return SystemTypeCode.Int64;
+			    case TypeCode.UInt64:
+				    return SystemTypeCode.UInt64;
+			    case TypeCode.Single:
+				    return SystemTypeCode.Single;
+			    case TypeCode.Double:
+				    return SystemTypeCode.Double;
+			    case TypeCode.Decimal:
+				    return SystemTypeCode.Decimal;
+			    case TypeCode.DateTime:
+				    return SystemTypeCode.DateTime;
+			    case TypeCode.String:
+				    return SystemTypeCode.String;
+			    default:
+				    throw new ArgumentOutOfRangeException("type");
+		    }
+	    }
     }
     #endregion
 }
