@@ -58,7 +58,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				return;
 			}
 
-			throw new NotImplementedException();
+			//TODO:
+			//throw new NotImplementedException();
 		}
 
 		private void CompileInlineMethod(IMethod method, InlineMethodInfo info)

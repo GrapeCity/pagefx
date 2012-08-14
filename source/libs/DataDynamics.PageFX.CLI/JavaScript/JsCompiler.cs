@@ -221,6 +221,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 				case InstructionCode.Isinst:
 				case InstructionCode.Castclass:
+				case InstructionCode.Ldobj:
+				case InstructionCode.Stobj:
 					CompileType(i.Type);
 					return i.Type.FullName;
 
@@ -320,7 +322,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return (int)SystemTypes.GetTypeCode(i.OutputType);
 		}
 
-		private JsNode OpLdtoken(MethodContext context, ITypeMember member)
+		private object OpLdtoken(MethodContext context, ITypeMember member)
 		{
 			var key = new InstructionKey(InstructionCode.Ldtoken, member);
 			var var = context.Vars[key];
@@ -377,6 +379,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				}
 
 				throw new NotImplementedException();
+			}
+
+			var type = member as IType;
+			if (type != null)
+			{
+				CompileType(type);
+				return type.FullName;
 			}
 
 			throw new NotImplementedException();

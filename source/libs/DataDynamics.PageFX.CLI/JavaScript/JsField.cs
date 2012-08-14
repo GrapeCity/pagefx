@@ -23,14 +23,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public override void Write(JsWriter writer)
 		{
-			if (Field.IsStatic)
-			{
-				writer.Write("{0}.{1} = ", Field.DeclaringType.FullName, Name);
-			}
-			else
-			{
-				writer.Write("this.{0} = ", Name);
-			}
+			var obj = Field.IsStatic ? Field.DeclaringType.FullName.Id() : "this".Id();
+			obj.Get(Name).Write(writer);
+			writer.Write(" = ");
 			writer.WriteValue(Field.Type.InitialValue());
 			writer.Write(";");
 		}

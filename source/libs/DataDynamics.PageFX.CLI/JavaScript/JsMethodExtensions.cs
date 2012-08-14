@@ -40,6 +40,22 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 						name = attr.Arguments.Count == 0 ? method.Name : (string)attr.Arguments[0].Value;
 						kind = InlineKind.Operator;
 						break;
+
+					case Attrs.ABC:
+						if (name == null)
+						{
+							if (method.IsAccessor())
+							{
+								kind = InlineKind.Property;
+								name = method.Association.Name;
+							}
+							else
+							{
+								kind = InlineKind.Function;
+								name = method.Name;
+							}
+						}
+						break;
 				}
 			}
 
@@ -81,5 +97,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public const string InlineFunction = Ns + "InlineFunctionAttribute";
 		public const string InlineProperty = Ns + "InlinePropertyAttribute";
 		public const string InlineOperator = Ns + "InlineOperatorAttribute";
+
+		public const string ABC = Ns + "ABCAttribute";
 	}
 }

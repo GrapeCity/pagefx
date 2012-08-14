@@ -39,6 +39,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					case TypeCode.Single:
 					case TypeCode.Double:
 					case TypeCode.String:
+					case TypeCode.Object:
 						writer.WriteValue(value);
 						break;
 					case TypeCode.Int64:
@@ -52,13 +53,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 						writer.Write((uint)((ulong)value & 0xffffffff));
 						break;
 					case TypeCode.Decimal:
-						break;
-					case TypeCode.Object:
-						var obj = value as JsNode;
-						if (obj == null)
-							throw new NotSupportedException();
-						obj.Write(writer);
-						break;
+						throw new NotImplementedException();
 					default:
 						throw new NotSupportedException();
 				}
