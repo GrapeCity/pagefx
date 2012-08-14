@@ -150,7 +150,7 @@ namespace System
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern string GetInternalStackTrace();
 
-	    internal string InternalMessage
+		internal extern string InternalMessage
 	    {
 			[InlineProperty("message")]
 		    [MethodImpl(MethodImplOptions.InternalCall)]
