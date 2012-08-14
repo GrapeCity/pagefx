@@ -204,9 +204,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 	{
 		private readonly JsNode _left;
 		private readonly object _value;
-		private readonly BinaryOperator _op;
+		private readonly string _op;
 
 		public JsBinaryOperator(JsNode left, object value, BinaryOperator op)
+		{
+			_left = left;
+			_value = value;
+			_op = op.EnumString("c#");
+		}
+
+		public JsBinaryOperator(JsNode left, object value, string op)
 		{
 			_left = left;
 			_value = value;
@@ -217,7 +224,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			_left.Write(writer);
 			writer.Write(" ");
-			writer.Write(_op.EnumString("c#"));
+			writer.Write(_op);
 			writer.Write(" ");
 			writer.WriteValue(_value);
 		}

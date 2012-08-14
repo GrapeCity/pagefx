@@ -2,14 +2,21 @@ using System;
 
 class Arithmetic
 {
-    public static void Main()
+	private static void Test(int a, int b)
+	{
+		Console.WriteLine(a + b);
+		Console.WriteLine(a - b);
+		Console.WriteLine(a * b);
+		Console.WriteLine(a / b);
+		Console.WriteLine(a % b);
+	}
+
+	public static void Main()
     {
-        int a = 4, b = 2;
-        Console.WriteLine(a + b);
-        Console.WriteLine(a - b);
-        Console.WriteLine(a * b);
-        Console.WriteLine(a / b);
-        Console.WriteLine(a % b);
-        Console.WriteLine("<%END%>");
+		Console.WriteLine("Test1");
+	    Test(4, 2);
+		Console.WriteLine("Test2");
+		Test(8, 3);
+		Console.WriteLine("<%END%>");
     }
 }

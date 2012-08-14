@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// This is a big switch by instruction code.
         /// </summary>
         /// <returns>array of instructions which performs the same computation as current translated instruction.</returns>
-        IInstruction[] TranslateInstructionCore()
+		private IInstruction[] TranslateInstructionCore()
         {
             //TODO: Add comment for every instruction from ECMA #335
             switch (_instruction.Code)
@@ -525,7 +525,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         #region Pointers
         //Reads value at given mock field ptr
-        void Load(Code code, MockFieldPtr ptr)
+		private void Load(Code code, MockFieldPtr ptr)
         {
             if (ptr.IsInstance)
             {
@@ -541,7 +541,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         //Writes value at given mock field ptr
         //value must be onto the stack
-        void Store(Code code, MockFieldPtr ptr)
+		private void Store(Code code, MockFieldPtr ptr)
         {
             if (ptr.IsInstance)
             {
@@ -557,7 +557,7 @@ namespace DataDynamics.PageFX.CLI.IL
         }
 
         //Reads value at given mock elem ptr
-        void Load(Code code, MockElemPtr ptr)
+		private void Load(Code code, MockElemPtr ptr)
         {
             LoadTemp(code, ptr.arr);
             LoadTemp(code, ptr.index);
@@ -568,7 +568,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         //Writes value at given mock elem ptr
         //value must be onto the stack
-        void Store(Code code, MockElemPtr ptr)
+		private void Store(Code code, MockElemPtr ptr)
         {
             LoadTemp(code, ptr.arr);
             code.Add(_provider.Swap());
@@ -579,7 +579,7 @@ namespace DataDynamics.PageFX.CLI.IL
             KillTemp(code, ptr.index);
         }
 
-        void LoadIndirect(Code code, IType vtype)
+		private void LoadIndirect(Code code, IType vtype)
         {
             code.AddRange(_provider.LoadIndirect(vtype));
         }
@@ -621,14 +621,14 @@ namespace DataDynamics.PageFX.CLI.IL
             return true;
         }
 
-        IInstruction[] LoadPtr(IValue v)
+		private IInstruction[] LoadPtr(IValue v)
         {
             var code = new Code();
             LoadPtr(code, v);
             return code.ToArray();
         }
 
-        void StorePtr(Code code, IValue addr, IType vtype)
+		private void StorePtr(Code code, IValue addr, IType vtype)
         {
             if (addr.IsMockPointer)
             {
@@ -677,7 +677,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        IValue PopPtr(Code code)
+		private IValue PopPtr(Code code)
         {
             var obj = PopValue();
             LoadPtr(code, obj);
@@ -686,7 +686,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region load instructions
-        bool IsByRef
+		private bool IsByRef
         {
             get
             {
@@ -696,21 +696,21 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void CopyValue(Code code, IType type)
+		private void CopyValue(Code code, IType type)
         {
             var copy = _provider.CopyValue(type);
             if (copy != null)
                 code.AddRange(copy);
         }
 
-        void CopyValue(IType type)
+		private void CopyValue(IType type)
         {
             var copy = _provider.CopyValue(type);
             if (copy != null)
                 EmitBlockCode(copy);
         }
 
-        void BeforeStoreValue(Code code, EvalItem value, IType type)
+		private void BeforeStoreValue(Code code, EvalItem value, IType type)
         {
             var valType = value.Type;
 
@@ -739,7 +739,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
-        void PassByValue(Code code, IType valueType)
+		private void PassByValue(Code code, IType valueType)
         {
             var p = _instruction.Parameter;
             if (p == null) return;
@@ -764,7 +764,7 @@ namespace DataDynamics.PageFX.CLI.IL
             _castToParamType = false;
         }
 
-        IInstruction[] Op_Ldc(object value)
+		private IInstruction[] Op_Ldc(object value)
         {
             var v = new ConstValue(value);
             Push(v);
@@ -776,7 +776,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Ldthis(bool ptr)
+		private IInstruction[] Op_Ldthis(bool ptr)
         {
             var code = new Code();
 
@@ -815,7 +815,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Ldarg(int index, bool ptr)
+		private IInstruction[] Op_Ldarg(int index, bool ptr)
         {
             var p = _method.Parameters[index];
 
@@ -853,14 +853,14 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        int ToRealArgIndex(int index)
+		private int ToRealArgIndex(int index)
         {
             if (!_method.IsStatic) //has this
                 return index - 1;
             return index;
         }
 
-        IInstruction[] Op_Ldarg(int index)
+		private IInstruction[] Op_Ldarg(int index)
         {
             index = ToRealArgIndex(index);
             if (index < 0)
@@ -868,7 +868,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return Op_Ldarg(index, false);
         }
 
-        IInstruction[] Op_Ldarga(int index)
+		private IInstruction[] Op_Ldarga(int index)
         {
             index = ToRealArgIndex(index);
             if (index < 0)
@@ -876,7 +876,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return Op_Ldarg(index, true);
         }
 
-        IInstruction[] Op_Ldloc(int index)
+		private IInstruction[] Op_Ldloc(int index)
         {
             var v = _body.LocalVariables[index];
             var type = v.Type;
@@ -890,7 +890,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Ldloca(int index)
+		private IInstruction[] Op_Ldloca(int index)
         {
             var v = _body.LocalVariables[index];
             if (v.IsAddressed)
@@ -904,7 +904,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return null;
         }
 
-        IInstruction[] Op_Ldfld(IField field)
+		private IInstruction[] Op_Ldfld(IField field)
         {
             var code = new Code();
 
@@ -919,7 +919,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Ldflda(IField field)
+		private IInstruction[] Op_Ldflda(IField field)
         {
             var code = new Code();
 
@@ -947,13 +947,13 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Ldtoken()
+		private IInstruction[] Op_Ldtoken()
         {
             Push(new TokenValue(_instruction.Member));
             return null;
         }
 
-        IInstruction[] Op_Ldftn()
+		private IInstruction[] Op_Ldftn()
         {
             //stack transition:  ... -> ..., ftn
             var code = new Code();
@@ -973,7 +973,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Ldvirtftn()
+		private IInstruction[] Op_Ldvirtftn()
         {
             //stack transition: ..., object -> ..., ftn
             var obj = Pop();
@@ -988,7 +988,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region store instructions
-        IInstruction[] Op_Starg(int index)
+		private IInstruction[] Op_Starg(int index)
         {
             if (!_method.IsStatic)
                 --index;
@@ -1000,7 +1000,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Stloc(int index)
+		private IInstruction[] Op_Stloc(int index)
         {
             var value = Pop();
             var v = _body.LocalVariables[index];
@@ -1010,7 +1010,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Stfld(IField field)
+		private IInstruction[] Op_Stfld(IField field)
         {
             var value = Pop();
             var obj = Pop();
@@ -1041,7 +1041,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Stsfld(IField field)
+		private IInstruction[] Op_Stsfld(IField field)
         {
             if (!field.IsStatic)
                 throw new InvalidOperationException();
@@ -1058,7 +1058,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #region ldind, stind
         //load value indirect onto the stack
         //stack transition: ..., addr -> ..., value
-        IInstruction[] Op_Ldind()
+		private IInstruction[] Op_Ldind()
         {
             var addr = Pop();
 
@@ -1176,7 +1176,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         //store value indirect from stack
         //stack transition: ..., addr, val -> ...
-        IInstruction[] Op_Stind()
+		private IInstruction[] Op_Stind()
         {
             var value = Pop();
             var addr = Pop();
@@ -1224,23 +1224,21 @@ namespace DataDynamics.PageFX.CLI.IL
         #region ldobj, stobj
         //copy a value from an address to the stack
         //stack transition: ..., src -> ..., val
-        IInstruction[] Op_Ldobj()
+		private IInstruction[] Op_Ldobj()
         {
-            //IType type = _instruction.Type;
             return Op_Ldind();
         }
 
         //store a value at an address
         //stack transition: ..., dest, src -> ...,
-        IInstruction[] Op_Stobj()
+		private IInstruction[] Op_Stobj()
         {
-            //IType type = _instruction.Type;
             return Op_Stind();
         }
         #endregion
 
         #region stack operations
-        IInstruction[] Op_Dup()
+		private IInstruction[] Op_Dup()
         {
             var v = Peek().value;
             switch (v.Kind)
@@ -1282,7 +1280,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return new[] {_provider.Dup()};
         }
 
-        IInstruction[] Op_Pop()
+		private IInstruction[] Op_Pop()
         {
             if (!_instruction.IsHandlerBegin)
             {
@@ -1322,12 +1320,12 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region branches
-        IInstruction[] Op_Branch()
+		private IInstruction[] Op_Branch()
         {
             return new[] { _provider.Branch() };
         }
 
-        IInstruction[] Op_Branch(BranchOperator op, bool unsigned)
+		private IInstruction[] Op_Branch(BranchOperator op, bool unsigned)
         {
             var code = new Code();
 
@@ -1366,7 +1364,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Switch()
+		private IInstruction[] Op_Switch()
         {
             var index = Pop();
             CheckPointer(index);
@@ -1395,7 +1393,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <param name="unsigned"></param>
         /// <param name="checkOverflow"></param>
         /// <returns></returns>
-        IInstruction[] Op(BinaryOperator op, bool unsigned, bool checkOverflow)
+		private IInstruction[] Op(BinaryOperator op, bool unsigned, bool checkOverflow)
         {
             //stack transition: left, right -> result
             var right = Pop();
@@ -1461,6 +1459,9 @@ namespace DataDynamics.PageFX.CLI.IL
             if (type == null)
                 throw new ILTranslatorException();
 
+	        _instruction.InputTypes = new[] {lt, rt};
+	        _instruction.OutputType = type;
+
             PushResult(type);
 
             var il = _provider.Op(op, lt, rt, type, checkOverflow);
@@ -1472,21 +1473,27 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op(UnaryOperator op, bool checkOverflow)
+		private IInstruction[] Op(UnaryOperator op, bool checkOverflow)
         {
             var value = Pop();
             CheckPointer(value);
+
             var vtype = value.Type;
             var type = UnaryExpression.GetResultType(vtype, op);
             if (type == null)
                 throw new ILTranslatorException();
+
+			_instruction.InputTypes = new[] {vtype};
+			_instruction.OutputType = type;
+
             PushResult(type);
+
             return _provider.Op(op, vtype, checkOverflow);
         }
         #endregion
 
         #region conversion operations
-        IInstruction[] Op_Conv(IType targetType, bool checkOverflow, bool unsigned)
+		private IInstruction[] Op_Conv(IType targetType, bool checkOverflow, bool unsigned)
         {
             var value = Pop();
             CheckPointer(value);
@@ -1508,13 +1515,13 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        void ConvCore(Code code, IType source, IType target, bool checkOverflow)
+		private void ConvCore(Code code, IType source, IType target, bool checkOverflow)
         {
             var il = _provider.Cast(source, target, checkOverflow);
             code.AddRange(il);
         }
 
-        bool Opt_Conv_Ret(Code code, IType sourceType, IType targetType)
+		private bool Opt_Conv_Ret(Code code, IType sourceType, IType targetType)
         {
             int ni = _instruction.Index + 1;
             if (ni >= _body.Code.Count) return false;
@@ -1541,14 +1548,14 @@ namespace DataDynamics.PageFX.CLI.IL
             return false;
         }
 
-        static bool IsUI64(IType type)
+		private static bool IsUI64(IType type)
         {
             return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
         }
         #endregion
 
         #region cast, isinst, box, unbox
-        IInstruction[] Op_Castclass()
+		private IInstruction[] Op_Castclass()
         {
             var type = _instruction.Type;
             
@@ -1562,7 +1569,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         //test if an object is an instance of a class or interface
         //stack transition: ..., obj -> ..., result
-        IInstruction[] Op_Isinst()
+		private IInstruction[] Op_Isinst()
         {
             var type = _instruction.Type;
             var code = new Code();
@@ -1572,7 +1579,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Box()
+		private IInstruction[] Op_Box()
         {
             var type = _instruction.Type;
             var value = PopValue();
@@ -1600,7 +1607,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Unbox()
+		private IInstruction[] Op_Unbox()
         {
             var type = _instruction.Type;
             var code = new Code();
@@ -1612,7 +1619,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region call operations
-        bool PopArgs(Code code, IMethod method, ref IType rtype)
+		private bool PopArgs(Code code, IMethod method, ref IType rtype)
         {
             int n = method.Parameters.Count;
             for (int i = 0; i < n; ++i)
@@ -1634,7 +1641,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return false;
         }
 
-        IInstruction[] Call(Code code, IType receiverType, IMethod method, CallFlags flags)
+		private IInstruction[] Call(Code code, IType receiverType, IMethod method, CallFlags flags)
         {
             if (_instruction.Code == InstructionCode.Newobj)
                 flags |= CallFlags.Newobj;
@@ -1646,7 +1653,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Call(bool virtcall)
+		private IInstruction[] Op_Call(bool virtcall)
         {
             var method = _instruction.Method;
             if (method.IsInitializeArray())
@@ -1693,7 +1700,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return Call(code, receiverType, method, flags);
         }
 
-        IInstruction[] InitializeArray()
+		private IInstruction[] InitializeArray()
         {
             var token = Pop();
             var f = token.instruction.Field;
@@ -1719,14 +1726,14 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        bool IsGetTypeFromHandle(IMethod m)
+		private bool IsGetTypeFromHandle(IMethod m)
         {
             if (!m.IsGetTypeFromHandle()) return false;
             Debug.Assert(!IsStackEmpty);
             return Peek().IsTypeToken;
         }
 
-        IInstruction[] TypeOf()
+		private IInstruction[] TypeOf()
         {
             var token = Pop();
             var type = token.instruction.Type;
@@ -1734,14 +1741,14 @@ namespace DataDynamics.PageFX.CLI.IL
             return _provider.TypeOf(type);
         }
 
-        IInstruction[] Op_Calli()
+		private IInstruction[] Op_Calli()
         {
             //TODO: We can do that
             var method = _instruction.Method;
             throw new NotSupportedException();
         }
 
-        IInstruction[] Op_Newobj()
+		private IInstruction[] Op_Newobj()
         {
             var ctor = _instruction.Method;
             var code = new Code();
@@ -1757,7 +1764,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return Call(code, rtype, ctor, 0);
         }
 
-        IInstruction[] Op_Initobj()
+		private IInstruction[] Op_Initobj()
         {
             var addr = Pop();
 
@@ -1788,7 +1795,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region array instructions
-        IInstruction[] Op_Newarr()
+		private IInstruction[] Op_Newarr()
         {
             var n = Pop();
             CheckPointer(n);
@@ -1807,7 +1814,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Ldlen()
+		private IInstruction[] Op_Ldlen()
         {
             var arr = Pop();
             CheckArray(arr);
@@ -1815,7 +1822,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return _provider.GetArrayLength();
         }
 
-        static IType GetElemType(IType type)
+		private static IType GetElemType(IType type)
         {
             var ct = type as ICompoundType;
             if (ct == null)
@@ -1823,7 +1830,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return ct.ElementType;
         }
 
-        IInstruction[] Op_Ldelem()
+		private IInstruction[] Op_Ldelem()
         {
             var index = Pop();
             var arr = Pop();
@@ -1840,7 +1847,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Ldelema()
+		private IInstruction[] Op_Ldelema()
         {
             var index = Pop();
             var arr = Pop();
@@ -1872,7 +1879,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         //store element to array
         //stack transition: ..., array, index, value, -> ...
-        IInstruction[] Op_Stelem()
+		private IInstruction[] Op_Stelem()
         {
             var value = Pop();
             var index = Pop();
@@ -1890,7 +1897,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region exceptions
-        IInstruction[] Op_Throw()
+		private IInstruction[] Op_Throw()
         {
             Pop();
             var code = new Code();
@@ -1901,22 +1908,22 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Rethrow()
+		private IInstruction[] Op_Rethrow()
         {
         	return _provider.Rethrow(_instruction.SehBlock);
         }
 
-        IInstruction[] Op_Leave()
+		private IInstruction[] Op_Leave()
         {
             return Op_Branch();
         }
 
-        IInstruction[] Op_Endfinally()
+		private IInstruction[] Op_Endfinally()
         {
             return Op_Branch();
         }
 
-        IInstruction[] Op_Endfilter()
+		private IInstruction[] Op_Endfilter()
         {
             //TODO:
             return null;
@@ -1924,19 +1931,19 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region misc
-        IInstruction[] Op_Nop()
+		private IInstruction[] Op_Nop()
         {
             var nop = _provider.Nop();
             if (nop == null) return null;
             return new[] { nop };
         }
 
-        IInstruction[] Op_DebuggerBreak()
+		private IInstruction[] Op_DebuggerBreak()
         {
             return _provider.DebuggerBreak();
         }
 
-        IInstruction[] Op_Return()
+		private IInstruction[] Op_Return()
         {
             var code = new Code();
             bool isvoid = _method.IsVoid();
@@ -1949,7 +1956,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return code.ToArray();
         }
 
-        IInstruction[] Op_Sizeof()
+		private IInstruction[] Op_Sizeof()
         {
             var type = _instruction.Type;
             throw new NotSupportedException();
@@ -1957,68 +1964,68 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region utils
-        int MoveTemp(Code code, int var)
+		private int MoveTemp(Code code, int var)
         {
             LoadTemp(code, var);
             return StoreTemp(code);
         }
 
-        void LoadTemp(Code code, int var)
+		private void LoadTemp(Code code, int var)
         {
             code.AddRange(_provider.GetTempVar(var));
         }
 
-        int StoreTemp(Code code)
+		private int StoreTemp(Code code)
         {
             int var;
             code.AddRange(_provider.SetTempVar(out var, false));
             return var;
         }
 
-        void KillTemp(Code code, int var)
+		private void KillTemp(Code code, int var)
         {
             code.AddRange(_provider.KillTempVar(var));
         }
 
-        static void CheckArray(EvalItem arr)
+		private static void CheckArray(EvalItem arr)
         {
             var arrType = arr.Type;
             if (arrType.TypeKind != TypeKind.Array)
                 throw new InvalidOperationException();
         }
 
-        static void CheckPointer(EvalItem v)
+        private static void CheckPointer(EvalItem v)
         {
             if (v.IsPointer)
                 throw new InvalidOperationException();
         }
 
-        void Push(IValue value)
+		private void Push(IValue value)
         {
             _block.Stack.Push(_instruction, value);
         }
 
-        void PushResult(IType type)
+		private void PushResult(IType type)
         {
             Push(new ComputedValue(type));
         }
 
-        EvalStack Stack
+		private EvalStack Stack
         {
             get { return _block.Stack; }
         }
 
-        bool IsStackEmpty
+		private bool IsStackEmpty
         {
             get { return Stack.Count == 0; }
         }
 
-        EvalItem Peek()
+		private EvalItem Peek()
         {
             return _block.Stack.Peek();
         }
 
-        EvalItem Pop()
+		private EvalItem Pop()
         {
             var stack = _block.Stack;
             if (stack.Count == 0)
@@ -2035,12 +2042,12 @@ namespace DataDynamics.PageFX.CLI.IL
             return stack.Pop();
         }
 
-        IValue PopValue()
+		private IValue PopValue()
         {
             return Pop().value;
         }
 
-        void CastToInt32(Code code, ref IType type)
+		private void CastToInt32(Code code, ref IType type)
         {
             Cast(code, type, SystemTypes.Int32);
             type = SystemTypes.Int32;

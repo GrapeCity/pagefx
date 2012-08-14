@@ -226,6 +226,9 @@ namespace DataDynamics.PageFX.CLI.IL
     	#endregion
 
         #region Internal Properties
+		/// <summary>
+		/// Gets or sets SEH block in which instruction is located.
+		/// </summary>
         public Block SehBlock { get; set; }
 
         /// <summary>
@@ -288,21 +291,23 @@ namespace DataDynamics.PageFX.CLI.IL
             set { State.ReceiverFor = value; }
         }
 
-        internal bool Dumped;
+		internal bool Dumped { get; set; }
+
+		public IType[] InputTypes { get; set; }
+
+		public IType OutputType { get; set; }
 
     	#endregion
 
         //DebugInfo
         public SequencePoint SequencePoint { get; set; }
 
-        #region Object Override Members
-        public override string ToString()
+	    public override string ToString()
         {
             return ToString(null, null);
         }
-        #endregion
 
-        #region IFormattable Members
+	    #region IFormattable Members
 		public string ToString(string format, IFormatProvider formatProvider)
         {
             if (string.IsNullOrEmpty(format))
@@ -396,6 +401,8 @@ namespace DataDynamics.PageFX.CLI.IL
             sb.Append(value);
         }
         #endregion
+
+		
     }
 
     internal sealed class InstructionState
@@ -422,8 +429,8 @@ namespace DataDynamics.PageFX.CLI.IL
         }
         private Stack _endStack;
 
-        public IType BoxingType;
+	    public IType BoxingType;
 
-        public Instruction ReceiverFor;
+	    public Instruction ReceiverFor;
     }
 }

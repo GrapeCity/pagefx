@@ -9,10 +9,54 @@ function $inherit($this, $base) {
 		$this[p] = $base[p];
 }
 
-function $bitstr(n) {
-	// n must be between -2147483648 and 2147483647
-	for (var f = 0, nShifted = n, s = ""; f < 32; f++, s += String(nShifted >>> 31), nShifted <<= 1);
-	return s;
+// Derived from https://gist.github.com/2192799
+function $decodeFloat(bytes, signBits, exponentBits, fractionBits, eMin, eMax, littleEndian) {
+  // var totalBits = (signBits + exponentBits + fractionBits);
+
+  var binary = "";
+  for (var i = 0; i < bytes.length; i++) {
+    var bits = bytes[i].toString(2);
+    while (bits.length < 8) 
+      bits = "0" + bits;
+
+    if (littleEndian)
+      binary = bits + binary;
+    else
+      binary += bits;
+  }
+
+  var sign = (binary.charAt(0) == '1')?-1:1;
+  var exponent = parseInt(binary.substr(signBits, exponentBits), 2) - eMax;
+  var significandBase = binary.substr(signBits + exponentBits, fractionBits);
+  var significandBin = '1'+significandBase;
+  var i = 0;
+  var val = 1;
+  var significand = 0;
+
+  if (exponent == -eMax) {
+      if (significandBase.indexOf('1') == -1)
+          return 0;
+      else {
+          exponent = eMin;
+          significandBin = '0'+significandBase;
+      }
+  }
+
+  while (i < significandBin.length) {
+      significand += val * parseInt(significandBin.charAt(i));
+      val = val / 2;
+      i++;
+  }
+
+  return sign * significand * Math.pow(2, exponent);
+}
+
+function $decodeSingle(bytes) {
+	return $decodeFloat(bytes, 1, 8, 23, -126, 127, true);
+}
+
+function $decodeDouble(bytes) {
+	return $decodeFloat(bytes, 1, 11, 52, -1022, 1023, true);
 }
 
 function $initarr(a, blob) {
@@ -26,9 +70,7 @@ function $initarr(a, blob) {
 	while (k < blob.length && i < arr.length) {
 		switch (e) {
 			case /*Boolean */ 3:
-				arr[i++] = blob[k++] != 0;
-			case /*Char */4:
-				i++; //todo
+				arr[i++] = blob[k++] ? true : false;
 				break;
 			case /*SByte */ 5:
 				arr[i++] = blob[k++];
@@ -42,6 +84,7 @@ function $initarr(a, blob) {
 				u = b1 | (b2 << 8);
 				arr[i++] = u >> 15 ? ~~u : u;
 				break;
+			case /*Char */4:
 			case /* UInt16 */ 8:
 				b1 = blob[k++];
 				b2 = blob[k++];
@@ -62,10 +105,18 @@ function $initarr(a, blob) {
 				b4 = blob[k++];
 				arr[i++] = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
 				break;
-			case /* Int64 */ 11:
-			case /* UInt64 */ 12:
-			case /* Single */ 13:
-			case /* Double */ 14:
+			case /* Int64 */11:
+				i++; //todo
+				break;
+			case /* UInt64 */12:
+				i++; //todo
+				break;
+			case /* Single */13:
+				arr[i++] = $decodeSingle([blob[k++], blob[k++], blob[k++], blob[k++]]);
+				break;
+			case /* Double */14:
+				arr[i++] = $decodeDouble([blob[k++], blob[k++], blob[k++], blob[k++], blob[k++], blob[k++], blob[k++], blob[k++]]);
+				break;
 			case /* Decimal */ 15:
 			case /* DateTime */ 16:
 			case /* String */18:
@@ -463,12 +514,12 @@ function $context($method, $args, $vars) {
 			case 91: // div
 				y = pop(true);
 				x = pop(true);
-				push(div(x, y));
+				push(div(x, y, i[1]));
 				break;
 			case 92: // div.un
 				y = popun();
 				x = popun();
-				push(div(x, y));
+				push(div(x, y, i[1]));
 				break;
 			case 93: // rem
 				y = pop(true);
@@ -1102,9 +1153,9 @@ function $context($method, $args, $vars) {
 		return x * y;
 	}
 
-	function div(x, y) {
+	function div(x, y, tc) {
 		//TODO: int64
-		return x / y;
+		return convto(x / y, tc);
 	}
 
 	function rem(x, y) {
@@ -1171,45 +1222,83 @@ function $context($method, $args, $vars) {
 		//TODO: int64
 		return x < y;
 	}
+	
+	function convto(v, tc) {
+		switch (tc) {
+			case /*Boolean */3:
+				//TODO: int64, uint64
+				return v != 0 ? true : false;
+			case /*SByte */5:
+				return convi1(v);
+			case /* Byte */6:
+				return convu1(v);
+			case /* Int16 */7:
+				return convi2(v);
+			case /*Char */4:
+			case /* UInt16 */8:
+				return convu2(v);
+			case /* Int32 */9:
+				return convi4(v);
+			case /* UInt32 */10:
+				return convu4(v);
+			case /* Int64 */11:
+				return convi8(v);
+			case /* UInt64 */12:
+				return convu8(v);
+			case /* Single */13:
+				return convr4(v);
+			case /* Double */14:
+				return convr8(v);
+			case /* Decimal */15:
+				return v;
+			case /* DateTime */16:
+				return v;
+			case /* String */18:
+				return String(v);
+			default:
+				return v;
+		}
+	}
 
+	//http://james.padolsey.com/javascript/double-bitwise-not/
 	function convi1(v) {
 		//TODO: int64
-		return v & 0xff;
+		return (~~v) & 0xff;
 	}
 
 	function convu1(v) {
 		//TODO: int64
-		return v & 0xff;
+		return (~~v) & 0xff;
 	}
 
 	function convi2(v) {
 		//TODO: int64
-		return v & 0xffff;
+		return (~~v) & 0xffff;
 	}
 
 	function convu2(v) {
 		//TODO: int64
-		return v & 0xffff;
+		return (~~v) & 0xffff;
 	}
 
 	function convi4(v) {
 		//TODO: int64
-		return v & 0xffffffff;
+		return (~~v) & 0xffffffff;
 	}
 
 	function convu4(v) {
 		//TODO: int64
-		return v & 0xffffffff;
+		return (~~v) & 0xffffffff;
 	}
 
 	function convi8(v) {
 		//TODO: int64
-		return v & 0xffffffff;
+		return (~~v) & 0xffffffff;
 	}
 
 	function convu8(v) {
 		//TODO: int64
-		return v & 0xffffffff;
+		return (~~v) & 0xffffffff;
 	}
 
 	function convr4(v) {

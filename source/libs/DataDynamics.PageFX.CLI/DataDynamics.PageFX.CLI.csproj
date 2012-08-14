@@ -154,6 +154,7 @@
     <Compile Include="JavaScript\JsInterface.cs" />
     <Compile Include="JavaScript\JsMethod.cs" />
     <Compile Include="JavaScript\JsMethodExtensions.cs" />
+    <Compile Include="JavaScript\NopCodeProvider.cs" />
     <Compile Include="JavaScript\JsNamespace.cs" />
     <Compile Include="JavaScript\JsNode.cs" />
     <Compile Include="JavaScript\JsObject.cs" />

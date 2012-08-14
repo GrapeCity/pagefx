@@ -135,8 +135,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return jsMethod;
 		}
 
+		private static void Analyze(IMethod method)
+		{
+			var translator = new ILTranslator();
+			translator.Translate(method, method.Body, new NopCodeProvider());
+		}
+
 		private JsFunction CompileFunction(JsClass klass, IMethod method)
 		{
+			Analyze(method);
+
 			var body = method.Body as IClrMethodBody;
 			if (body == null)
 				throw new NotSupportedException("The method format is not supported");
@@ -218,9 +226,98 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 				case InstructionCode.Ldelema:
 					return null;
+
+				#region binary, unary arithmetic operations
+				//arithmetic operations
+				// a + b
+				case InstructionCode.Add:
+					return Op(i, BinaryOperator.Addition, false, false);
+				case InstructionCode.Add_Ovf:
+					return Op(i, BinaryOperator.Addition, false, true);
+				case InstructionCode.Add_Ovf_Un:
+					return Op(i, BinaryOperator.Addition, true, true);
+
+				// a - b
+				case InstructionCode.Sub:
+					return Op(i, BinaryOperator.Subtraction, false, false);
+				case InstructionCode.Sub_Ovf:
+					return Op(i, BinaryOperator.Subtraction, false, true);
+				case InstructionCode.Sub_Ovf_Un:
+					return Op(i, BinaryOperator.Subtraction, true, true);
+
+				// a * b
+				case InstructionCode.Mul:
+					return Op(i, BinaryOperator.Multiply, false, false);
+				case InstructionCode.Mul_Ovf:
+					return Op(i, BinaryOperator.Multiply, false, true);
+				case InstructionCode.Mul_Ovf_Un:
+					return Op(i, BinaryOperator.Multiply, true, true);
+
+				// a / b
+				case InstructionCode.Div:
+					return Op(i, BinaryOperator.Division, false, false);
+				case InstructionCode.Div_Un:
+					return Op(i, BinaryOperator.Division, true, false);
+
+				// a % b
+				case InstructionCode.Rem:
+					return Op(i, BinaryOperator.Modulus, false, false);
+				case InstructionCode.Rem_Un:
+					return Op(i, BinaryOperator.Modulus, true, false);
+
+				//bitwise operations
+				// a & b
+				case InstructionCode.And:
+					return Op(i, BinaryOperator.BitwiseAnd, false, false);
+				// a | b
+				case InstructionCode.Or:
+					return Op(i, BinaryOperator.BitwiseOr, false, false);
+				// a ^ b
+				case InstructionCode.Xor:
+					return Op(i, BinaryOperator.ExclusiveOr, false, false);
+				// a << b
+				case InstructionCode.Shl:
+					return Op(i, BinaryOperator.LeftShift, false, false);
+				// a >> b
+				case InstructionCode.Shr:
+					return Op(i, BinaryOperator.RightShift, false, false);
+				case InstructionCode.Shr_Un:
+					return Op(i, BinaryOperator.RightShift, true, false);
+
+				//unary operations
+				case InstructionCode.Neg:
+					return Op(i, UnaryOperator.Negate, false);
+				case InstructionCode.Not:
+					return Op(i, UnaryOperator.BitwiseNot, false);
+
+				//relation operations
+				// a == b
+				case InstructionCode.Ceq:
+					return Op(i, BinaryOperator.Equality, false, false);
+				// a > b
+				case InstructionCode.Cgt:
+					return Op(i, BinaryOperator.GreaterThan, false, false);
+				case InstructionCode.Cgt_Un:
+					return Op(i, BinaryOperator.GreaterThan, true, false);
+				// a < b
+				case InstructionCode.Clt:
+					return Op(i, BinaryOperator.LessThan, false, false);
+				case InstructionCode.Clt_Un:
+					return Op(i, BinaryOperator.LessThan, true, false);
+				#endregion
 			}
 
 			return i.Value;
+		}
+
+		private static object Op(Instruction i, UnaryOperator op, bool checkOverflow)
+		{
+			return (int)SystemTypes.GetTypeCode(i.OutputType);
+		}
+
+		private static object Op(Instruction i, BinaryOperator op, bool unsigned, bool checkOverflow)
+		{
+			return (int)SystemTypes.GetTypeCode(i.OutputType);
 		}
 
 		private JsNode OpLdtoken(MethodContext context, ITypeMember member)
