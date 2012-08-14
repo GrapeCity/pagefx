@@ -134,16 +134,12 @@ namespace System
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern String substr(int startIndex, int length);
 
-        public static implicit operator avmstr(String s)
-        {
-            throw new NotImplementedException();
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+	    public static extern implicit operator avmstr(String s);
 
-        public static implicit operator String(avmstr s)
-        {
-            throw new NotImplementedException();
-        }
-
+	    [MethodImpl(MethodImplOptions.InternalCall)]
+	    public static extern implicit operator String(avmstr s);
+        
         #endregion
 
         [IndexerName("Chars")]
