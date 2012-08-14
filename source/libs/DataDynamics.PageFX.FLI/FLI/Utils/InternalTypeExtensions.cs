@@ -28,7 +28,7 @@ namespace DataDynamics.PageFX.FLI
 
             if (type.IsPrivateImplementationDetails())
             {
-            	return type.Fields.All(field => field.Type.IsArrayInitializer());
+            	return type.Fields.All(field => field.IsArrayInitializer());
             }
 
         	return false;

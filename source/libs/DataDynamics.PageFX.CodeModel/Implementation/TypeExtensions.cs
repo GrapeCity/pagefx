@@ -695,6 +695,15 @@ namespace DataDynamics.PageFX.CodeModel
     		return false;
     	}
 
+		public static bool IsArrayInitializer(this IField field)
+		{
+			if (field == null || field.Type == null) return false;
+			if (field.Type.IsArrayInitializer()) return true;
+			return field.Type.TypeKind == TypeKind.Primitive
+			       && field.DeclaringType.IsPrivateImplementationDetails()
+			       && field.Value != null;
+		}
+
     	/// <summary>
     	/// Determines whether the given type has only one instance constructor
     	/// </summary>

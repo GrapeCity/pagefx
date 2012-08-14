@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.FLI
                     return AbcGenConfig.ExludeEnumConstants;
                 return true;
             }
-            if (field.Type.IsArrayInitializer())
+            if (field.IsArrayInitializer())
                 return true;
             return false;
         }
