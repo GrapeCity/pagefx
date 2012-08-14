@@ -53,8 +53,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				}
 
 				jsMethod = new JsGeneratedMethod(method.JsFullName(), impl);
+
 				method.Tag = jsMethod;
+
 				klass.Add(jsMethod);
+
 				return;
 			}
 
@@ -64,6 +67,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private void CompileInlineMethod(IMethod method, InlineMethodInfo info)
 		{
+			var jsMethod = method.Tag as JsGeneratedMethod;
+			if (jsMethod != null) return;
+
 			var parameters = method.Parameters.Select(x => x.Name).ToArray();
 			var func = new JsFunction(null, parameters);
 
@@ -71,7 +77,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				case InlineKind.Property:
 					//TODO: support static properties
-					var propertyName = "$" + info.Name;
+					var propertyName = info.Name;
 					if (method.IsSetter)
 					{
 						func.Body.Add("this".Id().Set(propertyName, parameters[0].Id()));
@@ -99,7 +105,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 
 			var klass = CompileClass(method.DeclaringType);
-			klass.Add(new JsGeneratedMethod(method.JsFullName(), func));
+
+			jsMethod = new JsGeneratedMethod(method.JsFullName(), func);
+
+			method.Tag = jsMethod;
+
+			klass.Add(jsMethod);
 		}
 	}
 }

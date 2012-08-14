@@ -12,7 +12,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public override void Write(JsWriter writer)
 		{
 			//TODO: if not defined
-			writer.WriteLine("{0} = {{}};", Name);
+			writer.Write("{0} = {{}};", Name);
 		}
 	}
 }

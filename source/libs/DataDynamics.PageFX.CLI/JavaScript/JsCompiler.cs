@@ -48,7 +48,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			_program.Require("core.js");
 
-			var method = CompileMethod(_assembly.EntryPoint);
+			var entryPoint = _assembly.EntryPoint;
+			var method = CompileMethod(entryPoint);
 
 			foreach (var vcall in _virtualCalls.AsContinuous())
 			{
@@ -59,9 +60,15 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			CompileClass(SystemTypes.Type);
 
 			new TypeInfoBuilder(_program).Build();
-			
+
 			//TODO: pass args to main from node.js args
-			_program.Add(method.FullName.Id().Call().AsStatement());
+
+			var ctx = new MethodContext(CompileClass(entryPoint.DeclaringType), entryPoint);
+			var main = new JsFunction(null);
+			InitClass(ctx, main, entryPoint);
+			main.Body.Add(method.FullName.Id().Call().AsStatement());
+
+			_program.Add(main.Call().AsStatement());
 			
 			return _program;
 		}

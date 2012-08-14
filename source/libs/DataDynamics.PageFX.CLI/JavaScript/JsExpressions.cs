@@ -41,7 +41,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public override void Write(JsWriter writer)
 		{
+			bool br = _value is JsFunction;
+			if (br) writer.Write("(");
 			_value.Write(writer);
+			if (br) writer.Write(")");
 			writer.Write("(");
 			writer.WriteValues(_args, ", ");
 			writer.Write(")");

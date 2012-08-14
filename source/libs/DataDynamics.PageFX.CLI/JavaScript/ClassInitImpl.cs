@@ -55,7 +55,18 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			_host.CompileMethod(ctor);
 
+			var cinitName = AddClassIinitMethod(type, ctor);
+
+			func.Body.Add(cinitName.Id().Call().AsStatement());
+		}
+
+		private string AddClassIinitMethod(IType type, IMethod ctor)
+		{
 			var klass = _host.CompileClass(type);
+
+			var cinitName = string.Format("{0}.$cinit", type.FullName);
+
+			if (klass.HasClassInit) return cinitName;
 
 			var flag = string.Format("{0}.$cinit_done", type.FullName);
 
@@ -64,11 +75,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			cinit.Body.Add(new JsText(string.Format("{0} = 1;", flag)));
 			cinit.Body.Add(ctor.JsFullName().Id().Call().AsStatement());
 
-			var cinitName = string.Format("{0}.$cinit", type.FullName);
-
 			klass.Add(new JsGeneratedMethod(cinitName, cinit));
 
-			func.Body.Add(cinitName.Id().Call().AsStatement());
+			klass.HasClassInit = true;
+
+			return cinitName;
 		}
 	}
 }

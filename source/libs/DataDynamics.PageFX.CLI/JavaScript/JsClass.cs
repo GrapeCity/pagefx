@@ -31,6 +31,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			get { return _subclasses; }
 		}
 
+		public bool HasClassInit { get; set; }
+
 		public void Add(JsClassMember member)
 		{
 			if (member is JsField && !member.IsStatic)

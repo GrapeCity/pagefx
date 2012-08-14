@@ -64,6 +64,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (_namespaces.Count > 0)
 			{
+				writer.WriteLine("// namespaces");
 				writer.Write(_namespaces.Values.OrderBy(x => x.Name), "\n");
 				writer.WriteLine();
 			}

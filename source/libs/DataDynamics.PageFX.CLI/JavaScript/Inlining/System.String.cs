@@ -13,9 +13,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		}
 
 		[InlineImpl]
-		public static void op_Implicit(JsBlock code)
+		public static void op_Implicit(IMethod method, JsBlock code)
 		{
-			// do nothing since System.String is implemented via native avm string
+			var args = method.Parameters.Select(x => x.Name.Id()).ToArray();
+			code.Add(args[0].Return());
 		}
 
 		[InlineImpl]
