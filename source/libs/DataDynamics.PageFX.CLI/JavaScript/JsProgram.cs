@@ -18,6 +18,20 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		internal void DefineNamespace(string value)
 		{
+			if (string.IsNullOrEmpty(value)) return;
+
+			AddNamespace(value);
+
+			var i = value.IndexOf('.');
+			while (i >= 0)
+			{
+				AddNamespace(value.Substring(0, i));
+				i = value.IndexOf('.', i + 1);
+			}
+		}
+
+		private void AddNamespace(string value)
+		{
 			if (_namespaces.ContainsKey(value)) return;
 
 			_namespaces.Add(value, new JsNamespace(value));
@@ -50,7 +64,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (_namespaces.Count > 0)
 			{
-				writer.Write(_namespaces.Values.OrderBy(x => x), "\n");
+				writer.Write(_namespaces.Values.OrderBy(x => x.Name), "\n");
 				writer.WriteLine();
 			}
 

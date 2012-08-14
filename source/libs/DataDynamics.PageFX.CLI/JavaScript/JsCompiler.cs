@@ -12,6 +12,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private readonly IAssembly _assembly;
 		private JsProgram _program;
 		private readonly HashList<IMethod, IMethod> _virtualCalls = new HashList<IMethod, IMethod>(x => x);
+		private readonly HashList<IType, IType> _types = new HashList<IType, IType>(x => x);
 
 		public JsCompiler(IAssembly assembly)
 		{
@@ -32,6 +33,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_assembly = CommonLanguageInfrastructure.Deserialize(assemblyFile.FullName, null);
 		}
 
+		public void Compile(FileInfo output)
+		{
+			var program = Compile();
+
+			program.Write(output);
+		}
+
 		public JsProgram Compile()
 		{
 			if (_program != null) return _program;
@@ -46,18 +54,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				CompileImpls(vcall);
 			}
+
+			// build types
+			CompileClass(SystemTypes.Type);
+
+			new TypeInfoBuilder(_program).Build();
 			
 			//TODO: pass args to main from node.js args
 			_program.Add(method.FullName.Id().Call().AsStatement());
 			
 			return _program;
-		}
-
-		public void Compile(FileInfo output)
-		{
-			var program = Compile();
-
-			program.Write(output);
 		}
 
 		private void CompileImpls(IMethod method)
@@ -95,6 +101,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private void CompileOverrides(JsClass klass, IMethod method)
 		{
+			if (method.IsGetType()) return;
+
 			foreach (var subclass in klass.Subclasses.AsContinuous())
 			{
 				var o = subclass.Type.FindOverrideMethod(method);
@@ -107,8 +115,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 		}
 
-		private JsMethod CompileMethod(IMethod method)
+		internal JsMethod CompileMethod(IMethod method)
 		{
+			if (method.IsGetType()) return null;
+
 			var jsMethod = method.Tag as JsMethod;
 			if (jsMethod != null) return jsMethod;
 
@@ -123,19 +133,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			klass.Add(jsMethod);
 
 			return jsMethod;
-		}
-
-		private sealed class MethodContext
-		{
-			public readonly JsClass Class;
-			public readonly IMethod Method;
-			public readonly JsPool<JsVar> Vars = new JsPool<JsVar>();
-
-			public MethodContext(JsClass klass, IMethod method)
-			{
-				Class = klass;
-				Method = method;
-			}
 		}
 
 		private JsFunction CompileFunction(JsClass klass, IMethod method)
@@ -179,112 +176,165 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private object CompileInstruction(MethodContext context, Instruction i)
 		{
-			var method = i.Method;
-			if (method != null)
+			switch (i.Code)
 			{
-				//cases: static or instance call, new object, new md-array
-				switch (i.Code)
-				{
-					case InstructionCode.Newobj:
-						return CompileNewobj(context, method);
-					case InstructionCode.Ldftn:
-					case InstructionCode.Ldvirtftn:
-						throw new NotImplementedException();
-					default:
-						return CompileCall(context, method);
-				}
-			}
+				case InstructionCode.Call:
+				case InstructionCode.Callvirt:
+					return OpCall(context, i.Method);
 
-			var field = i.Field;
-			if (field != null)
-			{
-				return CompileFieldAccessor(context, field);
-			}
+				case InstructionCode.Ldftn:
+				case InstructionCode.Ldvirtftn:
+					return OpLdftn(i.Method);
+				case InstructionCode.Calli:
+					throw new NotImplementedException();
 
-			var type = i.Type;
-			if (type != null)
-			{
-				switch (i.Code)
-				{
-					case InstructionCode.Initobj:
-						return CompileInitobj(context, type);
-					default:
-						throw new NotImplementedException();
-				}
+				case InstructionCode.Newobj:
+					return OpNewobj(context, i.Method);
+				case InstructionCode.Initobj:
+					return OpInitobj(context, i.Type);
+				case InstructionCode.Newarr:
+					return OpNewarr(context, i.Type);
+
+				case InstructionCode.Ldfld:
+				case InstructionCode.Ldsfld:
+				case InstructionCode.Ldflda:
+				case InstructionCode.Stfld:
+				case InstructionCode.Stsfld:
+					return new FieldCompiler(this).Compile(context, i.Field);
+
+				case InstructionCode.Box:
+					return new BoxingImpl(this).Box(context, i.Type);
+				case InstructionCode.Unbox:
+				case InstructionCode.Unbox_Any:
+					return new BoxingImpl(this).Unbox(context, i.Type);
+
+				case InstructionCode.Ldtoken:
+					return OpLdtoken(context, i.Member);
+
+				case InstructionCode.Isinst:
+				case InstructionCode.Castclass:
+					CompileType(i.Type);
+					return i.Type.FullName;
+
+				case InstructionCode.Ldelema:
+					return null;
 			}
 
 			return i.Value;
 		}
 
-		private JsNode CompileFieldAccessor(MethodContext context, IField field)
+		private JsNode OpLdtoken(MethodContext context, ITypeMember member)
 		{
-			var var = context.Vars[field];
+			var key = new InstructionKey(InstructionCode.Ldtoken, member);
+			var var = context.Vars[key];
 			if (var != null) return var.Id();
-			
-			string name = field.JsName();
-			
-			var get = new JsFunction(null, "o");
-			var set = new JsFunction(null, "o", "v");
 
-			if (field.IsStatic)
+			var field = member as IField;
+			if (field != null)
 			{
-				name = field.DeclaringType.FullName + "." + name;
-				InitClass(context, get, field);
-				InitClass(context, set, field);
-				get.Body.Add(name.Id().Return());
-				set.Body.Add(name.Id().Set("v".Id()));
-			}
-			else
-			{
-				get.Body.Add("o".Id().Get(name).Return());
-				set.Body.Add("o".Id().Set(name, "v".Id()));
+				if (field.IsArrayInitializer())
+				{
+					var value = field.Value;
+					var blob = value as byte[];
+					if (blob == null)
+					{
+						switch (Type.GetTypeCode(value.GetType()))
+						{
+							case TypeCode.Boolean:
+								blob = new [] {(bool)value ? (byte)1 : (byte)0};
+								break;
+							case TypeCode.Char:
+								blob = BitConverter.GetBytes((char)value);
+								break;
+							case TypeCode.SByte:
+								blob = new[] { (byte)(sbyte)value };
+								break;
+							case TypeCode.Byte:
+								blob = new[] { (byte)value };
+								break;
+							case TypeCode.Int16:
+								blob = BitConverter.GetBytes((Int16)value);
+								break;
+							case TypeCode.UInt16:
+								blob = BitConverter.GetBytes((UInt16)value);
+								break;
+							case TypeCode.Int32:
+								blob = BitConverter.GetBytes((Int32)value);
+								break;
+							case TypeCode.UInt32:
+								blob = BitConverter.GetBytes((UInt32)value);
+								break;
+							case TypeCode.Int64:
+								blob = BitConverter.GetBytes((Int64)value);
+								break;
+							case TypeCode.UInt64:
+								blob = BitConverter.GetBytes((UInt64)value);
+								break;
+							default:
+								throw new ArgumentOutOfRangeException();
+						}
+					}
+
+					var arr = new JsArray(blob.Select(x => (object)x));
+					return context.Vars.Add(key, arr).Id();
+				}
+
+				throw new NotImplementedException();
 			}
 
-			var = context.Vars.Add(field, new JsObject {{"get", get}, {"set", set}});
-
-			return var.Id();
+			throw new NotImplementedException();
 		}
 
-		private sealed class Key
+		private object OpLdftn(IMethod method)
 		{
-			private readonly ITypeMember _member;
-			private readonly InstructionCode _code;
+			CompileCallMethod(method);
 
-			public Key(ITypeMember member, InstructionCode code)
-			{
-				_member = member;
-				_code = code;
-			}
-
-			public override bool Equals(object obj)
-			{
-				var k = obj as Key;
-				if (k == null) return false;
-				return k._member == _member && k._code == _code;
-			}
-
-			public override int GetHashCode()
-			{
-				return _member.GetHashCode() ^ (int)_code ^ typeof(Key).GetHashCode();
-			}
+			return method.JsFullName();
 		}
 
-		private JsNode CompileNewobj(MethodContext context, IMethod method)
+		private JsNode OpNewarr(MethodContext context, IType elemType)
 		{
-			var key = new Key(method, InstructionCode.Newobj);
+			var key = new InstructionKey(InstructionCode.Newarr, elemType);
+			var var = context.Vars[key];
+			if (var != null) return var.Id();
+
+			var type = TypeFactory.MakeArray(elemType);
+			if (!_types.Contains(type))
+				_types.Add(type);
+
+			CompileClass(SystemTypes.Array);
+
+			var elemInit = new JsFunction(null);
+			elemInit.Body.Add(elemType.InitialValue().Return());
+
+			var info = new JsObject
+				{
+					{"init", elemInit},
+					{"type", type.FullName},
+					{"box", new BoxingImpl(this).Box(context, elemType)},
+					{"unbox", new BoxingImpl(this).Unbox(context, elemType)},
+					{"etc", GetArrayElementTypeCode(elemType)},
+				};
+
+			return context.Vars.Add(key, info).Id();
+		}
+
+		private static int GetArrayElementTypeCode(IType elemType)
+		{
+			return (int)SystemTypes.GetTypeCode(elemType);
+		}
+
+		private JsNode OpNewobj(MethodContext context, IMethod method)
+		{
+			var key = new InstructionKey(InstructionCode.Newobj, method);
 			var var = context.Vars[key];
 			if (var != null) return var.Id();
 
 			var func = new JsFunction(null, "a");
 
-			if (method.Body is IClrMethodBody)
-			{
-				CompileMethod(method);
-			}
-			else // internal call
-			{
-				throw new NotImplementedException();
-			}
+			CompileCallMethod(method);
+			
+			//TODO: internal calls (delegates, md-arrays)
 
 			InitClass(context, func, method);
 
@@ -303,9 +353,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return var.Id();
 		}
 
-		private JsNode CompileInitobj(MethodContext context, IType type)
+		private JsNode OpInitobj(MethodContext context, IType type)
 		{
-			var key = new Key(type, InstructionCode.Initobj);
+			var key = new InstructionKey(InstructionCode.Initobj, type);
 			var var = context.Vars[key];
 			if (var != null) return var.Id();
 
@@ -318,7 +368,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return context.Vars.Add(key, func).Id();
 		}
 
-		private JsNode CompileCall(MethodContext context, IMethod method)
+		private JsNode OpCall(MethodContext context, IMethod method)
 		{
 			var var = context.Vars[method];
 			if (var != null) return var.Id();
@@ -331,7 +381,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				switch (method.Name)
 				{
 					case "WriteLine":
-						func.Body.Add(new JsReturn(new JsId("console.log")));
+						func.Body.Add("console.log".Id().Return());
 						break;
 					default:
 						throw new NotImplementedException();
@@ -340,6 +390,22 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				return CreateCallInfo(context, method, func);
 			}
 
+			CompileCallMethod(method);
+
+			if (method.IsInternalCall)
+			{
+				new InternalCallImpl(this).Compile(method);
+			}
+
+			InitClass(context, func, method);
+
+			func.Body.Add(method.JsFullName().Id().Return());
+
+			return CreateCallInfo(context, method, func);
+		}
+
+		private void CompileCallMethod(IMethod method)
+		{
 			if (method.Body is IClrMethodBody)
 			{
 				CompileMethod(method);
@@ -350,15 +416,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				if (!_virtualCalls.Contains(method))
 					_virtualCalls.Add(method);
 			}
-			else //TODO: native/internal calls
-			{
-			}
-
-			InitClass(context, func, method);
-
-			func.Body.Add(method.JsFullName().Id().Return());
-
-			return CreateCallInfo(context, method, func);
 		}
 
 		private static JsNode CreateCallInfo(MethodContext context, IMethod method, JsFunction func)
@@ -374,8 +431,20 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return context.Vars.Add(method, info).Id();
 		}
 
-		private JsClass CompileClass(IType type)
+		internal JsNode CompileType(IType type)
 		{
+			if (type.IsInterface)
+				return JsInterface.Make(type);
+			return CompileClass(type);
+		}
+
+		internal JsClass CompileClass(IType type)
+		{
+			if (type.IsExcluded())
+			{
+				return null;
+			}
+
 			var klass = type.Tag as JsClass;
 			if (klass != null) return klass;
 
@@ -398,74 +467,26 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				JsInterface.Make(iface).Implementations.Add(klass);
 			}
 
-			foreach (var field in type.Fields)
+			//TODO: compile non-static fields when any non-static method is compiled to reduce size of output
+
+			if (type != SystemTypes.Type && type != SystemTypes.Array)
 			{
-				klass.Add(JsField.Make(field));
+				foreach (var field in type.Fields)
+				{
+					klass.Add(JsField.Make(field));
+				}
 			}
 
 			_program.Add(klass);
 
-			DefineCopyMethod(klass);
+			JsClass.DefineCopyMethod(klass);
 
 			return klass;
 		}
 
-		private void InitClass(MethodContext context, JsFunction func, ITypeMember member)
+		internal void InitClass(MethodContext context, JsFunction func, ITypeMember member)
 		{
-			var method = member as IMethod;
-			if (method != null && (method.IsStatic || method.IsConstructor))
-			{
-				CallClassInit(context, func, member.DeclaringType);
-				return;
-			}
-
-			var type = member as IType;
-			if (type != null && !type.IsInterface)
-			{
-				CallClassInit(context, func, type);
-				return;
-			}
-
-			var field = member as IField;
-			if (field != null && field.IsStatic)
-			{
-				CallClassInit(context, func, field.DeclaringType);
-				return;
-			}
-		}
-
-		private void CallClassInit(MethodContext context, JsFunction func, IType type)
-		{
-			if (type == null) return;
-			
-			CallClassInit(context, func, type.BaseType);
-
-			var ctor = type.GetStaticCtor();
-			if (ctor == null || ctor == context.Method) return;
-
-			CompileMethod(ctor);
-
-			var klass = CompileClass(type);
-
-			var flag = string.Format("{0}.$cinit_done", type.FullName);
-
-			var cinit = new JsFunction(null);
-			cinit.Body.Add(new JsText(string.Format("if ({0} != undefined) return;", flag)));
-			cinit.Body.Add(new JsText(string.Format("{0} = 1;", flag)));
-			cinit.Body.Add(ctor.JsFullName().Id().Call().AsStatement());
-
-			var cinitName = string.Format("{0}.$cinit", type.FullName);
-
-			klass.Add(new JsStaticGeneratedMethod(cinitName){Function = cinit});
-
-			func.Body.Add(cinitName.Id().Call().AsStatement());
-		}
-
-		private void DefineCopyMethod(JsClass klass)
-		{
-			if (klass.Type.TypeKind != TypeKind.Struct) return;
-
-			var func = new JsFunction(null);
+			new ClassInitImpl(this).InitClass(context, func, member);
 		}
 	}
 }

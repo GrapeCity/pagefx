@@ -39,8 +39,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			foreach (var pair in _properties)
 			{
 				if (sep) writer.Write(",");
-				//TODO: check valid id, otherwise write key as string
-				writer.Write("{0}:", pair.Key);
+				var key = pair.Key;
+				if (key.IsValidId()) writer.Write("{0}:", key);
+				else writer.Write("'{0}':", key.JsEscape());
 				writer.WriteValue(pair.Value);
 				sep = true;
 			}

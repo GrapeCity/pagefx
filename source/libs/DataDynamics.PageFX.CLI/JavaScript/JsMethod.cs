@@ -43,13 +43,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		}
 	}
 
-	internal sealed class JsStaticGeneratedMethod : JsMethodBase
+	internal sealed class JsGeneratedMethod : JsMethodBase
 	{
 		private readonly string _fullName;
 
-		public JsStaticGeneratedMethod(string fullName)
+		public JsGeneratedMethod(string fullName, JsFunction function)
 		{
 			_fullName = fullName;
+			Function = function;
 		}
 
 		public override bool IsStatic
@@ -60,19 +61,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public override string FullName
 		{
 			get { return _fullName; }
-		}
-	}
-
-	internal static class JsMethodExtensions
-	{
-		public static string JsName(this IMethod method)
-		{
-			return method.GetSigName(SigKind.Js);
-		}
-
-		public static string JsFullName(this IMethod method)
-		{
-			return string.Format("{0}.{1}{2}", method.DeclaringType.FullName, method.IsStatic ? "" : "prototype.", method.JsName());
 		}
 	}
 }

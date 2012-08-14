@@ -49,6 +49,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 	internal static class JsFieldExtensions
 	{
+		public static string JsFullName(this IField field)
+		{
+			return field.DeclaringType.FullName + "." + field.JsName();
+		}
+
 		public static string JsName(this IField field)
 		{
 			//TODO: ensure uniqueness

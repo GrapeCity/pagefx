@@ -1,10 +1,78 @@
-﻿function $inherit($this, $base) {
+﻿$types = {};
+
+function $inherit($this, $base) {
 	for (var p in $base.prototype)
 		if (typeof ($this.prototype[p]) == 'undefined' || $this.prototype[p] == Object.prototype[p])
 		$this.prototype[p] = $base.prototype[p];
 	for (var p in $base)
 		if (typeof ($this[p]) == 'undefined')
 		$this[p] = $base[p];
+}
+
+function $bitstr(n) {
+	// n must be between -2147483648 and 2147483647
+	for (var f = 0, nShifted = n, s = ""; f < 32; f++, s += String(nShifted >>> 31), nShifted <<= 1);
+	return s;
+}
+
+function $initarr(a, blob) {
+
+	var arr = a.m_value;
+	var e = a.$etc;
+
+	var b1, b2, b3, b4, u;
+	var i = 0;
+	var k = 0;
+	while (k < blob.length && i < arr.length) {
+		switch (e) {
+			case /*Boolean */ 3:
+				arr[i++] = blob[k++] != 0;
+			case /*Char */4:
+				i++; //todo
+				break;
+			case /*SByte */ 5:
+				arr[i++] = blob[k++];
+				break;
+			case /* Byte */ 6:
+				arr[i++] = blob[k++];
+				break;
+			case /* Int16 */ 7:
+				b1 = blob[k++];
+				b2 = blob[k++];
+				u = b1 | (b2 << 8);
+				arr[i++] = u >> 15 ? ~~u : u;
+				break;
+			case /* UInt16 */ 8:
+				b1 = blob[k++];
+				b2 = blob[k++];
+				arr[i++] = b1 | (b2 << 8);
+				break;
+			case /* Int32 */9:
+				b1 = blob[k++];
+				b2 = blob[k++];
+				b3 = blob[k++];
+				b4 = blob[k++];
+				u = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
+				arr[i++] = u >> 31 ? ~~u : u;
+				break;
+			case /* UInt32 */ 10:
+				b1 = blob[k++];
+				b2 = blob[k++];
+				b3 = blob[k++];
+				b4 = blob[k++];
+				arr[i++] = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
+				break;
+			case /* Int64 */ 11:
+			case /* UInt64 */ 12:
+			case /* Single */ 13:
+			case /* Double */ 14:
+			case /* Decimal */ 15:
+			case /* DateTime */ 16:
+			case /* String */18:
+				i++; //todo
+				break;
+		}
+	}
 }
 
 function $context($method, $args, $vars) {
@@ -22,14 +90,20 @@ function $context($method, $args, $vars) {
 		return result;
 	};
 
+	function copy(o) {
+		if (o == null || o == undefined) return o;
+		return o.$copy == undefined ? o : o.$copy();
+	}
+
 	function push(value) {
 		stack.push(value);
 	}
 
 	function pop(nocopy) {
-		return stack.pop();
+		var o = stack.pop();
+		return nocopy ? o : copy(o);
 	}
-	
+
 	// pops unsigned number
 	function popun() {
 		return pop();
@@ -42,6 +116,7 @@ function $context($method, $args, $vars) {
 
 	function popobj() {
 		var v = pop(true);
+		if (v == null) return null;
 		var f = v.$ptrget;
 		return f === undefined ? v : f();
 	}
@@ -49,10 +124,15 @@ function $context($method, $args, $vars) {
 	function peek() {
 		return stack[stack.length - 1];
 	}
-	
+
 	function loop(code) {
+		var k = 0;
 		while (ip < code.length) {
 			eval(code);
+			k++;
+			if (k >= 10000) {
+				throw "endless eval loop";
+			}
 		}
 	}
 
@@ -476,13 +556,18 @@ function $context($method, $args, $vars) {
 				newobj(i[1]);
 				break;
 			case 116: // castclass
+				x = popobj();
+				push(cast(x, i[1]));
 				break;
 			case 117: // isinst
+				x = popobj();
+				push(isinst(x, i[1]));
 				break;
 			case 118: // conv.r.un
 				push(convrun(pop(true)));
 				break;
 			case 121: // unbox
+				unbox(i[1]);
 				break;
 			case 122: // throw
 				throw pop(true);
@@ -537,16 +622,18 @@ function $context($method, $args, $vars) {
 				noimpl();
 				break;
 			case 140: // box
+				box(i[1]);
 				break;
 			case 141: // newarr
+				push(newarr(pop(true), i[1]));
 				break;
 			case 142: // ldlen
-				arr = popobj();
+				arr = poparr();
 				push(arr.length);
 				break;
 			case 143: // ldelema
 				index = pop(true);
-				arr = popobj();
+				arr = poparr();
 				push(new elemptr(arr, index));
 				break;
 			case 144: // ldelem.i1
@@ -614,6 +701,7 @@ function $context($method, $args, $vars) {
 				stelem();
 				break;
 			case 165: // unbox.any
+				unbox(i[1]);
 				break;
 			case 179: // conv.ovf.i1
 				push(convi1ovf(pop(true)));
@@ -646,6 +734,7 @@ function $context($method, $args, $vars) {
 			case 198: // mkrefany
 				break;
 			case 208: // ldtoken
+				push(i[1]);
 				break;
 			case 209: // conv.u2
 				push(convu2(pop(true)));
@@ -742,8 +831,8 @@ function $context($method, $args, $vars) {
 				push(lt(x, y));
 				break;
 			case -506: // ldftn
-				break;
 			case -505: // ldvirtftn
+				ldftn(i[1]);
 				break;
 			case -503: // ldarg
 				ldarg(i[1]);
@@ -802,6 +891,29 @@ function $context($method, $args, $vars) {
 		
 		ip++;
 	}
+
+	function isinst(o, t) {
+		if (o === null || o === undefined)
+			return o;
+		if (o.GetType().$hierarchy[t] == undefined)
+			return null;
+		return o;
+	}
+
+	function cast(o, t) {
+		//TODO: casting primitive objects
+		return o;
+	}
+
+	function box(f) {
+		var v = popobj();
+		push(f(v));
+	}
+
+	function unbox(f) {
+		var v = popobj();
+		push(f(v));
+	}
 	
 	function popn(n) {
 		var arr = [];
@@ -809,6 +921,23 @@ function $context($method, $args, $vars) {
 			var val = pop();
 			arr.splice(0, 0, val);
 		}
+		return arr;
+	}
+
+	function newarr(n, e) {
+		var v = [];
+		for (var i = 0; i < n; i++) {
+			v.push(e.init());
+		}
+		
+		var arr = new System.Array();
+		arr.m_rank = 1;
+		arr.m_value = v;
+		arr.m_type = e.type;
+		arr.m_box = e.box;
+		arr.m_unbox = e.unbox;
+		arr.$etc = e.etc; // element type code
+
 		return arr;
 	}
 
@@ -833,7 +962,14 @@ function $context($method, $args, $vars) {
 			thisArg = pop(true);
 		}
 
-		var val = i.f(thisArg).apply(thisArg, argArray);
+		var f = i.f(thisArg);
+		
+		// for debugging
+		if (f == undefined) {
+			f = i.f(thisArg);
+		}
+
+		var val = f.apply(thisArg, argArray);
 
 		if (i.r) {
 			push(val);
@@ -843,11 +979,16 @@ function $context($method, $args, $vars) {
 	function calli() {
 		noimpl();
 	}
+	
+	function ldftn(f) {
+		push(f);
+	}
 
+	// load/store fields
 	function ldfld(f) {
 		push(f.get(popobj()));
 	}
-	
+
 	function stfld(f) {
 		var v = pop();
 		var o = popobj();
@@ -857,7 +998,7 @@ function $context($method, $args, $vars) {
 	function ldsfld(f) {
 		push(f.get(null));
 	}
-	
+
 	function stsfld(f) {
 		var v = pop();
 		f.set(null, v);
@@ -886,25 +1027,32 @@ function $context($method, $args, $vars) {
 		ptr.$ptrset(value);
 	}
 	
+	function poparr() {
+		var o = popobj();
+		return o == null ? null : o.m_value;
+	}
+	
 	function ldelem() {
 		var i = pop(true);
-		var arr = popobj();
+		var arr = poparr();
 		checkBounds(arr, i);
-		push(arr[i]);
+		return arr[i];
 	}
 	
 	function stelem(conv) {
 		var value = pop();
 		var i = pop(true);
-		var arr = popobj();
+		var arr = poparr();
 		if (conv !== undefined) {
 			value = conv(value);
 		}
 		checkBounds(arr, i);
 		arr[i] = value;
 	}
-	
+
 	function checkBounds(arr, index) {
+		if (arr == null)
+			throw "NullReferenceException";
 		if (index < 0 || index >= arr.length)
 			throw "IndexOutOfRangeException";
 	}
@@ -1104,14 +1252,14 @@ function $context($method, $args, $vars) {
 		};
 	}
 
-	function elemptr(arr, index) {
-		this.arr = arr;
-		this.index = index;
+	function elemptr(a, i) {
+		var arr = a;
+		var index = i;
 		this.$ptrget = function() {
-			return this.arr[this.index];
+			return arr[index];
 		};
 		this.$ptrset = function(v) {
-			this.arr[this.index] = v;
+			arr[index] = v;
 			return v;
 		};
 	}

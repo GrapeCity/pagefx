@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
-	internal sealed class JsInterface
+	internal sealed class JsInterface : JsNode
 	{
 		private readonly List<JsClass> _impls = new List<JsClass>();
 
@@ -28,6 +29,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				type.Tag = iface;
 			}
 			return iface;
+		}
+
+		public override void Write(JsWriter writer)
+		{
+			throw new NotSupportedException();
 		}
 	}
 }

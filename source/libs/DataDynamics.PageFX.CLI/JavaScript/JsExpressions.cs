@@ -66,39 +66,33 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 	internal sealed class JsReturn : JsNode
 	{
-		private readonly JsNode _value;
+		private readonly object _value;
 
-		public JsReturn(JsNode value)
+		public JsReturn(object value)
 		{
 			_value = value;
 		}
 
 		public override void Write(JsWriter writer)
 		{
-			if (_value == null)
-			{
-				writer.Write("return null;");
-				return;
-			}
-
 			writer.Write("return ");
-			_value.Write(writer);
+			writer.WriteValue(_value);
 			writer.Write(";");
 		}
 	}
 
 	internal sealed class JsId : JsNode
 	{
-		private readonly string _value;
-
 		public JsId(string value)
 		{
-			_value = value;
+			Value = value;
 		}
+
+		public string Value { get; private set; }
 
 		public override void Write(JsWriter writer)
 		{
-			writer.Write(_value);
+			writer.Write(Value);
 		}
 	}
 
@@ -158,16 +152,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 	internal sealed class JsConst : JsNode
 	{
-		private readonly object _value;
-
 		public JsConst(object value)
 		{
-			_value = value;
+			Value = value;
 		}
+
+		public object Value { get; private set; }
 
 		public override void Write(JsWriter writer)
 		{
-			writer.WriteValue(_value);
+			writer.WriteValue(Value);
 		}
 	}
 
@@ -190,30 +184,42 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public override void Write(JsWriter writer)
 		{
 			_obj.Write(writer);
-			writer.Write("[");
-			_name.Write(writer);
-			writer.Write("]");
+
+			var c = _name as JsConst;
+			if (c != null && c.Value is String && ((String)c.Value).IsValidId())
+			{
+				writer.Write(".");
+				writer.Write((String)c.Value);
+			}
+			else
+			{
+				writer.Write("[");
+				_name.Write(writer);
+				writer.Write("]");
+			}
 		}
 	}
 
 	internal sealed class JsBinaryOperator : JsNode
 	{
 		private readonly JsNode _left;
-		private readonly JsNode _right;
+		private readonly object _value;
 		private readonly BinaryOperator _op;
 
-		public JsBinaryOperator(JsNode left, JsNode right, BinaryOperator op)
+		public JsBinaryOperator(JsNode left, object value, BinaryOperator op)
 		{
 			_left = left;
-			_right = right;
+			_value = value;
 			_op = op;
 		}
 
 		public override void Write(JsWriter writer)
 		{
 			_left.Write(writer);
+			writer.Write(" ");
 			writer.Write(_op.EnumString("c#"));
-			_right.Write(writer);
+			writer.Write(" ");
+			writer.WriteValue(_value);
 		}
 	}
 
@@ -245,74 +251,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public override void Write(JsWriter writer)
 		{
 			writer.Write("new {0}()", _type.FullName);
-		}
-	}
-
-	internal static class JsExpressionExtensions
-	{
-		public static JsNode Const(this object value)
-		{
-			return new JsConst(value);
-		}
-
-		public static JsId Id(this string value)
-		{
-			return new JsId(value);
-		}
-
-		public static JsId Id(this JsVar var)
-		{
-			return new JsId(var.Name);
-		}
-
-		public static JsVar Var(this JsNode value, string name)
-		{
-			return new JsVar(name, value);
-		}
-
-		public static JsNode Call(this JsNode value, params object[] args)
-		{
-			return new JsCall(value, args);
-		}
-
-		public static JsNode AsStatement(this JsNode value)
-		{
-			return new JsStatement(value);
-		}
-
-		public static JsNode Return(this JsNode value)
-		{
-			return new JsReturn(value);
-		}
-
-		public static JsNode New(this IType type)
-		{
-			return new JsNewobj(type);
-		}
-
-		public static JsNode Set(this JsNode dest, JsNode value)
-		{
-			return new JsBinaryOperator(dest, value, BinaryOperator.Assign).AsStatement();
-		}
-
-		public static JsNode Get(this JsNode obj, string name)
-		{
-			return new JsPropertyRef(obj, name);
-		}
-
-		public static JsNode Get(this JsNode obj, JsNode name)
-		{
-			return new JsPropertyRef(obj, name);
-		}
-
-		public static JsNode Set(this JsNode obj, string name, JsNode value)
-		{
-			return Get(obj, name).Set(value);
-		}
-
-		public static JsNode Set(this JsNode obj, JsNode name, JsNode value)
-		{
-			return Get(obj, name).Set(value);
 		}
 	}
 }

@@ -3,11 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal static class JsExtensions
 	{
+		private static readonly char[] ValidIdChars = {'_', '$'};
+
+		public static bool IsValidId(this string id)
+		{
+			if (string.IsNullOrEmpty(id))
+				return false;
+
+			if (!(char.IsLetter(id[0]) || ValidIdChars.Contains(id[0])))
+				return false;
+
+			for (int i = 1; i < id.Length; i++)
+			{
+				if (!(char.IsLetter(id[i]) || ValidIdChars.Contains(id[i]) || char.IsDigit(id[i])))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		public static void WriteBlock<T>(this JsWriter writer, ICollection<T> seq, string separator) where T : JsNode
 		{
 			if (seq.Count <= 1)
