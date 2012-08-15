@@ -1732,6 +1732,16 @@ namespace System
 		[InlineOperator("+")]
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		extern internal static String ConcatInternal(String s1, String s2, String s3, String s4);
+
+		public static String Concat(String s, char c)
+		{
+			return Concat(s, fromCharCode(c));
+		}
+
+		public static String Concat(char c, String s)
+		{
+			return Concat(fromCharCode(c), s);
+		}
 		
         public static String Concat(String s1, String s2)
         {

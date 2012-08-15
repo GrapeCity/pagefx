@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
@@ -213,6 +214,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				case InstructionCode.Ldfld:
 				case InstructionCode.Ldsfld:
 				case InstructionCode.Ldflda:
+				case InstructionCode.Ldsflda:
 				case InstructionCode.Stfld:
 				case InstructionCode.Stsfld:
 					return new FieldCompiler(this).Compile(context, i.Field);
@@ -486,7 +488,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var var = context.Vars[method];
 			if (var != null) return var.Id();
 
-			var func = new JsFunction(null, "o");
+			var func = new JsFunction(null, "o", "a");
 
 			//TODO: remove temp code, now we redirect Console.WriteLine to console.log
 			if (method.DeclaringType.FullName == "System.Console")
@@ -494,7 +496,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				switch (method.Name)
 				{
 					case "WriteLine":
-						func.Body.Add("console.log".Id().Return());
+						func.Body.Add("console.log".Id().Call("a".Id().Get(0)));
 						break;
 					default:
 						throw new NotImplementedException();
@@ -512,9 +514,32 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			InitClass(context, func, method);
 
-			func.Body.Add(method.JsFullName().Id().Return());
+			JsNode call;
+			if (method.IsStatic)
+			{
+				call = method.JsFullName().Id().Get("apply").Call("o".Id(), "a".Id());
+			}
+			else
+			{
+				call = "o".Id().Get(method.JsName()).Get("apply").Call("o".Id(), "a".Id());
+			}
+			
+			func.Body.Add(method.IsVoid() ? call.AsStatement() : call.Return());
 
 			return CreateCallInfo(context, method, func);
+		}
+
+		private static JsNode CreateCallInfo(MethodContext context, IMethod method, JsFunction func)
+		{
+			var info = new JsObject
+				{
+					{"n", method.Parameters.Count},
+					{"s", method.IsStatic},
+					{"r", !method.IsVoid()},
+					{"f", func},
+				};
+
+			return context.Vars.Add(method, info).Id();
 		}
 
 		private void CompileCallMethod(IMethod method)
@@ -531,23 +556,17 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 		}
 
-		private static JsNode CreateCallInfo(MethodContext context, IMethod method, JsFunction func)
-		{
-			var info = new JsObject
-				{
-					{"n", method.Parameters.Count},
-					{"s", method.IsStatic},
-					{"r", !method.IsVoid()},
-					{"f", func},
-				};
-
-			return context.Vars.Add(method, info).Id();
-		}
-
 		internal JsNode CompileType(IType type)
 		{
 			if (type.IsInterface)
+			{
 				return JsInterface.Make(type);
+			}
+			if (type.IsArray)
+			{
+				CompileType(type.GetElementType());
+				return CompileClass(SystemTypes.Array);
+			}
 			return CompileClass(type);
 		}
 
@@ -563,7 +582,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			var baseClass = type.BaseType != null ? CompileClass(type.BaseType) : null;
 
-			if (!string.IsNullOrEmpty(type.Namespace))
+			if (string.IsNullOrEmpty(type.Namespace))
+				_program.DefineNamespace("$global");
+			else
 				_program.DefineNamespace(type.Namespace);
 
 			klass = new JsClass(type, baseClass);
@@ -580,16 +601,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				JsInterface.Make(iface).Implementations.Add(klass);
 			}
 
-			//TODO: compile non-static fields when any non-static method is compiled to reduce size of output
-
-			if (type != SystemTypes.Type && type != SystemTypes.Array)
-			{
-				foreach (var field in type.Fields)
-				{
-					klass.Add(JsField.Make(field));
-				}
-			}
-
 			_program.Add(klass);
 
 			JsClass.DefineCopyMethod(klass);
@@ -599,7 +610,50 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		internal void InitClass(MethodContext context, JsFunction func, ITypeMember member)
 		{
+			if (!(member is IType))
+			{
+				CompileFields(member.DeclaringType, member.IsStatic);
+			}
+
+			var type = member as IType;
+			type = type ?? member.DeclaringType;
+
+			if (type == SystemTypes.Type || type == SystemTypes.Array)
+				return;
+
 			new ClassInitImpl(this).InitClass(context, func, member);
+		}
+
+		private void CompileFields(IType type, bool isStatic)
+		{
+			if (type is ICompoundType) return;
+
+			if (type == SystemTypes.Type || type == SystemTypes.Array)
+				return;
+
+			foreach (var field in GetFields(type, isStatic))
+			{
+				CompileField(field);
+			}
+		}
+
+		private void CompileField(IField field)
+		{
+			if (field.Tag != null) return;
+
+			//TODO: do not compile primitive types
+			CompileType(field.DeclaringType);
+
+			JsField.Make(field);
+		}
+
+		private static IEnumerable<IField> GetFields(IType type, bool isStatic)
+		{
+			if (isStatic)
+			{
+				return type.Fields.Where(x => x.IsStatic && !x.IsConstant && !x.IsArrayInitializer());
+			}
+			return type.Fields.Where(f => !f.IsStatic && !f.IsConstant && !f.IsArrayInitializer());
 		}
 	}
 }

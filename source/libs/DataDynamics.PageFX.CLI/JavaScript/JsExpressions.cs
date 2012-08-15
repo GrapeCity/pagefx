@@ -153,51 +153,31 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		}
 	}
 
-	internal sealed class JsConst : JsNode
-	{
-		public JsConst(object value)
-		{
-			Value = value;
-		}
-
-		public object Value { get; private set; }
-
-		public override void Write(JsWriter writer)
-		{
-			writer.WriteValue(Value);
-		}
-	}
-
 	internal sealed class JsPropertyRef : JsNode
 	{
 		private readonly JsNode _obj;
-		private readonly JsNode _name;
+		private readonly object _name;
 
-		public JsPropertyRef(JsNode obj, JsNode name)
+		public JsPropertyRef(JsNode obj, object name)
 		{
 			_obj = obj;
 			_name = name;
-		}
-
-		public JsPropertyRef(JsNode obj, string name)
-			: this(obj, new JsConst(name))
-		{
 		}
 
 		public override void Write(JsWriter writer)
 		{
 			_obj.Write(writer);
 
-			var c = _name as JsConst;
-			if (c != null && c.Value is String && ((String)c.Value).IsValidId())
+			var s = _name as String;
+			if (s != null && s.IsJsid())
 			{
 				writer.Write(".");
-				writer.Write((String)c.Value);
+				writer.Write(s);
 			}
 			else
 			{
 				writer.Write("[");
-				_name.Write(writer);
+				writer.WriteValue(_name);
 				writer.Write("]");
 			}
 		}
@@ -233,22 +213,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		}
 	}
 
-	internal sealed class JsNew : JsNode
-	{
-		private readonly JsNode _value;
-
-		public JsNew(JsNode value)
-		{
-			_value = value;
-		}
-
-		public override void Write(JsWriter writer)
-		{
-			writer.Write("new ");
-			_value.Write(writer);
-		}
-	}
-
 	internal sealed class JsNewobj : JsNode
 	{
 		private readonly IType _type;
@@ -260,7 +224,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public override void Write(JsWriter writer)
 		{
-			writer.Write("new {0}()", _type.FullName);
+			writer.Write("new {0}()", _type.JsFullName());
 		}
 	}
 }

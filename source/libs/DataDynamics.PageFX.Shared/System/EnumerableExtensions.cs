@@ -4,7 +4,9 @@ using System.Collections.Generic;
 namespace System
 {
     public static class EnumerableExtensions
-    {
+	{
+		#region AsContinuous
+
 		public static IEnumerable<T> AsContinuous<T>(this IList<T> list)
 		{
 			if (list == null) throw new ArgumentNullException("list");
@@ -135,7 +137,9 @@ namespace System
 			}
 		}
 
-	    public static bool IsEmpty(this IEnumerable x)
+		#endregion
+
+		public static bool IsEmpty(this IEnumerable x)
         {
             if (x == null) return true;
             var e = x.GetEnumerator();

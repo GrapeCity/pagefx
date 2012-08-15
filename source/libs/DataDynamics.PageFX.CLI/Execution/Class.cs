@@ -148,7 +148,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			{
 				return type.Fields.Where(x => x.IsStatic && !x.IsConstant && !x.IsArrayInitializer());
 			}
-			return GetHierarchy(type).SelectMany(x => x.Fields.Where(f => !f.IsStatic && !f.IsConstant && !x.IsArrayInitializer()));
+			return GetHierarchy(type).SelectMany(x => x.Fields.Where(f => !f.IsStatic && !f.IsConstant && !f.IsArrayInitializer()));
 		}
 
 		private static IEnumerable<IType> GetHierarchy(IType type)

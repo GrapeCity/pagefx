@@ -116,6 +116,7 @@
     <Compile Include="Implementation\Expressions\References.cs" />
     <Compile Include="Implementation\Expressions\UnboxExpression.cs" />
     <Compile Include="Implementation\InstructionList.cs" />
+    <Compile Include="Implementation\JsExtensions.cs" />
     <Compile Include="Implementation\LabelResolver.cs" />
     <Compile Include="Implementation\LanguageInfrastructure.cs" />
     <Compile Include="Implementation\Members\EventCollection.cs" />

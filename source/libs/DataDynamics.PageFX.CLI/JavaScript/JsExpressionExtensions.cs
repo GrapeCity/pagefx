@@ -50,12 +50,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return new JsBinaryOperator(dest, value, BinaryOperator.Assign).AsStatement();
 		}
 
-		public static JsNode Get(this JsNode obj, string name)
-		{
-			return new JsPropertyRef(obj, name);
-		}
-
-		public static JsNode Get(this JsNode obj, JsNode name)
+		public static JsNode Get(this JsNode obj, object name)
 		{
 			return new JsPropertyRef(obj, name);
 		}

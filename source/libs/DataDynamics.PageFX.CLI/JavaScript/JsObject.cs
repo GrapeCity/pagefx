@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
@@ -40,7 +41,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				if (sep) writer.Write(",");
 				var key = pair.Key;
-				if (key.IsValidId()) writer.Write("{0}:", key);
+				if (key.IsJsid()) writer.Write("{0}:", key);
 				else writer.Write("'{0}':", key.JsEscape());
 				writer.WriteValue(pair.Value);
 				sep = true;

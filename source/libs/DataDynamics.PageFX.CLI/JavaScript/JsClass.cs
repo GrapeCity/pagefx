@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public override void Write(JsWriter writer)
 		{
-			var name = Type.FullName;
+			var name = Type.JsFullName();
 			writer.WriteLine("{0} = function() {{", name);
 			if (_instanceFields.Count > 0)
 			{
@@ -57,7 +57,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (Base != null)
 			{
 				writer.WriteLine();
-				writer.WriteLine("$inherit({0}, {1});", name, Base.Type.FullName);
+				writer.WriteLine("$inherit({0}, {1});", name, Base.Type.JsFullName());
+				if (Type.IsString())
+				{
+					writer.WriteLine("$inherit({0}, {1});", "String", Base.Type.JsFullName());
+				}
 			}
 		}
 
@@ -80,7 +84,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			copy.Body.Add(obj.Return());
 
-			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.$copy", klass.Type.FullName), copy));
+			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.$copy", klass.Type.JsFullName()), copy));
 		}
 	}
 }

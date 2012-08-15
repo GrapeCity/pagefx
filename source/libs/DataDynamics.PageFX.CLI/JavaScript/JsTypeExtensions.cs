@@ -7,6 +7,21 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal static class JsTypeExtensions
 	{
+		public static bool IsString(this IType type)
+		{
+			return type == SystemTypes.String || type.FullName == "Avm.String";
+		}
+
+		public static string JsFullName(this IType type)
+		{
+			string ns = type.Namespace;
+			if (string.IsNullOrEmpty(ns))
+			{
+				ns = "$global";
+			}
+			return new JsPropertyRef(ns.Id(), type.Name).ToString();
+		}
+
 		/// <summary>
 		/// Returns true if given type should not be compiled.
 		/// </summary>

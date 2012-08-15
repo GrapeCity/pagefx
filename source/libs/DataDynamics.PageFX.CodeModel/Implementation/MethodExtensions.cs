@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -81,6 +82,28 @@ namespace DataDynamics.PageFX.CodeModel
 			return prop != null && prop.Parameters.Count <= 0;
 		}
 
+		public static string GetSigName(this IType type, SigKind kind)
+		{
+			return type.GetSigName().ToValidId(kind);
+		}
+
+		private static string ToValidId(this string s, SigKind kind)
+		{
+			if (kind == SigKind.Avm) return s;
+
+			if (s.IndexOf((c, i) => !c.IsJsid(i == 0)) >= 0)
+			{
+				return s.Select((c, j) =>
+					{
+						if (JsExtensions.IsJsid(c, j == 0)) return c.ToString(CultureInfo.InvariantCulture);
+						if (c == '.') return "$";
+						return "x" + ((int)c).ToString("x2");
+					}).ToArray().Join("");
+			}
+
+			return s;
+		}
+
 		public static string BuildSigName(this IMethod method, SigKind kind)
 		{
 			var impl = method.GetExplicitImpl();
@@ -91,9 +114,12 @@ namespace DataDynamics.PageFX.CodeModel
 
 			var sb = new StringBuilder();
 
+			var sigName = declType.GetSigName(kind);
+
 			if (declType.IsInterface)
 			{
-				sb.Append(declType.SigName + ".");
+				sb.Append(sigName);
+				sb.Append(kind == SigKind.Avm ? "." : "$");
 			}
 
 			bool addParams = true;
@@ -101,43 +127,43 @@ namespace DataDynamics.PageFX.CodeModel
 			{
 				if (kind == SigKind.Avm && !method.IsStatic)
 					sb.Append(declType.Name);
-				sb.Append(kind == SigKind.Js ? method.Name.Replace('.', '$') : method.Name);
+				sb.Append(method.Name.ToValidId(kind));
 			}
 			else
 			{
 				if (method.NeedDeclaringTypePrefix())
 				{
-					sb.Append(declType.SigName);
+					sb.Append(sigName);
 					sb.Append("_");
 				}
 
 				if (method.NeedReturnTypePrefix())
 				{
-					sb.Append(method.Type.GetSigName());
+					sb.Append(method.Type.GetSigName(kind));
 					sb.Append("_");
 				}
 
 				var prop = method.Association as IProperty;
 				if (kind == SigKind.Avm && prop != null && method.IsAccessor())
 				{
-					sb.Append(prop.Name);
+					sb.Append(prop.Name.ToValidId(kind));
 					addParams = false;
 				}
 				else
 				{
-					sb.Append(method.Name);
+					sb.Append(method.Name.ToValidId(kind));
 				}
 			}
 
 			if (method.IsGenericInstance)
 			{
-				sb.AppendSigName(method.GenericArguments);
+				sb.AppendSigName(method.GenericArguments, kind);
 			}
 
 			if (addParams && method.Parameters.Count > 0)
 			{
 				sb.Append("_");
-				AppendParametersSignature(sb, method);
+				AppendParametersSignature(sb, method, kind);
 			}
 
 			return sb.ToString();
@@ -167,15 +193,15 @@ namespace DataDynamics.PageFX.CodeModel
 			return false;
 		}
 
-		private static void AppendParametersSignature(StringBuilder sb, IMethod method)
+		private static void AppendParametersSignature(StringBuilder sb, IMethod method, SigKind kind)
 		{
-			sb.AppendSigName(method.Parameters.Select(x => x.Type));
+			sb.AppendSigName(method.Parameters.Select(x => x.Type), kind);
 		}
 
-		public static string GetParametersSignature(this IMethod method)
+		public static string GetParametersSignature(this IMethod method, SigKind kind)
 		{
 			var sb = new StringBuilder();
-			AppendParametersSignature(sb, method);
+			AppendParametersSignature(sb, method, kind);
 			return sb.ToString();
 		}
 

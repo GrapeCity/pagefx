@@ -3,10 +3,10 @@
 function $inherit($this, $base) {
 	for (var p in $base.prototype)
 		if (typeof ($this.prototype[p]) == 'undefined' || $this.prototype[p] == Object.prototype[p])
-		$this.prototype[p] = $base.prototype[p];
+			$this.prototype[p] = $base.prototype[p];
 	for (var p in $base)
 		if (typeof ($this[p]) == 'undefined')
-		$this[p] = $base[p];
+			$this[p] = $base[p];
 }
 
 // Derived from https://gist.github.com/2192799
@@ -1013,17 +1013,19 @@ function $context($method, $args, $vars) {
 			thisArg = pop(true);
 		}
 
-		var f = i.f(thisArg);
-		
-		// for debugging
-		if (f == undefined) {
-			f = i.f(thisArg);
-		}
+		try {
+			
+			if (i.f == undefined) {
+				throw new TypeError("func call is undefined!");
+			}
+			
+			var val = i.f(thisArg, argArray);
 
-		var val = f.apply(thisArg, argArray);
-
-		if (i.r) {
-			push(val);
+			if (i.r) {
+				push(val);
+			}
+		} catch (e) {
+			throw e;
 		}
 	}
 

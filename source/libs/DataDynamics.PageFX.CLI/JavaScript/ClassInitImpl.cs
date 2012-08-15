@@ -64,11 +64,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			var klass = _host.CompileClass(type);
 
-			var cinitName = string.Format("{0}.$cinit", type.FullName);
+			var cinitName = string.Format("{0}.$cinit", type.JsFullName());
 
 			if (klass.HasClassInit) return cinitName;
 
-			var flag = string.Format("{0}.$cinit_done", type.FullName);
+			var flag = string.Format("{0}.$cinit_done", type.JsFullName());
 
 			var cinit = new JsFunction(null);
 			cinit.Body.Add(new JsText(string.Format("if ({0} != undefined) return;", flag)));

@@ -25,12 +25,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private void Build(JsClass klass)
 		{
 			var type = klass.Type;
-			var fullName = type.FullName;
 
 			// type init
 			var init = new JsFunction(null);
 
-			var prop = string.Format("$types['{0}']", "$$" + fullName.JsEscape());
+			var prop = string.Format("$types['{0}']", "$$" + type.FullName.JsEscape());
 
 			init.Body.Add(new JsText(string.Format("var t = {0};", prop)));
 			init.Body.Add(new JsText(string.Format("if (t != undefined) return t;")));
@@ -48,12 +47,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			init.Body.Add(t.Return());
 
-			_program.Add("$types".Id().Set(fullName, init));
+			_program.Add("$types".Id().Set(type.FullName, init));
 
 			var getType = new JsFunction(null);
-			getType.Body.Add("$types".Id().Get(fullName).Call().Return());
+			getType.Body.Add("$types".Id().Get(type.FullName).Call().Return());
 
-			klass.Add(new JsGeneratedMethod(fullName + ".prototype.GetType", getType));
+			klass.Add(new JsGeneratedMethod((type.IsString() ? "String" : type.JsFullName()) + ".prototype.GetType", getType));
 		}
 	}
 }

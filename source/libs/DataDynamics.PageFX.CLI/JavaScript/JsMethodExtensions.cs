@@ -7,12 +7,15 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 	{
 		public static string JsName(this IMethod method)
 		{
+			if (method.IsToString()) return "toString";
 			return method.GetSigName(SigKind.Js);
 		}
 
 		public static string JsFullName(this IMethod method)
 		{
-			return String.Format("{0}.{1}{2}", method.DeclaringType.FullName, method.IsStatic ? "" : "prototype.", method.JsName());
+			var type = method.DeclaringType;
+			var typeName = type.IsString() && !method.IsStatic ? type.Name : type.JsFullName();
+			return String.Format("{0}.{1}{2}", typeName, method.IsStatic ? "" : "prototype.", method.JsName());
 		}
 
 		//TODO: PERF process method custom attributes only once (one iteration)
@@ -68,6 +71,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public static bool IsGetType(this IMethod method)
 		{
 			return !method.IsStatic && method.Parameters.Count == 0 && method.Name == "GetType";
+		}
+
+		public static bool IsToString(this IMethod method)
+		{
+			return !method.IsStatic && method.Parameters.Count == 0 && method.Name == "ToString";
 		}
 	}
 

@@ -284,7 +284,7 @@ namespace DataDynamics.PageFX.FLI
 
             var elemPtr = DefineElemPtr();
 
-            string name = "GetAddr_" + method.GetParametersSignature();
+            string name = "GetAddr_" + method.GetParametersSignature(SigKind.Avm);
 
             return instance.DefineInstanceMethod(
                 name, elemPtr.Name,

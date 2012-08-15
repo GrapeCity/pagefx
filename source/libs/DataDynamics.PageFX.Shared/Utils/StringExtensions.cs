@@ -9,6 +9,19 @@ namespace DataDynamics
 {
     public static class StringExtensions
     {
+		public static int IndexOf(this string s, Func<char,int,bool> predicate)
+		{
+			if (string.IsNullOrEmpty(s)) return -1;
+
+			for (int i = 0; i < s.Length; i++)
+			{
+				if (predicate(s[i], i))
+					return i;
+			}
+
+			return -1;
+		}
+
     	public static string Unquote(this string s)
         {
             return s.Unquote(true);
