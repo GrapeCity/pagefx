@@ -26,6 +26,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 
 			_host.CompileClass(type);
+			_host.CompileFields(type, false);
 
 			func.Body.Add(type.New().Var("o"));
 			var obj = "o".Id();

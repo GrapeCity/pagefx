@@ -624,7 +624,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			new ClassInitImpl(this).InitClass(context, func, member);
 		}
 
-		private void CompileFields(IType type, bool isStatic)
+		internal void CompileFields(IType type, bool isStatic)
 		{
 			if (type is ICompoundType) return;
 
@@ -642,9 +642,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (field.Tag != null) return;
 
 			//TODO: do not compile primitive types
-			CompileType(field.DeclaringType);
-
-			JsField.Make(field);
+			var klass = CompileType(field.DeclaringType) as JsClass;
+			if (klass != null)
+			{
+				klass.Add(JsField.Make(field));
+			}
 		}
 
 		private static IEnumerable<IField> GetFields(IType type, bool isStatic)
