@@ -25,7 +25,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
 		public static List<object> ReadArrayValues(IField f, SystemTypeCode type)
 		{
-			var blob = f.Value as byte[];
+			var blob = f.GetBlob();
 			if (blob == null)
 				throw new ArgumentException("Invalid value of field. Value must be blob.", "f");
 
@@ -38,6 +38,51 @@ namespace DataDynamics.PageFX.CLI.IL
 			}
 
 			return vals;
+		}
+
+		public static byte[] GetBlob(this IField field)
+		{
+			var value = field.Value;
+			var blob = value as byte[];
+			if (blob == null)
+			{
+				switch (Type.GetTypeCode(value.GetType()))
+				{
+					case TypeCode.Boolean:
+						blob = new[] { (bool)value ? (byte)1 : (byte)0 };
+						break;
+					case TypeCode.Char:
+						blob = BitConverter.GetBytes((char)value);
+						break;
+					case TypeCode.SByte:
+						blob = new[] { (byte)(sbyte)value };
+						break;
+					case TypeCode.Byte:
+						blob = new[] { (byte)value };
+						break;
+					case TypeCode.Int16:
+						blob = BitConverter.GetBytes((Int16)value);
+						break;
+					case TypeCode.UInt16:
+						blob = BitConverter.GetBytes((UInt16)value);
+						break;
+					case TypeCode.Int32:
+						blob = BitConverter.GetBytes((Int32)value);
+						break;
+					case TypeCode.UInt32:
+						blob = BitConverter.GetBytes((UInt32)value);
+						break;
+					case TypeCode.Int64:
+						blob = BitConverter.GetBytes((Int64)value);
+						break;
+					case TypeCode.UInt64:
+						blob = BitConverter.GetBytes((UInt64)value);
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			}
+			return blob;
 		}
 
         private static object ReadValue(BufferedBinaryReader reader, SystemTypeCode type)

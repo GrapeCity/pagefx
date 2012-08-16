@@ -138,6 +138,8 @@
     <Compile Include="JavaScript\FieldCompiler.cs" />
     <Compile Include="JavaScript\Inlining\InlineCodeProvider.cs" />
     <Compile Include="JavaScript\Inlining\RuntimeHelpersInlines.cs" />
+    <Compile Include="JavaScript\Inlining\System.Char.cs" />
+    <Compile Include="JavaScript\Inlining\System.Delegate.cs" />
     <Compile Include="JavaScript\Inlining\System.Object.cs" />
     <Compile Include="JavaScript\Inlining\System.String.cs" />
     <Compile Include="JavaScript\InstructionKey.cs" />

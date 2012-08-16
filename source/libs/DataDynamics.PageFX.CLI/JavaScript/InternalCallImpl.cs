@@ -13,6 +13,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			    {
 				    {"System.Object", new SystemObjectInlines()},
 				    {"System.String", new StringInlines()},
+				    {"System.Char", new CharInlines()},
 				    {"System.Runtime.CompilerServices.RuntimeHelpers", new RuntimeHelpersInlines()},
 			    };
 
@@ -28,6 +29,30 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return _host.CompileClass(type);
 		}
 
+		public JsFunction CompileInlineFunction(IMethod method)
+		{
+			var info = method.GetInlineInfo();
+			if (info != null)
+			{
+				return CompileInlineFunction(method, info);
+			}
+
+			var type = method.DeclaringType;
+			if (type.TypeKind == TypeKind.Delegate)
+			{
+				//TODO: 
+				return null;
+			}
+
+			InlineCodeProvider provider;
+			if (Inlines.TryGetValue(type.FullName, out provider))
+			{
+				return CompileInlineFunction(method, provider);
+			}
+
+			return null;
+		}
+
 		public void Compile(IMethod method)
 		{
 			var info = method.GetInlineInfo();
@@ -37,27 +62,17 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				return;
 			}
 
+			var type = method.DeclaringType;
+            if (type.TypeKind == TypeKind.Delegate)
+            {
+	            Inline(DelegateInlines.Instance, method);
+				return;
+            }
+
 			InlineCodeProvider provider;
-			if (Inlines.TryGetValue(method.DeclaringType.FullName, out provider))
+			if (Inlines.TryGetValue(type.FullName, out provider))
 			{
-				var jsMethod = method.Tag as JsGeneratedMethod;
-				if (jsMethod != null) return;
-
-				var klass = CompileClass(method.DeclaringType);
-				var ctx = new MethodContext(klass, method);
-				var impl = provider.GetImplementation(ctx);
-
-				if (impl == null)
-				{
-					throw new NotImplementedException();
-				}
-
-				jsMethod = new JsGeneratedMethod(method.JsFullName(), impl);
-
-				method.Tag = jsMethod;
-
-				klass.Add(jsMethod);
-
+				Inline(provider, method);
 				return;
 			}
 
@@ -65,11 +80,47 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			//throw new NotImplementedException();
 		}
 
+		private void Inline(InlineCodeProvider provider, IMethod method)
+		{
+			var jsMethod = method.Tag as JsGeneratedMethod;
+			if (jsMethod != null) return;
+			
+			var impl = CompileInlineFunction(method, provider);
+			if (impl == null)
+			{
+				throw new NotImplementedException();
+			}
+
+			jsMethod = new JsGeneratedMethod(method.JsFullName(), impl);
+			method.Tag = jsMethod;
+
+			var klass = CompileClass(method.DeclaringType);
+			klass.Add(jsMethod);
+		}
+
+		private JsFunction CompileInlineFunction(IMethod method, InlineCodeProvider provider)
+		{
+			var klass = CompileClass(method.DeclaringType);
+			var ctx = new MethodContext(klass, method);
+			return provider.GetImplementation(ctx);
+		}
+
 		private void CompileInlineMethod(IMethod method, InlineMethodInfo info)
 		{
 			var jsMethod = method.Tag as JsGeneratedMethod;
 			if (jsMethod != null) return;
 
+			var func = CompileInlineFunction(method, info);
+			var klass = CompileClass(method.DeclaringType);
+
+			jsMethod = new JsGeneratedMethod(method.JsFullName(), func);
+			method.Tag = jsMethod;
+
+			klass.Add(jsMethod);
+		}
+
+		private static JsFunction CompileInlineFunction(IMethod method, InlineMethodInfo info)
+		{
 			var parameters = method.Parameters.Select(x => x.Name).ToArray();
 			var func = new JsFunction(null, parameters);
 
@@ -104,13 +155,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					break;
 			}
 
-			var klass = CompileClass(method.DeclaringType);
-
-			jsMethod = new JsGeneratedMethod(method.JsFullName(), func);
-
-			method.Tag = jsMethod;
-
-			klass.Add(jsMethod);
+			return func;
 		}
 	}
 }

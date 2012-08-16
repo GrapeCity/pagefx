@@ -12,7 +12,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_host = host;
 		}
 
-		public JsNode Box(MethodContext context, IType type)
+		public object Box(MethodContext context, IType type)
 		{
 			var key = new InstructionKey(InstructionCode.Box, type);
 			var var = context.Vars[key];
@@ -34,12 +34,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			func.Body.Add(obj.Set("m_value", "v".Id()));
 			func.Body.Add(obj.Return());
 
-			var = context.Vars.Add(key, func);
-
-			return var.Id();
+			return context.Vars.Add(key, func).Id();
 		}
 
-		public JsNode Unbox(MethodContext context, IType type)
+		public object Unbox(MethodContext context, IType type)
 		{
 			var key = new InstructionKey(InstructionCode.Box, type);
 			var var = context.Vars[key];
@@ -50,9 +48,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			//TODO: find boxing field and gets its JsName
 			func.Body.Add("o".Id().Get("m_value"));
 
-			var = context.Vars.Add(key, func);
-
-			return var.Id();
+			return context.Vars.Add(key, func).Id();
 		}
 	}
 }

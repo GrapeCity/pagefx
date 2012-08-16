@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 	{
 		public static string JsFullName(this IField field)
 		{
-			return field.DeclaringType.JsFullName() + "." + field.JsName();
+			return field.DeclaringType.JsFullName().Id().Get(field.JsName()).ToString();
 		}
 
 		public static string JsName(this IField field)

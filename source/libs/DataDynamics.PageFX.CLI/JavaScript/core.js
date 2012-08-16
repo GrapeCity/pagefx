@@ -9,6 +9,16 @@ function $inherit($this, $base) {
 			$this[p] = $base[p];
 }
 
+function $invokeDelegate(d, a, ret) {
+	if (d.m_prev != null) {
+		$invokeDelegate(d.m_prev, a, ret);
+	}
+
+	var val = d.m_function(d.m_target, a);
+	
+	return ret ? val : undefined;
+}
+
 // Derived from https://gist.github.com/2192799
 function $decodeFloat(bytes, signBits, exponentBits, fractionBits, eMin, eMax, littleEndian) {
   // var totalBits = (signBits + exponentBits + fractionBits);
@@ -953,6 +963,8 @@ function $context($method, $args, $vars) {
 
 	function cast(o, t) {
 		//TODO: casting primitive objects
+		if (!isinst(o, t))
+			throw new "InvalidCastException";
 		return o;
 	}
 

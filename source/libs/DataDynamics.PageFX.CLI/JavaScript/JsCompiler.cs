@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
 
@@ -162,7 +163,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private JsFunction CompileFunction(JsClass klass, IMethod method)
 		{
-			var func = CompileInlineFunction(klass, method);
+			var func = CompileInlineFunction(method);
 			if (func != null) return func;
 
 			Analyze(method);
@@ -204,19 +205,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return func;
 		}
 
-		private JsFunction CompileInlineFunction(JsClass klass, IMethod method)
+		private JsFunction CompileInlineFunction(IMethod method)
 		{
-			if (method.IsToString())
-			{
-				if (method.DeclaringType == SystemTypes.Char)
-				{
-					var func = new JsFunction(null);
-					func.Body.Add("String.fromCharCode".Id().Call("this".Id().Get("m_value")).Return());
-					return func;
-				}
-			}
-
-			return null;
+			return new InternalCallImpl(this).CompileInlineFunction(method);
 		}
 
 		private object CompileInstruction(MethodContext context, Instruction i)
@@ -229,7 +220,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 				case InstructionCode.Ldftn:
 				case InstructionCode.Ldvirtftn:
-					return OpLdftn(i.Method);
+					return OpLdftn(context, i);
 				case InstructionCode.Calli:
 					throw new NotImplementedException();
 
@@ -364,56 +355,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			var key = new InstructionKey(InstructionCode.Ldtoken, member);
 			var var = context.Vars[key];
-			if (var != null) return var.Id();
+			if (var != null) return var;
 
 			var field = member as IField;
 			if (field != null)
 			{
 				if (field.IsArrayInitializer())
 				{
-					var value = field.Value;
-					var blob = value as byte[];
-					if (blob == null)
-					{
-						switch (Type.GetTypeCode(value.GetType()))
-						{
-							case TypeCode.Boolean:
-								blob = new [] {(bool)value ? (byte)1 : (byte)0};
-								break;
-							case TypeCode.Char:
-								blob = BitConverter.GetBytes((char)value);
-								break;
-							case TypeCode.SByte:
-								blob = new[] { (byte)(sbyte)value };
-								break;
-							case TypeCode.Byte:
-								blob = new[] { (byte)value };
-								break;
-							case TypeCode.Int16:
-								blob = BitConverter.GetBytes((Int16)value);
-								break;
-							case TypeCode.UInt16:
-								blob = BitConverter.GetBytes((UInt16)value);
-								break;
-							case TypeCode.Int32:
-								blob = BitConverter.GetBytes((Int32)value);
-								break;
-							case TypeCode.UInt32:
-								blob = BitConverter.GetBytes((UInt32)value);
-								break;
-							case TypeCode.Int64:
-								blob = BitConverter.GetBytes((Int64)value);
-								break;
-							case TypeCode.UInt64:
-								blob = BitConverter.GetBytes((UInt64)value);
-								break;
-							default:
-								throw new ArgumentOutOfRangeException();
-						}
-					}
-
+					var blob = field.GetBlob();
 					var arr = new JsArray(blob.Select(x => (object)x));
-					return context.Vars.Add(key, arr).Id();
+					return context.Vars.Add(key, arr);
 				}
 
 				throw new NotImplementedException();
@@ -429,18 +380,25 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			throw new NotImplementedException();
 		}
 
-		private object OpLdftn(IMethod method)
+		private object OpLdftn(MethodContext context, Instruction i)
 		{
+			var method = i.Method;
+			var key = new InstructionKey(i.Code, method);
+			var var = context.Vars[key];
+			if (var != null) return var;
+
 			CompileCallMethod(method);
 
-			return method.JsFullName();
+			var func = CreateCallFunc(context, method);
+			
+			return context.Vars.Add(key, func);
 		}
 
 		private JsNode OpNewarr(MethodContext context, IType elemType)
 		{
 			var key = new InstructionKey(InstructionCode.Newarr, elemType);
 			var var = context.Vars[key];
-			if (var != null) return var.Id();
+			if (var != null) return var;
 
 			var type = TypeFactory.MakeArray(elemType);
 			if (!_types.Contains(type))
@@ -460,7 +418,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"etc", GetArrayElementTypeCode(elemType)},
 				};
 
-			return context.Vars.Add(key, info).Id();
+			return context.Vars.Add(key, info);
 		}
 
 		private static int GetArrayElementTypeCode(IType elemType)
@@ -472,19 +430,18 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			var key = new InstructionKey(InstructionCode.Newobj, method);
 			var var = context.Vars[key];
-			if (var != null) return var.Id();
-
-			var func = new JsFunction(null, "a");
+			if (var != null) return var;
 
 			CompileCallMethod(method);
 			
-			//TODO: internal calls (delegates, md-arrays)
+			var func = new JsFunction(null, "a");
 
 			InitClass(context, func, method);
 
-			func.Body.Add(method.DeclaringType.New().Var("o"));
-			func.Body.Add((method.JsFullName() + ".apply").Id().Call("o".Id(), "a".Id()).AsStatement());
-			func.Body.Add("o".Id().Return());
+			var obj = "o".Id();
+			func.Body.Add(method.DeclaringType.New().Var(obj.Value));
+			func.Body.Add(obj.Get(method.JsName()).Get("apply").Call(obj, "a".Id()).AsStatement());
+			func.Body.Add(obj.Return());
 
 			var info = new JsObject
 				{
@@ -492,16 +449,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"f", func},
 				};
 
-			var = context.Vars.Add(key, info);
-
-			return var.Id();
+			return context.Vars.Add(key, info);
 		}
 
 		private JsNode OpInitobj(MethodContext context, IType type)
 		{
 			var key = new InstructionKey(InstructionCode.Initobj, type);
 			var var = context.Vars[key];
-			if (var != null) return var.Id();
+			if (var != null) return var;
 
 			CompileClass(type);
 
@@ -509,23 +464,28 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			InitClass(context, func, type);
 			func.Body.Add(type.New().Return());
 
-			return context.Vars.Add(key, func).Id();
+			return context.Vars.Add(key, func);
 		}
 
-		private JsNode OpCall(MethodContext context, IMethod method)
+		private object OpCall(MethodContext context, IMethod method)
 		{
 			var var = context.Vars[method];
-			if (var != null) return var.Id();
+			if (var != null) return var;
 
-			var func = new JsFunction(null, "o", "a");
+			JsFunction func;
 
 			//TODO: remove temp code, now we redirect Console.WriteLine to console.log
+			
 			if (method.DeclaringType.FullName == "System.Console")
 			{
+				var obj = "o".Id();
+				var args = "a".Id();
+				func = new JsFunction(null, obj.Value, args.Value);
+
 				switch (method.Name)
 				{
 					case "WriteLine":
-						func.Body.Add("console.log".Id().Call("a".Id().Get(0)));
+						func.Body.Add("console.log".Id().Call(args.Get(0)));
 						break;
 					default:
 						throw new NotImplementedException();
@@ -536,29 +496,26 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			CompileCallMethod(method);
 
-			if (method.IsInternalCall)
-			{
-				new InternalCallImpl(this).Compile(method);
-			}
-
-			InitClass(context, func, method);
-
-			JsNode call;
-			if (method.IsStatic)
-			{
-				call = method.JsFullName().Id().Get("apply").Call("o".Id(), "a".Id());
-			}
-			else
-			{
-				call = "o".Id().Get(method.JsName()).Get("apply").Call("o".Id(), "a".Id());
-			}
+			func = CreateCallFunc(context, method);
 			
-			func.Body.Add(method.IsVoid() ? call.AsStatement() : call.Return());
-
 			return CreateCallInfo(context, method, func);
 		}
 
-		private static JsNode CreateCallInfo(MethodContext context, IMethod method, JsFunction func)
+		private JsFunction CreateCallFunc(MethodContext context, IMethod method)
+		{
+			var obj = "o".Id();
+			var args = "a".Id();
+			var func = new JsFunction(null, obj.Value, args.Value);
+
+			InitClass(context, func, method);
+
+			var call = method.Apply(obj, args);
+			func.Body.Add(method.IsVoid() ? call.AsStatement() : call.Return());
+
+			return func;
+		}
+
+		private static object CreateCallInfo(MethodContext context, IMethod method, JsFunction func)
 		{
 			var info = new JsObject
 				{
@@ -568,7 +525,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"f", func},
 				};
 
-			return context.Vars.Add(method, info).Id();
+			return context.Vars.Add(method, info);
 		}
 
 		private void CompileCallMethod(IMethod method)
@@ -582,6 +539,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				if (!_virtualCalls.Contains(method))
 					_virtualCalls.Add(method);
+			}
+
+			if (method.IsInternalCall || method.CodeType == MethodCodeType.Runtime)
+			{
+				new InternalCallImpl(this).Compile(method);
 			}
 		}
 

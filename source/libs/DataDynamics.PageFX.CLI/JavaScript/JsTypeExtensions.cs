@@ -23,6 +23,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return new JsPropertyRef(ns.Id(), type.Name).ToString();
 		}
 
+		public static string JsFullName(this IType type, IMethod method)
+		{
+			return type.IsString() && !method.IsStatic ? type.Name : type.JsFullName();
+		}
+
 		/// <summary>
 		/// Returns true if given type should not be compiled.
 		/// </summary>

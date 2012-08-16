@@ -11,10 +11,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_host = host;
 		}
 
-		public JsNode Compile(MethodContext context, IField field)
+		public object Compile(MethodContext context, IField field)
 		{
 			var var = context.Vars[field];
-			if (var != null) return var.Id();
+			if (var != null) return var;
 
 			var get = new JsFunction(null, "o");
 			var set = new JsFunction(null, "o", "v");
@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"set", set}
 				};
 
-			return context.Vars.Add(field, info).Id();
+			return context.Vars.Add(field, info);
 		}
 	}
 }

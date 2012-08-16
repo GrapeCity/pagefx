@@ -30,6 +30,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return new JsCall(value, args.Select(x => (object)x));
 		}
 
+		public static JsNode Apply(this IMethod method, JsNode obj, object args)
+		{
+			return method.IsStatic
+				       ? method.JsFullName().Id().Get("apply").Call(obj, args)
+				       : obj.Get(method.JsName()).Get("apply").Call(obj, args);
+		}
+
 		public static JsNode AsStatement(this JsNode value)
 		{
 			return new JsStatement(value);
@@ -45,9 +52,19 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return new JsNewobj(type);
 		}
 
+		public static JsNode Op(this JsNode left, object right, BinaryOperator op)
+		{
+			return new JsBinaryOperator(left, right, op);
+		}
+
+		public static JsNode Op(this JsNode left, object right, string op)
+		{
+			return new JsBinaryOperator(left, right, op);
+		}
+
 		public static JsNode Set(this JsNode dest, object value)
 		{
-			return new JsBinaryOperator(dest, value, BinaryOperator.Assign).AsStatement();
+			return dest.Op(value, BinaryOperator.Assign).AsStatement();
 		}
 
 		public static JsNode Get(this JsNode obj, object name)

@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		public static void Equals(IMethod method, JsBlock code)
 		{
 			var args = method.Parameters.Select(x => x.Name.Id()).ToArray();
-			code.Add(new JsBinaryOperator(args[0], args[1], "==").Return());
+			code.Add(args[0].Op(args[1], "==").Return());
 		}
 
 		[InlineImpl]
@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		public static void op_Inequality(IMethod method, JsBlock code)
 		{
 			var args = method.Parameters.Select(x => x.Name.Id()).ToArray();
-			code.Add(new JsBinaryOperator(args[0], args[1], "!=").Return());
+			code.Add(args[0].Op(args[1], "!=").Return());
 		}
 
 		[InlineImpl]

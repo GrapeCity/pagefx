@@ -125,8 +125,8 @@ namespace DataDynamics.PageFX.CodeModel
 			bool addParams = true;
 			if (method.IsConstructor)
 			{
-				if (kind == SigKind.Avm && !method.IsStatic)
-					sb.Append(declType.Name);
+				if (!method.IsStatic)
+					sb.Append(declType.Name.ToValidId(kind));
 				sb.Append(method.Name.ToValidId(kind));
 			}
 			else
