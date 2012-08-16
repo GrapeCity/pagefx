@@ -601,7 +601,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		internal JsClass CompileClass(IType type)
 		{
-			if (type.IsExcluded())
+			if (type == null || type.IsExcluded())
 			{
 				return null;
 			}
@@ -609,14 +609,15 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var klass = type.Tag as JsClass;
 			if (klass != null) return klass;
 
-			var baseClass = type.BaseType != null ? CompileClass(type.BaseType) : null;
+			var baseType = type.BaseType;
+			var baseClass = CompileClass(baseType == SystemTypes.ValueType ? SystemTypes.Object : baseType);
 
 			if (string.IsNullOrEmpty(type.Namespace))
 				_program.DefineNamespace("$global");
 			else
 				_program.DefineNamespace(type.Namespace);
 
-			klass = new JsClass(type, baseClass);
+			klass = new JsClass(type, baseType == SystemTypes.ValueType || baseType.IsString() ? null : baseClass);
 
 			type.Tag = klass;
 

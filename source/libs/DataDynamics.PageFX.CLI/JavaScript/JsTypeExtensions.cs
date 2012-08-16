@@ -9,6 +9,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 	{
 		public static bool IsString(this IType type)
 		{
+			if (type == null) return false;
 			return type == SystemTypes.String || type.FullName == "Avm.String";
 		}
 
