@@ -5,9 +5,9 @@ using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI
 {
-    partial class AbcGenerator
+    internal partial class AbcGenerator
     {
-        void EnshureDelegateMethods(IType type)
+        private void EnshureDelegateMethods(IType type)
         {
             var m = type.FindMethod(Const.Delegate.AddEventListeners, 2);
             if (m == null)
@@ -20,7 +20,7 @@ namespace DataDynamics.PageFX.FLI
             DefineAbcMethod(m);
         }
 
-        void EnshureDelegateMethods()
+		private void EnshureDelegateMethods()
         {
             if (_enshureDelegateMethods) return;
             _enshureDelegateMethods = true;
@@ -28,10 +28,10 @@ namespace DataDynamics.PageFX.FLI
             EnshureDelegateMethods(SystemTypes.MulticastDelegate);
         }
 
-        bool _enshureDelegateMethods;
+		private bool _enshureDelegateMethods;
 
         #region DefineDelegateConstructor
-        AbcMethod DefineDelegateConstructor(IMethod method, AbcInstance instance)
+		private AbcMethod DefineDelegateConstructor(IMethod method, AbcInstance instance)
         {
             bool isInitializer = !AbcGenConfig.IsInitializerParameterless;
             if (isInitializer && instance.Initializer != null)
@@ -86,7 +86,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineDelegateInvoke
-        AbcMethod DefineDelegateInvoke(IMethod method, AbcInstance instance)
+		private AbcMethod DefineDelegateInvoke(IMethod method, AbcInstance instance)
         {
             EnshureDelegateMethods();
             //TODO: Check m_function on "not null"
