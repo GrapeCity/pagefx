@@ -125,7 +125,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		internal JsMethod CompileMethod(IMethod method)
 		{
-			if (method.IsGetType()) return null;
+			if (Exclude(method)) return null;
 
 			var jsMethod = method.Tag as JsMethod;
 			if (jsMethod != null) return jsMethod;
@@ -143,6 +143,17 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return jsMethod;
 		}
 
+		private static bool Exclude(IMethod method)
+		{
+			if (method.IsGetType())
+				return true;
+
+			if (method.IsToString() && method.DeclaringType.IsString())
+				return true;
+
+			return false;
+		}
+
 		private static void Analyze(IMethod method)
 		{
 			var translator = new ILTranslator();
@@ -151,6 +162,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private JsFunction CompileFunction(JsClass klass, IMethod method)
 		{
+			var func = CompileInlineFunction(klass, method);
+			if (func != null) return func;
+
 			Analyze(method);
 
 			var body = method.Body as IClrMethodBody;
@@ -160,7 +174,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var context = new MethodContext(klass, method);
 
 			var parameters = method.Parameters.Select(x => x.Name).ToArray();
-			var func = new JsFunction(null, parameters);
+			func = new JsFunction(null, parameters);
 
 			//TODO: cache info and code as separate class property
 			var info = new JsObject
@@ -188,6 +202,21 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			func.Body.Add(new JsText("return ctx.exec(code);"));
 
 			return func;
+		}
+
+		private JsFunction CompileInlineFunction(JsClass klass, IMethod method)
+		{
+			if (method.IsToString())
+			{
+				if (method.DeclaringType == SystemTypes.Char)
+				{
+					var func = new JsFunction(null);
+					func.Body.Add("String.fromCharCode".Id().Call("this".Id().Get("m_value")).Return());
+					return func;
+				}
+			}
+
+			return null;
 		}
 
 		private object CompileInstruction(MethodContext context, Instruction i)
