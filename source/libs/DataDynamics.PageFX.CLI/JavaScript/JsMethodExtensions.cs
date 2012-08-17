@@ -1,10 +1,21 @@
 using System;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal static class JsMethodExtensions
 	{
+		public static string[] JsParameterNames(this IMethod method)
+		{
+			return method.Parameters.Select(x => x.Name.ToValidId(SigKind.Js)).ToArray();
+		}
+
+		public static JsId[] JsParameterIds(this IMethod method)
+		{
+			return method.Parameters.Select(x => x.Name.ToValidId(SigKind.Js).Id()).ToArray();
+		}
+
 		public static string JsName(this IMethod method)
 		{
 			if (method.IsToString()) return "toString";

@@ -174,7 +174,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			var context = new MethodContext(klass, method);
 
-			var parameters = method.Parameters.Select(x => x.Name).ToArray();
+			var parameters = method.JsParameterNames();
 			func = new JsFunction(null, parameters);
 
 			//TODO: cache info and code as separate class property

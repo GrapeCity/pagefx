@@ -121,7 +121,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private static JsFunction CompileInlineFunction(IMethod method, InlineMethodInfo info)
 		{
-			var parameters = method.Parameters.Select(x => x.Name).ToArray();
+			var parameters = method.JsParameterNames();
 			var func = new JsFunction(null, parameters);
 
 			switch (info.Kind)
@@ -144,7 +144,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					for (int i = 0; i < method.Parameters.Count; i++)
 					{
 						if (i > 0) text += info.Name;
-						text += method.Parameters[i].Name;
+						text += parameters[i];
 					}
 					text += ";";
 					func.Body.Add(new JsText(text));

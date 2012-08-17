@@ -8,14 +8,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl(ArgCount = 2)]
 		public static void Equals(IMethod method, JsBlock code)
 		{
-			var args = method.Parameters.Select(x => x.Name.Id()).ToArray();
+			var args = method.JsParameterIds();
 			code.Add(args[0].Op(args[1], "==").Return());
 		}
 
 		[InlineImpl]
 		public static void op_Implicit(IMethod method, JsBlock code)
 		{
-			var args = method.Parameters.Select(x => x.Name.Id()).ToArray();
+			var args = method.JsParameterIds();
 			code.Add(args[0].Return());
 		}
 
@@ -28,7 +28,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl]
 		public static void op_Inequality(IMethod method, JsBlock code)
 		{
-			var args = method.Parameters.Select(x => x.Name.Id()).ToArray();
+			var args = method.JsParameterIds();
 			code.Add(args[0].Op(args[1], "!=").Return());
 		}
 

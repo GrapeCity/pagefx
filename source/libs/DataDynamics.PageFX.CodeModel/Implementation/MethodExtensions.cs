@@ -87,23 +87,6 @@ namespace DataDynamics.PageFX.CodeModel
 			return type.GetSigName().ToValidId(kind);
 		}
 
-		private static string ToValidId(this string s, SigKind kind)
-		{
-			if (kind == SigKind.Avm) return s;
-
-			if (s.IndexOf((c, i) => !c.IsJsid(i == 0)) >= 0)
-			{
-				return s.Select((c, j) =>
-					{
-						if (JsExtensions.IsJsid(c, j == 0)) return c.ToString(CultureInfo.InvariantCulture);
-						if (c == '.') return "$";
-						return "x" + ((int)c).ToString("x2");
-					}).ToArray().Join("");
-			}
-
-			return s;
-		}
-
 		public static string BuildSigName(this IMethod method, SigKind kind)
 		{
 			var impl = method.GetExplicitImpl();

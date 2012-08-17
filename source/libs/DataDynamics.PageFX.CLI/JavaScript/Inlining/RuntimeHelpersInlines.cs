@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl]
 		public static void InitializeArray(IMethod method, JsBlock code)
 		{
-			var args = method.Parameters.Select(x => x.Name.Id()).ToArray();
+			var args = method.JsParameterIds();
 			code.Add("$initarr".Id().Call(args).AsStatement());
 		}
 	}

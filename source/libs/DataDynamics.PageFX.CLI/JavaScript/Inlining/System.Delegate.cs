@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 			if (method.Parameters.Count != 2)
 				throw new InvalidOperationException();
 
-			var args = method.Parameters.Select(x => x.Name.Id()).ToArray();
+			var args = method.JsParameterIds();
 			code.Add("this".Id().Set("m_target", args[0]));
 			code.Add("this".Id().Set("m_function", args[1]));
 		}
@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl]
 		public static void Invoke(IMethod method, JsBlock code)
 		{
-			var args = new JsArray(method.Parameters.Select(x => (object)x.Name.Id()));
+			var args = new JsArray(method.JsParameterIds());
 			code.Add("$invokeDelegate".Id().Call("this".Id(), args, method.IsVoid() ? 0 : 1));
 		}
 	}
