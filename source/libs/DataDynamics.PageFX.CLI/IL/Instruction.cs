@@ -16,6 +16,21 @@ namespace DataDynamics.PageFX.CLI.IL
 			Index = -1;
 		}
 
+		public IInstruction Clone()
+		{
+			return new Instruction
+				{
+					OpCode = OpCode,
+					Index = Index,
+					Value = Value,
+					MetadataToken = MetadataToken,
+					InputTypes = InputTypes,
+					OutputType = OutputType,
+					CallInfo = CallInfo,
+					SequencePoint = SequencePoint
+				};
+		}
+
         #region IInstruction Members
         int IInstruction.Code
         {
@@ -187,7 +202,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public int MetadataToken { get; set; }
 
-        public ITypeMember Member
+	    public ITypeMember Member
         {
             get 
             {
@@ -293,11 +308,15 @@ namespace DataDynamics.PageFX.CLI.IL
 
 		internal bool Dumped { get; set; }
 
+    	#endregion
+
+		// Analysis Info
+
 		public IType[] InputTypes { get; set; }
 
 		public IType OutputType { get; set; }
 
-    	#endregion
+		public CallInfo CallInfo { get; set; }
 
         //DebugInfo
         public SequencePoint SequencePoint { get; set; }
@@ -401,11 +420,22 @@ namespace DataDynamics.PageFX.CLI.IL
             sb.Append(value);
         }
         #endregion
-
-		
     }
 
-    internal sealed class InstructionState
+	internal sealed class CallInfo
+	{
+		public readonly IType ReceiverType;
+
+		public readonly CallFlags Flags;
+
+		public CallInfo(IType receiverType, CallFlags flags)
+		{
+			ReceiverType = receiverType;
+			Flags = flags;
+		}
+	}
+
+	internal sealed class InstructionState
     {
         public ITypeMember Member { get; set; }
 

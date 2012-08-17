@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
@@ -73,6 +74,8 @@ namespace DataDynamics.PageFX.CodeModel
         void TranslateOffsets(IInstructionList list);
 
         int MetadataToken { get; set; }
+
+	    IInstruction Clone();
     }
 
     public interface IInstructionList : IList<IInstruction>
@@ -83,4 +86,12 @@ namespace DataDynamics.PageFX.CodeModel
 
         void TranslateOffsets();
     }
+
+	public static class InstructionExtensions
+	{
+		public static IEnumerable<IInstruction> Clone(this IEnumerable<IInstruction> seq)
+		{
+			return seq.Select(i => i.Clone());
+		}
+	}
 }

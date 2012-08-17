@@ -305,9 +305,9 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        bool IsBaseMethod(IMethod method)
+        private bool IsBaseMethod(IMethod method)
         {
-            return CodeModel.TypeExtensions.IsBaseMethod(_method, method);
+            return _method.IsBaseMethod(method);
         }
         #endregion
 

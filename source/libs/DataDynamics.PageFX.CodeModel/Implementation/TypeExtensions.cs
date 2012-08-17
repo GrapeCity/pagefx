@@ -511,11 +511,11 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
 
-        public static bool IsBaseMethod(IMethod thisMethod, IMethod method)
+        public static bool IsBaseMethod(this IMethod thisMethod, IMethod baseMethod)
         {
             if (thisMethod.IsStatic) return false;
-            if (method.IsStatic) return false;
-            var type = method.DeclaringType;
+            if (baseMethod.IsStatic) return false;
+            var type = baseMethod.DeclaringType;
             var t = thisMethod.DeclaringType.BaseType;
             while (t != null)
             {

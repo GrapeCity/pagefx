@@ -765,6 +765,11 @@ namespace DataDynamics.PageFX.FLI.IL
         #endregion
 
         #region ICloneable Members
+		IInstruction IInstruction.Clone()
+		{
+			return Clone();
+		}
+
         /// <summary>
         /// Clones the instruction.
         /// </summary>

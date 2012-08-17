@@ -775,7 +775,7 @@ namespace DataDynamics.PageFX.CLI.IL
         }
         #endregion
 
-        #region AddInstructionPrefix
+        #region Instruction Prefix & Suffix
         /// <summary>
         /// Adds some code before current translated instruction
         /// </summary>
@@ -797,9 +797,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 throw new ILTranslatorException("Not implemented");
             }
         }
-        #endregion
-
-        #region AddInstructionSuffix
+        
         /// <summary>
         /// Adds some code after current translated instruction.
         /// </summary>

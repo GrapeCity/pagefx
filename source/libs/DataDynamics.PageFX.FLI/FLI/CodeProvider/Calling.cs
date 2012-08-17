@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
@@ -194,18 +194,10 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        #region CallInfo
-        private struct CallInfo
-        {
-        }
-        private readonly Stack<CallInfo> _callStack = new Stack<CallInfo>();
-        #endregion
-
         #region BeginCall/EndCall
         public IInstruction[] BeginCall(IMethod method)
         {
             EnsureMethod(method);
-            _callStack.Push(new CallInfo());
             return null;
         }
 
@@ -218,8 +210,6 @@ namespace DataDynamics.PageFX.FLI
                 _generator.FlexAppCtorAfterSuperCall(code);
             }
 
-            _callStack.Pop();
-            
             return code.ToArray();
         }
         #endregion
@@ -241,11 +231,8 @@ namespace DataDynamics.PageFX.FLI
             var code = tag as AbcCode;
             if (code != null)
             {
-                var arr = code.ToArray();
-                //NOTE: We need to clone instructions
-                for (int i = 0; i < arr.Length; ++i)
-                    arr[i] = ((Instruction)arr[i]).Clone();
-                return arr;
+				//NOTE: We need to clone instructions since inline code could be shared and reusable
+                return code.Clone().ToArray();
             }
 
             code = new AbcCode(_abc);
@@ -275,8 +262,7 @@ namespace DataDynamics.PageFX.FLI
             throw new NotImplementedException();
         }
 
-
-        static string GetBaseCallPrefix(IMethod method)
+        private static string GetBaseCallPrefix(IMethod method)
         {
             var m = method.Tag as AbcMethod;
             if (m != null)
@@ -287,7 +273,7 @@ namespace DataDynamics.PageFX.FLI
             return "$super$";
         }
 
-        AbcMethod DefineBaseCall(IType receiverType, IMethod method)
+        private AbcMethod DefineBaseCall(IType receiverType, IMethod method)
         {
             var instance = DefineAbcInstance(receiverType);
 
@@ -308,13 +294,13 @@ namespace DataDynamics.PageFX.FLI
                     method);
         }
 
-        void BaseCall(AbcCode code, IType receiverType, IMethod method)
+        private void BaseCall(AbcCode code, IType receiverType, IMethod method)
         {
             var m = DefineBaseCall(receiverType, method);
             code.Call(m);
         }
 
-        void Call(AbcCode code, IMethod method, AbcMultiname prop, CallFlags flags)
+        private void Call(AbcCode code, IMethod method, AbcMultiname prop, CallFlags flags)
         {
             if (prop == null)
                 throw new ArgumentNullException("prop");
@@ -329,22 +315,17 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        void CallCore(AbcCode code, IMethod method, AbcMultiname prop, CallFlags flags)
+        private void CallCore(AbcCode code, IMethod method, AbcMultiname prop, CallFlags flags)
         {
             prop = _abc.ImportConst(prop);
 
-            bool thiscall = (flags & CallFlags.Thiscall) != 0;
-            bool virtcall = (flags & CallFlags.Virtcall) != 0;
-
             //determines whether method belongs to base type
-            bool super = false;
-            if (thiscall && !virtcall)
-                super = IsSuperCall(method);
-
+            bool super = IsSuperCall(method, flags);
+            
             CallCore(code, method, prop, super);
         }
 
-        void CallCore(AbcCode code, IMethod method, AbcMultiname prop, bool super)
+        private void CallCore(AbcCode code, IMethod method, AbcMultiname prop, bool super)
         {
             var m = method.Tag as AbcMethod;
             if (m != null)
@@ -400,13 +381,20 @@ namespace DataDynamics.PageFX.FLI
             code.Add(InstructionCode.Callproperty, prop, n);
         }
 
-        bool IsSuperCall(IMethod method)
+		private bool IsSuperCall(IMethod method, CallFlags flags)
+		{
+			bool thiscall = (flags & CallFlags.Thiscall) != 0;
+			bool virtcall = (flags & CallFlags.Virtcall) != 0;
+			return thiscall && !virtcall && IsSuperCall(method);
+		}
+
+        private bool IsSuperCall(IMethod method)
         {
-            if (method.IsAbstract) return false;
+			if (method.IsStatic || method.IsConstructor || method.IsAbstract) return false;
             return IsBaseMethod(method);
         }
 
-        bool CanUseCallStatic
+        private bool CanUseCallStatic
         {
             get
             {
@@ -422,7 +410,7 @@ namespace DataDynamics.PageFX.FLI
 			}
         }
 
-        static bool MustCoerceReturnType(IMethod method)
+        private static bool MustCoerceReturnType(IMethod method)
         {
             if (method.IsVoid()) return false;
 
@@ -448,7 +436,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        static bool MustCoerceReturnType(IType declType)
+		private static bool MustCoerceReturnType(IType declType)
         {
             if (declType.IsInterface)
             {
@@ -478,7 +466,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        bool SuperCall(AbcCode code, IMethod method)
+		private bool SuperCall(AbcCode code, IMethod method)
         {
             if (IsConstructSuper(method))
             {
@@ -496,7 +484,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        bool IsConstructSuper(IMethod method)
+		private bool IsConstructSuper(IMethod method)
         {
             if (!_method.IsConstructor) return false;
             if (!IsBaseCtor(method)) return false;
@@ -504,7 +492,7 @@ namespace DataDynamics.PageFX.FLI
             return method.IsInitializer();
         }
 
-        void NewObject(AbcCode code, IMethod method)
+		private void NewObject(AbcCode code, IMethod method)
         {
             var type = method.DeclaringType;
 

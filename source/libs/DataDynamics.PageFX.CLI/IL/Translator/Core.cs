@@ -1679,12 +1679,14 @@ namespace DataDynamics.PageFX.CLI.IL
 
             bool basecall = false;
             if (!thiscall && !virtcall
-                && receiverType != method.DeclaringType
-                && !method.IsStatic && !method.IsConstructor)
+				&& !method.IsStatic && !method.IsConstructor
+                && receiverType != method.DeclaringType)
                 basecall = receiverType.IsSubclassOf(method.DeclaringType);
 
             if (basecall) flags |= CallFlags.Basecall;
 
+			_instruction.CallInfo = new IL.CallInfo(receiverType, flags);
+			
             if (!method.IsVoid())
             {
                 if (type.TypeKind == TypeKind.Reference)
