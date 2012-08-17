@@ -13,7 +13,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public static string JsFullName(this IMethod method)
 		{
-			var type = method.DeclaringType;
+			return method.JsFullName(method.DeclaringType);
+		}
+
+		public static string JsFullName(this IMethod method, IType type)
+		{
 			var typeName = type.JsFullName(method);
 			return String.Format("{0}.{1}{2}", typeName, method.IsStatic ? "" : "prototype.", method.JsName());
 		}

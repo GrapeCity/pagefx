@@ -54,10 +54,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			writer.Write(_staticMembers, "\n");
 
+			//TODO: !Base.Type.IsString() should be done in JsCompiler
 			if (Base != null && !Base.Type.IsString())
 			{
 				writer.WriteLine();
-				writer.WriteLine("$inherit({0}, {1});", name, Base.Type.JsFullName());
+				var baseName = Base.Type.JsFullName();
+				writer.WriteLine("{0}.prototype.$base = {1}.prototype;", name, baseName);
+				writer.WriteLine("$inherit({0}, {1});", name, baseName);
 			}
 		}
 

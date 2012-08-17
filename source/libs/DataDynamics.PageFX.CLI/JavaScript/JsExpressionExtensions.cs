@@ -33,8 +33,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public static JsNode Apply(this IMethod method, JsNode obj, object args)
 		{
 			return method.IsStatic
-				       ? method.JsFullName().Id().Get("apply").Call(obj, args)
-				       : obj.Get(method.JsName()).Get("apply").Call(obj, args);
+				       ? method.JsFullName().Id().Apply(obj, args)
+				       : obj.Get(method.JsName()).Apply(obj, args);
+		}
+
+		public static JsNode Apply(this JsNode f, JsNode obj, object args)
+		{
+			return f.Get("apply").Call(obj, args);
 		}
 
 		public static JsNode AsStatement(this JsNode value)

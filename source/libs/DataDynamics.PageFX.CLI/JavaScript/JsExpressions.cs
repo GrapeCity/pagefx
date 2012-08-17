@@ -130,29 +130,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		}
 	}
 
-	internal sealed class JsProperty : JsNode, IJsNameValuePair
-	{
-		public JsProperty()
-		{
-		}
-
-		public JsProperty(string name, JsNode value)
-		{
-			Name = name;
-			Value = value;
-		}
-
-		public string Name { get; set; }
-
-		public JsNode Value { get; set; }
-
-		public override void Write(JsWriter writer)
-		{
-			writer.Write("{0}: ", Name);
-			Value.Write(writer);
-		}
-	}
-
 	internal sealed class JsPropertyRef : JsNode
 	{
 		private readonly JsNode _obj;

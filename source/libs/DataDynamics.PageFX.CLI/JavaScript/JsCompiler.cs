@@ -216,7 +216,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				case InstructionCode.Call:
 				case InstructionCode.Callvirt:
-					return OpCall(context, i.Method);
+					return OpCall(context, i);
 
 				case InstructionCode.Ldftn:
 				case InstructionCode.Ldvirtftn:
@@ -237,6 +237,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				case InstructionCode.Ldsflda:
 				case InstructionCode.Stfld:
 				case InstructionCode.Stsfld:
+					CompileFields(i.Field.DeclaringType, i.Field.IsStatic);
 					return new FieldCompiler(this).Compile(context, i.Field);
 
 				case InstructionCode.Box:
@@ -389,7 +390,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			CompileCallMethod(method);
 
-			var func = CreateCallFunc(context, method);
+			var func = CreateCallFunc(context, method, i.CallInfo);
 			
 			return context.Vars.Add(key, func);
 		}
@@ -467,8 +468,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return context.Vars.Add(key, func);
 		}
 
-		private object OpCall(MethodContext context, IMethod method)
+		private object OpCall(MethodContext context, Instruction i)
 		{
+			var method = i.Method;
 			var var = context.Vars[method];
 			if (var != null) return var;
 
@@ -496,12 +498,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			CompileCallMethod(method);
 
-			func = CreateCallFunc(context, method);
+			func = CreateCallFunc(context, method, i.CallInfo);
 			
 			return CreateCallInfo(context, method, func);
 		}
 
-		private JsFunction CreateCallFunc(MethodContext context, IMethod method)
+		private JsFunction CreateCallFunc(MethodContext context, IMethod method, CallInfo info)
 		{
 			var obj = "o".Id();
 			var args = "a".Id();
@@ -509,10 +511,39 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			InitClass(context, func, method);
 
-			var call = method.Apply(obj, args);
+			JsNode call = null;
+
+			if (info != null)
+			{
+				if (info.ReceiverType != null && (info.Flags & CallFlags.Basecall) != 0)
+				{
+					call = method.JsFullName(info.ReceiverType).Id().Apply(obj, args);
+				}
+				else if (IsSuperCall(context, method, info.Flags))
+				{
+					call = obj.Get("$base").Get(method.JsName()).Apply(obj, args);
+				}
+			}
+			
+			if (call == null)
+				call = method.Apply(obj, args);
+
 			func.Body.Add(method.IsVoid() ? call.AsStatement() : call.Return());
 
 			return func;
+		}
+
+		private bool IsSuperCall(MethodContext context, IMethod method, CallFlags flags)
+		{
+			bool thiscall = (flags & CallFlags.Thiscall) != 0;
+			bool virtcall = (flags & CallFlags.Virtcall) != 0;
+			return thiscall && !virtcall && IsSuperCall(context, method);
+		}
+
+		private static bool IsSuperCall(MethodContext context, IMethod method)
+		{
+			if (method.IsStatic || method.IsConstructor || method.IsAbstract) return false;
+			return context.Method.IsBaseMethod(method);
 		}
 
 		private static object CreateCallInfo(MethodContext context, IMethod method, JsFunction func)
