@@ -474,33 +474,19 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var var = context.Vars[method];
 			if (var != null) return var;
 
-			JsFunction func;
-
-			//TODO: remove temp code, now we redirect Console.WriteLine to console.log
-			
-			if (method.DeclaringType.FullName == "System.Console")
-			{
-				var obj = "o".Id();
-				var args = "a".Id();
-				func = new JsFunction(null, obj.Value, args.Value);
-
-				switch (method.Name)
-				{
-					case "WriteLine":
-						func.Body.Add("console.log".Id().Call(args.Get(0)));
-						break;
-					default:
-						throw new NotImplementedException();
-				}
-
-				return CreateCallInfo(context, method, func);
-			}
-
 			CompileCallMethod(method);
 
-			func = CreateCallFunc(context, method, i.CallInfo);
-			
-			return CreateCallInfo(context, method, func);
+			var func = CreateCallFunc(context, method, i.CallInfo);
+
+			var info = new JsObject
+				{
+					{"n", method.Parameters.Count},
+					{"s", method.IsStatic},
+					{"r", !method.IsVoid()},
+					{"f", func},
+				};
+
+			return context.Vars.Add(method, info);
 		}
 
 		private JsFunction CreateCallFunc(MethodContext context, IMethod method, CallInfo info)
@@ -533,7 +519,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return func;
 		}
 
-		private bool IsSuperCall(MethodContext context, IMethod method, CallFlags flags)
+		private static bool IsSuperCall(MethodContext context, IMethod method, CallFlags flags)
 		{
 			bool thiscall = (flags & CallFlags.Thiscall) != 0;
 			bool virtcall = (flags & CallFlags.Virtcall) != 0;
@@ -544,19 +530,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			if (method.IsStatic || method.IsConstructor || method.IsAbstract) return false;
 			return context.Method.IsBaseMethod(method);
-		}
-
-		private static object CreateCallInfo(MethodContext context, IMethod method, JsFunction func)
-		{
-			var info = new JsObject
-				{
-					{"n", method.Parameters.Count},
-					{"s", method.IsStatic},
-					{"r", !method.IsVoid()},
-					{"f", func},
-				};
-
-			return context.Vars.Add(method, info);
 		}
 
 		private void CompileCallMethod(IMethod method)
