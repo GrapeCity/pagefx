@@ -339,7 +339,7 @@ namespace System
         }
         #endregion
 
-		protected Delegate CreateInstance()
+		protected virtual Delegate CreateInstance()
 		{
 			return (Delegate)GetType().CreateInstanceDefault();
 		}
