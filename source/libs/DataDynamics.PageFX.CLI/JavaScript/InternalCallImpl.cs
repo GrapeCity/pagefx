@@ -152,7 +152,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					break;
 
 				default:
-					var target = method.IsStatic ? method.DeclaringType.JsFullName(method).Id() : "this".Id();
+					var type = method.DeclaringType;
+					//TODO: use ABC, pfx meta attributes
+					var typeName = type.Namespace == "Avm" ? type.Name : type.JsFullName(method);
+					var target = method.IsStatic ? typeName.Id() : "this".Id();
 					func.Body.Add(target.Get(info.Name).Call(parameters.Select(x => x.Id()).ToArray()).Return());
 					break;
 			}

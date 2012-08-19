@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public static string JsFullName(this IType type)
 		{
 			string ns = type.Namespace;
-			if (String.IsNullOrEmpty(ns))
+			if (string.IsNullOrEmpty(ns))
 			{
 				ns = "$global";
 			}
