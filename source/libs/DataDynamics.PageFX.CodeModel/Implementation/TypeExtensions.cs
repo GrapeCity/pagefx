@@ -729,21 +729,11 @@ namespace DataDynamics.PageFX.CodeModel
     		return compoundType.ElementType;
     	}
 
-    	public static IMethod FindMethod(this IType type, string name, IType arg1)
-    	{
-    		return type.Methods.Find(name, arg1);
-    	}
-
-		public static IMethod FindMethod(this IType type, string name, int argc)
-    	{
-    		return type.Methods.Find(name, argc);
-    	}
-
-		public static IMethod FindMethod(this IType type, string name, int argc, Func<IParameterCollection, bool> args)
+	    public static IMethod FindMethod(this IType type, string name, int argc, Func<IParameterCollection, bool> args)
     	{
     		return type.Methods.Find(name, m =>
     		                               	{
-    		                               		var p= m.Parameters;
+    		                               		var p = m.Parameters;
     		                               		if (p.Count != argc) return false;
     		                               		return args(p);
     		                               	});

@@ -125,7 +125,7 @@ namespace DataDynamics.PageFX.FLI
             {
                 if (_isMemberwiseCloneCompiled.HasValue)
                     return _isMemberwiseCloneCompiled.Value;
-                var m = SystemTypes.Object.FindMethod("MemberwiseClone", 0);
+                var m = SystemTypes.Object.Methods.Find("MemberwiseClone", 0);
                 if (m == null)
                     throw new InvalidOperationException("Invalid corlib");
                 _isMemberwiseCloneCompiled = m.Tag is AbcMethod;

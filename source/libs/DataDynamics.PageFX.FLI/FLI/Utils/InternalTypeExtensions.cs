@@ -448,7 +448,7 @@ namespace DataDynamics.PageFX.FLI
 
 	    public static string GetMethodName(this IType type, string name, int argcount)
 	    {
-		    var m = type.FindMethod(name, argcount);
+		    var m = type.Methods.Find(name, argcount);
 		    if (m == null)
 			    throw new ArgumentException(String.Format("Unable to find method {0} in type {1}", name, type.FullName));
 		    return m.GetSigName(SigKind.Avm);

@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.FLI
             }
 
             //Use ToString
-            var toString = type.FindMethod(Const.Object.MethodToString, 0);
+            var toString = type.Methods.Find(Const.Object.MethodToString, 0);
             if (toString != null)
             {
                 var tostr = DefineAbcMethod(toString);

@@ -98,7 +98,7 @@ namespace DataDynamics.PageFX.FLI
             IMethod convertMethod;
             if (name == "ToType")
             {
-                convertMethod = convertType.FindMethod(method.Name, 3);
+	            convertMethod = convertType.Methods.Find(method.Name, 3);
             }
             else
             {
@@ -147,7 +147,7 @@ namespace DataDynamics.PageFX.FLI
             var m = method.Tag as AbcMethod;
             if (m == null) return;
 
-            var cmp = SystemTypes.String.FindMethod("CompareTo", SystemTypes.Object);
+            var cmp = SystemTypes.String.Methods.Find("CompareTo", SystemTypes.Object);
 
             if (cmp == null)
                 throw new InvalidOperationException("String has no CompareTo(object) method");
