@@ -1,10 +1,25 @@
-﻿using System.Linq;
+﻿using System;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 {
 	internal sealed class StringInlines : InlineCodeProvider
 	{
+		[InlineImpl("*", Attrs = MethodAttrs.Instance | MethodAttrs.Constructor)]
+		public static void Ctor(MethodContext context, JsBlock code)
+		{
+			var method = context.Method;
+			var args = method.JsParameterIds();
+
+			var build = method.DeclaringType.Methods.Find("Build", method.Parameters.Count);
+			if (build == null)
+				throw new InvalidOperationException("Unable to find String.Build.");
+
+			context.Host.CompileMethod(build);
+
+			code.Add(build.JsFullName(method.DeclaringType).Id().Call(args).Return());
+		}
+
 		[InlineImpl(ArgCount = 2)]
 		public static void Equals(IMethod method, JsBlock code)
 		{
@@ -35,8 +50,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl]
 		public static void ReturnValue(JsBlock code)
 		{
-			//TODO:
-			//code.ReturnValue();
+			throw new NotImplementedException();
 		}
 	}
 }

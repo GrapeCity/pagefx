@@ -445,7 +445,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public bool HasCopy(IType type)
 		{
-			return false;
+			return true;
 		}
 
 		public IInstruction[] CopyToThis(IType valueType)

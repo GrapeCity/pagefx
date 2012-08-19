@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public static string JsFullName(this IType type)
 		{
 			string ns = type.Namespace;
-			if (string.IsNullOrEmpty(ns))
+			if (String.IsNullOrEmpty(ns))
 			{
 				ns = "$global";
 			}
@@ -25,7 +25,19 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public static string JsFullName(this IType type, IMethod method)
 		{
-			return type.IsString() && !method.IsStatic ? type.Name : type.JsFullName();
+			if (type.IsString())
+			{
+				if (!method.IsStatic)
+				{
+					return type.Name;
+				}
+				//TODO: provide attributes to specify type name of native/internal/inline calls
+				if (method.Name == "fromCharCode")
+				{
+					return type.Name;
+				}
+			}
+			return type.JsFullName();
 		}
 
 		/// <summary>
@@ -100,6 +112,15 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					yield return t;
 				}
 			}
+		}
+
+		public static IEnumerable<IField> GetFields(this IType type, bool isStatic)
+		{
+			if (isStatic)
+			{
+				return type.Fields.Where(x => x.IsStatic && !x.IsConstant && !x.IsArrayInitializer());
+			}
+			return type.Fields.Where(f => !f.IsStatic && !f.IsConstant && !f.IsArrayInitializer());
 		}
 	}
 }

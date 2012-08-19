@@ -149,6 +149,7 @@
     <Compile Include="JavaScript\JsBlock.cs" />
     <Compile Include="JavaScript\JsClass.cs" />
     <Compile Include="JavaScript\JsCompiler.cs" />
+    <Compile Include="JavaScript\JsDelegate.cs" />
     <Compile Include="JavaScript\JsExpressionExtensions.cs" />
     <Compile Include="JavaScript\JsExtensions.cs" />
     <Compile Include="JavaScript\JsField.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="JavaScript\JsInterface.cs" />
     <Compile Include="JavaScript\JsMethod.cs" />
     <Compile Include="JavaScript\JsMethodExtensions.cs" />
+    <Compile Include="JavaScript\JsStruct.cs" />
     <Compile Include="JavaScript\NopCodeProvider.cs" />
     <Compile Include="JavaScript\JsNamespace.cs" />
     <Compile Include="JavaScript\JsNode.cs" />

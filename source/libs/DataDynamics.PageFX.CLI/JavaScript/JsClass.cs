@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
@@ -12,9 +11,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 	internal sealed class JsClass : JsNode
 	{
-		private readonly List<JsClassMember> _instanceFields = new List<JsClassMember>();
-		private readonly List<JsClassMember> _staticMembers = new List<JsClassMember>();
+		private readonly List<JsField> _instanceFields = new List<JsField>();
+		private readonly List<JsField> _staticFields = new List<JsField>();
+		private readonly List<JsClassMember> _members = new List<JsClassMember>();
 		private readonly IList<JsClass> _subclasses = new List<JsClass>();
+		private ClassFlags _flags;
 
 		public JsClass(IType type, JsClass baseClass)
 		{
@@ -31,28 +32,68 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			get { return _subclasses; }
 		}
 
-		public bool HasClassInit { get; set; }
+		public bool HasClassInit
+		{
+			get { return (_flags & ClassFlags.ClassInit) != 0; }
+			set { SetFlag(ClassFlags.ClassInit, value); }
+		}
+
+		public bool StaticFieldsCompiled
+		{
+			get { return (_flags & ClassFlags.StaticFieldsCompiled) != 0; }
+			set { SetFlag(ClassFlags.StaticFieldsCompiled, value); }
+		}
+
+		public bool InstanceFieldsCompiled
+		{
+			get { return (_flags & ClassFlags.InstanceFieldsCompiled) != 0; }
+			set { SetFlag(ClassFlags.InstanceFieldsCompiled, value); }
+		}
+
+		private void SetFlag(ClassFlags f, bool value)
+		{
+			if (value) _flags |= f;
+			else _flags &= ~f;
+		}
 
 		public void Add(JsClassMember member)
 		{
-			if (member is JsField && !member.IsStatic)
-				_instanceFields.Add(member);
-			else
-				_staticMembers.Add(member);
+			var field = member as JsField;
+			if (field != null)
+			{
+				if (field.IsStatic) _staticFields.Add(field);
+				else _instanceFields.Add(field);
+				return;
+			}
+			
+			_members.Add(member);
 		}
 
 		public override void Write(JsWriter writer)
 		{
 			var name = Type.JsFullName();
+
 			writer.WriteLine("{0} = function() {{", name);
 			if (_instanceFields.Count > 0)
 			{
+				writer.IncreaseIndent();
 				writer.Write(_instanceFields, "\n");
 				writer.WriteLine();
+				writer.DecreaseIndent();
 			}			
 			writer.WriteLine("};"); // end of class
 
-			writer.Write(_staticMembers, "\n");
+			if (_staticFields.Count > 0)
+			{
+				writer.WriteLine("{0}.$init_fields = function() {{", name);
+				writer.IncreaseIndent();
+				writer.Write(_staticFields, "\n");
+				writer.WriteLine();
+				writer.DecreaseIndent();
+				writer.WriteLine("};"); // end of static fields initializer
+			}
+
+			writer.Write(_members, "\n");
 
 			//TODO: !Base.Type.IsString() should be done in JsCompiler
 			if (Base != null && !Base.Type.IsString())
@@ -63,27 +104,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				writer.WriteLine("$inherit({0}, {1});", name, baseName);
 			}
 		}
+	}
 
-		public static void DefineCopyMethod(JsClass klass)
-		{
-			if (klass.Type.TypeKind != TypeKind.Struct) return;
-
-			var copy = new JsFunction(null);
-
-			copy.Body.Add(klass.Type.New().Var("o"));
-
-			var obj = "o".Id();
-
-			foreach (var field in klass.Type.Fields.Where(field => !field.IsStatic && !field.IsConstant))
-			{
-				var name = field.JsName();
-				var value = "this".Id().Get(name);
-				copy.Body.Add(obj.Set(name, value));
-			}
-
-			copy.Body.Add(obj.Return());
-
-			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.$copy", klass.Type.JsFullName()), copy));
-		}
+	[Flags]
+	internal enum ClassFlags
+	{
+		ClassInit = 0x01,
+		StaticFieldsCompiled = 0x02,
+		InstanceFieldsCompiled = 0x04,
 	}
 }

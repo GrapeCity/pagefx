@@ -339,9 +339,14 @@ namespace System
         }
         #endregion
 
+		protected Delegate CreateInstance()
+		{
+			return (Delegate)GetType().CreateInstanceDefault();
+		}
+
         public virtual object Clone()
         {
-            Delegate d = (Delegate)GetType().CreateInstanceDefault();
+            Delegate d = CreateInstance();
             d.m_target = m_target;
             d.m_function = m_function;
             return d;

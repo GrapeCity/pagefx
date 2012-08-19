@@ -277,7 +277,7 @@ namespace System
 
         public override object Clone()
         {
-            MulticastDelegate d = (MulticastDelegate)GetType().CreateInstanceDefault();
+            MulticastDelegate d = (MulticastDelegate)CreateInstance();
             d.m_target = m_target;
             d.m_function = m_function;
             d.m_prev = m_prev;

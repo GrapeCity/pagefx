@@ -1,4 +1,5 @@
-﻿using DataDynamics.PageFX.CodeModel;
+﻿using System.Linq;
+using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
@@ -30,9 +31,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 
 			var type = member as IType;
-			if (type != null && !type.IsInterface)
+			if (type != null)
 			{
-				return true;
+				return !type.IsInterface && !(type is ICompoundType);
 			}
 
 			var field = member as IField;
@@ -51,29 +52,54 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			CallClassInit(context, func, type.BaseType);
 
 			var ctor = type.GetStaticCtor();
-			if (ctor == null || ctor == context.Method) return;
-
-			_host.CompileMethod(ctor);
+			if (!HasClassInit(context, type, ctor)) return;
 
 			var cinitName = AddClassIinitMethod(type, ctor);
 
 			func.Body.Add(cinitName.Id().Call().AsStatement());
 		}
 
+		private static bool HasClassInit(MethodContext context, IType type, IMethod ctor)
+		{
+			if (ctor == null)
+			{
+				return type.GetFields(true).Any();
+			}
+
+			return ctor != context.Method;
+		}
+
 		private string AddClassIinitMethod(IType type, IMethod ctor)
 		{
 			var klass = _host.CompileClass(type);
 
-			var cinitName = string.Format("{0}.$cinit", type.JsFullName());
+			var typeName = type.JsFullName();
+			var cinitName = string.Format("{0}.$cinit", typeName);
 
 			if (klass.HasClassInit) return cinitName;
 
-			var flag = string.Format("{0}.$cinit_done", type.JsFullName());
+			if (ctor != null)
+			{
+				_host.CompileMethod(ctor);
+			}
+
+			var flag = string.Format("{0}.$cinit_done", typeName);
 
 			var cinit = new JsFunction(null);
 			cinit.Body.Add(new JsText(string.Format("if ({0} != undefined) return;", flag)));
 			cinit.Body.Add(new JsText(string.Format("{0} = 1;", flag)));
-			cinit.Body.Add(ctor.JsFullName().Id().Call().AsStatement());
+
+			if (type.GetFields(true).Any())
+			{
+				var initFields = string.Format("{0}.$init_fields", typeName);
+				cinit.Body.Add(new JsText(string.Format("if ({0} != undefined)", initFields)));
+				cinit.Body.Add(initFields.Id().Call().AsStatement());
+			}
+
+			if (ctor != null)
+			{
+				cinit.Body.Add(ctor.JsFullName().Id().Call().AsStatement());
+			}
 
 			klass.Add(new JsGeneratedMethod(cinitName, cinit));
 

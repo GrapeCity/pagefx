@@ -6,6 +6,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal static class JsMethodExtensions
 	{
+		public static bool IsStatic(this IMethod method)
+		{
+			return method.IsStatic 
+				|| (method.IsConstructor && method.DeclaringType.IsString());
+		}
+
 		public static string[] JsParameterNames(this IMethod method)
 		{
 			return method.Parameters.Select(x => x.Name.ToValidId(SigKind.Js)).ToArray();
@@ -30,7 +36,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public static string JsFullName(this IMethod method, IType type)
 		{
 			var typeName = type.JsFullName(method);
-			return String.Format("{0}.{1}{2}", typeName, method.IsStatic ? "" : "prototype.", method.JsName());
+			return String.Format("{0}.{1}{2}", typeName, method.IsStatic() ? "" : "prototype.", method.JsName());
 		}
 
 		//TODO: PERF process method custom attributes only once (one iteration)

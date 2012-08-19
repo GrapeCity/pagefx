@@ -76,7 +76,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			//TODO: pass args to main from node.js args
 
-			var ctx = new MethodContext(CompileClass(entryPoint.DeclaringType), entryPoint);
+			var ctx = new MethodContext(this, CompileClass(entryPoint.DeclaringType), entryPoint);
 			var main = new JsFunction(null);
 			InitClass(ctx, main, entryPoint);
 			main.Body.Add(method.FullName.Id().Call().AsStatement());
@@ -137,6 +137,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		internal JsMethod CompileMethod(IMethod method)
 		{
+			if (method == null)
+				throw new ArgumentNullException("method");
+
 			if (Exclude(method)) return null;
 
 			var jsMethod = method.Tag as JsMethod;
@@ -183,7 +186,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (body == null)
 				throw new NotSupportedException("The method format is not supported");
 
-			var context = new MethodContext(klass, method);
+			var context = new MethodContext(this, klass, method);
 
 			var parameters = method.JsParameterNames();
 			func = new JsFunction(null, parameters);
@@ -445,15 +448,24 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (var != null) return var;
 
 			CompileCallMethod(method);
-			
-			var func = new JsFunction(null, "a");
+
+			var args = "a".Id();
+
+			var func = new JsFunction(null, args.Value);
 
 			InitClass(context, func, method);
 
-			var obj = "o".Id();
-			func.Body.Add(method.DeclaringType.New().Var(obj.Value));
-			func.Body.Add(obj.Get(method.JsName()).Get("apply").Call(obj, "a".Id()).AsStatement());
-			func.Body.Add(obj.Return());
+			if (method.IsConstructor && method.DeclaringType.IsString())
+			{
+				func.Body.Add(method.Apply(null, args).Return());
+			}
+			else
+			{
+				var obj = "o".Id();
+				func.Body.Add(method.DeclaringType.New().Var(obj.Value));
+				func.Body.Add(method.Apply(obj, args).AsStatement());
+				func.Body.Add(obj.Return());
+			}
 
 			var info = new JsObject
 				{
@@ -610,21 +622,35 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			_program.Add(klass);
 
-			JsClass.DefineCopyMethod(klass);
+			switch (type.TypeKind)
+			{
+				case TypeKind.Struct:
+					JsStruct.CopyImpl(klass);
+					break;
+				case TypeKind.Delegate:
+					JsDelegate.CreateInstanceImpl(klass);
+					break;
+			}
 
 			return klass;
 		}
 
 		internal void InitClass(MethodContext context, JsFunction func, ITypeMember member)
 		{
-			if (!(member is IType))
+			IType type;
+			if (member is IType)
 			{
+				type = (IType)member;
+				CompileFields(type, true);
+				CompileFields(type, false);
+			}
+			else
+			{
+				type = member.DeclaringType;
 				CompileFields(member.DeclaringType, member.IsStatic);
 			}
 
-			var type = member as IType;
-			type = type ?? member.DeclaringType;
-
+			
 			if (type == SystemTypes.Type || type == SystemTypes.Array)
 				return;
 
@@ -633,36 +659,38 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		internal void CompileFields(IType type, bool isStatic)
 		{
-			if (type is ICompoundType) return;
+			if (type == null) throw new ArgumentNullException("type");
+
+			if (type is ICompoundType || type.IsInterface) return;
 
 			if (type == SystemTypes.Type || type == SystemTypes.Array)
 				return;
 
-			foreach (var field in GetFields(type, isStatic))
+			var klass = CompileType(type) as JsClass;
+			if (klass == null) return;
+
+			if (isStatic ? klass.StaticFieldsCompiled : klass.InstanceFieldsCompiled) return;
+
+			foreach (var field in type.GetFields(isStatic))
 			{
-				CompileField(field);
+				CompileField(klass, field);
 			}
+
+			if (isStatic) klass.StaticFieldsCompiled = true;
+			else klass.InstanceFieldsCompiled = true;
 		}
 
-		private void CompileField(IField field)
+		private void CompileField(JsClass klass, IField field)
 		{
 			if (field.Tag != null) return;
 
 			//TODO: do not compile primitive types
-			var klass = CompileType(field.DeclaringType) as JsClass;
-			if (klass != null)
-			{
-				klass.Add(JsField.Make(field));
-			}
-		}
+			klass.Add(JsField.Make(field));
 
-		private static IEnumerable<IField> GetFields(IType type, bool isStatic)
-		{
-			if (isStatic)
+			if (field.Type.TypeKind == TypeKind.Struct)
 			{
-				return type.Fields.Where(x => x.IsStatic && !x.IsConstant && !x.IsArrayInitializer());
+				CompileType(field.Type);
 			}
-			return type.Fields.Where(f => !f.IsStatic && !f.IsConstant && !f.IsArrayInitializer());
 		}
 	}
 }

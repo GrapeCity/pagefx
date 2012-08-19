@@ -1205,10 +1205,6 @@ namespace DataDynamics.PageFX.CLI.IL
                             var il = _provider.CopyToThis(vt);
                             code.AddRange(il);
                         }
-                        else
-                        {
-                            throw new ILTranslatorException();
-                        }
                     }
                     break;
 

@@ -49,57 +49,76 @@ namespace System
         , IComparable<String>, IEquatable <String>, IEnumerable<char>
     {
         #region Constructors
-        public String(char[] value, int startIndex, int length)
+
+	    public String(char[] value, int startIndex, int length)
         {
-            if (value == null)
-                throw new ArgumentNullException("value");
-            if (startIndex < 0)
-                throw new ArgumentOutOfRangeException("startIndex", "< 0");
-            if (length < 0)
-                throw new ArgumentOutOfRangeException("length", "< 0");
-            if (startIndex > value.Length - length)
-                throw new ArgumentOutOfRangeException("startIndex", "startIndex + length > value.Length");
-
-            string s = "";
-            while (length-- > 0)
-            {
-                char c = value[startIndex];
-                s += fromCharCode(c);
-                ++startIndex;
-            }
-
+            string s = Build(value, startIndex, length);
             ReturnValue(s);
         }
 
-        public String(char[] value)
+	    private static String Build(char[] value, int startIndex, int length)
+	    {
+		    if (value == null)
+			    throw new ArgumentNullException("value");
+		    if (startIndex < 0)
+			    throw new ArgumentOutOfRangeException("startIndex", "< 0");
+		    if (length < 0)
+			    throw new ArgumentOutOfRangeException("length", "< 0");
+		    if (startIndex > value.Length - length)
+			    throw new ArgumentOutOfRangeException("startIndex", "startIndex + length > value.Length");
+
+		    string s = "";
+		    while (length-- > 0)
+		    {
+			    char c = value[startIndex];
+			    s += fromCharCode(c);
+			    ++startIndex;
+		    }
+
+		    return s;
+	    }
+
+	    public String(char[] value)
         {
-            if (value == null)
-                throw new ArgumentNullException("value");
-
-            string s = "";
-            int n = value.Length;
-            for (int i = 0; i < n; ++i)
-            {
-                s += fromCharCode(value[i]);
-            }
-
+            string s = Build(value);
             ReturnValue(s);
         }
 
-        public String(char c, int count)
+	    private static String Build(char[] value)
+	    {
+		    if (value == null)
+			    throw new ArgumentNullException("value");
+
+		    string s = "";
+		    int n = value.Length;
+		    for (int i = 0; i < n; ++i)
+		    {
+			    s += fromCharCode(value[i]);
+		    }
+
+		    return s;
+	    }
+
+	    public String(char c, int count)
         {
-            if (count < 0)
-                throw new ArgumentOutOfRangeException("count", "count < 0");
-
-            string s = "";
-            string s2 = fromCharCode(c);
-            while (count-- > 0)
-            {
-                s += s2;
-            }
-
+            string s = Build(c, count);
             ReturnValue(s);
         }
+
+		private static String Build(char c, int count)
+		{
+			if (count < 0)
+				throw new ArgumentOutOfRangeException("count", "count < 0");
+
+			string s = "";
+			string s2 = fromCharCode(c);
+			while (count-- > 0)
+			{
+				s += s2;
+			}
+
+			return s;
+		}
         #endregion
 
         public static readonly String Empty = "";

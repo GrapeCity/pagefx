@@ -7,7 +7,7 @@ using DataDynamics.PageFX.CodeModel;
 namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 {
 	using Match = Func<IMethod, bool>;
-	using InlineFunc = Action<IMethod, JsBlock>;
+	using InlineFunc = Action<MethodContext, JsBlock>;
 
 	internal class InlineCodeProvider
 	{
@@ -56,13 +56,44 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 				}
 
 				InlineFunc f;
-				if (methodInfo.GetParameters().Length == 1)
+				var parameters = methodInfo.GetParameters();
+				if (parameters.Length == 1)
 				{
-					f = (method, code) => methodInfo.Invoke(null, new object[] {code});
+					f = (ctx, code) => methodInfo.Invoke(null, new object[] {code});
 				}
-				else if (methodInfo.GetParameters().Length == 2)
+				else if (parameters.Length == 2)
 				{
-					f = (method, code) => methodInfo.Invoke(null, new object[] {method, code});
+					int i = parameters.IndexOf(p => p.ParameterType.Name == "JsBlock");
+					if (i == 0)
+					{
+						if (parameters[1].ParameterType == typeof(IMethod))
+						{
+							f = (ctx, code) => methodInfo.Invoke(null, new object[] { code, ctx.Method });
+						}
+						else if (parameters[1].ParameterType == typeof(MethodContext))
+						{
+							f = (ctx, code) => methodInfo.Invoke(null, new object[] { code, ctx });
+						}
+						else
+						{
+							throw new InvalidOperationException();
+						}
+					}
+					else
+					{
+						if (parameters[0].ParameterType == typeof(IMethod))
+						{
+							f = (ctx, code) => methodInfo.Invoke(null, new object[] {ctx.Method, code});
+						}
+						else if (parameters[0].ParameterType == typeof(MethodContext))
+						{
+							f = (ctx, code) => methodInfo.Invoke(null, new object[] {ctx, code});
+						}
+						else
+						{
+							throw new InvalidOperationException();
+						}
+					}
 				}
 				else
 				{
@@ -92,7 +123,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 				{
 					var parameters = method.Parameters.Select(x => x.Name).ToArray();
 					var func = new JsFunction(null, parameters);
-					pair.Value(method, func.Body);
+					pair.Value(context, func.Body);
 					return func;
 				}
 			}
@@ -115,6 +146,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 				return false;
 			}
 			if ((attrs & MethodAttrs.Static) != 0 && !method.IsStatic)
+			{
+				return false;
+			}
+			if ((attrs & MethodAttrs.Instance) != 0 && method.IsStatic)
 			{
 				return false;
 			}
@@ -157,6 +192,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		Getter = 0x02,
 		Setter = 0x04,
 		Static = 0x08,
-		Operator = 0x10
+		Instance = 0x10,
+		Operator = 0x20,
 	}
 }

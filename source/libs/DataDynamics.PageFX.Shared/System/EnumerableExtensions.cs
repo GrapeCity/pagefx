@@ -139,6 +139,18 @@ namespace System
 
 		#endregion
 
+		public static int IndexOf<T>(this IEnumerable<T> seq, Func<T,bool> predicate)
+		{
+			int i = 0;
+			foreach (var item in seq)
+			{
+				if (predicate(item))
+					return i;
+				i++;
+			}
+			return -1;
+		}
+
 		public static bool IsEmpty(this IEnumerable x)
         {
             if (x == null) return true;

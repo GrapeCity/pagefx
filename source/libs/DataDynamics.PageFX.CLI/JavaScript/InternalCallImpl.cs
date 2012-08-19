@@ -102,7 +102,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private JsFunction CompileInlineFunction(IMethod method, InlineCodeProvider provider)
 		{
 			var klass = CompileClass(method.DeclaringType);
-			var ctx = new MethodContext(klass, method);
+			var ctx = new MethodContext(_host, klass, method);
 			return provider.GetImplementation(ctx);
 		}
 
@@ -152,7 +152,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					break;
 
 				default:
-					func.Body.Add("this".Id().Call(info.Name, parameters.Select(x => x.Id())).Return());
+					var target = method.IsStatic ? method.DeclaringType.JsFullName(method).Id() : "this".Id();
+					func.Body.Add(target.Get(info.Name).Call(parameters.Select(x => x.Id()).ToArray()).Return());
 					break;
 			}
 

@@ -5,7 +5,7 @@
 		[InlineImpl]
 		public static void ToString(JsBlock code)
 		{
-			code.Add("String.fromCharCode".Id().Call("this".Id().Get("m_value")).Return());
+			code.Add("String.fromCharCode".Id().Call("this".Id().Get(SpecialFields.BoxValue)).Return());
 		}
 	}
 }

@@ -1490,6 +1490,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\TryCatch\NestedFinallyClauses.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Arrays\FirstTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\CharTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\String\Ctors.cs" />
     <Compile Include="Tools\JsRunner.cs" />
     <Compile Include="UnitTests\ABCALL.cs" />
     <Compile Include="UnitTests\ABCDefineTest.cs" />
