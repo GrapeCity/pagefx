@@ -1,4 +1,5 @@
-﻿using DataDynamics.PageFX.CodeModel;
+﻿using System.Linq;
+using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
@@ -42,6 +43,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		}
 	}
 
+	internal static class SpecialFields
+	{
+		public const string BoxValue = "$value";
+	}
+
 	internal static class JsFieldExtensions
 	{
 		public static string JsFullName(this IField field)
@@ -51,8 +57,21 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public static string JsName(this IField field)
 		{
+			if (field.IsBoxValue()) return SpecialFields.BoxValue;
+
 			//TODO: ensure uniqueness
 			return field.Name;
+		}
+
+		public static bool IsBoxValue(this IField field)
+		{
+			if (field.IsStatic || field.IsConstant) return false;
+			return field.DeclaringType.IsBoxableType();
+		}
+
+		public static IField GetBoxValueField(this IType type)
+		{
+			return type.Fields.FirstOrDefault(x => x.IsBoxValue());
 		}
 	}
 }

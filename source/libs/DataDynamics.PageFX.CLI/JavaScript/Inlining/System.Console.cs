@@ -15,6 +15,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		public static void WriteLine(IMethod method, JsBlock code)
 		{
 			var args = method.JsParameterIds();
+
+			code.Add("$unbox".Id().Call(args[0]).Var("t"));
+			code.Add(new JsText(string.Format("if (t != undefined) {0} = t;", args[0].Value)));
 			code.Add("console.log".Id().Call(args[0]));
 		}
 	}

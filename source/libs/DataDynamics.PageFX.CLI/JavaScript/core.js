@@ -19,6 +19,12 @@ function $invokeDelegate(d, a, ret) {
 	return ret ? val : undefined;
 }
 
+function $unbox(o) {
+	if (o == null || o == undefined) return undefined;
+	var v = o.$value;
+	return v == undefined ? undefined : v;
+}
+
 // Derived from https://gist.github.com/2192799
 function $decodeFloat(bytes, signBits, exponentBits, fractionBits, eMin, eMax, littleEndian) {
   // var totalBits = (signBits + exponentBits + fractionBits);

@@ -9,6 +9,9 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
+	/// <summary>
+	/// Compiles assembly into javascript.
+	/// </summary>
 	public sealed class JsCompiler
 	{
 		private readonly IAssembly _assembly;
@@ -16,6 +19,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private readonly HashList<IMethod, IMethod> _virtualCalls = new HashList<IMethod, IMethod>(x => x);
 		private readonly HashList<IType, IType> _types = new HashList<IType, IType>(x => x);
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="JsCompiler"/> class.
+		/// </summary>
+		/// <param name="assembly">The assembly to be compiled.</param>
 		public JsCompiler(IAssembly assembly)
 		{
 			if (assembly == null)
@@ -27,6 +34,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_assembly = assembly;
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="JsCompiler"/> class.
+		/// </summary>
+		/// <param name="assemblyFile">The file of the assembly to be compiled.</param>
 		public JsCompiler(FileInfo assemblyFile)
 		{
 			if (assemblyFile == null)

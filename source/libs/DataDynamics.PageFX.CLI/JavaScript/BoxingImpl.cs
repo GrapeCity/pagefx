@@ -18,7 +18,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var var = context.Vars[key];
 			if (var != null) return var.Id();
 
-			var func = new JsFunction(null, "v");
+			var val = "v".Id();
+			var func = new JsFunction(null, val.Value);
 
 			if (type.IsNullableInstance())
 			{
@@ -28,11 +29,20 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_host.CompileClass(type);
 			_host.CompileFields(type, false);
 
-			func.Body.Add(type.New().Var("o"));
-			var obj = "o".Id();
-			//TODO: find boxing field and gets its JsName
-			func.Body.Add(obj.Set("m_value", "v".Id()));
-			func.Body.Add(obj.Return());
+			if (type.IsBoxableType())
+			{
+				var field = type.GetBoxValueField();
+				var obj = "o".Id();
+
+				func.Body.Add(type.New().Var(obj.Value));
+				func.Body.Add(obj.Set(field.JsName(), val));
+				func.Body.Add(obj.Return());
+			}
+			else
+			{
+				//TODO: need copy value type?
+				func.Body.Add(val.Return());
+			}
 
 			return context.Vars.Add(key, func).Id();
 		}
@@ -43,10 +53,19 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var var = context.Vars[key];
 			if (var != null) return var.Id();
 
-			var func = new JsFunction(null, "o");
+			var obj = "o".Id();
+			var func = new JsFunction(null, obj.Value);
 
-			//TODO: find boxing field and gets its JsName
-			func.Body.Add("o".Id().Get("m_value"));
+			if (type.IsBoxableType())
+			{
+				var field = type.GetBoxValueField();
+				func.Body.Add(obj.Get(field.JsName()));
+			}
+			else
+			{
+				//TODO: need copy value type?
+				func.Body.Add(obj.Return());
+			}
 
 			return context.Vars.Add(key, func).Id();
 		}
