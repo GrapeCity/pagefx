@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		public static void Ctor(MethodContext context, JsBlock code)
 		{
 			var method = context.Method;
-			var args = method.JsParameterIds();
+			var args = method.JsArgs();
 
 			var build = method.DeclaringType.Methods.Find("Build", method.Parameters.Count);
 			if (build == null)
@@ -23,14 +23,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl(ArgCount = 2)]
 		public static void Equals(IMethod method, JsBlock code)
 		{
-			var args = method.JsParameterIds();
+			var args = method.JsArgs();
 			code.Add(args[0].Op(args[1], "==").Return());
 		}
 
 		[InlineImpl]
 		public static void op_Implicit(IMethod method, JsBlock code)
 		{
-			var args = method.JsParameterIds();
+			var args = method.JsArgs();
 			code.Add(args[0].Return());
 		}
 
@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl]
 		public static void op_Inequality(IMethod method, JsBlock code)
 		{
-			var args = method.JsParameterIds();
+			var args = method.JsArgs();
 			code.Add(args[0].Op(args[1], "!=").Return());
 		}
 

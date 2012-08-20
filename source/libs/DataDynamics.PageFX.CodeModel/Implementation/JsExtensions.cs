@@ -27,9 +27,9 @@ namespace DataDynamics.PageFX.CodeModel
 			return true;
 		}
 
-		public static string ToValidId(this string s, SigKind kind)
+		public static string ToValidId(this string s, Runtime runtime)
 		{
-			if (kind == SigKind.Avm) return s;
+			if (runtime == Runtime.Avm) return s;
 
 			if (s.IndexOf((c, i) => !c.IsJsid(i == 0)) >= 0)
 			{

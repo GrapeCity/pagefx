@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl]
 		public static void WriteLine(IMethod method, JsBlock code)
 		{
-			var args = method.JsParameterIds();
+			var args = method.JsArgs();
 			if (args.Length == 0)
 			{
 				code.Add("console.log".Id().Call(""));

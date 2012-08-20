@@ -82,35 +82,35 @@ namespace DataDynamics.PageFX.CodeModel
 			return prop != null && prop.Parameters.Count <= 0;
 		}
 
-		public static string GetSigName(this IType type, SigKind kind)
+		public static string GetSigName(this IType type, Runtime runtime)
 		{
-			return type.GetSigName().ToValidId(kind);
+			return type.GetSigName().ToValidId(runtime);
 		}
 
-		public static string BuildSigName(this IMethod method, SigKind kind)
+		public static string BuildSigName(this IMethod method, Runtime runtime)
 		{
 			var impl = method.GetExplicitImpl();
 			if (impl != null)
-				return impl.BuildSigName(kind);
+				return impl.BuildSigName(runtime);
 
 			var declType = method.DeclaringType;
 
 			var sb = new StringBuilder();
 
-			var sigName = declType.GetSigName(kind);
+			var sigName = declType.GetSigName(runtime);
 
 			if (declType.IsInterface)
 			{
 				sb.Append(sigName);
-				sb.Append(kind == SigKind.Avm ? "." : "$");
+				sb.Append(runtime == Runtime.Avm ? "." : "$");
 			}
 
 			bool addParams = true;
 			if (method.IsConstructor)
 			{
 				if (!method.IsStatic)
-					sb.Append(declType.Name.ToValidId(kind));
-				sb.Append(method.Name.ToValidId(kind));
+					sb.Append(declType.Name.ToValidId(runtime));
+				sb.Append(method.Name.ToValidId(runtime));
 			}
 			else
 			{
@@ -122,31 +122,31 @@ namespace DataDynamics.PageFX.CodeModel
 
 				if (method.NeedReturnTypePrefix())
 				{
-					sb.Append(method.Type.GetSigName(kind));
+					sb.Append(method.Type.GetSigName(runtime));
 					sb.Append("_");
 				}
 
 				var prop = method.Association as IProperty;
-				if (kind == SigKind.Avm && prop != null && method.IsAccessor())
+				if (runtime == Runtime.Avm && prop != null && method.IsAccessor())
 				{
-					sb.Append(prop.Name.ToValidId(kind));
+					sb.Append(prop.Name.ToValidId(runtime));
 					addParams = false;
 				}
 				else
 				{
-					sb.Append(method.Name.ToValidId(kind));
+					sb.Append(method.Name.ToValidId(runtime));
 				}
 			}
 
 			if (method.IsGenericInstance)
 			{
-				sb.AppendSigName(method.GenericArguments, kind);
+				sb.AppendSigName(method.GenericArguments, runtime);
 			}
 
 			if (addParams && method.Parameters.Count > 0)
 			{
 				sb.Append("_");
-				AppendParametersSignature(sb, method, kind);
+				AppendParametersSignature(sb, method, runtime);
 			}
 
 			return sb.ToString();
@@ -176,15 +176,15 @@ namespace DataDynamics.PageFX.CodeModel
 			return false;
 		}
 
-		private static void AppendParametersSignature(StringBuilder sb, IMethod method, SigKind kind)
+		private static void AppendParametersSignature(StringBuilder sb, IMethod method, Runtime runtime)
 		{
-			sb.AppendSigName(method.Parameters.Select(x => x.Type), kind);
+			sb.AppendSigName(method.Parameters.Select(x => x.Type), runtime);
 		}
 
-		public static string GetParametersSignature(this IMethod method, SigKind kind)
+		public static string GetParametersSignature(this IMethod method, Runtime runtime)
 		{
 			var sb = new StringBuilder();
-			AppendParametersSignature(sb, method, kind);
+			AppendParametersSignature(sb, method, runtime);
 			return sb.ToString();
 		}
 

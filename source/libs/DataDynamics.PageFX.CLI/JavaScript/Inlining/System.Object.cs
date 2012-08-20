@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl]
 		public static void ReferenceEquals(IMethod method, JsBlock code)
 		{
-			var args = method.JsParameterIds();
+			var args = method.JsArgs();
 			code.Add(new JsBinaryOperator(args[0], args[1], "===").Return());
 		}
 	}

@@ -73,7 +73,7 @@ namespace DataDynamics.PageFX.FLI
 
             var method = provider as IMethod;
             if (method != null)
-				return method.DeclaringType.GetSigName() + "_" + method.GetSigName(SigKind.Avm);
+				return method.DeclaringType.GetSigName() + "_" + method.GetSigName(Runtime.Avm);
 
             var field = provider as IField;
             if (field != null)

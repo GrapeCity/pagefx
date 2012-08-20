@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 				throw new InvalidOperationException();
 
 			//TODO: get fields from System.Delegate and System.Multicast delegate types
-			var args = method.JsParameterIds();
+			var args = method.JsArgs();
 			code.Add("this".Id().Set("m_target", args[0]));
 			code.Add("this".Id().Set("m_function", args[1]));
 			code.Add("this".Id().Set("m_prev", null));
@@ -25,7 +25,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		[InlineImpl]
 		public static void Invoke(IMethod method, JsBlock code)
 		{
-			var args = new JsArray(method.JsParameterIds());
+			var args = new JsArray(method.JsArgs());
 			code.Add("$invokeDelegate".Id().Call("this".Id(), args, method.IsVoid() ? 0 : 1));
 		}
 	}

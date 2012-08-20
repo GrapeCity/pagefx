@@ -122,7 +122,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private static JsFunction CompileInlineFunction(IMethod method, InlineMethodInfo info)
 		{
-			var parameters = method.JsParameterNames();
+			var parameters = method.JsParams();
 			var func = new JsFunction(null, parameters);
 
 			switch (info.Kind)

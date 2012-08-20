@@ -451,7 +451,7 @@ namespace DataDynamics.PageFX.FLI
 		    var m = type.Methods.Find(name, argcount);
 		    if (m == null)
 			    throw new ArgumentException(String.Format("Unable to find method {0} in type {1}", name, type.FullName));
-		    return m.GetSigName(SigKind.Avm);
+		    return m.GetSigName(Runtime.Avm);
 	    }
     }
 }

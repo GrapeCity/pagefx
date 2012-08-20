@@ -44,9 +44,9 @@ namespace DataDynamics.PageFX.CodeModel
 
         #region IMethod Members
 
-	    public string GetSigName(SigKind kind)
+	    public string GetSigName(Runtime runtime)
 	    {
-			return _sigNames[(int)kind] ?? (_sigNames[(int)kind] = this.BuildSigName(kind));
+			return _sigNames[(int)runtime] ?? (_sigNames[(int)runtime] = this.BuildSigName(runtime));
 	    }
 
 	    public bool IsEntryPoint

@@ -756,9 +756,9 @@ namespace DataDynamics.PageFX.CodeModel
 		    return type == null ? "" : type.SigName;
 	    }
 
-	    public static void AppendSigName(this StringBuilder sb, IEnumerable<IType> types, SigKind kind)
+	    public static void AppendSigName(this StringBuilder sb, IEnumerable<IType> types, Runtime runtime)
 	    {
-		    sb.Append(types, x => x.GetSigName(kind), "_");
+		    sb.Append(types, x => x.GetSigName(runtime), "_");
 		}
 
 	    public static IEnumerable<IMethod> GetSameMethods(this IType type, IMethod method, bool compareReturnTypes)

@@ -12,20 +12,20 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				|| (method.IsConstructor && method.DeclaringType.IsString());
 		}
 
-		public static string[] JsParameterNames(this IMethod method)
+		public static string[] JsParams(this IMethod method)
 		{
-			return method.Parameters.Select(x => x.Name.ToValidId(SigKind.Js)).ToArray();
+			return method.Parameters.Select(x => x.Name.ToValidId(Runtime.Js)).ToArray();
 		}
 
-		public static JsId[] JsParameterIds(this IMethod method)
+		public static JsId[] JsArgs(this IMethod method)
 		{
-			return method.Parameters.Select(x => x.Name.ToValidId(SigKind.Js).Id()).ToArray();
+			return method.Parameters.Select(x => x.Name.ToValidId(Runtime.Js).Id()).ToArray();
 		}
 
 		public static string JsName(this IMethod method)
 		{
 			if (method.IsToString()) return "toString";
-			return method.GetSigName(SigKind.Js);
+			return method.GetSigName(Runtime.Js);
 		}
 
 		public static string JsFullName(this IMethod method)

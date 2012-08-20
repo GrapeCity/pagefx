@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CodeModel
 		IEnumerable<T> Find(string name);
 	}
 
-	public enum SigKind { Avm, Js }
+	public enum Runtime { Avm, Js }
 
     /// <summary>
     /// Represents type method
@@ -26,8 +26,8 @@ namespace DataDynamics.PageFX.CodeModel
 	    /// <summary>
 	    /// Gets qualified name.
 	    /// </summary>
-	    /// <param name="kind"> </param>
-	    string GetSigName(SigKind kind);
+	    /// <param name="runtime"> </param>
+	    string GetSigName(Runtime runtime);
 
 	    #region Flags
         /// <summary>
