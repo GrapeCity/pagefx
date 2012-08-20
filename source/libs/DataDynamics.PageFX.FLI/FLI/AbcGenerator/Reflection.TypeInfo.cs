@@ -173,16 +173,16 @@ namespace DataDynamics.PageFX.FLI
             
             return instance.DefineStaticMethod(
                 name, GetArrayInstance(),
-                delegate(AbcCode code)
-                {
-                    const int arr = 1;
-                    const int varAttr = 2;
+                code =>
+	                {
+		                const int arr = 1;
+		                const int varAttr = 2;
 
-                    code.NewArray(arr, SystemTypes.Object, provider.CustomAttributes,
-                                  attr => NewAttribute(code, attr, varAttr));
+		                code.NewArray(arr, SystemTypes.Object, provider.CustomAttributes,
+		                              attr => NewAttribute(code, attr, varAttr));
 
-                    code.ReturnValue();
-                });
+		                code.ReturnValue();
+	                });
         }
 
         void NewAttribute(AbcCode code, ICustomAttribute attr, int varAttr)
@@ -256,69 +256,69 @@ namespace DataDynamics.PageFX.FLI
 
             var wrapper = instance.DefineStaticMethod(
                 name, AvmTypeCode.Object,
-                delegate(AbcCode code)
-                {
-                    int n = am.ParamCount;
-                    bool hasReturn = false;
-                    if (m.IsConstructor)
-                    {
-                        if (init)
-                        {
-                            //addParam = true;
-                            if (am.IsInitializer)
-                            {
-                                //code.ThrowNotSupportedException();
-                                //return;
-                                //addParam = true;
-                                //code.LoadArguments(n + 1);
-                                //code.Add(InstructionCode.Callstatic, am, n);
-                            }
-                            else
-                            {
-                                addParam = true;
-                                code.LoadArguments(n + 1);
-                                code.Call(am);
-                            }
-                        }
-                        else
-                        {
-                            hasReturn = true;
-                            code.Getlex(am);
-                            if (am.IsInitializer)
-                            {
-                                code.LoadArguments(n);
-                                code.Construct(n);
-                            }
-                            else
-                            {
-                                code.Construct(0);
-                                code.Dup();
-                                code.LoadArguments(n);
-                                code.Call(am);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        hasReturn = !am.IsVoid;
-                        if (m.IsStatic)
-                        {
-                            code.Getlex(am);
-                        }
-                        else
-                        {
-                            addParam = true;
-                            ++n;
-                        }
+                code =>
+	                {
+		                int n = am.ParamCount;
+		                bool hasReturn = false;
+		                if (m.IsConstructor)
+		                {
+			                if (init)
+			                {
+				                //addParam = true;
+				                if (am.IsInitializer)
+				                {
+					                //code.ThrowNotSupportedException();
+					                //return;
+					                //addParam = true;
+					                //code.LoadArguments(n + 1);
+					                //code.Add(InstructionCode.Callstatic, am, n);
+				                }
+				                else
+				                {
+					                addParam = true;
+					                code.LoadArguments(n + 1);
+					                code.Call(am);
+				                }
+			                }
+			                else
+			                {
+				                hasReturn = true;
+				                code.Getlex(am);
+				                if (am.IsInitializer)
+				                {
+					                code.LoadArguments(n);
+					                code.Construct(n);
+				                }
+				                else
+				                {
+					                code.Construct(0);
+					                code.Dup();
+					                code.LoadArguments(n);
+					                code.Call(am);
+				                }
+			                }
+		                }
+		                else
+		                {
+			                hasReturn = !am.IsVoid;
+			                if (m.IsStatic)
+			                {
+				                code.Getlex(am);
+			                }
+			                else
+			                {
+				                addParam = true;
+				                ++n;
+			                }
 
-                        code.LoadArguments(n);
-                        code.Call(am);
-                    }
+			                code.LoadArguments(n);
+			                code.Call(am);
+		                }
 
-                    if (!hasReturn)
-                        code.PushNull();
-                    code.ReturnValue();
-                });
+		                if (!hasReturn)
+			                code.PushNull();
+		                code.ReturnValue();
+	                });
 
             if (addParam)
             {
@@ -579,14 +579,14 @@ namespace DataDynamics.PageFX.FLI
 
             return instance.DefineStaticMethod(
                 name, GetArrayInstance(),
-                delegate(AbcCode code)
-                    {
-                        var mtype = CorlibTypes[CorlibTypeId.PropertyInfo];
-                        const int arr = 1;
-                        code.NewArray(arr, mtype, type.Properties,
-                                      property => NewPropertyInfo(code, instance, property, 2));
-                        code.ReturnValue();
-                    });
+                code =>
+	                {
+		                var mtype = CorlibTypes[CorlibTypeId.PropertyInfo];
+		                const int arr = 1;
+		                code.NewArray(arr, mtype, type.Properties,
+		                              property => NewPropertyInfo(code, instance, property, 2));
+		                code.ReturnValue();
+	                });
         }
 
         void InitProperties(AbcCode code, AbcInstance instance, IType type, int varObj)
@@ -610,48 +610,45 @@ namespace DataDynamics.PageFX.FLI
             var name = DefinePfxName("init_enum_info_" + type.GetSigName());
             return enumInstance.DefineStaticMethod(
                 name, EnumInfo,
-                delegate(AbcCode code)
-                {
-                    const int varEnumInfo = 1;
-                    const int varArr = 2;
-                    code.CreateInstance(EnumInfo);
-                    code.SetLocal(varEnumInfo);
+                code =>
+	                {
+		                const int varEnumInfo = 1;
+		                const int varArr = 2;
+		                code.CreateInstance(EnumInfo);
+		                code.SetLocal(varEnumInfo);
 
-                    if (type.HasAttribute("System.FlagsAttribute"))
-                    {
-                        code.GetLocal(varEnumInfo);
-                        code.PushBool(true);
-                        code.SetProperty(Const.EnumInfo.Flags);
-                    }
+		                if (type.HasAttribute("System.FlagsAttribute"))
+		                {
+			                code.GetLocal(varEnumInfo);
+			                code.PushBool(true);
+			                code.SetProperty(Const.EnumInfo.Flags);
+		                }
 
-                    var fields = type.GetEnumFields();
-                    var utype = type.ValueType;
+		                var fields = type.GetEnumFields();
+		                var utype = type.ValueType;
 
-                    code.GetLocal(varEnumInfo);
+		                code.GetLocal(varEnumInfo);
 
-                    code.NewArray(varArr, SystemTypes.Object, fields,
-                        f =>
-                        {
-                            var val = f.Value;
-                            if (val == null)
-                                throw new InvalidOperationException();
-                            val = ToIntegralType(utype, val);
-                            code.Box(type, () => code.LoadConstant(val));
-                        });
+		                code.NewArray(varArr, SystemTypes.Object, fields,
+		                              f =>
+			                              {
+				                              var val = f.Value;
+				                              if (val == null)
+					                              throw new InvalidOperationException();
+				                              val = ToIntegralType(utype, val);
+				                              code.Box(type, () => code.LoadConstant(val));
+			                              });
 
-                    code.SetProperty(Const.EnumInfo.Values);
+		                code.SetProperty(Const.EnumInfo.Values);
 
-                    code.GetLocal(varEnumInfo);
-                    code.NewArray(varArr, SystemTypes.String, fields,
-                                  field =>
-	                                  {
-		                                  code.PushString(field.Name);
-	                                  });
-                    code.SetProperty(Const.EnumInfo.Names);
+		                code.GetLocal(varEnumInfo);
+		                code.NewArray(varArr, SystemTypes.String, fields,
+		                              field => { code.PushString(field.Name); });
+		                code.SetProperty(Const.EnumInfo.Names);
 
-                    code.GetLocal(varEnumInfo);
-                    code.ReturnValue();
-                });
+		                code.GetLocal(varEnumInfo);
+		                code.ReturnValue();
+	                });
         }
 
         static object ToIntegralType(IType type, object value)

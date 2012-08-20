@@ -241,18 +241,18 @@ namespace DataDynamics
 
             return rx.Replace(
                 template,
-                delegate(Match m)
-                    {
-                        string var = m.Groups["var"].Value;
-                        string v = vh[var] as string;
-                        if (v != null)
-                        {
-                            if (String.Compare(v, "newguid()", true) == 0)
-                                v = Guid.NewGuid().ToString("D");
-                            return v;
-                        }
-                        return var;
-                    });
+                m =>
+	                {
+		                string var = m.Groups["var"].Value;
+		                string v = vh[var] as string;
+		                if (v != null)
+		                {
+			                if (String.Compare(v, "newguid()", true) == 0)
+				                v = Guid.NewGuid().ToString("D");
+			                return v;
+		                }
+		                return var;
+	                });
         }
 
         public static string ReplaceVars(this string template, params string[] vars)

@@ -70,15 +70,15 @@ namespace DataDynamics.PageFX.FLI
 
             return instance.DefineInstanceMethod(
                 thisName, retType,
-                delegate(AbcCode code)
-                    {
-                        code.Getlex(instance);
-                        code.GetLocal(0); //left
-                        code.GetLocal(1); //right
-                        code.Call(abcOp);
-                        code.Coerce(retType);
-                        code.ReturnValue();
-                    },
+                code =>
+	                {
+		                code.Getlex(instance);
+		                code.GetLocal(0); //left
+		                code.GetLocal(1); //right
+		                code.Call(abcOp);
+		                code.Coerce(retType);
+		                code.ReturnValue();
+	                },
                 right, "right");
         }
 
@@ -111,14 +111,14 @@ namespace DataDynamics.PageFX.FLI
 
             return instance.DefineInstanceMethod(
                 thisName, retType,
-                delegate(AbcCode code)
-                    {
-                        code.Getlex(instance);
-                        code.GetLocal(0);
-                        code.Call(abcOp);
-                        code.Coerce(op.Type, true);
-                        code.ReturnValue();
-                    });
+                code =>
+	                {
+		                code.Getlex(instance);
+		                code.GetLocal(0);
+		                code.Call(abcOp);
+		                code.Coerce(op.Type, true);
+		                code.ReturnValue();
+	                });
         }
         #endregion
 
@@ -150,22 +150,22 @@ namespace DataDynamics.PageFX.FLI
 
             return instance.DefineStaticMethod(
                 name, retType,
-                delegate(AbcCode code)
-                    {
-                        code.GetLocal(1);
-                        code.PushNull();
-                        var ifnotNull = new Instruction(InstructionCode.Ifne);
-                        code.Add(ifnotNull);
-                        code.PushBool(!isTrue);
-                        code.ReturnValue();
+                code =>
+	                {
+		                code.GetLocal(1);
+		                code.PushNull();
+		                var ifnotNull = new Instruction(InstructionCode.Ifne);
+		                code.Add(ifnotNull);
+		                code.PushBool(!isTrue);
+		                code.ReturnValue();
 
-                        ifnotNull.BranchTarget = code.Label();
+		                ifnotNull.BranchTarget = code.Label();
 
-                        code.GetLocal(1);
-                        code.Call(abcOp);
+		                code.GetLocal(1);
+		                code.Call(abcOp);
 
-                        code.ReturnValue();
-                    },
+		                code.ReturnValue();
+	                },
                 instance.Name, "value");
         }
         #endregion

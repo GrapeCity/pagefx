@@ -37,15 +37,15 @@ namespace DataDynamics.PageFX.FLI
             return instance.DefineStaticGetter(
                 "isFlashInternal",
                 _abc.BuiltinTypes.Boolean,
-                delegate(AbcCode code)
-                    {
-                        code.GetPlayerType();
-                        code.PushString("AVMPlus");
-                        code.Add(InstructionCode.Equals);
-                        code.Add(InstructionCode.Not);
-                        code.ReturnValue();
-                    }
-                );
+                code =>
+	                {
+		                code.GetPlayerType();
+		                code.PushString("AVMPlus");
+		                code.Add(InstructionCode.Equals);
+		                code.Add(InstructionCode.Not);
+		                code.ReturnValue();
+	                }
+	            );
         }
         #endregion
 
@@ -57,31 +57,31 @@ namespace DataDynamics.PageFX.FLI
             return instance.DefineStaticGetter(
                 "isFlash",
                 _abc.BuiltinTypes.RealBoolean,
-                delegate(AbcCode code)
-                    {
-                        var isFlash = instance.DefineStaticSlot("__isFlash", AvmTypeCode.Boolean);
-                        var isFlashInitialized =
-                            instance.DefineStaticSlot("__isFlashInitialized", AvmTypeCode.Boolean);
+                code =>
+	                {
+		                var isFlash = instance.DefineStaticSlot("__isFlash", AvmTypeCode.Boolean);
+		                var isFlashInitialized =
+			                instance.DefineStaticSlot("__isFlashInitialized", AvmTypeCode.Boolean);
 
-                        code.GetLocal(0);
-                        code.GetProperty(isFlashInitialized);
+		                code.GetLocal(0);
+		                code.GetProperty(isFlashInitialized);
 
-                        var ifTrue = code.IfTrue();
+		                var ifTrue = code.IfTrue();
 
-                        code.GetLocal(0);
-                        code.GetLocal(0);
-                        var m = DefineIsFlashPlayerInternal();
-                        code.Call(m);
-                        code.SetProperty(isFlash);
+		                code.GetLocal(0);
+		                code.GetLocal(0);
+		                var m = DefineIsFlashPlayerInternal();
+		                code.Call(m);
+		                code.SetProperty(isFlash);
 
-                        ifTrue.BranchTarget = code.Label();
+		                ifTrue.BranchTarget = code.Label();
 
-                        code.GetLocal(0);
-                        code.GetProperty(isFlash);
-                        code.FixBool();
-                        code.ReturnValue();
-                    }
-                );
+		                code.GetLocal(0);
+		                code.GetProperty(isFlash);
+		                code.FixBool();
+		                code.ReturnValue();
+	                }
+	            );
         }
         #endregion
 
@@ -91,32 +91,32 @@ namespace DataDynamics.PageFX.FLI
             var instance = GetInstance(CorlibTypeId.Environment);
             return instance.DefineStaticMethod(
                 "exit_impl", AvmTypeCode.Void,
-                delegate(AbcCode code)
-                    {
-                        var isFlash = DefineIsFlashPlayer();
-                        code.Getlex(isFlash);
-                        code.Call(isFlash);
-                        var ifNotFlash = code.IfFalse();
+                code =>
+	                {
+		                var isFlash = DefineIsFlashPlayer();
+		                code.Getlex(isFlash);
+		                code.Call(isFlash);
+		                var ifNotFlash = code.IfFalse();
 
-                        var ns = _abc.DefinePackage("avmplus");
-                        var mn = _abc.DefineQName(ns, "System");
-                        code.Getlex(mn);
-                        mn = _abc.DefineQName(ns, "exit");
-                        code.GetLocal(1); //exitCode
-                        code.Call(mn, 1);
-                        code.ReturnVoid();
+		                var ns = _abc.DefinePackage("avmplus");
+		                var mn = _abc.DefineQName(ns, "System");
+		                code.Getlex(mn);
+		                mn = _abc.DefineQName(ns, "exit");
+		                code.GetLocal(1); //exitCode
+		                code.Call(mn, 1);
+		                code.ReturnVoid();
 
-                        ifNotFlash.BranchTarget = code.Label();
+		                ifNotFlash.BranchTarget = code.Label();
 
-                        ns = _abc.DefinePackage("flash.System");
-                        mn = _abc.DefineQName(ns, "System");
-                        code.Getlex(mn);
-                        mn = _abc.DefineQName(ns, "exit");
-                        code.GetLocal(1); //exitCode
-                        code.Add(InstructionCode.Coerce_u); //???
-                        code.Call(mn, 1);
-                        code.ReturnVoid();
-                    },
+		                ns = _abc.DefinePackage("flash.System");
+		                mn = _abc.DefineQName(ns, "System");
+		                code.Getlex(mn);
+		                mn = _abc.DefineQName(ns, "exit");
+		                code.GetLocal(1); //exitCode
+		                code.Add(InstructionCode.Coerce_u); //???
+		                code.Call(mn, 1);
+		                code.ReturnVoid();
+	                },
                 AvmTypeCode.Int32, "exitCode");
         }
         #endregion
@@ -182,23 +182,23 @@ namespace DataDynamics.PageFX.FLI
             _methodFindClass = instance.DefineStaticMethod(
                 new PfxQName("FindClass"),
                 AvmTypeCode.Class,
-                delegate(AbcCode code)
-                    {
-                        const int ns = 1;
-                        const int name = 2;
+                code =>
+	                {
+		                const int ns = 1;
+		                const int name = 2;
 
-                        code.GetLocal(ns);
-                        code.GetLocal(name);
-                        code.FindPropertyStrict(code.abc.RuntimeQName);
+		                code.GetLocal(ns);
+		                code.GetLocal(name);
+		                code.FindPropertyStrict(code.abc.RuntimeQName);
 
-                        code.GetLocal(ns);
-                        code.GetLocal(name);
-                        code.GetRuntimeProperty();
+		                code.GetLocal(ns);
+		                code.GetLocal(name);
+		                code.GetRuntimeProperty();
 
-                        code.CoerceClass();
+		                code.CoerceClass();
 
-                        code.ReturnValue();
-                    },
+		                code.ReturnValue();
+	                },
                 AvmTypeCode.Namespace, "ns",
                 AvmTypeCode.String, "name");
 
@@ -216,29 +216,29 @@ namespace DataDynamics.PageFX.FLI
             return instance.DefineStaticMethod(
                 "IsNull",
                 AvmTypeCode.Boolean,
-                delegate(AbcCode code)
-                    {
-                        const int value = 1;
+                code =>
+	                {
+		                const int value = 1;
 
-                        code.GetLocal(value);
-                        var notNull = code.IfNotNull();
-                        code.PushNativeBool(true);
-                        code.ReturnValue();
+		                code.GetLocal(value);
+		                var notNull = code.IfNotNull();
+		                code.PushNativeBool(true);
+		                code.ReturnValue();
 
-                        notNull.BranchTarget = code.Label();
-                        code.Try();
+		                notNull.BranchTarget = code.Label();
+		                code.Try();
 
-                        code.GetLocal(value);
-                        code.Nullable_HasValue(true);
-                        code.Add(InstructionCode.Not);
-                        code.ReturnValue();
+		                code.GetLocal(value);
+		                code.Nullable_HasValue(true);
+		                code.Add(InstructionCode.Not);
+		                code.ReturnValue();
 
-                        code.BeginCatch();
-                        code.Pop();
-                        code.PushNativeBool(false);
-                        code.ReturnValue();
-                        code.EndCatch(true);
-                    },
+		                code.BeginCatch();
+		                code.Pop();
+		                code.PushNativeBool(false);
+		                code.ReturnValue();
+		                code.EndCatch(true);
+	                },
                 AvmTypeCode.Object, "value");
         }
 
@@ -249,21 +249,21 @@ namespace DataDynamics.PageFX.FLI
             return instance.DefineStaticMethod(
                 "IsNullable",
                 AvmTypeCode.Boolean,
-                delegate(AbcCode code)
-                {
-                    const int value = 1;
+                code =>
+	                {
+		                const int value = 1;
 
-                    code.GetLocal(value);
-                    var notNull = code.IfNotNull();
-                    code.PushNativeBool(true);
-                    code.ReturnValue();
-                    notNull.BranchTarget = code.Label();
-                    
-                    code.GetLocal(value);
-                    code.Nullable_HasValue(true);
-                    code.Add(InstructionCode.Not);
-                    code.ReturnValue();
-                },
+		                code.GetLocal(value);
+		                var notNull = code.IfNotNull();
+		                code.PushNativeBool(true);
+		                code.ReturnValue();
+		                notNull.BranchTarget = code.Label();
+
+		                code.GetLocal(value);
+		                code.Nullable_HasValue(true);
+		                code.Add(InstructionCode.Not);
+		                code.ReturnValue();
+	                },
                 AvmTypeCode.Object, "value");
         }
         #endregion

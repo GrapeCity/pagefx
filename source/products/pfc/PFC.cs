@@ -494,12 +494,12 @@ namespace DataDynamics.PageFX
 
         static string FilterCommandLine()
         {
-            return cl.Filter(delegate(CommandLine.Item item)
-                                 {
-                                     if (!item.IsOption) return false;
-                                     if (!IsPfcOption(item)) return false;
-                                     return true;
-                                 });
+            return cl.Filter(item =>
+	            {
+		            if (!item.IsOption) return false;
+		            if (!IsPfcOption(item)) return false;
+		            return true;
+	            });
         }
 
         static bool doNotDeleteBins = true;

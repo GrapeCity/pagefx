@@ -61,13 +61,13 @@ namespace DataDynamics.PageFX.FLI
         AbcMethod DefineDefaultInitializer(IType type)
         {
             return _abc.DefineInitializer(
-                delegate(AbcCode code)
-                    {
-                        code.PushThisScope();
-                        code.InitFields(type, false, false);
-                        code.ConstructSuper();
-                        code.ReturnVoid();
-                    });
+	            code =>
+		            {
+			            code.PushThisScope();
+			            code.InitFields(type, false, false);
+			            code.ConstructSuper();
+			            code.ReturnVoid();
+		            });
         }
         #endregion
 
@@ -142,21 +142,21 @@ namespace DataDynamics.PageFX.FLI
             var type = klass.Type;
 
             return _abc.DefineInitializer(
-                delegate(AbcCode code)
-                    {
-                        code.PushThisScope();
+	            code =>
+		            {
+			            code.PushThisScope();
 
-                        code.InitFields(type, true, false);
+			            code.InitFields(type, true, false);
 
-                        foreach (var t in assetTraits)
-                        {
-                            code.LoadThis();
-                            code.Getlex(t.AssetInstance.Name);
-                            code.SetProperty(t.Name);
-                        }
+			            foreach (var t in assetTraits)
+			            {
+				            code.LoadThis();
+				            code.Getlex(t.AssetInstance.Name);
+				            code.SetProperty(t.Name);
+			            }
 
-                        code.ReturnVoid();
-                    });
+			            code.ReturnVoid();
+		            });
         }
 
         static InitInfo GetClassInitInfo(AbcInstance instance)
@@ -227,12 +227,12 @@ namespace DataDynamics.PageFX.FLI
                 string name = type.GetStaticCtorName();
                 instance.StaticCtor = instance.DefineStaticMethod(
                     name, AvmTypeCode.Void,
-                    delegate(AbcCode code)
-                        {
-                            code.PushThisScope();
-                            code.InitFields(type, true, false);
-                            code.ReturnVoid();
-                        });
+                    code =>
+	                    {
+		                    code.PushThisScope();
+		                    code.InitFields(type, true, false);
+		                    code.ReturnVoid();
+	                    });
                 return instance.StaticCtor;
             }
             return null;

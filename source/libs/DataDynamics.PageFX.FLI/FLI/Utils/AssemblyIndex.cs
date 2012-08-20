@@ -79,18 +79,19 @@ namespace DataDynamics.PageFX.FLI
             Build(asm);
         }
 
-        void Build(IAssembly root)
-        {
-            root.ProcessReferences(false,
-                   delegate(IAssembly asm)
-                   	{
-                   		if (asm != root)
-                   			Linker.Start(asm);
-                   		CacheTypes(asm);
-                   	});
-        }
+		void Build(IAssembly root)
+		{
+			root.ProcessReferences(
+				false,
+				asm =>
+					{
+						if (asm != root)
+							Linker.Start(asm);
+						CacheTypes(asm);
+					});
+		}
 
-        void CacheTypes(IAssembly asm)
+	    void CacheTypes(IAssembly asm)
         {
             AssemblyTag.Instance(asm).Index = this;
             foreach (var type in asm.Types)

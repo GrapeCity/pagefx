@@ -46,21 +46,21 @@ namespace DataDynamics.PageFX.FLI
             instance.StaticCtorCaller =
                 I.DefineStaticMethod(
                     "call_cctor." + instance.FullName, AvmTypeCode.Void,
-                    delegate(AbcCode code)
-                        {
-                            //NOTE: we must init class before setting cctor flag to true
-                            code.Getlex(ctor);
+                    code =>
+	                    {
+		                    //NOTE: we must init class before setting cctor flag to true
+		                    code.Getlex(ctor);
 
-                            GetStaticCtorFlag(code, instance);
-                            var br = code.IfFalse();
-                            code.ReturnVoid();
+		                    GetStaticCtorFlag(code, instance);
+		                    var br = code.IfFalse();
+		                    code.ReturnVoid();
 
-                            br.BranchTarget = code.Label();
-                            SetStaticCtorFlag(code, instance, true);
+		                    br.BranchTarget = code.Label();
+		                    SetStaticCtorFlag(code, instance, true);
 
-                            code.Call(ctor);
-                            code.ReturnVoid();
-                        });
+		                    code.Call(ctor);
+		                    code.ReturnVoid();
+	                    });
 
             return instance.StaticCtorCaller;
         }

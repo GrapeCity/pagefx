@@ -90,15 +90,15 @@ namespace DataDynamics.PageFX.FLI.ABC
             AddInstance(instance);
 
             instance.Initializer = DefineVoidMethod(
-                delegate(AbcCode code)
-                    {
-                        code.PushThisScope();
-                        code.LoadThis();
-                        code.PushString(locale);
-                        code.PushString(name);
-                        code.ConstructSuper(2);
-                        code.ReturnVoid();
-                    });
+	            code =>
+		            {
+			            code.PushThisScope();
+			            code.LoadThis();
+			            code.PushString(locale);
+			            code.PushString(name);
+			            code.ConstructSuper(2);
+			            code.ReturnVoid();
+		            });
 
             instance.Class.Initializer = DefineEmptyMethod();
             
@@ -106,22 +106,22 @@ namespace DataDynamics.PageFX.FLI.ABC
             instance.DefineOverrideMethod(
                 mn,
                 AvmTypeCode.Object,
-                delegate(AbcCode code)
-                    {
-                        int n = 0;
-                        var lines = rb.Content;
-                        for (int i = 0; i < lines.Length; ++i)
-                        {
-                            string line = lines[i];
-                            context.Line = i + 1;
-                            context.RB = rb;
-                            if (PushKeyValue(line, code, context))
-                                ++n;
-                        }
-                        code.Add(InstructionCode.Newobject, n);
-                        code.ReturnValue();
-                    }
-                );
+                code =>
+	                {
+		                int n = 0;
+		                var lines = rb.Content;
+		                for (int i = 0; i < lines.Length; ++i)
+		                {
+			                string line = lines[i];
+			                context.Line = i + 1;
+			                context.RB = rb;
+			                if (PushKeyValue(line, code, context))
+				                ++n;
+		                }
+		                code.Add(InstructionCode.Newobject, n);
+		                code.ReturnValue();
+	                }
+	            );
 
             DefineScript(instance);
         }

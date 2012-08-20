@@ -1107,13 +1107,13 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             script.Initializer = DefineMethod(
                 AvmTypeCode.Void,
-                delegate(AbcCode code)
-                    {
-                        code.PushThisScope();
-                        code.InitClassProperties(script);
-                        code.ReturnVoid();
-                    }
-                );
+                code =>
+	                {
+		                code.PushThisScope();
+		                code.InitClassProperties(script);
+		                code.ReturnVoid();
+	                }
+	            );
         }
 
         public void DefineScript(IEnumerable<AbcInstance> instances, Predicate<AbcInstance> filter)

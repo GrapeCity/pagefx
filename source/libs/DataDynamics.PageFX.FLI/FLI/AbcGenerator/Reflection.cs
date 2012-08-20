@@ -121,17 +121,17 @@ namespace DataDynamics.PageFX.FLI
 
                 instance.DefineMethod(
                     GetMethod(ObjectMethodId.GetType),
-                    delegate(AbcCode code)
-                        {
-                            code.CallAssemblyGetType(
-                                () =>
-                                    {
-                                        code.LoadThis();
-                                        code.Call(getTypeId);
-                                    }
-                                );
-                            code.ReturnValue();
-                        },
+                    code =>
+	                    {
+		                    code.CallAssemblyGetType(
+			                    () =>
+				                    {
+					                    code.LoadThis();
+					                    code.Call(getTypeId);
+				                    }
+			                    );
+		                    code.ReturnValue();
+	                    },
                     true);
             }
 

@@ -171,13 +171,13 @@ namespace DataDynamics.PageFX.FLI.SWF
 
         public ISwfCharacter GetCharacter(int id)
         {
-            return Find(delegate(SwfTag tag)
-                            {
-                                var c = tag as ISwfCharacter;
-                                if (c == null)
-                                    return false;
-                                return c.CharacterID == id;
-                            }) as ISwfCharacter;
+            return Find(tag =>
+	            {
+		            var c = tag as ISwfCharacter;
+		            if (c == null)
+			            return false;
+		            return c.CharacterID == id;
+	            }) as ISwfCharacter;
         }
         #endregion
     }

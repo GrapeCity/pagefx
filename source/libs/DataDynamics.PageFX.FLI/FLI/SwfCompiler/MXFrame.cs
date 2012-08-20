@@ -274,22 +274,22 @@ namespace DataDynamics.PageFX.FLI
 
                 instance.DefineVirtualOverrideMethod(
                     "info", objType,
-                    delegate(AbcCode code)
-                        {
-                            code.LoadThis();
-                            code.GetProperty(infoField);
+                    code =>
+	                    {
+		                    code.LoadThis();
+		                    code.GetProperty(infoField);
 
-                            var br = code.IfNotNull();
-                            code.LoadThis();
-                            code.LoadThis();
-                            code.Call(method);
-                            code.SetProperty(infoField);
+		                    var br = code.IfNotNull();
+		                    code.LoadThis();
+		                    code.LoadThis();
+		                    code.Call(method);
+		                    code.SetProperty(infoField);
 
-                            br.BranchTarget = code.Label();
-                            code.LoadThis();
-                            code.GetProperty(infoField);
-                            code.ReturnValue();
-                        });
+		                    br.BranchTarget = code.Label();
+		                    code.LoadThis();
+		                    code.GetProperty(infoField);
+		                    code.ReturnValue();
+	                    });
             }
             else
             {

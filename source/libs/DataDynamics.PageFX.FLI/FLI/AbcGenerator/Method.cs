@@ -10,16 +10,17 @@ namespace DataDynamics.PageFX.FLI
 
     //Contains generation of AbcMethod
     //Key method (entry point): DefineMethod
-    partial class AbcGenerator
+    internal partial class AbcGenerator
     {
         #region GetMethodName
-        AbcMultiname GetMethodName(IMethod method)
+        private AbcMultiname GetMethodName(IMethod method)
         {
             string name = method.GetSigName(SigKind.Avm);
             return _abc.DefineQName(method, name);
         }
 
-        static string GetFixedName(IMethod method)
+		//fixes due to flex compiler bugs
+        private static string GetFixedName(IMethod method)
         {
             //NOTE: flex compiler lookups inside instance to resolve type refs
             var declType = method.DeclaringType;
@@ -40,7 +41,7 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        AbcMultiname GetMethodName(IMethod method, out bool isOverride)
+        private AbcMultiname GetMethodName(IMethod method, out bool isOverride)
         {
             isOverride = method.IsOverride();
 
@@ -63,7 +64,7 @@ namespace DataDynamics.PageFX.FLI
         	return _abc.DefineQName(method, name);
         }
 
-        AbcMultiname GetDefinedMethodName(IMethod method)
+        private AbcMultiname GetDefinedMethodName(IMethod method)
         {
             var tag = DefineMethod(method);
 
@@ -80,7 +81,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineMethodTrait
-        AbcTrait DefineMethodTrait(AbcMethod abcMethod, IMethod method)
+        private AbcTrait DefineMethodTrait(AbcMethod abcMethod, IMethod method)
         {
 #if DEBUG
             DebugService.DoCancel();
@@ -111,7 +112,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region ImportMethod
-        object ImportAbcMethod(AbcMethod method)
+        private object ImportAbcMethod(AbcMethod method)
         {
             if (method.IsNative)
                 return method;
@@ -146,7 +147,7 @@ namespace DataDynamics.PageFX.FLI
             return method;
         }
 
-        object ImportMethod(IMethod method)
+        private object ImportMethod(IMethod method)
         {
             var tag = method.Tag;
             if (tag == null) return null;
@@ -162,7 +163,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineMethod
-        object IsDefined(IMethod method)
+        private object IsDefined(IMethod method)
         {
             if (_abc.IsDefined(method))
             {
@@ -242,7 +243,7 @@ namespace DataDynamics.PageFX.FLI
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        AbcMethod DefineMethodCore(IMethod method)
+        private AbcMethod DefineMethodCore(IMethod method)
         {
             var declType = method.DeclaringType;
             var instance = declType.Tag as AbcInstance;
@@ -305,7 +306,7 @@ namespace DataDynamics.PageFX.FLI
             return abcMethod;
         }
 
-        AbcString DefineMethodName(AbcMethod method)
+        private AbcString DefineMethodName(AbcMethod method)
         {
             string name = "";
             var instance = method.Instance;
@@ -337,14 +338,14 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        void ImplementProtoMethods(IMethod method, AbcMethod abcMethod)
+        private void ImplementProtoMethods(IMethod method, AbcMethod abcMethod)
         {
             ImplementStringMethod(method);
             ImplementObjectMethod(method, abcMethod);
         }
 
         #region DefineImplementedMethods
-        void DefineImplementedMethods(IMethod method, AbcInstance instance, AbcMethod abcMethod)
+        private void DefineImplementedMethods(IMethod method, AbcInstance instance, AbcMethod abcMethod)
         {
             var impls = method.ImplementedMethods;
             if (impls == null) return;
@@ -435,7 +436,7 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        AbcMethod GetBaseMethod(AbcMethod am, IMethod m)
+        private AbcMethod GetBaseMethod(AbcMethod am, IMethod m)
         {
             var impls = m.ImplementedMethods;
             if (impls != null && impls.Length == 1)
@@ -448,7 +449,7 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        void CopyParams(AbcMethod to, AbcMethod from)
+        private void CopyParams(AbcMethod to, AbcMethod from)
         {
             int n = from.ParamCount;
             for (int i = 0; i < n; ++i)
@@ -476,7 +477,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineBaseMethods
-        void DefineBaseMethods(IMethod method)
+        private void DefineBaseMethods(IMethod method)
         {
             //            var declType = method.DeclaringType;
             //            if (declType.IsInterface) return;
@@ -512,7 +513,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineOverrideMethods
-        void DefineOverrideMethods(IMethod method)
+        private void DefineOverrideMethods(IMethod method)
         {
             if (method.IsAbstract || method.IsVirtual)
             {
@@ -545,7 +546,7 @@ namespace DataDynamics.PageFX.FLI
 
         #region DefineSubclassOverrideMethods
         //Defines override methods in subclasses
-        void DefineSubclassOverrideMethods(AbcInstance instance, IMethod method)
+        private void DefineSubclassOverrideMethods(AbcInstance instance, IMethod method)
         {
             var type = instance.Type;
             if (type == SystemTypes.Enum) return;
@@ -568,7 +569,7 @@ namespace DataDynamics.PageFX.FLI
 
         #region DefineOverrideMethod
 
-	    void DefineOverrideMethod(IType implType, IMethod method)
+	    private void DefineOverrideMethod(IType implType, IMethod method)
         {
             if (implType == null) return;
             var m = implType.FindOverrideMethod(method);
@@ -579,7 +580,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineImplementation
-        void DefineImplementation(IType implType, IMethod method)
+        private void DefineImplementation(IType implType, IMethod method)
         {
             if (implType == null)
                 throw new ArgumentNullException();
@@ -605,20 +606,20 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineExplicitImplementation
-        void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod, IMethod method, IMethod ifaceMethod)
+        private void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod, IMethod method, IMethod ifaceMethod)
         {
             var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
 
             var m = instance.DefineMethod(
                 ifaceAbcMethod,
-                delegate(AbcCode code)
-                {
-                    code.LoadThis();
-                    code.LoadArguments(ifaceMethod);
-                    code.Call(abcMethod);
-                    if (ifaceAbcMethod.IsVoid) code.ReturnVoid();
-                    else code.ReturnValue();
-                });
+                code =>
+	                {
+		                code.LoadThis();
+		                code.LoadArguments(ifaceMethod);
+		                code.Call(abcMethod);
+		                if (ifaceAbcMethod.IsVoid) code.ReturnVoid();
+		                else code.ReturnValue();
+	                });
 
             //m.SourceMethod = method;
             m.Trait.IsOverride = method.DeclaringType.BaseType.FindImplementation(ifaceMethod, true) != null;
@@ -628,7 +629,7 @@ namespace DataDynamics.PageFX.FLI
         #region DefineMethodBody
         public bool UseCCS;
 
-        void DefineMethodBody(AbcMethod abcMethod)
+        private void DefineMethodBody(AbcMethod abcMethod)
         {
             if (abcMethod == null)
                 throw new ArgumentNullException();
@@ -649,7 +650,7 @@ namespace DataDynamics.PageFX.FLI
             BuildBodyCore(abcMethod, method);
         }
 
-        bool LoadBodyFromCache(AbcMethod abcMethod)
+        private bool LoadBodyFromCache(AbcMethod abcMethod)
         {
             var refs = new BodyReferences();
             var body = _ccs.Import(abcMethod, refs);
@@ -662,7 +663,7 @@ namespace DataDynamics.PageFX.FLI
             return true;
         }
 
-        void BuildBodyCore(AbcMethod target, IMethod source)
+        private void BuildBodyCore(AbcMethod target, IMethod source)
         {
             var targetBody = new AbcMethodBody(target);
             _abc.MethodBodies.Add(targetBody);
@@ -758,54 +759,53 @@ namespace DataDynamics.PageFX.FLI
             return DefineAbcMethod(type, name, 0);
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, Func<IMethod,bool> p)
+        private LazyValue<AbcMethod> LazyMethod(IType type, Func<IMethod,bool> p)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, p));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, int argc)
+		private LazyValue<AbcMethod> LazyMethod(IType type, string name, int argc)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, argc));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name)
+		private LazyValue<AbcMethod> LazyMethod(IType type, string name)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType,bool> arg1)
+		private LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2)
+		private LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1, Func<IType, bool> arg2)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2, Func<IType,bool> arg3)
+		private LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1, Func<IType, bool> arg2, Func<IType, bool> arg3)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2, arg3));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1)
+		private LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2)
+		private LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2));
         }
 
-        LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2, IType arg3)
+		private LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2, IType arg3)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2, arg3));
         }
         #endregion
 
-        #region Utils
-        bool IsMxAppCtor(IMethod method)
+	    private bool IsMxAppCtor(IMethod method)
         {
             if (method == null) return false;
             if (method.IsStatic) return false;
@@ -814,6 +814,5 @@ namespace DataDynamics.PageFX.FLI
             if (method.Parameters.Count != 0) return false;
             return method.DeclaringType == sfc.TypeFlexApp;
         }
-        #endregion
     }
 }

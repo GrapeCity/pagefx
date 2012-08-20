@@ -69,18 +69,18 @@ namespace DataDynamics.PageFX.FLI
             
             return instance.DefineStaticMethod(
                 name, typeName,
-                delegate(AbcCode code)
-                    {
-                        const int value = 1;
-                        code.BeginAsMethod();
+                code =>
+	                {
+		                const int value = 1;
+		                code.BeginAsMethod();
 
-                        code.Try();
-                        code.GetLocal(value);
-                        code.Coerce(typeName);
-                        code.ReturnValue();
+		                code.Try();
+		                code.GetLocal(value);
+		                code.Coerce(typeName);
+		                code.ReturnValue();
 
-                        code.CatchReturnNull();
-                    },
+		                code.CatchReturnNull();
+	                },
                 AvmTypeCode.Object, "value");
         }
         #endregion
@@ -105,24 +105,24 @@ namespace DataDynamics.PageFX.FLI
 
             return instance.DefineStaticMethod(
                     name, typeName,
-                    delegate(AbcCode code)
-                    {
-                        const int value = 1;
+                    code =>
+	                    {
+		                    const int value = 1;
 
-                        code.BeginAsMethod();
-                        
-                        code.Try();
+		                    code.BeginAsMethod();
 
-                        code.GetLocal(value);
-                        code.Coerce(typeName);
+		                    code.Try();
 
-                        code.PushTypeId(type);
-                        code.Call(ArrayMethodId.CastTo);
+		                    code.GetLocal(value);
+		                    code.Coerce(typeName);
 
-                        code.ReturnValue();
+		                    code.PushTypeId(type);
+		                    code.Call(ArrayMethodId.CastTo);
 
-                        code.CatchReturnNull();
-                    },
+		                    code.ReturnValue();
+
+		                    code.CatchReturnNull();
+	                    },
                     AvmTypeCode.Object, "value");
         }
         #endregion
@@ -148,48 +148,48 @@ namespace DataDynamics.PageFX.FLI
 
             return instance.DefineStaticMethod(
                 name, typeName,
-                delegate(AbcCode code)
-                    {
-                        var gi = (IGenericInstance)type;
-                        var elemType = gi.GenericArguments[0];
+                code =>
+	                {
+		                var gi = (IGenericInstance)type;
+		                var elemType = gi.GenericArguments[0];
 
-                        const int value = 1;
+		                const int value = 1;
 
-                        code.BeginAsMethod();
+		                code.BeginAsMethod();
 
-                        code.Try();
+		                code.Try();
 
-                    	code.If(
-                    		() =>
-                    			{
-                    				code.GetLocal(value);
-                    				return code.IfNotArray();
-                    			},
-                    		() =>
-                    			{
-                    				code.GetLocal(value);
-                    				code.Coerce(type, false);
-                    				code.ReturnValue();
-                    			},
-                    		//array case
-                    		() => code.If(
-                    			() =>
-                    				{
-                    					code.HasElemType(elemType, value);
-                    					return code.IfTrue();
-                    				},
-                    			() =>
-                    				{
-                    					//can cast
-                    					code.GetLocal(value);
-                    					code.ReturnValue();
-                    				},
-                    			() => code.ReturnNull()
-                    		      	)
-                    		);
+		                code.If(
+			                () =>
+				                {
+					                code.GetLocal(value);
+					                return code.IfNotArray();
+				                },
+			                () =>
+				                {
+					                code.GetLocal(value);
+					                code.Coerce(type, false);
+					                code.ReturnValue();
+				                },
+			                //array case
+			                () => code.If(
+				                () =>
+					                {
+						                code.HasElemType(elemType, value);
+						                return code.IfTrue();
+					                },
+				                () =>
+					                {
+						                //can cast
+						                code.GetLocal(value);
+						                code.ReturnValue();
+					                },
+				                () => code.ReturnNull()
+				                      )
+			                );
 
-                        code.CatchReturnNull();
-                    },
+		                code.CatchReturnNull();
+	                },
                 AvmTypeCode.Object, "value");
         }
         #endregion
@@ -212,58 +212,58 @@ namespace DataDynamics.PageFX.FLI
 
             return instance.DefineStaticMethod(
                 name, AvmTypeCode.Object,
-                delegate(AbcCode code)
-                    {
-                        const int value = 1;
+                code =>
+	                {
+		                const int value = 1;
 
-                        code.BeginAsMethod();
+		                code.BeginAsMethod();
 
-                        code.Try();
+		                code.Try();
 
-                        code.If(
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    //code.PushString("String");
-                                    //code.PushQName(code[AvmTypeCode.String]);
-                                    //code.Add(InstructionCode.Istypelate);
-                                    code.Is(AvmTypeCode.String);
-                                    return code.IfTrue();
-                                },
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    code.ReturnValue();
-                                },
-                            delegate
-                                {
-                                    if (type.IsIEnumerableInstance())
-                                    {
-                                        var elemType = type.GetTypeArgument(0);
-                                        
-                                        //check array
-                                        code.GetLocal(value);
-                                        var notArray = code.IfNotArray();
+		                code.If(
+			                delegate
+				                {
+					                code.GetLocal(value);
+					                //code.PushString("String");
+					                //code.PushQName(code[AvmTypeCode.String]);
+					                //code.Add(InstructionCode.Istypelate);
+					                code.Is(AvmTypeCode.String);
+					                return code.IfTrue();
+				                },
+			                delegate
+				                {
+					                code.GetLocal(value);
+					                code.ReturnValue();
+				                },
+			                delegate
+				                {
+					                if (type.IsIEnumerableInstance())
+					                {
+						                var elemType = type.GetTypeArgument(0);
 
-                                        code.HasElemType(elemType, value);
-                                        
-                                        var notArgArray = code.IfFalse();
-                                        code.GetLocal(value);
-                                        code.ReturnValue();
+						                //check array
+						                code.GetLocal(value);
+						                var notArray = code.IfNotArray();
 
-                                        var label = code.Label();
-                                        notArgArray.BranchTarget = label;
-                                        notArray.BranchTarget = label;
-                                    }
+						                code.HasElemType(elemType, value);
 
-                                    code.GetLocal(value);
-                                    code.As(_abc.GetTypeName(type, false));
-                                    code.ReturnValue();
-                                }
-                            );
+						                var notArgArray = code.IfFalse();
+						                code.GetLocal(value);
+						                code.ReturnValue();
 
-                        code.CatchReturnNull();
-                    },
+						                var label = code.Label();
+						                notArgArray.BranchTarget = label;
+						                notArray.BranchTarget = label;
+					                }
+
+					                code.GetLocal(value);
+					                code.As(_abc.GetTypeName(type, false));
+					                code.ReturnValue();
+				                }
+			                );
+
+		                code.CatchReturnNull();
+	                },
                 AvmTypeCode.Object, "value");
         }
         #endregion
@@ -288,38 +288,38 @@ namespace DataDynamics.PageFX.FLI
             var typeName = DefineMemberType(type);
             return instance.DefineStaticMethod(
                 name, typeName,
-                delegate(AbcCode code)
-                    {
-                        const int value = 1;
-                        code.BeginAsMethod();
+                code =>
+	                {
+		                const int value = 1;
+		                code.BeginAsMethod();
 
-                        code.Try();
+		                code.Try();
 
-                        code.If(
-                            //not me?
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    code.As(typeName);
-                                    return code.IfNull();
-                                },
-                            //not me
-                            delegate
-                                {
-                                    code.NewNullable(type, value);
-                                    code.ReturnValue();
-                                },
-                            //me
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    code.Coerce(typeName);
-                                    code.ReturnValue();
-                                }
-                            );
+		                code.If(
+			                //not me?
+			                () =>
+				                {
+					                code.GetLocal(value);
+					                code.As(typeName);
+					                return code.IfNull();
+				                },
+			                //not me
+			                () =>
+				                {
+					                code.NewNullable(type, value);
+					                code.ReturnValue();
+				                },
+			                //me
+			                () =>
+				                {
+					                code.GetLocal(value);
+					                code.Coerce(typeName);
+					                code.ReturnValue();
+				                }
+			                );
 
-                        code.CatchReturnNull();
-                    },
+		                code.CatchReturnNull();
+	                },
                 AvmTypeCode.Object, "value");
         }
         #endregion
@@ -346,43 +346,43 @@ namespace DataDynamics.PageFX.FLI
 
             return instance.DefineStaticMethod(
                 name, typeName,
-                delegate(AbcCode code)
-                    {
-                        const int value = 1;
-                        code.BeginAsMethod();
+                code =>
+	                {
+		                const int value = 1;
+		                code.BeginAsMethod();
 
-                        code.Try();
+		                code.Try();
 
-                        var MyNullable = DefineAbcInstance(MakeNullable(type));
+		                var MyNullable = DefineAbcInstance(MakeNullable(type));
 
-                        code.If(
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    code.As(MyNullable);
-                                    return code.IfNull();
-                                },
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    code.Coerce(typeName);
-                                    code.ReturnValue();
-                                },
-                            delegate
-                                {
-                                    if (type.IsBoxableType())
-                                    {
-                                        code.Box(typeName, () => code.GetBoxedValue(value));
-                                    }
-                                    else
-                                    {
-                                        code.GetBoxedValue(value);
-                                    }
-                                    code.ReturnValue();
-                                });
+		                code.If(
+			                delegate
+				                {
+					                code.GetLocal(value);
+					                code.As(MyNullable);
+					                return code.IfNull();
+				                },
+			                delegate
+				                {
+					                code.GetLocal(value);
+					                code.Coerce(typeName);
+					                code.ReturnValue();
+				                },
+			                delegate
+				                {
+					                if (type.IsBoxableType())
+					                {
+						                code.Box(typeName, () => code.GetBoxedValue(value));
+					                }
+					                else
+					                {
+						                code.GetBoxedValue(value);
+					                }
+					                code.ReturnValue();
+				                });
 
-                        code.CatchReturnNull();
-                    },
+		                code.CatchReturnNull();
+	                },
                 AvmTypeCode.Object, "value");
         }
         #endregion
@@ -402,26 +402,26 @@ namespace DataDynamics.PageFX.FLI
 
             return instance.DefineStaticMethod(
                 name, typeName,
-                delegate(AbcCode code)
-                {
-                    const int value = 1;
+                code =>
+	                {
+		                const int value = 1;
 
-                    code.GetLocal(value);
-                    code.IfNullReturnNull(1);
+		                code.GetLocal(value);
+		                code.IfNullReturnNull(1);
 
-                    code.Getlex(instance);
-                    code.GetLocal(value);
-                    code.Call(AS);
-                    code.SetLocal(value);
+		                code.Getlex(instance);
+		                code.GetLocal(value);
+		                code.Call(AS);
+		                code.SetLocal(value);
 
-                    code.GetLocal(value);
-                    var notNull = code.IfNotNull(false);
-                    code.ThrowInvalidCastException(type);
+		                code.GetLocal(value);
+		                var notNull = code.IfNotNull(false);
+		                code.ThrowInvalidCastException(type);
 
-                    notNull.BranchTarget = code.Label();
-                    code.GetLocal(value);
-                    code.ReturnValue();
-                },
+		                notNull.BranchTarget = code.Label();
+		                code.GetLocal(value);
+		                code.ReturnValue();
+	                },
                 AvmTypeCode.Object, "value");
         }
         #endregion
@@ -432,28 +432,28 @@ namespace DataDynamics.PageFX.FLI
             var instance = DefineAbcInstance(SystemTypes.String);
             return instance.DefineStaticMethod(
                 "cast_to_me", AvmTypeCode.String,
-                delegate(AbcCode code)
-                    {
-                        const int value = 1;
+                code =>
+	                {
+		                const int value = 1;
 
-                        code.IfNullReturnNull(value);
+		                code.IfNullReturnNull(value);
 
-                        code.If(
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    code.Is(AvmTypeCode.String);
-                                    return code.IfTrue();
-                                },
-                            delegate
-                                {
-                                    code.GetLocal(value);
-                                    code.CoerceString();
-                                    code.ReturnValue();
-                                },
-                            () => code.ThrowInvalidCastException()
-                            );
-                    },
+		                code.If(
+			                () =>
+				                {
+					                code.GetLocal(value);
+					                code.Is(AvmTypeCode.String);
+					                return code.IfTrue();
+				                },
+			                () =>
+				                {
+					                code.GetLocal(value);
+					                code.CoerceString();
+					                code.ReturnValue();
+				                },
+			                () => code.ThrowInvalidCastException()
+			                );
+	                },
                 AvmTypeCode.Object, "value");
         }
         #endregion

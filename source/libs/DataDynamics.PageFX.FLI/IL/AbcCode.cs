@@ -3465,18 +3465,18 @@ namespace DataDynamics.PageFX.FLI.IL
 
             return instance.DefineStaticMethod(
                 ovf1Name, retType,
-                delegate(AbcCode code)
-                    {
-                        code.PushThisScope();
+                code =>
+	                {
+		                code.PushThisScope();
 
-                        code.LoadThis();
-                        code.GetLocal(1); //left
+		                code.LoadThis();
+		                code.GetLocal(1); //left
 
-                        code.LoadTempValue(type, true); //right
-                        code.Call(ovf2);
+		                code.LoadTempValue(type, true); //right
+		                code.Call(ovf2);
 
-                        code.ReturnValue();
-                    },
+		                code.ReturnValue();
+	                },
                 retType, "left");
         }
         #endregion

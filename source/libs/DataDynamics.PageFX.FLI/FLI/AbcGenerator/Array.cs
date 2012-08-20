@@ -119,11 +119,11 @@ namespace DataDynamics.PageFX.FLI
             if (InternalTypeExtensions.IsInitArray(elemType))
             {
                 code.InitArray(elemType,
-                    delegate
-                        {
-                            code.LoadThis();
-                            code.GetProperty(Const.Array.Value);
-                        }, varSize);
+                               () =>
+	                               {
+		                               code.LoadThis();
+		                               code.GetProperty(Const.Array.Value);
+	                               }, varSize);
             }
 
             code.ReturnVoid();
@@ -693,25 +693,25 @@ namespace DataDynamics.PageFX.FLI
                         const int func = 3;
 
                         code.While(
-                            delegate
-                                {
-                                    code.GetLocal(size);
-                                    code.Add(InstructionCode.Decrement_i);
-                                    code.SetLocal(size);
-                                    code.GetLocal(size);
-                                    code.Add(InstructionCode.Pushbyte, 0);
-                                    return code.If(BranchOperator.LessThan);
-                                },
-                            delegate
-                                {
-                                    code.GetLocal(arr);
-                                    code.GetLocal(size);
-                                    code.GetLocal(func);
-                                    code.PushNull();
-                                    code.CallClosure(0);
-                                    code.SetNativeArrayItem();
-                                }
-                            );
+	                        () =>
+		                        {
+			                        code.GetLocal(size);
+			                        code.Add(InstructionCode.Decrement_i);
+			                        code.SetLocal(size);
+			                        code.GetLocal(size);
+			                        code.Add(InstructionCode.Pushbyte, 0);
+			                        return code.If(BranchOperator.LessThan);
+		                        },
+	                        () =>
+		                        {
+			                        code.GetLocal(arr);
+			                        code.GetLocal(size);
+			                        code.GetLocal(func);
+			                        code.PushNull();
+			                        code.CallClosure(0);
+			                        code.SetNativeArrayItem();
+		                        }
+	                        );
 
                         code.ReturnVoid();
                     },
