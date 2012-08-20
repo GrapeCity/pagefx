@@ -91,12 +91,20 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public static bool IsGetType(this IMethod method)
 		{
-			return !method.IsStatic && method.Parameters.Count == 0 && method.Name == "GetType";
+			if (method.DeclaringType.IsInterface) return false;
+			return !method.IsStatic
+				&& method.Parameters.Count == 0
+				&& method.Type == SystemTypes.Type
+				&& method.Name == "GetType";
 		}
 
 		public static bool IsToString(this IMethod method)
 		{
-			return !method.IsStatic && method.Parameters.Count == 0 && method.Name == "ToString";
+			if (method.DeclaringType.IsInterface) return false;
+			return !method.IsStatic 
+				&& method.Parameters.Count == 0 
+				&& method.Type == SystemTypes.String
+				&& method.Name == "ToString";
 		}
 	}
 
