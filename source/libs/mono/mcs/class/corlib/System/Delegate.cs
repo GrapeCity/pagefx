@@ -371,17 +371,6 @@ namespace System
             return false;
         }
 
-        //public override int GetHashCode()
-        //{
-        //    // FIXME: Sync with Equals above
-        //    return (int)method_ptr;
-        //}
-
-        //protected virtual MethodInfo GetMethodImpl()
-        //{
-        //    return Method;
-        //}
-
         public virtual Delegate[] GetInvocationList()
         {
             return new Delegate[] { this };

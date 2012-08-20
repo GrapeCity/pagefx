@@ -84,10 +84,7 @@ namespace System
 
             if (m_prev == null)
             {
-                if (d.m_prev == null)
-                    return true;
-                else
-                    return false;
+                return d.m_prev == null;
             }
 
             return m_prev.Equals(d.m_prev);
