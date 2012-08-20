@@ -30,6 +30,11 @@ function $unbox(o) {
 	return v == undefined ? o : v;
 }
 
+function $tostr(o) {
+	if (o == null || o == undefined) return "";
+	return o.toString();
+}
+
 // Derived from https://gist.github.com/2192799
 function $decodeFloat(bytes, signBits, exponentBits, fractionBits, eMin, eMax, littleEndian) {
   // var totalBits = (signBits + exponentBits + fractionBits);
@@ -1031,7 +1036,7 @@ function $context($method, $args, $vars) {
 		
 		var thisArg = null;
 		if (!i.s) { // is not static
-			thisArg = pop(true);
+			thisArg = popobj();
 		}
 
 		try {
@@ -1381,14 +1386,14 @@ function $context($method, $args, $vars) {
 		};
 	}
 	
-	function fldptr(o, f) {
-		this.o = o;
-		this.f = f;
+	function fldptr($o, $f) {
+		var o = $o;
+		var f = $f;
 		this.$ptrget = function() {
-			return this.f.get(this.o);
+			return f.get(o);
 		};
 		this.$ptrset = function(v) {
-			this.f.set(this.o, v);
+			f.set(o, v);
 			return v;
 		};
 	}

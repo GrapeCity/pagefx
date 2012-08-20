@@ -32,6 +32,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			get { return _subclasses; }
 		}
 
+		#region Flags
+
 		public bool HasClassInit
 		{
 			get { return (_flags & ClassFlags.ClassInit) != 0; }
@@ -55,6 +57,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (value) _flags |= f;
 			else _flags &= ~f;
 		}
+
+		#endregion
 
 		public void Add(JsClassMember member)
 		{

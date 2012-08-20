@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
@@ -13,8 +14,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		}
 
 		[InlineImpl]
-		public static void WriteLine(IMethod method, JsBlock code)
+		public static void WriteLine(MethodContext context, JsBlock code)
 		{
+			var method = context.Method;
 			var args = method.JsArgs();
 			if (args.Length == 0)
 			{
@@ -22,8 +24,21 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 			}
 			else if (args.Length == 1)
 			{
-				var val = "$unbox".Id().Call(args[0]);
-				code.Add("console.log".Id().Call(val));
+				var p = method.Parameters[0].Type;
+				if (p == SystemTypes.String)
+				{
+					code.Add("console.log".Id().Call(args[0]));
+				}
+				else
+				{
+					if (p == SystemTypes.Object)
+					{
+						context.Host.CompileMethod(SystemTypes.Object.Methods.Find("ToString").First());
+					}
+
+					var val = "$tostr".Id().Call("$unbox".Id().Call(args[0]));
+					code.Add("console.log".Id().Call(val));
+				}
 			}
 			else
 			{
