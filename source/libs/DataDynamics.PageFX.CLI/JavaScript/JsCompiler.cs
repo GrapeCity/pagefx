@@ -155,7 +155,31 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			klass.Add(jsMethod);
 
+			CompileImplementedMethods(klass, method);
+
 			return jsMethod;
+		}
+
+		private static void CompileImplementedMethods(JsClass klass, IMethod method)
+		{
+			if (method.IsExplicitImplementation) return;
+
+			var impls = method.ImplementedMethods;
+			if (impls == null) return;
+			if (impls.Length <= 0) return;
+
+			var type = method.DeclaringType.JsFullName(method);
+			var name = method.JsName();
+
+			foreach (var i in impls)
+			{
+				var func = new JsFunction(null, i.JsParams());
+
+				var call = "this".Id().Get(name).Call(i.JsArgs());
+				func.Body.Add(method.IsVoid() ? call.AsStatement() : call.Return());
+
+				klass.Add(new JsGeneratedMethod(string.Format("{0}.prototype.{1}", type, i.JsName()), func));
+			}
 		}
 
 		private static bool Exclude(IMethod method)
@@ -188,7 +212,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			var context = new MethodContext(this, klass, method);
 
-			var parameters = method.JsParameterNames();
+			var parameters = method.JsParams();
 			func = new JsFunction(null, parameters);
 
 			//TODO: cache info and code as separate class property
