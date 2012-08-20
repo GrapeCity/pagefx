@@ -14,9 +14,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 			if (method.Parameters.Count != 2)
 				throw new InvalidOperationException();
 
+			//TODO: get fields from System.Delegate and System.Multicast delegate types
 			var args = method.JsParameterIds();
 			code.Add("this".Id().Set("m_target", args[0]));
 			code.Add("this".Id().Set("m_function", args[1]));
+			code.Add("this".Id().Set("m_prev", null));
+			code.Add("this".Id().Set("m_next", null));
 		}
 
 		[InlineImpl]

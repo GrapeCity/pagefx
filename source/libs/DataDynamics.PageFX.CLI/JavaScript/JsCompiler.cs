@@ -530,7 +530,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				}
 				else if (IsSuperCall(context, method, info.Flags))
 				{
-					call = obj.Get("$base").Get(method.JsName()).Apply(obj, args);
+					var baseType = context.Method.DeclaringType.BaseType;
+					call = method.JsFullName(baseType).Id().Apply(obj, args);
+					//TODO: remove $base if it is not needed
+					//call = obj.Get("$base").Get(method.JsName()).Apply(obj, args);
 				}
 			}
 			
@@ -663,8 +666,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (type is ICompoundType || type.IsInterface) return;
 
-			if (type == SystemTypes.Type || type == SystemTypes.Array)
-				return;
+			if (!CompileFieldsFor(type)) return;
 
 			var klass = CompileType(type) as JsClass;
 			if (klass == null) return;
@@ -678,6 +680,24 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (isStatic) klass.StaticFieldsCompiled = true;
 			else klass.InstanceFieldsCompiled = true;
+		}
+
+		private static bool CompileFieldsFor(IType type)
+		{
+			if (type.SystemType != null)
+			{
+				switch (type.SystemType.Code)
+				{
+					case SystemTypeCode.Void:
+					case SystemTypeCode.Array:
+					case SystemTypeCode.Type:
+					case SystemTypeCode.Delegate:
+					case SystemTypeCode.MulticastDelegate:
+						return false;
+				}
+			}
+
+			return true;
 		}
 
 		private void CompileField(JsClass klass, IField field)

@@ -19,10 +19,15 @@ function $invokeDelegate(d, a, ret) {
 	return ret ? val : undefined;
 }
 
+function $copy(o) {
+	if (o == null || o === undefined) return o;
+	return o.$copy == undefined ? o : o.$copy();
+}
+
 function $unbox(o) {
-	if (o == null || o == undefined) return undefined;
+	if (o == null || o == undefined) return o;
 	var v = o.$value;
-	return v == undefined ? undefined : v;
+	return v == undefined ? o : v;
 }
 
 // Derived from https://gist.github.com/2192799
@@ -157,18 +162,16 @@ function $context($method, $args, $vars) {
 		return result;
 	};
 
-	function copy(o) {
-		if (o == null || o == undefined) return o;
-		return o.$copy == undefined ? o : o.$copy();
-	}
-
-	function push(value) {
-		stack.push(value);
+	function push(v) {
+		if (v === undefined) {
+			throw new EvalError("undefined should not be pushed onto the eval stack.");
+		}
+		stack.push(v);
 	}
 
 	function pop(nocopy) {
 		var o = stack.pop();
-		return nocopy ? o : copy(o);
+		return nocopy ? o : $copy(o);
 	}
 
 	// pops unsigned number
@@ -1057,7 +1060,12 @@ function $context($method, $args, $vars) {
 
 	// load/store fields
 	function ldfld(f) {
-		push(f.get(popobj()));
+		var o = popobj();
+		var v = f.get(o);
+		if (v === undefined) {
+			v = f.get(o); // for debug
+		}
+		push(v);
 	}
 
 	function stfld(f) {

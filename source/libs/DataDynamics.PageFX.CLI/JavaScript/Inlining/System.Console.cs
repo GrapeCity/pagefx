@@ -1,4 +1,5 @@
-﻿using DataDynamics.PageFX.CodeModel;
+﻿using System;
+using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 {
@@ -17,13 +18,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 			var args = method.JsParameterIds();
 			if (args.Length == 0)
 			{
-				code.Add("console.log".Id().Call("\n"));
+				code.Add("console.log".Id().Call(""));
+			}
+			else if (args.Length == 1)
+			{
+				var val = "$unbox".Id().Call(args[0]);
+				code.Add("console.log".Id().Call(val));
 			}
 			else
 			{
-				code.Add("$unbox".Id().Call(args[0]).Var("t"));
-				code.Add(new JsText(string.Format("if (t != undefined) {0} = t;", args[0].Value)));
-				code.Add("console.log".Id().Call(args[0]));
+				throw new NotImplementedException();
 			}
 		}
 	}

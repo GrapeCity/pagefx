@@ -100,7 +100,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				writer.WriteLine();
 				var baseName = Base.Type.JsFullName();
-				writer.WriteLine("{0}.prototype.$base = {1}.prototype;", name, baseName);
+				//TODO: enable when explicit base ref will be needed
+				//writer.WriteLine("{0}.prototype.$base = {1}.prototype;", name, baseName);
 				writer.WriteLine("$inherit({0}, {1});", name, baseName);
 			}
 		}
