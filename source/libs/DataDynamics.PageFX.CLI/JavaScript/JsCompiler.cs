@@ -212,22 +212,26 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				throw new NotSupportedException("The method format is not supported");
 
 			var translator = new ILTranslator();
-			translator.Translate(method, method.Body, new NopCodeProvider(this, method));
+			var codeProvider = new NopCodeProvider(this, klass, method);
+			translator.Translate(method, method.Body, codeProvider);
 
+			return codeProvider.Function;
+		}
+
+		internal JsFunction CompileJsil(JsClass klass, IMethod method, IClrMethodBody body)
+		{
 			var context = new MethodContext(this, klass, method);
 
 			var parameters = method.JsParams();
-			func = new JsFunction(null, parameters);
+			var func = new JsFunction(null, parameters);
 
 			//TODO: cache info and code as separate class property
 			var info = new JsObject
 				{
-                    {"IsVoid", method.IsVoid()},
+					{"IsVoid", method.IsVoid()},
 				};
 
-			//TODO: string instance calls as static calls
-
-			var args = new JsArray((method.IsStatic ? new string[0] : new []{"this"}).Concat(parameters).Select(x => (object)new JsId(x)));
+			var args = new JsArray((method.IsStatic ? new string[0] : new[] {"this"}).Concat(parameters).Select(x => (object)new JsId(x)));
 			var vars = new JsArray(method.Body.LocalVariables.Select(x => x.Type.InitialValue()));
 			var code = new JsArray(body.Code.Select<Instruction, object>(i => new JsInstruction(i, CompileInstruction(context, i))), "\n");
 

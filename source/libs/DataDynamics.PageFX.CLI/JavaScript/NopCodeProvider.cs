@@ -6,14 +6,22 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal class NopCodeProvider : ICodeProvider
 	{
+		private static readonly IInstruction OpNop = new Instruction { OpCode = OpCodes.Nop };
+		private static readonly IInstruction[] NopArray = new[] { OpNop };
+		private static readonly IInstruction[] Empty = new IInstruction[0];
+
 		private readonly JsCompiler _host;
+		private readonly JsClass _klass;
 		private readonly IMethod _method;
 
-		public NopCodeProvider(JsCompiler host, IMethod method)
+		public NopCodeProvider(JsCompiler host, JsClass klass, IMethod method)
 		{
 			_host = host;
+			_klass = klass;
 			_method = method;
 		}
+
+		public JsFunction Function { get; private set; }
 
 		public bool DonotCopyReturnValue { get; set; }
 
@@ -26,10 +34,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public void AfterTranslation()
 		{
 		}
-
-		private static readonly IInstruction OpNop = new Instruction {OpCode = OpCodes.Nop};
-		private static readonly IInstruction[] NopArray = new IInstruction[] {OpNop};
-		private static readonly IInstruction[] Empty = new IInstruction[0];
 
 		public IInstruction Nop()
 		{
@@ -48,6 +52,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public void Finish()
 		{
+			Function = _host.CompileJsil(_klass, _method, (IClrMethodBody)_method.Body);
 		}
 
 		public int GetVarIndex(int index, bool tobackend)
