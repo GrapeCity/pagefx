@@ -173,7 +173,6 @@
     <Compile Include="FLI\Utils\AvmResolver.cs" />
     <Compile Include="FLI\Tools\DebugService.cs" />
     <Compile Include="FLI\SpecTypes\VectorType.cs" />
-    <Compile Include="FLI\Utils\Corlib.cs" />
     <Compile Include="FLI\Utils\Embed.cs" />
     <Compile Include="FLI\Enums.cs" />
     <Compile Include="FLI\FlashLanguageInfrastructure.cs" />

@@ -133,9 +133,11 @@
     <Compile Include="IL\Values\VarPtr.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="JavaScript\ArrayInterfaceImpl.cs" />
     <Compile Include="JavaScript\BoxingImpl.cs" />
     <Compile Include="JavaScript\ClassInitImpl.cs" />
     <Compile Include="JavaScript\FieldCompiler.cs" />
+    <Compile Include="JavaScript\Inlining\System.Int32.cs" />
     <Compile Include="JavaScript\Inlining\InlineCodeProvider.cs" />
     <Compile Include="JavaScript\Inlining\RuntimeHelpersInlines.cs" />
     <Compile Include="JavaScript\Inlining\System.Char.cs" />

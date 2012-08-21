@@ -48,6 +48,7 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Corlib.cs" />
     <Compile Include="Design\ClassLayout.cs" />
     <Compile Include="Design\Enums.cs" />
     <Compile Include="Design\Expressions\Arrays.cs" />

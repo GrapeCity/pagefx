@@ -1,11 +1,11 @@
 ﻿namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 {
-	internal sealed class CharInlines : InlineCodeProvider
+	internal sealed class Int32Inlines : InlineCodeProvider
 	{
 		[InlineImpl(ArgCount = 0)]
 		public static void ToString(JsBlock code)
 		{
-			code.Add("String.fromCharCode".Id().Call("this".Id().Get(SpecialFields.BoxValue)).Return());
+			code.Add("this".Id().Get(SpecialFields.BoxValue).Get("toString").Call().Return());
 		}
 	}
 }

@@ -14,9 +14,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				    {"System.Object", new SystemObjectInlines()},
 				    {"System.String", new StringInlines()},
 				    {"System.Char", new CharInlines()},
+				    {"System.Int32", new Int32Inlines()},
 				    {"System.Console", new ConsoleInlines()},
 				    {"System.Runtime.CompilerServices.RuntimeHelpers", new RuntimeHelpersInlines()},
 			    };
+
+		private static readonly Dictionary<string, bool> ExcludedMethods =
+			new Dictionary<string, bool>
+				{
+					{"Avm.String.toLowerCase", true}
+				};
 
 		private readonly JsCompiler _host;
 
@@ -32,6 +39,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public JsFunction CompileInlineFunction(IMethod method)
 		{
+			if (Excluded(method)) return null;
+
 			var info = method.GetInlineInfo();
 			if (info != null)
 			{
@@ -56,6 +65,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public void Compile(IMethod method)
 		{
+			if (Excluded(method)) return;
+
 			var info = method.GetInlineInfo();
 			if (info != null)
 			{
@@ -79,6 +90,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			//TODO:
 			//throw new NotImplementedException();
+		}
+
+		private static bool Excluded(IMethod method)
+		{
+			string key = method.DeclaringType.FullName + "." + method.Name;
+			return ExcludedMethods.ContainsKey(key);
 		}
 
 		private void Inline(InlineCodeProvider provider, IMethod method)

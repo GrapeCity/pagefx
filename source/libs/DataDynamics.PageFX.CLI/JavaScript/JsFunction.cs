@@ -7,6 +7,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private readonly List<string> _parameters = new List<string>();
 		private readonly JsBlock _body = new JsBlock();
 
+		public JsFunction() : this(null)
+		{
+		}
+
 		public JsFunction(string name, params string[] parameters)
 		{
 			Name = name;

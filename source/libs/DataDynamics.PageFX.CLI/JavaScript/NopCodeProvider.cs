@@ -6,6 +6,15 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal class NopCodeProvider : ICodeProvider
 	{
+		private readonly JsCompiler _host;
+		private readonly IMethod _method;
+
+		public NopCodeProvider(JsCompiler host, IMethod method)
+		{
+			_host = host;
+			_method = method;
+		}
+
 		public bool DonotCopyReturnValue { get; set; }
 
 		public IInstruction SourceInstruction { get; set; }

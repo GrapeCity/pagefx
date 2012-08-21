@@ -17,7 +17,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private readonly IAssembly _assembly;
 		private JsProgram _program;
 		private readonly HashList<IMethod, IMethod> _virtualCalls = new HashList<IMethod, IMethod>(x => x);
-		private readonly HashList<IType, IType> _types = new HashList<IType, IType>(x => x);
+		private readonly HashList<IType, IType> _arrayTypes = new HashList<IType, IType>(x => x);
+
+		internal readonly CorlibTypeCache CorlibTypes = new CorlibTypeCache();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="JsCompiler"/> class.
@@ -88,7 +90,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private void CompileImpls(IMethod method)
 		{
-			var iface = method.DeclaringType.Tag as JsInterface;
+			var declaringType = method.DeclaringType;
+			if (declaringType.IsGenericArrayInterface())
+			{
+				new ArrayInterfaceImpl(this).Compile(method);
+			}
+
+			var iface = declaringType.Tag as JsInterface;
 			if (iface != null)
 			{
 				foreach (var implClass in iface.Implementations.AsContinuous())
@@ -109,10 +117,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 					CompileMethod(impl);
 				}
+
 				return;
 			}
 
-			var klass = method.DeclaringType.Tag as JsClass;
+			var klass = declaringType.Tag as JsClass;
 			if (klass != null)
 			{
 				CompileOverrides(klass, method);
@@ -193,22 +202,17 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return false;
 		}
 
-		private static void Analyze(IMethod method)
-		{
-			var translator = new ILTranslator();
-			translator.Translate(method, method.Body, new NopCodeProvider());
-		}
-
 		private JsFunction CompileFunction(JsClass klass, IMethod method)
 		{
 			var func = CompileInlineFunction(method);
 			if (func != null) return func;
 
-			Analyze(method);
-
 			var body = method.Body as IClrMethodBody;
 			if (body == null)
 				throw new NotSupportedException("The method format is not supported");
+
+			var translator = new ILTranslator();
+			translator.Translate(method, method.Body, new NopCodeProvider(this, method));
 
 			var context = new MethodContext(this, klass, method);
 
@@ -440,8 +444,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (var != null) return var;
 
 			var type = TypeFactory.MakeArray(elemType);
-			if (!_types.Contains(type))
-				_types.Add(type);
+			if (!_arrayTypes.Contains(type))
+				_arrayTypes.Add(type);
 
 			CompileClass(SystemTypes.Array);
 
@@ -664,24 +668,30 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		internal void InitClass(MethodContext context, JsFunction func, ITypeMember member)
 		{
-			IType type;
+			var type = member is IType ? (IType)member : member.DeclaringType;
+
+			if (ExcludeInitClass(type)) return;
+
 			if (member is IType)
 			{
-				type = (IType)member;
 				CompileFields(type, true);
 				CompileFields(type, false);
 			}
 			else
 			{
-				type = member.DeclaringType;
-				CompileFields(member.DeclaringType, member.IsStatic);
+				CompileFields(type, member.IsStatic);
 			}
-
 			
-			if (type == SystemTypes.Type || type == SystemTypes.Array)
-				return;
-
 			new ClassInitImpl(this).InitClass(context, func, member);
+		}
+
+		private static bool ExcludeInitClass(IType type)
+		{
+			if (type.IsInterface || type is ICompoundType)
+				return true;
+			if (type == SystemTypes.Type || type == SystemTypes.Array || type.FullName == "System.Console")
+				return true;
+			return false;
 		}
 
 		internal void CompileFields(IType type, bool isStatic)

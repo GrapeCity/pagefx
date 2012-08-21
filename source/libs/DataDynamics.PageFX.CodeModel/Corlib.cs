@@ -1,10 +1,9 @@
 using System;
-using DataDynamics.PageFX.CodeModel;
 
-namespace DataDynamics.PageFX.FLI
+namespace DataDynamics.PageFX.CodeModel
 {
     #region class Corlib
-    static class Corlib
+    public static class Corlib
     {
         /// <summary>
         /// Returns corlib assembly
@@ -236,7 +235,7 @@ namespace DataDynamics.PageFX.FLI
     #endregion
 
     #region CorlibTypeCache
-    enum CorlibTypeId
+    public enum CorlibTypeId
     {
         NullReferenceException,
         InvalidCastException,
@@ -263,7 +262,7 @@ namespace DataDynamics.PageFX.FLI
         CompilerUtils,
     }
 
-    enum GenericTypeId
+    public enum GenericTypeId
     {
         ICollectionT,
         IEnumerableT,
@@ -273,7 +272,7 @@ namespace DataDynamics.PageFX.FLI
         ArrayEnumeratorT
     }
 
-    internal class CorlibTypeCache
+    public class CorlibTypeCache
     {
         private readonly LazyValue<IType>[] _types = new[]
             {
