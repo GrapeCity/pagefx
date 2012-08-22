@@ -13,8 +13,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			    {
 				    {"System.Object", new SystemObjectInlines()},
 				    {"System.String", new StringInlines()},
+					{"System.Int32", new Int32Inlines()},
 				    {"System.Char", new CharInlines()},
-				    {"System.Int32", new Int32Inlines()},
+					{"System.Array", new ArrayInlines()},
+					{"Avm.Array", new AvmArrayInlines()},
 				    {"System.Console", new ConsoleInlines()},
 				    {"System.Runtime.CompilerServices.RuntimeHelpers", new RuntimeHelpersInlines()},
 			    };

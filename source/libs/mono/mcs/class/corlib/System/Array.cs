@@ -63,11 +63,10 @@ namespace System
 
         public static implicit operator Avm.Array(Array arr)
         {
-            if (arr == null) return null;
-            return arr.m_value;
+	        return arr == null ? null : arr.m_value;
         }
 
-        internal void Push(object value)
+	    internal void Push(object value)
         {
             m_value.push(value);
         }

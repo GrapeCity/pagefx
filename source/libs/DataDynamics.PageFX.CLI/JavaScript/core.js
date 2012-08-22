@@ -1039,13 +1039,19 @@ function $context($method, $args, $vars) {
 			thisArg = popobj();
 		}
 
-		if (i.f == undefined) {
+		if (i.f === undefined) {
 			throw new TypeError("func call is undefined!");
 		}
 
 		var val = i.f(thisArg, argArray);
 
 		if (i.r) {
+
+			// for debug
+			if (val === undefined) {
+				val = i.f(thisArg, argArray);
+			}
+			
 			push(val);
 		}
 	}

@@ -37,6 +37,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					return type.Name;
 				}
 			}
+			if (type.FullName == "Avm.Array")
+			{
+				if (!method.IsStatic)
+				{
+					return type.Name;
+				}
+			}
 			return type.JsFullName();
 		}
 

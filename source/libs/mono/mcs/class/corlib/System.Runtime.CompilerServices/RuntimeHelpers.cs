@@ -48,19 +48,8 @@ namespace System.Runtime.CompilerServices
 #endif
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		static extern void InitializeArray (Array array, IntPtr fldHandle);
-
-	    [MethodImplAttribute(MethodImplOptions.InternalCall)]
 	    public extern static void InitializeArray(Array array, RuntimeFieldHandle fldHandle);
-        //{
-        //    InitializeArray (array, fldHandle.Value);
-        //}
-
-		public static extern int OffsetToStringData {
-			[MethodImpl (MethodImplOptions.InternalCall)]
-			get;
-		}
-
+        
 #if NET_1_1
         public static int GetHashCode (object o) 
         {
@@ -68,32 +57,11 @@ namespace System.Runtime.CompilerServices
         }
 
         public static new bool Equals (object o1, object o2) {
-			// LAMESPEC: According to MSDN, this is equivalent to 
-			// Object::Equals (). But the MS version of Object::Equals()
-			// includes the functionality of ValueType::Equals(), while
-			// our version does not.
-			if (o1 == o2)
-				return true;
-			if ((o1 == null) || (o2 == null))
-				return false;
-			if (o1 is ValueType)
-				return ValueType.DefaultEquals (o1, o2);
-			else
-				return Object.Equals (o1, o2);
+			return Object.Equals (o1, o2);
 		}
 #endif
 
-
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern object GetObjectValue (object obj);
-
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		static extern void RunClassConstructor (IntPtr type);
-
-		public static void RunClassConstructor (RuntimeTypeHandle type)
-		{
-			RunClassConstructor (type.Value);
-		}
-
 	}
 }

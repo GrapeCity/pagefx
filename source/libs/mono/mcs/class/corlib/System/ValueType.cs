@@ -114,15 +114,5 @@ namespace System
             }
             return h;
         }
-
-        //// <summary>
-        ////   Stringified representation of this ValueType.
-        ////   Must be overriden for better results, by default
-        ////   it just returns the Type name.
-        //// </summary>
-        //public override string ToString()
-        //{
-        //    return GetType().FullName;
-        //}
     }
 }
