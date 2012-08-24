@@ -983,13 +983,16 @@ function $context($method, $args, $vars) {
 	}
 
 	function box(f) {
-		var v = popobj();
-		push(f(v));
+		var o = popobj();
+		var v = f(o);
+		if (v === undefined) {
+			v = f(o); // for debug
+		}
+		push(v);
 	}
 
 	function unbox(f) {
-		var v = popobj();
-		push(f(v));
+		box(f);
 	}
 	
 	function popn(n) {

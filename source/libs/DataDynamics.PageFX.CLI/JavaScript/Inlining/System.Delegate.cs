@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
@@ -26,7 +25,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		public static void Invoke(IMethod method, JsBlock code)
 		{
 			var args = new JsArray(method.JsArgs());
-			code.Add("$invokeDelegate".Id().Call("this".Id(), args, method.IsVoid() ? 0 : 1));
+			var call = "$invokeDelegate".Id().Call("this".Id(), args, method.IsVoid() ? 0 : 1);
+			code.Add(method.IsVoid() ? call.AsStatement() : call.Return());
 		}
 	}
 }

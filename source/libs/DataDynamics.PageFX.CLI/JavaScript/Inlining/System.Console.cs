@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		}
 
 		[InlineImpl]
-		public static void WriteLine(MethodContext context, JsBlock code)
+		public static bool WriteLine(MethodContext context, JsBlock code)
 		{
 			var method = context.Method;
 			var args = method.JsArgs();
@@ -40,10 +40,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 					code.Add("console.log".Id().Call(val));
 				}
 			}
-			else
-			{
-				throw new NotImplementedException();
-			}
+			return false;
 		}
 	}
 }

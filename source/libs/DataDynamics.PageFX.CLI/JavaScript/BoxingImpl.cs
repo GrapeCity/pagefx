@@ -58,13 +58,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (type.IsBoxableType())
 			{
-				var field = type.GetBoxValueField();
-				func.Body.Add(obj.Get(field.JsName()));
+				func.Body.Add("$unbox".Id().Call(obj).Return());
 			}
 			else
 			{
-				//TODO: need copy value type?
-				func.Body.Add(obj.Return());
+				func.Body.Add("$copy".Id().Call(obj).Return());
 			}
 
 			return context.Vars.Add(key, func).Id();
