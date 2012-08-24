@@ -37,18 +37,19 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 				}
 
 				Match match;
-				if (info.ArgCount >= 0)
-				{
-					match = x => CheckAttrs(x, info.Attrs) && x.Parameters.Count == info.ArgCount;
-				}
-				else if (info.ArgTypes != null)
+				if (info.ArgTypes != null && info.ArgTypes.Length > 0)
 				{
 					match = x =>
 						{
 							if (!CheckAttrs(x, info.Attrs)) return false;
+							if (info.ArgCount >= 0 && x.Parameters.Count != info.ArgCount) return false;
 							if (x.Parameters.Count < info.ArgTypes.Length) return false;
-							return !info.ArgTypes.Where((t, i) => x.Parameters[i].Type.Name != t).Any();
+							return !info.ArgTypes.Where((t, i) => !CheckType(x.Parameters[i].Type, t)).Any();
 						};
+				}
+				else if (info.ArgCount >= 0)
+				{
+					match = x => CheckAttrs(x, info.Attrs) && x.Parameters.Count == info.ArgCount;
 				}
 				else
 				{
@@ -109,14 +110,26 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 			var method = context.Method;
 
 			IList<KeyValuePair<Match, InlineFunc>> list;
-			if (!_impls.TryGetValue(method.Name, out list))
+			if (_impls.TryGetValue(method.Name, out list))
 			{
-				if (!_impls.TryGetValue("*", out list))
+				var impl = GetImpl(context, list);
+				if (impl != null)
 				{
-					return null;
+					return impl;
 				}
 			}
 
+			if (_impls.TryGetValue("*", out list))
+			{
+				return GetImpl(context, list);
+			}
+
+			return null;
+		}
+
+		private static JsFunction GetImpl(MethodContext context, IEnumerable<KeyValuePair<Match, InlineFunc>> list)
+		{
+			var method = context.Method;
 			foreach (var pair in list)
 			{
 				if (pair.Key(method))
@@ -127,7 +140,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 					return func;
 				}
 			}
-
 			return null;
 		}
 
@@ -158,6 +170,41 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 				return false;
 			}
 			return true;
+		}
+
+		private static bool CheckType(IType type, string spec)
+		{
+			if (spec[0] == '$')
+			{
+				switch (spec.Substring(1))
+				{
+					case "int32":
+						switch (SystemTypes.GetTypeCode(type))
+						{
+							case TypeCode.SByte:
+							case TypeCode.Byte:
+							case TypeCode.Int16:
+							case TypeCode.UInt16:
+							case TypeCode.Int32:
+							case TypeCode.UInt32:
+								return true;
+							default:
+								return false;
+						}
+					case "float":
+						switch (SystemTypes.GetTypeCode(type))
+						{
+							case TypeCode.Single:
+							case TypeCode.Double:
+								return true;
+							default:
+								return false;
+						}
+					default:
+						throw new NotImplementedException();
+				}
+			}
+			return type.Name == spec;
 		}
 	}
 
