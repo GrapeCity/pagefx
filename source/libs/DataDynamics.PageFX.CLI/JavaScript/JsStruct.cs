@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
@@ -17,6 +18,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				var name = field.JsName();
 				var value = "this".Id().Get(name);
+
+				if (field.Type.TypeKind == TypeKind.Struct)
+				{
+					value = "$copy".Id().Call(value);
+				}
+
 				func.Body.Add(obj.Set(name, value));
 			}
 

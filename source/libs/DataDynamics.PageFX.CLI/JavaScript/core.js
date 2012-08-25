@@ -201,13 +201,8 @@ function $context($method, $args, $vars) {
 	}
 
 	function loop(code) {
-		var k = 0;
 		while (ip < code.length) {
 			eval(code);
-			k++;
-			if (k >= 10000) {
-				throw "endless eval loop";
-			}
 		}
 	}
 

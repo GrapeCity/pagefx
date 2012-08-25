@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			writer.Write((int)_instruction.Code);
 
 			var value = _value;
-			if (value != null)
+			if (value != null && !Ignore(_instruction.Code))
 			{
 				writer.Write(", ");
 
@@ -63,6 +63,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 
 			writer.Write("]");			
+		}
+
+		private static bool Ignore(InstructionCode c)
+		{
+			switch (c)
+			{
+				case InstructionCode.Constrained:
+					return true;
+			}
+			return false;
 		}
 	}
 }
