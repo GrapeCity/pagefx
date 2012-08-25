@@ -16,7 +16,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 	{
 		private readonly IAssembly _assembly;
 		private JsProgram _program;
-		private readonly HashList<IMethod, IMethod> _virtualCalls = new HashList<IMethod, IMethod>(x => x);
 		private readonly HashList<IType, IType> _arrayTypes = new HashList<IType, IType>(x => x);
 
 		internal readonly CorlibTypeCache CorlibTypes = new CorlibTypeCache();
@@ -66,11 +65,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var entryPoint = _assembly.EntryPoint;
 			var method = CompileMethod(entryPoint);
 
-			foreach (var vcall in _virtualCalls.AsContinuous())
-			{
-				CompileImpls(vcall);
-			}
-
 			// build types
 			CompileClass(SystemTypes.Type);
 
@@ -99,7 +93,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var iface = declaringType.Tag as JsInterface;
 			if (iface != null)
 			{
-				foreach (var implClass in iface.Implementations.AsContinuous())
+				// ToList is required since during compilation new implementations could be added
+				foreach (var implClass in iface.Implementations.ToList())
 				{
 					var implType = implClass.Type;
 					if (implType.IsInterface) continue;
@@ -130,9 +125,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private void CompileOverrides(JsClass klass, IMethod method)
 		{
+			// GetType is implemented by TypeInfoBuilder
 			if (method.IsGetType()) return;
 
-			foreach (var subclass in klass.Subclasses.AsContinuous())
+			foreach (var subclass in klass.Subclasses.ToList())
 			{
 				var o = subclass.Type.FindOverrideMethod(method);
 				if (o != null)
@@ -590,22 +586,29 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return context.Method.IsBaseMethod(method);
 		}
 
-		private void CompileCallMethod(IMethod method)
+		internal void CompileCallMethod(IMethod method)
 		{
+			if (method.Tag != null) return;
+
 			if (method.Body is IClrMethodBody)
 			{
 				CompileMethod(method);
 			}
 
-			if (method.IsAbstract || method.IsVirtual)
-			{
-				if (!_virtualCalls.Contains(method))
-					_virtualCalls.Add(method);
-			}
-
 			if (method.IsInternalCall || method.CodeType == MethodCodeType.Runtime)
 			{
 				new InternalCallImpl(this).Compile(method);
+			}
+
+			if (method.Tag == null)
+			{
+				// mark abstract methods to detect that it is called in the program
+				method.Tag = this;
+			}
+
+			if (method.IsAbstract || method.IsVirtual)
+			{
+				CompileImpls(method);
 			}
 		}
 
@@ -615,11 +618,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				return JsInterface.Make(type);
 			}
+
 			if (type.IsArray)
 			{
 				CompileType(type.GetElementType());
 				return CompileClass(SystemTypes.Array);
 			}
+
 			return CompileClass(type);
 		}
 
@@ -667,7 +672,38 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					break;
 			}
 
+			CompileImpls(type);
+
 			return klass;
+		}
+
+		private void CompileImpls(IType type)
+		{
+			foreach (var method in type.Methods.Where(IsCompilableImpl))
+			{
+				CompileMethod(method);
+			}
+		}
+
+		private static bool IsCompilableImpl(IMethod method)
+		{
+			if (method.IsStatic || method.IsAbstract || method.IsConstructor)
+				return false;
+
+			if (method.ImplementedMethods != null
+				&& method.ImplementedMethods.Any(x => x.Tag != null))
+			{
+				return true;
+			}
+
+			if (method.IsOverride)
+			{
+				var baseMethod = method.BaseMethod;
+				if (baseMethod != null && baseMethod.Tag != null)
+					return true;
+			}
+
+			return false;
 		}
 
 		internal void InitClass(MethodContext context, JsFunction func, ITypeMember member)
