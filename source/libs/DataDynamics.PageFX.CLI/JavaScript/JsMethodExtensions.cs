@@ -106,6 +106,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				&& method.Type == SystemTypes.String
 				&& method.Name == "ToString";
 		}
+
+		public static bool IsEquals(this IMethod method)
+		{
+			if (method.DeclaringType.IsInterface) return false;
+			return !method.IsStatic
+				&& method.Parameters.Count == 1
+				&& method.Parameters[0].Type == SystemTypes.Object
+				&& method.Type == SystemTypes.Boolean
+				&& method.Name == "Equals";
+		}
 	}
 
 	internal sealed class InlineMethodInfo

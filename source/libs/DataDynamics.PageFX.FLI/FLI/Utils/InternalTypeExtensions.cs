@@ -187,19 +187,15 @@ namespace DataDynamics.PageFX.FLI
 	    #endregion
 
         #region numeric types
-        public static bool IsInt64(this IType type)
-        {
-            return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
-        }
 
-        public static bool IsDecimal(this IType type)
+	    public static bool IsDecimal(this IType type)
         {
             return type == SystemTypes.Decimal;
         }
 
         public static bool IsDecimalOrInt64(this IType type)
         {
-            return IsDecimal(type) || IsInt64(type);
+            return IsDecimal(type) || TypeExtensions.IsInt64(type);
         }
 
         public static bool IsDecimalOrInt64(IType type1, IType type2)
@@ -213,9 +209,9 @@ namespace DataDynamics.PageFX.FLI
                 return type1;
             if (IsDecimal(type2))
                 return type2;
-            if (IsInt64(type1))
+            if (TypeExtensions.IsInt64(type1))
                 return type1;
-            if (IsInt64(type2))
+            if (TypeExtensions.IsInt64(type2))
                 return type2;
             return null;
         }
@@ -250,17 +246,10 @@ namespace DataDynamics.PageFX.FLI
 
         public static bool IsBoxableOrInt64Based(this IType type)
         {
-            return type.IsBoxableType() || IsInt64Based(type);
+            return type.IsBoxableType() || type.IsInt64Based();
         }
 
-        public static bool IsInt64Based(this IType type)
-        {
-            if (type.IsEnum)
-                type = type.ValueType;
-            return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
-        }
-
-        public static bool HasCopy(IType type)
+	    public static bool HasCopy(IType type)
         {
             if (type == null) return false;
             if (type == SystemTypes.ValueType) return false;

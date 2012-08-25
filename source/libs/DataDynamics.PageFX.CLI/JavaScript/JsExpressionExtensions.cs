@@ -86,5 +86,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			return Get(obj, name).Set(value);
 		}
+
+		public static JsNode And(this JsNode left, object right)
+		{
+			var a = left as JsAnd;
+			if (a != null)
+			{
+				a.Args.Add(right);
+				return a;
+			}
+			return new JsAnd(left, right);
+		}
 	}
 }

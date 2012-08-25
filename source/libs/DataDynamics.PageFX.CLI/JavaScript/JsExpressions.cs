@@ -204,4 +204,34 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			writer.Write("new {0}()", _type.JsFullName());
 		}
 	}
+
+	internal sealed class JsAnd : JsNode
+	{
+		public JsAnd(params object[] args)
+		{
+			Args = args == null ? new List<object>() : new List<object>(args);
+		}
+
+		public IList<object> Args { get; private set; }
+
+		public override void Write(JsWriter writer)
+		{
+			writer.WriteValues(Args, " && ");
+		}
+	}
+
+	internal sealed class JsOr : JsNode
+	{
+		public JsOr(params object[] args)
+		{
+			Args = args == null ? new List<object>() : new List<object>(args);
+		}
+
+		public IList<object> Args { get; private set; }
+
+		public override void Write(JsWriter writer)
+		{
+			writer.WriteValues(Args, " || ");
+		}
+	}
 }

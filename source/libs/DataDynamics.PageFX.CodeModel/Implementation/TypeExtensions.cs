@@ -850,5 +850,17 @@ namespace DataDynamics.PageFX.CodeModel
 			    type = SystemTypes.Array;
 		    return type.Methods.StaticConstructor;
 	    }
+
+	    public static bool IsInt64(this IType type)
+	    {
+		    return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
+	    }
+
+	    public static bool IsInt64Based(this IType type)
+	    {
+		    if (type.IsEnum)
+			    type = type.ValueType;
+		    return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
+	    }
     }
 }

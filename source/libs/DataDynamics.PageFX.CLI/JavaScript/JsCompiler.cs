@@ -135,6 +135,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				{
 					CompileMethod(o);
 				}
+				else if (subclass.Type.TypeKind == TypeKind.Struct && method.IsEquals())
+				{
+					JsStruct.DefaultEqualsImpl(this, subclass);
+				}
 
 				CompileOverrides(subclass, method);
 			}
@@ -672,16 +676,38 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					break;
 			}
 
-			CompileImpls(type);
+			CompileImpls(klass, type);
 
 			return klass;
 		}
 
-		private void CompileImpls(IType type)
+		private void CompileImpls(JsClass klass, IType type)
 		{
-			foreach (var method in type.Methods.Where(IsCompilableImpl))
+			var isValueType = type.TypeKind == TypeKind.Struct;
+			bool equalsDefined = false;
+
+			foreach (var method in type.Methods)
 			{
-				CompileMethod(method);
+				if (isValueType)
+				{
+					if (method.IsEquals())
+					{
+						equalsDefined = true;
+					}
+				}
+
+				if (IsCompilableImpl(method))
+				{
+					CompileMethod(method);
+				}
+			}
+
+			if (isValueType)
+			{
+				if (!equalsDefined && JsStruct.GetObjectEqualsMethod().Tag != null)
+				{
+					JsStruct.DefaultEqualsImpl(this, klass);
+				}
 			}
 		}
 
