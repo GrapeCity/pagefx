@@ -623,6 +623,7 @@ function $context($method, $args, $vars) {
 			case 112: // cpobj
 				break;
 			case 113: // ldobj
+				ldobj(i[1]);
 				break;
 			case 114: // ldstr
 				push(i[1]);
@@ -665,6 +666,7 @@ function $context($method, $args, $vars) {
 				stsfld(i[1]);
 				break;
 			case 129: // stobj
+				stobj(i[1]);
 				break;
 			case 130: // conv.ovf.i1.un
 				push(convi1ovf(popun()));
@@ -1100,19 +1102,32 @@ function $context($method, $args, $vars) {
 	function ldsflda(f) {
 		push(new fldptr(null, f));
 	}
-
+	
 	function ldind() {
-		var ptr = popptr();
-		return ptr.$ptrget();
+		var p = popptr();
+		return p.$ptrget();
 	}
 	
 	function stind(conv) {
-		var value = pop();
-		var ptr = popptr();
+		var v = pop();
+		var p = popptr();
 		if (conv !== undefined) {
-			value = conv(value);
+			v = conv(v);
 		}
-		ptr.$ptrset(value);
+		p.$ptrset(v);
+	}
+
+	function ldobj(t) {
+		var o = ldind();
+		//TODO: cast!
+		push(o);
+	}
+	
+	function stobj(t) {
+		var v = pop();
+		var p = popptr();
+		//TODO: cast!
+		p.$ptrset(v);
 	}
 	
 	function poparr() {
