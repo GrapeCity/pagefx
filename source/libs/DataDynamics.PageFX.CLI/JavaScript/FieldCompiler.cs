@@ -16,8 +16,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var var = context.Vars[field];
 			if (var != null) return var;
 
-			var get = new JsFunction(null, "o");
-			var set = new JsFunction(null, "o", "v");
+			var obj = "o".Id();
+			var val = "v".Id();
+			var get = new JsFunction(null, obj.Value);
+			var set = new JsFunction(null, obj.Value, val.Value);
 
 			if (field.IsStatic)
 			{
@@ -25,13 +27,21 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				_host.InitClass(context, get, field);
 				_host.InitClass(context, set, field);
 				get.Body.Add(name.Id().Return());
-				set.Body.Add(name.Id().Set("v".Id()));
+				set.Body.Add(name.Id().Set(val));
 			}
 			else
 			{
 				var name = field.JsName();
-				get.Body.Add("o".Id().Get(name).Return());
-				set.Body.Add("o".Id().Set(name, "v".Id()));
+
+				// for debug
+				var value = obj.Get(name).Var("v");
+				get.Body.Add(value);
+				get.Body.Add(new JsText(string.Format("if (v === undefined) throw new ReferenceError('{0} is undefined');", field.FullName)));
+				get.Body.Add(value.Name.Id().Return());
+
+				//get.Body.Add(obj.Get(name).Return());
+
+				set.Body.Add(obj.Set(name, val));
 			}
 
 			var info = new JsObject
