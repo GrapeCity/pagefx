@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var type = klass.Type;
 
 			// type init
-			var init = new JsFunction(null);
+			var init = new JsFunction();
 
 			var prop = string.Format("$types['{0}']", "$$" + type.FullName.JsEscape());
 
@@ -44,6 +44,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			var hierarchy = new JsObject(type.GetFullTypeHierarchy().Select(x => new KeyValuePair<string, object>(x.FullName, 1)));
 			init.Body.Add(t.Set("$hierarchy", hierarchy));
+
+			var newFunc = new JsFunction();
+			newFunc.Body.Add(type.New().Return());
+			
+			init.Body.Add(t.Set("$new", newFunc));
 
 			init.Body.Add(t.Return());
 

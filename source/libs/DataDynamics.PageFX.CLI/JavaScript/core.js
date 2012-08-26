@@ -9,6 +9,7 @@ function $inherit($this, $base) {
 			$this[p] = $base[p];
 }
 
+//TODO: move to System.Delegate as snippet
 function $invokeDelegate(d, a, ret) {
 	if (d.m_prev != null) {
 		$invokeDelegate(d.m_prev, a, ret);
@@ -37,6 +38,16 @@ function $tostr(o) {
 		return o ? "True" : "False";
 	
 	return o.toString();
+}
+
+function $clone(o) {
+	var c = o.GetType().$new();
+	var fields = o.$fields();
+	for (var i = 0; i < fields.length; i++) {
+		var f = fields[i];
+		c[f] = $copy(o[f]);
+	}
+	return c;
 }
 
 // Derived from https://gist.github.com/2192799

@@ -17,6 +17,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"System.Int32", new Int32Inlines()},
 				    {"System.Char", new CharInlines()},
 					{"System.Array", new ArrayInlines()},
+					{"System.Type", new TypeInlines()},
 					{"Avm.Array", new AvmArrayInlines()},
 				    {"System.Console", new ConsoleInlines()},
 				    {"System.Runtime.CompilerServices.RuntimeHelpers", new RuntimeHelpersInlines()},

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
@@ -105,6 +106,29 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}			
 			writer.WriteLine("};"); // end of class
 
+			if (_instanceFields.Count > 0)
+			{
+				writer.WriteLine("{0}.prototype.$fields = function() {{", name);
+				writer.IncreaseIndent();
+
+				var f = new JsArray(_instanceFields.Select(x => (object)x.Field.JsName()));
+				
+				if (Base != null && Base.HasInstanceFields)
+				{
+					f.Var("f").Write(writer);
+					writer.WriteLine();
+					writer.WriteLine("return {0}.prototype.$fields.apply(this).concat(f);", baseName);
+				}
+				else
+				{
+					f.Return().Write(writer);
+					writer.WriteLine();
+				}
+
+				writer.DecreaseIndent();
+				writer.WriteLine("};"); // end of $fields
+			}
+
 			if (_staticFields.Count > 0)
 			{
 				writer.WriteLine("{0}.$init_fields = function() {{", name);
@@ -124,6 +148,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				//writer.WriteLine("{0}.prototype.$base = {1}.prototype;", name, baseName);
 				writer.WriteLine("$inherit({0}, {1});", name, baseName);
 			}
+		}
+
+		private bool HasInstanceFields
+		{
+			get { return _instanceFields.Count > 0; }
 		}
 	}
 }

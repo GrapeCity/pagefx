@@ -138,6 +138,7 @@
     <Compile Include="JavaScript\ClassInitImpl.cs" />
     <Compile Include="JavaScript\FieldCompiler.cs" />
     <Compile Include="JavaScript\Inlining\Avm.Array.cs" />
+    <Compile Include="JavaScript\Inlining\System.Type.cs" />
     <Compile Include="JavaScript\Inlining\System.Boolean.cs" />
     <Compile Include="JavaScript\Inlining\System.Array.cs" />
     <Compile Include="JavaScript\Inlining\System.Int32.cs" />
