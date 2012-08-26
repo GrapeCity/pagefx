@@ -260,6 +260,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			switch (i.Code)
 			{
+				case InstructionCode.Ldstr:
+					// string should be compiled to be ready for Object method calls.
+					CompileClass(SystemTypes.String);
+					return i.Value;
+
 				case InstructionCode.Call:
 				case InstructionCode.Callvirt:
 					return OpCall(context, i);
