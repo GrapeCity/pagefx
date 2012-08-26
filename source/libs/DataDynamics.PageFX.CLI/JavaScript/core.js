@@ -1114,8 +1114,11 @@ function $context($method, $args, $vars) {
 	}
 	
 	function ldind() {
-		var p = popptr();
-		return p.$ptrget();
+		var v = pop(true);
+		if (v.$ptrget) {
+			return v.$ptrget();
+		}
+		return $unbox(v);
 	}
 	
 	function stind(conv) {
