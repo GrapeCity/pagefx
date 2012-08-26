@@ -32,6 +32,10 @@ function $unbox(o) {
 
 function $tostr(o) {
 	if (o == null || o == undefined) return "";
+
+	if (typeof (o) == "boolean")
+		return o ? "True" : "False";
+	
 	return o.toString();
 }
 

@@ -35,7 +35,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				var obj = "o".Id();
 
 				func.Body.Add(type.New().Var(obj.Value));
-				func.Body.Add(obj.Set(field.JsName(), val));
+
+				JsNode value = val;
+				if (type == SystemTypes.Boolean)
+				{
+					value = val.Ternary(true, false);
+				}
+
+				func.Body.Add(obj.Set(field.JsName(), value));
 				func.Body.Add(obj.Return());
 			}
 			else

@@ -234,4 +234,27 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			writer.WriteValues(Args, " || ");
 		}
 	}
+
+	internal sealed class JsConditionalExpression : JsNode
+	{
+		private readonly object _condition;
+		private readonly object _left;
+		private readonly object _right;
+
+		public JsConditionalExpression(object condition, object left, object right)
+		{
+			_condition = condition;
+			_left = left;
+			_right = right;
+		}
+
+		public override void Write(JsWriter writer)
+		{
+			writer.WriteValue(_condition);
+			writer.Write(" ? ");
+			writer.WriteValue(_left);
+			writer.Write(" : ");
+			writer.WriteValue(_right);
+		}
+	}
 }

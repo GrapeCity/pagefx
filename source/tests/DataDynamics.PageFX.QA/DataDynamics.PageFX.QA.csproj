@@ -129,7 +129,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Delegates\Delegate2.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Delegates\Delegate3.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Delegates\Delegate4.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\EnumTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\EnumTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Incrementing\Test1.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Incrementing\Test2.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Incrementing\Test3.cs" />
@@ -276,7 +276,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Interfaces\Test10.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Methods\Misc\ToStringNew.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Methods\Misc\MyCollectionTest.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\BigEnumTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\BigEnumTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System.Xml\XmlReaderTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\StaticCtor3.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\RegexParserVerifyError.cs" />
@@ -1492,6 +1492,8 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\CharTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\String\Ctors.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\ValueTypeEquals.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\BoolTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\SimpleEnumTest.cs" />
     <Compile Include="Tools\JsRunner.cs" />
     <Compile Include="UnitTests\ABCALL.cs" />
     <Compile Include="UnitTests\ABCDefineTest.cs" />

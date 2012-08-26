@@ -97,5 +97,21 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 			return new JsAnd(left, right);
 		}
+
+		public static JsNode Or(this JsNode left, object right)
+		{
+			var e = left as JsOr;
+			if (e != null)
+			{
+				e.Args.Add(right);
+				return e;
+			}
+			return new JsOr(left, right);
+		}
+
+		public static JsNode Ternary(this JsNode condition, object left, object right)
+		{
+			return new JsConditionalExpression(condition, left, right);
+		}
 	}
 }
