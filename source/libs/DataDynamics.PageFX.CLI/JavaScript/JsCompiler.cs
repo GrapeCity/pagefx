@@ -115,7 +115,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 					impl = impl.ResolveGenericInstance(implType, method);
 
-					CompileMethod(impl);
+					CompileCallMethod(impl);
 				}
 
 				return;
