@@ -47,9 +47,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private void CallClassInit(MethodContext context, JsFunction func, IType type)
 		{
-			if (type == null) return;
+			if (type == null || type == SystemTypes.Object || type == SystemTypes.ValueType) return;
 
-			CallClassInit(context, func, type.BaseType);
+			if (type.BaseType != null)
+			{
+				CallClassInit(context, func, type.BaseType);
+			}
 
 			var ctor = type.GetStaticCtor();
 			if (!HasClassInit(context, type, ctor)) return;
@@ -78,6 +81,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (klass.HasClassInit) return cinitName;
 
+			klass.HasClassInit = true;
+
 			if (ctor != null)
 			{
 				_host.CompileMethod(ctor);
@@ -102,8 +107,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 
 			klass.Add(new JsGeneratedMethod(cinitName, cinit));
-
-			klass.HasClassInit = true;
 
 			return cinitName;
 		}

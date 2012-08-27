@@ -805,13 +805,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (isStatic ? klass.StaticFieldsCompiled : klass.InstanceFieldsCompiled) return;
 
+			if (isStatic) klass.StaticFieldsCompiled = true;
+			else klass.InstanceFieldsCompiled = true;
+
 			foreach (var field in type.GetFields(isStatic))
 			{
 				CompileField(klass, field);
 			}
-
-			if (isStatic) klass.StaticFieldsCompiled = true;
-			else klass.InstanceFieldsCompiled = true;
 		}
 
 		private static bool CompileFieldsFor(IType type)

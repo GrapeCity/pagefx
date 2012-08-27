@@ -1096,7 +1096,11 @@ function $context($method, $args, $vars) {
 	}
 
 	function ldsfld(f) {
-		push(f.get(null));
+		var v = f.get(null);
+		if (v === undefined) {
+			v = f.get(null); // for debug
+		}
+		push(v);
 	}
 
 	function stsfld(f) {
