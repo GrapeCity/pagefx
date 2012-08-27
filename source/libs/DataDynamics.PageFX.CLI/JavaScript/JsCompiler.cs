@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 	{
 		private readonly IAssembly _assembly;
 		private JsProgram _program;
-		private readonly HashList<IType, IType> _arrayTypes = new HashList<IType, IType>(x => x);
+		private readonly HashList<IType, IType> _constructedTypes = new HashList<IType, IType>(x => x);
 
 		internal readonly CorlibTypeCache CorlibTypes = new CorlibTypeCache();
 
@@ -68,7 +68,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			// build types
 			CompileClass(SystemTypes.Type);
 
-			new TypeInfoBuilder(_program).Build();
+			new TypeInfoBuilder(this, _program).Build();
 
 			//TODO: pass args to main from node.js args
 
@@ -80,6 +80,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_program.Add(main.Call().AsStatement());
 			
 			return _program;
+		}
+
+		internal IList<IType> ConstructedTypes
+		{
+			get { return _constructedTypes; }
 		}
 
 		private void CompileImpls(IMethod method)
@@ -451,13 +456,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			var key = new InstructionKey(InstructionCode.Newarr, elemType);
 			var var = context.Vars[key];
-			if (var != null) return var;
+			if (var != null) return var.Id();
 
 			var type = TypeFactory.MakeArray(elemType);
-			if (!_arrayTypes.Contains(type))
-				_arrayTypes.Add(type);
-
-			CompileClass(SystemTypes.Array);
+			if (!_constructedTypes.Contains(type))
+				_constructedTypes.Add(type);
 
 			var elemInit = new JsFunction(null);
 			elemInit.Body.Add(elemType.InitialValue().Return());
@@ -471,7 +474,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"etc", GetArrayElementTypeCode(elemType)},
 				};
 
-			return context.Vars.Add(key, info);
+			var = context.Vars.Add(key, info);
+
+			CompileClass(SystemTypes.Array);
+			CompileType(elemType);
+
+			return var.Id();
 		}
 
 		private static int GetArrayElementTypeCode(IType elemType)
@@ -673,7 +681,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			else
 				_program.DefineNamespace(type.Namespace);
 
-			klass = new JsClass(type, baseType == SystemTypes.ValueType || baseType.IsString() ? null : baseClass);
+			klass = new JsClass(type, baseType == SystemTypes.ValueType || type.IsString() ? null : baseClass);
 
 			type.Tag = klass;
 

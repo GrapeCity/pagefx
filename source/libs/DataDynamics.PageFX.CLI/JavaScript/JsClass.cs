@@ -91,28 +91,55 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				baseName = Base.Type.JsFullName();
 			}
 
-			writer.WriteLine("{0} = function() {{", name);
-			if (_instanceFields.Count > 0)
+			WriteClassFunction(writer, baseName, name);
+			WriteGetFields(writer, baseName, name);
+			WriteStaticFields(writer, name);
+
+			writer.Write(_members, "\n");
+
+			if (Base != null)
 			{
+				writer.WriteLine();
+				//TODO: enable when explicit base ref will be needed
+				//writer.WriteLine("{0}.prototype.$base = {1}.prototype;", name, baseName);
+				writer.WriteLine("$inherit({0}, {1});", name, baseName);
+			}
+		}
+
+		private void WriteClassFunction(JsWriter writer, string baseName, string name)
+		{
+			if (Type.IsAvmString()) return;
+
+			writer.WriteLine("{0} = function() {{", name);
+			if (_instanceFields.Count > 0 || baseName != null)
+			{
+				writer.IncreaseIndent();
+
 				if (baseName != null)
 				{
 					writer.WriteLine("{0}.apply(this);", baseName);
 				}
 
-				writer.IncreaseIndent();
-				writer.Write(_instanceFields, "\n");
-				writer.WriteLine();
-				writer.DecreaseIndent();
-			}			
-			writer.WriteLine("};"); // end of class
+				if (_instanceFields.Count > 0)
+				{
+					writer.Write(_instanceFields, "\n");
+					writer.WriteLine();
+				}
 
+				writer.DecreaseIndent();
+			}
+			writer.WriteLine("};"); // end of class
+		}
+
+		private void WriteGetFields(JsWriter writer, string baseName, string name)
+		{
 			if (_instanceFields.Count > 0)
 			{
 				writer.WriteLine("{0}.prototype.$fields = function() {{", name);
 				writer.IncreaseIndent();
 
 				var f = new JsArray(_instanceFields.Select(x => (object)x.Field.JsName()));
-				
+
 				if (Base != null && Base.HasInstanceFields)
 				{
 					f.Var("f").Write(writer);
@@ -128,7 +155,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				writer.DecreaseIndent();
 				writer.WriteLine("};"); // end of $fields
 			}
+		}
 
+		private void WriteStaticFields(JsWriter writer, string name)
+		{
 			if (_staticFields.Count > 0)
 			{
 				writer.WriteLine("{0}.$init_fields = function() {{", name);
@@ -137,16 +167,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				writer.WriteLine();
 				writer.DecreaseIndent();
 				writer.WriteLine("};"); // end of static fields initializer
-			}
-
-			writer.Write(_members, "\n");
-
-			if (Base != null)
-			{
-				writer.WriteLine();
-				//TODO: enable when explicit base ref will be needed
-				//writer.WriteLine("{0}.prototype.$base = {1}.prototype;", name, baseName);
-				writer.WriteLine("$inherit({0}, {1});", name, baseName);
 			}
 		}
 

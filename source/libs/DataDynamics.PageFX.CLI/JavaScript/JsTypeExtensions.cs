@@ -13,6 +13,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return type == SystemTypes.String || type.FullName == "Avm.String";
 		}
 
+		public static bool IsAvmString(this IType type)
+		{
+			if (type == null) return false;
+			return type.FullName == "Avm.String";
+		}
+
 		public static string JsFullName(this IType type)
 		{
 			string ns = type.Namespace;

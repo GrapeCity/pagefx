@@ -989,8 +989,10 @@ function $context($method, $args, $vars) {
 
 	function cast(o, t) {
 		//TODO: casting primitive objects
-		if (!isinst(o, t))
+		if (!isinst(o, t)) {
+			isinst(o, t); // for debug
 			throw new "InvalidCastException";
+		}
 		return o;
 	}
 
@@ -1028,6 +1030,9 @@ function $context($method, $args, $vars) {
 		arr.m_type = e.type;
 		arr.m_box = e.box;
 		arr.m_unbox = e.unbox;
+		arr.m_lbounds = null;
+		arr.m_lengths = null;
+		arr.m_dims = null;
 		arr.$etc = e.etc; // element type code
 
 		return arr;

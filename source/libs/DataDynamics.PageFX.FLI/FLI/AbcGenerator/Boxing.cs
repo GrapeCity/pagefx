@@ -150,7 +150,7 @@ namespace DataDynamics.PageFX.FLI
 						                code.SetLocal(varKind);
 
 						                code.GetLocal(varKind);
-						                code.PushInt(GetTypeKind(type));
+						                code.PushInt(type.GetCorlibKind());
 						                var ifKind = code.IfEquals();
 						                code.ThrowInvalidCastException("invalid value type kind (not " + type.FullName +
 						                                               ")");

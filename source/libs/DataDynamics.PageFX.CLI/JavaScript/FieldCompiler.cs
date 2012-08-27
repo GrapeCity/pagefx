@@ -1,4 +1,6 @@
-﻿using DataDynamics.PageFX.CodeModel;
+﻿#define JSC_FIELD_DEBUG
+
+using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
@@ -35,20 +37,30 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				_host.InitClass(context, set, field);
 
 				var name = field.JsFullName();
+
+#if JSC_FIELD_DEBUG
+				var value = name.Id().Var("v");
+				get.Body.Add(value);
+				get.Body.Add(new JsText(string.Format("if (v === undefined) throw new ReferenceError('{0} is undefined');", field.FullName)));
+				get.Body.Add(value.Name.Id().Return());
+#else
 				get.Body.Add(name.Id().Return());
+#endif
+
 				set.Body.Add(name.Id().Set(val));
 			}
 			else
 			{
 				var name = field.JsName();
 
-				// for debug
-				//var value = obj.Get(name).Var("v");
-				//get.Body.Add(value);
-				//get.Body.Add(new JsText(string.Format("if (v === undefined) throw new ReferenceError('{0} is undefined');", field.FullName)));
-				//get.Body.Add(value.Name.Id().Return());
-
+#if JSC_FIELD_DEBUG
+				var value = obj.Get(name).Var("v");
+				get.Body.Add(value);
+				get.Body.Add(new JsText(string.Format("if (v === undefined) throw new ReferenceError('{0} is undefined');", field.FullName)));
+				get.Body.Add(value.Name.Id().Return());
+#else
 				get.Body.Add(obj.Get(name).Return());
+#endif
 
 				set.Body.Add(obj.Set(name, val));
 			}

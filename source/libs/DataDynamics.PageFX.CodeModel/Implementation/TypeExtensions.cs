@@ -862,5 +862,53 @@ namespace DataDynamics.PageFX.CodeModel
 			    type = type.ValueType;
 		    return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
 	    }
+
+	    public static int GetCorlibKind(this IType type)
+	    {
+		    const int typeCodeOffset = 100;
+		    //set type kind
+		    switch (type.TypeKind)
+		    {
+			    case TypeKind.Class:
+				    {
+					    if (type == SystemTypes.String)
+						    return typeCodeOffset + (int)TypeCode.String;
+					    return 0;
+				    }
+
+			    case TypeKind.Delegate:
+				    return 0;
+
+			    case TypeKind.Struct:
+				    {
+					    if (type.FullName == "System.DBNull")
+						    return typeCodeOffset + (int)TypeCode.DBNull;
+
+					    if (type.FullName == "System.DateTime")
+						    return typeCodeOffset + (int)TypeCode.DateTime;
+
+					    return (int)type.TypeKind;
+				    }
+
+			    case TypeKind.Array:
+			    case TypeKind.Interface:
+			    case TypeKind.Pointer:
+			    case TypeKind.Reference:
+			    case TypeKind.Enum:
+				    return (int)type.TypeKind;
+
+			    case TypeKind.GenericParameter:
+				    throw new NotSupportedException();
+
+			    case TypeKind.Primitive:
+				    {
+					    var st = type.SystemType;
+					    if (st == null)
+						    throw new InvalidOperationException();
+					    return typeCodeOffset + (int)st.TypeCode;
+				    }
+		    }
+		    return -1;
+	    }
     }
 }

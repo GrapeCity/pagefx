@@ -7,5 +7,18 @@
 		{
 			code.Add("this".Id().Get("$new").Call().Return());
 		}
+
+		[InlineImpl]
+		public static void get_ElementType(JsBlock code)
+		{
+			code.Add(new JsText("if (this.$elemType === undefined) return null;"));
+			code.Add(new JsText("return $types[this.$elemType]();"));
+		}
+
+		[InlineImpl]
+		public static void get_FullName(JsBlock code)
+		{
+			code.Add(new JsText("return this.ns ? this.ns + '.' + this.name : this.name;"));
+		}
 	}
 }
