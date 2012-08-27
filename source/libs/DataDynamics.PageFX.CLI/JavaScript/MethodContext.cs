@@ -15,10 +15,5 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			Class = klass;
 			Method = method;
 		}
-
-		public JsGlobalPool Pool
-		{
-			get { return Host.Pool; }
-		}
 	}
 }

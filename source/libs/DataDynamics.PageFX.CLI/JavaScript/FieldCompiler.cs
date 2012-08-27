@@ -13,9 +13,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public object Compile(MethodContext context, IField field)
 		{
-			var key = new FieldAccessKey(context.Method, field);
-			var fieldInfo = context.Pool[key];
-			if (fieldInfo != null) return fieldInfo;
+			var fieldInfo = context.Vars[field];
+			if (fieldInfo != null) return fieldInfo.Id();
 
 			var obj = "o".Id();
 			var val = "v".Id();
@@ -28,7 +27,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"set", set}
 				};
 
-			fieldInfo = context.Pool.Add(key, info);
+			fieldInfo = context.Vars.Add(field, info);
 
 			if (field.IsStatic)
 			{
@@ -54,7 +53,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				set.Body.Add(obj.Set(name, val));
 			}
 
-			return fieldInfo;
+			return fieldInfo.Id();
 		}
 	}
 }
