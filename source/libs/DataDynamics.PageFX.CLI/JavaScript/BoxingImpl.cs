@@ -15,8 +15,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public object Box(MethodContext context, IType type)
 		{
 			var key = new InstructionKey(InstructionCode.Box, type);
-			var var = context.Vars[key];
-			if (var != null) return var.Id();
+			var info = context.Pool[key];
+			if (info != null) return info;
 
 			var val = "v".Id();
 			var func = new JsFunction(null, val.Value);
@@ -51,14 +51,17 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				func.Body.Add(val.Return());
 			}
 
-			return context.Vars.Add(key, func).Id();
+			info = context.Pool[key];
+			if (info != null) return info;
+
+			return context.Pool.Add(key, func);
 		}
 
 		public object Unbox(MethodContext context, IType type)
 		{
-			var key = new InstructionKey(InstructionCode.Box, type);
-			var var = context.Vars[key];
-			if (var != null) return var.Id();
+			var key = new InstructionKey(InstructionCode.Unbox, type);
+			var info = context.Pool[key];
+			if (info != null) return info;
 
 			var obj = "o".Id();
 			var func = new JsFunction(null, obj.Value);
@@ -72,7 +75,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				func.Body.Add("$copy".Id().Call(obj).Return());
 			}
 
-			return context.Vars.Add(key, func).Id();
+			return context.Pool.Add(key, func);
 		}
 	}
 }

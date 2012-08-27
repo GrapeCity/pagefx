@@ -136,6 +136,7 @@
     <Compile Include="JavaScript\ArrayInterfaceImpl.cs" />
     <Compile Include="JavaScript\BoxingImpl.cs" />
     <Compile Include="JavaScript\ClassInitImpl.cs" />
+    <Compile Include="JavaScript\JsGlobalPool.cs" />
     <Compile Include="JavaScript\FieldCompiler.cs" />
     <Compile Include="JavaScript\Inlining\Avm.Array.cs" />
     <Compile Include="JavaScript\Inlining\System.Type.cs" />

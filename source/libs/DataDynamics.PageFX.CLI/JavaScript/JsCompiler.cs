@@ -15,6 +15,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 	public sealed class JsCompiler
 	{
 		private readonly IAssembly _assembly;
+		private JsGlobalPool _pool;
 		private JsProgram _program;
 		private readonly HashList<IType, IType> _arrayTypes = new HashList<IType, IType>(x => x);
 
@@ -62,6 +63,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			_program.Require("core.js");
 
+			_pool = new JsGlobalPool();
+			_program.Add(_pool);
+
 			var entryPoint = _assembly.EntryPoint;
 			var method = CompileMethod(entryPoint);
 
@@ -80,6 +84,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_program.Add(main.Call().AsStatement());
 			
 			return _program;
+		}
+
+		internal JsGlobalPool Pool
+		{
+			get { return _pool; }
 		}
 
 		private void CompileImpls(IMethod method)
@@ -436,14 +445,17 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			var method = i.Method;
 			var key = new InstructionKey(i.Code, method);
-			var var = context.Vars[key];
-			if (var != null) return var;
+			var info = context.Pool[key];
+			if (info != null) return info;
 
 			CompileCallMethod(method);
 
 			var func = CreateCallFunc(context, method, i.CallInfo);
+
+			info = context.Pool[key];
+			if (info != null) return info;
 			
-			return context.Vars.Add(key, func);
+			return context.Pool.Add(key, func);
 		}
 
 		private JsNode OpNewarr(MethodContext context, IType elemType)
@@ -481,10 +493,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private JsNode OpNewobj(MethodContext context, IMethod method)
 		{
 			var key = new InstructionKey(InstructionCode.Newobj, method);
-			var var = context.Vars[key];
-			if (var != null) return var;
+			var data = context.Pool[key];
+			if (data != null) return data;
 
 			CompileCallMethod(method);
+
+			data = context.Pool[key];
+			if (data != null) return data;
 
 			var args = "a".Id();
 
@@ -504,20 +519,23 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				func.Body.Add(obj.Return());
 			}
 
+			data = context.Pool[key];
+			if (data != null) return data;
+
 			var info = new JsObject
 				{
 					{"n", method.Parameters.Count},
 					{"f", func},
 				};
 
-			return context.Vars.Add(key, info);
+			return context.Pool.Add(key, info);
 		}
 
 		private JsNode OpInitobj(MethodContext context, IType type)
 		{
 			var key = new InstructionKey(InstructionCode.Initobj, type);
-			var var = context.Vars[key];
-			if (var != null) return var;
+			var info = context.Pool[key];
+			if (info != null) return info;
 
 			CompileClass(type);
 
@@ -525,18 +543,21 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			InitClass(context, func, type);
 			func.Body.Add(type.New().Return());
 
-			return context.Vars.Add(key, func);
+			return context.Pool.Add(key, func);
 		}
 
 		private object OpCall(MethodContext context, Instruction i)
 		{
 			var method = i.Method;
-			var var = context.Vars[method];
-			if (var != null) return var;
+			var callInfo = _pool[method];
+			if (callInfo != null) return callInfo;
 
 			CompileCallMethod(method);
 
 			var func = CreateCallFunc(context, method, i.CallInfo);
+
+			callInfo = _pool[method];
+			if (callInfo != null) return callInfo;
 
 			var info = new JsObject
 				{
@@ -546,7 +567,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"f", func},
 				};
 
-			return context.Vars.Add(method, info);
+			return _pool.Add(method, info);
 		}
 
 		private JsFunction CreateCallFunc(MethodContext context, IMethod method, CallInfo info)
