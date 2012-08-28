@@ -229,7 +229,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Interfaces\Test8.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ControlFlow\Ternary\Test2.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Iterators\SimpleTests.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\Int64Test.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Int64\Int64Test.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\MiscTests.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Arrays\TestCopy.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\SortedListTest.cs" />
@@ -256,7 +256,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\Numbers.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ControlFlow\Ternary\SmallTests.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Delegates\EventTest2.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\Int64SmallTests.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Int64\Int64SmallTests.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Incrementing\SmallTests.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\ConvertTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\OverflowChecking.cs" />
@@ -1495,6 +1495,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\BoolTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\SimpleEnumTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\BitConverterTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Int64\Int64FirstTest.cs" />
     <Compile Include="Tools\JsRunner.cs" />
     <Compile Include="UnitTests\ABCALL.cs" />
     <Compile Include="UnitTests\ABCDefineTest.cs" />

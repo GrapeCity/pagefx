@@ -263,12 +263,28 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private object CompileInstruction(MethodContext context, Instruction i)
 		{
+			var value = i.Value;
+			if (value is long)
+			{
+				var hi = (int)((long)value >> 32);
+				var lo = (uint)((long)value & 0xffffffff);
+				CompileClass(SystemTypes.Int64);
+				return new JsNewobj(SystemTypes.Int64, hi, lo);
+			}
+			if (value is ulong)
+			{
+				var hi = (uint)((ulong)value >> 32);
+				var lo = (uint)((ulong)value & 0xffffffff);
+				CompileClass(SystemTypes.UInt64);
+				return new JsNewobj(SystemTypes.UInt64, hi, lo);
+			}
+
 			switch (i.Code)
 			{
 				case InstructionCode.Ldstr:
 					// string should be compiled to be ready for Object method calls.
 					CompileClass(SystemTypes.String);
-					return i.Value;
+					return value;
 
 				case InstructionCode.Call:
 				case InstructionCode.Callvirt:
@@ -395,7 +411,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				#endregion
 			}
 
-			return i.Value;
+			return value;
 		}
 
 		private static object Op(Instruction i, UnaryOperator op, bool checkOverflow)
@@ -792,7 +808,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			if (type.IsInterface || type is ICompoundType)
 				return true;
-			if (type == SystemTypes.Type || type == SystemTypes.Array || type.FullName == "System.Console")
+			if (type == SystemTypes.Type || type == SystemTypes.Array)
 				return true;
 			return false;
 		}

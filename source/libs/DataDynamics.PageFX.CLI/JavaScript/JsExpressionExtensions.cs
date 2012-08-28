@@ -52,9 +52,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return new JsReturn(value);
 		}
 
-		public static JsNode New(this IType type)
+		public static JsNode New(this IType type, params object[] args)
 		{
-			return new JsNewobj(type);
+			return new JsNewobj(type, args);
 		}
 
 		public static JsNode Op(this JsNode left, object right, BinaryOperator op)

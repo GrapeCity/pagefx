@@ -18,6 +18,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			ClassInit = 0x01,
 			StaticFieldsCompiled = 0x02,
 			InstanceFieldsCompiled = 0x04,
+			BoxFunctionCompiled = 0x08,
 		}
 
 		private readonly List<JsField> _instanceFields = new List<JsField>();
@@ -59,6 +60,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			get { return (_flags & ClassFlags.InstanceFieldsCompiled) != 0; }
 			set { SetFlag(ClassFlags.InstanceFieldsCompiled, value); }
+		}
+
+		public bool BoxFunctionCompiled
+		{
+			get { return (_flags & ClassFlags.BoxFunctionCompiled) != 0; }
+			set { SetFlag(ClassFlags.BoxFunctionCompiled, value); }
 		}
 
 		private void SetFlag(ClassFlags f, bool value)
@@ -110,6 +117,27 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			if (Type.IsAvmString()) return;
 
+			if (Type.IsInt64())
+			{
+				writer.WriteLine("{0} = function(hi, lo) {{", name);
+				writer.IncreaseIndent();
+				writer.WriteLine("this.m_hi = hi ? hi : 0;");
+				writer.WriteLine("this.m_lo = lo ? lo : 0;");
+				writer.DecreaseIndent();
+				writer.WriteLine("};"); // end of function
+				return;
+			}
+
+			if (Type.IsBoxableType())
+			{
+				writer.WriteLine("{0} = function(v) {{", name);
+				writer.IncreaseIndent();
+				writer.WriteLine("this.{0} = v ? v : 0;", SpecialFields.BoxValue);
+				writer.DecreaseIndent();
+				writer.WriteLine("};"); // end of function
+				return;
+			}
+
 			writer.WriteLine("{0} = function() {{", name);
 			if (_instanceFields.Count > 0 || baseName != null)
 			{
@@ -128,7 +156,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 				writer.DecreaseIndent();
 			}
-			writer.WriteLine("};"); // end of class
+			writer.WriteLine("};"); // end of function
 		}
 
 		private void WriteGetFields(JsWriter writer, string baseName, string name)

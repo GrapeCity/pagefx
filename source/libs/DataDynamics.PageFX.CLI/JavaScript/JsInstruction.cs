@@ -41,18 +41,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					case TypeCode.String:
 						writer.WriteValue(value);
 						break;
-					case TypeCode.Int64:
-						writer.Write((int)((long)value >> 32));
-						writer.Write(",");
-						writer.Write((uint)((long)value & 0xffffffff));
-						break;
-					case TypeCode.UInt64:
-						writer.Write((uint)((ulong)value >> 32));
-						writer.Write(",");
-						writer.Write((uint)((ulong)value & 0xffffffff));
-						break;
-					case TypeCode.Decimal:
-						throw new NotImplementedException();
 					case TypeCode.Object:
 						var var = value as JsVar;
 						writer.WriteValue(var != null ? var.Id() : value);

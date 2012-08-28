@@ -193,15 +193,22 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 	internal sealed class JsNewobj : JsNode
 	{
 		private readonly IType _type;
+		private readonly object[] _args;
 
-		public JsNewobj(IType type)
+		public JsNewobj(IType type, params object[] args)
 		{
 			_type = type;
+			_args = args;
 		}
 
 		public override void Write(JsWriter writer)
 		{
-			writer.Write("new {0}()", _type.JsFullName());
+			writer.Write("new {0}(", _type.JsFullName());
+			if (_args != null && _args.Length > 0)
+			{
+				writer.WriteValues(_args, ", ");
+			}
+			writer.Write(")");
 		}
 	}
 

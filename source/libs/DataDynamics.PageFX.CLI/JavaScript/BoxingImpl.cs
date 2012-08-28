@@ -18,65 +18,45 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var info = context.Vars[key];
 			if (info != null) return info.Id();
 
-			var val = "v".Id();
-			var func = new JsFunction(null, val.Value);
+			//TODO: nullable
 
-			info = context.Vars.Add(key, func);
-
-			if (type.IsNullableInstance())
-			{
-				type = type.GetTypeArgument(0);
-			}
-
-			_host.CompileClass(type);
+			var klass = _host.CompileClass(type);
 			_host.CompileFields(type, false);
 
 			if (type.IsBoxableType())
 			{
-				var field = type.GetBoxValueField();
-				var obj = "o".Id();
+				var name = string.Format("{0}.$box", type.JsFullName());
 
-				func.Body.Add(type.New().Var(obj.Value));
-
-				JsNode value = val;
-				if (type == SystemTypes.Boolean)
+				if (!klass.BoxFunctionCompiled)
 				{
-					value = val.Ternary(true, false);
+					klass.BoxFunctionCompiled = true;
+
+					var val = (JsNode)"v".Id();
+					var func = new JsFunction(null, "v");
+
+					if (type == SystemTypes.Boolean)
+					{
+						val = val.Ternary(true, false);
+					}
+
+					func.Body.Add(type.New(val).Return());
+
+					klass.Add(new JsGeneratedMethod(name, func));
 				}
 
-				func.Body.Add(obj.Set(field.JsName(), value));
-				func.Body.Add(obj.Return());
-			}
-			else
-			{
-				//TODO: need copy value type?
-				func.Body.Add(val.Return());
+				return name.Id();
 			}
 
-			return info.Id();
+			return "$copy".Id();
 		}
 
 		public object Unbox(MethodContext context, IType type)
 		{
-			var key = new InstructionKey(InstructionCode.Unbox, type);
-			var info = context.Vars[key];
-			if (info != null) return info.Id();
-
-			var obj = "o".Id();
-			var func = new JsFunction(null, obj.Value);
-
-			info = context.Vars.Add(key, func);
-
 			if (type.IsBoxableType())
 			{
-				func.Body.Add("$unbox".Id().Call(obj).Return());
+				return "$unbox".Id();
 			}
-			else
-			{
-				func.Body.Add("$copy".Id().Call(obj).Return());
-			}
-
-			return info.Id();
+			return "$copy".Id();
 		}
 	}
 }
