@@ -44,17 +44,14 @@ namespace System
 #endif
     class Console
     {
-        internal static TextWriter stdout;
+        private static TextWriter stdout;
         private static TextWriter stderr;
         private static TextReader stdin;
     	private static bool _hasReadCalls;
 
     	static Console()
         {
-            stdout = ConsoleWriter.Instance;
-            stderr = stdout;
-
-        	ResetColor();
+            ResetColor();
         }
 
 #if !NET_2_0
@@ -67,6 +64,10 @@ namespace System
         {
             get
             {
+				if (stderr == null)
+				{
+					stderr = Out;
+				}
                 return stderr;
             }
         }
@@ -75,6 +76,10 @@ namespace System
         {
             get
             {
+				if (stdout == null)
+				{
+					stdout = ConsoleWriter.Instance;
+				}
                 return stdout;
             }
         }
@@ -132,89 +137,89 @@ namespace System
 
         public static void Write(bool value)
         {
-            stdout.Write(value);
+            Out.Write(value);
         }
 
         public static void Write(char value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         public static void Write(char[] value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         public static void Write(decimal value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         public static void Write(double value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         public static void Write(int value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         public static void Write(long value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         public static void Write(object value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         public static void Write(float value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         public static void Write(string value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         [CLSCompliant(false)]
         public static void Write(uint value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         [CLSCompliant(false)]
         public static void Write(ulong value)
         {
-            stdout.Write(value);
+			Out.Write(value);
         }
 
         public static void Write(string format, object arg0)
         {
-            stdout.Write(format, arg0);
+			Out.Write(format, arg0);
         }
 
         public static void Write(string format, params object[] arg)
         {
-            stdout.Write(format, arg);
+			Out.Write(format, arg);
         }
 
         public static void Write(char[] buffer, int index, int count)
         {
-            stdout.Write(buffer, index, count);
+			Out.Write(buffer, index, count);
         }
 
         public static void Write(string format, object arg0, object arg1)
         {
-            stdout.Write(format, arg0, arg1);
+			Out.Write(format, arg0, arg1);
         }
 
         public static void Write(string format, object arg0, object arg1, object arg2)
         {
-            stdout.Write(format, arg0, arg1, arg2);
+			Out.Write(format, arg0, arg1, arg2);
         }
 
         internal static void OpenSW()
@@ -231,94 +236,94 @@ namespace System
 
         public static void WriteLine()
         {
-            stdout.WriteLine();
+			Out.WriteLine();
         }
 
         public static void WriteLine(bool value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(char value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(char[] value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(decimal value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(double value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(int value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(long value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(object value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(float value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(string value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         [CLSCompliant(false)]
         public static void WriteLine(uint value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         [CLSCompliant(false)]
         public static void WriteLine(ulong value)
         {
-            stdout.WriteLine(value);
+			Out.WriteLine(value);
         }
 
         public static void WriteLine(string format, object arg0)
         {
-            stdout.WriteLine(format, arg0);
+			Out.WriteLine(format, arg0);
         }
 
         public static void WriteLine(string format, params object[] arg)
         {
-            stdout.WriteLine(format, arg);
+			Out.WriteLine(format, arg);
         }
 
         public static void WriteLine(char[] buffer, int index, int count)
         {
-            stdout.WriteLine(buffer, index, count);
+			Out.WriteLine(buffer, index, count);
         }
 
         public static void WriteLine(string format, object arg0, object arg1)
         {
-            stdout.WriteLine(format, arg0, arg1);
+			Out.WriteLine(format, arg0, arg1);
         }
 
         public static void WriteLine(string format, object arg0, object arg1, object arg2)
         {
-            stdout.WriteLine(format, arg0, arg1, arg2);
+			Out.WriteLine(format, arg0, arg1, arg2);
         }
 
 		public static int Read()
