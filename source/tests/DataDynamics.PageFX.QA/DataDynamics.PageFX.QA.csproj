@@ -1494,6 +1494,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\ValueTypeEquals.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\BoolTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\SimpleEnumTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\BitConverterTest.cs" />
     <Compile Include="Tools\JsRunner.cs" />
     <Compile Include="UnitTests\ABCALL.cs" />
     <Compile Include="UnitTests\ABCDefineTest.cs" />

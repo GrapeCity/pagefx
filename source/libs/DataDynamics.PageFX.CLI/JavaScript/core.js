@@ -50,6 +50,60 @@ function $clone(o) {
 	return c;
 }
 
+// https://github.com/pgriess/node-jspack/blob/master/jspack.js
+function $encodeFloat(a, p, v, el, bigEndian) {
+	var s, e, m, i, d, c, mLen, eLen, eBias, eMax;
+	mLen = el.mLen, eLen = el.len * 8 - el.mLen - 1, eMax = (1 << eLen) - 1, eBias = eMax >> 1;
+
+	s = v < 0 ? 1 : 0;
+	v = Math.abs(v);
+	
+	if (isNaN(v) || (v == Infinity)) {
+		m = isNaN(v) ? 1 : 0;
+		e = eMax;
+	} else {
+		e = Math.floor(Math.log(v) / Math.LN2); 		// Calculate log2 of the value
+		if (v * (c = Math.pow(2, -e)) < 1) { e--; c *= 2; } 	// Math.log() isn't 100% reliable
+
+		// Round by adding 1/2 the significand's LSD
+		if (e + eBias >= 1) { v += el.rt / c; } 		// Normalized:  mLen significand digits
+		else { v += el.rt * Math.pow(2, 1 - eBias); } 		// Denormalized:  <= mLen significand digits
+		if (v * c >= 2) { e++; c /= 2; } 			// Rounding can increment the exponent
+
+		if (e + eBias >= eMax) {
+			// Overflow
+			m = 0;
+			e = eMax;
+		}
+		else if (e + eBias >= 1) {
+			// Normalized - term order matters, as Math.pow(2, 52-e) and v*Math.pow(2, 52) can overflow
+			m = (v * c - 1) * Math.pow(2, mLen);
+			e = e + eBias;
+		}
+		else {
+			// Denormalized - also catches the '0' case, somewhat by chance
+			m = v * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
+			e = 0;
+		}
+	}
+
+	for (i = bigEndian ? (el.len - 1) : 0, d = bigEndian ? -1 : 1; mLen >= 8; a[p + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
+	for (e = (e << mLen) | m, eLen += mLen; eLen > 0; a[p + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
+	a[p + i - d] |= s * 128;
+
+	return a;
+}
+
+function $encodeSingle(v) {
+	var a = new Array(4);
+	return $encodeFloat(a, 0, v, {len: 4, mLen: 23, rt: Math.pow(2, -24) - Math.pow(2, -77)}, false);
+}
+
+function $encodeDouble(v) {
+	var a = new Array(8);
+	return $encodeFloat(a, 0, v, {len: 8, mLen: 52, rt: 0}, false);
+}
+
 // Derived from https://gist.github.com/2192799
 function $decodeFloat(bytes, signBits, exponentBits, fractionBits, eMin, eMax, littleEndian) {
   // var totalBits = (signBits + exponentBits + fractionBits);
@@ -165,6 +219,27 @@ function $initarr(a, blob) {
 				break;
 		}
 	}
+}
+
+function $toSystemByteArray(nativeArray) {
+	
+	var arr = new System.Array();
+	arr.m_rank = 1;
+	arr.m_value = nativeArray;
+	arr.m_type = "System.Byte[]";
+	arr.m_box = function(v) {
+		var o = new System.Byte();
+		o.$value = v;
+		return o;
+	};
+	
+	arr.m_unbox = $unbox;
+	arr.m_lbounds = null;
+	arr.m_lengths = null;
+	arr.m_dims = null;
+	arr.$etc = 6; // element type code
+
+	return arr;
 }
 
 function $context($method, $args, $vars) {

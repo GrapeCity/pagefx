@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using DataDynamics.PageFX.CodeModel;
+﻿using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 {

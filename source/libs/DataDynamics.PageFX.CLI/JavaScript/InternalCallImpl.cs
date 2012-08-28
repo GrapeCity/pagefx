@@ -20,6 +20,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"System.Type", new TypeInlines()},
 					{"Avm.Array", new AvmArrayInlines()},
 				    {"System.Console", new ConsoleInlines()},
+				    {"System.BitConverter", new BitConverterInlines()},
 				    {"System.Runtime.CompilerServices.RuntimeHelpers", new RuntimeHelpersInlines()},
 			    };
 

@@ -458,10 +458,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var var = context.Vars[key];
 			if (var != null) return var.Id();
 
-			var type = TypeFactory.MakeArray(elemType);
-			if (!_constructedTypes.Contains(type))
-				_constructedTypes.Add(type);
-
+			var type = RegisterArrayType(elemType);
+			
 			var elemInit = new JsFunction(null);
 			elemInit.Body.Add(elemType.InitialValue().Return());
 
@@ -480,6 +478,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			CompileType(elemType);
 
 			return var.Id();
+		}
+
+		internal IType RegisterArrayType(IType elementType)
+		{
+			var type = TypeFactory.MakeArray(elementType);
+			if (!_constructedTypes.Contains(type))
+				_constructedTypes.Add(type);
+			return type;
 		}
 
 		private static int GetArrayElementTypeCode(IType elemType)
