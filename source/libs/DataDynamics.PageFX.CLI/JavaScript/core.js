@@ -155,22 +155,7 @@ function $decodeDouble(bytes) {
 }
 
 // System.TypeCode
-$tc = {
-	b: 3,
-	c: 4,
-	i1: 5,	
-	u1: 6,
-	i2: 7,
-	u2: 8,
-	i4: 9,
-	u4: 10,
-	i8: 11,
-	u8: 12,
-	r4: 13,
-	r8: 14,
-	d: 15,
-	s: 18
-};
+$tc = { b: 3, c: 4, i1: 5, u1: 6, i2: 7, u2: 8, i4: 9, u4: 10, i8: 11, u8: 12, r4: 13, r8: 14, d: 15, s: 18 };
 
 function $initarr(a, blob) {
 
@@ -313,21 +298,21 @@ function $conv(v, from, to) {
 				case /*SByte */5:
 					return v;
 				case /* Byte */6:
-					return (~~v) & 0xff;
+					return v & 0xff;
+				case /*Char */4:
+				case /* UInt16 */8:
+					return v & 0xffff;
+				case /* UInt32 */10:
+					return v < 0 ? v + 0xffffffff + 1 : v;
 				case /* Int16 */7:
 				case /* Int32 */9:
 				case /* Single */13:
 				case /* Double */14:
 					return v;
-				case /*Char */4:
-				case /* UInt16 */8:
-					return (~~v) & 0xffff;
-				case /* UInt32 */10:
-					return (~~v) & 0xffffffff;
 				case /* Int64 */11:
 					return new System.Int64(v < 0 ? -1 : 0, v);
 				case /* UInt64 */12:
-					return new System.UInt64(0, (~~v) & 0xffffffff);
+					return new System.UInt64(0, v & 0xff);
 				case /* Decimal */15:
 					break;
 				case /* String */18:
@@ -417,20 +402,21 @@ function $conv(v, from, to) {
 					return v ? true : false;
 				case /*SByte */5:
 				case /* Byte */6:
+					return v & 0xff;
+				case /*Char */4:
 				case /* Int16 */7:
+				case /* UInt16 */8:
+					return v & 0xffff;
 				case /* Int32 */9:
 				case /* Single */13:
 				case /* Double */14:
 					return v;
-				case /*Char */4:
-				case /* UInt16 */8:
-					return (~~v) & 0xffff;
 				case /* UInt32 */10:
-					return (~~v) & 0xffffffff;
+					return v & 0xffffffff;
 				case /* Int64 */11:
 					return new System.Int64(v < 0 ? -1 : 0, v);
 				case /* UInt64 */12:
-					return new System.UInt64(0, (~~v) & 0xffffffff);
+					return new System.UInt64(0, v & 0xffffffff);
 				case /* Decimal */15:
 					break;
 				case /* String */18:
@@ -626,7 +612,7 @@ function $context($method, $args, $vars) {
 
 	// pops unsigned number
 	function popun() {
-		return pop();
+		return pop(true);
 	}
 
 	function popptr() {
@@ -1079,7 +1065,7 @@ function $context($method, $args, $vars) {
 				push(isinst(x, i[1]));
 				break;
 			case 118: // conv.r.un
-				push(convrun(pop(true)));
+				push(convr4(popun(), i[1]));
 				break;
 			case 121: // unbox
 				unbox(i[1]);
@@ -1229,7 +1215,7 @@ function $context($method, $args, $vars) {
 				push(convi2(pop(true), i[1]));
 				break;
 			case 182: // conv.ovf.u2
-				push(convu1(pop(true), i[1]));
+				push(convu2(pop(true), i[1]));
 				break;
 			case 183: // conv.ovf.i4
 				push(convi4(pop(true), i[1]));
@@ -1253,10 +1239,10 @@ function $context($method, $args, $vars) {
 				push(i[1]);
 				break;
 			case 209: // conv.u2
-				push(convu2(pop(true)));
+				push(convu2(pop(true), i[1]));
 				break;
 			case 210: // conv.u1
-				push(convu1(pop(true)));
+				push(convu1(pop(true), i[1]));
 				break;
 			case 211: // conv.i
 				push(convi(pop(true)));
@@ -1303,7 +1289,8 @@ function $context($method, $args, $vars) {
 			case 222: // leave.s
 				ip = i[1];
 				return;
-			case 223: // stind.i
+			case 223: // stind.
+				noimpl();
 				break;
 			case 224: // conv.u
 				push(convu(pop(true)));

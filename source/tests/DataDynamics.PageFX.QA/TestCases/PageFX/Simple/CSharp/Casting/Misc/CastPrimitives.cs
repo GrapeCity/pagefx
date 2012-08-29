@@ -4,37 +4,37 @@ class CastPrimitivesTest
 {
     static void f(sbyte a)
     {
-        Console.WriteLine("i1 {0}", a);
+        Console.WriteLine(a);
     }
 
     static void f(byte a)
     {
-        Console.WriteLine("u1 {0}", a);
+        Console.WriteLine(a);
     }
 
     static void f(short a)
     {
-        Console.WriteLine("i2 {0}", a);
+        Console.WriteLine(a);
     }
 
     static void f(ushort a)
     {
-        Console.WriteLine("u2 {0}", a);
+        Console.WriteLine(a);
     }
 
     static void f(char a)
     {
-        Console.WriteLine("ch {0}", (int)a);
+        Console.WriteLine((int)a);
     }
 
     static void f(int a)
     {
-        Console.WriteLine("i4 {0}", a);
+        Console.WriteLine(a);
     }
 
     static void f(uint a)
     {
-        Console.WriteLine("u4 {0}", a);
+        Console.WriteLine(a);
     }
 
     //static void f(long a)
@@ -59,35 +59,54 @@ class CastPrimitivesTest
 
     static void test_i1(sbyte v)
     {
-        Console.WriteLine("test_i1 {0}", v);
-        //f((sbyte)v);
-        f((byte)v);
-        f((char)v);
-        f((short)v);
-        f((ushort)v);
-        f((int)v);
-        f((uint)v);
-        //f((long)v);
-        //f((ulong)v);
-        //f((float)v);
-        //f((double)v);
+		Console.WriteLine("to u1:");
+		byte u1 = (byte)v;
+		Console.WriteLine(u1);
+		Console.WriteLine("to i2:");
+		var i2 = (short)v;
+		Console.WriteLine(i2);
+		Console.WriteLine("to u2:");
+		var u2 = (ushort)v;
+		Console.WriteLine(u2);
+		Console.WriteLine("to i4:");
+		var i4 = (int)v;
+		Console.WriteLine(i4);
+		Console.WriteLine("to u4:");
+		var u4 = (uint)v;
+		Console.WriteLine(u4);
+		//Console.WriteLine("to ch:");
+		//var c = (char)v;
+		//Console.WriteLine(c);
+		//f((long)v);
+		//f((ulong)v);
+		//f((float)v);
+		//f((double)v);
     }
 
     static void test_i1()
     {
+		Console.WriteLine("## i1 tests");
+	    Console.WriteLine("### -100");
         test_i1(-100);
+		Console.WriteLine("### 100");
         test_i1(100);
     }
 
     static void test_u1(byte v)
     {
-        Console.WriteLine("test_u1 {0}", v);
+	    Console.WriteLine(v);
+	    Console.WriteLine("to i1:");
         f((sbyte)v);
         //f((byte)v);
+		Console.WriteLine("to ch:");
         f((char)v);
+		Console.WriteLine("to i2:");
         f((short)v);
+		Console.WriteLine("to u2:");
         f((ushort)v);
+		Console.WriteLine("to i4:");
         f((int)v);
+		Console.WriteLine("to u4:");
         f((uint)v);
         //f((long)v);
         //f((ulong)v);
@@ -97,6 +116,7 @@ class CastPrimitivesTest
 
     static void test_u1()
     {
+		Console.WriteLine("## u1 tests");
         test_u1(0xFF);
         test_u1(0x88);
         test_u1(byte.MinValue);
@@ -105,13 +125,19 @@ class CastPrimitivesTest
 
     static void test_i2(short v)
     {
-        Console.WriteLine("test_i2 {0}", v);
+	    Console.WriteLine(v);
+	    Console.WriteLine("to i1:");
         f((sbyte)v);
+		Console.WriteLine("to u1:");
         f((byte)v);
+		Console.WriteLine("to ch:");
         f((char)v);
         //f((short)v);
+		Console.WriteLine("to i2:");
         f((ushort)v);
+		Console.WriteLine("to i4:");
         f((int)v);
+		Console.WriteLine("to u4:");
         f((uint)v);
         //f((long)v);
         //f((ulong)v);
@@ -121,6 +147,7 @@ class CastPrimitivesTest
 
     static void test_i2()
     {
+		Console.WriteLine("## i2 tests");
         test_i2(-1);
         test_i2(1000);
         test_i2(-1000);
@@ -130,7 +157,8 @@ class CastPrimitivesTest
 
     static void test_u2(ushort v)
     {
-        Console.WriteLine("test_i2 {0}", v);
+	    Console.WriteLine("## test u2");
+        Console.WriteLine(v);
         f((sbyte)v);
         f((byte)v);
         f((char)v);
@@ -153,7 +181,8 @@ class CastPrimitivesTest
 
     static void test_i4(int v)
     {
-        Console.WriteLine("test_i4 {0}", v);
+	    Console.WriteLine("## test i4");
+        Console.WriteLine(v);
         f((sbyte)v);
         f((byte)v);
         f((char)v);
@@ -178,7 +207,8 @@ class CastPrimitivesTest
 
     static void test_u4(uint v)
     {
-        Console.WriteLine("test_u4 {0}", v);
+	    Console.WriteLine("## test u4");
+        Console.WriteLine(v);
         f((sbyte)v);
         f((byte)v);
         f((char)v);
@@ -285,8 +315,8 @@ class CastPrimitivesTest
         test_u2();
         test_i4();
         test_u4();
-        Console.WriteLine("<%END%>");
         //test_f4();
         //test_f8();
+		Console.WriteLine("<%END%>");
     }
 }

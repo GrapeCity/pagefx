@@ -284,56 +284,53 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				case InstructionCode.Conv_I1:
 				case InstructionCode.Conv_Ovf_I1:
 				case InstructionCode.Ldelem_I1:
+				case InstructionCode.Stelem_I1:
 				case InstructionCode.Ldind_I1:
 				case InstructionCode.Stind_I1:
-					return OpWithTypeCode(SystemTypes.Int8);
 				case InstructionCode.Conv_I2:
 				case InstructionCode.Conv_Ovf_I2:
 				case InstructionCode.Ldelem_I2:
+				case InstructionCode.Stelem_I2:
 				case InstructionCode.Ldind_I2:
 				case InstructionCode.Stind_I2:
-					return OpWithTypeCode(SystemTypes.Int16);
 				case InstructionCode.Conv_I4:
 				case InstructionCode.Conv_Ovf_I4:
 				case InstructionCode.Ldelem_I4:
+				case InstructionCode.Stelem_I4:
 				case InstructionCode.Ldind_I4:
 				case InstructionCode.Stind_I4:
-					return OpWithTypeCode(SystemTypes.Int32);
 				case InstructionCode.Conv_I8:
 				case InstructionCode.Conv_Ovf_I8:
 				case InstructionCode.Ldelem_I8:
+				case InstructionCode.Stelem_I8:
 				case InstructionCode.Ldind_I8:
 				case InstructionCode.Stind_I8:
-					return OpWithTypeCode(SystemTypes.Int64);
 				case InstructionCode.Conv_R4:
 				case InstructionCode.Conv_R_Un:
 				case InstructionCode.Ldelem_R4:
+				case InstructionCode.Stelem_R4:
 				case InstructionCode.Ldind_R4:
 				case InstructionCode.Stind_R4:
-					return OpWithTypeCode(SystemTypes.Single);
 				case InstructionCode.Conv_R8:
 				case InstructionCode.Ldelem_R8:
+				case InstructionCode.Stelem_R8:
 				case InstructionCode.Ldind_R8:
 				case InstructionCode.Stind_R8:
-					return OpWithTypeCode(SystemTypes.Double);
 				case InstructionCode.Conv_U1:
 				case InstructionCode.Conv_Ovf_U1:
 				case InstructionCode.Ldelem_U1:
 				case InstructionCode.Ldind_U1:
-					return OpWithTypeCode(SystemTypes.Byte);
 				case InstructionCode.Conv_U2:
 				case InstructionCode.Conv_Ovf_U2:
 				case InstructionCode.Ldelem_U2:
 				case InstructionCode.Ldind_U2:
-					return OpWithTypeCode(SystemTypes.UInt16);
 				case InstructionCode.Conv_U4:
 				case InstructionCode.Conv_Ovf_U4:
 				case InstructionCode.Ldelem_U4:
 				case InstructionCode.Ldind_U4:
-					return OpWithTypeCode(SystemTypes.UInt32);
 				case InstructionCode.Conv_U8:
 				case InstructionCode.Conv_Ovf_U8:
-					return OpWithTypeCode(SystemTypes.UInt64);
+					return OpWithTypeCode(i);
 
 				case InstructionCode.Ldstr:
 					// string should be compiled to be ready for Object method calls.
@@ -468,8 +465,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return value;
 		}
 
-		private static object OpWithTypeCode(IType type)
+		private object OpWithTypeCode(Instruction i)
 		{
+			var type = i.InputTypes[0];
+			if (type.IsInt64())
+			{
+				CompileClass(type);
+			}
 			return (int)type.GetTypeCode();
 		}
 		

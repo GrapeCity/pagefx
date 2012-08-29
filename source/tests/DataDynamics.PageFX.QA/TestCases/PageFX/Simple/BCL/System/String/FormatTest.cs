@@ -11,7 +11,7 @@ class X
 
     static void Test2()
     {
-        Console.WriteLine("---Test1");
+        Console.WriteLine("---Test2");
         double n1 = 3.14;
         string s = string.Format("{0}", n1);
         Console.WriteLine(s);

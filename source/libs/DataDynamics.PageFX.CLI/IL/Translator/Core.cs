@@ -1067,6 +1067,8 @@ namespace DataDynamics.PageFX.CLI.IL
 
             var type = v.Type;
 
+			_instruction.InputTypes = new []{type};
+
             switch (v.Kind)
             {
                 case ValueKind.Const:
@@ -1498,6 +1500,9 @@ namespace DataDynamics.PageFX.CLI.IL
 
             var sourceType = value.Type;
 
+			_instruction.InputTypes = new []{sourceType};
+			_instruction.OutputType = targetType;
+
             if (!checkOverflow && Opt_Conv_Ret(code, sourceType, targetType))
                 return code.ToArray();
 
@@ -1836,6 +1841,8 @@ namespace DataDynamics.PageFX.CLI.IL
 
             var elemType = GetElemType(arr.Type);
 
+			_instruction.InputTypes = new[] {elemType};
+
             var code = new Code();
             code.AddRange(_provider.GetArrayElem(elemType));
             PassByValue(code, elemType);
@@ -1884,6 +1891,8 @@ namespace DataDynamics.PageFX.CLI.IL
             var arr = Pop();
             CheckArray(arr);
             CheckPointer(index);
+
+			_instruction.InputTypes = new[] {value.Type};
 
             var elemType = GetElemType(arr.Type);
 
