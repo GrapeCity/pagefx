@@ -154,6 +154,24 @@ function $decodeDouble(bytes) {
 	return $decodeFloat(bytes, 1, 11, 52, -1022, 1023, true);
 }
 
+// System.TypeCode
+$tc = {
+	b: 3,
+	c: 4,
+	i1: 5,	
+	u1: 6,
+	i2: 7,
+	u2: 8,
+	i4: 9,
+	u4: 10,
+	i8: 11,
+	u8: 12,
+	r4: 13,
+	r8: 14,
+	d: 15,
+	s: 18
+};
+
 function $initarr(a, blob) {
 
 	var arr = a.m_value;
@@ -240,6 +258,343 @@ function $toSystemByteArray(nativeArray) {
 	arr.$etc = 6; // element type code
 
 	return arr;
+}
+
+function $conv(v, from, to) {
+	var dk = 4294967296.0;
+	var n;
+	
+	function mask(t) {
+		switch (t) {
+			case /*SByte */5:
+			case /* Byte */6:
+				return 0xff;
+			case /* Int16 */7:
+			case /*Char */4:
+			case /* UInt16 */8:
+				return 0xffff;
+			case /* Int32 */9:
+			case /* UInt32 */10:
+				return 0xffffffff;
+			default:
+				return 0;
+		}
+	}
+	
+	switch (from) {
+		case /*Boolean */3:
+			switch (to) {
+				case /*Boolean */3:
+					return v;
+				case /*SByte */5:
+				case /* Byte */6:
+				case /* Int16 */7:
+				case /*Char */4:
+				case /* UInt16 */8:
+				case /* Int32 */9:
+				case /* UInt32 */10:
+				case /* Single */13:
+				case /* Double */14:
+					return v ? 1 : 0;
+				case /* Int64 */11:
+					return new System.Int64(0, v ? 1 : 0);
+				case /* UInt64 */12:
+					return new System.UInt64(0, v ? 1 : 0);
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v ? "True" : "False";
+			}
+			break;
+		case /*SByte */5:
+			switch (to) {
+				case /*Boolean */3:
+					return v ? true : false;
+				case /*SByte */5:
+					return v;
+				case /* Byte */6:
+					return (~~v) & 0xff;
+				case /* Int16 */7:
+				case /* Int32 */9:
+				case /* Single */13:
+				case /* Double */14:
+					return v;
+				case /*Char */4:
+				case /* UInt16 */8:
+					return (~~v) & 0xffff;
+				case /* UInt32 */10:
+					return (~~v) & 0xffffffff;
+				case /* Int64 */11:
+					return new System.Int64(v < 0 ? -1 : 0, v);
+				case /* UInt64 */12:
+					return new System.UInt64(0, (~~v) & 0xffffffff);
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v.toString();
+			}
+			break;
+		case /* Byte */6:
+			switch (to) {
+				case /*Boolean */3:
+					return v ? true : false;
+				case /*SByte */5:
+				case /* Byte */6:
+					return v;
+				case /* Int16 */7:
+				case /*Char */4:
+				case /* UInt16 */8:
+				case /* Int32 */9:
+				case /* UInt32 */10:
+				case /* Single */13:
+				case /* Double */14:
+					return v;
+				case /* Int64 */11:
+					return new System.Int64(0, v);
+				case /* UInt64 */12:
+					return new System.UInt64(0, v);
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v.toString();
+			}
+			break;
+		case /* Int16 */7:
+			switch (to) {
+				case /*Boolean */3:
+					return v ? true : false;
+				case /*SByte */5:
+				case /* Byte */6:
+					return (~~v) & 0xff;
+				case /* Int16 */7:
+				case /* Int32 */9:
+				case /* Single */13:
+				case /* Double */14:
+					return v;
+				case /*Char */4:
+				case /* UInt16 */8:
+					return (~~v) & 0xffff;
+				case /* UInt32 */10:
+					return (~~v) & 0xffffffff;
+				case /* Int64 */11:
+					return new System.Int64(v < 0 ? -1 : 0, v);
+				case /* UInt64 */12:
+					return new System.UInt64(0, (~~v) & 0xffffffff);
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v.toString();
+			}
+			break;
+		case /*Char */4:
+		case /* UInt16 */8:
+			switch (to) {
+				case /*Boolean */3:
+					return v ? true : false;
+				case /*SByte */5:
+				case /* Byte */6:
+				case /* Int16 */7: //todo: handle sign
+				case /*Char */4:
+				case /* UInt16 */8:
+				case /* Int32 */9:
+				case /* UInt32 */10:
+				case /* Single */13:
+				case /* Double */14:
+					return v;
+				case /* Int64 */11:
+					return new System.Int64(0, v);
+				case /* UInt64 */12:
+					return new System.UInt64(0, v);
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v.toString();
+			}
+			break;
+		case /* Int32 */9:
+			switch (to) {
+				case /*Boolean */3:
+					return v ? true : false;
+				case /*SByte */5:
+				case /* Byte */6:
+				case /* Int16 */7:
+				case /* Int32 */9:
+				case /* Single */13:
+				case /* Double */14:
+					return v;
+				case /*Char */4:
+				case /* UInt16 */8:
+					return (~~v) & 0xffff;
+				case /* UInt32 */10:
+					return (~~v) & 0xffffffff;
+				case /* Int64 */11:
+					return new System.Int64(v < 0 ? -1 : 0, v);
+				case /* UInt64 */12:
+					return new System.UInt64(0, (~~v) & 0xffffffff);
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v.toString();
+			}
+			break;
+		case /* UInt32 */10:
+			switch (to) {
+				case /*Boolean */3:
+					return v ? true : false;
+				case /*SByte */5:
+				case /* Byte */6:
+					return (~~v) & 0xff;
+				case /* Int16 */7: //todo: handle sign
+				case /*Char */4:
+				case /* UInt16 */8:
+					return (~~v) & 0xffffff;
+				case /* Int32 */9: //todo: handle sign
+				case /* UInt32 */10:
+				case /* Single */13:
+				case /* Double */14:
+					return v;
+				case /* Int64 */11: //todo: handle sign
+					return new System.Int64(0, v);
+				case /* UInt64 */12:
+					return new System.UInt64(0, v);
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v.toString();
+			}
+			break;
+		case /* Int64 */11:
+			switch (to) {
+				case /*Boolean */3:
+					return v.m_hi && v.m_lo ? true : false;
+				case /*SByte */5: //todo: handle sign
+					return (~~v.m_lo) & 0xff;
+				case /* Byte */6:
+					return (~~v.m_lo) & 0xff;
+				case /* Int16 */7: //todo: handle sign
+					return (~~v.m_lo) & 0xffff;
+				case /*Char */4:
+				case /* UInt16 */8:
+					return (~~v.m_lo) & 0xffff;
+				case /* Int32 */9:
+					return (~~v.m_lo) & 0xffffffff;
+				case /* UInt32 */10:
+					return (~~v.m_lo) & 0xffffffff;
+				case /* Single */13:
+				case /* Double */14:
+					return dk * v.m_hi + v.m_lo;
+				case /* Int64 */11:
+					return v;
+				case /* UInt64 */12: //todo: handle sign
+					return new System.UInt64((~~v.m_hi) & 0xffffffff, v.m_lo);
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v.toString();
+			}
+			break;
+		case /* UInt64 */12:
+			switch (to) {
+				case /*Boolean */3:
+					return v.m_hi && v.m_lo ? true : false;
+				case /*SByte */5: //todo: handle sign
+					return (~~v.m_lo) & 0xff;
+				case /* Byte */6:
+					return (~~v.m_lo) & 0xff;
+				case /* Int16 */7: //todo: handle sign
+					return (~~v.m_lo) & 0xffff;
+				case /*Char */4:
+				case /* UInt16 */8:
+					return (~~v.m_lo) & 0xffff;
+				case /* Int32 */9: //todo: handle sign
+					return (~~v.m_lo) & 0xffffffff;
+				case /* UInt32 */10:
+					return (~~v.m_lo) & 0xffffffff;
+				case /* Single */13:
+				case /* Double */14:
+					return dk * v.m_hi + v.m_lo;
+				case /* Int64 */11: //todo: handle sign
+					return new System.UInt64((~~v.m_hi) & 0xffffffff, v.m_lo);
+				case /* UInt64 */12:
+					return v;
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v.toString();
+			}
+			break;
+		case /* Single */13:
+		case /* Double */14:
+			switch (to) {
+				case /*Boolean */3:
+					return v ? true : false;
+				case /*SByte */5:
+				case /* Byte */6:
+					return (~~v) & 0xff;
+				case /* Int16 */7:
+				case /*Char */4:
+				case /* UInt16 */8:
+					return (~~v) & 0xffff;
+				case /* Int32 */9:
+				case /* UInt32 */10:
+					return (~~v) & 0xffffffff;
+				case /* Single */13:
+				case /* Double */14:
+					return v;
+				case /* Int64 */11:
+					return new System.Int64(0, v ? 1 : 0);
+				case /* UInt64 */12:
+					return new System.UInt64(0, v ? 1 : 0);
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v ? "True" : "False";
+			}
+			break;
+		case /* Decimal */15:
+			break;
+		case /* String */18:
+			switch (to) {
+				case /*Boolean */3:
+					v = v.toLower();
+					if (v == "true") return true;
+					if (v == "false") return false;
+					n = parseFloat(v);
+					if (!isNaN(n)) return n ? true : false;
+					throw new Error("InvalidCastException");
+				case /*SByte */5:
+				case /* Byte */6:
+				case /* Int16 */7:
+				case /*Char */4:
+				case /* UInt16 */8:
+				case /* Int32 */9:
+				case /* UInt32 */10:
+					v = v.toLower();
+					if (v == "true") return 1;
+					if (v == "false") return 0;
+					n = parseInt(v);
+					if (!isNaN(n))
+						return (~~n) & mask(to);
+					throw new Error("InvalidCastException");
+				case /* Single */13:
+				case /* Double */14:
+					v = v.toLower();
+					if (v == "true") return 1;
+					if (v == "false") return 0;
+					n = parseFloat(v);
+					if (!isNaN(n))
+						return n;
+					throw new Error("InvalidCastException");
+				case /* Int64 */11:
+				case /* UInt64 */12:
+				case /* Decimal */15:
+					break;
+				case /* String */18:
+					return v;
+			}
+			break;
+	}
+	throw new Error("Not implemented!");
 }
 
 function $context($method, $args, $vars) {
@@ -414,7 +769,6 @@ function $context($method, $args, $vars) {
 				push(i[1]);
 				break;
 			case 33: // ldc.i8
-				//TODO: int64
 				push(i[1]);
 				break;
 			case 37: // dup
@@ -552,34 +906,34 @@ function $context($method, $args, $vars) {
 				}
 				break;
 			case 70: // ldind.i1
-				push(convi1(ldind()));
+				push(convi1(ldind(), i[1]));
 				break;
 			case 71: // ldind.u1
-				push(convu2(ldind()));
+				push(convu2(ldind(), i[1]));
 				break;
 			case 72: // ldind.i2
-				push(convi2(ldind()));
+				push(convi2(ldind(), i[1]));
 				break;
 			case 73: // ldind.u2
-				push(convu2(ldind()));
+				push(convu2(ldind(), i[1]));
 				break;
 			case 74: // ldind.i4
-				push(convi4(ldind()));
+				push(convi4(ldind(), i[1]));
 				break;
 			case 75: // ldind.u4
-				push(convu4(ldind()));
+				push(convu4(ldind(), i[1]));
 				break;
 			case 76: // ldind.i8
-				push(convi8(ldind()));
+				push(convi8(ldind(), i[1]));
 				break;
 			case 77: // ldind.i
-				push(ldind()); // loads native int
+				push(ldind()); // TODO: loads native int
 				break;
 			case 78: // ldind.r4
-				push(convr4(ldind()));
+				push(convr4(ldind(), i[1]));
 				break;
 			case 79: // ldind.r8
-				push(convr8(ldind()));
+				push(convr8(ldind(), i[1]));
 				break;
 			case 80: // ldind.ref
 				push(ldind());
@@ -588,22 +942,22 @@ function $context($method, $args, $vars) {
 				stind();
 				break;
 			case 82: // stind.i1
-				stind(convi1);
+				stind(convi1, i[1]);
 				break;
 			case 83: // stind.i2
-				stind(convi2);
+				stind(convi2, i[1]);
 				break;
 			case 84: // stind.i4
-				stind(convi4);
+				stind(convi4, i[1]);
 				break;
 			case 85: // stind.i8
-				stind(convi8);
+				stind(convi8, i[1]);
 				break;
 			case 86: // stind.r4
-				stind(convr4);
+				stind(convr4, i[1]);
 				break;
 			case 87: // stind.r8
-				stind(convr8);
+				stind(convr8, i[1]);
 				break;
 			case 88: // add
 				y = pop(true);
@@ -679,28 +1033,28 @@ function $context($method, $args, $vars) {
 				push(not(x));
 				break;
 			case 103: // conv.i1
-				push(convi1(pop(true)));
+				push(convi1(pop(true), i[1]));
 				break;
 			case 104: // conv.i2
-				push(convi2(pop(true)));
+				push(convi2(pop(true), i[1]));
 				break;
 			case 105: // conv.i4
-				push(convi4(pop(true)));
+				push(convi4(pop(true), i[1]));
 				break;
 			case 106: // conv.i8
-				push(convi8(pop(true)));
+				push(convi8(pop(true), i[1]));
 				break;
 			case 107: // conv.r4
-				push(convr4(pop(true)));
+				push(convr4(pop(true), i[1]));
 				break;
 			case 108: // conv.r8
-				push(convr8(pop(true)));
+				push(convr8(pop(true), i[1]));
 				break;
 			case 109: // conv.u4
-				push(convu4(pop(true)));
+				push(convu4(pop(true), i[1]));
 				break;
 			case 110: // conv.u8
-				push(convu8(pop(true)));
+				push(convu8(pop(true), i[1]));
 				break;
 			case 111: // callvirt
 				call(i[1], true);
@@ -799,59 +1153,59 @@ function $context($method, $args, $vars) {
 				push(new elemptr(arr, index));
 				break;
 			case 144: // ldelem.i1
-				push(convi1(ldelem()));
+				push(convi1(ldelem(), i[1]));
 				break;
 			case 145: // ldelem.u1
-				push(convu1(ldelem()));
+				push(convu1(ldelem(), i[1]));
 				break;
 			case 146: // ldelem.i2
-				push(convi2(ldelem()));
+				push(convi2(ldelem(), i[1]));
 				break;
 			case 147: // ldelem.u2
-				push(convu2(ldelem()));
+				push(convu2(ldelem(), i[1]));
 				break;
 			case 148: // ldelem.i4
-				push(convi4(ldelem()));
+				push(convi4(ldelem(), i[1]));
 				break;
 			case 149: // ldelem.u4
-				push(convu4(ldelem()));
+				push(convu4(ldelem(), i[1]));
 				break;
 			case 150: // ldelem.i8
-				push(convi8(ldelem()));
+				push(convi8(ldelem(), i[1]));
 				break;
 			case 151: // ldelem.i
 				//TODO: native int
 				push(ldelem());
 				break;
 			case 152: // ldelem.r4
-				push(convr4(ldelem()));
+				push(convr4(ldelem(), i[1]));
 				break;
 			case 153: // ldelem.r8
-				push(convr8(ldelem()));
+				push(convr8(ldelem(), i[1]));
 				break;
 			case 154: // ldelem.ref
 				push(ldelem());
 				break;
 			case 155: // stelem.i
-				stelem();
+				stelem(); //TODO: native int
 				break;
 			case 156: // stelem.i1
-				stelem(convi1);
+				stelem(convi1, i[1]);
 				break;
 			case 157: // stelem.i2
-				stelem(convi2);
+				stelem(convi2, i[1]);
 				break;
 			case 158: // stelem.i4
-				stelem(convi4);
+				stelem(convi4, i[1]);
 				break;
 			case 159: // stelem.i8
-				stelem(convi8);
+				stelem(convi8, i[1]);
 				break;
 			case 160: // stelem.r4
-				stelem(convr4);
+				stelem(convr4, i[1]);
 				break;
 			case 161: // stelem.r8
-				stelem(convr8);
+				stelem(convr8, i[1]);
 				break;
 			case 162: // stelem.ref
 				stelem();
@@ -866,28 +1220,28 @@ function $context($method, $args, $vars) {
 				unbox(i[1]);
 				break;
 			case 179: // conv.ovf.i1
-				push(convi1ovf(pop(true)));
+				push(convi1(pop(true), i[1]));
 				break;
 			case 180: // conv.ovf.u1
-				push(convu1ovf(pop(true)));
+				push(convu1(pop(true), i[1]));
 				break;
 			case 181: // conv.ovf.i2
-				push(convi2ovf(pop(true)));
+				push(convi2(pop(true), i[1]));
 				break;
 			case 182: // conv.ovf.u2
-				push(convu1ovf(pop(true)));
+				push(convu1(pop(true), i[1]));
 				break;
 			case 183: // conv.ovf.i4
-				push(convi4ovf(pop(true)));
+				push(convi4(pop(true), i[1]));
 				break;
 			case 184: // conv.ovf.u4
-				push(convu4ovf(pop(true)));
+				push(convu4(pop(true), i[1]));
 				break;
 			case 185: // conv.ovf.i8
-				push(convi8ovf(pop(true)));
+				push(convi8(pop(true), i[1]));
 				break;
 			case 186: // conv.ovf.u8
-				push(convu8ovf(pop(true)));
+				push(convu8(pop(true), i[1]));
 				break;
 			case 194: // refanyval
 				break;
@@ -1205,11 +1559,11 @@ function $context($method, $args, $vars) {
 		return $unbox(v);
 	}
 	
-	function stind(conv) {
+	function stind(conv, from) {
 		var v = pop();
 		var p = popptr();
 		if (conv !== undefined) {
-			v = conv(v);
+			v = conv(v, from);
 		}
 		p.$ptrset(v);
 	}
@@ -1239,12 +1593,12 @@ function $context($method, $args, $vars) {
 		return arr[i];
 	}
 	
-	function stelem(conv) {
+	function stelem(conv, from) {
 		var value = pop();
 		var i = pop(true);
 		var arr = poparr();
 		if (conv !== undefined) {
-			value = conv(value);
+			value = conv(value, from);
 		}
 		checkBounds(arr, i);
 		arr[i] = value;
@@ -1304,7 +1658,7 @@ function $context($method, $args, $vars) {
 
 	function div(x, y, tc) {
 		//TODO: int64
-		return convto(x / y, tc);
+		return $conv(x / y, $tc.i4, tc);
 	}
 
 	function rem(x, y) {
@@ -1371,101 +1725,54 @@ function $context($method, $args, $vars) {
 		//TODO: int64
 		return x < y;
 	}
-	
-	function convto(v, tc) {
-		switch (tc) {
-			case /*Boolean */3:
-				//TODO: int64, uint64
-				return v != 0 ? true : false;
-			case /*SByte */5:
-				return convi1(v);
-			case /* Byte */6:
-				return convu1(v);
-			case /* Int16 */7:
-				return convi2(v);
-			case /*Char */4:
-			case /* UInt16 */8:
-				return convu2(v);
-			case /* Int32 */9:
-				return convi4(v);
-			case /* UInt32 */10:
-				return convu4(v);
-			case /* Int64 */11:
-				return convi8(v);
-			case /* UInt64 */12:
-				return convu8(v);
-			case /* Single */13:
-				return convr4(v);
-			case /* Double */14:
-				return convr8(v);
-			case /* Decimal */15:
-				return v;
-			case /* DateTime */16:
-				return v;
-			case /* String */18:
-				return String(v);
-			default:
-				return v;
-		}
-	}
 
 	//http://james.padolsey.com/javascript/double-bitwise-not/
-	function convi1(v) {
-		//TODO: int64
-		return (~~v) & 0xff;
+	function convi1(v, from) {
+		return $conv(v, from, $tc.i1);
 	}
 
-	function convu1(v) {
-		//TODO: int64
-		return (~~v) & 0xff;
+	function convu1(v, from) {
+		return $conv(v, from, $tc.u1);
 	}
 
-	function convi2(v) {
-		//TODO: int64
-		return (~~v) & 0xffff;
+	function convi2(v, from) {
+		return $conv(v, from, $tc.i2);
 	}
 
-	function convu2(v) {
-		//TODO: int64
-		return (~~v) & 0xffff;
+	function convu2(v, from) {
+		return $conv(v, from, $tc.u2);
 	}
 
-	function convi4(v) {
-		//TODO: int64
-		return (~~v) & 0xffffffff;
+	function convi4(v, from) {
+		return $conv(v, from, $tc.i4);
 	}
 
-	function convu4(v) {
-		//TODO: int64
-		return (~~v) & 0xffffffff;
+	function convu4(v, from) {
+		return $conv(v, from, $tc.u4);
 	}
 
-	function convi8(v) {
-		//TODO: int64
-		return (~~v) & 0xffffffff;
+	function convi8(v, from) {
+		return $conv(v, from, $tc.i8);
 	}
 
-	function convu8(v) {
-		//TODO: int64
-		return (~~v) & 0xffffffff;
+	function convu8(v, from) {
+		return $conv(v, from, $tc.u8);
 	}
 
-	function convr4(v) {
-		//TODO: int64
-		return v;
+	function convr4(v, from) {
+		return $conv(v, from, $tc.r4);
 	}
 
-	function convr8(v) {
-		//TODO: int64
-		return v;
+	function convr8(v, from) {
+		return $conv(v, from, $tc.r8);
 	}
 	
 	function noimpl() {
-		throw "NotImplementedException";
+		throw new Error("NotImplementedException");
 	}
 
 	function ignore(i) {
-		console.warn("ignored instruction %d", i[0]);
+		//console.warn("ignored instruction %d", i[0]);
 	}
 
 	function varptr(i) {
