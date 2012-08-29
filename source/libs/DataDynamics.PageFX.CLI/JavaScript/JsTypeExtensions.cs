@@ -79,7 +79,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public static object InitialValue(this IType type)
 		{
-			switch (SystemTypes.GetTypeCode(type))
+			switch (type.GetTypeCode())
 			{
 				case TypeCode.Boolean:
 					return false;

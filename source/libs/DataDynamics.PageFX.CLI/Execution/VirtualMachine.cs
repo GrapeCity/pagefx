@@ -1630,7 +1630,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private object ConvertTo(object value, IType type)
 		{
-			switch (SystemTypes.GetTypeCode(type))
+			switch (type.GetTypeCode())
 			{
 				case TypeCode.Boolean:
 					return Convert.ToBoolean(value);
@@ -1693,7 +1693,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 			}
 			else
 			{
-				switch (SystemTypes.GetTypeCode(type))
+				switch (type.GetTypeCode())
 				{
 					case TypeCode.Boolean:
 						context.Push((Boolean)value);
@@ -1771,7 +1771,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 				return;
 			}
 
-			switch (SystemTypes.GetTypeCode(type))
+			switch (type.GetTypeCode())
 			{
 				case TypeCode.Boolean:
 					context.Push(value is Boolean);
@@ -1826,7 +1826,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private static bool IsCompatArrayElementType(Type type, IType itype)
 		{
-			var code = SystemTypes.GetTypeCode(itype);
+			var code = itype.GetTypeCode();
 			switch (Type.GetTypeCode(type))
 			{
 				case TypeCode.Object:
@@ -1899,7 +1899,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private Array NewArraySz(IType elemType, int len)
 		{
-			switch (SystemTypes.GetTypeCode(elemType))
+			switch (elemType.GetTypeCode())
 			{
 				case TypeCode.Boolean:
 					return new Boolean[len];

@@ -179,7 +179,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 				switch (spec.Substring(1))
 				{
 					case "int32":
-						switch (SystemTypes.GetTypeCode(type))
+						switch (type.GetTypeCode())
 						{
 							case TypeCode.SByte:
 							case TypeCode.Byte:
@@ -192,7 +192,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 								return false;
 						}
 					case "float":
-						switch (SystemTypes.GetTypeCode(type))
+						switch (type.GetTypeCode())
 						{
 							case TypeCode.Single:
 							case TypeCode.Double:

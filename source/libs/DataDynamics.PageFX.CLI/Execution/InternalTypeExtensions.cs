@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 	{
 		public static object GetDefaultValue(this IType type)
 		{
-			switch (SystemTypes.GetTypeCode(type))
+			switch (type.GetTypeCode())
 			{
 				case TypeCode.DBNull:
 					return DBNull.Value;
