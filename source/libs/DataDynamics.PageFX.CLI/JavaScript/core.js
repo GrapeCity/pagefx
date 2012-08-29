@@ -1108,28 +1108,28 @@ function $context($method, $args, $vars) {
 				stobj(i[1]);
 				break;
 			case 130: // conv.ovf.i1.un
-				push(convi1ovf(popun()));
+				push(convi1(popun(), i[1]));
 				break;
 			case 131: // conv.ovf.i2.un
-				push(convi2ovf(popun()));
+				push(convi2(popun(), i[1]));
 				break;
 			case 132: // conv.ovf.i4.un
-				push(convi4ovf(popun()));
+				push(convi4(popun(), [1]));
 				break;
 			case 133: // conv.ovf.i8.un
-				push(convi8ovf(popun()));
+				push(convi8(popun(), i[1]));
 				break;
 			case 134: // conv.ovf.u1.un
-				push(convu1ovf(popun()));
+				push(convu1(popun(), i[1]));
 				break;
 			case 135: // conv.ovf.u2.un
-				push(convu2ovf(popun()));
+				push(convu2(popun(), i[1]));
 				break;
 			case 136: // conv.ovf.u4.un
-				push(convu4ovf(popun()));
+				push(convu4(popun(), i[1]));
 				break;
 			case 137: // conv.ovf.u8.un
-				push(convu8ovf(popun()));
+				push(convu8(popun(), i[1]));
 				break;
 			case 138: // conv.ovf.i.un
 				noimpl();
@@ -1621,7 +1621,7 @@ function $context($method, $args, $vars) {
 			case "number":
 				return v != 0;
 			default:
-				//TODO: int64
+				if (v.$i8 || v.$u8) return v.m_hi && v.m_lo;
 				return v !== null && v !== undefined;
 		}
 	}
@@ -1658,7 +1658,7 @@ function $context($method, $args, $vars) {
 
 	function div(x, y, tc) {
 		//TODO: int64
-		return $conv(x / y, $tc.i4, tc);
+		return $conv(x / y, $tc.r8, tc);
 	}
 
 	function rem(x, y) {
