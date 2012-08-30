@@ -1183,6 +1183,8 @@ namespace DataDynamics.PageFX.CLI.IL
             var value = Pop();
             var addr = Pop();
 
+			_instruction.InputTypes = new[] { value.Type };
+
             var code = new Code();
             BeforeStoreValue(code, value, addr.Type);
 

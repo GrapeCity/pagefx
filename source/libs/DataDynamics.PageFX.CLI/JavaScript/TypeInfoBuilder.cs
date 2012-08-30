@@ -76,10 +76,15 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			newFunc.Body.Add(type.New().Return());
 			init.Body.Add(t.Set("$new", newFunc));
 
-			var arrayType = type as IArrayType;
-			if (arrayType != null)
+			var compoundType = type as ICompoundType;
+			if (compoundType != null)
 			{
-				init.Body.Add(t.Set("$elemType", arrayType.ElementType.FullName));
+				init.Body.Add(t.Set("$elemType", compoundType.ElementType.FullName));
+			}
+
+			if (type.ValueType != null)
+			{
+				init.Body.Add(t.Set("$valueType", type.ValueType.FullName));
 			}
 
 			init.Body.Add(t.Return());

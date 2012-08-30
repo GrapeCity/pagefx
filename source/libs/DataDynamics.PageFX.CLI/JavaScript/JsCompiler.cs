@@ -468,6 +468,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private object OpWithTypeCode(Instruction i)
 		{
 			var type = i.InputTypes[0];
+
+			if (type is ICompoundType)
+			{
+				Debugger.Break();
+			}
+
 			if (type.IsInt64())
 			{
 				CompileClass(type);
