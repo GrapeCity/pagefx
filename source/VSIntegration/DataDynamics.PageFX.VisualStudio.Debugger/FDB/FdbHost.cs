@@ -1137,7 +1137,7 @@ namespace DataDynamics.PageFX.VisualStudio.Debugger
 
             public string Convert(string exp)
             {
-                if (ParseHelper.IsSimpleId(exp))
+                if (exp.IsSimpleId())
                 {
                     var prop = _property[exp];
                     if (prop != null) return prop.Value;
@@ -1165,14 +1165,14 @@ namespace DataDynamics.PageFX.VisualStudio.Debugger
                 for (int i = 0; i < n; ++i)
                 {
                     char c = exp[i];
-                    if (ParseHelper.IsSimpleIdStart(c))
+					if (c.IsSimpleIdStartChar())
                     {
                         string id = "";
                         id += c;
                         for (++i; i < n; ++i)
                         {
                             c = exp[i];
-                            if (!ParseHelper.IsSimpleIdChar(c))
+                            if (!c.IsSimpleIdChar())
                             {
                                 --i;
                                 break;

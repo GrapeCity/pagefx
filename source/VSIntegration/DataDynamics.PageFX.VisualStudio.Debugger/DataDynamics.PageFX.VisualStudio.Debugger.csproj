@@ -64,11 +64,11 @@
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Hex.cs">
       <Link>Utils\Hex.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\ParseHelper.cs">
-      <Link>Shared\ParseHelper.cs</Link>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\ParseExtensions.cs">
+      <Link>Shared\ParseExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\str.cs">
-      <Link>Shared\str.cs</Link>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\StringExtensions.cs">
+      <Link>Shared\StringExtensions.cs</Link>
     </Compile>
     <Compile Include="Engine\Const.cs" />
     <Compile Include="Engine\Guids.cs" />
