@@ -136,7 +136,6 @@
     <Compile Include="JavaScript\ArrayInterfaceImpl.cs" />
     <Compile Include="JavaScript\BoxingImpl.cs" />
     <Compile Include="JavaScript\ClassInitImpl.cs" />
-    <Compile Include="JavaScript\FieldAccessKey.cs" />
     <Compile Include="JavaScript\Inlining\AvmInlines.cs" />
     <Compile Include="JavaScript\Inlining\System.BitConverter.cs" />
     <Compile Include="JavaScript\JsGlobalPool.cs" />

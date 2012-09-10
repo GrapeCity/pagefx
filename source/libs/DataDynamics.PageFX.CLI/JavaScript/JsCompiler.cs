@@ -674,6 +674,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				call = obj.Ternary("True", "False");
 			}
 
+			//to detect stackoverflows
+			//func.Body.Add("console.log".Id().Call(method.JsFullName()).AsStatement());
+
 			if (call == null && info != null)
 			{
 				if (info.ReceiverType != null && (info.Flags & CallFlags.Basecall) != 0)
@@ -688,9 +691,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					//call = obj.Get("$base").Get(method.JsName()).Apply(obj, args);
 				}
 			}
-			
+
 			if (call == null)
+			{
+				if (!method.IsStatic && !method.IsConstructor && method.DeclaringType.IsBoxableType())
+				{
+					new BoxingImpl(this).BoxUnboxed(context, method.DeclaringType, func, obj);
+				}
+
 				call = method.Apply(obj, args);
+			}
 
 			func.Body.Add(method.IsVoid() ? call.AsStatement() : call.Return());
 

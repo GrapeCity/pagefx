@@ -25,6 +25,13 @@ function $copy(o) {
 	return o.$copy == undefined ? o : o.$copy();
 }
 
+// conditional boxing
+function $cbox(o, box) {
+	if (o == null || o == undefined) return o;
+	if (o.$value === undefined) return box(o);
+	return o;
+}
+
 function $unbox(o) {
 	if (o == null || o == undefined) return o;
 	var v = o.$value;

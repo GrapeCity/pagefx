@@ -331,10 +331,10 @@ namespace DataDynamics.PageFX.FLI
             //WriteFile(dir, "play.bat", "avmplus.exe -Dinterp -Dverbose %1");
             WriteFile(dir, "run.bat", "avmplus.exe -Dinterp test.abc");
             WriteFile(dir, "avmdump.bat", "avmplus.exe -Dinterp -Dverbose test.abc > avmdump.txt");
-			WriteFile(dir, "test.js.html", @"
+			WriteFile(dir, "test.js.html", @"<!DOCTYPE html>
 <html>
 <head>
-<script src=""test.js""></script>
+<script type=""text/javascript"" src=""test.js""></script>
 </head>
 <body>
 <p>Hello!<p>

@@ -12,7 +12,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_host = host;
 		}
 
-		public object Box(MethodContext context, IType type)
+		public void BoxUnboxed(MethodContext context, IType type, JsFunction func, JsNode obj)
+		{
+			var f = Box(context, type);
+			func.Body.Add(obj.Set("$cbox".Id().Call(obj, f)));
+		}
+
+		public JsNode Box(MethodContext context, IType type)
 		{
 			var key = new InstructionKey(InstructionCode.Box, type);
 			var info = context.Vars[key];
@@ -25,6 +31,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (type.IsBoxableType())
 			{
+				//TODO: consider to move to type
 				var name = string.Format("{0}.$box", type.JsFullName());
 
 				if (!klass.BoxFunctionCompiled)
@@ -50,7 +57,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return "$copy".Id();
 		}
 
-		public object Unbox(MethodContext context, IType type)
+		public JsNode Unbox(MethodContext context, IType type)
 		{
 			if (type.IsBoxableType())
 			{
