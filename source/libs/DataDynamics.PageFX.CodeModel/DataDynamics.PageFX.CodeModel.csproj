@@ -147,6 +147,7 @@
     <Compile Include="Implementation\Types\GenericInstance.cs" />
     <Compile Include="Implementation\Members\ReadOnlyMemberCollection.cs" />
     <Compile Include="Implementation\Types\GenericType.cs" />
+    <Compile Include="OperatorResolver.cs" />
     <Compile Include="Syntax\Attributes.cs" />
     <Compile Include="Design\Statements\Basic.cs" />
     <Compile Include="Syntax\EnumExtensions.cs" />

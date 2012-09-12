@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Diagnostics;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
@@ -9,47 +8,25 @@ namespace DataDynamics.PageFX.FLI
 {
     partial class AbcGenerator
     {
+		private readonly OperatorResolver _opCache = new OperatorResolver();
+
         #region Op Cache
+
         public IMethod FindOperator(BinaryOperator op, IType left, IType right)
         {
-            string key = ((int)op).ToString() + (int)left.SystemType.Code + (int)right.SystemType.Code;
-            var m = _opCache[key] as IMethod;
-            if (m == null)
-            {
-                m = op.FindOperator(left, right);
-                if (m != null)
-                    _opCache[key] = m;
-            }
-            return m;
+	        return _opCache.Find(op, left, right);
         }
 
         public IMethod FindOperator(UnaryOperator op, IType type)
         {
-            string key = ((int)op).ToString() + (int)type.SystemType.Code;
-            var m = _opCache[key] as IMethod;
-            if (m == null)
-            {
-                m = op.FindOperator(type);
-                if (m != null)
-                    _opCache[key] = m;
-            }
-            return m;
+	        return _opCache.Find(op, type);
         }
 
         public IMethod FindBooleanOperator(IType type, bool isTrue)
         {
-            string key = (isTrue ? OpNames.True : OpNames.False) + (int)type.SystemType.Code;
-            var m = _opCache[key] as IMethod;
-            if (m == null)
-            {
-                m = type.FindBooleanOperator(isTrue);
-                if (m != null)
-                    _opCache[key] = m;
-            }
-            return m;
+	        return _opCache.Find(type, isTrue);
         }
 
-        readonly Hashtable _opCache = new Hashtable();
         #endregion
 
         #region Binary Operator

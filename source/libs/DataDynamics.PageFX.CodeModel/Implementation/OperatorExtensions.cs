@@ -176,14 +176,14 @@ namespace DataDynamics.PageFX.CodeModel
             return true;
         }
 
-    	public static IMethod FindOperator(this BinaryOperator op, IType left, IType right)
+    	public static IMethod FindMethod(this BinaryOperator op, IType left, IType right)
         {
             string name = op.GetMethodName();
             var set = left.Methods.Find(name);
             return set.FirstOrDefault(m => m.IsBinaryOperator(op, left, right));
         }
 
-		public static IMethod FindOperator(this UnaryOperator op, IType type)
+		public static IMethod FindMethod(this UnaryOperator op, IType type)
 		{
 			string name = op.GetMethodName();
 			var ops = type.Methods.Find(name);
