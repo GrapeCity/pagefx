@@ -317,7 +317,7 @@ function $conv(v, from, to) {
 				case /* Double */14:
 					return v;
 				case /* Int64 */11:
-					return new System.Int64(v < 0 ? -1 : 0, v);
+					return new System.Int64(v < 0 ? -1 : 0, v & 0xff);
 				case /* UInt64 */12:
 					return new System.UInt64(0, v & 0xff);
 				case /* Decimal */15:
@@ -804,7 +804,7 @@ function $context($method, $args, $vars) {
 			case 59: // beq
 				y = pop(true);
 				x = pop(true);
-				if (eq(x, y)) {
+				if (eq(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -813,7 +813,7 @@ function $context($method, $args, $vars) {
 			case 60: // bge
 				y = pop(true);
 				x = pop(true);
-				if (ge(x, y)) {
+				if (ge(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -822,7 +822,7 @@ function $context($method, $args, $vars) {
 			case 61: // bgt
 				y = pop(true);
 				x = pop(true);
-				if (gt(x, y)) {
+				if (gt(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -831,7 +831,7 @@ function $context($method, $args, $vars) {
 			case 62: // ble
 				y = pop(true);
 				x = pop(true);
-				if (le(x, y)) {
+				if (le(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -840,7 +840,7 @@ function $context($method, $args, $vars) {
 			case 63: // blt
 				y = pop(true);
 				x = pop(true);
-				if (lt(x, y)) {
+				if (lt(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -849,7 +849,7 @@ function $context($method, $args, $vars) {
 			case 64: // bne.un
 				y = popun();
 				x = popun();
-				if (!eq(x, y)) {
+				if (!eq(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -858,7 +858,7 @@ function $context($method, $args, $vars) {
 			case 65: // bge.un
 				y = popun();
 				x = popun();
-				if (ge(x, y)) {
+				if (ge(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -867,7 +867,7 @@ function $context($method, $args, $vars) {
 			case 66: // bgt.un
 				y = popun();
 				x = popun();
-				if (gt(x, y)) {
+				if (gt(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -876,7 +876,7 @@ function $context($method, $args, $vars) {
 			case 67: // ble.un
 				y = popun();
 				x = popun();
-				if (le(x, y)) {
+				if (le(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -885,7 +885,7 @@ function $context($method, $args, $vars) {
 			case 68: // blt.un
 				y = popun();
 				x = popun();
-				if (lt(x, y)) {
+				if (lt(x, y, i[2])) {
 					ip = i[1];
 					return;
 				}
@@ -955,17 +955,17 @@ function $context($method, $args, $vars) {
 			case 88: // add
 				y = pop(true);
 				x = pop(true);
-				push(add(x, y));
+				push(add(x, y, i[1]));
 				break;
 			case 89: // sub
 				y = pop(true);
 				x = pop(true);
-				push(sub(x, y));
+				push(sub(x, y, i[1]));
 				break;
 			case 90: // mul
 				y = pop(true);
 				x = pop(true);
-				push(mul(x, y));
+				push(mul(x, y, i[1]));
 				break;
 			case 91: // div
 				y = pop(true);
@@ -980,27 +980,27 @@ function $context($method, $args, $vars) {
 			case 93: // rem
 				y = pop(true);
 				x = pop(true);
-				push(rem(x, y));
+				push(rem(x, y, i[1]));
 				break;
 			case 94: // rem.un
 				y = popun();
 				x = popun();
-				push(rem(x, y));
+				push(rem(x, y, i[1]));
 				break;
 			case 95: // and
 				y = pop(true);
 				x = pop(true);
-				push(and(x, y));
+				push(and(x, y, i[1]));
 				break;
 			case 96: // or
 				y = pop(true);
 				x = pop(true);
-				push(or(x, y));
+				push(or(x, y, i[1]));
 				break;
 			case 97: // xor
 				y = pop(true);
 				x = pop(true);
-				push(xor(x, y));
+				push(xor(x, y, i[1]));
 				break;
 			case 98: // shl
 				y = pop(true);
@@ -1263,32 +1263,32 @@ function $context($method, $args, $vars) {
 			case 214: // add.ovf
 				y = pop(true);
 				x = pop(true);
-				push(addovf(x, y));
+				push(add(x, y, i[1]));
 				break;
 			case 215: // add.ovf.un
 				y = popun();
 				x = popun();
-				push(addovf(x, y));
+				push(add(x, y, i[1]));
 				break;
 			case 216: // mul.ovf
 				y = pop(true);
 				x = pop(true);
-				push(mulovf(x, y));
+				push(mul(x, y, i[1]));
 				break;
 			case 217: // mul.ovf.un
 				y = popun();
 				x = popun();
-				push(mulovf(x, y));
+				push(mul(x, y, i[1]));
 				break;
 			case 218: // sub.ovf
 				y = pop(true);
 				x = pop(true);
-				push(subovf(x, y));
+				push(sub(x, y, i[1]));
 				break;
 			case 219: // sub.ovf.un
 				y = popun();
 				x = popun();
-				push(subovf(x, y));
+				push(sub(x, y, i[1]));
 				break;
 			case 220: // endfinally
 				break;
@@ -1318,27 +1318,27 @@ function $context($method, $args, $vars) {
 			case -511: // ceq
 				y = pop(true);
 				x = pop(true);
-				push(eq(x, y));
+				push(eq(x, y, i[1]));
 				break;
 			case -510: // cgt
 				y = pop(true);
 				x = pop(true);
-				push(gt(x, y));
+				push(gt(x, y, i[1]));
 				break;
 			case -509: // cgt.un
 				y = popun();
 				x = popun();
-				push(gt(x, y));
+				push(gt(x, y, i[1]));
 				break;
 			case -508: // clt
 				y = pop(true);
 				x = pop(true);
-				push(lt(x, y));
+				push(lt(x, y, i[1]));
 				break;
 			case -507: // clt.un
 				y = popun();
 				x = popun();
-				push(lt(x, y));
+				push(lt(x, y, i[1]));
 				break;
 			case -506: // ldftn
 			case -505: // ldvirtftn
@@ -1620,104 +1620,181 @@ function $context($method, $args, $vars) {
 		}
 	}
 	
-	function add(x, y) {
-		//TODO: int64
-		return x + y;
+	function fixt(t) {
+		switch (t) {
+			case /*SByte */5:
+			case /* Int16 */7:
+				return 9;
+
+			case /* Byte */6:
+			case /*Char */4:
+			case /* UInt16 */8:
+				return 10;
+				
+			case /* Single */13:
+			case /* Double */14:
+				return 14;
+
+			default:
+			case /*Boolean */3:
+			case /* Int32 */9:
+			case /* UInt32 */10:
+			case /* Int64 */11:
+			case /* UInt64 */12:
+			case /* Decimal */15:
+				return t;
+		}
+	}
+	
+	function maxt(t) {
+		var t1 = fixt(t >> 8);
+		var t2 = fixt(t & 0xff);
+		return Math.max(t1, t2);
+	}
+	
+	function bop(x, y, t, op) {
+		var t1 = fixt(t >> 8);
+		var t2 = fixt(t & 0xff);
+		var t3 = Math.max(t1, t2);
+		x = $conv(x, t1, t3);
+		y = $conv(y, t2, t3);
+		return op(x, y);
 	}
 
-	function addovf(x, y) {
-		//TODO: int64
-		return x + y;
+	function $add(x, y) {
+		return x.$add ? x.$add(y) : x + y;
+	}
+	
+	function add(x, y, t) {
+		return bop(x, y, t, $add);
 	}
 
-	function sub(x, y) {
-		//TODO: int64
-		return x - y;
+	function $sub(x, y) {
+		return x.$sub ? x.$sub(y) : x - y;
+	}
+	
+	function sub(x, y, t) {
+		return bop(x, y, t, $sub);
 	}
 
-	function subovf(x, y) {
-		//TODO: int64
-		return x - y;
+	function $mul(x, y) {
+		return x.$mul ? x.$mul(y) : x * y;
 	}
 
-	function mul(x, y) {
-		//TODO: int64
-		return x * y;
+	function mul(x, y, t) {
+		return bop(x, y, t, $mul);
 	}
 
-	function mulovf(x, y) {
-		//TODO: int64
-		return x * y;
+	function $div(x, y) {
+		return x.$div ? x.$div(y) : x / y;
 	}
 
-	function div(x, y, tc) {
-		//TODO: int64
-		return $conv(x / y, $tc.r8, tc);
+	function $idiv(x, y) {
+		return ~~(x / y);
 	}
 
-	function rem(x, y) {
-		//TODO: int64
-		return x % y;
+	function div(x, y, t) {
+		if (maxt(t) <= 10) {
+			return bop(x, y, t, $idiv);
+		}
+		return bop(x, y, t, $div);
 	}
 
-	function and(x, y) {
-		//TODO: int64
-		return x & y;
+	function $rem(x, y) {
+		return x.$rem ? x.$rem(y) : x % y;
 	}
 
-	function or(x, y) {
-		//TODO: int64
-		return x | y;
+	function $irem(x, y) {
+		return ~~(x % y);
 	}
 
-	function xor(x, y) {
-		//TODO: int64
-		return x ^ y;
+	function rem(x, y, t) {
+		if (maxt(t) <= 10) {
+			return bop(x, y, t, $irem);
+		}
+		return bop(x, y, t, $rem);
+	}
+
+	function $and(x, y) {
+		return x.$and ? x.$and(y) : x & y;
+	}
+
+	function and(x, y, t) {
+		return bop(x, y, t, $and);
+	}
+
+	function $or(x, y) {
+		return x.$or ? x.$or(y) : x | y;
+	}
+
+	function or(x, y, t) {
+		return bop(x, y, t, $or);
+	}
+
+	function $xor(x, y) {
+		return x.$xor ? x.$xor(y) : x ^ y;
+	}
+
+	function xor(x, y, t) {
+		return bop(x, y, t, $xor);
 	}
 
 	function shl(x, y) {
-		//TODO: int64
+		if (x.$shl) return x.$shl(y);
 		return x << y;
 	}
 
 	function shr(x, y) {
-		//TODO: int64
+		if (x.$shr) return x.$shr(y);
 		return x >> y;
 	}
 
 	function neg(x) {
-		//TODO: int64
-		return -x;
+		return x.$neg ? x.$neg() : -x;
 	}
-	
+
 	function not(x) {
-		//TODO: handle null?
-		return !x;
+		return x.$not ? x.$not() : !x;
 	}
 
-	function eq(x, y) {
-		//TODO: int64
-		return x == y;
+	function $eq(x, y) {
+		return x.$eq ? x.$eq(y) : x == y;
 	}
 
-	function ge(x, y) {
-		//TODO: int64
-		return x >= y;
+	function eq(x, y, t) {
+		return bop(x, y, t, $eq);
 	}
 
-	function le(x, y) {
-		//TODO: int64
-		return x <= y;
+	function $ge(x, y) {
+		return x.$ge ? x.$ge(y) : x >= y;
 	}
 
-	function gt(x, y) {
-		//TODO: int64
-		return x > y;
+	function ge(x, y, t) {
+		return bop(x, y, t, $ge);
 	}
 
-	function lt(x, y) {
-		//TODO: int64
-		return x < y;
+	function $le(x, y) {
+		return x.$le ? x.$le(y) : x <= y;
+	}
+
+	function le(x, y, t) {
+		return bop(x, y, t, $le);
+	}
+
+	function $gt(x, y) {
+		return x.$gt ? x.$gt(y) : x > y;
+	}
+
+	function gt(x, y, t) {
+		return bop(x, y, t, $gt);
+	}
+
+	function $lt(x, y, t) {
+		return x.$lt ? x.$lt(y) : x < y;
+	}
+
+	function lt(x, y, t) {
+		return bop(x, y, t, $lt);
 	}
 
 	//http://james.padolsey.com/javascript/double-bitwise-not/

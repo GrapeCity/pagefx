@@ -460,9 +460,50 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				case InstructionCode.Clt_Un:
 					return Op(i, BinaryOperator.LessThan, true, false);
 				#endregion
+
+				#region conditional branches
+
+				case InstructionCode.Beq:
+				case InstructionCode.Beq_S:
+				case InstructionCode.Bne_Un:
+				case InstructionCode.Bne_Un_S:
+					return Br(i, BinaryOperator.Equality);
+				case InstructionCode.Blt:
+				case InstructionCode.Blt_S:
+				case InstructionCode.Blt_Un:
+				case InstructionCode.Blt_Un_S:
+					return Br(i, BinaryOperator.LessThan);
+				case InstructionCode.Ble:
+				case InstructionCode.Ble_S:
+				case InstructionCode.Ble_Un:
+				case InstructionCode.Ble_Un_S:
+					return Br(i, BinaryOperator.LessThanOrEqual);
+				case InstructionCode.Bgt:
+				case InstructionCode.Bgt_S:
+				case InstructionCode.Bgt_Un:
+				case InstructionCode.Bgt_Un_S:
+					return Br(i, BinaryOperator.GreaterThan);
+				case InstructionCode.Bge:
+				case InstructionCode.Bge_S:
+				case InstructionCode.Bge_Un:
+				case InstructionCode.Bge_Un_S:
+					return Br(i, BinaryOperator.GreaterThanOrEqual);
+
+				#endregion
 			}
 
 			return value;
+		}
+
+		private object Br(Instruction i, BinaryOperator op)
+		{
+			CompileOp(i, op);
+
+			var x = (int)i.InputTypes[0].GetTypeCode();
+			var y = (int)i.InputTypes[1].GetTypeCode();
+			var t = (x << 8) | y;
+
+			return new JsTuple(i.Value, t);
 		}
 
 		private object OpWithTypeCode(Instruction i)
@@ -481,14 +522,102 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return (int)type.GetTypeCode();
 		}
 		
-		private static object Op(Instruction i, UnaryOperator op, bool checkOverflow)
+		private object Op(Instruction i, UnaryOperator op, bool checkOverflow)
 		{
-			return (int)i.OutputType.GetTypeCode();
+			var t = (int)i.OutputType.GetTypeCode();
+
+			CompileOp(i.InputTypes[0], op);
+
+			return t;
 		}
 
-		private static object Op(Instruction i, BinaryOperator op, bool unsigned, bool checkOverflow)
+		private object Op(Instruction i, BinaryOperator op, bool unsigned, bool checkOverflow)
 		{
-			return (int)i.OutputType.GetTypeCode();
+			CompileOp(i, op);
+
+			var x = (int)i.InputTypes[0].GetTypeCode();
+			var y = (int)i.InputTypes[1].GetTypeCode();
+			var t = (x << 8) | y;
+
+			return t;
+		}
+
+		private void CompileOp(Instruction i, BinaryOperator op)
+		{
+			CompileOp(i.InputTypes[0], op);
+			CompileOp(i.InputTypes[1], op);
+
+			if (i.OutputType != null)
+			{
+				CompileOp(i.OutputType, op);
+			}
+		}
+
+		private readonly OperatorResolver _operators = new OperatorResolver();
+
+		private static bool HasOperators(IType type)
+		{
+			switch (type.GetTypeCode())
+			{
+				case TypeCode.Int64:
+				case TypeCode.UInt64:
+				case TypeCode.Decimal:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		private void CompileOp(IType type, UnaryOperator op)
+		{
+			// exclude natively supported types
+			if (!HasOperators(type)) return;
+
+			var method = _operators.Find(op, type);
+			if (method == null)
+			{
+				return;
+			}
+
+			if (method.Tag != null) return;
+
+			var jsMethod = CompileMethod(method);
+
+			var func = new JsFunction(null);
+			func.Body.Add(jsMethod.FullName.Id().Call("this".Id()).Return());
+
+			ExtendPrototype(type, op.JsName(), func);
+		}
+
+		private void CompileOp(IType type, BinaryOperator op)
+		{
+			// exclude natively supported types
+			if (!HasOperators(type)) return;
+
+			var method = _operators.Find(op, type, type);
+			if (method == null)
+			{
+				return;
+			}
+
+			if (method.Tag != null) return;
+
+			var jsMethod = CompileMethod(method);
+
+			var val = "v".Id();
+			var func = new JsFunction(null, val.Value);
+			func.Body.Add(jsMethod.FullName.Id().Call("this".Id(), val).Return());
+
+			ExtendPrototype(type, op.JsName(), func);
+		}
+
+		internal void ExtendPrototype(IType type, string name, JsFunction func)
+		{
+			var klass = CompileClass(type);
+
+			var fullName = type.JsFullName() + ".prototype." + name;
+
+			klass.Add(new JsGeneratedMethod(fullName, func));
 		}
 
 		private object OpLdtoken(MethodContext context, ITypeMember member)

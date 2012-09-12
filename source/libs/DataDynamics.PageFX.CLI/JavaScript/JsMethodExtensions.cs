@@ -6,6 +6,62 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal static class JsMethodExtensions
 	{
+		public static string JsName(this BinaryOperator op)
+		{
+			switch (op)
+			{
+				case BinaryOperator.Addition:
+					return "$add";
+				case BinaryOperator.Subtraction:
+					return "$sub";
+				case BinaryOperator.Multiply:
+					return "$mul";
+				case BinaryOperator.Division:
+					return "$div";
+				case BinaryOperator.Modulus:
+					return "$rem";
+				case BinaryOperator.LeftShift:
+					return "$shl";
+				case BinaryOperator.RightShift:
+					return "$shr";
+				case BinaryOperator.Equality:
+					return "$eq";
+				case BinaryOperator.Inequality:
+					return "$ne";
+				case BinaryOperator.BitwiseOr:
+					return "$or";
+				case BinaryOperator.BitwiseAnd:
+					return "$and";
+				case BinaryOperator.ExclusiveOr:
+					return "$xor";
+				case BinaryOperator.LessThan:
+					return "$lt";
+				case BinaryOperator.LessThanOrEqual:
+					return "$le";
+				case BinaryOperator.GreaterThan:
+					return "$gt";
+				case BinaryOperator.GreaterThanOrEqual:
+					return "$ge";
+				default:
+					return op.ToString();
+			}
+		}
+
+		public static string JsName(this UnaryOperator op)
+		{
+			switch (op)
+			{
+				case UnaryOperator.Negate:
+					return "$neg";
+				case UnaryOperator.BooleanNot:
+					return "$not";
+				case UnaryOperator.BitwiseNot:
+					return "$bnot";
+				default:
+					return op.ToString();
+			}
+		}
+
 		public static bool IsStatic(this IMethod method)
 		{
 			return method.IsStatic 

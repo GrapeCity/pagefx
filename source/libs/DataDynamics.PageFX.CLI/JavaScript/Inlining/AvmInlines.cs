@@ -2,6 +2,15 @@
 
 namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 {
+	internal sealed class ConsoleWriterInlines : InlineCodeProvider
+	{
+		[InlineImpl]
+		public static void get_UseEOL(JsBlock code)
+		{
+			code.Add(false.Return());
+		}
+	}
+
 	internal sealed class AvmInlines : InlineCodeProvider
 	{
 		[InlineImpl]

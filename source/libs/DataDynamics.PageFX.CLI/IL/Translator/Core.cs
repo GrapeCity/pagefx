@@ -1336,7 +1336,9 @@ namespace DataDynamics.PageFX.CLI.IL
                 CheckPointer(v);
                 lt = v.Type;
 
-                if (v.IsInstance || !(SystemTypes.IsNumeric(lt) || lt.IsEnum))
+	            _instruction.InputTypes = new [] {lt};
+
+                if (v.IsInstance || !(lt.IsNumeric() || lt.IsEnum))
                 {
                     op = op == BranchOperator.False ? BranchOperator.Null : BranchOperator.NotNull;
                 }
@@ -1351,6 +1353,8 @@ namespace DataDynamics.PageFX.CLI.IL
 
                 lt = left.Type;
                 rt = right.Type;
+
+	            _instruction.InputTypes = new[] {lt, rt};
 
                 //FIX: Problem with comparions signed and unsigned numbers.
                 if (unsigned || IsSignedUnsigned(lt, rt))
