@@ -752,12 +752,12 @@ namespace DataDynamics.PageFX.CLI.IL
 
 		private static bool IsInvalidCast(IType source, IType target)
         {
-            if (SystemTypes.IsNumeric(source))
+            if (source.IsNumeric())
             {
                 if (!IsNumEnumOrObject(target))
                     return true;
             }
-            else if (SystemTypes.IsNumeric(target))
+            else if (target.IsNumeric())
             {
                 if (!IsNumEnumOrObject(source))
                     return true;
@@ -768,7 +768,7 @@ namespace DataDynamics.PageFX.CLI.IL
 		private static bool IsNumEnumOrObject(IType type)
         {
             if (type == null) return false;
-            return SystemTypes.IsNumeric(type)
+            return type.IsNumeric()
                    || type.IsEnum
                    || type == SystemTypes.Object
                    || type == SystemTypes.ValueType;

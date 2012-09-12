@@ -150,8 +150,8 @@ namespace DataDynamics.PageFX.CLI.IL
 
         private static bool IsSignedUnsigned(IType ltype, IType rtype)
         {
-            return (SystemTypes.IsSigned(ltype) && SystemTypes.IsUnsigned(rtype))
-                   || (SystemTypes.IsUnsigned(ltype) && SystemTypes.IsSigned(rtype));
+            return (ltype.IsSigned() && rtype.IsUnsigned())
+                   || (ltype.IsUnsigned() && rtype.IsSigned());
         }
 
 		private void ToUnsigned(Code code, ref IType type, bool swap)

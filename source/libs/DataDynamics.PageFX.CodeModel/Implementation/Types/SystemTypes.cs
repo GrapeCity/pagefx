@@ -821,7 +821,7 @@ namespace DataDynamics.PageFX.CodeModel
             get { return Int32; }
         }
 
-        public static bool IsNumeric(IType type)
+        public static bool IsNumeric(this IType type)
         {
             if (type == null) return false;
             var st = type.SystemType;
@@ -829,7 +829,7 @@ namespace DataDynamics.PageFX.CodeModel
             return st.IsNumeric;
         }
 
-        public static bool IsIntegral(IType type)
+        public static bool IsIntegral(this IType type)
         {
             if (type == null) return false;
             var st = type.SystemType;
@@ -837,7 +837,7 @@ namespace DataDynamics.PageFX.CodeModel
             return st.IsIntegral;
         }
 
-        public static bool IsSigned(IType type)
+        public static bool IsSigned(this IType type)
         {
             if (type == null) return false;
             var st = type.SystemType;
@@ -845,7 +845,7 @@ namespace DataDynamics.PageFX.CodeModel
             return st.IsSigned;
         }
 
-        public static bool IsUnsigned(IType type)
+        public static bool IsUnsigned(this IType type)
         {
             if (type == null) return false;
             var st = type.SystemType;

@@ -1606,7 +1606,7 @@ namespace DataDynamics.PageFX.FLI.IL
             }
 
             var type = InternalTypeExtensions.SelectDecimalOrInt64(source, target);
-            if (type != null && SystemTypes.IsNumeric(target))
+            if (type != null && target.IsNumeric())
             {
                 CallCastOp(source, target, type);
                 return;
@@ -3111,7 +3111,7 @@ namespace DataDynamics.PageFX.FLI.IL
                     break;
 
                 case BinaryOperator.RightShift:
-            		BitOp(result, SystemTypes.IsUnsigned(result) ? InstructionCode.Urshift : InstructionCode.Rshift);
+            		BitOp(result, result.IsUnsigned() ? InstructionCode.Urshift : InstructionCode.Rshift);
             		break;
 
                 case BinaryOperator.BitwiseOr:
@@ -3333,7 +3333,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void IntOp(IType type, InstructionCode c, InstructionCode ci)
         {
-            if (SystemTypes.IsSigned(type))
+            if (type.IsSigned())
             {
                 AvmConfig.CheckInt64(type);
                 Add(ci);
@@ -3372,7 +3372,7 @@ namespace DataDynamics.PageFX.FLI.IL
         //stack transition: ..., left, right -> ..., result
         public void AddOvf(IType left, IType right, IType result)
         {
-            if (SystemTypes.IsIntegral(result))
+            if (result.IsIntegral())
             {
                 CallLeftOpTempOvf(result, "AddOvf");
             }
@@ -3389,7 +3389,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void SubOvf(IType left, IType right, IType result)
         {
-            if (SystemTypes.IsSigned(result))
+            if (result.IsSigned())
             {
                 CallLeftOpTempOvf(result, "SubOvf");
             }
@@ -3406,7 +3406,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
         public void MulOvf(IType left, IType right, IType result)
         {
-            if (SystemTypes.IsIntegral(result))
+            if (result.IsIntegral())
             {
                 CallLeftOpTempOvf(result, "MulOvf");
             }
