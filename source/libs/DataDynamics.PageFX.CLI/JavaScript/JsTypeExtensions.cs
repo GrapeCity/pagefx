@@ -83,6 +83,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				case TypeCode.Boolean:
 					return false;
+
 				case TypeCode.Char:
 				case TypeCode.SByte:
 				case TypeCode.Byte:
@@ -90,17 +91,20 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				case TypeCode.UInt16:
 				case TypeCode.Int32:
 				case TypeCode.UInt32:
-				case TypeCode.Int64:
-				case TypeCode.UInt64:
 				case TypeCode.Single:
 				case TypeCode.Double:
-				case TypeCode.Decimal:
 					return 0;
+
+				case TypeCode.Decimal:
+				case TypeCode.Int64:
+				case TypeCode.UInt64:
+					return type.New();
+				
 					//case TypeCode.DateTime:
 				default:
 					if (type.TypeKind == TypeKind.Struct)
 					{
-						return new JsNewobj(type);
+						return type.New();
 					}
 					return null;
 			}
