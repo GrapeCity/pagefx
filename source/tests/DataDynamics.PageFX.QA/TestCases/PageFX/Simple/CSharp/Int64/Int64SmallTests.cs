@@ -4,12 +4,14 @@ class Program
 {
     static void TestCompare()
     {
+		Console.WriteLine("# TestCompare");
         ulong v = 11UL;
         Console.WriteLine(v < 10UL);
     }
 
     static void TestCast()
     {
+		Console.WriteLine("# TestCast");
         {
             long a = -11L;
             ulong b = (ulong)a;
@@ -26,6 +28,7 @@ class Program
 
     static void TestMulDiv()
     {
+		Console.WriteLine("# TestMulDiv");
         {
             ulong a = 11UL;
             ulong b = 10UL;
@@ -42,24 +45,28 @@ class Program
 
     static void Test1()
     {
+		Console.WriteLine("# Test1");
         long v = -11L;
         Console.WriteLine(v);
     }
 
     static void Test2()
     {
+		Console.WriteLine("# Test2");
         ulong v = 11UL;
         Console.WriteLine(v);
     }
 
     static void Test3()
     {
+		Console.WriteLine("# Test3");
         long v = 45643271;
         Console.WriteLine((ulong)v);
     }
 
     static void Test4()
     {
+		Console.WriteLine("# Test4");
         long v = 45643271;
         Console.WriteLine(v);
         v = v >> 10;
@@ -74,6 +81,7 @@ class Program
 
     static void Test5()
     {
+		Console.WriteLine("# Test5");
         Console.WriteLine(minL);
         Console.WriteLine(maxL);
         Console.WriteLine(minUL);

@@ -1600,9 +1600,9 @@ function $context($method, $args, $vars) {
 
 	function checkBounds(arr, index) {
 		if (arr == null)
-			throw "NullReferenceException";
+			throw new ReferenceError("NullReferenceException");
 		if (index < 0 || index >= arr.length)
-			throw "IndexOutOfRangeException";
+			throw new RangeError("IndexOutOfRangeException");
 	}
 
 	function istrue(v) {
