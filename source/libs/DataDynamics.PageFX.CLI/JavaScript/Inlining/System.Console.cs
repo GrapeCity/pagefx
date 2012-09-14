@@ -33,12 +33,19 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 			code.Add("console.log".Id().Call(val));
 		}
 
-		//[InlineImpl("WriteLine", ArgCount = 1, ArgTypes = new[] { "$int32" })]
-		//public static void WriteLine_Int32(IMethod method, JsBlock code)
-		//{
-		//    var arg = method.JsArgs()[0];
-		//    code.Add("console.log".Id().Call(arg));
-		//}
+		[InlineImpl("WriteLine", ArgCount = 1, ArgTypes = new[] { "Int32" })]
+		public static void WriteLine_Int32(IMethod method, JsBlock code)
+		{
+			var arg = method.JsArgs()[0];
+			code.Add("console.log".Id().Call(arg));
+		}
+
+		[InlineImpl("WriteLine", ArgCount = 1, ArgTypes = new[] { "UInt32" })]
+		public static void WriteLine_UInt32(IMethod method, JsBlock code)
+		{
+			var arg = method.JsArgs()[0];
+			code.Add("console.log".Id().Call(arg));
+		}
 
 		[InlineImpl("WriteLine", ArgCount = 1, ArgTypes = new[] { "$float" })]
 		public static void WriteLine_Floats(IMethod method, JsBlock code)

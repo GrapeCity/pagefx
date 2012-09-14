@@ -253,6 +253,10 @@ function $toSystemByteArray(nativeArray) {
 }
 
 function $conv(v, from, to) {
+
+	if (from == to)
+		return v;
+	
 	var dk = 4294967296.0;
 	var n;
 	
@@ -586,6 +590,9 @@ function $conv(v, from, to) {
 					return v;
 			}
 			break;
+			// Objects
+		default:
+			return v;
 	}
 	throw new Error("Not implemented!");
 }

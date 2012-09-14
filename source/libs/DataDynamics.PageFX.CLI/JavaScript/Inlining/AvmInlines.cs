@@ -59,5 +59,22 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 			var args = method.JsArgs();
 			code.Add(args[0].Set(SpecialFields.BoxValue, args[1]));
 		}
+
+		[InlineImpl]
+		public static void NewArray(IMethod method, JsBlock code)
+		{
+			var args = method.JsArgs();
+			code.Add("new Array".Id().Call(args).Return());
+		}
+	}
+
+	internal sealed class AvmGlobalInlines : InlineCodeProvider
+	{
+		[InlineImpl]
+		public static void isNaN(IMethod method, JsBlock code)
+		{
+			var arg = method.JsArgs()[0];
+			code.Add("isNaN".Id().Call(arg).Return());
+		}
 	}
 }

@@ -20,6 +20,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"System.Type", new TypeInlines()},
 					{"Avm.Array", new AvmArrayInlines()},
 					{"avm", new AvmInlines()},
+					{"Avm.Global", new AvmGlobalInlines()},
 				    {"System.Console", new ConsoleInlines()},
 					{"System.ConsoleWriter", new ConsoleWriterInlines()},
 				    {"System.BitConverter", new BitConverterInlines()},
@@ -48,23 +49,24 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			if (Excluded(method)) return null;
 
+			var type = method.DeclaringType;
+
+			InlineCodeProvider provider;
+			if (Inlines.TryGetValue(type.FullName, out provider))
+			{
+				return CompileInlineFunction(method, provider);
+			}
+
 			var info = method.GetInlineInfo();
 			if (info != null)
 			{
 				return CompileInlineFunction(method, info);
 			}
 
-			var type = method.DeclaringType;
 			if (type.TypeKind == TypeKind.Delegate)
 			{
 				//TODO: 
 				return null;
-			}
-
-			InlineCodeProvider provider;
-			if (Inlines.TryGetValue(type.FullName, out provider))
-			{
-				return CompileInlineFunction(method, provider);
 			}
 
 			return null;
@@ -74,19 +76,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			if (Excluded(method)) return;
 
-			var info = method.GetInlineInfo();
-			if (info != null)
-			{
-				CompileInlineMethod(method, info);
-				return;
-			}
-
 			var type = method.DeclaringType;
-            if (type.TypeKind == TypeKind.Delegate)
-            {
-	            Inline(DelegateInlines.Instance, method);
-				return;
-            }
 
 			InlineCodeProvider provider;
 			if (Inlines.TryGetValue(type.FullName, out provider))
@@ -94,6 +84,19 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				Inline(provider, method);
 				return;
 			}
+
+			var info = method.GetInlineInfo();
+			if (info != null)
+			{
+				CompileInlineMethod(method, info);
+				return;
+			}
+
+			if (type.TypeKind == TypeKind.Delegate)
+            {
+	            Inline(DelegateInlines.Instance, method);
+				return;
+            }
 
 			//TODO:
 			//throw new NotImplementedException();
@@ -113,6 +116,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var impl = CompileInlineFunction(method, provider);
 			if (impl == null)
 			{
+				var info = method.GetInlineInfo();
+				if (info != null)
+				{
+					CompileInlineMethod(method, info);
+					return;
+				}
+
 				throw new NotImplementedException();
 			}
 

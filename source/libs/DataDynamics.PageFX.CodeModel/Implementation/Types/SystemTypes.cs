@@ -644,6 +644,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static TypeCode GetTypeCode(this IType type)
         {
+			if (type == null) return TypeCode.Empty;
             var st = type.SystemType;
             if (st != null) return st.TypeCode;
             return TypeCode.Empty;
