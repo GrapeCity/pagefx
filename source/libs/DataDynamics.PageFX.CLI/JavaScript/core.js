@@ -162,71 +162,409 @@ function $decodeDouble(bytes) {
 }
 
 // System.TypeCode
-$tc = { b: 3, c: 4, i1: 5, u1: 6, i2: 7, u2: 8, i4: 9, u4: 10, i8: 11, u8: 12, r4: 13, r8: 14, d: 15, s: 18 };
+$tc = {
+	b: 3,	// Boolean
+	c: 4,	// Char
+	i1: 5,	// SByte
+	u1: 6,	// Byte
+	i2: 7,	// Int16
+	u2: 8,	// UInt16
+	i4: 9,	// Int32
+	u4: 10,	// UInt32
+	i8: 11,	// Int64
+	u8: 12,	// UInt64
+	r4: 13,	// Single
+	r8: 14,	// Double
+	d: 15,	// Decimal
+	s: 18	// String
+};
+
+function $conv(v, from, to) {
+
+	if (from == to)
+		return v;
+
+	var n;
+
+	switch (to) {
+		case $tc.b: // to boolean
+			switch (from) {
+				case $tc.b:
+				case $tc.c:
+				case $tc.i1:
+				case $tc.u1:
+				case $tc.i2:
+				case $tc.u2:
+				case $tc.i4:
+				case $tc.u4:
+				case $tc.r4:
+				case $tc.r8:
+					return v ? true : false;
+				case $tc.i8:
+				case $tc.u8:
+					return v.m_hi || v.m_lo ? true : false;
+				case $tc.s:
+					v = v.toLower();
+					if (v == "true") return true;
+					if (v == "false") return false;
+					n = parseFloat(v);
+					if (!isNaN(n)) return n ? true : false;
+					throw new Error("InvalidCastException");
+			}
+			break;
+		case $tc.i1: // to sbyte
+			switch (from) {
+				case $tc.b:
+					return v ? 1 : 0;
+				case $tc.i1:
+					return v;
+				case $tc.c:
+				case $tc.u1:
+				case $tc.i2:
+				case $tc.u2:
+				case $tc.i4:
+				case $tc.u4:
+					n = v & 0xff;
+					return n & 0x80 ? ((~n & 0xff) - 1) : n;
+				case $tc.i8:
+				case $tc.u8:
+					n = v.m_lo & 0xff;
+					return n & 0x80 ? ((~n & 0xff) - 1) : n;
+				case $tc.r4:
+				case $tc.r8:
+					n = (~~v) & 0xff;
+					return n & 0x80 ? ((~n & 0xff) - 1) : n;
+				case $tc.s:
+					n = parseFloat(v);
+					if (isNaN(n)) throw new Error("InvalidCastException");
+					n = (~~n) & 0xff;
+					return n & 0x80 ? ((~n & 0xff) - 1) : n;
+			}
+			break;
+		case $tc.u1: // to byte
+			switch (from) {
+				case $tc.b:
+					return v ? 1 : 0;
+				case $tc.i1:
+				case $tc.c:
+				case $tc.u1:
+				case $tc.i2:
+				case $tc.u2:
+				case $tc.i4:
+				case $tc.u4:
+					return ((v >>> 0) & 0xff) >>> 0;
+				case $tc.i8:
+				case $tc.u8:
+					return ((v.m_lo >>> 0) & 0xff) >>> 0;
+				case $tc.r4:
+				case $tc.r8:
+					return (((~~v) >>> 0) & 0xff) >>> 0;
+				case $tc.s:
+					n = parseFloat(v);
+					if (isNaN(n)) throw new Error("InvalidCastException");
+					return (((~~n) >>> 0) & 0xff) >>> 0;
+			}
+			break;
+		case $tc.i2: // to int16
+			switch (from) {
+				case $tc.b:
+					return v ? 1 : 0;
+				case $tc.i1:
+				case $tc.u1:
+				case $tc.i2:
+					return v;
+				case $tc.c:
+				case $tc.u2:
+				case $tc.i4:
+				case $tc.u4:
+					n = v & 0xffff;
+					return n & 0x8000 ? ((~n & 0xffff) - 1) : n;
+				case $tc.i8:
+				case $tc.u8:
+					n = v.m_lo & 0xffff;
+					return n & 0x8000 ? ((~n & 0xffff) - 1) : n;
+				case $tc.r4:
+				case $tc.r8:
+					n = (~~v) & 0xffff;
+					return n & 0x8000 ? ((~n & 0xffff) - 1) : n;
+				case $tc.s:
+					n = parseFloat(v);
+					if (isNaN(n)) throw new Error("InvalidCastException");
+					n = (~~n) & 0xffff;
+					return n & 0x8000 ? ((~n & 0xffff) - 1) : n;
+			}
+			break;
+		case $tc.c: // to char
+		case $tc.u2: // to uint16
+			switch (from) {
+				case $tc.b:
+					return v ? 1 : 0;
+				case $tc.u1:
+				case $tc.c:
+				case $tc.u2:
+					return v;
+				case $tc.i1:
+				case $tc.i2:
+				case $tc.i4:
+				case $tc.u4:
+					return ((v >>> 0) & 0xffff) >>> 0;
+				case $tc.i8:
+				case $tc.u8:
+					return ((v.m_lo >>> 0) & 0xffff) >>> 0;
+				case $tc.r4:
+				case $tc.r8:
+					return (((~~v) >>> 0) & 0xffff) >>> 0;
+				case $tc.s:
+					n = parseFloat(v);
+					if (isNaN(n)) throw new Error("InvalidCastException");
+					return (((~~n) >>> 0) & 0xffff) >>> 0;
+			}
+			break;
+		case $tc.i4: // to int32
+			switch (from) {
+				case $tc.b:
+					return v ? 1 : 0;
+				case $tc.i1:
+				case $tc.u1:
+				case $tc.i2:
+				case $tc.c:
+				case $tc.u2:
+				case $tc.i4:
+					return v;
+				case $tc.u4:
+					n = v & 0xffffffff;
+					return n & 0x80000000 ? ((~n & 0xffffffff) - 1) : n;
+				case $tc.i8:
+				case $tc.u8:
+					n = v.m_lo & 0xffffffff;
+					return n & 0x80000000 ? ((~n & 0xffffffff) - 1) : n;
+				case $tc.r4:
+				case $tc.r8:
+					n = (~~v) & 0xffffffff;
+					return n & 0x80000000 ? ((~n & 0xffffffff) - 1) : n;
+				case $tc.s:
+					n = parseFloat(v);
+					if (isNaN(n)) throw new Error("InvalidCastException");
+					n = (~~n) & 0xffffffff;
+					return n & 0x80000000 ? ((~n & 0xffffffff) - 1) : n;
+			}
+			break;
+		case $tc.u4: // to uint32
+			switch (from) {
+				case $tc.b:
+					return v ? 1 : 0;
+				case $tc.u1:
+				case $tc.c:
+				case $tc.u2:
+				case $tc.u4:
+					return v;
+				case $tc.i1:
+				case $tc.i2:
+				case $tc.i4:
+					return ((v >>> 0) & 0xffffffff) >>> 0;
+				case $tc.i8:
+				case $tc.u8:
+					return ((v.m_lo >>> 0) & 0xffffffff) >>> 0;
+				case $tc.r4:
+				case $tc.r8:
+					return (((~~v) >>> 0) & 0xffffffff) >>> 0;
+				case $tc.s:
+					n = parseFloat(v);
+					if (isNaN(n)) throw new Error("InvalidCastException");
+					return (((~~n) >>> 0) & 0xffffffff) >>> 0;
+			}
+			break;
+		case $tc.i8: // to int64
+			switch (from) {
+				case $tc.b:
+					return v ? new System.Int64(0, 1) : new System.Int64(0, 0);
+				case $tc.u1:
+				case $tc.c:
+				case $tc.u2:
+				case $tc.u4:
+					return new System.Int64(0, v);
+				case $tc.i1:
+				case $tc.i2:
+				case $tc.i4:
+					n = ((v >>> 0) & 0xffffffff) >>> 0;
+					return new System.Int64(v < 0 ? -1 : 0, n);
+				case $tc.i8:
+					return v;
+				case $tc.u8:
+					return new System.Int64(v.m_hi & 0xffffffff, v.m_lo);
+				case $tc.r4:
+				case $tc.r8:
+					n = (((~~v) >>> 0) & 0xffffffff) >>> 0;
+					return new System.Int64(v < 0 ? -1 : 0, n);
+				case $tc.s:
+					n = parseFloat(v);
+					if (isNaN(n)) throw new Error("InvalidCastException");
+					n = (((~~n) >>> 0) & 0xffffffff) >>> 0;
+					return new System.Int64(v < 0 ? -1 : 0, n);
+			}
+			break;
+		case $tc.u8: // to uint64
+			switch (from) {
+				case $tc.b:
+					return v ? new System.UInt64(0, 1) : new System.UInt64(0, 0);
+				case $tc.u1:
+				case $tc.c:
+				case $tc.u2:
+				case $tc.u4:
+					return new System.UInt64(0, v);
+				case $tc.i1:
+				case $tc.i2:
+				case $tc.i4:
+					n = ((v >>> 0) & 0xffffffff) >>> 0;
+					return new System.UInt64(v < 0 ? 0xffffffff : 0, n);
+				case $tc.i8:
+					n = ((v.m_hi >>> 0) & 0xffffffff) >>> 0;
+					return new System.UInt64(n, v.m_lo);
+				case $tc.u8:
+					return v;
+				case $tc.r4:
+				case $tc.r8:
+					n = (((~~v) >>> 0) & 0xffffffff) >>> 0;
+					return new System.UInt64(v < 0 ? 0xffffffff : 0, n);
+				case $tc.s:
+					n = parseFloat(v);
+					if (isNaN(n)) throw new Error("InvalidCastException");
+					var hi = n < 0 ? 0xffffffff : 0;
+					n = (((~~n) >>> 0) & 0xffffffff) >>> 0;
+					return new System.UInt64(hi, n);
+			}
+			break;
+		case $tc.r4: // to Single
+		case $tc.r8: // to Double
+			switch (from) {
+				case $tc.b:
+					return v ? 1 : 0;
+				case $tc.c:
+				case $tc.i1:
+				case $tc.u1:
+				case $tc.i2:
+				case $tc.u2:
+				case $tc.i4:
+				case $tc.u4:
+				case $tc.r4:
+				case $tc.r8:
+					return v;
+				case $tc.i8:
+				case $tc.u8:
+					return 4294967296.0 * v.m_hi + v.m_lo;
+				case $tc.s:
+					n = parseFloat(v);
+					if (isNaN(n)) throw new Error("InvalidCastException");
+					return n;
+			}
+			break;
+		case $tc.s: // to string
+			switch (from) {
+				case $tc.b:
+					return v ? "True" : "False";
+				case $tc.c:
+				case $tc.i1:
+				case $tc.u1:
+				case $tc.i2:
+				case $tc.u2:
+				case $tc.i4:
+				case $tc.u4:
+				case $tc.r4:
+				case $tc.r8:
+				case $tc.i8:
+				case $tc.u8:
+				case $tc.s:
+					return v.toString();
+			}
+			break;
+	}
+
+	throw new Error("Not implemented!");
+}
 
 function $initarr(a, blob) {
 
 	var arr = a.m_value;
 	var e = a.$etc;
 
-	var b1, b2, b3, b4, u;
+	var b1, b2, b3, b4, u, u2;
 	var i = 0;
 	var k = 0;
 	while (k < blob.length && i < arr.length) {
 		switch (e) {
-			case /*Boolean */ 3:
+			case $tc.b:
 				arr[i++] = blob[k++] ? true : false;
 				break;
-			case /*SByte */ 5:
+			case $tc.i1:
 				arr[i++] = blob[k++];
 				break;
-			case /* Byte */ 6:
+			case $tc.u1:
 				arr[i++] = blob[k++];
 				break;
-			case /* Int16 */ 7:
+			case $tc.i2:
 				b1 = blob[k++];
 				b2 = blob[k++];
 				u = b1 | (b2 << 8);
 				arr[i++] = u >> 15 ? ~~u : u;
 				break;
-			case /*Char */4:
-			case /* UInt16 */ 8:
+			case $tc.c:
+			case $tc.u2:
 				b1 = blob[k++];
 				b2 = blob[k++];
 				arr[i++] = b1 | (b2 << 8);
 				break;
-			case /* Int32 */9:
+			case $tc.i4:
 				b1 = blob[k++];
 				b2 = blob[k++];
 				b3 = blob[k++];
 				b4 = blob[k++];
 				u = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
-				arr[i++] = u >> 31 ? ~~u : u;
+				arr[i++] = $conv(u, $tc.u4, $tc.i4);
 				break;
-			case /* UInt32 */ 10:
+			case $tc.u4:
 				b1 = blob[k++];
 				b2 = blob[k++];
 				b3 = blob[k++];
 				b4 = blob[k++];
 				arr[i++] = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
 				break;
-			case /* Int64 */11:
-				i++; //todo
+			case $tc.i8:
+				b1 = blob[k++];
+				b2 = blob[k++];
+				b3 = blob[k++];
+				b4 = blob[k++];
+				u = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
+				b1 = blob[k++];
+				b2 = blob[k++];
+				b3 = blob[k++];
+				b4 = blob[k++];
+				u2 = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
+				//TODO: $conv(new Sytem.Int64(u2, u), $tc.u8, $tc.i8)?
+				arr[i++] = new Sytem.Int64(u2 & 0xffffffff, u);
 				break;
-			case /* UInt64 */12:
-				i++; //todo
+			case $tc.u8:
+				b1 = blob[k++];
+				b2 = blob[k++];
+				b3 = blob[k++];
+				b4 = blob[k++];
+				u = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
+				b1 = blob[k++];
+				b2 = blob[k++];
+				b3 = blob[k++];
+				b4 = blob[k++];
+				u2 = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
+				arr[i++] = new Sytem.UInt64(u2, u);
 				break;
-			case /* Single */13:
+			case $tc.r4:
 				arr[i++] = $decodeSingle([blob[k++], blob[k++], blob[k++], blob[k++]]);
 				break;
-			case /* Double */14:
+			case $tc.r8:
 				arr[i++] = $decodeDouble([blob[k++], blob[k++], blob[k++], blob[k++], blob[k++], blob[k++], blob[k++], blob[k++]]);
 				break;
 			case /* Decimal */ 15:
 			case /* DateTime */ 16:
 			case /* String */18:
-				i++; //todo
-				break;
+				throw new Error("Not implemented!");
 		}
 	}
 }
@@ -250,351 +588,6 @@ function $toSystemByteArray(nativeArray) {
 	arr.$etc = 6; // element type code
 
 	return arr;
-}
-
-function $conv(v, from, to) {
-
-	if (from == to)
-		return v;
-	
-	var dk = 4294967296.0;
-	var n;
-	
-	function mask(t) {
-		switch (t) {
-			case /*SByte */5:
-			case /* Byte */6:
-				return 0xff;
-			case /* Int16 */7:
-			case /*Char */4:
-			case /* UInt16 */8:
-				return 0xffff;
-			case /* Int32 */9:
-			case /* UInt32 */10:
-				return 0xffffffff;
-			default:
-				return 0;
-		}
-	}
-	
-	switch (from) {
-		case /*Boolean */3:
-			switch (to) {
-				case /*Boolean */3:
-					return v;
-				case /*SByte */5:
-				case /* Byte */6:
-				case /* Int16 */7:
-				case /*Char */4:
-				case /* UInt16 */8:
-				case /* Int32 */9:
-				case /* UInt32 */10:
-				case /* Single */13:
-				case /* Double */14:
-					return v ? 1 : 0;
-				case /* Int64 */11:
-					return new System.Int64(0, v ? 1 : 0);
-				case /* UInt64 */12:
-					return new System.UInt64(0, v ? 1 : 0);
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v ? "True" : "False";
-			}
-			break;
-		case /*SByte */5:
-			switch (to) {
-				case /*Boolean */3:
-					return v ? true : false;
-				case /*SByte */5:
-					return v;
-				case /* Byte */6:
-					return v & 0xff;
-				case /*Char */4:
-				case /* UInt16 */8:
-					return v & 0xffff;
-				case /* UInt32 */10:
-					return v < 0 ? v + 0xffffffff + 1 : v;
-				case /* Int16 */7:
-				case /* Int32 */9:
-				case /* Single */13:
-				case /* Double */14:
-					return v;
-				case /* Int64 */11:
-					return new System.Int64(v < 0 ? -1 : 0, v & 0xff);
-				case /* UInt64 */12:
-					return new System.UInt64(0, v & 0xff);
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v.toString();
-			}
-			break;
-		case /* Byte */6:
-			switch (to) {
-				case /*Boolean */3:
-					return v ? true : false;
-				case /*SByte */5:
-				case /* Byte */6:
-					return v;
-				case /* Int16 */7:
-				case /*Char */4:
-				case /* UInt16 */8:
-				case /* Int32 */9:
-				case /* UInt32 */10:
-				case /* Single */13:
-				case /* Double */14:
-					return v;
-				case /* Int64 */11:
-					return new System.Int64(0, v);
-				case /* UInt64 */12:
-					return new System.UInt64(0, v);
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v.toString();
-			}
-			break;
-		case /* Int16 */7:
-			switch (to) {
-				case /*Boolean */3:
-					return v ? true : false;
-				case /*SByte */5:
-				case /* Byte */6:
-					return (~~v) & 0xff;
-				case /* Int16 */7:
-				case /* Int32 */9:
-				case /* Single */13:
-				case /* Double */14:
-					return v;
-				case /*Char */4:
-				case /* UInt16 */8:
-					return (~~v) & 0xffff;
-				case /* UInt32 */10:
-					return (~~v) & 0xffffffff;
-				case /* Int64 */11:
-					return new System.Int64(v < 0 ? -1 : 0, v);
-				case /* UInt64 */12:
-					return new System.UInt64(0, (~~v) & 0xffffffff);
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v.toString();
-			}
-			break;
-		case /*Char */4:
-		case /* UInt16 */8:
-			switch (to) {
-				case /*Boolean */3:
-					return v ? true : false;
-				case /*SByte */5:
-				case /* Byte */6:
-				case /* Int16 */7: //todo: handle sign
-				case /*Char */4:
-				case /* UInt16 */8:
-				case /* Int32 */9:
-				case /* UInt32 */10:
-				case /* Single */13:
-				case /* Double */14:
-					return v;
-				case /* Int64 */11:
-					return new System.Int64(0, v);
-				case /* UInt64 */12:
-					return new System.UInt64(0, v);
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v.toString();
-			}
-			break;
-		case /* Int32 */9:
-			switch (to) {
-				case /*Boolean */3:
-					return v ? true : false;
-				case /*SByte */5:
-				case /* Byte */6:
-					return v & 0xff;
-				case /*Char */4:
-				case /* Int16 */7:
-				case /* UInt16 */8:
-					return v & 0xffff;
-				case /* Int32 */9:
-				case /* Single */13:
-				case /* Double */14:
-					return v;
-				case /* UInt32 */10:
-					return v & 0xffffffff;
-				case /* Int64 */11:
-					return new System.Int64(v < 0 ? -1 : 0, v);
-				case /* UInt64 */12:
-					return new System.UInt64(0, v & 0xffffffff);
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v.toString();
-			}
-			break;
-		case /* UInt32 */10:
-			switch (to) {
-				case /*Boolean */3:
-					return v ? true : false;
-				case /*SByte */5:
-				case /* Byte */6:
-					return (~~v) & 0xff;
-				case /* Int16 */7: //todo: handle sign
-				case /*Char */4:
-				case /* UInt16 */8:
-					return (~~v) & 0xffffff;
-				case /* Int32 */9: //todo: handle sign
-				case /* UInt32 */10:
-				case /* Single */13:
-				case /* Double */14:
-					return v;
-				case /* Int64 */11: //todo: handle sign
-					return new System.Int64(0, v);
-				case /* UInt64 */12:
-					return new System.UInt64(0, v);
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v.toString();
-			}
-			break;
-		case /* Int64 */11:
-			switch (to) {
-				case /*Boolean */3:
-					return v.m_hi && v.m_lo ? true : false;
-				case /*SByte */5: //todo: handle sign
-					return (~~v.m_lo) & 0xff;
-				case /* Byte */6:
-					return (~~v.m_lo) & 0xff;
-				case /* Int16 */7: //todo: handle sign
-					return (~~v.m_lo) & 0xffff;
-				case /*Char */4:
-				case /* UInt16 */8:
-					return (~~v.m_lo) & 0xffff;
-				case /* Int32 */9:
-					return (~~v.m_lo) & 0xffffffff;
-				case /* UInt32 */10:
-					return (~~v.m_lo) & 0xffffffff;
-				case /* Single */13:
-				case /* Double */14:
-					return dk * v.m_hi + v.m_lo;
-				case /* Int64 */11:
-					return v;
-				case /* UInt64 */12: //todo: handle sign
-					return new System.UInt64((~~v.m_hi) & 0xffffffff, v.m_lo);
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v.toString();
-			}
-			break;
-		case /* UInt64 */12:
-			switch (to) {
-				case /*Boolean */3:
-					return v.m_hi && v.m_lo ? true : false;
-				case /*SByte */5: //todo: handle sign
-					return (~~v.m_lo) & 0xff;
-				case /* Byte */6:
-					return (~~v.m_lo) & 0xff;
-				case /* Int16 */7: //todo: handle sign
-					return (~~v.m_lo) & 0xffff;
-				case /*Char */4:
-				case /* UInt16 */8:
-					return (~~v.m_lo) & 0xffff;
-				case /* Int32 */9: //todo: handle sign
-					return (~~v.m_lo) & 0xffffffff;
-				case /* UInt32 */10:
-					return (~~v.m_lo) & 0xffffffff;
-				case /* Single */13:
-				case /* Double */14:
-					return dk * v.m_hi + v.m_lo;
-				case /* Int64 */11: //todo: handle sign
-					return new System.UInt64((~~v.m_hi) & 0xffffffff, v.m_lo);
-				case /* UInt64 */12:
-					return v;
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v.toString();
-			}
-			break;
-		case /* Single */13:
-		case /* Double */14:
-			switch (to) {
-				case /*Boolean */3:
-					return v ? true : false;
-				case /*SByte */5:
-				case /* Byte */6:
-					return (~~v) & 0xff;
-				case /* Int16 */7:
-				case /*Char */4:
-				case /* UInt16 */8:
-					return (~~v) & 0xffff;
-				case /* Int32 */9:
-				case /* UInt32 */10:
-					return (~~v) & 0xffffffff;
-				case /* Single */13:
-				case /* Double */14:
-					return v;
-				case /* Int64 */11:
-					return new System.Int64(0, v ? 1 : 0);
-				case /* UInt64 */12:
-					return new System.UInt64(0, v ? 1 : 0);
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v ? "True" : "False";
-			}
-			break;
-		case /* Decimal */15:
-			break;
-		case /* String */18:
-			switch (to) {
-				case /*Boolean */3:
-					v = v.toLower();
-					if (v == "true") return true;
-					if (v == "false") return false;
-					n = parseFloat(v);
-					if (!isNaN(n)) return n ? true : false;
-					throw new Error("InvalidCastException");
-				case /*SByte */5:
-				case /* Byte */6:
-				case /* Int16 */7:
-				case /*Char */4:
-				case /* UInt16 */8:
-				case /* Int32 */9:
-				case /* UInt32 */10:
-					v = v.toLower();
-					if (v == "true") return 1;
-					if (v == "false") return 0;
-					n = parseInt(v);
-					if (!isNaN(n))
-						return (~~n) & mask(to);
-					throw new Error("InvalidCastException");
-				case /* Single */13:
-				case /* Double */14:
-					v = v.toLower();
-					if (v == "true") return 1;
-					if (v == "false") return 0;
-					n = parseFloat(v);
-					if (!isNaN(n))
-						return n;
-					throw new Error("InvalidCastException");
-				case /* Int64 */11:
-				case /* UInt64 */12:
-				case /* Decimal */15:
-					break;
-				case /* String */18:
-					return v;
-			}
-			break;
-			// Objects
-		default:
-			return v;
-	}
-	throw new Error("Not implemented!");
 }
 
 function $context($method, $args, $vars) {
@@ -1629,26 +1622,20 @@ function $context($method, $args, $vars) {
 	
 	function fixt(t) {
 		switch (t) {
-			case /*SByte */5:
-			case /* Int16 */7:
-				return 9;
+			case $tc.i1:
+			case $tc.i2:
+				return $tc.i4;
 
-			case /* Byte */6:
-			case /*Char */4:
-			case /* UInt16 */8:
-				return 10;
-				
-			case /* Single */13:
-			case /* Double */14:
-				return 14;
+			case $tc.u1:
+			case $tc.c:
+			case $tc.u2:
+				return $tc.u4;
+
+			case $tc.r4:
+			case $tc.r8:
+				return $tc.r8;
 
 			default:
-			case /*Boolean */3:
-			case /* Int32 */9:
-			case /* UInt32 */10:
-			case /* Int64 */11:
-			case /* UInt64 */12:
-			case /* Decimal */15:
 				return t;
 		}
 	}
