@@ -1,6 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NAnt Files", "NAnt Files", "{849AD8E7-8F9D-4BA2-84F8-C9CF804AE82D}"
+	ProjectSection(SolutionItems) = preProject
+		..\build.nant = ..\build.nant
+		..\common.nant = ..\common.nant
+		..\qa.nant = ..\qa.nant
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api-diff", "mono\api-diff\api-diff.csproj", "{75DA4CC0-96BE-4822-A68F-4FB3815B56EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api-info", "mono\api-info\api-info.csproj", "{36EA9312-A157-4313-B2BC-3B3F42DE0959}"
@@ -24,13 +31,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "abc", "fli\abc\abc.csproj", "{19D836C7-4C04-406A-A820-155AB14A797D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.FLI", "..\libs\DataDynamics.PageFX.FLI\DataDynamics.PageFX.FLI.csproj", "{A54D800D-621B-491A-BE70-59D46BA70523}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NAnt Files", "NAnt Files", "{849AD8E7-8F9D-4BA2-84F8-C9CF804AE82D}"
-	ProjectSection(SolutionItems) = preProject
-		..\build.nant = ..\build.nant
-		..\common.nant = ..\common.nant
-		..\qa.nant = ..\qa.nant
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.QA", "..\tests\DataDynamics.PageFX.QA\DataDynamics.PageFX.QA.csproj", "{D5099CF9-A243-4364-B9C7-6397917E3EFB}"
 EndProject
