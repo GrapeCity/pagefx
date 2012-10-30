@@ -184,7 +184,7 @@ function $conv(v, from, to) {
 	if (from == to)
 		return v;
 
-	var n;
+	var n, hi, lo;
 
 	switch (to) {
 		case $tc.b: // to boolean
@@ -450,6 +450,19 @@ function $conv(v, from, to) {
 				case $tc.r8:
 					return v;
 				case $tc.i8:
+					var sign = 1;
+					hi = v.m_hi;
+					lo = v.m_lo;
+					if (hi & 0x80000000)
+					{
+						sign = -1;
+						hi = ~hi & 0x7fffffff;
+						lo = ~lo;
+						if (!hi && !lo)
+							return -1;
+						return sign * (4294967296.0 * hi + lo);
+					}
+					return sign * (4294967296.0 * hi + lo);
 				case $tc.u8:
 					return 4294967296.0 * v.m_hi + v.m_lo;
 				case $tc.s:

@@ -465,8 +465,8 @@ test("FromInt64", function() {
 	equal($conv(z, $tc.i8, $tc.r4), 0); //56
 	equal($conv(p1, $tc.i8, $tc.r4), 1); //57
 	equal($conv(m1, $tc.i8, $tc.r4), -1); //58
-	equal($conv(min, $tc.i8, $tc.r4), min);
-	equal($conv(max, $tc.i8, $tc.r4), max); //60
+	equal($conv(min, $tc.i8, $tc.r4), -9223372036854775808);
+	equal($conv(max, $tc.i8, $tc.r4), 9223372036854775807); //60
 
 	equal($conv(z, $tc.i8, $tc.r8), 0);
 	equal($conv(p1, $tc.i8, $tc.r8), 1);
