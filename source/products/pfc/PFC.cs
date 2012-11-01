@@ -105,12 +105,6 @@ namespace DataDynamics.PageFX
                 return 0;
             }
 
-            if (cl.HasOption("ccs"))
-            {
-                FlashLanguageInfrastructure.PerformCodeCaching();
-                return 0;
-            }
-
             //if (cl.HasOption(PFCOptions.NUnit))
             //{
             //    ConsoleTestRunner.Run(cl);

@@ -78,7 +78,6 @@
     <Compile Include="Design\IArgument.cs" />
     <Compile Include="Design\IArrayType.cs" />
     <Compile Include="Design\IAssembly.cs" />
-    <Compile Include="Design\ICodeCashingService.cs" />
     <Compile Include="Design\ICodeNode.cs" />
     <Compile Include="Design\ICompoundType.cs" />
     <Compile Include="Design\IConstantProvider.cs" />

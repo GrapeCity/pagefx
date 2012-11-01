@@ -627,7 +627,6 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineMethodBody
-        public bool UseCCS;
 
         private void DefineMethodBody(AbcMethod abcMethod)
         {
@@ -641,29 +640,11 @@ namespace DataDynamics.PageFX.FLI
 #if DEBUG
             DebugService.DoCancel();
 #endif
-            if (!IsCcsRunning && UseCCS)
-            {
-                if (LoadBodyFromCache(abcMethod))
-                    return;
-            }
 
             BuildBodyCore(abcMethod, method);
         }
 
-        private bool LoadBodyFromCache(AbcMethod abcMethod)
-        {
-            var refs = new BodyReferences();
-            var body = _ccs.Import(abcMethod, refs);
-            if (body == null) return false;
-            _abc.MethodBodies.Add(body);
-            foreach (var member in refs.Members)
-                DefineMember(member);
-            foreach (var field in refs.FieldPointers)
-                DefineFieldPtr(field);
-            return true;
-        }
-
-        private void BuildBodyCore(AbcMethod target, IMethod source)
+	    private void BuildBodyCore(AbcMethod target, IMethod source)
         {
             var targetBody = new AbcMethodBody(target);
             _abc.MethodBodies.Add(targetBody);

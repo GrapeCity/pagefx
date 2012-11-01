@@ -67,8 +67,6 @@ namespace DataDynamics.PageFX.FLI
             var code = new AbcCode(_abc);
             code.GetFieldPtr(field);
             _body.Flags |= AbcBodyFlags.HasFieldPointers;
-            if (IsCcsRunning)
-                AddToken(TokenKind.FieldPtr);
             return code.ToArray();
         }
 

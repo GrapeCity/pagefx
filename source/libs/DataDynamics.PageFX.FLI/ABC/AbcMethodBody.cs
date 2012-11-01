@@ -242,113 +242,98 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
 
         internal void Finish(AbcFile abc)
-        {     
-            //this + args
-            int paramCount = Method.ParamCount;
-            int lcount = paramCount + 1;
+        {
+	        //this + args
+	        int paramCount = Method.ParamCount;
+	        int lcount = paramCount + 1;
 
-            int n = IL.Count;
+	        int n = IL.Count;
 
-            Block block = null;
-            
-            MaxStackDepth = 0;
-            MaxScopeDepth = 0;
-            MinScopeDepth = 0;
+	        Block block = null;
 
-            IL.MarkTargets();
-            MarkSEHTargets();
+	        MaxStackDepth = 0;
+	        MaxScopeDepth = 0;
+	        MinScopeDepth = 0;
 
-            int maxPop = 0;
-            int maxPush = 0;
-            
-            for (int i = 0; i < n; ++i)
-            {
-                var instr = IL[i];
+	        IL.MarkTargets();
+	        MarkSEHTargets();
 
-                if (block == null || instr.IsSEHTarget)
-                {
-                    UpdateSizeOfStacks(block);
+	        int maxPop = 0;
+	        int maxPush = 0;
 
-                    block = new Block {from = i};
-                    if (instr.IsSEHTarget)
-                        block.stackDepth = 1;
-                }
+	        for (int i = 0; i < n; ++i)
+	        {
+		        var instr = IL[i];
 
-                int pop = instr.StackPop;
-                int push = instr.StackPush;
+		        if (block == null || instr.IsSEHTarget)
+		        {
+			        UpdateSizeOfStacks(block);
 
-                if (pop > maxPop) maxPop = pop;
-                if (push > maxPush) maxPush = push;
+			        block = new Block {from = i};
+			        if (instr.IsSEHTarget)
+				        block.stackDepth = 1;
+		        }
 
-                block.stackDepth += push - pop;
-                if (block.stackDepth > block.maxStack)
-                    block.maxStack = block.stackDepth;
+		        int pop = instr.StackPop;
+		        int push = instr.StackPush;
 
-                block.scopeDepth += instr.ScopePush - instr.ScopePop;
-                if (block.scopeDepth > block.maxScope)
-                    block.maxScope = block.scopeDepth;
-                
-                if (instr.IsEndOfBlock && block.from != i)
-                {
-                    UpdateSizeOfStacks(block);
-                    block = null;
-                }
+		        if (pop > maxPop) maxPop = pop;
+		        if (push > maxPush) maxPush = push;
 
-                var c = instr.Code;
+		        block.stackDepth += push - pop;
+		        if (block.stackDepth > block.maxStack)
+			        block.maxStack = block.stackDepth;
 
-                if (c == InstructionCode.Newactivation)
-                    Method.Flags |= AbcMethodFlags.NeedActivation;
+		        block.scopeDepth += instr.ScopePush - instr.ScopePop;
+		        if (block.scopeDepth > block.maxScope)
+			        block.maxScope = block.scopeDepth;
 
-                if (c == InstructionCode.Dxns || c == InstructionCode.Dxnslate)
-                    Method.Flags |= AbcMethodFlags.SetDxns;
+		        if (instr.IsEndOfBlock && block.from != i)
+		        {
+			        UpdateSizeOfStacks(block);
+			        block = null;
+		        }
 
-                int lreg = GetLocalReg(instr);
-                if (lreg >= 0)
-                {
-                    if (lreg + 1 > lcount)
-                        lcount = lreg + 1;
-                }
+		        var c = instr.Code;
 
-                instr.ImportOperands(abc);
-            }
+		        if (c == InstructionCode.Newactivation)
+			        Method.Flags |= AbcMethodFlags.NeedActivation;
 
-            UpdateSizeOfStacks(block);
+		        if (c == InstructionCode.Dxns || c == InstructionCode.Dxnslate)
+			        Method.Flags |= AbcMethodFlags.SetDxns;
 
-            MaxScopeDepth += MinScopeDepth;
+		        int lreg = GetLocalReg(instr);
+		        if (lreg >= 0)
+		        {
+			        if (lreg + 1 > lcount)
+				        lcount = lreg + 1;
+		        }
 
-            //if (GlobalSettings.EmitDebugInfo)
-            //    ++lcount;
+		        instr.ImportOperands(abc);
+	        }
 
-            //NOTE: AVM constraint
-            if (lcount < paramCount + 1)
-                lcount = paramCount + 1;
-            
-            LocalCount = lcount;
+	        UpdateSizeOfStacks(block);
 
-            bool kakos = IsCcsRunning(abc);
-            if (kakos)
-            {
-                IL.ResolveBranchTargets();
-            }
-            else
-            {
-                TranslateIndices();
-                ResolveExceptionOffsets(abc);
-            }
+	        MaxScopeDepth += MinScopeDepth;
+
+	        //if (GlobalSettings.EmitDebugInfo)
+	        //    ++lcount;
+
+	        //NOTE: AVM constraint
+	        if (lcount < paramCount + 1)
+		        lcount = paramCount + 1;
+
+	        LocalCount = lcount;
+
+	        TranslateIndices();
+	        ResolveExceptionOffsets(abc);
 
 #if DEBUG
-            //IL.Verify();
+	        //IL.Verify();
 #endif
         }
 
-        static bool IsCcsRunning(AbcFile abc)
-        {
-            var g = abc.generator;
-            if (g == null) return false;
-            return g.IsCcsRunning;
-        }
-
-        void UpdateSizeOfStacks(Block block)
+	    void UpdateSizeOfStacks(Block block)
         {
             if (block == null) return;
             MaxStackDepth += block.maxStack;
@@ -450,38 +435,6 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
 
         internal AbcBodyFlags Flags;
-
-        #region References
-        internal void AddToken(int token, TokenKind kind)
-        {
-            if (_tokenStorage == null)
-            {
-                _tokenStorage = new List<List<int>> {null, null};
-            	return;
-            }
-            var store = _tokenStorage[(int)kind];
-            if (store == null)
-            {
-                store = new List<int> {token};
-            	_tokenStorage[(int)kind] = store;
-                return;
-            }
-            if (store.Contains(token))
-                return;
-            store.Add(token);
-        }
-        List<List<int>> _tokenStorage;
-
-        internal int[] GetTokens(TokenKind kind)
-        {
-            if (_tokenStorage == null)
-                return null;
-            var store = _tokenStorage[(int)kind];
-            if (store == null)
-                return null;
-            return store.ToArray();
-        }
-        #endregion
     }
 
     public class AbcMethodBodyCollection : List<AbcMethodBody>, ISwfAtom, ISupportXmlDump
@@ -530,13 +483,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
     }
 
-    enum TokenKind
-    {
-        FieldPtr,
-        ArrayElementType,
-    }
-
-    [Flags]
+	[Flags]
     enum AbcBodyFlags
     {
         None = 0x00,

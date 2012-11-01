@@ -67,9 +67,7 @@ namespace DataDynamics.PageFX.FLI
         //If not null indicates that we genearate swiff file.
         internal SwfCompiler sfc;
 
-        public bool IsCcsRunning; //true -> Code Cashing Service is running
         public AbcGenMode Mode;
-        CodeCachingService _ccs;
         #endregion
 
         #region Properties
@@ -154,8 +152,6 @@ namespace DataDynamics.PageFX.FLI
                        };
 
             AssemblyTag.Instance(_assembly).AddAbc(_abc);
-
-            _ccs = new CodeCachingService(this);
 
             if (sfc != null)
             {

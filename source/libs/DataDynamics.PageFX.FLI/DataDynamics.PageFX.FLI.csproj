@@ -167,7 +167,6 @@
     <Compile Include="FLI\AbcGenerator\Reflection.cs" />
     <Compile Include="FLI\AbcGenerator\Runtime.cs" />
     <Compile Include="FLI\AbcGenerator\Type.cs" />
-    <Compile Include="FLI\Tools\CodeCachingService.cs" />
     <Compile Include="FLI\Tools\HtmlTemplate.cs" />
     <Compile Include="FLI\Tools\Linker.cs" />
     <Compile Include="FLI\Tools\SimpleSwcLinker.cs" />

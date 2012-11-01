@@ -107,17 +107,7 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        void AddToken(TokenKind kind)
-        {
-            _body.AddToken(CurrentMetadataToken, kind);
-        }
-
-        public bool IsCcsRunning
-        {
-            get { return _generator.IsCcsRunning; }
-        }
-
-        public IInstruction Nop()
+	    public IInstruction Nop()
         {
             //NOTE: nop is really needed to build empty basic blocks.
             //Therefore we should not return null.

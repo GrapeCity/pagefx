@@ -145,11 +145,6 @@ namespace DataDynamics.PageFX.FLI
             _instance.Serialize(assembly, stream, format);
         }
 
-        public static void PerformCodeCaching()
-        {
-            CodeCachingService.Run();
-        }
-
 #if PERF
         public static void DumpPerfStat()
         {

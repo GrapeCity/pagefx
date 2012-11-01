@@ -16,11 +16,7 @@ namespace DataDynamics.PageFX.FLI
             code.NewArray(elemType);
 
             _body.Flags |= AbcBodyFlags.HasNewArrayInstructions;
-            if (IsCcsRunning)
-            {
-                AddToken(TokenKind.ArrayElementType);
-            }
-
+            
             return code.ToArray();
         }
 
