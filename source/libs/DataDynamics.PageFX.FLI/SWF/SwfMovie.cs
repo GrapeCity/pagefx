@@ -708,7 +708,9 @@ namespace DataDynamics.PageFX.FLI.SWF
         private void LoadAssetCache()
         {
             if (_assetCache != null) return;
+
             _assetCache = new Dictionary<string, SwfAsset>();
+
             foreach (var tag in _tags)
             {
                 var symTable = tag as SwfTagSymbolClass;
@@ -722,7 +724,6 @@ namespace DataDynamics.PageFX.FLI.SWF
                 if (export != null)
                 {
                     CacheAssets(export.Assets, true);
-                    continue;
                 }
             }
         }

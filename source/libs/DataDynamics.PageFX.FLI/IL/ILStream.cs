@@ -202,18 +202,18 @@ namespace DataDynamics.PageFX.FLI.IL
             }
         }
 
-        bool CombineGetlex(int i)
+        private void CombineGetlex(int i)
         {
             var instr = this[i];
             if (instr.Code != InstructionCode.Getproperty)
-                return false;
+	            return;
 
-            if (i - 1 < 0) return false;
-            var prev = this[i - 1];
+	        if (i - 1 < 0) return;
+	        var prev = this[i - 1];
             if (prev.Code != InstructionCode.Findpropstrict)
-                return false;
+	            return;
 
-            var qn1 = instr.Operand as AbcMultiname;
+	        var qn1 = instr.Operand as AbcMultiname;
             var qn2 = prev.Operand as AbcMultiname;
             if (qn1 != null && qn2 != null && qn1 == qn2)
             {
@@ -221,10 +221,8 @@ namespace DataDynamics.PageFX.FLI.IL
                 --i;
                 RemoveAt(i);
                 Insert(i, new Instruction(InstructionCode.Getlex, qn1));
-                return true;
+	            return;
             }
-
-            return false;
         }
     }
 }

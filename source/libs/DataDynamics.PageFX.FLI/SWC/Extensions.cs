@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FLI.SWC
 
         public static Stream ExtractSwfLibrary(this ZipFile zip)
         {
-            return Zip.Extract(zip, e => string.Compare(e.Name, SwcFile.LIBRARY_SWF, StringComparison.CurrentCultureIgnoreCase) == 0);
+            return Zip.Extract(zip, e => string.Equals(e.Name, SwcFile.LIBRARY_SWF, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

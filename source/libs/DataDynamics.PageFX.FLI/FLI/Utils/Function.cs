@@ -55,16 +55,16 @@ namespace DataDynamics.PageFX
 
         readonly List<Argument> _args = new List<Argument>();
 
-        public Argument Find(string name, bool ignoreCase)
-        {
-        	return _args.FirstOrDefault(a => a.Name != null
-        	                                 && string.Compare(a.Name, name,
-        	                                                   ignoreCase
-        	                                                   	? StringComparison.CurrentCultureIgnoreCase
-        	                                                   	: StringComparison.CurrentCulture) == 0);
-        }
+		public Argument Find(string name, bool ignoreCase)
+		{
+			return _args.FirstOrDefault(a => a.Name != null
+			                                 && string.Equals(a.Name, name,
+			                                                  ignoreCase
+				                                                  ? StringComparison.CurrentCultureIgnoreCase
+				                                                  : StringComparison.CurrentCulture));
+		}
 
-        public override string ToString()
+	    public override string ToString()
         {
             var sb = new StringBuilder();
             sb.Append(Name);

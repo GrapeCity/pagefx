@@ -148,7 +148,7 @@ namespace DataDynamics.PageFX
 
         public static TestCase Find(string name)
         {
-			return All.FirstOrDefault(tc => string.Compare(tc.FullName, name, StringComparison.CurrentCultureIgnoreCase) == 0);
+			return All.FirstOrDefault(tc => string.Equals(tc.FullName, name, StringComparison.CurrentCultureIgnoreCase));
         }
 
         /// <summary>

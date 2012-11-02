@@ -397,7 +397,6 @@ namespace DataDynamics.PageFX.FLI.SWC
                             {
                                 if (!depInstance.IsForeign)
                                     abc.InstanceRefs.Add(depInstance);
-                                return;
                             }
                         }
                     }
@@ -619,7 +618,6 @@ namespace DataDynamics.PageFX.FLI.SWC
 
                 var instance = klass.Instance;
                 RegisterMixin(instance);
-            	return;
             }
         }
 

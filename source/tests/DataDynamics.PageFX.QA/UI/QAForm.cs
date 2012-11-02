@@ -671,11 +671,7 @@ namespace DataDynamics.PageFX
 
             if (worker.CancellationPending) return;
 
-            safe(delegate
-                     {
-                         node.BackColor = Color.Yellow;
-                         //testCases.Invalidate();
-                     });
+            safe(() => node.BackColor = Color.Yellow);
 
             RunTestCase(tc);
 

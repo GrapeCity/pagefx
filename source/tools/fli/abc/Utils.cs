@@ -6,7 +6,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Linq;
-using DataDynamics;
 
 namespace abc
 {
@@ -73,7 +72,7 @@ namespace abc
             string path = GetStatePath(fname, true);
 
         	var xws = new XmlWriterSettings {Indent = true, IndentChars = "  "};
-        	using (var writer = XmlWriter.Create(path))
+        	using (var writer = XmlWriter.Create(path, xws))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("root");

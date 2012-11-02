@@ -584,11 +584,11 @@ namespace DataDynamics.PageFX.CLI.IL
             code.AddRange(_provider.LoadIndirect(vtype));
         }
 
-        private bool LoadPtr(Code code, IValue v)
+        private void LoadPtr(Code code, IValue v)
         {
-            if (!v.IsPointer) return false;
+            if (!v.IsPointer) return;
 
-            if (v.IsMockPointer)
+	        if (v.IsMockPointer)
             {
                 switch (v.Kind)
                 {
@@ -618,7 +618,6 @@ namespace DataDynamics.PageFX.CLI.IL
                 var vtype = v.Type;
                 LoadIndirect(code, vtype);
             }
-            return true;
         }
 
 		private IInstruction[] LoadPtr(IValue v)

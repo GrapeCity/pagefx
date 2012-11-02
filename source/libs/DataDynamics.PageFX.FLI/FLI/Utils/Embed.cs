@@ -123,7 +123,7 @@ namespace DataDynamics.PageFX.FLI
                 return new Embed { Source = source, MimeType = MimeTypes.AutoDetect(source) };
             }
 
-			var src = f.Arguments.FirstOrDefault(a => a.Name == null || string.Compare(a.Name, "source", StringComparison.OrdinalIgnoreCase) == 0);
+			var src = f.Arguments.FirstOrDefault(a => a.Name == null || string.Equals(a.Name, "source", StringComparison.OrdinalIgnoreCase));
             if (src != null)
             {
                 string source = src.Value as string;

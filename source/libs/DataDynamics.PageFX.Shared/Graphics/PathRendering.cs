@@ -306,7 +306,7 @@ namespace System.Drawing
             	for (int i = 0; i < n; ++i)
                 {
                     var type = (PathPointType)types[i];
-                    var pointType = type & PathPointType.PathTypeMask;
+                    var pointType = (PathPointType)((int)type & (int)PathPointType.PathTypeMask);
                     var pt = points[i];
                     if (type == PathPointType.Start)
                     {
@@ -333,7 +333,7 @@ namespace System.Drawing
                             render.Line(cur, pt);
                         }
                         cur = pt;
-                        if ((type & PathPointType.CloseSubpath) != 0)
+						if (((int)type & (int)PathPointType.CloseSubpath) != 0)
                         {
                             Close(render, features, cur, start);
                             cur = start;
@@ -348,7 +348,7 @@ namespace System.Drawing
                             Cubic(render, features, cur, bezier[0], bezier[1], pt, resolution);
                             cur = pt;
                             bezierIdx = 0;
-                            if ((type & PathPointType.CloseSubpath) != 0)
+                            if (((int)type & (int)PathPointType.CloseSubpath) != 0)
                             {
                                 Close(render, features, cur, start);
                                 cur = start;

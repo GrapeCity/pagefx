@@ -35,7 +35,7 @@ namespace System.IO
             if (!CheckDirectory(dir))
                 return;
 
-            if (_dirs.Any(s => string.Compare(s, dir, StringComparison.CurrentCultureIgnoreCase) == 0))
+            if (_dirs.Any(s => string.Equals(s, dir, StringComparison.CurrentCultureIgnoreCase)))
             {
             	return;
             }

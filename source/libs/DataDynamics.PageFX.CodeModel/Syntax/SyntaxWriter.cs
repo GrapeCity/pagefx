@@ -383,9 +383,9 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
             if (dic.TryGetValue("mode", out value))
             {
-                if (string.Compare(value, "short", StringComparison.OrdinalIgnoreCase) == 0)
+                if (string.Equals(value, "short", StringComparison.OrdinalIgnoreCase))
                     Mode = FormatMode.ShortDeclaration;
-				else if (string.Compare(value, "decl", StringComparison.OrdinalIgnoreCase) == 0)
+				else if (string.Equals(value, "decl", StringComparison.OrdinalIgnoreCase))
                     Mode = FormatMode.FullDeclaration;
                 else
                     Mode = FormatMode.Full;
@@ -393,7 +393,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
             if (dic.TryGetValue("region", out value))
             {
-                if (value == "+" || value == "1" || string.Compare(value, "true", StringComparison.OrdinalIgnoreCase) == 0)
+                if (value == "+" || value == "1" || string.Equals(value, "true", StringComparison.OrdinalIgnoreCase))
                     _useRegions = true;
             }
         }

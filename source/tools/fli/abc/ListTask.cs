@@ -25,7 +25,7 @@ namespace abc
                 if (types != null && types.Length > 0)
                 {
                     string fullname = instance.FullName;
-                    if (types.Any(type => string.Compare(type, fullname, StringComparison.InvariantCultureIgnoreCase) == 0))
+                    if (types.Any(type => string.Equals(type, fullname, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         List(Console.Out, instance);
                     }

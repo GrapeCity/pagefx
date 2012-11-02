@@ -12,17 +12,12 @@ namespace DataDynamics.PageFX.FLI
 	public class RslItem
 	{
 		private string _hashType = HashExtensions.TypeSHA256;
-		private string _localPath;
 		private string[] _policyFiles;
 
 		/// <summary>
 		/// Gets or sets path to RSL.
 		/// </summary>
-		public string LocalPath
-		{
-			get { return _localPath; }
-			set { _localPath = value; }
-		}
+		public string LocalPath { get; set; }
 
 		/// <summary>
 		/// Gets or sets URI to RSL.
@@ -99,7 +94,7 @@ namespace DataDynamics.PageFX.FLI
 			bool mx = false;
 			foreach (string pair in pairs)
 			{
-				if (String.Compare(pair, "mx", StringComparison.OrdinalIgnoreCase) == 0)
+				if (String.Equals(pair, "mx", StringComparison.OrdinalIgnoreCase))
 				{
 					rsl.Library = GlobalSettings.GetMxLibraryPath();
 					mx = true;
@@ -176,60 +171,50 @@ namespace DataDynamics.PageFX.FLI
 			return "";
 		}
 
+		private static readonly Dictionary<string, Action<RslItem, string>> Setters
+			= new Dictionary<string, Action<RslItem, string>>(StringComparer.OrdinalIgnoreCase)
+				{
+					{"lib", (x, v) => x.Library = v},
+					{"library", (x, v) => x.Library = v},
+
+					{"local", (x, v) => x.LocalPath = v},
+					{"localpath", (x, v) => x.LocalPath = v},
+					{"local-path", (x, v) => x.LocalPath = v},
+					{"local_path", (x, v) => x.LocalPath = v},
+					{"rsl", (x, v) => x.LocalPath = v},
+					{"rslpath", (x, v) => x.LocalPath = v},
+					{"rsl-path", (x, v) => x.LocalPath = v},
+					{"rsl_path", (x, v) => x.LocalPath = v},
+
+					{"policyfile", (x, v) => x.PolicyFile = v},
+					{"policy-file", (x, v) => x.PolicyFile = v},
+					{"policy_file", (x, v) => x.PolicyFile = v},
+
+					{"hashtype", (x, v) => x.HashType = v},
+					{"hash-type", (x, v) => x.HashType = v},
+					{"hash_type", (x, v) => x.HashType = v},
+					{"hashalg", (x, v) => x.HashType = v},
+					{"hash-alg", (x, v) => x.HashType = v},
+					{"hash_alg", (x, v) => x.HashType = v},
+					{"hashalgorithm", (x, v) => x.HashType = v},
+					{"hash-algorithm", (x, v) => x.HashType = v},
+					{"hash_algorithm", (x, v) => x.HashType = v},
+
+					{"uri", (x, v) => x.Uri = v},
+					{"rsluri", (x, v) => x.Uri = v},
+					{"rsl-uri", (x, v) => x.Uri = v},
+					{"rsl_uri", (x, v) => x.Uri = v},
+				};
+
 		public bool SetValue(string key, string value)
 		{
-			if (String.Compare(key, "lib", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "library", StringComparison.OrdinalIgnoreCase) == 0)
+			Action<RslItem, string> setter;
+			if (Setters.TryGetValue(key, out setter))
 			{
-				Library = value;
+				setter(this, value);
 				return true;
 			}
-
-			if (String.Compare(key, "local", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "localpath", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "local-path", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "local_path", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "rsl", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "rslpath", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "rsl-path", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "rsl_path", StringComparison.OrdinalIgnoreCase) == 0)
-			{
-				_localPath = value;
-				return true;
-			}
-
-			if (String.Compare(key, "policyfile", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "policy-file", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "policy_file", StringComparison.OrdinalIgnoreCase) == 0)
-			{
-				PolicyFile = value;
-				return true;
-			}
-
-			if (String.Compare(key, "hashtype", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "hash-type", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "hash_type", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "hashalg", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "hash-alg", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "hash_alg", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "hashalgorithm", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "hash-algoritm", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "hash_algoritm", StringComparison.OrdinalIgnoreCase) == 0)
-			{
-				_hashType = value;
-				return true;
-			}
-
-			if (String.Compare(key, "uri", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "rsluri", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "rsl-uri", StringComparison.OrdinalIgnoreCase) == 0
-			    || String.Compare(key, "rsl_uri", StringComparison.OrdinalIgnoreCase) == 0)
-			{
-				Uri = value;
-				return true;
-			}
-
-			return true;
+			return false;
 		}
 
 		#endregion
@@ -241,7 +226,7 @@ namespace DataDynamics.PageFX.FLI
 			ResolveLocalPath();
 
 			if (string.IsNullOrEmpty(Uri))
-				Uri = Path.GetFileName(_localPath);
+				Uri = Path.GetFileName(LocalPath);
 
 			PolicyFile = ResolvePath("Policy", PolicyFile, false, true);
 		}
@@ -253,59 +238,59 @@ namespace DataDynamics.PageFX.FLI
 
 		private void ResolveLocalPath()
 		{
-			_localPath = ResolvePath("RSL", _localPath, false, false);
+			LocalPath = ResolvePath("RSL", LocalPath, false, false);
 		}
 
 		private void AutoComplete()
 		{
 			if (string.IsNullOrEmpty(Library))
 			{
-				CheckEmpty(_localPath, "RSL");
+				CheckEmpty(LocalPath, "RSL");
 				ResolveLocalPath();
 
-				Library = Path.ChangeExtension(_localPath, ".dll");
+				Library = Path.ChangeExtension(LocalPath, ".dll");
 
 				CheckFile(Library, "Library");
 				return;
 			}
 
-			if (string.IsNullOrEmpty(_localPath))
+			if (string.IsNullOrEmpty(LocalPath))
 			{
 				CheckEmpty(Library, "Library");
 
 				ResolveLibPath();
 
-				_localPath = Path.ChangeExtension(Library, ".swf");
+				LocalPath = Path.ChangeExtension(Library, ".swf");
 
 				DetectLocalPath();
 
-				CheckFile(_localPath, "RSL");
+				CheckFile(LocalPath, "RSL");
 			}
 		}
 
 		private void DetectLocalPath()
 		{
-			if (File.Exists(_localPath)) return;
+			if (File.Exists(LocalPath)) return;
 
 			//try .swz file
-			_localPath = Path.ChangeExtension(_localPath, ".swz");
+			LocalPath = Path.ChangeExtension(LocalPath, ".swz");
 
-			if (File.Exists(_localPath)) return;
+			if (File.Exists(LocalPath)) return;
 
 			//try .swc file
-			_localPath = Path.ChangeExtension(_localPath, ".swc");
+			LocalPath = Path.ChangeExtension(LocalPath, ".swc");
 
-			CheckFile(_localPath, "RSL");
+			CheckFile(LocalPath, "RSL");
 
-			Stream lib = _localPath.ExtractSwfLibrary();
+			Stream lib = LocalPath.ExtractSwfLibrary();
 			if (lib == null)
 			{
-				string reason = string.Format(". Unable to extract library.swf from swc file '{0}'", _localPath);
+				string reason = string.Format(". Unable to extract library.swf from swc file '{0}'", LocalPath);
 				throw Errors.RSL.UnableToResolve.CreateException(this + reason);
 			}
 
-			_localPath = Path.ChangeExtension(_localPath, ".swf");
-			lib.Save(_localPath);
+			LocalPath = Path.ChangeExtension(LocalPath, ".swf");
+			lib.Save(LocalPath);
 		}
 
 		private string ResolvePath(string prefix, string path, bool uri, bool optional)
@@ -358,8 +343,8 @@ namespace DataDynamics.PageFX.FLI
 			sb.Append("/rsl:");
 			if (!string.IsNullOrEmpty(Library))
 				sb.AppendFormat("lib={0};", Library);
-			if (!string.IsNullOrEmpty(_localPath))
-				sb.AppendFormat("local={0};", _localPath);
+			if (!string.IsNullOrEmpty(LocalPath))
+				sb.AppendFormat("local={0};", LocalPath);
 			if (!string.IsNullOrEmpty(PolicyFile))
 				sb.AppendFormat("policyFile={0};", PolicyFile);
 			if (!string.IsNullOrEmpty(HashType))
@@ -376,17 +361,16 @@ namespace DataDynamics.PageFX.FLI
 			foreach (var item in cl.Items)
 			{
 				if (!item.IsOption) continue;
-				bool crossDomain = false;
-				if (String.Compare(item.Name, "cdrsl", StringComparison.OrdinalIgnoreCase) == 0)
+				if (String.Equals(item.Name, "cdrsl", StringComparison.OrdinalIgnoreCase))
 				{
-					crossDomain = true;
+					var rsl = RslItem.Parse(item.Value, true);
+					list.Add(rsl);
 				}
-				else if (String.Compare(item.Name, "rsl", StringComparison.OrdinalIgnoreCase) != 0)
+				else if (String.Equals(item.Name, "rsl", StringComparison.OrdinalIgnoreCase))
 				{
-					continue;
+					var rsl = RslItem.Parse(item.Value, false);
+					list.Add(rsl);
 				}
-				var rsl = RslItem.Parse(item.Value, crossDomain);
-				list.Add(rsl);
 			}
 			return list;
 		}

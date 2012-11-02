@@ -102,7 +102,7 @@ namespace DataDynamics.Tools
                 if (item.Type == CommandLine.ItemType.Option)
                 {
                     string name = item.Name;
-					if (NotVars.Any(s => string.Compare(s, name, StringComparison.CurrentCultureIgnoreCase) == 0))
+					if (NotVars.Any(s => string.Equals(s, name, StringComparison.CurrentCultureIgnoreCase)))
                         continue;
 
                     vars.Add(name);

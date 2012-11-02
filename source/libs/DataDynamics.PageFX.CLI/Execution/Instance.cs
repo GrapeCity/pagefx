@@ -70,7 +70,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			if (Class.GetHashCodeMethod != null)
 			{
-				return Convert.ToInt32(_engine.Call(Class.GetHashCodeMethod, new[] { this }));
+				return Convert.ToInt32(_engine.Call(Class.GetHashCodeMethod, new object[] { this }));
 			}
 
 			return base.GetHashCode();

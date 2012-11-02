@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX
             if (p.StartColumn != StartColumn) return false;
             if (p.EndRow != EndRow) return false;
             if (p.EndColumn != EndColumn) return false;
-            return string.Compare(p.File, File, StringComparison.CurrentCultureIgnoreCase) == 0;
+            return string.Equals(p.File, File, StringComparison.CurrentCultureIgnoreCase);
         }
 
     	private static readonly int HashSalt = typeof(SequencePoint).GetHashCode();

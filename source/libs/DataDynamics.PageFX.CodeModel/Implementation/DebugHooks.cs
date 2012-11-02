@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX
 				return true;
 			}
 
-			return string.Compare(method.Name, MethodName, StringComparison.InvariantCultureIgnoreCase) == 0;
+			return string.Equals(method.Name, MethodName, StringComparison.InvariantCultureIgnoreCase);
 		}
 
     	public static bool CanBreak(IMethod method)

@@ -2308,31 +2308,22 @@ namespace DataDynamics.PageFX.CLI
             int index = owner.Index - 1;
             switch (owner.Table)
             {
-                case MdbTableId.TypeDef:
-                    return _typeDef[index];
+	            case MdbTableId.TypeDef:
+		            return _typeDef[index];
 
-                case MdbTableId.TypeRef:
-                    return GetTypeRef(index);
+	            case MdbTableId.TypeRef:
+		            return GetTypeRef(index);
 
-                case MdbTableId.ModuleRef:
-                    {
-                        //TODO:
-                        //var mod = GetModuleRef(idx.Index - 1);
-                        //return mod.Types[name];
-                        throw new NotImplementedException();
-                    }
+	            case MdbTableId.ModuleRef:
+		            throw new NotImplementedException();
 
-                case MdbTableId.TypeSpec:
-                    return GetTypeSpec(index, CurrentType, CurrentMethod);
+	            case MdbTableId.TypeSpec:
+		            return GetTypeSpec(index, CurrentType, CurrentMethod);
 
-                case MdbTableId.MethodDef:
-                    {
-                        //TODO:
-                        var m = _methodDef[index];
-                        throw new NotImplementedException();
-                    }
+	            case MdbTableId.MethodDef:
+		            throw new NotImplementedException();
             }
-            return null;
+	        return null;
         }
 
         ITypeMember GetMemberRef(int index)
