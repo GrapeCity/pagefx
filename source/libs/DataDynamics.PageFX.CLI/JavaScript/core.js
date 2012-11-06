@@ -552,8 +552,8 @@ function $initarr(a, blob) {
 				b3 = blob[k++];
 				b4 = blob[k++];
 				u2 = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
-				//TODO: $conv(new Sytem.Int64(u2, u), $tc.u8, $tc.i8)?
-				arr[i++] = new Sytem.Int64(u2 & 0xffffffff, u);
+				//TODO: $conv(new System.Int64(u2, u), $tc.u8, $tc.i8)?
+				arr[i++] = new System.Int64(u2 & 0xffffffff, u);
 				break;
 			case $tc.u8:
 				b1 = blob[k++];
@@ -566,7 +566,7 @@ function $initarr(a, blob) {
 				b3 = blob[k++];
 				b4 = blob[k++];
 				u2 = b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
-				arr[i++] = new Sytem.UInt64(u2, u);
+				arr[i++] = new System.UInt64(u2, u);
 				break;
 			case $tc.r4:
 				arr[i++] = $decodeSingle([blob[k++], blob[k++], blob[k++], blob[k++]]);
