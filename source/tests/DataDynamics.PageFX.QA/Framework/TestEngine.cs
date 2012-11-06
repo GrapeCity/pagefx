@@ -337,7 +337,6 @@ namespace DataDynamics.PageFX.FLI
 <script type=""text/javascript"" src=""test.js""></script>
 </head>
 <body>
-<p>Hello!<p>
 </body>
 </html>
 ");
