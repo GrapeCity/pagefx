@@ -225,20 +225,20 @@ function $conv(v, from, to) {
 				case $tc.i4:
 				case $tc.u4:
 					n = v & 0xff;
-					return n & 0x80 ? ((~n & 0xff) - 1) : n;
+					return n & 0x80 ? -((~n & 0xff) + 1) : n;
 				case $tc.i8:
 				case $tc.u8:
 					n = v.m_lo & 0xff;
-					return n & 0x80 ? ((~n & 0xff) - 1) : n;
+					return n & 0x80 ? -((~n & 0xff) + 1) : n;
 				case $tc.r4:
 				case $tc.r8:
 					n = (~~v) & 0xff;
-					return n & 0x80 ? ((~n & 0xff) - 1) : n;
+					return n & 0x80 ? -((~n & 0xff) + 1) : n;
 				case $tc.s:
 					n = parseFloat(v);
 					if (isNaN(n)) throw new Error("InvalidCastException");
 					n = (~~n) & 0xff;
-					return n & 0x80 ? ((~n & 0xff) - 1) : n;
+					return n & 0x80 ? -((~n & 0xff) + 1) : n;
 			}
 			break;
 		case $tc.u1: // to byte
@@ -278,20 +278,20 @@ function $conv(v, from, to) {
 				case $tc.i4:
 				case $tc.u4:
 					n = v & 0xffff;
-					return n & 0x8000 ? ((~n & 0xffff) - 1) : n;
+					return n & 0x8000 ? -((~n & 0xffff) + 1) : n;
 				case $tc.i8:
 				case $tc.u8:
 					n = v.m_lo & 0xffff;
-					return n & 0x8000 ? ((~n & 0xffff) - 1) : n;
+					return n & 0x8000 ? -((~n & 0xffff) + 1) : n;
 				case $tc.r4:
 				case $tc.r8:
 					n = (~~v) & 0xffff;
-					return n & 0x8000 ? ((~n & 0xffff) - 1) : n;
+					return n & 0x8000 ? -((~n & 0xffff) + 1) : n;
 				case $tc.s:
 					n = parseFloat(v);
 					if (isNaN(n)) throw new Error("InvalidCastException");
 					n = (~~n) & 0xffff;
-					return n & 0x8000 ? ((~n & 0xffff) - 1) : n;
+					return n & 0x8000 ? -((~n & 0xffff) + 1) : n;
 			}
 			break;
 		case $tc.c: // to char
@@ -333,20 +333,20 @@ function $conv(v, from, to) {
 					return v;
 				case $tc.u4:
 					n = v & 0xffffffff;
-					return n & 0x80000000 ? ((~n & 0xffffffff) - 1) : n;
+					return n & 0x80000000 ? -((~n & 0xffffffff) + 1) : n;
 				case $tc.i8:
 				case $tc.u8:
 					n = v.m_lo & 0xffffffff;
-					return n & 0x80000000 ? ((~n & 0xffffffff) - 1) : n;
+					return n & 0x80000000 ? -((~n & 0xffffffff) + 1) : n;
 				case $tc.r4:
 				case $tc.r8:
 					n = (~~v) & 0xffffffff;
-					return n & 0x80000000 ? ((~n & 0xffffffff) - 1) : n;
+					return n & 0x80000000 ? -((~n & 0xffffffff) + 1) : n;
 				case $tc.s:
 					n = parseFloat(v);
 					if (isNaN(n)) throw new Error("InvalidCastException");
 					n = (~~n) & 0xffffffff;
-					return n & 0x80000000 ? ((~n & 0xffffffff) - 1) : n;
+					return n & 0x80000000 ? -((~n & 0xffffffff) + 1) : n;
 			}
 			break;
 		case $tc.u4: // to uint32
