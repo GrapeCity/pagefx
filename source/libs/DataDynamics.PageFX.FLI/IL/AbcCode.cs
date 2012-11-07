@@ -2102,15 +2102,6 @@ namespace DataDynamics.PageFX.FLI.IL
         {
             EnsureType(type);
 
-            //NOTE:
-            //No need to copy strings because string is immutable object,
-            //but string must be copied in assign instructions.
-            //if (type == SystemTypes.String)
-            //{
-            //    CopyString(code);
-            //    return;
-            //}
-
             if (InternalTypeExtensions.HasCopy(type))
             {
                 var instance = type.Tag as AbcInstance;

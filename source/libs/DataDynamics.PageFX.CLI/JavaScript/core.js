@@ -1,10 +1,13 @@
-﻿$types = {};
+﻿//http://james.padolsey.com/javascript/double-bitwise-not/
+
+$types = {};
 
 function $inherit($this, $base) {
-	for (var p in $base.prototype)
+	var p;
+	for (p in $base.prototype)
 		if (typeof ($this.prototype[p]) == 'undefined' || $this.prototype[p] == Object.prototype[p])
 			$this.prototype[p] = $base.prototype[p];
-	for (var p in $base)
+	for (p in $base)
 		if (typeof ($this[p]) == 'undefined')
 			$this[p] = $base[p];
 }
@@ -115,8 +118,9 @@ function $encodeDouble(v) {
 function $decodeFloat(bytes, signBits, exponentBits, fractionBits, eMin, eMax, littleEndian) {
   // var totalBits = (signBits + exponentBits + fractionBits);
 
+  var i;
   var binary = "";
-  for (var i = 0; i < bytes.length; i++) {
+  for (i = 0; i < bytes.length; i++) {
     var bits = bytes[i].toString(2);
     while (bits.length < 8) 
       bits = "0" + bits;
@@ -131,7 +135,7 @@ function $decodeFloat(bytes, signBits, exponentBits, fractionBits, eMin, eMax, l
   var exponent = parseInt(binary.substr(signBits, exponentBits), 2) - eMax;
   var significandBase = binary.substr(signBits + exponentBits, fractionBits);
   var significandBin = '1'+significandBase;
-  var i = 0;
+  i = 0;
   var val = 1;
   var significand = 0;
 
@@ -429,7 +433,7 @@ function $conv(v, from, to) {
 				case $tc.s:
 					n = parseFloat(v);
 					if (isNaN(n)) throw new Error("InvalidCastException");
-					var hi = n < 0 ? 0xffffffff : 0;
+					hi = n < 0 ? 0xffffffff : 0;
 					n = (((~~n) >>> 0) & 0xffffffff) >>> 0;
 					return new System.UInt64(hi, n);
 			}
@@ -912,34 +916,34 @@ function $context($method, $args, $vars) {
 				}
 				break;
 			case 70: // ldind.i1
-				push(convi1(ldind(), i[1]));
+				ldindt(i, $tc.i1);
 				break;
 			case 71: // ldind.u1
-				push(convu2(ldind(), i[1]));
+				ldindt(i, $tc.u1);
 				break;
 			case 72: // ldind.i2
-				push(convi2(ldind(), i[1]));
+				ldindt(i, $tc.i2);
 				break;
 			case 73: // ldind.u2
-				push(convu2(ldind(), i[1]));
+				ldindt(i, $tc.u2);
 				break;
 			case 74: // ldind.i4
-				push(convi4(ldind(), i[1]));
+				ldindt(i, $tc.i4);
 				break;
 			case 75: // ldind.u4
-				push(convu4(ldind(), i[1]));
+				ldindt(i, $tc.i4);
 				break;
 			case 76: // ldind.i8
-				push(convi8(ldind(), i[1]));
+				ldindt(i, $tc.i8);
 				break;
 			case 77: // ldind.i
 				push(ldind()); // TODO: loads native int
 				break;
 			case 78: // ldind.r4
-				push(convr4(ldind(), i[1]));
+				ldindt(i, $tc.r4);
 				break;
 			case 79: // ldind.r8
-				push(convr8(ldind(), i[1]));
+				ldindt(i, $tc.r8);
 				break;
 			case 80: // ldind.ref
 				push(ldind());
@@ -948,22 +952,12 @@ function $context($method, $args, $vars) {
 				stind();
 				break;
 			case 82: // stind.i1
-				stind(convi1, i[1]);
-				break;
 			case 83: // stind.i2
-				stind(convi2, i[1]);
-				break;
 			case 84: // stind.i4
-				stind(convi4, i[1]);
-				break;
 			case 85: // stind.i8
-				stind(convi8, i[1]);
-				break;
 			case 86: // stind.r4
-				stind(convr4, i[1]);
-				break;
 			case 87: // stind.r8
-				stind(convr8, i[1]);
+				stindt(i);
 				break;
 			case 88: // add
 				y = pop(true);
@@ -1039,28 +1033,28 @@ function $context($method, $args, $vars) {
 				push(not(x));
 				break;
 			case 103: // conv.i1
-				push(convi1(pop(true), i[1]));
+				convt(i, $tc.i1, false, false);
 				break;
 			case 104: // conv.i2
-				push(convi2(pop(true), i[1]));
+				convt(i, $tc.i2, false, false);
 				break;
 			case 105: // conv.i4
-				push(convi4(pop(true), i[1]));
+				convt(i, $tc.i4, false, false);
 				break;
 			case 106: // conv.i8
-				push(convi8(pop(true), i[1]));
+				convt(i, $tc.i8, false, false);
 				break;
 			case 107: // conv.r4
-				push(convr4(pop(true), i[1]));
+				convt(i, $tc.r4, false, false);
 				break;
 			case 108: // conv.r8
-				push(convr8(pop(true), i[1]));
+				convt(i, $tc.r8, false, false);
 				break;
 			case 109: // conv.u4
-				push(convu4(pop(true), i[1]));
+				convt(i, $tc.u4, false, false);
 				break;
 			case 110: // conv.u8
-				push(convu8(pop(true), i[1]));
+				convt(i, $tc.u8, false, false);
 				break;
 			case 111: // callvirt
 				call(i[1], true);
@@ -1114,28 +1108,28 @@ function $context($method, $args, $vars) {
 				stobj(i[1]);
 				break;
 			case 130: // conv.ovf.i1.un
-				push(convi1(popun(), i[1]));
+				convt(i, $tc.i1, true, true);
 				break;
 			case 131: // conv.ovf.i2.un
-				push(convi2(popun(), i[1]));
+				convt(i, $tc.i2, true, true);
 				break;
 			case 132: // conv.ovf.i4.un
-				push(convi4(popun(), [1]));
+				convt(i, $tc.i4, true, true);
 				break;
 			case 133: // conv.ovf.i8.un
-				push(convi8(popun(), i[1]));
+				convt(i, $tc.i8, true, true);
 				break;
 			case 134: // conv.ovf.u1.un
-				push(convu1(popun(), i[1]));
+				convt(i, $tc.u1, true, true);
 				break;
 			case 135: // conv.ovf.u2.un
-				push(convu2(popun(), i[1]));
+				convt(i, $tc.u2, true, true);
 				break;
 			case 136: // conv.ovf.u4.un
-				push(convu4(popun(), i[1]));
+				convt(i, $tc.u4, true, true);
 				break;
 			case 137: // conv.ovf.u8.un
-				push(convu8(popun(), i[1]));
+				convt(i, $tc.u8, true, true);
 				break;
 			case 138: // conv.ovf.i.un
 				noimpl();
@@ -1159,35 +1153,35 @@ function $context($method, $args, $vars) {
 				push(new elemptr(arr, index));
 				break;
 			case 144: // ldelem.i1
-				push(convi1(ldelem(), i[1]));
+				ldelemt(i, $tc.i1);
 				break;
 			case 145: // ldelem.u1
-				push(convu1(ldelem(), i[1]));
+				ldelemt(i, $tc.u1);
 				break;
 			case 146: // ldelem.i2
-				push(convi2(ldelem(), i[1]));
+				ldelemt(i, $tc.i2);
 				break;
 			case 147: // ldelem.u2
-				push(convu2(ldelem(), i[1]));
+				ldelemt(i, $tc.u2);
 				break;
 			case 148: // ldelem.i4
-				push(convi4(ldelem(), i[1]));
+				ldelemt(i, $tc.i4);
 				break;
 			case 149: // ldelem.u4
-				push(convu4(ldelem(), i[1]));
+				ldelemt(i, $tc.u4);
 				break;
 			case 150: // ldelem.i8
-				push(convi8(ldelem(), i[1]));
+				ldelemt(i, $tc.i8);
 				break;
 			case 151: // ldelem.i
 				//TODO: native int
 				push(ldelem());
 				break;
 			case 152: // ldelem.r4
-				push(convr4(ldelem(), i[1]));
+				ldelemt(i, $tc.r4);
 				break;
 			case 153: // ldelem.r8
-				push(convr8(ldelem(), i[1]));
+				ldelemt(i, $tc.r8);
 				break;
 			case 154: // ldelem.ref
 				push(ldelem());
@@ -1226,28 +1220,28 @@ function $context($method, $args, $vars) {
 				unbox(i[1]);
 				break;
 			case 179: // conv.ovf.i1
-				push(convi1(pop(true), i[1]));
+				convt(i, $tc.i1, false, true);
 				break;
 			case 180: // conv.ovf.u1
-				push(convu1(pop(true), i[1]));
+				convt(i, $tc.u1, false, true);
 				break;
 			case 181: // conv.ovf.i2
-				push(convi2(pop(true), i[1]));
+				convt(i, $tc.i2, false, true);
 				break;
 			case 182: // conv.ovf.u2
-				push(convu2(pop(true), i[1]));
+				convt(i, $tc.u2, false, true);
 				break;
 			case 183: // conv.ovf.i4
-				push(convi4(pop(true), i[1]));
+				convt(i, $tc.i4, false, true);
 				break;
 			case 184: // conv.ovf.u4
-				push(convu4(pop(true), i[1]));
+				convt(i, $tc.u4, false, true);
 				break;
 			case 185: // conv.ovf.i8
-				push(convi8(pop(true), i[1]));
+				convt(i, $tc.i8, false, true);
 				break;
 			case 186: // conv.ovf.u8
-				push(convu8(pop(true), i[1]));
+				convt(i, $tc.u8, false, true);
 				break;
 			case 194: // refanyval
 				break;
@@ -1259,19 +1253,19 @@ function $context($method, $args, $vars) {
 				push(i[1]);
 				break;
 			case 209: // conv.u2
-				push(convu2(pop(true), i[1]));
+				convt(i, $tc.u2, false, false);
 				break;
 			case 210: // conv.u1
-				push(convu1(pop(true), i[1]));
+				convt(i, $tc.u1, false, false);
 				break;
 			case 211: // conv.i
-				push(convi(pop(true)));
+				noimpl();
 				break;
 			case 212: // conv.ovf.i
-				push(conviovf(pop(true)));
+				noimpl();
 				break;
 			case 213: // conv.ovf.u
-				push(convuovf(pop(true)));
+				noimpl();
 				break;
 			case 214: // add.ovf
 				y = pop(true);
@@ -1313,7 +1307,7 @@ function $context($method, $args, $vars) {
 				noimpl();
 				break;
 			case 224: // conv.u
-				push(convu(pop(true)));
+				noimpl();
 				break;
 			case 248: // prefix7
 			case 249: // prefix6
@@ -1566,11 +1560,25 @@ function $context($method, $args, $vars) {
 		return $unbox(v);
 	}
 	
-	function stind(conv, from) {
+	function ldindt(i, to) {
+		var v = ldind();
+		v = $conv(v, i[1], to);
+		push(v);
+	}
+
+	function stind() {
 		var v = pop();
 		var p = popptr();
-		if (conv !== undefined) {
-			v = conv(v, from);
+		p.$ptrset(v);
+	}
+	
+	function stindt(i) {
+		var v = pop();
+		var p = popptr();
+		var from = i[1];
+		var to = i[2];
+		if (from != to) {
+			v = $conv(v, from, to);
 		}
 		p.$ptrset(v);
 	}
@@ -1598,6 +1606,12 @@ function $context($method, $args, $vars) {
 		var arr = poparr();
 		checkBounds(arr, i);
 		return arr[i];
+	}
+	
+	function ldelemt(i, to) {
+		var v = ldelem();
+		v = $conv(v, i[1], to);
+		push(v);
 	}
 	
 	function stelem(conv, from) {
@@ -1796,45 +1810,35 @@ function $context($method, $args, $vars) {
 		return bop(x, y, t, $gt);
 	}
 
-	function $lt(x, y, t) {
+	function $lt(x, y) {
 		return x.$lt ? x.$lt(y) : x < y;
 	}
 
 	function lt(x, y, t) {
 		return bop(x, y, t, $lt);
 	}
-
-	//http://james.padolsey.com/javascript/double-bitwise-not/
+	
+	function convt(i, to, un, ovf) {
+		var v = un ? popun() : pop(true);
+		// TODO: implement conversion with overflow checking
+		v = $conv(v, i[1], to);
+		push(v);
+	}
+	
 	function convi1(v, from) {
 		return $conv(v, from, $tc.i1);
-	}
-
-	function convu1(v, from) {
-		return $conv(v, from, $tc.u1);
 	}
 
 	function convi2(v, from) {
 		return $conv(v, from, $tc.i2);
 	}
 
-	function convu2(v, from) {
-		return $conv(v, from, $tc.u2);
-	}
-
 	function convi4(v, from) {
 		return $conv(v, from, $tc.i4);
 	}
 
-	function convu4(v, from) {
-		return $conv(v, from, $tc.u4);
-	}
-
 	function convi8(v, from) {
 		return $conv(v, from, $tc.i8);
-	}
-
-	function convu8(v, from) {
-		return $conv(v, from, $tc.u8);
 	}
 
 	function convr4(v, from) {

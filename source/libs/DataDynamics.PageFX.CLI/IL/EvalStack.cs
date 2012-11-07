@@ -36,12 +36,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public IType Type
         {
-            get
-            {
-                if (value == null)
-                    return null;
-                return value.Type;
-            }
+            get { return value == null ? null : value.Type; }
         }
 
         public bool IsNull

@@ -281,56 +281,66 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			switch (i.Code)
 			{
+					// conv ops
 				case InstructionCode.Conv_I1:
-				case InstructionCode.Conv_Ovf_I1:
-				case InstructionCode.Ldelem_I1:
-				case InstructionCode.Stelem_I1:
-				case InstructionCode.Ldind_I1:
-				case InstructionCode.Stind_I1:
 				case InstructionCode.Conv_I2:
-				case InstructionCode.Conv_Ovf_I2:
-				case InstructionCode.Ldelem_I2:
-				case InstructionCode.Stelem_I2:
-				case InstructionCode.Ldind_I2:
-				case InstructionCode.Stind_I2:
 				case InstructionCode.Conv_I4:
-				case InstructionCode.Conv_Ovf_I4:
-				case InstructionCode.Ldelem_I4:
-				case InstructionCode.Stelem_I4:
-				case InstructionCode.Ldind_I4:
-				case InstructionCode.Stind_I4:
 				case InstructionCode.Conv_I8:
-				case InstructionCode.Conv_Ovf_I8:
-				case InstructionCode.Ldelem_I8:
-				case InstructionCode.Stelem_I8:
-				case InstructionCode.Ldind_I8:
-				case InstructionCode.Stind_I8:
-				case InstructionCode.Conv_R4:
-				case InstructionCode.Conv_R_Un:
-				case InstructionCode.Ldelem_R4:
-				case InstructionCode.Stelem_R4:
-				case InstructionCode.Ldind_R4:
-				case InstructionCode.Stind_R4:
-				case InstructionCode.Conv_R8:
-				case InstructionCode.Ldelem_R8:
-				case InstructionCode.Stelem_R8:
-				case InstructionCode.Ldind_R8:
-				case InstructionCode.Stind_R8:
 				case InstructionCode.Conv_U1:
-				case InstructionCode.Conv_Ovf_U1:
-				case InstructionCode.Ldelem_U1:
-				case InstructionCode.Ldind_U1:
 				case InstructionCode.Conv_U2:
-				case InstructionCode.Conv_Ovf_U2:
-				case InstructionCode.Ldelem_U2:
-				case InstructionCode.Ldind_U2:
 				case InstructionCode.Conv_U4:
-				case InstructionCode.Conv_Ovf_U4:
-				case InstructionCode.Ldelem_U4:
-				case InstructionCode.Ldind_U4:
 				case InstructionCode.Conv_U8:
+				case InstructionCode.Conv_R4:
+				case InstructionCode.Conv_R8:
+				case InstructionCode.Conv_R_Un:
+				case InstructionCode.Conv_Ovf_I1:
+				case InstructionCode.Conv_Ovf_I2:
+				case InstructionCode.Conv_Ovf_I4:
+				case InstructionCode.Conv_Ovf_I8:
+				case InstructionCode.Conv_Ovf_U1:
+				case InstructionCode.Conv_Ovf_U2:
+				case InstructionCode.Conv_Ovf_U4:
 				case InstructionCode.Conv_Ovf_U8:
+
+					// ldelem ops
+				case InstructionCode.Ldelem_I1:
+				case InstructionCode.Ldelem_I2:
+				case InstructionCode.Ldelem_I4:
+				case InstructionCode.Ldelem_I8:
+				case InstructionCode.Ldelem_R4:
+				case InstructionCode.Ldelem_R8:
+				case InstructionCode.Ldelem_U1:
+				case InstructionCode.Ldelem_U2:
+				case InstructionCode.Ldelem_U4:
+
+					// stelem ops
+				case InstructionCode.Stelem_I1:
+				case InstructionCode.Stelem_I2:
+				case InstructionCode.Stelem_I4:
+				case InstructionCode.Stelem_I8:
+				case InstructionCode.Stelem_R4:
+				case InstructionCode.Stelem_R8:
+
+					// ldind ops
+				case InstructionCode.Ldind_I1:
+				case InstructionCode.Ldind_I2:
+				case InstructionCode.Ldind_I4:
+				case InstructionCode.Ldind_I8:
+				case InstructionCode.Ldind_R4:
+				case InstructionCode.Ldind_R8:
+				case InstructionCode.Ldind_U1:
+				case InstructionCode.Ldind_U2:
+				case InstructionCode.Ldind_U4:
 					return OpWithTypeCode(i);
+
+					// stind ops
+				case InstructionCode.Stind_I1:
+				case InstructionCode.Stind_I2:
+				case InstructionCode.Stind_I4:
+				case InstructionCode.Stind_I8:
+				case InstructionCode.Stind_R4:
+				case InstructionCode.Stind_R8:				
+					return OpStind(i);
 
 				case InstructionCode.Ldstr:
 					// string should be compiled to be ready for Object method calls.
@@ -512,14 +522,33 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (type is ICompoundType)
 			{
-				Debugger.Break();
+				throw new NotImplementedException();
 			}
 
 			if (type.IsInt64())
 			{
 				CompileClass(type);
 			}
+
 			return (int)type.GetTypeCode();
+		}
+
+		private object OpStind(Instruction i)
+		{
+			var valueType = i.InputTypes[0];
+			var ptrType = i.OutputType;
+
+			if (valueType is ICompoundType)
+			{
+				throw new NotImplementedException();
+			}
+
+			if (valueType.IsInt64())
+			{
+				CompileClass(valueType);
+			}
+
+			return new JsTuple((int)valueType.GetTypeCode(), (int)ptrType.GetTypeCode());
 		}
 		
 		private object Op(Instruction i, UnaryOperator op, bool checkOverflow)

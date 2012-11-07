@@ -720,6 +720,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
             type = type.UnwrapRef();
 
+			// fixing possible verifier error (unable to reconcile types)
             if (!FixTernaryAssignment(type))
             {
                 Cast(code, valType, type);
@@ -727,10 +728,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
             if (type == SystemTypes.String)
             {
-                //TODO: Check whether it is need.
-                //IInstruction[] copy = _provider.CopyString();
-                //if (copy != null)
-                //    code.AddRange(copy);
+				// String are implemented via native string, so no need to copy it.
             }
             else
             {
@@ -1182,13 +1180,14 @@ namespace DataDynamics.PageFX.CLI.IL
             var value = Pop();
             var addr = Pop();
 
-			_instruction.InputTypes = new[] { value.Type };
-
             var code = new Code();
             BeforeStoreValue(code, value, addr.Type);
 
-            var av = addr.value;
-            switch (av.Kind)
+			_instruction.InputTypes = new[] { value.Type };
+			// NOTE: output type defines type of pointer
+			_instruction.OutputType = addr.Type;
+
+			switch (addr.value.Kind)
             {
                 case ValueKind.Const:
                 case ValueKind.Var:
@@ -1201,7 +1200,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
                 case ValueKind.This:
                     {
-                        var v = (ThisValue)av;
+                        var v = (ThisValue)addr.value;
                         var vt = v.Type;
                         if (_provider.HasCopy(vt))
                         {
@@ -1212,7 +1211,7 @@ namespace DataDynamics.PageFX.CLI.IL
                     break;
 
                 default:
-                    StorePtr(code, av, value.Type);
+                    StorePtr(code, addr.value, value.Type);
                     break;
             }
 
