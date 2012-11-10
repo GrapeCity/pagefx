@@ -195,23 +195,14 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        #region LoadConstant
-        public IInstruction[] PushSystemString(string s)
-        {
-            var code = new AbcCode(_abc);
-	        code.PushString(s);
-	        return code.ToArray();
-        }
-
-        public IInstruction[] LoadConstant(object value)
+	    public IInstruction[] LoadConstant(object value)
         {
             var code = new AbcCode(_abc);
             code.LoadConstant(value);
             return code.ToArray();
         }
-        #endregion
 
-        #region LoadStaticInstance
+	    #region LoadStaticInstance
         /// <summary>
         /// Pushes onto the stack static instance of the class to call static functions
         /// </summary>

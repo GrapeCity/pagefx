@@ -54,9 +54,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				case UnaryOperator.Negate:
 					return "$neg";
 				case UnaryOperator.BooleanNot:
-					return "$not";
-				case UnaryOperator.BitwiseNot:
 					return "$bnot";
+				case UnaryOperator.BitwiseNot:
+					return "$not";
 				default:
 					return op.ToString();
 			}

@@ -7,6 +7,40 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal static class JsTypeExtensions
 	{
+		private static readonly Dictionary<TypeCode, string> TypeCodeNames =
+			new Dictionary<TypeCode, string>
+				{
+					{TypeCode.Empty, "Empty"},
+					{TypeCode.Object, "o"},
+					{TypeCode.DBNull, "DBNull"},
+					{TypeCode.Boolean, "b"},
+					{TypeCode.Char, "c"},
+					{TypeCode.SByte, "i1"},
+					{TypeCode.Byte, "u1"},
+					{TypeCode.Int16, "i2"},
+					{TypeCode.UInt16, "u2"},
+					{TypeCode.Int32, "i4"},
+					{TypeCode.UInt32, "u4"},
+					{TypeCode.Int64, "i8"},
+					{TypeCode.UInt64, "u8"},
+					{TypeCode.Single, "r4"},
+					{TypeCode.Double, "r8"},
+					{TypeCode.Decimal, "d"},
+					{TypeCode.DateTime, "DateTime"},
+					{TypeCode.String, "s"},
+				};
+
+		public static object JsTypeCode(this IType type)
+		{
+			var key = type.GetTypeCode();
+			string name;
+			if (TypeCodeNames.TryGetValue(key, out name))
+			{
+				return ("$tc." + name).Id();
+			}
+			return key;
+		}
+
 		public static bool IsString(this IType type)
 		{
 			if (type == null) return false;

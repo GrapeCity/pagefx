@@ -110,34 +110,21 @@ namespace DataDynamics.PageFX.CodeModel
     {
         public SystemType(SystemTypeCode code, string name)
         {
-            _code = code;
-            _name = name;
+            Code = code;
+            Name = name;
         }
 
-        public string Name
-        {
-            get { return _name; }
-        }
-        readonly string _name;
+	    public string Name { get; private set; }
 
-        public SystemTypeCode Code
-        {
-            get { return _code; }
-        }
-        readonly SystemTypeCode _code;
+	    public SystemTypeCode Code { get; private set; }
 
-        public string CSharpKeyword
-        {
-            get { return _csharpKeyword; }
-            internal set { _csharpKeyword = value; }
-        }
-        string _csharpKeyword;
+	    public string CSharpKeyword { get; internal set; }
 
-        public string ShortName
+	    public string ShortName
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Int8: return "i8";
                     case SystemTypeCode.UInt8: return "u8";
@@ -152,7 +139,7 @@ namespace DataDynamics.PageFX.CodeModel
                     case SystemTypeCode.Boolean: return "b";
                     case SystemTypeCode.Char: return "c";
                 }
-                return _csharpKeyword;
+                return CSharpKeyword;
             }
         }
 
@@ -160,7 +147,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Boolean: return TypeCode.Boolean;
                     case SystemTypeCode.Int8: return TypeCode.SByte;
@@ -177,8 +164,8 @@ namespace DataDynamics.PageFX.CodeModel
                     case SystemTypeCode.DateTime: return TypeCode.DateTime;
                     case SystemTypeCode.Char: return TypeCode.Char;
                     case SystemTypeCode.String: return TypeCode.String;
-                    default:
-                        return TypeCode.Empty;
+                    case SystemTypeCode.Object: return TypeCode.Object;
+                    default: return TypeCode.Empty;
                 }
             }
         }
@@ -187,7 +174,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.None:
                     case SystemTypeCode.Void:
@@ -233,7 +220,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public override string ToString()
         {
-            return _name;
+            return Name;
         }
 
         public static SystemTypeCode ParseCode(string name)
@@ -287,7 +274,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Boolean:
                     case SystemTypeCode.Int8:
@@ -325,7 +312,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Boolean:
                     case SystemTypeCode.Int8:
@@ -350,7 +337,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Int8:
                     case SystemTypeCode.Int16:
@@ -366,7 +353,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.UInt8:
                     case SystemTypeCode.UInt16:
@@ -382,7 +369,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Int8:
                         return SystemTypes.UInt8;
@@ -401,7 +388,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.UInt8:
                         return SystemTypes.Int8;
@@ -420,7 +407,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Int8:
                     case SystemTypeCode.Int16:
@@ -440,7 +427,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Boolean:
                     case SystemTypeCode.Int8:
@@ -458,7 +445,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Int32:
                     case SystemTypeCode.UInt32:
@@ -476,44 +463,44 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsDecimal
         {
-            get { return _code == SystemTypeCode.Decimal; }
+            get { return Code == SystemTypeCode.Decimal; }
         }
 
         public bool IsSingle
         {
-            get { return _code == SystemTypeCode.Single; }
+            get { return Code == SystemTypeCode.Single; }
         }
 
         public bool IsDouble
         {
-            get { return _code == SystemTypeCode.Double; }
+            get { return Code == SystemTypeCode.Double; }
         }
 
         public bool IsInt32
         {
-            get { return _code == SystemTypeCode.Int32; }
+            get { return Code == SystemTypeCode.Int32; }
         }
 
         public bool IsUInt32
         {
-            get { return _code == SystemTypeCode.UInt32; }
+            get { return Code == SystemTypeCode.UInt32; }
         }
 
         public bool IsInt64
         {
-            get { return _code == SystemTypeCode.Int64; }
+            get { return Code == SystemTypeCode.Int64; }
         }
 
         public bool IsUInt64
         {
-            get { return _code == SystemTypeCode.UInt64; }
+            get { return Code == SystemTypeCode.UInt64; }
         }
 
         public bool IsDecimalOrInt64
         {
             get
             {
-                switch (_code)
+                switch (Code)
                 {
                     case SystemTypeCode.Decimal:
                     case SystemTypeCode.Int64:
@@ -644,13 +631,14 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static TypeCode GetTypeCode(this IType type)
         {
-			if (type == null) return TypeCode.Empty;
-            var st = type.SystemType;
-            if (st != null) return st.TypeCode;
-            return TypeCode.Empty;
+			if (type != null && type.SystemType != null)
+			{
+				return type.SystemType.TypeCode;
+			}
+	        return TypeCode.Empty;
         }
 
-        #region Type Properties
+	    #region Type Properties
         public static IType Void
         {
             get { return Get(SystemTypeCode.Void); }
@@ -870,7 +858,7 @@ namespace DataDynamics.PageFX.CodeModel
             return st.Unsigned;
         }
 
-        static IEnumerable<IType> GetDescendingOrder()
+        private static IEnumerable<IType> GetDescendingOrder()
         {
             yield return Decimal;
             yield return Double;

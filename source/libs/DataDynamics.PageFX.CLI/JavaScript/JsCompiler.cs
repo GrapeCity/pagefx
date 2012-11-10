@@ -227,8 +227,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			var context = new MethodContext(this, klass, method);
 
-			var parameters = method.JsParams();
-			var func = new JsFunction(null, parameters);
+			var func = new JsFunction(null, method.JsParams());
 
 			//TODO: cache info and code as separate class property
 			var info = new JsObject
@@ -236,7 +235,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"IsVoid", method.IsVoid()},
 				};
 
-			var args = new JsArray((method.IsStatic ? new string[0] : new[] {"this"}).Concat(parameters).Select(x => (object)new JsId(x)));
+			var args = CompilerArgs(method);
 			var vars = new JsArray(method.Body.LocalVariables.Select(x => x.Type.InitialValue()));
 			var code = new JsArray(body.Code.Select<Instruction, object>(i => new JsInstruction(i, CompileInstruction(context, i))), "\n");
 
@@ -254,6 +253,24 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			func.Body.Add(new JsText("return ctx.exec(code);"));
 
 			return func;
+		}
+
+		private static JsArray CompilerArgs(IMethod method)
+		{
+			var args = method.Parameters.Select(x => CompileArg(x));
+			if (method.IsStatic)
+				return new JsArray(args);
+			return new JsArray(new object[] {"this".Id()}.Concat(args));
+		}
+
+		private static object CompileArg(IParameter p)
+		{
+			object arg = p.Name.ToValidId(Runtime.Js).Id();
+			if (p.Type.IsInt64())
+			{
+				arg = "$convto".Id().Call(arg, p.Type.JsTypeCode());
+			}
+			return arg;
 		}
 
 		private JsFunction CompileInlineFunction(IMethod method)
@@ -511,7 +528,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			var x = (int)i.InputTypes[0].GetTypeCode();
 			var y = (int)i.InputTypes[1].GetTypeCode();
-			var t = (x << 8) | y;
+			var z = (int)i.OutputType.GetTypeCode();
+			var t = (x << 16) | (y << 8) | z;
 
 			return new JsTuple(i.Value, t);
 		}
@@ -530,7 +548,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				CompileClass(type);
 			}
 
-			return (int)type.GetTypeCode();
+			return type.JsTypeCode();
 		}
 
 		private object OpStind(Instruction i)
@@ -548,7 +566,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				CompileClass(valueType);
 			}
 
-			return new JsTuple((int)valueType.GetTypeCode(), (int)ptrType.GetTypeCode());
+			return new JsTuple(valueType.JsTypeCode(), ptrType.JsTypeCode());
 		}
 		
 		private object Op(Instruction i, UnaryOperator op, bool checkOverflow)
@@ -566,7 +584,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			var x = (int)i.InputTypes[0].GetTypeCode();
 			var y = (int)i.InputTypes[1].GetTypeCode();
-			var t = (x << 8) | y;
+			var z = (int)i.OutputType.GetTypeCode();
+			var t = (x << 16) | (y << 8) | z;
 
 			return t;
 		}
@@ -575,11 +594,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			CompileOp(i.InputTypes[0], op);
 			CompileOp(i.InputTypes[1], op);
-
-			if (i.OutputType != null)
-			{
-				CompileOp(i.OutputType, op);
-			}
+			CompileOp(i.OutputType, op);
 		}
 
 		private readonly OperatorResolver _operators = new OperatorResolver();
@@ -710,7 +725,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					{"type", type.FullName},
 					{"box", new BoxingImpl(this).Box(context, elemType)},
 					{"unbox", new BoxingImpl(this).Unbox(context, elemType)},
-					{"etc", GetArrayElementTypeCode(elemType)},
+					{"etc", elemType.JsTypeCode()},
 				};
 
 			var = context.Vars.Add(key, info);
@@ -727,11 +742,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (!_constructedTypes.Contains(type))
 				_constructedTypes.Add(type);
 			return type;
-		}
-
-		private static int GetArrayElementTypeCode(IType elemType)
-		{
-			return (int)elemType.GetTypeCode();
 		}
 
 		private JsNode OpNewobj(MethodContext context, IMethod method)

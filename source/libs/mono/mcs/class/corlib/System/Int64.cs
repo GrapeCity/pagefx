@@ -128,12 +128,35 @@ namespace System
         #region Add
         public static Int64 operator +(Int64 x, Int64 y)
         {
-            int h = x.m_hi;
-            uint l2 = y.m_lo;
-            uint l = x.m_lo + l2;
-            if (l < l2) h++; //carry!
-            h += y.m_hi;
-            return new Int64(h, l);
+			// https://github.com/kripken/emscripten/blob/master/src/long.js
+			// Divide each number into 4 chunks of 16 bits, and then sum the chunks.
+
+	        uint hi = (uint)x.m_hi;
+			uint a48 = hi >> 16;
+			uint a32 = hi & 0xFFFF;
+			uint a16 = x.m_lo >> 16;
+			uint a00 = x.m_lo & 0xFFFF;
+
+			hi = (uint)y.m_hi;
+			uint b48 = hi >> 16;
+			uint b32 = hi & 0xFFFF;
+			uint b16 = y.m_lo >> 16;
+			uint b00 = y.m_lo & 0xFFFF;
+
+			uint c48 = 0, c32 = 0, c16 = 0, c00 = 0;
+			c00 += a00 + b00;
+			c16 += c00 >> 16;
+			c00 &= 0xFFFF;
+			c16 += a16 + b16;
+			c32 += c16 >> 16;
+			c16 &= 0xFFFF;
+			c32 += a32 + b32;
+			c48 += c32 >> 16;
+			c32 &= 0xFFFF;
+			c48 += a48 + b48;
+			c48 &= 0xFFFF;
+
+			return new Int64((c48 << 16) | c32, (c16 << 16) | c00);
         }
 
         public static Int64 operator +(Int64 x, UInt64 y)
@@ -205,13 +228,7 @@ namespace System
         #region Sub
         public static Int64 operator -(Int64 x, Int64 y)
         {
-            uint l2 = y.m_lo;
-            uint l = x.m_lo;
-            int h = x.m_hi - y.m_hi;
-            if (l < l2) //borrow?
-                h -= 1;
-            l -= l2;
-            return new Int64(h, l);
+	        return x + (-y);
         }
 
         public static Int64 operator -(Int64 x, UInt64 y)
@@ -280,23 +297,9 @@ namespace System
         }
         #endregion
 
-        public void Negate()
-        {
-            uint l = (~m_lo) + 1;
-            int h = ~m_hi;
-            if (l == 0)
-                ++h;
-            m_lo = l;
-            m_hi = h;
-        }
-
         public static Int64 operator -(Int64 x)
         {
-            uint l = (~x.m_lo) + 1;
-            int h = ~x.m_hi;
-            if (l == 0)
-                ++h;
-            return new Int64(h, l);
+			return (~x) + 1;
         }
 
         #region Multiply

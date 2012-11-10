@@ -93,12 +93,33 @@ namespace System
         #region Add
         public static UInt64 operator +(UInt64 x, UInt64 y)
         {
-            uint y_lo = y.m_lo;
-            uint l = x.m_lo + y_lo;
-            uint h = x.m_hi + y.m_hi;
-            if (l < y_lo)
-                h += 1;
-            return new UInt64(h, l);
+			// https://github.com/kripken/emscripten/blob/master/src/long.js
+			// Divide each number into 4 chunks of 16 bits, and then sum the chunks.
+
+			uint a48 = x.m_hi >> 16;
+			uint a32 = x.m_hi & 0xFFFF;
+			uint a16 = x.m_lo >> 16;
+			uint a00 = x.m_lo & 0xFFFF;
+
+			uint b48 = y.m_hi >> 16;
+			uint b32 = y.m_hi & 0xFFFF;
+			uint b16 = y.m_lo >> 16;
+			uint b00 = y.m_lo & 0xFFFF;
+
+			uint c48 = 0, c32 = 0, c16 = 0, c00 = 0;
+			c00 += a00 + b00;
+			c16 += c00 >> 16;
+			c00 &= 0xFFFF;
+			c16 += a16 + b16;
+			c32 += c16 >> 16;
+			c16 &= 0xFFFF;
+			c32 += a32 + b32;
+			c48 += c32 >> 16;
+			c32 &= 0xFFFF;
+			c48 += a48 + b48;
+			c48 &= 0xFFFF;
+
+			return new UInt64((c48 << 16) | c32, (c16 << 16) | c00);
         }
 
         public static UInt64 operator +(UInt64 x, uint y)
@@ -150,12 +171,7 @@ namespace System
 
         public static UInt64 operator -(UInt64 x, uint y)
         {
-            uint l = x.m_lo;
-            uint h = x.m_hi;
-            if (l < y)
-                h -= 1;
-            l -= y;
-            return new UInt64(h, l);
+	        return Sub(x, new UInt64(y));
         }
 
         public static UInt64 operator -(UInt64 x, int y)
@@ -185,105 +201,47 @@ namespace System
         #endregion
 
         #region Multiply
-        internal static void Mult64by16to64(uint alo, uint ahi, ushort b, out uint clo, out uint chi)
-        {
-            uint val, mid, carry0, carry1;
-            ushort a0, a1, a2, a3;
-            ushort h0, h1, h2, h3, h4;
-            a0 = (ushort)alo;
-            a1 = (ushort)(alo >> 16);
-            a2 = (ushort)ahi;
-            a3 = (ushort)(ahi >> 16);
 
-            val = ((uint)a0) * b;
-            h0 = (ushort)val;
+	    internal static UInt64 Multiply(uint alo, uint ahi, uint blo, uint bhi)
+		{
+			// https://github.com/kripken/emscripten/blob/master/src/long.js
 
-            val >>= 16;
-            carry0 = 0;
-            mid = ((uint)a1) * b;
-            val += mid;
-            if (val < mid) ++carry0;
-            h1 = (ushort)val;
+			uint a48 = ahi >> 16;
+			uint a32 = ahi & 0xFFFF;
+			uint a16 = alo >> 16;
+			uint a00 = alo & 0xFFFF;
 
-            val >>= 16;
-            carry1 = 0;
-            mid = ((uint)a2) * b;
-            val += mid;
-            if (val < mid) ++carry1;
-            h2 = (ushort)val;
+			uint b48 = bhi >> 16;
+			uint b32 = bhi & 0xFFFF;
+			uint b16 = blo >> 16;
+			uint b00 = blo & 0xFFFF;
 
-            val >>= 16;
-            val += carry0;
-            mid = ((uint)a3) * b;
-            val += mid;
-            h3 = (ushort)val;
+			uint c48 = 0, c32 = 0, c16 = 0, c00 = 0;
+			c00 += a00*b00;
+			c16 += c00 >> 16;
+			c00 &= 0xFFFF;
+			c16 += a16*b00;
+			c32 += c16 >> 16;
+			c16 &= 0xFFFF;
+			c16 += a00*b16;
+			c32 += c16 >> 16;
+			c16 &= 0xFFFF;
+			c32 += a32*b00;
+			c48 += c32 >> 16;
+			c32 &= 0xFFFF;
+			c32 += a16*b16;
+			c48 += c32 >> 16;
+			c32 &= 0xFFFF;
+			c32 += a00*b32;
+			c48 += c32 >> 16;
+			c32 &= 0xFFFF;
+			c48 += a48*b00 + a32*b16 + a16*b32 + a00*b48;
+			c48 &= 0xFFFF;
 
-            val >>= 16;
-            val += carry1;
-            h4 = (ushort)val;
-            if (h4 != 0)
-                throw new OverflowException();
+			return new UInt64((c48 << 16) | c32, (c16 << 16) | c00);
+		}
 
-            clo = ((uint)h1) << 16 | h0;
-            chi = ((uint)h3) << 16 | h2;
-        }
-
-        internal static void Mult32by32to64(uint a, uint b, out uint clo, out uint chi)
-        {
-            Mult32by32to64((ushort)a, (ushort)(a >> 16), (ushort)b, (ushort)(b >> 16), out clo, out chi);
-        }
-
-        private static void Mult32by32to64(ushort alo, ushort ahi, ushort blo, ushort bhi, out uint clo, out uint chi)
-        {
-            uint a, b, c, d;
-            ushort h0, h1, h2, h3, carry;
-
-            a = ((uint)alo) * blo;
-            h0 = (ushort)a;
-
-            a >>= 16;
-            carry = 0;
-            b = ((uint)alo) * bhi;
-            c = ((uint)ahi) * blo;
-            a += b;
-            if (a < b) ++carry;
-            a += c;
-            if (a < c) ++carry;
-            h1 = (ushort)a;
-
-            a >>= 16;
-            d = ((uint)ahi) * bhi;
-            a += d;
-            h2 = (ushort)a;
-
-            a >>= 16;
-            a += carry;
-            h3 = (ushort)a;
-
-            clo = ((uint)h1) << 16 | h0;
-            chi = ((uint)h3) << 16 | h2;
-        }
-
-        internal static UInt64 Multiply(uint alo, uint ahi, uint blo, uint bhi)
-        {
-            uint p1_lo, p1_hi, p2_lo, p2_hi, p3_lo, p3_hi;
-            uint sum;
-
-            Mult32by32to64(alo, blo, out p1_lo, out p1_hi);
-
-            uint c0 = p1_lo;
-
-            sum = p1_hi;
-            Mult32by32to64(ahi, blo, out p2_lo, out p2_hi);
-            Mult32by32to64(alo, bhi, out p3_lo, out p3_hi);
-            sum += p2_lo;
-            sum += p3_lo;
-            uint c1 = sum;
-
-            return new UInt64(c1, c0);
-        }
-
-        public static UInt64 operator *(UInt64 x, UInt64 y)
+	    public static UInt64 operator *(UInt64 x, UInt64 y)
         {
             return Multiply(x.m_lo, x.m_hi, y.m_lo, y.m_hi);
         }
@@ -295,16 +253,7 @@ namespace System
 
         public static UInt64 operator *(UInt64 d1, uint d2)
         {
-            if (d2 <= ushort.MaxValue)
-            {
-                uint c0, c1;
-                Mult64by16to64(d1.m_lo, d1.m_hi, (ushort)d2, out c0, out c1);
-                return new UInt64(c1, c0);
-            }
-            else
-            {
-                return Multiply(d1.m_lo, d1.m_hi, d2, 0);
-            }
+            return Multiply(d1.m_lo, d1.m_hi, d2, 0);
         }
 
         public static UInt64 operator *(UInt64 x, int y)
@@ -484,9 +433,7 @@ namespace System
 
         public static Int64 operator -(UInt64 x)
         {
-            Int64 y = new Int64(x);
-            y.Negate();
-            return y;
+            return -(new Int64(x));
         }
         #endregion
 

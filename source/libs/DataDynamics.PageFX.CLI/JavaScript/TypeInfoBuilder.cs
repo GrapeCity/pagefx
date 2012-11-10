@@ -65,31 +65,54 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			init.Body.Add(t.Set(SystemTypes.Type.New()));
 			init.Body.Add(new JsText(string.Format("{0} = t;", prop)));
 
-			init.Body.Add(t.Set("ns", type.Namespace ?? ""));
-			init.Body.Add(t.Set("name", type.Name));
-			init.Body.Add(t.Set("kind", type.GetCorlibKind()));
-
-			var hierarchy = new JsObject(type.GetFullTypeHierarchy().Select(x => new KeyValuePair<string, object>(x.FullName, 1)));
-			init.Body.Add(t.Set("$hierarchy", hierarchy));
-
-			var newFunc = new JsFunction();
-			newFunc.Body.Add(type.New().Return());
-			init.Body.Add(t.Set("$new", newFunc));
-
-			var compoundType = type as ICompoundType;
-			if (compoundType != null)
+			var description = Describe(type);
+			foreach (var property in description)
 			{
-				init.Body.Add(t.Set("$elemType", compoundType.ElementType.FullName));
-			}
-
-			if (type.ValueType != null)
-			{
-				init.Body.Add(t.Set("$valueType", type.ValueType.FullName));
+				init.Body.Add(t.Set(property.Key, property.Value));
 			}
 
 			init.Body.Add(t.Return());
 
 			_program.Add("$types".Id().Set(type.FullName, init));
+		}
+
+		private static IEnumerable<KeyValuePair<string,object>> Describe(IType type)
+		{
+			var hierarchy = new JsObject(type.GetFullTypeHierarchy().Select(x => new KeyValuePair<string, object>(x.FullName, 1)));
+
+			var newFunc = new JsFunction();
+			newFunc.Body.Add(type.New().Return());
+
+			var list = new PropertyList
+				{
+					{"ns", type.Namespace ?? ""},
+					{"name", type.Name},
+					{"kind", type.GetCorlibKind()},
+					{"$typecode", type.JsTypeCode()},
+					{"$hierarchy", hierarchy},
+					{"$new", newFunc},
+				};
+			
+			var compoundType = type as ICompoundType;
+			if (compoundType != null)
+			{
+				list.Add("$elemType", compoundType.ElementType.FullName);
+			}
+
+			if (type.ValueType != null)
+			{
+				list.Add("$valueType", type.ValueType.FullName);
+			}
+
+			return list;
+		}
+
+		private sealed class PropertyList : List<KeyValuePair<string,object>>
+		{
+			public void Add(string key, object value)
+			{
+				Add(new KeyValuePair<string, object>(key, value));
+			}
 		}
 	}
 }

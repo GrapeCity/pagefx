@@ -165,8 +165,23 @@ function $decodeDouble(bytes) {
 	return $decodeFloat(bytes, 1, 11, 52, -1022, 1023, true);
 }
 
+// Substitutes "{n}" tokens within the specified string with the respective arguments passed in.
+function $format(str) {
+
+	if (!str) return '';
+
+	for (var i = 1; i < arguments.length; i++) {
+		str = str.replace(new RegExp("\\{" + (i - 1) + "\\}", "g"), arguments[i]);
+	}
+
+	return str;
+}
+
 // System.TypeCode
 $tc = {
+	Empty: 0,
+    o: 1,
+    DBNull: 2,
 	b: 3,	// Boolean
 	c: 4,	// Char
 	i1: 5,	// SByte
@@ -180,7 +195,32 @@ $tc = {
 	r4: 13,	// Single
 	r8: 14,	// Double
 	d: 15,	// Decimal
-	s: 18	// String
+	DateTime: 16,	// DateTime
+	s: 18,	// String
+	
+	stringify: function(v){
+		switch (v) {
+			case $tc.Empty: return "Empty";
+			case $tc.o: return "Object";
+			case $tc.DBNull: return "DBNull";
+			case $tc.b: return "Boolean";
+			case $tc.c: return "Char";
+			case $tc.i1: return "SByte";
+			case $tc.u1: return "Byte";
+			case $tc.i2: return "Int16";
+			case $tc.u2: return "UInt16";
+			case $tc.i4: return "Int32";
+			case $tc.u4: return "UInt32";
+			case $tc.i8: return "Int64";
+			case $tc.u8: return "UInt64";
+			case $tc.r4: return "Single";
+			case $tc.r8: return "Double";
+			case $tc.d: return "Decimal";
+			case $tc.DateTime: return "DateTime";
+			case $tc.s: return "String";
+			default: return v.toString();
+		}
+	}
 };
 
 function $conv(v, from, to) {
@@ -420,7 +460,7 @@ function $conv(v, from, to) {
 				case $tc.i2:
 				case $tc.i4:
 					n = ((v >>> 0) & 0xffffffff) >>> 0;
-					return new System.UInt64(v < 0 ? 0xffffffff : 0, n);
+					return new System.UInt64(0, n);
 				case $tc.i8:
 					n = ((v.m_hi >>> 0) & 0xffffffff) >>> 0;
 					return new System.UInt64(n, v.m_lo);
@@ -496,7 +536,17 @@ function $conv(v, from, to) {
 			break;
 	}
 
-	throw new Error("Not implemented!");
+	throw new Error($format("$conv from {0} to {1} is not implemented!", $tc.stringify(from), $tc.stringify(to)));
+}
+
+function $convto(v, to) {
+	if (v) {
+		var from = v.GetType().$typecode;
+		if (from != to) {
+			return $conv(v, from, to);
+		}
+	}
+	return v;
 }
 
 function $initarr(a, blob) {
@@ -1012,17 +1062,17 @@ function $context($method, $args, $vars) {
 			case 98: // shl
 				y = pop(true);
 				x = pop(true);
-				push(shl(x, y));
+				push(shl(x, y, i[1]));
 				break;
 			case 99: // shr
 				y = pop(true);
 				x = pop(true);
-				push(shr(x, y));
+				push(shr(x, y, i[1]));
 				break;
 			case 100: // shr.un
 				y = popun();
 				x = popun();
-				push(shr(x, y));
+				push(shr(x, y, i[1]));
 				break;
 			case 101: // neg
 				x = pop(true);
@@ -1647,38 +1697,35 @@ function $context($method, $args, $vars) {
 		}
 	}
 	
-	function fixt(t) {
+	function isUnsigned(t) {
 		switch (t) {
-			case $tc.i1:
-			case $tc.i2:
-				return $tc.i4;
-
 			case $tc.u1:
-			case $tc.c:
 			case $tc.u2:
-				return $tc.u4;
-
-			case $tc.r4:
-			case $tc.r8:
-				return $tc.r8;
-
+			case $tc.u4:
+			case $tc.u8:
+			case $tc.c:
+				return true;
 			default:
-				return t;
+				return false;
 		}
 	}
 	
-	function maxt(t) {
-		var t1 = fixt(t >> 8);
-		var t2 = fixt(t & 0xff);
-		return Math.max(t1, t2);
+	function bop(x, y, t, op) {
+		var tx = (t >>> 16) & 0xff;
+		var ty = (t >>> 8) & 0xff;
+		var tr = Math.max(tx, ty);
+		x = $conv(x, tx, tr);
+		y = $conv(y, ty, tr);
+		var v = op(x, y);
+		return $conv(v, tr, t & 0xff);
 	}
 	
-	function bop(x, y, t, op) {
-		var t1 = fixt(t >> 8);
-		var t2 = fixt(t & 0xff);
-		var t3 = Math.max(t1, t2);
-		x = $conv(x, t1, t3);
-		y = $conv(y, t2, t3);
+	function rel(x, y, t, op) {
+		var tx = (t >>> 16) & 0xff;
+		var ty = (t >>> 8) & 0xff;
+		var tr = Math.max(tx, ty);
+		x = $conv(x, tx, tr);
+		y = $conv(y, ty, tr);
 		return op(x, y);
 	}
 
@@ -1715,7 +1762,7 @@ function $context($method, $args, $vars) {
 	}
 
 	function div(x, y, t) {
-		if (maxt(t) <= 10) {
+		if ((t & 0xff) <= $tc.u4) {
 			return bop(x, y, t, $idiv);
 		}
 		return bop(x, y, t, $div);
@@ -1730,7 +1777,7 @@ function $context($method, $args, $vars) {
 	}
 
 	function rem(x, y, t) {
-		if (maxt(t) <= 10) {
+		if ((t & 0xff) <= $tc.u4) {
 			return bop(x, y, t, $irem);
 		}
 		return bop(x, y, t, $rem);
@@ -1759,15 +1806,21 @@ function $context($method, $args, $vars) {
 	function xor(x, y, t) {
 		return bop(x, y, t, $xor);
 	}
-
-	function shl(x, y) {
+	
+	function shl(x, y, t) {
+		// convert y to int32
+		y = $conv(y, (t >>> 8) & 0xff, $tc.i4);
 		if (x.$shl) return x.$shl(y);
-		return x << y;
+		return $conv(x << y, $tc.i4, t & 0xff);
 	}
 
-	function shr(x, y) {
+	function shr(x, y, t) {
+		// convert y to int32
+		y = $conv(y, (t >>> 8) & 0xff, $tc.i4);
 		if (x.$shr) return x.$shr(y);
-		return x >> y;
+		t = t & 0xff;
+		var un = isUnsigned(t);
+		return un ? $conv(x >>> y, $tc.u4, t) : $conv(x >> y, $tc.i4, t);
 	}
 
 	function neg(x) {
@@ -1775,7 +1828,7 @@ function $context($method, $args, $vars) {
 	}
 
 	function not(x) {
-		return x.$not ? x.$not() : !x;
+		return x.$not ? x.$not() : ~x;
 	}
 
 	function $eq(x, y) {
@@ -1783,7 +1836,9 @@ function $context($method, $args, $vars) {
 	}
 
 	function eq(x, y, t) {
-		return bop(x, y, t, $eq);
+		if (x === null) return y === null;
+		if (y === null) return false;
+		return rel(x, y, t, $eq);
 	}
 
 	function $ge(x, y) {
@@ -1791,7 +1846,7 @@ function $context($method, $args, $vars) {
 	}
 
 	function ge(x, y, t) {
-		return bop(x, y, t, $ge);
+		return rel(x, y, t, $ge);
 	}
 
 	function $le(x, y) {
@@ -1799,7 +1854,7 @@ function $context($method, $args, $vars) {
 	}
 
 	function le(x, y, t) {
-		return bop(x, y, t, $le);
+		return rel(x, y, t, $le);
 	}
 
 	function $gt(x, y) {
@@ -1807,7 +1862,7 @@ function $context($method, $args, $vars) {
 	}
 
 	function gt(x, y, t) {
-		return bop(x, y, t, $gt);
+		return rel(x, y, t, $gt);
 	}
 
 	function $lt(x, y) {
@@ -1815,7 +1870,7 @@ function $context($method, $args, $vars) {
 	}
 
 	function lt(x, y, t) {
-		return bop(x, y, t, $lt);
+		return rel(x, y, t, $lt);
 	}
 	
 	function convt(i, to, un, ovf) {

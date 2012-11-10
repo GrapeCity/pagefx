@@ -99,10 +99,10 @@ test("FromSByte", function() {
 	check64($conv(min, $tc.i1, $tc.i8), -1, 0xffffff80);
 	check64($conv(max, $tc.i1, $tc.i8), 0, max); //45
 
-	check64($conv(0, $tc.i1, $tc.u8), 0, 0);
-	check64($conv(1, $tc.i1, $tc.u8), 0, 1);
-	check64($conv(-1, $tc.i1, $tc.u8), 0xffffffff, 0xffffffff);
-	check64($conv(min, $tc.i1, $tc.u8), 0xffffffff, 0xffffff80);
+	check64($conv(0, $tc.i1, $tc.u8), 0, 0); //46,47
+	check64($conv(1, $tc.i1, $tc.u8), 0, 1); //48,49
+	check64($conv(-1, $tc.i1, $tc.u8), 0, 0xffffffff); //50, 51
+	check64($conv(min, $tc.i1, $tc.u8), 0, 0xffffff80); //52, 53
 	check64($conv(max, $tc.i1, $tc.u8), 0, max); //55
 
 	equal($conv(0, $tc.i1, $tc.r4), 0);
@@ -219,8 +219,8 @@ test("FromInt16", function() {
 
 	check64($conv(0, $tc.i2, $tc.u8), 0, 0);
 	check64($conv(1, $tc.i2, $tc.u8), 0, 1);
-	check64($conv(-1, $tc.i2, $tc.u8), 0xffffffff, 0xffffffff);
-	check64($conv(min, $tc.i2, $tc.u8), 0xffffffff, 0xffff8000);
+	check64($conv(-1, $tc.i2, $tc.u8), 0, 0xffffffff);
+	check64($conv(min, $tc.i2, $tc.u8), 0, 0xffff8000);
 	check64($conv(max, $tc.i2, $tc.u8), 0, max); //55
 
 	equal($conv(0, $tc.i2, $tc.r4), 0);
@@ -337,8 +337,8 @@ test("FromInt32", function() {
 
 	check64($conv(0, $tc.i4, $tc.u8), 0, 0);
 	check64($conv(1, $tc.i4, $tc.u8), 0, 1);
-	check64($conv(-1, $tc.i4, $tc.u8), 0xffffffff, 0xffffffff);
-	check64($conv(min, $tc.i4, $tc.u8), 0xffffffff, 0x80000000);
+	check64($conv(-1, $tc.i4, $tc.u8), 0, 0xffffffff);
+	check64($conv(min, $tc.i4, $tc.u8), 0, 0x80000000);
 	check64($conv(max, $tc.i4, $tc.u8), 0, 0x7fffffff); //55
 
 	equal($conv(0, $tc.i4, $tc.r4), 0);
