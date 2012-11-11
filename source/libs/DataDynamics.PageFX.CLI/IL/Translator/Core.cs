@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CLI.IL
     using Code = List<IInstruction>;
 
     //This part contains translation for every CIL instruction.
-    partial class ILTranslator
+    internal partial class ILTranslator
     {
         #region TranslateInstructionCore
         /// <summary>
@@ -1846,6 +1846,7 @@ namespace DataDynamics.PageFX.CLI.IL
             var elemType = GetElemType(arr.Type);
 
 			_instruction.InputTypes = new[] {elemType};
+			_instruction.OutputType = elemType;
 
             var code = new Code();
             code.AddRange(_provider.GetArrayElem(elemType));

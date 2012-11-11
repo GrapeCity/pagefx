@@ -240,7 +240,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return codeProvider.Function;
 		}
 
-		internal JsFunction CompileJsil(JsClass klass, IMethod method, IClrMethodBody body)
+		internal JsFunction CompileMethodBody(JsClass klass, IMethod method, IClrMethodBody body)
 		{
 			var context = new MethodContext(this, klass, method);
 
@@ -433,7 +433,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					CompileType(i.Type);
 					return i.Type.FullName;
 
+				case InstructionCode.Ldelem:
 				case InstructionCode.Ldelema:
+					CompileType(i.Type);
+					//TODO: add type name
 					return null;
 
 				#region binary, unary arithmetic operations
@@ -941,6 +944,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		internal JsNode CompileType(IType type)
 		{
+			if (type == null) return null;
+
 			if (type.IsInterface)
 			{
 				return JsInterface.Make(type);

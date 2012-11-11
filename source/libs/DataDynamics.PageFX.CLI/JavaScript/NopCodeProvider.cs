@@ -52,7 +52,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public void Finish()
 		{
-			Function = _host.CompileJsil(_klass, _method, (IClrMethodBody)_method.Body);
+			Function = _host.CompileMethodBody(_klass, _method, (IClrMethodBody)_method.Body);
 		}
 
 		public int GetVarIndex(int index, bool tobackend)
