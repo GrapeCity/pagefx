@@ -6,7 +6,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			var func = new JsFunction(null);
 			func.Body.Add(klass.Type.New().Return());
-			klass.Add(new JsGeneratedMethod(string.Format("{0}.prototype.CreateInstance", klass.Type.JsFullName()), func));
+
+			klass.ExtendPrototype(func, "CreateInstance");
 		}
 	}
 }

@@ -156,6 +156,7 @@
     <Compile Include="JavaScript\ClassInitImpl.cs" />
     <Compile Include="JavaScript\Inlining\AvmInlines.cs" />
     <Compile Include="JavaScript\Inlining\System.BitConverter.cs" />
+    <Compile Include="JavaScript\JsClassExtensions.cs" />
     <Compile Include="JavaScript\JsEnum.cs" />
     <Compile Include="JavaScript\JsGlobalPool.cs" />
     <Compile Include="JavaScript\FieldCompiler.cs" />

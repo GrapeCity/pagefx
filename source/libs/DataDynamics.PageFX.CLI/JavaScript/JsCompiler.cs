@@ -657,7 +657,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var func = new JsFunction(null);
 			func.Body.Add(jsMethod.FullName.Id().Call("this".Id()).Return());
 
-			ExtendPrototype(type, op.JsName(), func);
+			ExtendPrototype(type, func, op.JsName());
 		}
 
 		private void CompileOp(IType type, BinaryOperator op)
@@ -679,16 +679,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var func = new JsFunction(null, val.Value);
 			func.Body.Add(jsMethod.FullName.Id().Call("this".Id(), val).Return());
 
-			ExtendPrototype(type, op.JsName(), func);
+			ExtendPrototype(type, func, op.JsName());
 		}
 
-		internal void ExtendPrototype(IType type, string name, JsFunction func)
+		internal void ExtendPrototype(IType type, JsFunction func, string name)
 		{
 			var klass = CompileClass(type);
 
-			var fullName = type.JsFullName() + ".prototype." + name;
-
-			klass.Add(new JsGeneratedMethod(fullName, func));
+			klass.ExtendPrototype(func, name);
 		}
 
 		private object OpLdtoken(MethodContext context, ITypeMember member)

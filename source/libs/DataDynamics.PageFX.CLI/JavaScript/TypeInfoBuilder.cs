@@ -38,18 +38,18 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			Register(type);
 
-			var getType = new JsFunction(null);
+			var func = new JsFunction(null);
 
 			if (type == SystemTypes.Array)
 			{
-				getType.Body.Add("$types".Id().Get("this".Id().Get("m_type")).Call().Return());
+				func.Body.Add("$types".Id().Get("this".Id().Get("m_type")).Call().Return());
 			}
 			else
 			{
-				getType.Body.Add("$types".Id().Get(type.FullName).Call().Return());
+				func.Body.Add("$types".Id().Get(type.FullName).Call().Return());
 			}
 
-			klass.Add(new JsGeneratedMethod((type.IsString() ? "String" : type.JsFullName()) + ".prototype.GetType", getType));
+			klass.ExtendPrototype(func, "GetType");
 		}
 
 		private void Register(IType type)

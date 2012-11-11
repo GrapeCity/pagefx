@@ -52,7 +52,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				func.Body.Add(value.Return());
 			}
 
-			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.GetHashCode", type.JsFullName()), func));
+			klass.ExtendPrototype(func, "GetHashCode");
 		}
 
 		private static void CompileToString(JsCompiler compiler, JsClass klass)
@@ -71,7 +71,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				func.Body.Add(new JsText("return $enum.stringify(this);"));
 			}
 
-			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.toString", type.JsFullName()), func));
+			klass.ExtendPrototype(func, "toString");
 		}
 
 		private static void CompileValues(JsCompiler compiler, JsClass klass)
@@ -108,7 +108,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var func = new JsFunction(null);
 			func.Body.Add(valuesField.Id().Return());
 
-			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.$values", typeName), func));
+			klass.ExtendPrototype(func, "$values");
 		}
 
 		private static object GetValue(JsCompiler compiler, IField field, IType valueType)

@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			func.Body.Add(obj.Return());
 
-			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.$copy", type.JsFullName()), func));
+			klass.ExtendPrototype(func, "$copy");
 		}
 
 		private static void CompileEquals(JsCompiler compiler, JsClass klass)
@@ -90,7 +90,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			var methodName = ObjectMethods.Find(ObjectMethodId.Equals).JsName();
 
-			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.{1}", klass.Type.JsFullName(), methodName), func));
+			klass.ExtendPrototype(func, methodName);
 		}
 
 		private static IEnumerable<IField> GetInstanceFields(JsClass klass)
@@ -100,10 +100,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private static void CompileGetHashCode(JsClass klass)
 		{
-			var type = klass.Type;
 			var func = new JsFunction(null);
 			func.Body.Add("$hash".Id().Call("this".Id()).Return());
-			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.GetHashCode", type.JsFullName()), func));
+
+			klass.ExtendPrototype(func, "GetHashCode");
 		}
 	}
 }
