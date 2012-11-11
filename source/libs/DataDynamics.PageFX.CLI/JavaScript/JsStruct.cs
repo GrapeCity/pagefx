@@ -9,11 +9,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 	{
 		public static void CopyImpl(JsClass klass)
 		{
+			var type = klass.Type;
 			var func = new JsFunction(null);
 
 			var obj = "o".Id();
-
-			func.Body.Add(klass.Type.New().Var(obj.Value));
+			
+			func.Body.Add(type.New().Var(obj.Value));
 
 			foreach (var field in GetInstanceFields(klass))
 			{
@@ -30,7 +31,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			func.Body.Add(obj.Return());
 
-			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.$copy", klass.Type.JsFullName()), func));
+			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.$copy", type.JsFullName()), func));
 		}
 
 		public static void DefaultEqualsImpl(JsCompiler host, JsClass klass)
@@ -69,14 +70,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			func.Body.Add(result == null ? "false".Id().Return() : result.Return());
 
-			var methodName = GetObjectEqualsMethod().JsName();
+			var methodName = ObjectMethods.FindEquals().JsName();
 
 			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.{1}", klass.Type.JsFullName(), methodName), func));
-		}
-
-		public static IMethod GetObjectEqualsMethod()
-		{
-			return SystemTypes.Object.Methods.Find("Equals", SystemTypes.Object);
 		}
 
 		private static IEnumerable<IField> GetInstanceFields(JsClass klass)

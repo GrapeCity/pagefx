@@ -147,7 +147,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Delegates\Delegate2.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Delegates\Delegate3.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Delegates\Delegate4.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\EnumTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\EnumFormat.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Incrementing\Test1.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Incrementing\Test2.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Incrementing\Test3.cs" />
@@ -1511,9 +1511,13 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\String\Ctors.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\ValueTypeEquals.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\BoolTest.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\SimpleEnumTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\EnumSwitch.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\BitConverterTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Int64\Int64FirstTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\SimpleEnums.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\LongEnums.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\EnumArray.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\EnumMethods.cs" />
     <Compile Include="Tools\JsRunner.cs" />
     <Compile Include="UnitTests\ABCALL.cs" />
     <Compile Include="UnitTests\ABCDefineTest.cs" />

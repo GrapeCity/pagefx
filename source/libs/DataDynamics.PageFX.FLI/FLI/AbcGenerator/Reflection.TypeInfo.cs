@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
@@ -651,7 +652,7 @@ namespace DataDynamics.PageFX.FLI
 	                });
         }
 
-        static object ToIntegralType(IType type, object value)
+        private static object ToIntegralType(IType type, object value)
         {
             var st = type.SystemType;
             if (st == null)
@@ -659,21 +660,21 @@ namespace DataDynamics.PageFX.FLI
             switch (st.Code)
             {
                 case SystemTypeCode.Int8:
-                    return Convert.ToSByte(value);
+                    return Convert.ToSByte(value, CultureInfo.InvariantCulture);
                 case SystemTypeCode.UInt8:
-                    return Convert.ToByte(value);
+					return Convert.ToByte(value, CultureInfo.InvariantCulture);
                 case SystemTypeCode.Int16:
-                    return Convert.ToInt16(value);
+					return Convert.ToInt16(value, CultureInfo.InvariantCulture);
                 case SystemTypeCode.UInt16:
-                    return Convert.ToUInt16(value);
+					return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
                 case SystemTypeCode.Int32:
-                    return Convert.ToInt32(value);
+					return Convert.ToInt32(value, CultureInfo.InvariantCulture);
                 case SystemTypeCode.UInt32:
-                    return Convert.ToUInt32(value);
+					return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
                 case SystemTypeCode.Int64:
-                    return Convert.ToInt64(value);
+					return Convert.ToInt64(value, CultureInfo.InvariantCulture);
                 case SystemTypeCode.UInt64:
-                    return Convert.ToUInt64(value);
+					return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
                 default:
                     throw new ArgumentException("Invalid type");
             }

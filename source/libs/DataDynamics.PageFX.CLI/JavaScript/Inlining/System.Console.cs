@@ -61,7 +61,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 			context.Host.CompileCallMethod(toString);
 
 			var arg = context.Method.JsArgs()[0];
-			var val = "$tostr".Id().Call("$unbox".Id().Call(arg));
+			var val = "$tostr".Id().Call(arg);
 			code.Add("console.log".Id().Call(val));
 		}
 	}

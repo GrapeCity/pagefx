@@ -140,12 +140,37 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				{
 					CompileMethod(o);
 				}
-				else if (subclass.Type.TypeKind == TypeKind.Struct && method.IsEquals())
+				else if (method.IsEquals())
 				{
-					JsStruct.DefaultEqualsImpl(this, subclass);
+					CompileEqualsImpl(subclass);
+				}
+				else if (method.IsToString())
+				{
+					CompileToStringImpl(subclass);
 				}
 
 				CompileOverrides(subclass, method);
+			}
+		}
+
+		private void CompileEqualsImpl(JsClass klass)
+		{
+			switch (klass.Type.TypeKind)
+			{
+				case TypeKind.Struct:
+				case TypeKind.Enum:
+					JsStruct.DefaultEqualsImpl(this, klass);
+					break;
+			}
+		}
+
+		private void CompileToStringImpl(JsClass klass)
+		{
+			switch (klass.Type.TypeKind)
+			{
+				case TypeKind.Enum:
+					JsEnum.ToStringImpl(this, klass);
+					break;
 			}
 		}
 
@@ -278,24 +303,34 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return new InternalCallImpl(this).CompileInlineFunction(method);
 		}
 
+		internal object CompileInt64(long value)
+		{
+			var hi = (int)(value >> 32);
+			var lo = (uint)(value & 0xffffffff);
+			CompileClass(SystemTypes.Int64);
+			return SystemTypes.Int64.New(hi, lo);
+		}
+
+		internal object CompileUInt64(ulong value)
+		{
+			var hi = (uint)(value >> 32);
+			var lo = (uint)(value & 0xffffffff);
+			CompileClass(SystemTypes.UInt64);
+			return SystemTypes.UInt64.New(hi, lo);
+		}
+
 		private object CompileInstruction(MethodContext context, Instruction i)
 		{
 			var value = i.Value;
 			if (value is long)
 			{
-				var hi = (int)((long)value >> 32);
-				var lo = (uint)((long)value & 0xffffffff);
-				CompileClass(SystemTypes.Int64);
-				return new JsNewobj(SystemTypes.Int64, hi, lo);
+				return CompileInt64((long)value);
 			}
 			if (value is ulong)
 			{
-				var hi = (uint)((ulong)value >> 32);
-				var lo = (uint)((ulong)value & 0xffffffff);
-				CompileClass(SystemTypes.UInt64);
-				return new JsNewobj(SystemTypes.UInt64, hi, lo);
+				return CompileUInt64((ulong)value);
 			}
-
+			
 			switch (i.Code)
 			{
 					// conv ops
@@ -940,8 +975,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var klass = type.Tag as JsClass;
 			if (klass != null) return klass;
 
+			if (type.IsEnum && type.ValueType.IsInt64())
+			{
+				CompileClass(type.ValueType);
+			}
+
 			var baseType = type.BaseType;
-			var baseClass = CompileClass(baseType == SystemTypes.ValueType ? SystemTypes.Object : baseType);
+			var baseClass = CompileClass(baseType == SystemTypes.ValueType || type.IsEnum ? SystemTypes.Object : baseType);
 
 			if (string.IsNullOrEmpty(type.Namespace))
 				_program.DefineNamespace("$global");
@@ -981,16 +1021,21 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private void CompileImpls(JsClass klass, IType type)
 		{
-			var isValueType = type.TypeKind == TypeKind.Struct;
+			var isEnumOrStruct = type.TypeKind == TypeKind.Struct || type.TypeKind == TypeKind.Enum;
 			bool equalsDefined = false;
+			bool toStringDefined = false;
 
 			foreach (var method in type.Methods)
 			{
-				if (isValueType)
+				if (isEnumOrStruct)
 				{
 					if (method.IsEquals())
 					{
 						equalsDefined = true;
+					}
+					else if (method.IsToString())
+					{
+						toStringDefined = true;
 					}
 				}
 
@@ -1000,11 +1045,15 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				}
 			}
 
-			if (isValueType)
+			if (isEnumOrStruct)
 			{
-				if (!equalsDefined && JsStruct.GetObjectEqualsMethod().Tag != null)
+				if (!equalsDefined && ObjectMethods.FindEquals().Tag != null)
 				{
-					JsStruct.DefaultEqualsImpl(this, klass);
+					CompileEqualsImpl(klass);
+				}
+				if (!toStringDefined && ObjectMethods.FindToString().Tag != null)
+				{
+					CompileToStringImpl(klass);
 				}
 			}
 		}

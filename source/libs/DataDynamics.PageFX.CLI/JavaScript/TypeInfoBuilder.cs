@@ -78,7 +78,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private static IEnumerable<KeyValuePair<string,object>> Describe(IType type)
 		{
-			var hierarchy = new JsObject(type.GetFullTypeHierarchy().Select(x => new KeyValuePair<string, object>(x.FullName, 1)));
+			var hierarchy = new JsObject(type.GetFullTypeHierarchy().Select(x => new KeyValuePair<object, object>(x.FullName, 1)));
 
 			var newFunc = new JsFunction();
 			newFunc.Body.Add(type.New().Return());

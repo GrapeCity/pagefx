@@ -156,6 +156,7 @@
     <Compile Include="JavaScript\ClassInitImpl.cs" />
     <Compile Include="JavaScript\Inlining\AvmInlines.cs" />
     <Compile Include="JavaScript\Inlining\System.BitConverter.cs" />
+    <Compile Include="JavaScript\JsEnum.cs" />
     <Compile Include="JavaScript\JsGlobalPool.cs" />
     <Compile Include="JavaScript\FieldCompiler.cs" />
     <Compile Include="JavaScript\Inlining\Avm.Array.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="JavaScript\JsPool.cs" />
     <Compile Include="JavaScript\JsTypeExtensions.cs" />
     <Compile Include="JavaScript\MethodContext.cs" />
+    <Compile Include="JavaScript\ObjectMethods.cs" />
     <Compile Include="JavaScript\TypeInfoBuilder.cs" />
     <Compile Include="Metadata\Enums.cs" />
     <Compile Include="Metadata\MdbHtmlExport.cs" />

@@ -385,10 +385,15 @@ namespace DataDynamics.PageFX.FLI
         public static bool IsValueType(this IType type)
         {
             if (type == null) return false;
-            if (type.TypeKind == TypeKind.Struct) return true;
-            if (type.IsEnum) return true;
-            if (type.TypeKind == TypeKind.Primitive) return true;
-            return false;
+	        switch (type.TypeKind)
+	        {
+				case TypeKind.Struct:
+				case TypeKind.Enum:
+				case TypeKind.Primitive:
+			        return true;
+				default:
+			        return false;
+	        }
         }
 
         public static bool MustUseCastToMethod(IType type, bool asop)
@@ -410,16 +415,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-    	public static IField[] GetEnumFields(this IType type)
-    	{
-    		if (type == null)
-    			throw new ArgumentNullException("type");
-    		if (type.TypeKind != TypeKind.Enum)
-    			throw new ArgumentException("type is not enum");
-    		return type.Fields.Where(f => f.IsStatic).ToArray();
-    	}
-
-    	public static bool HasProtectedNamespace(this IType type)
+	    public static bool HasProtectedNamespace(this IType type)
     	{
     		switch (type.TypeKind)
     		{

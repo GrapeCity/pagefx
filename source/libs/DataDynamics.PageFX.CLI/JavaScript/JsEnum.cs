@@ -1,0 +1,103 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using DataDynamics.PageFX.CodeModel;
+
+namespace DataDynamics.PageFX.CLI.JavaScript
+{
+	internal sealed class JsEnum
+	{
+		public static void ToStringImpl(JsCompiler compiler, JsClass klass)
+		{
+			CompileValues(compiler, klass);
+
+			var type = klass.Type;
+
+			var func = new JsFunction(null);
+			if (type.HasAttribute("System.FlagsAttribute"))
+			{
+				func.Body.Add(new JsText("return $enum.flags(this);"));
+			}
+			else
+			{
+				func.Body.Add(new JsText("return $enum.stringify(this);"));
+			}
+
+			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.toString", type.JsFullName()), func));
+		}
+
+		private static void CompileValues(JsCompiler compiler, JsClass klass)
+		{
+			var type = klass.Type;
+
+			var fields = type.GetEnumFields()
+				.Select(x =>
+					{
+						var value = GetValue(compiler, x, type.ValueType);
+						return new {Name = x.Name, Value = value};
+					});
+
+			var typeName = type.JsFullName();
+			var valuesField = string.Format("{0}.$$values", typeName);
+			object values;
+
+			if (type.ValueType.IsInt64())
+			{
+				values = new JsArray(fields.Select(x => (object)new JsObject
+					{
+						{"name", x.Name},
+						{"value", x.Value},
+					}));
+			}
+			else
+			{
+
+				values = new JsObject(fields.Select(x => new KeyValuePair<object, object>(x.Value, x.Name)));
+			}
+
+			klass.Add(new JsGeneratedField(valuesField, values));
+
+			var func = new JsFunction(null);
+			func.Body.Add(valuesField.Id().Return());
+
+			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.$values", typeName), func));
+		}
+
+		private static object GetValue(JsCompiler compiler, IField field, IType valueType)
+		{
+			var value = field.Value;
+			if (value == null)
+				throw new InvalidOperationException();
+			return CompileValue(compiler, valueType, value);
+		}
+
+		private static object CompileValue(JsCompiler compiler, IType type, object value)
+		{
+			var st = type.SystemType;
+			if (st == null)
+				throw new ArgumentException("Type is not system");
+			switch (st.Code)
+			{
+				case SystemTypeCode.Int8:
+					return Convert.ToSByte(value, CultureInfo.InvariantCulture);
+				case SystemTypeCode.UInt8:
+					return Convert.ToByte(value, CultureInfo.InvariantCulture);
+				case SystemTypeCode.Int16:
+					return Convert.ToInt16(value, CultureInfo.InvariantCulture);
+				case SystemTypeCode.UInt16:
+					return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
+				case SystemTypeCode.Int32:
+					return Convert.ToInt32(value, CultureInfo.InvariantCulture);
+				case SystemTypeCode.UInt32:
+					return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
+				case SystemTypeCode.Int64:
+					return compiler.CompileInt64(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+				case SystemTypeCode.UInt64:
+					return compiler.CompileUInt64(Convert.ToUInt64(value, CultureInfo.InvariantCulture));
+				default:
+					throw new ArgumentException("Invalid type");
+			}
+		}
+	}
+}

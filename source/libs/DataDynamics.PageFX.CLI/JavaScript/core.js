@@ -2,6 +2,52 @@
 
 $types = {};
 
+// System.TypeCode
+$tc = {
+	Empty: 0,
+	o: 1,
+	DBNull: 2,
+	b: 3,	// Boolean
+	c: 4,	// Char
+	i1: 5,	// SByte
+	u1: 6,	// Byte
+	i2: 7,	// Int16
+	u2: 8,	// UInt16
+	i4: 9,	// Int32
+	u4: 10,	// UInt32
+	i8: 11,	// Int64
+	u8: 12,	// UInt64
+	r4: 13,	// Single
+	r8: 14,	// Double
+	d: 15,	// Decimal
+	DateTime: 16,	// DateTime
+	s: 18,	// String
+
+	stringify: function (v) {
+		switch (v) {
+			case $tc.Empty: return "Empty";
+			case $tc.o: return "Object";
+			case $tc.DBNull: return "DBNull";
+			case $tc.b: return "Boolean";
+			case $tc.c: return "Char";
+			case $tc.i1: return "SByte";
+			case $tc.u1: return "Byte";
+			case $tc.i2: return "Int16";
+			case $tc.u2: return "UInt16";
+			case $tc.i4: return "Int32";
+			case $tc.u4: return "UInt32";
+			case $tc.i8: return "Int64";
+			case $tc.u8: return "UInt64";
+			case $tc.r4: return "Single";
+			case $tc.r8: return "Double";
+			case $tc.d: return "Decimal";
+			case $tc.DateTime: return "DateTime";
+			case $tc.s: return "String";
+			default: return v.toString();
+		}
+	}
+};
+
 function $inherit($this, $base) {
 	var p;
 	for (p in $base.prototype)
@@ -10,6 +56,97 @@ function $inherit($this, $base) {
 	for (p in $base)
 		if (typeof ($this[p]) == 'undefined')
 			$this[p] = $base[p];
+}
+
+function $isint64(v) {
+	if (v) {
+		var t = v.GetType().$typecode;
+		return t == $tc.i8 || t == $tc.u8;
+	}
+	return false;
+}
+
+function $istrue(v) {
+	if (v === null || v === undefined) {
+		return false;
+	}
+	switch (typeof (v)) {
+		case "boolean":
+			return v;
+		case "number":
+			return v != 0;
+		default:
+			if ($isint64(v)) return v.m_hi && v.m_lo;
+			return v !== null && v !== undefined;
+	}
+}
+
+function $add(x, y) {
+	return x.$add ? x.$add(y) : x + y;
+}
+
+function $sub(x, y) {
+	return x.$sub ? x.$sub(y) : x - y;
+}
+
+function $mul(x, y) {
+	return x.$mul ? x.$mul(y) : x * y;
+}
+
+function $div(x, y) {
+	return x.$div ? x.$div(y) : x / y;
+}
+
+function $idiv(x, y) {
+	return ~~(x / y);
+}
+
+function $rem(x, y) {
+	return x.$rem ? x.$rem(y) : x % y;
+}
+
+function $irem(x, y) {
+	return ~~(x % y);
+}
+
+function $and(x, y) {
+	return x.$and ? x.$and(y) : x & y;
+}
+
+function $or(x, y) {
+	return x.$or ? x.$or(y) : x | y;
+}
+
+function $xor(x, y) {
+	return x.$xor ? x.$xor(y) : x ^ y;
+}
+
+function $eq(x, y) {
+	return x.$eq ? x.$eq(y) : x == y;
+}
+
+function $ge(x, y) {
+	return x.$ge ? x.$ge(y) : x >= y;
+}
+
+function $le(x, y) {
+	return x.$le ? x.$le(y) : x <= y;
+}
+
+function $gt(x, y) {
+	return x.$gt ? x.$gt(y) : x > y;
+}
+
+function $lt(x, y) {
+	return x.$lt ? x.$lt(y) : x < y;
+}
+
+function $neg(x) {
+	return x.$neg ? x.$neg() : -x;
+}
+
+function $not(x) {
+	return x.$not ? x.$not() : ~x;
 }
 
 //TODO: move to System.Delegate as snippet
@@ -177,52 +314,6 @@ function $format(str) {
 	return str;
 }
 
-// System.TypeCode
-$tc = {
-	Empty: 0,
-    o: 1,
-    DBNull: 2,
-	b: 3,	// Boolean
-	c: 4,	// Char
-	i1: 5,	// SByte
-	u1: 6,	// Byte
-	i2: 7,	// Int16
-	u2: 8,	// UInt16
-	i4: 9,	// Int32
-	u4: 10,	// UInt32
-	i8: 11,	// Int64
-	u8: 12,	// UInt64
-	r4: 13,	// Single
-	r8: 14,	// Double
-	d: 15,	// Decimal
-	DateTime: 16,	// DateTime
-	s: 18,	// String
-	
-	stringify: function(v){
-		switch (v) {
-			case $tc.Empty: return "Empty";
-			case $tc.o: return "Object";
-			case $tc.DBNull: return "DBNull";
-			case $tc.b: return "Boolean";
-			case $tc.c: return "Char";
-			case $tc.i1: return "SByte";
-			case $tc.u1: return "Byte";
-			case $tc.i2: return "Int16";
-			case $tc.u2: return "UInt16";
-			case $tc.i4: return "Int32";
-			case $tc.u4: return "UInt32";
-			case $tc.i8: return "Int64";
-			case $tc.u8: return "UInt64";
-			case $tc.r4: return "Single";
-			case $tc.r8: return "Double";
-			case $tc.d: return "Decimal";
-			case $tc.DateTime: return "DateTime";
-			case $tc.s: return "String";
-			default: return v.toString();
-		}
-	}
-};
-
 function $conv(v, from, to) {
 
 	if (from == to)
@@ -231,6 +322,8 @@ function $conv(v, from, to) {
 	var n, hi, lo;
 
 	switch (to) {
+		case $tc.o: // to object
+			return v;
 		case $tc.b: // to boolean
 			switch (from) {
 				case $tc.b:
@@ -540,11 +633,9 @@ function $conv(v, from, to) {
 }
 
 function $convto(v, to) {
-	if (v) {
-		var from = v.GetType().$typecode;
-		if (from != to) {
-			return $conv(v, from, to);
-		}
+	var from = v.GetType().$typecode;
+	if (from != to) {
+		return $conv(v, from, to);
 	}
 	return v;
 }
@@ -628,9 +719,9 @@ function $initarr(a, blob) {
 			case $tc.r8:
 				arr[i++] = $decodeDouble([blob[k++], blob[k++], blob[k++], blob[k++], blob[k++], blob[k++], blob[k++], blob[k++]]);
 				break;
-			case /* Decimal */ 15:
-			case /* DateTime */ 16:
-			case /* String */18:
+			case /* Decimal */ $tc.d:
+			case /* DateTime */ $tc.DateTime:
+			case /* String */$tc.s:
 				throw new Error("Not implemented!");
 		}
 	}
@@ -656,6 +747,81 @@ function $toSystemByteArray(nativeArray) {
 
 	return arr;
 }
+
+var $isArray = Array.isArray || function(v) {
+	return toString.call(v) == '[object Array]';
+};
+
+var $enum = {
+	stringify: function (o) {
+		var v = o.$value;
+		var vals = o.$values();
+		var s = this._find(v, vals);
+		return s ? s : v.toString();
+	},
+	
+	flags: function (o) {
+		var v = o.$value;
+		var vals = o.$values();
+		var s = "";
+		var $this = this;
+
+		$this._process(vals,
+			function (name, value) {
+
+				var fname = $this._find(v, vals);
+				if (fname) {
+					if (s.length > 0) {
+						s += ", ";
+					}
+					s += name;
+					return true;
+				}
+				
+				var f = $and(v, value);
+				if ($istrue(f)) {
+					v = $and(v, $not(value));					
+					if (s.length > 0) {
+						s += ", ";
+					}
+					s += name;
+				}
+
+				return false;
+			});
+		
+		return s ? s : v.toString();
+	},
+	
+	_find: function (v, vals) {
+		if ($isArray(vals)) { // long enums
+			for (var i = 0; i < vals.length; i++) {
+				var p = vals[i];
+				if ($eq(v, p.value)) {
+					return p.name;
+				}
+			}
+		} else if (v in vals) {
+			return vals[v];
+		}
+		return null;
+	},
+
+	_process: function (vals, callback) {
+		if ($isArray(vals)) {
+			for (var i = 0; i < vals.length; i++) {
+				var p = vals[i];
+				if (callback(p.name, p.value))
+					break;
+			}
+		} else {
+			for (var key in vals) {
+				if (callback(vals[key], parseInt(key)))
+					break;
+			}
+		}
+	}
+};
 
 function $context($method, $args, $vars) {
 
@@ -855,14 +1021,14 @@ function $context($method, $args, $vars) {
 				return;
 			case 44: // brfalse.s
 			case 57: // brfalse
-				if (!istrue(pop(true))) {
+				if (!$istrue(pop(true))) {
 					ip = i[1];
 					return;
 				}
 				break;
 			case 45: // brtrue.s
 			case 58: // brtrue
-				if (istrue(pop(true))) {
+				if ($istrue(pop(true))) {
 					ip = i[1];
 					return;
 				}
@@ -1076,11 +1242,11 @@ function $context($method, $args, $vars) {
 				break;
 			case 101: // neg
 				x = pop(true);
-				push(neg(x));
+				push($neg(x));
 				break;
 			case 102: // not
 				x = pop(true);
-				push(not(x));
+				push($not(x));
 				break;
 			case 103: // conv.i1
 				convt(i, $tc.i1, false, false);
@@ -1682,21 +1848,6 @@ function $context($method, $args, $vars) {
 			throw new RangeError("IndexOutOfRangeException");
 	}
 
-	function istrue(v) {
-		if (v === null || v === undefined) {
-			return false;
-		}
-		switch (typeof (v)) {
-			case "boolean":
-				return v;
-			case "number":
-				return v != 0;
-			default:
-				if (v.$i8 || v.$u8) return v.m_hi && v.m_lo;
-				return v !== null && v !== undefined;
-		}
-	}
-	
 	function isUnsigned(t) {
 		switch (t) {
 			case $tc.u1:
@@ -1729,36 +1880,16 @@ function $context($method, $args, $vars) {
 		return op(x, y);
 	}
 
-	function $add(x, y) {
-		return x.$add ? x.$add(y) : x + y;
-	}
-	
 	function add(x, y, t) {
 		return bop(x, y, t, $add);
 	}
 
-	function $sub(x, y) {
-		return x.$sub ? x.$sub(y) : x - y;
-	}
-	
 	function sub(x, y, t) {
 		return bop(x, y, t, $sub);
 	}
 
-	function $mul(x, y) {
-		return x.$mul ? x.$mul(y) : x * y;
-	}
-
 	function mul(x, y, t) {
 		return bop(x, y, t, $mul);
-	}
-
-	function $div(x, y) {
-		return x.$div ? x.$div(y) : x / y;
-	}
-
-	function $idiv(x, y) {
-		return ~~(x / y);
 	}
 
 	function div(x, y, t) {
@@ -1768,14 +1899,6 @@ function $context($method, $args, $vars) {
 		return bop(x, y, t, $div);
 	}
 
-	function $rem(x, y) {
-		return x.$rem ? x.$rem(y) : x % y;
-	}
-
-	function $irem(x, y) {
-		return ~~(x % y);
-	}
-
 	function rem(x, y, t) {
 		if ((t & 0xff) <= $tc.u4) {
 			return bop(x, y, t, $irem);
@@ -1783,24 +1906,12 @@ function $context($method, $args, $vars) {
 		return bop(x, y, t, $rem);
 	}
 
-	function $and(x, y) {
-		return x.$and ? x.$and(y) : x & y;
-	}
-
 	function and(x, y, t) {
 		return bop(x, y, t, $and);
 	}
 
-	function $or(x, y) {
-		return x.$or ? x.$or(y) : x | y;
-	}
-
 	function or(x, y, t) {
 		return bop(x, y, t, $or);
-	}
-
-	function $xor(x, y) {
-		return x.$xor ? x.$xor(y) : x ^ y;
 	}
 
 	function xor(x, y, t) {
@@ -1823,50 +1934,22 @@ function $context($method, $args, $vars) {
 		return un ? $conv(x >>> y, $tc.u4, t) : $conv(x >> y, $tc.i4, t);
 	}
 
-	function neg(x) {
-		return x.$neg ? x.$neg() : -x;
-	}
-
-	function not(x) {
-		return x.$not ? x.$not() : ~x;
-	}
-
-	function $eq(x, y) {
-		return x.$eq ? x.$eq(y) : x == y;
-	}
-
 	function eq(x, y, t) {
 		if (x === null) return y === null;
 		if (y === null) return false;
 		return rel(x, y, t, $eq);
 	}
 
-	function $ge(x, y) {
-		return x.$ge ? x.$ge(y) : x >= y;
-	}
-
 	function ge(x, y, t) {
 		return rel(x, y, t, $ge);
-	}
-
-	function $le(x, y) {
-		return x.$le ? x.$le(y) : x <= y;
 	}
 
 	function le(x, y, t) {
 		return rel(x, y, t, $le);
 	}
 
-	function $gt(x, y) {
-		return x.$gt ? x.$gt(y) : x > y;
-	}
-
 	function gt(x, y, t) {
 		return rel(x, y, t, $gt);
-	}
-
-	function $lt(x, y) {
-		return x.$lt ? x.$lt(y) : x < y;
 	}
 
 	function lt(x, y, t) {

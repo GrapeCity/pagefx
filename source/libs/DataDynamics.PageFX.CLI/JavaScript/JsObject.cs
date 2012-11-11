@@ -5,7 +5,7 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
-	using Property = KeyValuePair<string, object>;
+	using Property = KeyValuePair<object, object>;
 
 	internal sealed class JsObject : JsNode, IEnumerable<Property>
 	{
@@ -28,8 +28,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_properties.AddRange(properties);
 		}
 
-		public void Add(string name, object value)
+		public void Add(object name, object value)
 		{
+			if (name == null) throw new ArgumentNullException("name");
 			_properties.Add(new Property(name, value));
 		}
 
@@ -41,8 +42,19 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				if (sep) writer.Write(",");
 				var key = pair.Key;
-				if (key.IsJsid()) writer.Write("{0}:", key);
-				else writer.Write("'{0}':", key.JsEscape());
+
+				var name = key as string;
+				if (name != null)
+				{
+					if (name.IsJsid()) writer.Write("{0}:", name);
+					else writer.Write("'{0}':", name.JsEscape());
+				}
+				else
+				{
+					writer.WriteValue(key);
+					writer.Write(":");
+				}
+				
 				writer.WriteValue(pair.Value);
 				sep = true;
 			}

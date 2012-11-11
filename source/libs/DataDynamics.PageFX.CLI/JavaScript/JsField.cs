@@ -1,8 +1,37 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
+	internal sealed class JsGeneratedField : JsClassMember
+	{
+		private readonly string _name;
+		private readonly object _value;
+
+		public JsGeneratedField(string name, object value)
+		{
+			if (string.IsNullOrEmpty(name))
+				throw new ArgumentNullException("name");
+			
+			_name = name;
+			_value = value;
+		}
+
+		public override void Write(JsWriter writer)
+		{
+			writer.Write(_name);
+			writer.Write(" = ");
+			writer.WriteValue(_value);
+			writer.Write(";");
+		}
+
+		public override bool IsStatic
+		{
+			get { return true; }
+		}
+	}
+
 	internal sealed class JsField : JsClassMember
 	{
 		public JsField(IField field)

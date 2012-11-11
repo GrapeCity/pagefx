@@ -910,5 +910,14 @@ namespace DataDynamics.PageFX.CodeModel
 		    }
 		    return -1;
 	    }
+
+	    public static IField[] GetEnumFields(this IType type)
+	    {
+		    if (type == null)
+			    throw new ArgumentNullException("type");
+		    if (type.TypeKind != TypeKind.Enum)
+			    throw new ArgumentException("type is not enum");
+		    return type.Fields.Where(f => f.IsStatic).ToArray();
+	    }
     }
 }
