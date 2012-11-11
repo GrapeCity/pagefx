@@ -140,36 +140,28 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				{
 					CompileMethod(o);
 				}
-				else if (method.IsEquals())
+				else
 				{
-					CompileEqualsImpl(subclass);
+					var id = method.GetObjectMethodId();
+					if (id != ObjectMethodId.Unknown)
+					{
+						CompileMethod(subclass, id);
+					}
 				}
-				else if (method.IsToString())
-				{
-					CompileToStringImpl(subclass);
-				}
-
+				
 				CompileOverrides(subclass, method);
 			}
 		}
 
-		private void CompileEqualsImpl(JsClass klass)
+		private void CompileMethod(JsClass klass, ObjectMethodId id)
 		{
 			switch (klass.Type.TypeKind)
 			{
 				case TypeKind.Struct:
-				case TypeKind.Enum:
-					JsStruct.DefaultEqualsImpl(this, klass);
+					JsStruct.Compile(this, klass, id);
 					break;
-			}
-		}
-
-		private void CompileToStringImpl(JsClass klass)
-		{
-			switch (klass.Type.TypeKind)
-			{
 				case TypeKind.Enum:
-					JsEnum.ToStringImpl(this, klass);
+					JsEnum.Compile(this, klass, id);
 					break;
 			}
 		}
@@ -1007,7 +999,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			switch (type.TypeKind)
 			{
 				case TypeKind.Struct:
-					JsStruct.CopyImpl(klass);
+					JsStruct.CompileCopy(klass);
 					break;
 				case TypeKind.Delegate:
 					JsDelegate.CreateInstanceImpl(klass);
@@ -1022,20 +1014,25 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private void CompileImpls(JsClass klass, IType type)
 		{
 			var isEnumOrStruct = type.TypeKind == TypeKind.Struct || type.TypeKind == TypeKind.Enum;
-			bool equalsDefined = false;
-			bool toStringDefined = false;
+			List<ObjectMethodId> objectMethods = null;
+			if (isEnumOrStruct)
+			{
+				objectMethods = new List<ObjectMethodId>
+					{
+						ObjectMethodId.Equals,
+						ObjectMethodId.GetHashCode,
+						ObjectMethodId.ToString
+					};
+			}
 
 			foreach (var method in type.Methods)
 			{
 				if (isEnumOrStruct)
 				{
-					if (method.IsEquals())
+					var id = method.GetObjectMethodId();
+					if (id != ObjectMethodId.Unknown)
 					{
-						equalsDefined = true;
-					}
-					else if (method.IsToString())
-					{
-						toStringDefined = true;
+						objectMethods.Remove(id);
 					}
 				}
 
@@ -1047,13 +1044,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (isEnumOrStruct)
 			{
-				if (!equalsDefined && ObjectMethods.FindEquals().Tag != null)
+				foreach (var id in objectMethods.Where(id => ObjectMethods.Find(id).Tag != null))
 				{
-					CompileEqualsImpl(klass);
-				}
-				if (!toStringDefined && ObjectMethods.FindToString().Tag != null)
-				{
-					CompileToStringImpl(klass);
+					CompileMethod(klass, id);
 				}
 			}
 		}

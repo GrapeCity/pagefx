@@ -30,7 +30,6 @@ class Program
     static void TestGetHashCode()
     {
 	    Console.WriteLine("# TestGetHashCode");
-        //ABCD a = ABCD.A;
         Enum a = new ABCD();
         Console.WriteLine(a.GetHashCode());
     }
@@ -40,7 +39,7 @@ class Program
         TestEquals();
         TestToString();
         TestFlags();
-        //TestGetHashCode();
+        TestGetHashCode();
         Console.WriteLine("<%END%>");
     }
 }

@@ -7,6 +7,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal static class JsTypeExtensions
 	{
+		private const string AvmStringClassName = "Avm.String";
+
 		private static readonly Dictionary<TypeCode, string> TypeCodeNames =
 			new Dictionary<TypeCode, string>
 				{
@@ -44,13 +46,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public static bool IsString(this IType type)
 		{
 			if (type == null) return false;
-			return type == SystemTypes.String || type.FullName == "Avm.String";
+			return type == SystemTypes.String || type.FullName == AvmStringClassName;
 		}
 
 		public static bool IsAvmString(this IType type)
 		{
 			if (type == null) return false;
-			return type.FullName == "Avm.String";
+			return type.FullName == AvmStringClassName;
 		}
 
 		public static string JsFullName(this IType type)
@@ -134,10 +136,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				case TypeCode.UInt64:
 					return type.New();
 				
-					//case TypeCode.DateTime:
 				default:
 					if (type.TypeKind == TypeKind.Struct)
 					{
+						if (type == SystemTypes.ValueType)
+							return null;
+						if (type == SystemTypes.Enum)
+							return null;
+
 						return type.New();
 					}
 					return null;

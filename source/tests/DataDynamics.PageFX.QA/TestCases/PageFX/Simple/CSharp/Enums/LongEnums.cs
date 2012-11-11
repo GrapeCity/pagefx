@@ -40,7 +40,7 @@ class Program
 
     static void TestGetHashCode()
     {
-        //ABCD a = ABCD.A;
+		Console.WriteLine("# TestGetHashCode");
         Enum a = new LongEnum();
         Console.WriteLine(a.GetHashCode());
     }
@@ -50,7 +50,7 @@ class Program
         TestEquals();
         TestToString();
         TestFlags();
-        //TestGetHashCode();
+        TestGetHashCode();
         Console.WriteLine("<%END%>");
     }
 }

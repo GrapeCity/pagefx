@@ -7,7 +7,25 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal sealed class JsStruct
 	{
-		public static void CopyImpl(JsClass klass)
+		public static void Compile(JsCompiler compiler, JsClass klass, ObjectMethodId id)
+		{
+			switch (id)
+			{
+				case ObjectMethodId.Equals:
+					CompileEquals(compiler, klass);
+					break;
+				case ObjectMethodId.GetHashCode:
+					CompileGetHashCode(compiler, klass);
+					break;
+				case ObjectMethodId.ToString:
+					// Object.ToString will be used
+					break;
+				default:
+					throw new ArgumentOutOfRangeException("id");
+			}
+		}
+
+		public static void CompileCopy(JsClass klass)
 		{
 			var type = klass.Type;
 			var func = new JsFunction(null);
@@ -34,7 +52,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.$copy", type.JsFullName()), func));
 		}
 
-		public static void DefaultEqualsImpl(JsCompiler host, JsClass klass)
+		private static void CompileEquals(JsCompiler compiler, JsClass klass)
 		{
 			var other = "o".Id();
 
@@ -61,7 +79,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				else // value types, int64 based
 				{
 					var eq = SystemTypes.Object.Methods.Find("Equals", SystemTypes.Object, SystemTypes.Object);
-					host.CompileMethod(eq);
+					compiler.CompileMethod(eq);
 					e = eq.JsFullName().Id().Call(left, right);
 				}
 
@@ -70,7 +88,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			func.Body.Add(result == null ? "false".Id().Return() : result.Return());
 
-			var methodName = ObjectMethods.FindEquals().JsName();
+			var methodName = ObjectMethods.Find(ObjectMethodId.Equals).JsName();
 
 			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.{1}", klass.Type.JsFullName(), methodName), func));
 		}
@@ -78,6 +96,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private static IEnumerable<IField> GetInstanceFields(JsClass klass)
 		{
 			return klass.Type.Fields.Where(field => !field.IsStatic && !field.IsConstant);
+		}
+
+		private static void CompileGetHashCode(JsCompiler compiler, JsClass klass)
+		{
+			// TODO: implement GetHashCode for value types
 		}
 	}
 }

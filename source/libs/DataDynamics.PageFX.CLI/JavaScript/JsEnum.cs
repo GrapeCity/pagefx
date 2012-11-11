@@ -8,11 +8,58 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal sealed class JsEnum
 	{
-		public static void ToStringImpl(JsCompiler compiler, JsClass klass)
+		public static void Compile(JsCompiler compiler, JsClass klass, ObjectMethodId id)
 		{
-			CompileValues(compiler, klass);
-
 			var type = klass.Type;
+			if (!type.IsEnum)
+				throw new InvalidOperationException("Type is not enum.");
+
+			switch (id)
+			{
+				case ObjectMethodId.Equals:
+					//TODO: implement Equals for enums here
+					JsStruct.Compile(compiler, klass, id);
+					break;
+				case ObjectMethodId.GetHashCode:
+					CompileGetHashCode(klass);
+					break;
+				case ObjectMethodId.ToString:
+					CompileToString(compiler, klass);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException("id");
+			}
+		}
+
+		private static void CompileGetHashCode(JsClass klass)
+		{
+			var type = klass.Type;
+			var func = new JsFunction(null);
+
+			var value = "this.$value".Id();
+
+			if (type.ValueType.IsInt64())
+			{
+				//TODO: inline [U]Int64.GetHashCode implementation
+				func.Body.Add(value.Get("GetHashCode").Call().Return());
+			}
+			else if (type.ValueType != SystemTypes.Int32)
+			{
+				func.Body.Add("$conv".Id().Call(value, type.ValueType.JsTypeCode(), SystemTypes.Int32.JsTypeCode()).Return());
+			}
+			else
+			{
+				func.Body.Add(value.Return());
+			}
+
+			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.GetHashCode", type.JsFullName()), func));
+		}
+
+		private static void CompileToString(JsCompiler compiler, JsClass klass)
+		{
+			var type = klass.Type;
+			
+			CompileValues(compiler, klass);
 
 			var func = new JsFunction(null);
 			if (type.HasAttribute("System.FlagsAttribute"))
