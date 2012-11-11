@@ -778,7 +778,7 @@ function $toSystemByteArray(nativeArray) {
 }
 
 var $isArray = Array.isArray || function(v) {
-	return toString.call(v) == '[object Array]';
+	return (typeof(v) == "object") && (v instanceof Array);
 };
 
 var $enum = {
