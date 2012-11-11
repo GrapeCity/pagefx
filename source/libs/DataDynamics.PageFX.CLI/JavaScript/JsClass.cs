@@ -123,6 +123,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				writer.IncreaseIndent();
 				writer.WriteLine("this.m_hi = hi ? hi : 0;");
 				writer.WriteLine("this.m_lo = lo ? lo : 0;");
+				writer.WriteLine("return this;");
 				writer.DecreaseIndent();
 				writer.WriteLine("};"); // end of function
 				return;
@@ -133,6 +134,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				writer.WriteLine("{0} = function(v) {{", name);
 				writer.IncreaseIndent();
 				writer.WriteLine("this.{0} = v ? v : 0;", SpecialFields.BoxValue);
+				writer.WriteLine("return this;");
 				writer.DecreaseIndent();
 				writer.WriteLine("};"); // end of function
 				return;
@@ -154,6 +156,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					writer.WriteLine();
 				}
 
+				writer.WriteLine("return this;");
 				writer.DecreaseIndent();
 			}
 			writer.WriteLine("};"); // end of function
