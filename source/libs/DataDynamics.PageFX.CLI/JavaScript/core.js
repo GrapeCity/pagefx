@@ -204,13 +204,16 @@ function $hashval(v) {
 		case "number":
 			//TODO: to long.GetHashCode
 			return ~~v;
+		case "string":
+			return v.GetHashCode();
 		default:
 			return v ? v.toString().GetHashCode() : 0;
 	}
 }
 
 function $hash(o) {
-	var h = 0;
+	var t = o.GetType();
+	var h = t.ns.GetHashCode() ^ t.name.GetHashCode();
 	var fields = o.$fields();
 	for (var i = 0; i < fields.length; i++) {
 		var f = fields[i];
