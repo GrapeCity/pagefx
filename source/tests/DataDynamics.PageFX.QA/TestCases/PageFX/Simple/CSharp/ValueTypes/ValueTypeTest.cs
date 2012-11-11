@@ -11,7 +11,7 @@ struct Point
         this.y = y;
     }
 
-    public static readonly Point Empty;
+	public static readonly Point Empty;
 
     public override string ToString()
     {

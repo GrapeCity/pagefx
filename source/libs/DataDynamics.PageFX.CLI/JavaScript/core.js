@@ -161,21 +161,21 @@ function $invokeDelegate(d, a, ret) {
 }
 
 function $copy(o) {
-	if (o == null || o === undefined) return o;
-	return o.$copy == undefined ? o : o.$copy();
+	if (o === null || o === undefined) return o;
+	return o.$copy === undefined ? o : o.$copy();
 }
 
 // conditional boxing
 function $cbox(o, box) {
-	if (o == null || o == undefined) return o;
+	if (o === null || o === undefined) return o;
 	if (o.$value === undefined) return box(o);
 	return o;
 }
 
 function $unbox(o) {
-	if (o == null || o == undefined) return o;
+	if (o === null || o === undefined) return o;
 	var v = o.$value;
-	return v == undefined ? o : v;
+	return v === undefined ? o : v;
 }
 
 function $tostr(o) {
@@ -195,6 +195,32 @@ function $clone(o) {
 		c[f] = $copy(o[f]);
 	}
 	return c;
+}
+
+function $hashval(v) {
+	switch (typeof(v)) {
+		case "boolean":
+			return v ? 1 : 0;
+		case "number":
+			//TODO: to long.GetHashCode
+			return ~~v;
+		default:
+			return v ? v.toString().GetHashCode() : 0;
+	}
+}
+
+function $hash(o) {
+	var h = 0;
+	var fields = o.$fields();
+	for (var i = 0; i < fields.length; i++) {
+		var f = fields[i];
+		var v = o[f];
+		if (v) {
+			var ghc = v.GetHashCode;
+			h ^= ghc === undefined ? $hashval(v) : ghc();
+		}
+	}
+	return h;
 }
 
 // https://github.com/pgriess/node-jspack/blob/master/jspack.js

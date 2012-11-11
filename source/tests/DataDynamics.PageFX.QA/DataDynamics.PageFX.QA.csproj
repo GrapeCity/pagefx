@@ -195,7 +195,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\New2.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\StaticCtor1.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\StaticInit.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\ValueTypeTest.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\ValueTypeTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\VisibilityTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Methods\Misc\CallRedirect.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\TypeOf.cs" />
@@ -258,7 +258,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Delegates\AnonymousDelegate1.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Delegates\AnonymousDelegate2.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\TimeSpanTest.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\StaticValueTypeFields.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\StaticValueTypeFields.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Iterators\Test1.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Iterators\Test2.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Iterators\Test3.cs" />
@@ -348,9 +348,9 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\AVM\Vector\UInt16.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\AVM\Vector\Int64.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\AVM\Vector\UInt64.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\MutatingReadonlyStruct.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\MutatingReadonlyStruct.cs" />
     <EmbeddedResource Include="TestCases\Negative\IncompatibleCall.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\MutatingReadonlyStruct2.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\MutatingReadonlyStruct2.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ArgumentPassing\SimpleTests.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ArgumentPassing\RefStFieldInt.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\AssignThis.cs" />
@@ -1447,7 +1447,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Casting\IEnumerable\FromValue.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Casting\String\FromNullable.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Casting\String\FromValue.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\MutatingReadonlyStruct3.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\MutatingReadonlyStruct3.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Bugs\6.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\StaticCtor4.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Benchmark\Hashtable.cs" />
@@ -1472,12 +1472,12 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Reflection\CustomAttributesAdvanced.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Reflection\MemberInfo.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Reflection\ParametrAttribute.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\StructStaticCtor.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\StructStaticCtor.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Bugs\9.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Reflection\PropertyInfo.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Bugs\10.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Bugs\11.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\StructInStruct.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\StructInStruct.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\String\StaticReadonly.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Reflection\StringCtor.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Reflection\ConstructorInfo.cs" />
@@ -1509,7 +1509,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Arrays\FirstTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\CharTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\String\Ctors.cs" />
-    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Types\ValueTypeEquals.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\ValueTypeEquals.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Misc\BoolTest.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\EnumSwitch.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\BCL\System\BitConverterTest.cs" />
@@ -1518,6 +1518,7 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\LongEnums.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\EnumArray.cs" />
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\Enums\EnumMethods.cs" />
+    <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\HashCode.cs" />
     <Compile Include="Tools\JsRunner.cs" />
     <Compile Include="UnitTests\ABCALL.cs" />
     <Compile Include="UnitTests\ABCDefineTest.cs" />

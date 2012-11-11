@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					CompileEquals(compiler, klass);
 					break;
 				case ObjectMethodId.GetHashCode:
-					CompileGetHashCode(compiler, klass);
+					CompileGetHashCode(klass);
 					break;
 				case ObjectMethodId.ToString:
 					// Object.ToString will be used
@@ -98,9 +98,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return klass.Type.Fields.Where(field => !field.IsStatic && !field.IsConstant);
 		}
 
-		private static void CompileGetHashCode(JsCompiler compiler, JsClass klass)
+		private static void CompileGetHashCode(JsClass klass)
 		{
-			// TODO: implement GetHashCode for value types
+			var type = klass.Type;
+			var func = new JsFunction(null);
+			func.Body.Add("$hash".Id().Call("this".Id()).Return());
+			klass.Add(new JsGeneratedMethod(String.Format("{0}.prototype.GetHashCode", type.JsFullName()), func));
 		}
 	}
 }
