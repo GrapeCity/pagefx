@@ -905,7 +905,7 @@ function $context($method, $args, $vars) {
 			loop(code);
 		} catch (e) {
 			//find the most inner try block
-			var b = findBlock(false);
+			var b = findBlock();
 			if (b === null) {
 				throw e;
 			}
@@ -922,11 +922,9 @@ function $context($method, $args, $vars) {
 		}
 	}
 	
-	function runFinally(code) {
-		var b = findBlock(true);
-		if (b === null) return;
-
-		var h = findHandler(b, null);
+	function runFinally(code, bi) {
+		var b = method.blocks[bi];
+		var h = findHandler(b, null, true);
 
 		exception = undefined;
 		stack = [];
@@ -935,16 +933,12 @@ function $context($method, $args, $vars) {
 		run(code);
 	}
 
-	function findBlock(finallyFilter) {
+	function findBlock() {
 		var t = null;
 		var blocks = method.blocks;
 		for (var i = 0; i < blocks.length; i++) {
 			var b = blocks[i];
 			if (b.entry <= ip && ip <= b.exit) {
-				if (finallyFilter) {
-					if (findHandler(b, null, true) == null)
-						continue;
-				}
 				if (t === null || b.entry >= t.entry) {
 					t = b;
 				}
@@ -1627,7 +1621,10 @@ function $context($method, $args, $vars) {
 			case 221: // leave
 			case 222: // leave.s
 				ip = i[1];
-				runFinally(code);
+				var bi = i[2]; // index of try/finally block to run
+				if (bi >= 0) {
+					runFinally(code, bi);
+				}
 				return;
 			case 223: // stind.
 				noimpl();

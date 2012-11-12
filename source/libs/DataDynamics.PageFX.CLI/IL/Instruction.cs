@@ -61,6 +61,16 @@ namespace DataDynamics.PageFX.CLI.IL
             }
         }
 
+		public bool IsEndOfSehBlock
+		{
+			get
+			{
+				var b = SehBlock;
+				if (b == null) return false;
+				return b.ExitPoint == this;
+			}
+		}
+
         public void TranslateOffsets(IInstructionList list)
         {
             if (IsSwitch)

@@ -72,7 +72,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			//TODO: pass args to main from node.js args
 
-			var ctx = new MethodContext(this, CompileClass(entryPoint.DeclaringType), entryPoint);
+			var ctx = new MethodContext(this, CompileClass(entryPoint.DeclaringType), entryPoint, new TryCatchBlock[0]);
 			var main = new JsFunction(null);
 			InitClass(ctx, main, entryPoint);
 			main.Body.Add(method.FullName.Id().Call().AsStatement());
@@ -242,15 +242,17 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		internal JsFunction CompileMethodBody(JsClass klass, IMethod method, IClrMethodBody body)
 		{
-			var context = new MethodContext(this, klass, method);
+			var blocks = body.GetAllProtectedBlocks().ToArray();
+			var context = new MethodContext(this, klass, method, blocks);
 
 			var func = new JsFunction(null, method.JsParams());
 
+			//TODO: for every instruction set index of protected block to quickly find exception handlers
 			//TODO: cache info and code as separate class property
 			var info = new JsObject
 				{
 					{"IsVoid", method.IsVoid()},
-					{"blocks", CompileBlocks(body)}
+					{"blocks", CompileBlocks(blocks)}
 				};
 
 			var args = CompilerArgs(method);
@@ -273,10 +275,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return func;
 		}
 
-		private JsArray CompileBlocks(IClrMethodBody body)
+		private JsArray CompileBlocks(IEnumerable<TryCatchBlock> blocks)
 		{
 			return new JsArray(
-				body.GetAllProtectedBlocks()
+				blocks
 					.Select(
 						x => (object)new JsObject
 							{
@@ -371,6 +373,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private object CompileInstruction(MethodContext context, Instruction i)
 		{
+			//TODO: for every instruction set index of protected block to quickly find exception handlers
+
 			var value = i.Value;
 			if (value is long)
 			{
@@ -605,9 +609,40 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					return Br(i, BinaryOperator.GreaterThanOrEqual);
 
 				#endregion
+
+				case InstructionCode.Leave:
+				case InstructionCode.Leave_S:
+					return OpLeave(context, i);
 			}
 
 			return value;
+		}
+
+		private static object OpLeave(MethodContext context, Instruction i)
+		{
+			var index = -1;
+			if (i.IsEndOfSehBlock && i.SehBlock is TryCatchBlock)
+			{
+				var b = GetSurroundingTryFinally(i);
+				if (b != null)
+				{
+					index = context.ProtectedBlocks.IndexOf(x => x == b);
+				}
+			}
+			return new JsTuple(i.Value, index);
+		}
+
+		private static TryCatchBlock GetSurroundingTryFinally(Instruction i)
+		{
+			var b = i.SehBlock;
+			while (b != null)
+			{
+				var tb = b as TryCatchBlock;
+				if (tb != null && tb.IsTryFinally)
+					return tb;
+				b = b.Parent;
+			}
+			return null;
 		}
 
 		private object Br(Instruction i, BinaryOperator op)

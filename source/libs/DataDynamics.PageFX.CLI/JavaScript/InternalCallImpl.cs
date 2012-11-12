@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.JavaScript.Inlining;
 using DataDynamics.PageFX.CodeModel;
 
@@ -137,7 +138,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private JsFunction CompileInlineFunction(IMethod method, InlineCodeProvider provider)
 		{
 			var klass = CompileClass(method.DeclaringType);
-			var ctx = new MethodContext(_host, klass, method);
+			var ctx = new MethodContext(_host, klass, method, new TryCatchBlock[0]);
 			return provider.GetImplementation(ctx);
 		}
 
