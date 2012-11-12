@@ -6,33 +6,33 @@ class TryCatch1
     {
         try
         {
-            Console.WriteLine("--");
+            Console.WriteLine("1");
             try
             {
-                Console.WriteLine("--");
+                Console.WriteLine("2");
                 try
                 {
-                    Console.WriteLine("body");
+                    Console.WriteLine("most inner");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("catch");
+                    Console.WriteLine("catch1");
                 }
                 finally
                 {
-                    Console.WriteLine("finally");
+                    Console.WriteLine("finally1");
                 }
-                Console.WriteLine("--");
+                Console.WriteLine("3");
             }
             catch (Exception e)
             {
-                Console.WriteLine("catch");
+                Console.WriteLine("catch2");
             }
-            Console.WriteLine("--");
+            Console.WriteLine("4");
         }
         finally
         {
-            Console.WriteLine("finally");
+            Console.WriteLine("finally2");
         }
         Console.WriteLine("<%END%>");
     }

@@ -8,27 +8,26 @@ using System.Text;
 using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
-using MethodBody = DataDynamics.PageFX.CLI.IL.MethodBody;
 
 namespace DataDynamics.PageFX.CLI.CFG
 {
     internal static class MethodBodyExtensions
     {
-        private static string GetTypeName(IType type)
+        private static string GetShortTypeName(IType type)
         {
             switch(type.TypeKind)
             {
                 case TypeKind.Array:
                     {
                         var arr = (IArrayType)type;
-                        return GetTypeName(arr.ElementType) + arr.Dimensions.Count;
+                        return GetShortTypeName(arr.ElementType) + arr.Dimensions.Count;
                     }
 
                 case TypeKind.Pointer:
                 case TypeKind.Reference:
                     {
                         var ct = (ICompoundType)type;
-                        return GetTypeName(ct.ElementType) + "&";
+                        return GetShortTypeName(ct.ElementType) + "&";
                     }
 
                 default:
@@ -67,7 +66,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             {
                 var p = m.Parameters[i];
                 s.Append("_");
-                s.Append(GetTypeName(p.Type));
+                s.Append(GetShortTypeName(p.Type));
             }
             return s.ToString();
         }

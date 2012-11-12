@@ -18,6 +18,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				    {"System.Char", new CharInlines()},
 					{"System.Array", new ArrayInlines()},
 					{"System.Type", new TypeInlines()},
+					{"System.Exception", new SystemExceptionInlines()},
 					{"Avm.Array", new AvmArrayInlines()},
 					{"avm", new AvmInlines()},
 					{"Avm.Global", new AvmGlobalInlines()},

@@ -4,11 +4,11 @@ class X
 {
     static void Test1()
     {
-        string s1 = "original";
+	    Console.WriteLine("# Test1");
 
         try
         {
-            s1.EndsWith(null);
+            "abc".EndsWith(null);
             Console.WriteLine("error");
         }
         catch (ArgumentNullException)
@@ -17,9 +17,29 @@ class X
         }
     }
 
+	static void Test2()
+	{
+		Console.WriteLine("# Test2");
+
+		try
+		{
+			"abc".EndsWith(null);
+			Console.WriteLine("error");
+		}
+		catch (ArgumentNullException)
+		{
+			Console.WriteLine("ok");
+		}
+		finally
+		{
+			Console.WriteLine("finally");
+		}
+	}
+
     static void Main()
     {
         Test1();
+        Test2();
         Console.WriteLine("<%END%>");
     }
 }

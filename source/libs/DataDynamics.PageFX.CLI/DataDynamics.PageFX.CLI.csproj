@@ -98,13 +98,18 @@
     <Compile Include="GAC\IInstallReferenceItem.cs" />
     <Compile Include="CFG\GraphBuilder.cs" />
     <Compile Include="CFG\FlowGraphExtensions.cs" />
+    <Compile Include="IL\BlockExtensions.cs" />
+    <Compile Include="IL\HandlerBlock.cs" />
+    <Compile Include="IL\IClrMethodBody.cs" />
     <Compile Include="IL\InstructionExtensions.cs" />
+    <Compile Include="IL\MethodBodyExtensions.cs" />
     <Compile Include="IL\Translator\Analysis.cs" />
     <Compile Include="IL\Translator\Core.cs" />
     <Compile Include="IL\Translator\DumpMap.cs" />
     <Compile Include="IL\Translator\Generics.cs" />
     <Compile Include="IL\Translator\Translation.cs" />
     <Compile Include="IL\Translator\Utils.cs" />
+    <Compile Include="IL\TryCatchBlock.cs" />
     <Compile Include="IL\Values\Arg.cs" />
     <Compile Include="IL\CIL.cs" />
     <Compile Include="CFG\NodeList.cs" />
@@ -155,6 +160,7 @@
     <Compile Include="JavaScript\BoxingImpl.cs" />
     <Compile Include="JavaScript\ClassInitImpl.cs" />
     <Compile Include="JavaScript\Inlining\AvmInlines.cs" />
+    <Compile Include="JavaScript\Inlining\System.Exception.cs" />
     <Compile Include="JavaScript\Inlining\System.BitConverter.cs" />
     <Compile Include="JavaScript\JsClassExtensions.cs" />
     <Compile Include="JavaScript\JsEnum.cs" />
@@ -189,6 +195,7 @@
     <Compile Include="JavaScript\JsMethodExtensions.cs" />
     <Compile Include="JavaScript\JsStruct.cs" />
     <Compile Include="JavaScript\JsTuple.cs" />
+    <Compile Include="JavaScript\JsUndefined.cs" />
     <Compile Include="JavaScript\NopCodeProvider.cs" />
     <Compile Include="JavaScript\JsNamespace.cs" />
     <Compile Include="JavaScript\JsNode.cs" />

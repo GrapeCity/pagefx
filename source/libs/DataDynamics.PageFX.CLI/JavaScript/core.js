@@ -863,7 +863,7 @@ function $context($method, $args, $vars) {
 	var exception;
 
 	this.exec = function(code) {
-		loop(code);
+		run(code);
 		return result;
 	};
 
@@ -899,7 +899,86 @@ function $context($method, $args, $vars) {
 	function peek() {
 		return stack[stack.length - 1];
 	}
+	
+	function run(code) {
+		try {
+			loop(code);
+		} catch (e) {
+			//find the most inner try block
+			var b = findBlock(false);
+			if (b === null) {
+				throw e;
+			}
+			var h = findHandler(b, e, false);
+			if (h === null) {
+				throw e;
+			}
 
+			exception = e;
+			stack = [e];
+			ip = h.entry;
+			
+			run(code);
+		}
+	}
+	
+	function runFinally(code) {
+		var b = findBlock(true);
+		if (b === null) return;
+
+		var h = findHandler(b, null);
+
+		exception = undefined;
+		stack = [];
+		ip = h.entry;
+
+		run(code);
+	}
+
+	function findBlock(finallyFilter) {
+		var t = null;
+		var blocks = method.blocks;
+		for (var i = 0; i < blocks.length; i++) {
+			var b = blocks[i];
+			if (b.entry <= ip && ip <= b.exit) {
+				if (finallyFilter) {
+					if (findHandler(b, null, true) == null)
+						continue;
+				}
+				if (t === null || b.entry >= t.entry) {
+					t = b;
+				}
+			}
+		}
+		return t;
+	}
+	
+	function findHandler(b, e, finallyFilter) {
+		for (var i = 0; i < b.handlers.length; i++) {
+			var h = b.handlers[i];
+			
+			if (finallyFilter) {
+				if (h.type == 1) return h;
+				continue;
+			}
+				
+			switch (h.type) {
+				case 0: //catch
+					var et = h.exception;
+					if (et === undefined || e instanceof et) {
+						return h;
+					}
+					break;
+				case 1: //finally
+				case 2: //fault
+					return h;
+				case 3: //filter
+					noimpl();
+			}
+		}
+		return null;
+	}
+	
 	function loop(code) {
 		while (ip < code.length) {
 			eval(code);
@@ -1543,10 +1622,12 @@ function $context($method, $args, $vars) {
 				push(sub(x, y, i[1]));
 				break;
 			case 220: // endfinally
-				break;
+				ip = i[1];
+				return;
 			case 221: // leave
 			case 222: // leave.s
 				ip = i[1];
+				runFinally(code);
 				return;
 			case 223: // stind.
 				noimpl();

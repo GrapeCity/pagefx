@@ -288,7 +288,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 			TryCatchBlock tryCatch = null;
 
-			foreach (var block in context.Body.ProtectedBlocks)
+			foreach (var block in context.Body.GetAllProtectedBlocks())
 			{
 				if (block.EntryIndex <= context.IP && context.IP <= block.ExitIndex)
 				{

@@ -250,6 +250,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var info = new JsObject
 				{
 					{"IsVoid", method.IsVoid()},
+					{"blocks", CompileBlocks(body)}
 				};
 
 			var args = CompilerArgs(method);
@@ -270,6 +271,63 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			func.Body.Add(new JsText("return ctx.exec(code);"));
 
 			return func;
+		}
+
+		private JsArray CompileBlocks(IClrMethodBody body)
+		{
+			return new JsArray(
+				body.GetAllProtectedBlocks()
+					.Select(
+						x => (object)new JsObject
+							{
+								{"entry", x.EntryIndex},
+								{"exit", x.ExitIndex},
+								{"handlers", CompileHandlers(x)},
+							}), "\n");
+		}
+
+		private JsArray CompileHandlers(TryCatchBlock block)
+		{
+			return new JsArray(
+				block.Handlers
+					.Cast<HandlerBlock>()
+					.OrderBy(x => x.EntryPoint.Index)
+					.Select(
+						x => (object)new JsObject
+							{
+								{"type", ToJs(x.Type)},
+								{"entry", x.EntryIndex},
+								{"exception", CompileExceptionType(x.ExceptionType)}
+							}
+					), "\n");
+		}
+
+		private object CompileExceptionType(IType type)
+		{
+			if (type == null || type == SystemTypes.Object || type == SystemTypes.Exception)
+			{
+				return JsUndefined.Value;
+			}
+
+			CompileType(type);
+			return type.JsFullName().Id();
+		}
+
+		private static int ToJs(BlockType type)
+		{
+			switch (type)
+			{
+				case BlockType.Catch:
+					return 0;
+				case BlockType.Finally:
+					return 1;
+				case BlockType.Fault:
+					return 2;
+				case BlockType.Filter:
+					return 3;
+				default:
+					return -1;
+			}
 		}
 
 		private static JsArray CompilerArgs(IMethod method)
@@ -322,7 +380,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				return CompileUInt64((ulong)value);
 			}
-			
+
 			switch (i.Code)
 			{
 					// conv ops
