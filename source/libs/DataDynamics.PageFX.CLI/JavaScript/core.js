@@ -957,10 +957,7 @@ function $context($method, $args, $vars) {
 			switch (h.type) {
 				case handlerType.Catch:
 					var type = h.exception;
-					var jserror;
-					if (type === undefined
-						|| e instanceof type
-						|| ((jserror = h.jserror) != undefined && e instanceof jserror)) {
+					if (type === undefined || e instanceof type) {
 						return h;
 					}
 					break;
@@ -1820,22 +1817,25 @@ function $context($method, $args, $vars) {
 		
 		//TODO: support getting properties
 		
-		var thisArg = null;
+		var o = null;
 		if (!i.s) { // is not static
-			thisArg = popobj();
+			o = popobj();
+			if (o === null) {
+				throw new System.NullReferenceException();
+			}
 		}
 
 		if (i.f === undefined) {
 			throw new TypeError("func call is undefined!");
 		}
 
-		var val = i.f(thisArg, argArray);
+		var val = i.f(o, argArray);
 
 		if (i.r) {
 
 			// for debug
 			if (val === undefined) {
-				val = i.f(thisArg, argArray);
+				val = i.f(o, argArray);
 			}
 			
 			push(val);
@@ -1853,6 +1853,8 @@ function $context($method, $args, $vars) {
 	// load/store fields
 	function ldfld(f) {
 		var o = popobj();
+		if (o === null)
+			throw new System.NullReferenceException();
 		var v = f.get(o);
 		if (v === undefined) {
 			v = f.get(o); // for debug
@@ -1863,6 +1865,8 @@ function $context($method, $args, $vars) {
 	function stfld(f) {
 		var v = pop();
 		var o = popobj();
+		if (o === null)
+			throw new System.NullReferenceException();
 		f.set(o, v);
 	}
 
@@ -1880,8 +1884,10 @@ function $context($method, $args, $vars) {
 	}
 
 	function ldflda(f) {
-		var obj = popobj();
-		push(new fldptr(obj, f));
+		var o = popobj();
+		if (o === null)
+			throw new System.NullReferenceException();
+		push(new fldptr(o, f));
 	}
 
 	function ldsflda(f) {
@@ -1963,9 +1969,9 @@ function $context($method, $args, $vars) {
 
 	function checkBounds(arr, index) {
 		if (arr == null)
-			throw new ReferenceError("NullReferenceException");
+			throw new System.NullReferenceException();
 		if (index < 0 || index >= arr.length)
-			throw new RangeError("IndexOutOfRangeException");
+			throw new System.IndexOutOfRangeException();
 	}
 
 	function isUnsigned(t) {
@@ -2108,7 +2114,7 @@ function $context($method, $args, $vars) {
 	}
 	
 	function noimpl() {
-		throw new Error("NotImplementedException");
+		throw new Error("Not implemented!");
 	}
 
 	function ignore(i) {

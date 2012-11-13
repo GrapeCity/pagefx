@@ -65,8 +65,15 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			var entryPoint = _assembly.EntryPoint;
 			var method = CompileMethod(entryPoint);
 
+			// system exceptions
+			CompileClass(CorlibTypes[CorlibTypeId.NullReferenceException]);
+			CompileClass(CorlibTypes[CorlibTypeId.InvalidCastException]);
+			CompileClass(CorlibTypes[CorlibTypeId.NotImplementedException]);
+			CompileClass(Corlib.FindType("System.IndexOutOfRangeException"));
+
 			// build types
 			CompileClass(SystemTypes.Type);
+			
 
 			new TypeInfoBuilder(this, _program).Build();
 
@@ -326,11 +333,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 										{"entry", x.EntryIndex},
 										{"exception", CompileExceptionType(x.ExceptionType)}
 									};
-								var jsError = ProvideJsError(x.ExceptionType);
-								if (jsError != null)
-								{
-									obj.Add("jserror", jsError.Id());
-								}
 								return (object)obj;
 							}
 					), "\n");
@@ -346,15 +348,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			CompileType(type);
 
 			return type.JsFullName().Id();
-		}
-
-		private string ProvideJsError(IType type)
-		{
-			if (type == CorlibTypes[CorlibTypeId.NullReferenceException])
-			{
-				return "TypeError";
-			}
-			return null;
 		}
 
 		private static int ToJs(BlockType type)
