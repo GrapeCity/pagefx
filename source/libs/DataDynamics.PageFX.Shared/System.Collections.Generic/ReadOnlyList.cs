@@ -169,5 +169,20 @@ namespace System.Collections.Generic
 		{
 			return list.AsReadOnlyList().BinarySearch(index, length, p);
 		}
+
+		public static T[] ToArray<T>(this IReadOnlyList<T> list)
+		{
+			if (list == null)
+				throw new ArgumentNullException("list");
+
+			var array = new T[list.Count];
+
+			for (int i = 0; i < list.Count; i++)
+			{
+				array[i] = list[i];
+			}
+
+			return array;
+		}
     }
 }

@@ -120,6 +120,7 @@
     <Compile Include="PageFX\PfxConfig.cs" />
     <Compile Include="PageFX\PFCOptions.cs" />
     <Compile Include="PageFX\Warnings.cs" />
+    <Compile Include="System.Collections.Generic\Tuples.cs" />
     <Compile Include="Utils\CodeTextWriter.cs" />
     <Compile Include="Utils\EnumExtensions.cs" />
     <Compile Include="Utils\Filters.cs" />
