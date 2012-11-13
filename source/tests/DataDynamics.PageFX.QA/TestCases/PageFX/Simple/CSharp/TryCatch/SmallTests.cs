@@ -36,10 +36,25 @@ class X
 		}
 	}
 
+	static void Test3()
+	{
+		Console.WriteLine("# Test3");
+
+		try
+		{
+			Console.WriteLine("hi!");
+		}
+		finally
+		{
+			Console.WriteLine("finally");
+		}
+	}
+
     static void Main()
     {
         Test1();
         Test2();
+        Test3();
         Console.WriteLine("<%END%>");
     }
 }

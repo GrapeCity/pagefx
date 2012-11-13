@@ -247,12 +247,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			var func = new JsFunction(null, method.JsParams());
 
-			//TODO: for every instruction set index of protected block to quickly find exception handlers
 			//TODO: cache info and code as separate class property
-			var info = new JsObject
+
+			var info = new JsObject(true)
 				{
-					{"IsVoid", method.IsVoid()},
-					{"blocks", CompileBlocks(blocks)}
+					{"isVoid", method.IsVoid()},
+					{"blocks", CompileBlocks(blocks)},
+					{"blockMap", CompileBlockMap(body, blocks)},
 				};
 
 			var args = CompilerArgs(method);
@@ -275,13 +276,35 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return func;
 		}
 
+		private static JsArray CompileBlockMap(IClrMethodBody body, TryCatchBlock[] blocks)
+		{
+			return blocks.Length > 0
+				       ? new JsArray(
+					         body.Code.Select<Instruction, object>(
+						         i =>
+							         {
+								         var b = i.SehBlock;
+								         while (b != null)
+								         {
+									         var tb = b as TryCatchBlock;
+									         if (tb != null)
+										         return blocks.IndexOf(x => x == b);
+									         var h = b as HandlerBlock;
+											 b = h != null ? h.Owner.Parent : b.Parent;
+								         }
+								         return -1;
+							         }))
+				       : JsArray.Empty;
+		}
+
 		private JsArray CompileBlocks(IEnumerable<TryCatchBlock> blocks)
 		{
 			return new JsArray(
 				blocks
 					.Select(
-						x => (object)new JsObject
+						x => (object)new JsObject(true)
 							{
+								//TODO: entry, exit are not used, since we build block map for quick lookup
 								{"entry", x.EntryIndex},
 								{"exit", x.ExitIndex},
 								{"handlers", CompileHandlers(x)},
@@ -295,11 +318,20 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 					.Cast<HandlerBlock>()
 					.OrderBy(x => x.EntryPoint.Index)
 					.Select(
-						x => (object)new JsObject
+						x =>
 							{
-								{"type", ToJs(x.Type)},
-								{"entry", x.EntryIndex},
-								{"exception", CompileExceptionType(x.ExceptionType)}
+								var obj = new JsObject
+									{
+										{"type", ToJs(x.Type)},
+										{"entry", x.EntryIndex},
+										{"exception", CompileExceptionType(x.ExceptionType)}
+									};
+								var jsError = ProvideJsError(x.ExceptionType);
+								if (jsError != null)
+								{
+									obj.Add("jserror", jsError.Id());
+								}
+								return (object)obj;
 							}
 					), "\n");
 		}
@@ -312,7 +344,17 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 
 			CompileType(type);
+
 			return type.JsFullName().Id();
+		}
+
+		private string ProvideJsError(IType type)
+		{
+			if (type == CorlibTypes[CorlibTypeId.NullReferenceException])
+			{
+				return "TypeError";
+			}
+			return null;
 		}
 
 		private static int ToJs(BlockType type)
@@ -621,7 +663,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private static object OpLeave(MethodContext context, Instruction i)
 		{
 			var index = -1;
-			if (i.IsEndOfSehBlock && i.SehBlock is TryCatchBlock)
+			if (i.IsEndOfSehBlock)
 			{
 				var b = GetSurroundingTryFinally(i);
 				if (b != null)
@@ -635,14 +677,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private static TryCatchBlock GetSurroundingTryFinally(Instruction i)
 		{
 			var b = i.SehBlock;
-			while (b != null)
-			{
-				var tb = b as TryCatchBlock;
-				if (tb != null && tb.IsTryFinally)
-					return tb;
-				b = b.Parent;
-			}
-			return null;
+			if (b == null) return null;
+
+			var tb = b as TryCatchBlock;
+			return tb != null && tb.IsTryFinally ? tb : null;
 		}
 
 		private object Br(Instruction i, BinaryOperator op)

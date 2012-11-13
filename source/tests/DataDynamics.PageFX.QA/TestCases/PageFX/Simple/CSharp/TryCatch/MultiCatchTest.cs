@@ -37,13 +37,13 @@ class X
         {
             obj.Throw();
         }
-        catch (NullReferenceException e1)
+        catch (NullReferenceException)
         {
-            Console.WriteLine(e1.GetType());
+			Console.WriteLine("NullReferenceException");
         }
-        catch (InvalidCastException e2)
+        catch (InvalidCastException)
         {
-            Console.WriteLine(e2.GetType());
+			Console.WriteLine("InvalidCastException");
         }
         catch (Exception exc)
         {

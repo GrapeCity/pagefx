@@ -48,6 +48,34 @@ $tc = {
 	}
 };
 
+function $toDouble(x) {
+	return Number(x);
+}
+
+function $toBoolean(x) {
+	return !!x;
+}
+
+function $toUint(x) {
+	var v = (~~x) | 0;
+	return v < 0 ? (v + 4294967296) : v;
+}
+
+function $toInt(x) {
+	return (~~x) | 0;
+}
+
+function $toUnsigned(x) {
+	if (x != null) {
+		var t = x.GetType;
+		if (t) {
+			return $conv(x, t().$typecode, $tc.u8);
+		}
+		return $toUint(x);
+	}
+	return x;
+}
+
 function $inherit($this, $base) {
 	var p;
 	for (p in $base.prototype)
@@ -58,27 +86,14 @@ function $inherit($this, $base) {
 			$this[p] = $base[p];
 }
 
-function $isint64(v) {
-	if (v) {
-		var t = v.GetType().$typecode;
-		return t == $tc.i8 || t == $tc.u8;
-	}
-	return false;
+function $isint64(x) {
+	return x !== null && x !== undefined
+		&& ((System.Int64 !== undefined && x instanceof System.Int64)
+			|| ((System.UInt64 !== undefined) && x instanceof System.UInt64));
 }
 
-function $istrue(v) {
-	if (v === null || v === undefined) {
-		return false;
-	}
-	switch (typeof (v)) {
-		case "boolean":
-			return v;
-		case "number":
-			return v != 0;
-		default:
-			if ($isint64(v)) return v.m_hi && v.m_lo;
-			return v !== null && v !== undefined;
-	}
+function $istrue(x) {
+	return x && $isint64(x) ? x.m_hi && x.m_lo : !!x;
 }
 
 function $add(x, y) {
@@ -365,7 +380,7 @@ function $conv(v, from, to) {
 				case $tc.u4:
 				case $tc.r4:
 				case $tc.r8:
-					return v ? true : false;
+					return !!v;
 				case $tc.i8:
 				case $tc.u8:
 					return v.m_hi || v.m_lo ? true : false;
@@ -881,7 +896,8 @@ function $context($method, $args, $vars) {
 
 	// pops unsigned number
 	function popun() {
-		return pop(true);
+		var x = pop(true);
+		return $toUnsigned(x);
 	}
 
 	function popptr() {
@@ -900,77 +916,74 @@ function $context($method, $args, $vars) {
 		return stack[stack.length - 1];
 	}
 	
+	var handlerType = { Catch: 0, Finally: 1, Fault: 2, Filter: 3 };
+	
 	function run(code) {
 		try {
 			loop(code);
 		} catch (e) {
-			//find the most inner try block
-			var b = findBlock();
-			if (b === null) {
-				throw e;
-			}
-			var h = findHandler(b, e, false);
+			var h = findHandler(e);
 			if (h === null) {
 				throw e;
 			}
 
 			exception = e;
-			stack = [e];
+			
+			if (h.type == handlerType.Catch) {
+				stack = [e];
+			} else {
+				stack = [];
+			}
+			
 			ip = h.entry;
 			
 			run(code);
+			
+			if (h.type == handlerType.Finally) {
+				throw e;
+			}
 		}
+	}
+
+	function findHandler(e) {
+		var blocks = method.blocks;
+		if (blocks.length == 0) return null;
+		var i = method.blockMap[ip];
+		if (i < 0) return null;
+		
+		var b = blocks[i];
+		for (i = 0; i < b.handlers.length; i++) {
+			var h = b.handlers[i];
+			switch (h.type) {
+				case handlerType.Catch:
+					var type = h.exception;
+					var jserror;
+					if (type === undefined
+						|| e instanceof type
+						|| ((jserror = h.jserror) != undefined && e instanceof jserror)) {
+						return h;
+					}
+					break;
+				case handlerType.Finally:
+					return h;
+				case handlerType.Fault:
+				case handlerType.Filter:
+					noimpl();
+			}
+		}
+		
+		return null;
 	}
 	
 	function runFinally(code, bi) {
 		var b = method.blocks[bi];
-		var h = findHandler(b, null, true);
+		var h = b.handlers[0];
 
 		exception = undefined;
 		stack = [];
 		ip = h.entry;
 
 		run(code);
-	}
-
-	function findBlock() {
-		var t = null;
-		var blocks = method.blocks;
-		for (var i = 0; i < blocks.length; i++) {
-			var b = blocks[i];
-			if (b.entry <= ip && ip <= b.exit) {
-				if (t === null || b.entry >= t.entry) {
-					t = b;
-				}
-			}
-		}
-		return t;
-	}
-	
-	function findHandler(b, e, finallyFilter) {
-		for (var i = 0; i < b.handlers.length; i++) {
-			var h = b.handlers[i];
-			
-			if (finallyFilter) {
-				if (h.type == 1) return h;
-				continue;
-			}
-				
-			switch (h.type) {
-				case 0: //catch
-					var et = h.exception;
-					if (et === undefined || e instanceof et) {
-						return h;
-					}
-					break;
-				case 1: //finally
-				case 2: //fault
-					return h;
-				case 3: //filter
-					noimpl();
-			}
-		}
-		return null;
 	}
 	
 	function loop(code) {
@@ -1113,7 +1126,7 @@ function $context($method, $args, $vars) {
 				break;
 			case 42: // ret
 				ip = code.length;
-				if (!method.IsVoid) {
+				if (!method.isVoid) {
 					result = pop();
 				}
 				return;
@@ -1621,9 +1634,9 @@ function $context($method, $args, $vars) {
 			case 221: // leave
 			case 222: // leave.s
 				ip = i[1];
-				var bi = i[2]; // index of try/finally block to run
-				if (bi >= 0) {
-					runFinally(code, bi);
+				index = i[2]; // index of try/finally block to run
+				if (index >= 0) {
+					runFinally(code, index);
 				}
 				return;
 			case 223: // stind.

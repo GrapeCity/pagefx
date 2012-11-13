@@ -15,6 +15,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 		}
 
+		public JsObject(bool newLine)
+		{
+			NewLine = newLine;
+		}
+
+		public bool NewLine { get; set; }
+
 		public JsObject(IEnumerable<Property> properties)
 		{
 			if (properties == null)
@@ -37,10 +44,21 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public override void Write(JsWriter writer)
 		{
 			writer.Write("{");
+
+			if (NewLine)
+			{
+				writer.WriteLine();
+				writer.IncreaseIndent();
+			}
+
 			bool sep = false;
 			foreach (var pair in _properties)
 			{
-				if (sep) writer.Write(",");
+				if (sep)
+				{
+					writer.Write(",");
+					if (NewLine) writer.WriteLine();
+				}
 				var key = pair.Key;
 
 				var name = key as string;
@@ -58,6 +76,13 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				writer.WriteValue(pair.Value);
 				sep = true;
 			}
+
+			if (NewLine)
+			{
+				writer.WriteLine();
+				writer.DecreaseIndent();
+			}
+
 			writer.Write("}");
 		}
 

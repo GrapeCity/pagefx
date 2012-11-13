@@ -9,6 +9,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		private readonly object[] _values;
 		private readonly string _separator;
 
+		public static readonly JsArray Empty = new JsArray(new object[0]);
+
 		public JsArray(IEnumerable<object> values) : this(values, " ")
 		{			
 		}
