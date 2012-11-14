@@ -27,7 +27,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public static JsNode Call<T>(this JsNode value, params T[] args)
 		{
-			return new JsCall(value, args.Select(x => (object)x));
+			return new JsCall(value, args.Cast<object>());
+		}
+
+		public static JsNode Call<T>(this IMethod method, JsNode obj, params T[] args)
+		{
+			return method.IsStatic()
+					   ? method.JsFullName().Id().Apply(obj, new JsArray(args.Cast<object>()))
+					   : obj.Get(method.JsName()).Call(obj, args);
 		}
 
 		public static JsNode Apply(this IMethod method, JsNode obj, object args)

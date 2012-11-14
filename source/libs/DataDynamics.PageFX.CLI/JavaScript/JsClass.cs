@@ -18,7 +18,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			ClassInit = 0x01,
 			StaticFieldsCompiled = 0x02,
 			InstanceFieldsCompiled = 0x04,
-			BoxFunctionCompiled = 0x08,
+			BoxCompiled = 0x08,
+			UnboxCompiled = 0x10
 		}
 
 		private readonly List<JsField> _instanceFields = new List<JsField>();
@@ -62,10 +63,16 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			set { SetFlag(ClassFlags.InstanceFieldsCompiled, value); }
 		}
 
-		public bool BoxFunctionCompiled
+		public bool BoxCompiled
 		{
-			get { return (_flags & ClassFlags.BoxFunctionCompiled) != 0; }
-			set { SetFlag(ClassFlags.BoxFunctionCompiled, value); }
+			get { return (_flags & ClassFlags.BoxCompiled) != 0; }
+			set { SetFlag(ClassFlags.BoxCompiled, value); }
+		}
+
+		public bool UnboxCompiled
+		{
+			get { return (_flags & ClassFlags.UnboxCompiled) != 0; }
+			set { SetFlag(ClassFlags.UnboxCompiled, value); }
 		}
 
 		private void SetFlag(ClassFlags f, bool value)
@@ -135,6 +142,25 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				writer.IncreaseIndent();
 				writer.WriteLine("this.{0} = v ? v : 0;", SpecialFields.BoxValue);
 				writer.WriteLine("return this;");
+				writer.DecreaseIndent();
+				writer.WriteLine("};"); // end of function
+				return;
+			}
+
+			if (Type.IsNullableInstance())
+			{
+				writer.WriteLine("{0} = function(v) {{", name);
+				writer.IncreaseIndent();
+
+				writer.WriteLine("if (v) {");
+				writer.IncreaseIndent();
+				writer.WriteLine("this.{0} = v ? v : 0;", SpecialFields.BoxValue);
+				writer.WriteLine("this.{0} = true;", Type.GetHasValueField().JsName());
+				writer.DecreaseIndent();
+				writer.WriteLine("}");
+
+				writer.WriteLine("return this;");
+
 				writer.DecreaseIndent();
 				writer.WriteLine("};"); // end of function
 				return;

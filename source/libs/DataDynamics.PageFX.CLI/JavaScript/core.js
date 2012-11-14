@@ -137,22 +137,31 @@ function $xor(x, y) {
 }
 
 function $eq(x, y) {
+	if (x === null || y === null) return x == y;
 	return x.$eq ? x.$eq(y) : x == y;
 }
 
 function $ge(x, y) {
+	if (x === null) return y === null;
+	if (y === null) return true;
 	return x.$ge ? x.$ge(y) : x >= y;
 }
 
 function $le(x, y) {
+	if (x === null) return y === null;
+	if (y === null) return false;
 	return x.$le ? x.$le(y) : x <= y;
 }
 
 function $gt(x, y) {
+	if (x === null) return false;
+	if (y === null) return true;
 	return x.$gt ? x.$gt(y) : x > y;
 }
 
 function $lt(x, y) {
+	if (x === null) return y !== null;
+	if (y === null) return false;
 	return x.$lt ? x.$lt(y) : x < y;
 }
 
@@ -391,6 +400,8 @@ function $conv(v, from, to) {
 					n = parseFloat(v);
 					if (!isNaN(n)) return n ? true : false;
 					throw new Error("InvalidCastException");
+				default:
+					return !!v;
 			}
 			break;
 		case $tc.i1: // to sbyte
@@ -2001,8 +2012,8 @@ function $context($method, $args, $vars) {
 		var tx = (t >>> 16) & 0xff;
 		var ty = (t >>> 8) & 0xff;
 		var tr = Math.max(tx, ty);
-		x = $conv(x, tx, tr);
-		y = $conv(y, ty, tr);
+		if (x != null) x = $conv(x, tx, tr);
+		if (y != null) y = $conv(y, ty, tr);
 		return op(x, y);
 	}
 

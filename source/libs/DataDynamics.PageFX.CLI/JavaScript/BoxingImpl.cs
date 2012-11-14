@@ -1,5 +1,4 @@
-﻿using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.CodeModel;
+﻿using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {
@@ -20,36 +19,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public JsNode Box(MethodContext context, IType type)
 		{
-			var key = new InstructionKey(InstructionCode.Box, type);
-			var info = context.Vars[key];
-			if (info != null) return info.Id();
+			var klass = CompileClass(type);
 
-			//TODO: nullable
-
-			var klass = _host.CompileClass(type);
-			_host.CompileFields(type, false);
-
-			if (type.IsBoxableType())
+			if (type.IsBoxableType() || type.IsNullableInstance())
 			{
-				//TODO: consider to move to type
-				var name = string.Format("{0}.$box", type.JsFullName());
-
-				if (!klass.BoxFunctionCompiled)
-				{
-					klass.BoxFunctionCompiled = true;
-
-					var val = (JsNode)"v".Id();
-					var func = new JsFunction(null, "v");
-
-					if (type == SystemTypes.Boolean)
-					{
-						val = val.Ternary(true, false);
-					}
-
-					func.Body.Add(type.New(val).Return());
-
-					klass.Add(new JsGeneratedMethod(name, func));
-				}
+				var name = CompileBox(type, klass);
 
 				return name.Id();
 			}
@@ -59,11 +33,81 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public JsNode Unbox(MethodContext context, IType type)
 		{
+			var klass = CompileClass(type);
+
+			//TODO: InvalidCastException
+
+			if (type.IsNullableInstance())
+			{
+				return CompileUnbox(context, type, klass).Id();
+			}
+
 			if (type.IsBoxableType())
 			{
 				return "$unbox".Id();
 			}
+
 			return "$copy".Id();
+		}
+
+		private JsClass CompileClass(IType type)
+		{
+			var klass = _host.CompileClass(type);
+			_host.CompileFields(type, false);
+			return klass;
+		}
+
+		private string CompileBox(IType type, JsClass klass)
+		{
+			var name = string.Format("{0}.$box", type.JsFullName());
+
+			if (klass.BoxCompiled) return name;
+
+			klass.BoxCompiled = true;
+
+			var val = (JsNode)"v".Id();
+			var func = new JsFunction(null, "v");
+
+			if (type.IsNullableInstance())
+			{
+				func.Body.Add(new JsText(string.Format("if (!v.has_value) return null;")));
+				func.Body.Add(val.Set(val.Get(SpecialFields.BoxValue.Id())));
+
+				type = type.GetTypeArgument(0);
+			}
+
+			if (type == SystemTypes.Boolean)
+			{
+				val = val.Ternary(true, false);
+			}
+
+			func.Body.Add(type.New(val).Return());
+
+			klass.Add(new JsGeneratedMethod(name, func));
+
+			return name;
+		}
+
+		private string CompileUnbox(MethodContext context, IType type, JsClass klass)
+		{
+			var name = string.Format("{0}.$unbox", type.JsFullName());
+
+			if (klass.UnboxCompiled) return name;
+
+			klass.UnboxCompiled = true;
+
+			var valueType = type.GetTypeArgument(0);
+			var unbox = Unbox(context, valueType);
+
+			var val = (JsNode)"v".Id();
+			var func = new JsFunction(null, "v");
+
+			func.Body.Add(val.Set(unbox.Call(val)));
+			func.Body.Add(type.New(val).Return());
+
+			klass.Add(new JsGeneratedMethod(name, func));
+
+			return name;
 		}
 	}
 }

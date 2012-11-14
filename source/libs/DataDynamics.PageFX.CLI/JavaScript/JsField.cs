@@ -86,7 +86,8 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public static string JsName(this IField field)
 		{
-			if (field.IsBoxValue()) return SpecialFields.BoxValue;
+			if (field.IsBoxValue())
+				return SpecialFields.BoxValue;
 
 			//TODO: ensure uniqueness
 			return field.Name;
@@ -95,12 +96,26 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public static bool IsBoxValue(this IField field)
 		{
 			if (field.IsStatic || field.IsConstant) return false;
-			return field.DeclaringType.IsBoxableType();
+
+			var type = field.DeclaringType;
+			if (type.IsBoxableType()) return true;
+
+			if (type.IsNullableInstance())
+			{
+				return field.Name == "m_value";
+			}
+
+			return false;
 		}
 
 		public static IField GetBoxValueField(this IType type)
 		{
 			return type.Fields.FirstOrDefault(x => x.IsBoxValue());
+		}
+
+		public static IField GetHasValueField(this IType type)
+		{
+			return type.Fields.FirstOrDefault(x => x.Name == "has_value");
 		}
 	}
 }
