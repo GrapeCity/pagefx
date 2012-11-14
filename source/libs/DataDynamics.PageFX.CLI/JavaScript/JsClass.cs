@@ -138,9 +138,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			if (Type.IsBoxableType())
 			{
+				var valueType = Type.IsEnum ? Type.ValueType : Type;
 				writer.WriteLine("{0} = function(v) {{", name);
 				writer.IncreaseIndent();
-				writer.WriteLine("this.{0} = v ? v : 0;", SpecialFields.BoxValue);
+				writer.WriteLine("this.{0} = v !== undefined ? v : {1};", SpecialFields.BoxValue, valueType.InitialValue().ToJsString());
 				writer.WriteLine("return this;");
 				writer.DecreaseIndent();
 				writer.WriteLine("};"); // end of function
@@ -152,13 +153,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				writer.WriteLine("{0} = function(v) {{", name);
 				writer.IncreaseIndent();
 
-				writer.WriteLine("if (v) {");
-				writer.IncreaseIndent();
-				writer.WriteLine("this.{0} = v ? v : 0;", SpecialFields.BoxValue);
-				writer.WriteLine("this.{0} = true;", Type.GetHasValueField().JsName());
-				writer.DecreaseIndent();
-				writer.WriteLine("}");
-
+				var valueType = Type.GetTypeArgument(0);
+				writer.WriteLine("this.{0} = v !== undefined ? v : {1};", SpecialFields.BoxValue, valueType.InitialValue().ToJsString());
+				writer.WriteLine("this.{0} = v !== undefined;", Type.GetHasValueField().JsName());
 				writer.WriteLine("return this;");
 
 				writer.DecreaseIndent();

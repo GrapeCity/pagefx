@@ -71,9 +71,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (type.IsNullableInstance())
 			{
 				func.Body.Add(new JsText(string.Format("if (!v.has_value) return null;")));
-				func.Body.Add(val.Set(val.Get(SpecialFields.BoxValue.Id())));
+				func.Body.Add(val.Set(val.Get(SpecialFields.BoxValue)));
 
 				type = type.GetTypeArgument(0);
+				CompileClass(type);
 			}
 
 			if (type == SystemTypes.Boolean)

@@ -5,6 +5,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 {
 	internal static class JsExpressionExtensions
 	{
+		public static string ToJsString(this object value)
+		{
+			var writer = new JsWriter();
+			writer.WriteValue(value);
+			writer.Flush();
+			return writer.ToString();
+		}
+
 		public static JsId Id(this string value)
 		{
 			return new JsId(value);
