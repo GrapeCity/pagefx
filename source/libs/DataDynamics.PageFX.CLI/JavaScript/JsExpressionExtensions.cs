@@ -82,6 +82,11 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return new JsBinaryOperator(left, right, op);
 		}
 
+		public static JsNode Op(this JsNode value, string op)
+		{
+			return new JsUnaryOperator(value, op);
+		}
+
 		public static JsNode Set(this JsNode dest, object value)
 		{
 			return dest.Op(value, BinaryOperator.Assign).AsStatement();

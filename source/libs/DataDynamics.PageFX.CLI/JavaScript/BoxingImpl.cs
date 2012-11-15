@@ -54,6 +54,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			var klass = _host.CompileClass(type);
 			_host.CompileFields(type, false);
+
+			if (type.IsNullableInstance())
+			{
+				JsStruct.CompileCopy(klass);
+			}
+
 			return klass;
 		}
 
@@ -71,18 +77,20 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (type.IsNullableInstance())
 			{
 				func.Body.Add(new JsText(string.Format("if (!v.has_value) return null;")));
-				func.Body.Add(val.Set(val.Get(SpecialFields.BoxValue)));
+				func.Body.Add("$copy".Id().Call(val).Return());
 
 				type = type.GetTypeArgument(0);
 				CompileClass(type);
 			}
-
-			if (type == SystemTypes.Boolean)
+			else
 			{
-				val = val.Ternary(true, false);
-			}
+				if (type == SystemTypes.Boolean)
+				{
+					val = val.Op("!!");
+				}
 
-			func.Body.Add(type.New(val).Return());
+				func.Body.Add(type.New(val).Return());
+			}
 
 			klass.Add(new JsGeneratedMethod(name, func));
 

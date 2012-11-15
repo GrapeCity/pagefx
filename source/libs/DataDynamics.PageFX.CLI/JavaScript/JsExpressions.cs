@@ -160,18 +160,29 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		}
 	}
 
+	internal sealed class JsUnaryOperator : JsNode
+	{
+		private readonly JsNode _value;
+		private readonly string _op;
+
+		public JsUnaryOperator(JsNode value, string op)
+		{
+			_value = value;
+			_op = op;
+		}
+
+		public override void Write(JsWriter writer)
+		{
+			writer.Write(_op);
+			_value.Write(writer);
+		}
+	}
+
 	internal sealed class JsBinaryOperator : JsNode
 	{
 		private readonly JsNode _left;
 		private readonly object _value;
 		private readonly string _op;
-
-		public JsBinaryOperator(JsNode left, object value, BinaryOperator op)
-		{
-			_left = left;
-			_value = value;
-			_op = op.EnumString("c#");
-		}
 
 		public JsBinaryOperator(JsNode left, object value, string op)
 		{
@@ -180,13 +191,20 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_op = op;
 		}
 
+		public JsBinaryOperator(JsNode left, object value, BinaryOperator op)
+			: this(left, value, op.EnumString("c#"))
+		{
+		}
+
 		public override void Write(JsWriter writer)
 		{
+			writer.Write("(");
 			_left.Write(writer);
 			writer.Write(" ");
 			writer.Write(_op);
 			writer.Write(" ");
 			writer.WriteValue(_value);
+			writer.Write(")");
 		}
 	}
 
