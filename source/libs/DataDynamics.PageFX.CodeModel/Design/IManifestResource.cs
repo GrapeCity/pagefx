@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.CodeModel
         byte[] Data { get; set; }
     }
 
-    public interface IManifestResourceCollection : IList<IManifestResource>
+    public interface IManifestResourceCollection : IReadOnlyList<IManifestResource>
     {
         IManifestResource this[string name] { get; }
     }

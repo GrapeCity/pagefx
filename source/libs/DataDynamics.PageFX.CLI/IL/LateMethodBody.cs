@@ -19,7 +19,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         private MethodBody Impl
         {
-            get { return _body ?? (_body = _loader.Decompile(_method, _rva)); }
+            get { return _body ?? (_body = _loader.LoadBody(_method, _rva)); }
         }
 
         #region IMethodBody Members

@@ -1,0 +1,37 @@
+﻿using System.Linq;
+using DataDynamics.PageFX.CLI.Metadata;
+using DataDynamics.PageFX.CodeModel;
+
+namespace DataDynamics.PageFX.CLI.CLI.Tables
+{
+	internal sealed class FileTable : MetadataTable<IManifestFile>
+	{
+		public FileTable(AssemblyLoader loader) : base(loader, MdbTableId.File)
+		{
+		}
+
+		public override MdbTableId Id
+		{
+			get { return MdbTableId.File; }
+		}
+
+		public IManifestFile this[string name]
+		{
+			get { return this.FirstOrDefault(x => x.Name == name); }
+		}
+
+		protected override IManifestFile ParseRow(int index)
+		{
+			var row = Mdb.GetRow(MdbTableId.File, index);
+
+			var flags = (FileFlags)row[MDB.File.Flags].Value;
+
+			return new ManifestFile
+				{
+					Name = row[MDB.File.Name].String,
+					HashValue = row[MDB.File.HashValue].Blob,
+					ContainsMetadata = flags == FileFlags.ContainsMetadata
+				};
+		}
+	}
+}

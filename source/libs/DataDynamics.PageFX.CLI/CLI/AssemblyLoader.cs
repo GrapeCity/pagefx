@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
+using DataDynamics.PageFX.CLI.CLI.Tables;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
@@ -36,27 +36,39 @@ namespace DataDynamics.PageFX.CLI
         }
         #endregion
 
-        #region Fields
 		private MdbReader _mdb;
 		private IAssembly _assembly;
-		private IAssembly[] _assemblyRef;
-		private IModule[] _module;
-		private IModule[] _moduleRef;
+		private FileTable _files;
+		private ManifestResourceTable _manifestResources;
+		private ConstantTable _const;
+		private AssemblyRefTable _assemblyRef;
+		private ModuleTable _module;
+		private ModuleRefTable _moduleRef;
 		private IType[] _typeRef;
-		private IType[] _typeDef;
+		private TypeTable _typeDef;
 		private IType[] _typeSpec;
 		private IType[] _interfaceImpl;
-		private IField[] _field;
-		private Method[] _methodDef;
+		private FieldTable _fields;
+		private MethodTable _methodDef;
 		private ITypeMember[] _memberRef;
 		private IMethod[] _methodSpec;
-		private IParameter[] _param;
-		private IGenericParameter[] _genericParam;
-		private IProperty[] _property;
-        private IEvent[] _event;
-		private IManifestFile[] _file;
-		private IManifestResource[] _manifestResource;
-        #endregion
+		private ParamTable _parameters;
+		private GenericParamTable _genericParam;
+		private PropertyTable _property;
+        private EventTable _event;
+		private ClassLayoutTable _classLayout;
+
+		internal IAssembly Assembly { get { return _assembly; } }
+		internal IModule MainModule { get { return _assembly.MainModule; } }
+	    internal MdbReader Mdb { get { return _mdb; } }
+	    internal ConstantTable Const { get { return _const; } }
+	    internal ClassLayoutTable ClassLayout { get { return _classLayout; } }
+	    internal FileTable Files { get { return _files; } }
+		internal ManifestResourceTable ManifestResources { get { return _manifestResources; } }
+		internal ParamTable Parameters { get { return _parameters; } }
+		internal GenericParamTable GenericParameters { get { return _genericParam; } }
+		internal FieldTable Fields { get { return _fields; } }
+		internal MethodTable Methods { get { return _methodDef; } }
 
         #region Loading Process
         #region LoadFromFile, LoadFromStream
@@ -83,7 +95,7 @@ namespace DataDynamics.PageFX.CLI
         public static int TotalTime;
 #endif
 
-        void LoadCore()
+        private void LoadCore()
         {
             if (LoadAssemblyTable()) return;
 
@@ -100,25 +112,46 @@ namespace DataDynamics.PageFX.CLI
 #endif
         }
 
-        void LoadTables()
+        private void LoadTables()
         {
             //To avoid circular references assembly is added to cache
             AssemblyResolver.AddToCache(_assembly);
 
             _loaders.Add(this);
 
-            //DumpMdbTables();
+			// THE ORDER IS IMPORTANT!!!
+			_const = new ConstantTable(_mdb);
+			_files = new FileTable(this);
+	        _manifestResources = new ManifestResourceTable(this);
 
-            LoadModuleTable();
-            LoadCorlib();
-            
-            LoadParamTable();
-            LoadFieldTable();
-            LoadMethodDefTable();
-            LoadGenericParamTable();
-            LoadTypeDefTable();
-            LoadClassLayoutTable();
-            LoadNestedClassTable();
+			// load modules
+	        _module = new ModuleTable(this);
+			foreach (var mod in _module)
+	        {
+		        _assembly.Modules.Add(mod);
+	        }
+
+			_moduleRef = new ModuleRefTable(this);
+			_assemblyRef = new AssemblyRefTable(this);
+
+	        LoadCorlib();
+
+	        _parameters = new ParamTable(this);
+	        _fields = new FieldTable(this);
+			_property = new PropertyTable(this);
+			_event = new EventTable(this);
+			_classLayout = new ClassLayoutTable();
+	        _genericParam = new GenericParamTable(_mdb);
+
+			_methodDef = new MethodTable(this);
+
+			//TODO: remove loading, do lazy loading
+	        _methodDef.Load();
+	        
+	        _typeDef = new TypeTable(this);
+	        _typeDef.Load();
+			
+	        LoadNestedClassTable();
             RegisterTypes();
             
             ResolveFieldSignatures();
@@ -126,28 +159,16 @@ namespace DataDynamics.PageFX.CLI
 
             SetBaseType();
             LoadGenericParamConstraintTable();
-
-            //DumpGenericMethodNames();
-
-            LoadPropertyTable();
-            LoadEventTable();
-            LoadMethodSemanticsTable();
-
+	        
+	        LoadMethodSemanticsTable();
             LoadMethodImplTable();
             LoadInterfaceImplTable();
 
-            LoadConstantTable();
-
-            LoadFieldLayoutTable();
-
-            //LoadFieldMarshalTable();
             LoadCustomAttribute();
             LoadFieldRVA();
-            LoadManifestResourceTable();
 
             if (SortMembers)
                 Sort();
-
         }
         #endregion
 
@@ -201,158 +222,6 @@ namespace DataDynamics.PageFX.CLI
         public static bool SortMembers;
         #endregion
 
-        #region Debug Utils
-        void DumpMdbTables()
-        {
-            for (int i = 0; i < 64; ++i)
-            {
-                var id = (MdbTableId)i;
-                Debug.WriteLine(string.Format("{0}: {1}", id, _mdb.GetRowCount(id)));
-            }
-        }
-
-        void DumpGenericMethodNames()
-        {
-            foreach (var method in _methodDef)
-            {
-                if (method.GenericParameters.Count > 0)
-                {
-                    DumpFullMethodName(method);
-                }
-            }
-        }
-
-        static void DumpFullMethodName(IMethod method)
-        {
-            Debug.WriteLine(method.DeclaringType.FullName + "." + method.Name);
-        }
-        #endregion
-
-        #region LoadFileTable
-        IManifestFile GetFile(int index)
-        {
-            if (_file == null)
-            {
-                int n = _mdb.GetRowCount(MdbTableId.File);
-                _file = new IManifestFile[n];
-            }
-
-            if (_file[index] != null)
-                return _file[index];
-
-            var row = _mdb.GetRow(MdbTableId.File, index);
-            var f = new ManifestFile();
-            var flags = (FileFlags)row[MDB.File.Flags].Value;
-            if (flags == FileFlags.ContainsMetadata)
-                f.ContainsMetadata = true;
-            f.Name = row[MDB.File.Name].String;
-            f.HashValue = row[MDB.File.HashValue].Blob;
-
-            _file[index] = f;
-            //_assembly.MainModule.Files.Add(f);
-
-            return f;
-        }
-
-        IManifestFile GetFile(string name)
-        {
-            int n = _mdb.GetRowCount(MdbTableId.File);
-            for (int i = 0; i < n; ++i)
-            {
-                var f = GetFile(i);
-                if (f.Name == name)
-                    return f;
-            }
-            return null;
-        }
-
-        void LoadFileTable()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.File);
-            for (int i = 0; i < n; ++i)
-                GetFile(i);
-        }
-        #endregion
-
-        #region LoadModuleTable
-        void LoadModuleTable()
-        {
-            const MdbTableId tableId = MdbTableId.Module;
-            int n = _mdb.GetRowCount(tableId);
-            _module = new IModule[n];
-            for (int i = 0; i < n; ++i)
-            {
-                var row = _mdb.GetRow(tableId, i);
-                var mod = new Module
-                {
-                    Name = row[MDB.Module.Name].String,
-                    Version = row[MDB.Module.Mvid].Guid
-                };
-
-                _assembly.Modules.Add(mod);
-                _module[i] = mod;
-
-                var file = GetFile(mod.Name);
-                if (file != null)
-                {
-                    throw new NotImplementedException();
-                }
-                else
-                {
-                    mod.IsMain = true;
-                    mod.RefResolver = this;
-                    mod.MetadataTokenResolver = this;
-                }
-                
-            }
-        }
-        #endregion
-
-        #region LoadParamTable
-        void LoadParamTable()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.Param);
-            _param = new IParameter[n];
-            for (int i = 0; i < n; ++i)
-            {
-                var row = _mdb.GetRow(MdbTableId.Param, i);
-                var p = new Parameter
-                            {
-                                Flags = ((ParamAttributes)row[MDB.Param.Flags].Value),
-                                Index = ((int)row[MDB.Param.Sequence].Value),
-                                Name = row[MDB.Param.Name].String
-                            };
-                _param[i] = p;
-            }
-        }
-        #endregion
-
-        #region LoadFieldTable
-        void LoadFieldTable()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.Field);
-            _field = new IField[n];
-            for (int i = 0; i < n; ++i)
-            {
-                var row = _mdb.GetRow(MdbTableId.Field, i);
-                var flags = (FieldAttributes)row[MDB.Field.Flags].Value;
-                var name = row[MDB.Field.Name].String;
-                var field = new Field
-                                {
-                                    MetadataToken = MdbIndex.MakeToken(MdbTableId.Field, i + 1),
-                                    Visibility = ToVisibility(flags),
-                                    IsStatic = ((flags & FieldAttributes.Static) != 0),
-                                    IsConstant = ((flags & FieldAttributes.Literal) != 0),
-                                    IsReadOnly = ((flags & FieldAttributes.InitOnly) != 0),
-                                    IsSpecialName = ((flags & FieldAttributes.SpecialName) != 0),
-                                    IsRuntimeSpecialName = ((flags & FieldAttributes.RTSpecialName) != 0),
-                                    Name = name
-                                };
-                _field[i] = field;
-            }
-        }
-        #endregion
-
         #region LoadFieldRVA
         static int GetFieldTypeSize(IType type)
         {
@@ -370,9 +239,12 @@ namespace DataDynamics.PageFX.CLI
             for (int i = 0; i < n; ++i)
             {
                 var row = _mdb.GetRow(MdbTableId.FieldRVA, i);
+
                 uint rva = row[MDB.FieldRVA.RVA].Value;
                 int fieldIndex = row[MDB.FieldRVA.Field].Index - 1;
-                var f = _field[fieldIndex];
+
+                var f = _fields[fieldIndex];
+
                 var type = f.Type;
                 int size = GetFieldTypeSize(type);
                 if (size > 0)
@@ -384,329 +256,6 @@ namespace DataDynamics.PageFX.CLI
                 {
                     throw new InvalidOperationException();
                 }
-            }
-        }
-        #endregion
-
-        #region LoadMethodDefTable
-        void LoadMethodDefTable()
-        {
-            const MdbTableId tableId = MdbTableId.MethodDef;
-            MdbIndex entryPoint = _mdb.CLIHeader.EntryPointToken;
-            bool checkEntryPoint = entryPoint.Table == tableId;
-
-            int methodNum = _mdb.GetRowCount(tableId);
-            _methodDef = new Method[methodNum];
-            for (int i = 0; i < methodNum; ++i)
-            {
-                var row = _mdb.GetRow(tableId, i);
-
-                var implFlags = (MethodImplAttributes)row[MDB.MethodDef.ImplFlags].Value;
-                var flags = (MethodAttributes)row[MDB.MethodDef.Flags].Value;
-
-                //if (flags == MethodAttributes.PrivateScope) continue;
-
-                var method = new Method
-                                 {
-                                     MetadataToken = MdbIndex.MakeToken(tableId, i + 1),
-                                     Name = row[MDB.MethodDef.Name].String,
-                                     ImplFlags = implFlags
-                                 };
-
-                _methodDef[i] = method;
-
-                method.Visibility = ToVisibility(flags);
-                bool isStatic = (flags & MethodAttributes.Static) != 0;
-                method.IsStatic = isStatic;
-                if (!isStatic)
-                {
-                    method.IsAbstract = (flags & MethodAttributes.Abstract) != 0;
-                    method.IsFinal = (flags & MethodAttributes.Final) != 0;
-                    method.IsNewSlot = (flags & MethodAttributes.NewSlot) != 0;
-                    method.IsVirtual = (flags & MethodAttributes.Virtual) != 0;
-                }
-                method.IsSpecialName = (flags & MethodAttributes.SpecialName) != 0;
-                method.IsRuntimeSpecialName = (flags & MethodAttributes.RTSpecialName) != 0;
-
-                if (checkEntryPoint && entryPoint.Index - 1 == i)
-                {
-                    method.IsEntryPoint = true;
-                    _assembly.EntryPoint = method;
-                }
-
-                int paramNum = _param.Length;
-                int paramList = row[MDB.MethodDef.ParamList].Index - 1;
-                int nextParamList;
-                if (i + 1 < _methodDef.Length)
-                {
-                    var nm = _mdb.GetRow(MdbTableId.MethodDef, i + 1);
-                    nextParamList = nm[MDB.MethodDef.ParamList].Index - 1;
-                }
-                else nextParamList = paramNum;
-
-                for (int pi = paramList; pi < paramNum && pi < nextParamList; ++pi)
-                {
-                    var param = _param[pi];
-                    if (param.Index == 0)
-                    {
-                        //0 refers to the owner method's return type;
-                        continue;
-                    }
-                    method.Parameters.Add(param);
-                }
-
-                uint rva = row[MDB.MethodDef.RVA].Value;
-                if (rva != 0) //abstract or extern
-                {
-                    method.Body = new LateMethodBody(this, method, rva);
-                }
-            }
-        }
-        #endregion
-
-        #region LoadGenericParamTable
-        static long _gpid;
-
-        void LoadGenericParamTable()
-        {
-            const MdbTableId tableId = MdbTableId.GenericParam;
-            int n = _mdb.GetRowCount(tableId);
-            _genericParam = new IGenericParameter[n];
-            for (int i = 0; i < n; ++i)
-            {
-                var row = _mdb.GetRow(tableId, i);
-                int pos = (int)row[MDB.GenericParam.Number].Value;
-                var flags = (GenericParamAttributes)row[MDB.GenericParam.Flags].Value;
-
-                var param = new GenericParameter
-                                 {
-                                     Position = pos,
-                                     Variance = ToVariance(flags),
-                                     SpecialConstraints = ToSpecConstraints(flags),
-                                     Name = row[MDB.GenericParam.Name].String,
-                                     MetadataToken = MdbIndex.MakeToken(tableId, i),
-                                     ID = ++_gpid
-                                 };
-
-                _genericParam[i] = param;
-
-                MdbIndex owner = row[MDB.GenericParam.Owner].Value;
-                switch (owner.Table)
-                {
-                    case MdbTableId.TypeDef:
-                        {
-                            var type = GetGenericType(owner.Index - 1);
-                            type.GenericParameters.Add(param);
-                            param.DeclaringType = type;
-                        }
-                        break;
-
-                    case MdbTableId.MethodDef:
-                        {
-                            var m = _methodDef[owner.Index - 1];
-                            m.GenericParameters.Add(param);
-                            param.DeclaringMethod = m;
-                        }
-                        break;
-
-                    default:
-                        throw new BadMetadataException();
-                }
-            }
-
-            //if (!Algorithms.IsUnique(_genericParam, (x, y) => x.MetadataToken == y.MetadataToken))
-            //    Debugger.Break();
-        }
-
-        static GenericParameterVariance ToVariance(GenericParamAttributes flags)
-        {
-            var variance = flags & GenericParamAttributes.VarianceMask;
-            switch (variance)
-            {
-                case GenericParamAttributes.Covariant:
-                    return GenericParameterVariance.Covariant;
-
-                case GenericParamAttributes.Contravariant:
-                    return GenericParameterVariance.Contravariant;
-            }
-            return GenericParameterVariance.NonVariant;
-        }
-
-        static GenericParameterSpecialConstraints ToSpecConstraints(GenericParamAttributes flags)
-        {
-            var v = GenericParameterSpecialConstraints.None;
-            var sc = flags & GenericParamAttributes.SpecialConstraintMask;
-            if ((sc & GenericParamAttributes.DefaultConstructorConstraint) != 0)
-                v |= GenericParameterSpecialConstraints.DefaultConstructor;
-            if ((sc & GenericParamAttributes.ReferenceTypeConstraint) != 0)
-                v |= GenericParameterSpecialConstraints.ReferenceType;
-            if ((sc & GenericParamAttributes.NotNullableValueTypeConstraint) != 0)
-                v |= GenericParameterSpecialConstraints.ValueType;
-            return v;
-        }
-        #endregion
-
-        #region LoadTypeDefTable
-        static UserDefinedType CreateSystemType(string ns, string name)
-        {
-            if (ns == SystemTypes.Namespace)
-            {
-                foreach (var sysType in SystemTypes.Types)
-                {
-                    if (name == sysType.Name)
-                    {
-                        var type = new UserDefinedType(sysType.Kind);
-                        sysType.Value = type;
-                        type.SystemType = sysType;
-                        return type;
-                    }
-                }
-            }
-            return null;
-        }
-
-        void SetFieldsAndMethods(MdbRow row, int index, IType type)
-        {
-            SetFields(row, index, type);
-            SetMethods(row, index, type);
-        }
-
-        void SetFields(MdbRow row, int index, IType type)
-        {
-            int from = row[MDB.TypeDef.FieldList].Index - 1;
-            if (from < 0) return;
-
-            int n = _field.Length;
-            int to = n;
-            
-            if (index + 1 < _typeDef.Length)
-            {
-                var nextRow = _mdb.GetRow(MdbTableId.TypeDef, index + 1);
-                to = nextRow[MDB.TypeDef.FieldList].Index - 1;
-            }
-
-            for (int i = from; i < n && i < to; ++i)
-            {
-                var f = _field[i];
-                type.Members.Add(f);
-            }
-        }
-
-        void SetMethods(MdbRow row, int index, IType type)
-        {
-            int from = row[MDB.TypeDef.MethodList].Index - 1;
-            if (from < 0) return;
-
-            int n = _methodDef.Length;
-            int to = n;
-
-            if (index + 1 < _typeDef.Length)
-            {
-                var nextRow = _mdb.GetRow(MdbTableId.TypeDef, index + 1);
-                to = nextRow[MDB.TypeDef.MethodList].Index - 1;
-            }
-
-            for (int i = from; i < n && i < to; ++i)
-            {
-                var m = _methodDef[i];
-                type.Members.Add(m);
-            }
-        }
-
-        static bool IsInterface(TypeAttributes f)
-        {
-            return (f & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
-        }
-
-        static void SetTypeFlags(IType type, TypeAttributes flags)
-        {
-            type.Visibility = ToVisibility(flags);
-            type.IsAbstract = (flags & TypeAttributes.Abstract) != 0;
-            type.IsSealed = (flags & TypeAttributes.Sealed) != 0;
-            type.IsBeforeFieldInit = (flags & TypeAttributes.BeforeFieldInit) != 0;
-            type.IsSpecialName = (flags & TypeAttributes.SpecialName) != 0;
-            type.IsRuntimeSpecialName = (flags & TypeAttributes.RTSpecialName) != 0;
-        }
-
-        IType GetTypeDef(int index, bool isGeneric)
-        {
-            const MdbTableId tableId = MdbTableId.TypeDef;
-            if (_typeDef == null)
-            {
-                int n = _mdb.GetRowCount(tableId);
-                _typeDef = new IType[n];
-            }
-
-            if (_typeDef[index] != null)
-                return _typeDef[index];
-
-            var row = _mdb.GetRow(tableId, index);
-            var flags = (TypeAttributes)row[MDB.TypeDef.Flags].Value;
-            string name = row[MDB.TypeDef.TypeName].String;
-            string ns = row[MDB.TypeDef.TypeNamespace].String;
-
-            var type = CreateType(ns, name, flags, isGeneric);
-            type.MetadataToken = MdbIndex.MakeToken(tableId, index + 1);
-
-            type.Name = name;
-            type.Namespace = ns;
-            _typeDef[index] = type;
-            SetFieldsAndMethods(row, index, type);
-
-            return type;
-        }
-
-        static UserDefinedType CreateType(string ns, string name, TypeAttributes flags, bool isGeneric)
-        {
-            UserDefinedType type;
-            bool isIface = IsInterface(flags);
-            if (isGeneric)
-            {
-                type = new GenericType
-                           {
-                               TypeKind = (isIface ? TypeKind.Interface : TypeKind.Class)
-                           };
-            }
-            else if (isIface)
-            {
-                type = new UserDefinedType(TypeKind.Interface);
-            }
-            else
-            {
-                type = CreateSystemType(ns, name) ?? new UserDefinedType(TypeKind.Class);
-            }
-            SetTypeFlags(type, flags);
-            return type;
-        }
-
-        GenericType GetGenericType(int index)
-        {
-            return (GenericType)GetTypeDef(index, true);
-        }
-
-        void LoadTypeDefTable()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.TypeDef);
-            for (int i = 0; i < n; ++i)
-            {
-                var type = GetTypeDef(i, false);
-                Debug.Assert(type != null);
-            }
-        }
-        #endregion
-
-        #region LoadClassLayoutTable
-        void LoadClassLayoutTable()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.ClassLayout);
-            for (int i = 0; i < n; ++i)
-            {
-                var row = _mdb.GetRow(MdbTableId.ClassLayout, i);
-                int index = row[MDB.ClassLayout.Parent].Index - 1;
-                var type = _typeDef[index];
-                int size = (int)row[MDB.ClassLayout.ClassSize].Value;
-                int pack = (int)row[MDB.ClassLayout.PackingSize].Value;
-                type.Layout = new ClassLayout(size, pack);
             }
         }
         #endregion
@@ -727,22 +276,13 @@ namespace DataDynamics.PageFX.CLI
         #endregion
 
         #region RegisterTypes
-        IModule MainModule
-        {
-            get
-            {
-                return _assembly.MainModule;
-            }
-        }
 
         void RegisterTypes()
         {
-            int n = _typeDef.Length;
-            for (int i = 0; i < n; ++i)
-            {
-                var type = _typeDef[i];
-                RegisterType(type);
-            }
+	        foreach (var type in _typeDef)
+	        {
+				RegisterType(type);
+	        }
         }
 
         void RegisterType(IType type)
@@ -757,70 +297,26 @@ namespace DataDynamics.PageFX.CLI
                 ns.Types.Add(type);
             }
         }
+
         #endregion
 
-        #region LoadAssemblyRefTable
-        IAssembly ResolveAssembly(IAssemblyReference r)
+        #region Assembly Refs
+        internal IAssembly ResolveAssembly(IAssemblyReference r)
         {
             return AssemblyResolver.ResolveAssembly(r, _assembly.Location);
         }
 
-        IAssembly GetAssemblyRef(int index)
+	    public void ResolveAssemblyReferences()
         {
-            const MdbTableId tableId = MdbTableId.AssemblyRef;
-            if (_assemblyRef == null)
-            {
-                int n = _mdb.GetRowCount(tableId);
-                _assemblyRef = new IAssembly[n];
-            }
-
-            var asm = _assemblyRef[index];
-            if (asm != null) return asm;
-
-            var row = _mdb.GetRow(tableId, index);
-            var asmref = new AssemblyReference
-                             {
-                                 Version = GetVersion(row, 0),
-                                 Flags = ((AssemblyFlags)row[MDB.AssemblyRef.Flags].Value),
-                                 PublicKeyToken = row[MDB.AssemblyRef.PublicKeyOrToken].Blob,
-                                 Name = row[MDB.AssemblyRef.Name].String,
-                                 Culture = row[MDB.AssemblyRef.Culture].Culture,
-                                 HashValue = row[MDB.AssemblyRef.HashValue].Blob
-                             };
-
-            asm = ResolveAssembly(asmref);
-            _assemblyRef[index] = asm;
-
-            var mod = _assembly.MainModule as Module;
-            if (mod != null)
-            {
-                mod.RefResolver = null;
-                mod.References.Add(asm);
-                mod.RefResolver = this;
-            }
-            else
-            {
-                _assembly.MainModule.References.Add(asm);
-            }
-
-            return asm;
+	        foreach (var asm in _assemblyRef)
+	        {
+		        Trace.WriteLine(asm.Name);
+	        }
         }
 
-        void LoadAssemblyRefTable()
+        private void LoadCorlib()
         {
-            int n = _mdb.GetRowCount(MdbTableId.AssemblyRef);
-            for (int i = 0; i < n; ++i)
-                GetAssemblyRef(i);
-        }
-
-        public void ResolveAssemblyReferences()
-        {
-            LoadAssemblyRefTable();
-        }
-
-        void LoadCorlib()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.AssemblyRef);
+            int n = _assemblyRef.Count;
             if (n == 0)
             {
                 _assembly.IsCorlib = true;
@@ -829,7 +325,7 @@ namespace DataDynamics.PageFX.CLI
             {
                 for (int i = 0; i < n; ++i)
                 {
-                    IAssembly asm = GetAssemblyRef(0);
+                    var asm = _assemblyRef[i];
                     if (asm.IsCorlib)
                         break;
                 }
@@ -837,41 +333,7 @@ namespace DataDynamics.PageFX.CLI
         }
         #endregion
 
-        #region LoadModuleRefTable
-        IModule GetModuleRef(int index)
-        {
-            if (_moduleRef == null)
-            {
-                int n = _mdb.GetRowCount(MdbTableId.ModuleRef);
-                _moduleRef = new IModule[n];
-            }
-
-            var mod = _moduleRef[index];
-            if (mod != null) return mod;
-
-            var row = _mdb.GetRow(MdbTableId.ModuleRef, index);
-            string name = row[MDB.ModuleRef.Name].String;
-
-            //var f = GetFile(name);
-            //var res = GetResource(name);
-
-        	mod = new Module {Name = name};
-
-        	_moduleRef[index] = mod;
-            _assembly.Modules.Add(mod);
-            
-            return mod;
-        }
-
-        void LoadModuleRefTable()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.ModuleRef);
-            for (int i = 0; i < n; ++i)
-                GetModuleRef(i);
-        }
-        #endregion
-
-        #region LoadTypeRefTable
+	    #region LoadTypeRefTable
         ITypeContainer GetTypeContainer(MdbIndex idx)
         {
             switch (idx.Table)
@@ -880,10 +342,10 @@ namespace DataDynamics.PageFX.CLI
                     return _module[idx.Index - 1];
 
                 case MdbTableId.ModuleRef:
-                    return GetModuleRef(idx.Index - 1);
+                    return _moduleRef[idx.Index - 1];
 
                 case MdbTableId.AssemblyRef:
-                    return GetAssemblyRef(idx.Index - 1);
+                    return _assemblyRef[idx.Index - 1];
 
                 case MdbTableId.TypeRef:
                     return GetTypeRef(idx.Index - 1);
@@ -947,7 +409,8 @@ namespace DataDynamics.PageFX.CLI
         #region SetBaseType
         void SetBaseType()
         {
-            int n = _typeDef.Length;
+			//TODO: move to TypeTable
+            int n = _typeDef.Count;
             for (int i = 0; i < n; ++i)
             {
                 var type = _typeDef[i];
@@ -973,13 +436,14 @@ namespace DataDynamics.PageFX.CLI
         #region LoadGenericParamConstraintTable
         void LoadGenericParamConstraintTable()
         {
-            const MdbTableId tableId = MdbTableId.GenericParamConstraint;
+			//TODO: generic parameter constraints
+            /*const MdbTableId tableId = MdbTableId.GenericParamConstraint;
             int n = _mdb.GetRowCount(tableId);
             for (int i = 0; i < n; ++i)
             {
                 var row = _mdb.GetRow(tableId, i);
                 int index = row[MDB.GenericParamConstraint.Owner].Index - 1;
-                var gparam = _genericParam[index];
+                IGenericParameter gparam = _genericParam[index];
                 MdbIndex cid = row[MDB.GenericParamConstraint.Constraint].Value;
 
                 var declType = gparam.DeclaringType;
@@ -1003,17 +467,17 @@ namespace DataDynamics.PageFX.CLI
                     if (gparam.BaseType == null)
                         gparam.BaseType = constraint;
                 }
-            }
+            }*/
         }
         #endregion
 
         #region ResolveFieldSignatures
         void ResolveFieldSignatures()
         {
-            int n = _field.Length;
+            int n = _fields.Count;
             for (int i = 0; i < n; ++i)
             {
-                var field = _field[i];
+                var field = _fields[i];
                 if (field.DeclaringType == null)
                     throw new BadMetadataException(string.Format("Field {0}[{1}] has no declaring type", field.Name, i));
                 var row = _mdb.GetRow(MdbTableId.Field, i);
@@ -1027,7 +491,7 @@ namespace DataDynamics.PageFX.CLI
         #region ResolveMethodSignatures
         void ResolveMethodSignatures()
         {
-            int n = _methodDef.Length;
+            int n = _methodDef.Count;
             for (int i = 0; i < n; ++i)
             {
                 var method = _methodDef[i];
@@ -1173,55 +637,6 @@ namespace DataDynamics.PageFX.CLI
         }
         #endregion
 
-        #region LoadPropertyTable
-        void LoadPropertyTable()
-        {
-            const MdbTableId tableId = MdbTableId.Property;
-            int n = _mdb.GetRowCount(tableId);
-            _property = new IProperty[n];
-            for (int i = 0; i < n; ++i)
-            {
-                var row = _mdb.GetRow(tableId, i);
-                var flags = (PropertyAttributes)row[MDB.Property.Flags].Value;
-                var name = row[MDB.Property.Name].String;
-                var p = new Property
-                            {
-                                MetadataToken = MdbIndex.MakeToken(tableId, i + 1),
-                                Name = name,
-                                IsSpecialName = ((flags & PropertyAttributes.SpecialName) != 0),
-                                IsRuntimeSpecialName = ((flags & PropertyAttributes.RTSpecialName) != 0),
-                                HasDefault = ((flags & PropertyAttributes.HasDefault) != 0)
-                            };
-                _property[row.Index] = p;
-            }
-        }
-        #endregion
-
-        #region LoadEventTable
-        void LoadEventTable()
-        {
-            const MdbTableId tableId = MdbTableId.Event;
-            int eventNum = _mdb.GetRowCount(tableId);
-            _event = new IEvent[eventNum];
-            for (int i = 0; i < eventNum; ++i)
-            {
-                var row = _mdb.GetRow(tableId, i);
-                var flags = (EventAttributes)row[MDB.Event.EventFlags].Value;
-                var name = row[MDB.Event.Name].String;
-
-                var e = new Event
-            	        	{
-            	        		MetadataToken = MdbIndex.MakeToken(tableId, i + 1),
-            	        		Name = name,
-            	        		IsSpecialName = ((flags & EventAttributes.SpecialName) != 0),
-            	        		IsRuntimeSpecialName = ((flags & EventAttributes.RTSpecialName) != 0),
-                            };
-
-                _event[i] = e;
-            }
-        }
-        #endregion
-
         #region LoadMethodSemanticsTable
         void LoadMethodSemanticsTable()
         {
@@ -1301,132 +716,8 @@ namespace DataDynamics.PageFX.CLI
         }
         #endregion
 
-        #region LoadConstantTable
-        static object GetConstantValue(ElementType type, byte[] blob)
-        {
-            var reader = new BufferedBinaryReader(blob);
-            switch (type)
-            {
-                case ElementType.Boolean:
-                    return reader.ReadBoolean();
-
-                case ElementType.Char:
-                    return reader.ReadChar();
-
-                case ElementType.Int8:
-                    return reader.ReadSByte();
-
-                case ElementType.UInt8:
-                    return reader.ReadByte();
-
-                case ElementType.Int16:
-                    return reader.ReadInt16();
-
-                case ElementType.UInt16:
-                    return reader.ReadUInt16();
-
-                case ElementType.Int32:
-                    return reader.ReadInt32();
-
-                case ElementType.UInt32:
-                    return reader.ReadUInt32();
-
-                case ElementType.Int64:
-                    return reader.ReadInt64();
-
-                case ElementType.UInt64:
-                    return reader.ReadUInt64();
-
-                case ElementType.Single:
-                    return reader.ReadSingle();
-
-                case ElementType.Double:
-                    return reader.ReadDouble();
-
-                case ElementType.String:
-                    return Encoding.Unicode.GetString(blob);
-
-                case ElementType.Class:
-                    return null;
-
-                default:
-                    return blob;
-            }
-        }
-
-        void SetConstant(MdbIndex parent, object value)
-        {
-            switch (parent.Table)
-            {
-                case MdbTableId.Field:
-                    {
-                        var f = _field[parent.Index - 1];
-                        f.Value = value;
-                    }
-                    break;
-
-                case MdbTableId.Param:
-                    {
-                        var p = _param[parent.Index - 1];
-                        p.Value = value;
-                    }
-                    break;
-
-                case MdbTableId.Property:
-                    {
-                        var p = _property[parent.Index - 1];
-                        p.Value = value;
-                    }
-                    break;
-            }
-        }
-
-        void LoadConstantTable()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.Constant);
-            for (int i = 0; i < n; ++i)
-            {
-                var row = _mdb.GetRow(MdbTableId.Constant, i);
-                var type = (ElementType)row[MDB.Constant.Type].Value;
-                var blob = row[MDB.Constant.Value].Blob;
-                MdbIndex parent = row[MDB.Constant.Parent].Value;
-                var value = GetConstantValue(type, blob);
-                SetConstant(parent, value);
-            }
-        }
-        #endregion
-
-        #region LoadFieldLayoutTable
-        void LoadFieldLayoutTable()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.FieldLayout);
-            for (int i = 0; i < n; ++i)
-            {
-                var row = _mdb.GetRow(MdbTableId.FieldLayout, i);
-                var offset = (int)row[MDB.FieldLayout.Offset].Value;
-                int fi = row[MDB.FieldLayout.Field].Index - 1;
-                _field[fi].Offset = offset;
-            }
-        }
-        #endregion
-
-        #region LoadFieldMarshalTable
-        //void LoadFieldMarshalTable()
-        //{
-        //    int n = _mdb.GetRowCount(MdbTableId.FieldMarshal);
-        //    for (int i = 0; i < n; ++i)
-        //    {
-        //        var row = _mdb.GetRow(MdbTableId.FieldMarshal, i);
-        //        MdbIndex parentIndex = row[MDB.FieldMarshal.Parent].Value;
-        //        var blob = row[MDB.FieldMarshal.NativeType].Blob;
-        //        //BufferedBinaryReader reader = new BufferedBinaryReader(blob);
-        //        //NativeType type = (NativeType)row[MDB.FieldMarshal.NativeType].Value;
-        //    }
-        //}
-        #endregion
-
         #region LoadCustomAttribute
-        void LoadCustomAttribute()
+		private void LoadCustomAttribute()
         {
             int n = _mdb.GetRowCount(MdbTableId.CustomAttribute);
             for (int i = 0; i < n; ++i)
@@ -1491,7 +782,7 @@ namespace DataDynamics.PageFX.CLI
             int n = _mdb.GetRowCount(MdbTableId.AssemblyRef);
             for (int i = 0; i < n; ++i)
             {
-                var asm = GetAssemblyRef(i);
+                var asm = _assemblyRef[i];
                 type = asm.FindType(name);
                 if (type != null)
                     return type;
@@ -1500,13 +791,13 @@ namespace DataDynamics.PageFX.CLI
             return null;
         }
 
-        IType ReadType(BufferedBinaryReader reader)
+		private IType ReadType(BufferedBinaryReader reader)
         {
             string s = reader.ReadCountedUtf8();
             return FindType(s);
         }
 
-        object ReadArray(BufferedBinaryReader reader, ElementType elemType)
+		private object ReadArray(BufferedBinaryReader reader, ElementType elemType)
         {
             Array arr = null;
             int n = reader.ReadInt32();
@@ -1520,7 +811,7 @@ namespace DataDynamics.PageFX.CLI
             return arr;
         }
 
-        object ReadArray(BufferedBinaryReader reader, IType elemType)
+		private object ReadArray(BufferedBinaryReader reader, IType elemType)
         {
             Array arr = null;
             int n = reader.ReadInt32();
@@ -1534,7 +825,7 @@ namespace DataDynamics.PageFX.CLI
             return arr;
         }
 
-        object ReadValue(BufferedBinaryReader reader, ElementType e)
+        private object ReadValue(BufferedBinaryReader reader, ElementType e)
         {
             switch (e)
             {
@@ -1806,7 +1097,7 @@ namespace DataDynamics.PageFX.CLI
                     return _methodDef[index];
 
                 case MdbTableId.Field:
-                    return _field[index];
+                    return _fields[index];
 
                 case MdbTableId.TypeRef:
                     return GetTypeRef(index);
@@ -1815,7 +1106,7 @@ namespace DataDynamics.PageFX.CLI
                     return _typeDef[index];
 
                 case MdbTableId.Param:
-                    return _param[index];
+                    return _parameters[index];
 
                 case MdbTableId.Property:
                     return _property[index];
@@ -1833,7 +1124,7 @@ namespace DataDynamics.PageFX.CLI
                     return GetTypeSpec(index, CurrentType, CurrentMethod);
 
                 case MdbTableId.AssemblyRef:
-                    return GetAssemblyRef(index);
+                    return _assemblyRef[index];
 
                 case MdbTableId.Assembly:
                     return _assembly;
@@ -1845,7 +1136,7 @@ namespace DataDynamics.PageFX.CLI
                     return GetMemberRef(index);
 
                 case MdbTableId.File:
-                    return _file[index];
+                    return _files[index];
 
                 case MdbTableId.DeclSecurity:
                     return null;
@@ -1857,7 +1148,7 @@ namespace DataDynamics.PageFX.CLI
                     return null;
 
                 case MdbTableId.ManifestResource:
-                    return GetResource(index);
+                    return _manifestResources[index];
 
                 case MdbTableId.GenericParam:
                     return _genericParam[index];
@@ -1894,88 +1185,8 @@ namespace DataDynamics.PageFX.CLI
         }
         #endregion
 
-        #region LoadManifestResourceTable
-        IManifestResource GetResource(int index)
-        {
-            int n = _mdb.GetRowCount(MdbTableId.ManifestResource);
-            if (_manifestResource == null)
-                _manifestResource = new IManifestResource[n];
-
-            var res = _manifestResource[index];
-            if (res != null) return res;
-
-            var row = _mdb.GetRow(MdbTableId.ManifestResource, index);
-            string name = row[MDB.ManifestResource.Name].String;
-
-            var mres = new ManifestResource
-            {
-                Name = name
-            };
-
-            var flags = (ManifestResourceAttributes)row[MDB.ManifestResource.Flags].Value;
-            if ((flags & ManifestResourceAttributes.VisibilityMask) == ManifestResourceAttributes.Public)
-                mres.IsPublic = true;
-
-            int offset = (int)row[MDB.ManifestResource.Offset].Value;
-            mres.Offset = offset;
-
-            _manifestResource[index] = mres;
-
-            MdbIndex impl = row[MDB.ManifestResource.Implementation].Value;
-            if (impl == 0)
-            {
-
-            }
-            else
-            {
-                switch (impl.Table)
-                {
-                    case MdbTableId.File:
-                        {
-                            //if (offset != 0)
-                            //    throw new BadMetadataException(string.Format("Offset of manifest resource {0} shall be zero.", mr.Name));
-                            var reader = _mdb.SeekResourceOffset(offset);
-                            int size = reader.ReadInt32();
-                            mres.Data = reader.ReadBlock(size);
-                        }
-                        break;
-
-                    case MdbTableId.AssemblyRef:
-                        {
-                            //IAssembly asm = _assemblyRef[impl.Index - 1];
-                            throw new NotSupportedException();
-                        }
-                }
-            }
-
-            return mres;
-        }
-
-        IManifestResource GetResource(string name)
-        {
-            int n = _mdb.GetRowCount(MdbTableId.ManifestResource);
-            for (int i = 0; i < n; ++i)
-            {
-                var res = GetResource(i);
-                if (res.Name == name)
-                    return res;
-            }
-            return null;
-        }
-
-        void LoadManifestResourceTable()
-        {
-            int n = _mdb.GetRowCount(MdbTableId.ManifestResource);
-            for (int i = 0; i < n; ++i)
-            {
-                var res = GetResource(i);
-                _assembly.MainModule.Resources.Add(res);
-            }
-        }
-        #endregion
-
-        #region Decompile
-        public MethodBody Decompile(IMethod method, uint rva)
+		#region LoadMethodBody
+		public MethodBody LoadBody(IMethod method, uint rva)
         {
             var reader = _mdb.SeekRVA(rva);
             _currentMethod = method;
@@ -2636,78 +1847,8 @@ namespace DataDynamics.PageFX.CLI
         #endregion
         #endregion
 
-        #region Utils
-        static Visibility ToVisibility(TypeAttributes f)
-        {
-            var v = f & TypeAttributes.VisibilityMask;
-            switch(v)
-            {
-                case TypeAttributes.Public: 
-                    return Visibility.Public;
-                case TypeAttributes.NestedFamily: 
-                    return Visibility.NestedProtected;
-                case TypeAttributes.NestedAssembly: 
-                    return Visibility.NestedInternal;
-                case TypeAttributes.NestedFamORAssem:
-                case TypeAttributes.NestedFamANDAssem: 
-                    return Visibility.NestedProtectedInternal;
-                case TypeAttributes.NestedPrivate: 
-                    return Visibility.NestedPrivate;
-            }
-            return Visibility.Internal;
-        }
-
-        static Visibility ToVisibility(MethodAttributes f)
-        {
-            var v = f & MethodAttributes.MemberAccessMask;
-            switch (v)
-            {
-                case MethodAttributes.PrivateScope:
-                    return Visibility.PrivateScope;
-                case MethodAttributes.Private:
-                    return Visibility.Private;
-                case MethodAttributes.FamANDAssem:
-                case MethodAttributes.FamORAssem:
-                    return Visibility.ProtectedInternal;
-                case MethodAttributes.Assembly:
-                    return Visibility.Internal;
-                case MethodAttributes.Family:
-                    return Visibility.Protected;
-            }
-            return Visibility.Public;
-        }
-
-        static Visibility ToVisibility(FieldAttributes f)
-        {
-            var v = f & FieldAttributes.FieldAccessMask;
-            switch (v)
-            {
-                case FieldAttributes.PrivateScope:
-                    return Visibility.PrivateScope;
-                case FieldAttributes.Private:
-                    return Visibility.Private;
-                case FieldAttributes.FamANDAssem:
-                case FieldAttributes.FamORAssem:
-                    return Visibility.ProtectedInternal;
-                case FieldAttributes.Assembly:
-                    return Visibility.Internal;
-                case FieldAttributes.Family:
-                    return Visibility.Protected;
-            }
-            return Visibility.Public;
-        }
-
-        static Version GetVersion(MdbRow row, int i)
-        {
-            return new Version((int)row[i].Value,
-                               (int)row[i + 1].Value,
-                               (int)row[i + 2].Value,
-                               (int)row[i + 3].Value);
-        }
-        #endregion
-
-        #region IMethodContext Members
-        IType CurrentType
+	    #region IMethodContext Members
+        private IType CurrentType
         {
             get
             {
@@ -2718,13 +1859,13 @@ namespace DataDynamics.PageFX.CLI
                 return null;
             }
         }
-        IType _currentType;
+		private IType _currentType;
 
         public IMethod CurrentMethod
         {
             get { return _currentMethod; }
         }
-        IMethod _currentMethod;
+        private IMethod _currentMethod;
 
         public IVariableCollection ResolveLocalVariables(int sig, out bool hasGenericVars)
         {
@@ -2797,7 +1938,7 @@ namespace DataDynamics.PageFX.CLI
                     return GetTypeDefOrRef(token, _currentMethod.DeclaringType, _currentMethod);
 
                 case MdbTableId.Field:
-                    return _field[index - 1];
+                    return _fields[index - 1];
 
                 case MdbTableId.MethodDef:
                     return _methodDef[index - 1];
@@ -2866,10 +2007,10 @@ namespace DataDynamics.PageFX.CLI
 
         #region IDisposable
         public static List<AssemblyLoader> _loaders = new List<AssemblyLoader>();
-
-        public static void Clean()
-        {
-            _gpid = 0;
+	    
+	    public static void Clean()
+	    {
+		    GenericParamTable.ResetId();
             while (_loaders.Count > 0)
             {
                 var al = _loaders[0];
@@ -2903,5 +2044,13 @@ namespace DataDynamics.PageFX.CLI
             Dispose(false);
         }
         #endregion
+
+		private static Version GetVersion(MdbRow row, int i)
+		{
+			return new Version((int)row[i].Value,
+							   (int)row[i + 1].Value,
+							   (int)row[i + 2].Value,
+							   (int)row[i + 3].Value);
+		}
     }
 }

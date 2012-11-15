@@ -177,7 +177,9 @@ namespace DataDynamics.PageFX.CLI.Metadata
             }
 
             row = new MdbRow(rowIndex, cells);
+
             table.Rows[rowIndex] = row;
+
             return row;
         }
 
@@ -189,7 +191,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
             }
         }
 
-        MdbCell ReadCell(MdbColumn column)
+        private MdbCell ReadCell(MdbColumn column)
         {    
             switch(column.Type)
             {
@@ -242,14 +244,14 @@ namespace DataDynamics.PageFX.CLI.Metadata
             }
         }
 
-        MdbIndex ReadIndex(MdbTableId id)
+        private MdbIndex ReadIndex(MdbTableId id)
         {
             int size = GetSimpleIndexSize(id);
             uint index = _reader.ReadIndex(size);
             return new MdbIndex(id, (int)index);
         }
 
-        MdbIndex ReadIndex(MdbCodedIndex i)
+        private MdbIndex ReadIndex(MdbCodedIndex i)
         {
             int size = GetCodedIndexSize(i);
             uint index = _reader.ReadIndex(size);

@@ -117,7 +117,7 @@ namespace DataDynamics.PageFX.CLI.CFG
             var header = new Node();
             var next = BuildNode(header, entryPoint);
             if (header.CodeLength == 0)
-                throw new DecompileException();
+                throw new ILTranslatorException();
             if (next != null)
             {
                 var nodeStack = new Stack<Node>();
@@ -131,7 +131,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                     foreach (var index in next)
                     {
                         if (index < 0 || index >= _code.Count)
-                            throw new DecompileException();
+                            throw new ILTranslatorException();
                         var instruction = _code[index];
                         var nextNode = instruction.BasicBlock;
                         if (nextNode != null)
@@ -146,7 +146,7 @@ namespace DataDynamics.PageFX.CLI.CFG
                             nextNode = new Node();
                             var nextNext = BuildNode(nextNode, instruction);
                             if (nextNode.CodeLength == 0)
-                                throw new DecompileException();
+                                throw new ILTranslatorException();
                             //Note: can be switch
                             //if (node.HasOut(nextNode))
                             //    throw new DecompileException();

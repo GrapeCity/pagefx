@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -49,9 +50,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IManifestResourceCollection Resources
         {
-            get { return _resources; }
+			get { return _resources ?? EmptyResourceCollection.Instance; }
+			set { _resources = value; }
         }
-        readonly ManifestResourceCollection _resources = new ManifestResourceCollection();
+        private IManifestResourceCollection _resources;
 
         public IUnmanagedResourceCollection UnmanagedResources
         {
@@ -126,6 +128,36 @@ namespace DataDynamics.PageFX.CodeModel
             return ToString(null, null);
         }
         #endregion
+
+		private sealed class EmptyResourceCollection : IManifestResourceCollection
+		{
+			public static readonly IManifestResourceCollection Instance = new EmptyResourceCollection();
+
+			public IEnumerator<IManifestResource> GetEnumerator()
+			{
+				yield break;
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			public int Count
+			{
+				get { return 0; }
+			}
+
+			public IManifestResource this[int index]
+			{
+				get { return null; }
+			}
+
+			public IManifestResource this[string name]
+			{
+				get { return null; }
+			}
+		}
     }
 
     /// <summary>

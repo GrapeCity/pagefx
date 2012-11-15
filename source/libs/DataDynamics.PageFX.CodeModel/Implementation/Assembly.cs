@@ -16,16 +16,7 @@ namespace DataDynamics.PageFX.CodeModel
             _modules = new ModuleCollection(this);
         }
 
-        /// <summary>
-        /// Gets the list of assembly manifest resources
-        /// </summary>
-        public ManifestResourceCollection ManifestResources
-        {
-            get { return _manifestResources; }
-        }
-        readonly ManifestResourceCollection _manifestResources = new ManifestResourceCollection();
-
-        public override IEnumerable<ICodeNode> ChildNodes
+	    public override IEnumerable<ICodeNode> ChildNodes
         {
             get { return new ICodeNode[] {_modules}; }
         }

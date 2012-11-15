@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         IManifestFileCollection Files { get; }
 
-        IManifestResourceCollection Resources { get; }
+		IManifestResourceCollection Resources { get; set; }
 
         IUnmanagedResourceCollection UnmanagedResources { get; }
 

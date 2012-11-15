@@ -12,9 +12,7 @@ namespace DataDynamics.PageFX.CodeModel
             get { return MemberType.Field; }
         }
 
-        #region IField Members
-
-    	public int Offset { get; set; }
+	    public int Offset { get; set; }
 
     	public int Slot { get; set; }
 
@@ -38,6 +36,5 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { throw new NotSupportedException(); }
         }
-        #endregion
     }
 }
