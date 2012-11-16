@@ -5,6 +5,11 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
+	public interface IGenericParameterConstraints : ITypeCollection
+	{
+		IType BaseType { get; }
+	}
+
     public sealed class GenericParameter : CustomAttributeProvider, IGenericParameter
     {
         #region ITypeMember Members
@@ -189,13 +194,18 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IMethod DeclaringMethod { get; set; }
 
-        public IType BaseType { get; set; }
+		public IGenericParameterConstraints Constraints { get; set; }
 
-        public ITypeCollection Interfaces
+	    public IType BaseType
+	    {
+		    get { return Constraints != null ? Constraints.BaseType : null; }
+		    set { throw new NotSupportedException(); }
+	    }
+
+		public ITypeCollection Interfaces
         {
-            get { return _interfaces; }
+            get { return Constraints; }
         }
-        private readonly SimpleTypeCollection _interfaces = new SimpleTypeCollection();
 
         public ITypeCollection Types
         {

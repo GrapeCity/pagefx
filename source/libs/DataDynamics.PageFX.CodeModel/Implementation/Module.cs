@@ -71,17 +71,11 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ITypeContainer Members
-        public INamespaceCollection Namespaces
-        {
-            get { return _namespaces; }
-        }
-        readonly NamespaceCollection _namespaces = new NamespaceCollection();
-
         public ITypeCollection Types
         {
             get { return _types; }
         }
-        readonly TypeCollection _types = new TypeCollection();
+        private readonly TypeCollection _types = new TypeCollection();
         #endregion
 
         #region ICodeNode Members
@@ -93,7 +87,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] {_namespaces}; }
+            get { return new ICodeNode[] {Types}; }
         }
 
     	/// <summary>
@@ -182,11 +176,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         public new void Sort()
         {
-            Sort((x, y) => x.Name.CompareTo(y.Name));
+            Sort((x, y) => String.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
 
             foreach (var m in this)
             {
-                m.Namespaces.Sort();
                 m.Types.Sort();
             }
         }

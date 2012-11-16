@@ -27,10 +27,10 @@ namespace DataDynamics.PageFX.CodeModel
         public AssemblyReference(string name, Version version,
                                 byte[] publicKeyToken, CultureInfo culture)
         {
-            _name = name;
-            _version = version;
+            Name = name;
+            Version = version;
             _culture = culture ?? CultureInfo.InvariantCulture;
-            _publicKeyToken = publicKeyToken;
+            PublicKeyToken = publicKeyToken;
         }
 
         /// <summary>
@@ -54,27 +54,18 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region IAssemblyReference Members
-        /// <summary>
-        /// Assembly Name
-        /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
 
-        /// <summary>
-        /// Gets or sets assembly version
-        /// </summary>
-        public Version Version
-        {
-            get { return _version; }
-            set { _version = value; }
-        }
-        private Version _version;
+	    /// <summary>
+	    /// Assembly Name
+	    /// </summary>
+	    public string Name { get; set; }
 
-    	public AssemblyFlags Flags { get; set; }
+	    /// <summary>
+	    /// Gets or sets assembly version
+	    /// </summary>
+	    public Version Version { get; set; }
+
+	    public AssemblyFlags Flags { get; set; }
 
     	/// <summary>
         /// Culture Info
@@ -88,18 +79,15 @@ namespace DataDynamics.PageFX.CodeModel
 
     	public byte[] PublicKey { get; set; }
 
-    	/// <summary>
-        /// Public key token
-        /// </summary>
-        /// <remarks>Can be null</remarks>
-        public byte[] PublicKeyToken
-        {
-            get { return _publicKeyToken; }
-            set { _publicKeyToken = value; }
-        }
-        private byte[] _publicKeyToken;
+	    /// <summary>
+	    /// Public key token
+	    /// </summary>
+	    /// <remarks>Can be null</remarks>
+	    public byte[] PublicKeyToken { get; set; }
 
-    	public byte[] HashValue { get; set; }
+	    public byte[] HashValue { get; set; }
+
+		public HashAlgorithmId HashAlgorithm { get; set; }
 
     	public string FullName
         {
@@ -132,8 +120,8 @@ namespace DataDynamics.PageFX.CodeModel
                     throw new ArgumentNullException("value");
 
                 var parts = value.Split(',');
-                _name = parts[0].Trim();
-                _version = new Version(0, 0, 0, 0);
+                Name = parts[0].Trim();
+                Version = new Version(0, 0, 0, 0);
                 _culture = CultureInfo.InvariantCulture;
 
                 for (int i = 1; i < parts.Length; i++)
@@ -141,7 +129,7 @@ namespace DataDynamics.PageFX.CodeModel
                     var pair = parts[i].Split('=');
                     pair[0] = pair[0].Trim();
                     if (pair[0] == "Version")
-                        _version = new Version(pair[1].Trim());
+                        Version = new Version(pair[1].Trim());
                     if (pair[0] == "Culture")
                     {
                     	string cultureName = pair[1].Trim();
@@ -152,15 +140,15 @@ namespace DataDynamics.PageFX.CodeModel
                         string keyToken = pair[1].Trim().ToLower();
 						if (keyToken == "null")
 						{
-							_publicKeyToken = null;
+							PublicKeyToken = null;
 						}
 						else
 						{
-							_publicKeyToken = new byte[keyToken.Length / 2];
-							for (int j = 0; j < _publicKeyToken.Length; j++)
+							PublicKeyToken = new byte[keyToken.Length / 2];
+							for (int j = 0; j < PublicKeyToken.Length; j++)
 							{
 								string byteStr = keyToken.Substring(j * 2, 2);
-								_publicKeyToken[j] = byte.Parse(byteStr, NumberStyles.HexNumber);
+								PublicKeyToken[j] = byte.Parse(byteStr, NumberStyles.HexNumber);
 							}
 						}
                     }

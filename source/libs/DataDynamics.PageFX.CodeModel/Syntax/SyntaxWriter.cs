@@ -22,8 +22,6 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Add<IAssembly>(WriteAssembly);
             Add<IModule>(WriteModule);
             Add<IModuleCollection>(WriteModuleCollection);
-            Add<INamespaceCollection>(WriteNamespaceCollection);
-            Add<INamespace>(WriteNamespace);
             Add<IType>(WriteType);
             Add<ITypeCollection>(WriteTypeCollection);
             Add<IFieldCollection>(WriteFieldCollection);
@@ -452,8 +450,6 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (_scopeStack.Count > 0)
             {
                 var node = _scopeStack.Peek();
-                var ns = node as INamespace;
-                if (ns != null) return ns.Name;
                 var type = node as IType;
                 if (type != null) return type.Namespace;
             }
@@ -590,24 +586,6 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         void WriteModuleCollection(IModuleCollection collection)
         {
             WriteKids(collection);
-        }
-        #endregion
-
-        #region INamespaceCollection
-        public void WriteNamespaceCollection(INamespaceCollection list)
-        {
-            WriteKids(list);
-        }
-        #endregion
-
-        #region INamespace
-        public void WriteNamespace(INamespace ns)
-        {
-            PushScope(ns);
-            BeginNamespace(ns.Name);
-            WriteNodes(ns.Types, "");
-            EndNamespace(ns.Name);
-            PopScope();
         }
         #endregion
 

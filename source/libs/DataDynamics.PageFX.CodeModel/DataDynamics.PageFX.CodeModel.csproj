@@ -100,7 +100,6 @@
     <Compile Include="Design\Expressions\References.cs" />
     <Compile Include="Design\IMethod.cs" />
     <Compile Include="Design\IMethodBody.cs" />
-    <Compile Include="Design\INamespace.cs" />
     <Compile Include="Design\IOptionalModifier.cs" />
     <Compile Include="Design\IPolymorphicMember.cs" />
     <Compile Include="Design\IParameter.cs" />
@@ -202,7 +201,6 @@
     <Compile Include="Implementation\Members\TypeMemberCollection.cs" />
     <Compile Include="Implementation\Members\Variable.cs" />
     <Compile Include="Implementation\Module.cs" />
-    <Compile Include="Implementation\Namespace.cs" />
     <Compile Include="Implementation\Statements\CommentStatement.cs" />
     <Compile Include="Implementation\Statements\IfStatement.cs" />
     <Compile Include="Implementation\Statements\DebuggerBreakStatement.cs" />

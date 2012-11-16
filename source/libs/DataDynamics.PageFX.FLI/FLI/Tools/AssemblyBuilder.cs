@@ -884,9 +884,7 @@ namespace DataDynamics.PageFX.FLI
         void RegisterType(IType type)
         {
             var mod = _assembly.MainModule;
-            var ns = mod.Namespaces[type.Namespace];
             type.Module = mod;
-            ns.Types.Add(type);
             _assembly.Types.Add(type);
         }
         #endregion

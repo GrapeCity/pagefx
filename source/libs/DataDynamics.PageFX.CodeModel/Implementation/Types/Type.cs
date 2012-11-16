@@ -189,7 +189,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _members; }
         }
-        readonly TypeMemberCollection _members;
+        private readonly TypeMemberCollection _members;
 
         public IFieldCollection Fields
         {

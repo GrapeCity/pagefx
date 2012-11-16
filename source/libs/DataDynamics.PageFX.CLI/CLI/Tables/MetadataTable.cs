@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 	internal abstract class MetadataTable<T> : IMetadataTable<T> where T:class 
 	{
 		protected readonly AssemblyLoader Loader;
-		private readonly T[] _rows;
+		protected readonly T[] Rows;
 
 		protected MetadataTable(AssemblyLoader loader, MdbTableId tableId)
 		{
@@ -16,19 +16,19 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 
 			int rowCount = loader.Mdb.GetRowCount(tableId);
 
-			_rows = new T[rowCount];
+			Rows = new T[rowCount];
 		}
 
 		public abstract MdbTableId Id { get; }
 		
 		public int Count
 		{
-			get { return _rows.Length; }
+			get { return Rows.Length; }
 		}
 
 		public T this[int index]
 		{
-			get { return _rows[index] ?? (_rows[index] = ParseRow(index)); }
+			get { return Rows[index] ?? (Rows[index] = ParseRow(index)); }
 		}
 
 		public int Load()

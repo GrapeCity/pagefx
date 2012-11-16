@@ -35,8 +35,6 @@ namespace DataDynamics.PageFX.CodeModel
 
         IUnmanagedResourceCollection UnmanagedResources { get; }
 
-        INamespaceCollection Namespaces { get; }
-
         object ResolveMetadataToken(IMethod method, int token);
     }
 

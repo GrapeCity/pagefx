@@ -213,6 +213,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ICodeNode Members
+
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Types; }
@@ -223,11 +224,8 @@ namespace DataDynamics.PageFX.CodeModel
             get { return this.Cast<ICodeNode>(); }
         }
 
-        public object Tag
-        {
-            get { return null; }
-            set { }
-        }
+        public object Tag { get; set; }
+
         #endregion
 
         #region IFormattable Members

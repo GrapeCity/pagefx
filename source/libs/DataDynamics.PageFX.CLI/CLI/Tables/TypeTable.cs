@@ -30,14 +30,73 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 
 			var type = CreateType(ns, name, flags, genericParams);
 
+			// to avoid problems with self refs in fields/methods,etc
+			Rows[index] = type;
+
+			RegisterType(type);
+
 			type.MetadataToken = token;
-			type.Name = name;
-			type.Namespace = ns;
+
+			//TODO: lazy resolving of class layout
 			type.Layout = Loader.ClassLayout.Find(Mdb, index);
 
+			//TODO: lazy resolving of declaring type
+			var declType = ResolveDeclaringType(index);
+			if (declType != null)
+			{
+				type.DeclaringType = declType;
+				declType.Types.Add(type);
+			}
+
+			//TODO: lazy fields/methods collections
 			SetFieldsAndMethods(row, index, type);
 
+			//TODO: lazy resolving of base type
+			SetBaseType(row, type);
+
 			return type;
+		}
+
+		private void RegisterType(IType type)
+		{
+			var mod = Loader.MainModule;
+			type.Module = mod;
+			mod.Types.Add(type);
+		}
+
+		private void SetBaseType(MdbRow row, IType type)
+		{
+			if (type == SystemTypes.Object) return;
+
+			MdbIndex baseIndex = row[MDB.TypeDef.Extends].Value;
+
+			var baseType = Loader.GetTypeDefOrRef(baseIndex, type, type.DeclaringMethod);
+			type.BaseType = baseType;
+
+			var thisType = type as UserDefinedType;
+			if (thisType != null && thisType.TypeKind != TypeKind.Primitive)
+			{
+				if (baseType == SystemTypes.Enum)
+					thisType.TypeKind = TypeKind.Enum;
+				else if (baseType == SystemTypes.ValueType)
+					thisType.TypeKind = TypeKind.Struct;
+				else if (baseType == SystemTypes.Delegate || baseType == SystemTypes.MulticastDelegate)
+					thisType.TypeKind = TypeKind.Delegate;
+			}
+		}
+
+		private IType ResolveDeclaringType(int index)
+		{
+			//TODO: subject for PERF
+			foreach (var row in Mdb.GetRows(MdbTableId.NestedClass))
+			{
+				int nestedIndex = row[MDB.NestedClass.Class].Index - 1;
+				if (nestedIndex != index) continue;
+
+				int enclosingIndex = row[MDB.NestedClass.EnclosingClass].Index - 1;
+				return this[enclosingIndex];
+			}
+			return null;
 		}
 
 		private void SetFieldsAndMethods(MdbRow row, int index, IType type)
@@ -97,9 +156,11 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 			if (genericParameters != null && genericParameters.Any())
 			{
 				type = new GenericType
-				{
-					TypeKind = (isIface ? TypeKind.Interface : TypeKind.Class)
-				};
+					{
+						TypeKind = (isIface ? TypeKind.Interface : TypeKind.Class),
+						Namespace = ns,
+						Name = name
+					};
 				foreach (var parameter in genericParameters)
 				{
 					((GenericType)type).GenericParameters.Add(parameter);
@@ -108,31 +169,47 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 			}
 			else if (isIface)
 			{
-				type = new UserDefinedType(TypeKind.Interface);
+				type = new UserDefinedType(TypeKind.Interface)
+					{
+						Namespace = ns,
+						Name = name
+					};
 			}
 			else
 			{
-				type = CreateSystemType(ns, name) ?? new UserDefinedType(TypeKind.Class);
+				type = CreateSystemType(ns, name)
+				       ?? new UserDefinedType(TypeKind.Class)
+					       {
+						       Namespace = ns,
+						       Name = name
+					       };
 			}
+
 			SetTypeFlags(type, flags);
+
 			return type;
 		}
 
 		private static UserDefinedType CreateSystemType(string ns, string name)
 		{
-			if (ns == SystemTypes.Namespace)
+			if (ns != SystemTypes.Namespace) return null;
+
+			//TODO: PERF use dictionary
+			foreach (var sysType in SystemTypes.Types)
 			{
-				foreach (var sysType in SystemTypes.Types)
+				if (name == sysType.Name)
 				{
-					if (name == sysType.Name)
-					{
-						var type = new UserDefinedType(sysType.Kind);
-						sysType.Value = type;
-						type.SystemType = sysType;
-						return type;
-					}
+					var type = new UserDefinedType(sysType.Kind)
+						{
+							Namespace = ns,
+							Name = name
+						};
+					sysType.Value = type;
+					type.SystemType = sysType;
+					return type;
 				}
 			}
+
 			return null;
 		}
 
@@ -151,7 +228,7 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 			return (f & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
 		}
 
-		static Visibility ToVisibility(TypeAttributes f)
+		private static Visibility ToVisibility(TypeAttributes f)
 		{
 			var v = f & TypeAttributes.VisibilityMask;
 			switch (v)

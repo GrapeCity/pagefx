@@ -1,24 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CLI.CLI.Tables
 {
 	internal sealed class GenericParamTable
 	{
-		private readonly MdbReader _mdb;
+		private readonly AssemblyLoader _loader;
 		private static readonly ReadOnlyCollection<IGenericParameter> Empty = new List<IGenericParameter>().AsReadOnly();
 		private readonly Dictionary<MdbIndex, IList<IGenericParameter>> _cache = new Dictionary<MdbIndex, IList<IGenericParameter>>();
 		private int _lastIndex;
 		private static long _id;
 		private readonly IGenericParameter[] _array;
 
-		public GenericParamTable(MdbReader mdb)
+		public GenericParamTable(AssemblyLoader loader)
 		{
-			_mdb = mdb;
+			_loader = loader;
 
-			int n = mdb.GetRowCount(MdbTableId.GenericParam);
+			int n = loader.Mdb.GetRowCount(MdbTableId.GenericParam);
 			_array = new IGenericParameter[n];
 		}
 
@@ -35,17 +39,18 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 
 			var list = new List<IGenericParameter>();
 
-			int n = _mdb.GetRowCount(MdbTableId.GenericParam);
+			var mdb = _loader.Mdb;
+			int n = mdb.GetRowCount(MdbTableId.GenericParam);
 			for (; _lastIndex < n; _lastIndex++)
 			{
-				var row = _mdb.GetRow(MdbTableId.GenericParam, _lastIndex);
+				var row = mdb.GetRow(MdbTableId.GenericParam, _lastIndex);
 				MdbIndex currentOwner = row[MDB.GenericParam.Owner].Value;
 
 				list.Add(this[_lastIndex]);
 
 				for (_lastIndex++; _lastIndex < n; _lastIndex++)
 				{
-					row = _mdb.GetRow(MdbTableId.GenericParam, _lastIndex);
+					row = mdb.GetRow(MdbTableId.GenericParam, _lastIndex);
 					MdbIndex owner = row[MDB.GenericParam.Owner].Value;
 					if (owner != currentOwner)
 					{
@@ -72,20 +77,25 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 
 		private IGenericParameter Create(int index)
 		{
-			var row = _mdb.GetRow(MdbTableId.GenericParam, index);
+			var row = _loader.Mdb.GetRow(MdbTableId.GenericParam, index);
 
 			var pos = (int)row[MDB.GenericParam.Number].Value;
 			var flags = (GenericParamAttributes)row[MDB.GenericParam.Flags].Value;
+			var token = MdbIndex.MakeToken(MdbTableId.GenericParam, index);
 
-			return new GenericParameter
+			var param = new GenericParameter
 				{
 					Position = pos,
 					Variance = ToVariance(flags),
 					SpecialConstraints = ToSpecConstraints(flags),
 					Name = row[MDB.GenericParam.Name].String,
-					MetadataToken = MdbIndex.MakeToken(MdbTableId.GenericParam, index),
+					MetadataToken = token,
 					ID = ++_id
 				};
+
+			param.Constraints = new Constraints(_loader, param, index);
+
+			return param;
 		}
 
 		private static GenericParameterVariance ToVariance(GenericParamAttributes flags)
@@ -118,6 +128,151 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 		public static void ResetId()
 		{
 			_id = 0;
+		}
+
+		private sealed class Constraints : IGenericParameterConstraints
+		{
+			private readonly AssemblyLoader _loader;
+			private readonly IGenericParameter _owner;
+			private readonly int _ownerIndex;
+			private readonly List<IType> _list = new List<IType>();
+			private IType _baseType;
+			private bool _resolveBaseType = true;
+			private int _startIndex = -1;
+
+			public Constraints(AssemblyLoader loader, IGenericParameter owner, int ownerIndex)
+			{
+				_loader = loader;
+				_owner = owner;
+				_ownerIndex = ownerIndex;
+			}
+
+			public IType BaseType
+			{
+				get
+				{
+					if (_resolveBaseType)
+					{
+						_baseType = Load(-1, true);
+						_resolveBaseType = false;
+					}
+					return _baseType;
+				}
+			}
+
+			public IEnumerator<IType> GetEnumerator()
+			{
+				for (int i = 0; i < Count; i++)
+				{
+					yield return this[i];
+				}
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			public int Count
+			{
+				get
+				{
+					Load(-1, false);
+					return _list.Count;
+				}
+			}
+
+			public IType this[int index]
+			{
+				get
+				{
+					if (index < 0) throw new ArgumentOutOfRangeException("index");
+					if (index < _list.Count)
+						return _list[index];
+					return Load(index, false);
+				}
+			}
+
+			public CodeNodeType NodeType
+			{
+				get { return CodeNodeType.Types; }
+			}
+
+			public IEnumerable<ICodeNode> ChildNodes
+			{
+				get { return this.Cast<ICodeNode>(); }
+			}
+
+			public object Tag { get; set; }
+
+			public IType this[string fullname]
+			{
+				get { return this.FirstOrDefault(t => t.FullName == fullname); }
+			}
+
+			public void Add(IType type)
+			{
+				throw new NotSupportedException();
+			}
+
+			public bool Contains(IType type)
+			{
+				return type != null && this.Any(x => x == type);
+			}
+
+			public void Sort()
+			{
+			}
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				return SyntaxFormatter.Format(this, format, formatProvider);
+			}
+
+			private IType Load(int index, bool baseType)
+			{
+				//TODO: possible subject for PERF
+
+				var mdb = _loader.Mdb;
+				int n = mdb.GetRowCount(MdbTableId.GenericParamConstraint);
+				for (int i = _startIndex >= 0 ? _startIndex : 0; i < n; ++i)
+				{
+					var row = mdb.GetRow(MdbTableId.GenericParamConstraint, i);
+					int owner = row[MDB.GenericParamConstraint.Owner].Index - 1;
+					if (owner != _ownerIndex) continue;
+
+					if (_startIndex < 0) _startIndex = i;
+
+					MdbIndex cid = row[MDB.GenericParamConstraint.Constraint].Value;
+
+					var gparam = _owner;
+					var declType = gparam.DeclaringType;
+					if (gparam.DeclaringMethod != null)
+						declType = gparam.DeclaringMethod.DeclaringType;
+
+					var constraint = _loader.GetTypeDefOrRef(cid, declType, gparam.DeclaringMethod);
+					if (constraint == null)
+						throw new BadMetadataException(string.Format("Invalid constraint index {0}", cid));
+
+					if (constraint.TypeKind == TypeKind.Interface)
+					{
+						_list.Add(constraint);
+
+						if (index >= 0 && index < _list.Count)
+							return constraint;
+					}
+					else
+					{
+						if (baseType)
+							return constraint;
+					}
+				}
+
+				if (index >= 0)
+					throw new ArgumentOutOfRangeException("index");
+
+				return null;
+			}
 		}
 	}
 }

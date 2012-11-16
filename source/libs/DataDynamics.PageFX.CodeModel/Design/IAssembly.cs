@@ -44,6 +44,11 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         byte[] HashValue { get; set; }
 
+		/// <summary>
+		/// Gets or sets hash algorithm.
+		/// </summary>
+		HashAlgorithmId HashAlgorithm { get; set; }
+
         /// <summary>
         /// Gets the full name of the assembly.
         /// </summary>
