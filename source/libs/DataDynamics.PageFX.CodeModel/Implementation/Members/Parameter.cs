@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.CodeModel.Syntax;
@@ -284,5 +285,57 @@ namespace DataDynamics.PageFX.CodeModel
             return false;
         }
         #endregion
+
+	    public static readonly IParameterCollection Empty = new EmptyImpl();
+
+		private sealed class EmptyImpl : IParameterCollection
+		{
+			public IEnumerator<IParameter> GetEnumerator()
+			{
+				return Enumerable.Empty<IParameter>().GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			public int Count
+			{
+				get { return 0; }
+			}
+
+			public IParameter this[int index]
+			{
+				get { throw new ArgumentOutOfRangeException("index"); }
+			}
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				return "";
+			}
+
+			public CodeNodeType NodeType
+			{
+				get { return CodeNodeType.Parameters; }
+			}
+
+			public IEnumerable<ICodeNode> ChildNodes
+			{
+				get { return this.Cast<ICodeNode>(); }
+			}
+
+			public object Tag { get; set; }
+
+			public IParameter this[string name]
+			{
+				get { return null; }
+			}
+
+			public void Add(IParameter parameter)
+			{
+				throw new NotSupportedException();
+			}
+		}
     }
 }

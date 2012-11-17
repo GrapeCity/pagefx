@@ -24,12 +24,18 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			var flags = (FileFlags)row[MDB.File.Flags].Value;
 
-			return new ManifestFile
+			var token = MdbIndex.MakeToken(MdbTableId.File, index + 1);
+
+			var file = new ManifestFile
 				{
 					Name = row[MDB.File.Name].String,
 					HashValue = row[MDB.File.HashValue].Blob,
 					ContainsMetadata = flags == FileFlags.ContainsMetadata
 				};
+
+			file.CustomAttributes = new CustomAttributes(Loader, file, token);
+
+			return file;
 		}
 	}
 }

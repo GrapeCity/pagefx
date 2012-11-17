@@ -135,11 +135,7 @@ namespace DataDynamics.PageFX.CodeModel
             mod.Types.Add(type);
         }
 
-        void ITypeCollection.Sort()
-        {
-            _modules.Sort();
-        }
-        #endregion
+	    #endregion
 
         #region IEnumerable<IType> Members
         IEnumerator<IType> IEnumerable<IType>.GetEnumerator()

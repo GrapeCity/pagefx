@@ -6,18 +6,20 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class TypeSpecTable
 	{
 		private readonly AssemblyLoader _loader;
-		private readonly IType[] _types;
+		private IType[] _types;
 
 		public TypeSpecTable(AssemblyLoader loader)
 		{
 			_loader = loader;
-
-			int n = loader.Mdb.GetRowCount(MdbTableId.TypeSpec);
-			_types = new IType[n];
 		}
 
 		public IType Get(int index, Context context)
 		{
+			if (_types == null)
+			{
+				int n = _loader.Mdb.GetRowCount(MdbTableId.TypeSpec);
+				_types = new IType[n];
+			}
 			return _types[index] ?? (_types[index] = Resolve(index, context));
 		}
 

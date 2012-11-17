@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.CodeModel
 	    private bool _resolveBaseMethod = true;
 	    private IMethod _baseMethod;
 		private readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
-		private readonly ParameterCollection _parameters = new ParameterCollection();
+		private IParameterCollection _parameters;
 		private readonly CustomAttributeCollection _returnAttrs = new CustomAttributeCollection();
 
         /// <summary>
@@ -259,7 +259,8 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IParameterCollection Parameters
         {
-            get { return _parameters; }
+            get { return _parameters ?? (_parameters = new ParameterCollection()); }
+			set { _parameters = value; }
         }
 
         /// <summary>
@@ -390,5 +391,12 @@ namespace DataDynamics.PageFX.CodeModel
         {
         	return method.Parameters.Count(p => !p.HasResolvedType);
         }
+
+		public Func<IType> TypeResolver { get; set; }
+
+		protected override IType ResolveType()
+		{
+			return TypeResolver != null ? TypeResolver() : null;
+		}
     }
 }

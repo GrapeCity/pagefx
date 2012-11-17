@@ -28,6 +28,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 					Resources = Loader.ManifestResources
 				};
 
+			var token = MdbIndex.MakeToken(MdbTableId.Module, index + 1);
+			module.CustomAttributes = new CustomAttributes(Loader, module, token);
+
 			var file = Loader.Files[module.Name];
 			if (file != null)
 			{

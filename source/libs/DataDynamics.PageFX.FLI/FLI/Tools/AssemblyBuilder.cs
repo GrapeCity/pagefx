@@ -1303,7 +1303,7 @@ namespace DataDynamics.PageFX.FLI
         //    return instance.FullName == name;
         //}
 
-        void BuildParams(AbcMethod method, ICollection<IParameter> parameters, XmlNode methodElem)
+        void BuildParams(AbcMethod method, IParameterCollection parameters, XmlNode methodElem)
         {
             if (method.IsSetter)
             {

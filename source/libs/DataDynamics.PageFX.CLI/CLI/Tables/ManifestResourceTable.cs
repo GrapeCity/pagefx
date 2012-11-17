@@ -36,6 +36,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 					IsPublic = isPublic
 				};
 
+			var token = MdbIndex.MakeToken(MdbTableId.ManifestResource, index + 1);
+			resource.CustomAttributes = new CustomAttributes(Loader, resource, token);
+
 			MdbIndex impl = row[MDB.ManifestResource.Implementation].Value;
 			if (impl == 0)
 			{

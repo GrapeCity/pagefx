@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
@@ -12,67 +11,31 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class GenericParamTable
 	{
 		private readonly AssemblyLoader _loader;
-		private static readonly ReadOnlyCollection<IGenericParameter> Empty = new List<IGenericParameter>().AsReadOnly();
-		private readonly Dictionary<MdbIndex, IList<IGenericParameter>> _cache = new Dictionary<MdbIndex, IList<IGenericParameter>>();
-		private int _lastIndex;
 		private static long _id;
-		private readonly IGenericParameter[] _array;
+		private IGenericParameter[] _array;
 
 		public GenericParamTable(AssemblyLoader loader)
 		{
 			_loader = loader;
-
-			int n = loader.Mdb.GetRowCount(MdbTableId.GenericParam);
-			_array = new IGenericParameter[n];
 		}
 
 		public IGenericParameter this[int index]
 		{
-			get { return _array[index] ?? (_array[index] = Create(index)); }
+			get
+			{
+				if (_array == null)
+				{
+					int n = _loader.Mdb.GetRowCount(MdbTableId.GenericParam);
+					_array = new IGenericParameter[n];
+				}
+				return _array[index] ?? (_array[index] = Create(index));
+			}
 		}
 
 		public IList<IGenericParameter> Find(MdbIndex target)
 		{
-			IList<IGenericParameter> result;
-			if (_cache.TryGetValue(target, out result))
-				return result;
-
-			var list = new List<IGenericParameter>();
-
-			var mdb = _loader.Mdb;
-			int n = mdb.GetRowCount(MdbTableId.GenericParam);
-			for (; _lastIndex < n; _lastIndex++)
-			{
-				var row = mdb.GetRow(MdbTableId.GenericParam, _lastIndex);
-				MdbIndex currentOwner = row[MDB.GenericParam.Owner].Value;
-
-				list.Add(this[_lastIndex]);
-
-				for (_lastIndex++; _lastIndex < n; _lastIndex++)
-				{
-					row = mdb.GetRow(MdbTableId.GenericParam, _lastIndex);
-					MdbIndex owner = row[MDB.GenericParam.Owner].Value;
-					if (owner != currentOwner)
-					{
-						break;
-					}
-
-					list.Add(this[_lastIndex]);
-				}
-
-				result = list.AsReadOnly();
-				_cache.Add(currentOwner, result);
-
-				if (currentOwner == target)
-				{
-					return result;
-				}
-
-				_lastIndex--;
-				list = new List<IGenericParameter>();
-			}
-			
-			return Empty;
+			var rows = _loader.Mdb.LookupRows(MdbTableId.GenericParam, MDB.GenericParam.Owner, target, false);
+			return rows.Select(x => this[x.Index]).ToList().AsReadOnly();
 		}
 
 		private IGenericParameter Create(int index)
@@ -94,6 +57,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 				};
 
 			param.Constraints = new Constraints(_loader, param, index);
+			param.CustomAttributes = new CustomAttributes(_loader, param, token);
 
 			return param;
 		}
@@ -218,10 +182,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 			public bool Contains(IType type)
 			{
 				return type != null && this.Any(x => x == type);
-			}
-
-			public void Sort()
-			{
 			}
 
 			public string ToString(string format, IFormatProvider formatProvider)

@@ -25,6 +25,8 @@ namespace DataDynamics.PageFX.CLI.Metadata
             get { return _cells; }
         }
 
+	    internal object Object { get; set; }
+
 	    private readonly MdbCell[] _cells;
 
         public MdbCell this[int index]

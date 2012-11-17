@@ -11,19 +11,17 @@ namespace DataDynamics.PageFX.CodeModel
     /// </summary>
     public class UserDefinedType : TypeMember, IType
     {
-        #region Constructors
-        public UserDefinedType()
+	    public UserDefinedType()
         {
             _members = new TypeMemberCollection(this);
         }
 
         public UserDefinedType(TypeKind kind) : this()
         {
-            _typeKind = kind;
+            TypeKind = kind;
         }
-        #endregion
 
-        #region IType Members
+	    #region IType Members
         /// <summary>
         /// Gets the module in which the current type is defined. 
         /// </summary>
@@ -37,17 +35,12 @@ namespace DataDynamics.PageFX.CodeModel
             get { return MemberType.Type; }
         }
 
-        /// <summary>
-        /// Gets kind of the type.
-        /// </summary>
-        public TypeKind TypeKind
-        {
-            get { return _typeKind; }
-            set { _typeKind = value; }
-        }
-        TypeKind _typeKind;
+	    /// <summary>
+	    /// Gets kind of the type.
+	    /// </summary>
+	    public TypeKind TypeKind { get; set; }
 
-        /// <summary>
+	    /// <summary>
         /// Gets or sets flag specifing that this type is abstract.
         /// </summary>
         public bool IsAbstract
@@ -88,7 +81,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsInterface
         {
-            get { return _typeKind == TypeKind.Interface; }
+            get { return TypeKind == TypeKind.Interface; }
         }
 
         /// <summary>
@@ -96,7 +89,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsClass 
         {
-            get { return _typeKind == TypeKind.Class; }
+            get { return TypeKind == TypeKind.Class; }
         }
 
         /// <summary>
@@ -181,9 +174,10 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public ITypeCollection Interfaces
         {
-            get { return _interfaces; }
+            get { return _interfaces ?? (_interfaces = new SimpleTypeCollection()); }
+			set { _interfaces = value; }
         }
-        readonly SimpleTypeCollection _interfaces = new SimpleTypeCollection();
+        private ITypeCollection _interfaces;
 
         public ITypeMemberCollection Members
         {

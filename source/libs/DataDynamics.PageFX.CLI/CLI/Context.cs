@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.CLI
 			}
 
 			Method = gparam.DeclaringMethod;
-			if (Method == null)
+			if (Method == null || Method.DeclaringType == null)
 			{
 				throw new InvalidOperationException("Invalid context!");
 			}
@@ -42,14 +42,30 @@ namespace DataDynamics.PageFX.CLI
 		{
 			if (method == null)
 				throw new ArgumentNullException("method");
+			if (method.DeclaringType == null)
+				throw new ArgumentException("method");
 
 			Type = method.DeclaringType;
 			Method = method;
 			IsGeneric = generic;
 		}
 
+		public Context(IType type, IMethod method)
+		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			if (method == null)
+				throw new ArgumentNullException("method");
+
+			Type = type;
+			Method = method;
+		}
+
 		public Context(Context context, bool generic)
 		{
+			if (context == null)
+				throw new ArgumentNullException("context");
+
 			Type = context.Type;
 			Method = context.Method;
 			IsGeneric = generic;

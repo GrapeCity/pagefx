@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var token = MdbIndex.MakeToken(MdbTableId.Property, index + 1);
 			var value = Loader.Const[token];
 
-			return new Property
+			var property = new Property
 				{
 					MetadataToken = token,
 					Name = name,
@@ -31,6 +31,10 @@ namespace DataDynamics.PageFX.CLI.Tables
 					HasDefault = ((flags & PropertyAttributes.HasDefault) != 0),
 					Value = value
 				};
+
+			property.CustomAttributes = new CustomAttributes(Loader, property, token);
+
+			return property;
 		}
 	}
 }

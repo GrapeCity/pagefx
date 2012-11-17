@@ -41,6 +41,5 @@ namespace DataDynamics.PageFX.CodeModel
     public interface IModuleCollection : IList<IModule>, ICodeNode
     {
         IModule this[string name] { get; }
-        void Sort();
     }
 }

@@ -56,7 +56,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents collection of <see cref="IParameter"/>s.
     /// </summary>
-    public interface IParameterCollection : IList<IParameter>, ICodeNode
+    public interface IParameterCollection : IReadOnlyList<IParameter>, ICodeNode
     {
         /// <summary>
         /// Finds paramater by given name.
@@ -64,5 +64,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// <param name="name">name of paramater to find.</param>
         /// <returns></returns>
         IParameter this[string name] { get; }
+
+	    void Add(IParameter parameter);
     }
 }

@@ -30,6 +30,8 @@ namespace DataDynamics.PageFX.CodeModel
     /// </summary>
     public interface IEventCollection : IReadOnlyList<IEvent>, ICodeNode
     {
+	    void Add(IEvent item);
+
         /// <summary>
         /// Finds event with given name.
         /// </summary>

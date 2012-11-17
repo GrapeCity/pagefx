@@ -2274,7 +2274,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteArguments(IList<IParameter> parameters, IList<IExpression> args, string prefix, string suffix)
+        void WriteArguments(IReadOnlyList<IParameter> parameters, IList<IExpression> args, string prefix, string suffix)
         {
             Write(prefix);
             for (int i = 0; i < args.Count; ++i)

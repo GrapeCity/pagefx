@@ -9,7 +9,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal abstract class MetadataTable<T> : IMetadataTable<T> where T:class 
 	{
 		protected readonly AssemblyLoader Loader;
-		protected readonly List<T> Rows = new List<T>();
 		
 		protected MetadataTable(AssemblyLoader loader)
 		{
@@ -30,19 +29,12 @@ namespace DataDynamics.PageFX.CLI.Tables
 				if (index < 0 || index >= Count)
 					throw new ArgumentOutOfRangeException("index");
 
-				while (Rows.Count <= index)
-					Rows.Add(null);
-				
-				var obj = Rows[index];
-				if (obj != null)
-					return obj;
-
 				var row = Loader.Mdb.GetRow(Id, index);
-				obj = ParseRow(row, index);
-
-				Rows[index] = obj;
-
-				return obj;
+				
+				if (row.Object == null)
+					row.Object = ParseRow(row, index);
+				
+				return (T)row.Object;
 			}
 		}
 

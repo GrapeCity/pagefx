@@ -7,42 +7,23 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class MethodProxy : IMethod
     {
-		private readonly bool _signatureChanged;
+		private bool _signatureChanged;
 		private readonly string[] _sigNames = new string[2];
 	    private readonly IGenericInstance _instance;
         private readonly IMethod _method;
-        private readonly IType _type;
-        private readonly ParameterCollection _params;
+        private IType _type;
+        private IParameterCollection _parameters;
 		private IMethod[] _implMethods;
 		private IMethod _baseMethod;
 		private bool _resolveBaseMethod = true;
 
-	    #region ctor
-        public MethodProxy(IGenericInstance instance, IMethod method)
+	    public MethodProxy(IGenericInstance instance, IMethod method)
         {
             _instance = instance;
             _method = method;
-            _type = GenericType.Resolve(instance, method, method.Type);
-
-            if (_type != method.Type)
-                _signatureChanged = true;
-
-            _params = new ParameterCollection();
-            foreach (var p in method.Parameters)
-            {
-                var ptype = GenericType.Resolve(instance, method, p.Type);
-                var p2 = new Parameter(ptype, p.Name, p.Index);
-                _params.Add(p2);
-                if (ptype != p.Type)
-                {
-                    _signatureChanged = true;
-                    p2.HasResolvedType = true;
-                }
-            }
         }
-        #endregion
 
-        #region IMethod Members
+	    #region IMethod Members
 
 	    public string GetSigName(Runtime runtime)
 	    {
@@ -138,8 +119,28 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IParameterCollection Parameters
         {
-            get { return _params; }
+            get { return _parameters ?? (_parameters = ResolveParams()); }
         }
+
+		private IParameterCollection ResolveParams()
+		{
+			var collection = new ParameterCollection();
+
+			foreach (var p in _method.Parameters)
+			{
+				var ptype = GenericType.Resolve(_instance, _method, p.Type);
+				var p2 = new Parameter(ptype, p.Name, p.Index);
+				collection.Add(p2);
+
+				if (ptype != p.Type)
+				{
+					_signatureChanged = true;
+					p2.HasResolvedType = true;
+				}
+			}
+
+			return collection;
+		}
 
         public ICustomAttributeCollection ReturnCustomAttributes
         {
@@ -333,7 +334,18 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IType Type
         {
-            get { return _type; }
+            get
+            {
+				if (_type == null)
+				{
+					_type = GenericType.Resolve(_instance, _method, _method.Type);
+
+					if (_type != _method.Type)
+						_signatureChanged = true;
+				}
+
+	            return _type;
+            }
             set { throw new NotSupportedException(); }
         }
 

@@ -26,15 +26,31 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var token = MdbIndex.MakeToken(MdbTableId.TypeDef, index + 1);
 			var genericParams = Loader.GenericParameters.Find(token);
 
-			var type = CreateType(ns, name, flags, genericParams);
+			bool isIface = IsInterface(flags);
+			var kind = isIface ? TypeKind.Interface : TypeKind.Class;
+			var sysType = !isIface && ns == SystemTypes.Namespace ? SystemTypes.Find(name) : null;
+			if (sysType != null) kind = sysType.Kind;
+
+			var type = CreateType(kind, genericParams);
+
+			type.Namespace = ns;
+			type.Name = name;
+			SetTypeFlags(type, flags);
+
+			if (sysType != null)
+			{
+				sysType.Value = type;
+				type.SystemType = sysType;
+			}
 
 			// to avoid problems with self refs in fields/methods,etc
-			Rows[index] = type;
+			row.Object = type;
 
 			type.MetadataToken = token;
+			type.CustomAttributes = new CustomAttributes(Loader, type, token);
 
 			//TODO: lazy resolving of class layout
-			type.Layout = Loader.ClassLayout.Find(Mdb, index);
+			type.Layout = ResolveLayout(Mdb, index);
 
 			//TODO: lazy resolving of declaring type
 			var declType = ResolveDeclaringType(index);
@@ -52,6 +68,10 @@ namespace DataDynamics.PageFX.CLI.Tables
 			//TODO: lazy resolving of base type
 			SetBaseType(row, type);
 
+			type.Interfaces = new InterfaceImpl(Loader, type, index);
+
+			LoadMethodImpl(type, index);
+
 			return type;
 		}
 
@@ -64,7 +84,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		private void SetBaseType(MdbRow row, IType type)
 		{
-			if (type == SystemTypes.Object) return;
+			if (type.FullName == "System.Object") return;
 
 			MdbIndex baseIndex = row[MDB.TypeDef.Extends].Value;
 
@@ -74,39 +94,58 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var thisType = type as UserDefinedType;
 			if (thisType != null && thisType.TypeKind != TypeKind.Primitive)
 			{
-				if (baseType == SystemTypes.Enum)
+				if (baseType.FullName == "System.Enum")
 					thisType.TypeKind = TypeKind.Enum;
-				else if (baseType == SystemTypes.ValueType)
+				else if (baseType.FullName == "System.ValueType")
 					thisType.TypeKind = TypeKind.Struct;
-				else if (baseType == SystemTypes.Delegate || baseType == SystemTypes.MulticastDelegate)
+				else if (baseType.FullName == "System.Delegate" || baseType.FullName == "System.MulticastDelegate")
 					thisType.TypeKind = TypeKind.Delegate;
 			}
 		}
 
+		private static ClassLayout ResolveLayout(MdbReader mdb, int typeIndex)
+		{
+			var row = mdb.LookupRow(MdbTableId.ClassLayout, MDB.ClassLayout.Parent, typeIndex, true);
+			if (row == null)
+				return null;
+
+			var size = (int)row[MDB.ClassLayout.ClassSize].Value;
+			var pack = (int)row[MDB.ClassLayout.PackingSize].Value;
+			return new ClassLayout(size, pack);
+		}
+
 		private IType ResolveDeclaringType(int index)
 		{
-			//TODO: subject for PERF
-			foreach (var row in Mdb.GetRows(MdbTableId.NestedClass))
-			{
-				int nestedIndex = row[MDB.NestedClass.Class].Index - 1;
-				if (nestedIndex != index) continue;
+			var row = Mdb.LookupRow(MdbTableId.NestedClass, MDB.NestedClass.Class, index, true);
+			if (row == null) return null;
 
-				int enclosingIndex = row[MDB.NestedClass.EnclosingClass].Index - 1;
-				return this[enclosingIndex];
-			}
-			return null;
+			int enclosingIndex = row[MDB.NestedClass.EnclosingClass].Index - 1;
+			return this[enclosingIndex];
 		}
 
 		private void SetFieldsAndMethods(MdbRow row, int index, IType type)
 		{
-			SetFields(row, index, type);
-			SetMethods(row, index, type);
+			var fields = GetFields(row, index, type);
+			var methods = GetMethods(row, index, type);
+
+			//TODO: remove, lazy loading
+			foreach (var field in fields)
+			{
+			}
+
+			foreach (var method in methods)
+			{
+			}
+
+			var members = (TypeMemberCollection)type.Members;
+			members.Fields = fields;			
+			members.Methods = methods;
 		}
 
-		private void SetFields(MdbRow row, int index, IType type)
+		private IFieldCollection GetFields(MdbRow row, int index, IType type)
 		{
 			int from = row[MDB.TypeDef.FieldList].Index - 1;
-			if (from < 0) return;
+			if (from < 0) return FieldCollection.Empty;
 
 			var fields = Loader.Fields;
 			int n = fields.Count;
@@ -118,17 +157,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 				to = nextRow[MDB.TypeDef.FieldList].Index - 1;
 			}
 
-			for (int i = from; i < n && i < to; ++i)
-			{
-				var f = fields[i];
-				type.Members.Add(f);
-			}
+			return new FieldList(Loader, type, from, to);
 		}
 
-		private void SetMethods(MdbRow row, int index, IType type)
+		private IMethodCollection GetMethods(MdbRow row, int index, IType type)
 		{
 			int from = row[MDB.TypeDef.MethodList].Index - 1;
-			if (from < 0) return;
+			if (from < 0) return MethodCollection.Empty;
 
 			var methods = Loader.Methods;
 			int n = methods.Count;
@@ -140,75 +175,39 @@ namespace DataDynamics.PageFX.CLI.Tables
 				to = nextRow[MDB.TypeDef.MethodList].Index - 1;
 			}
 
-			for (int i = from; i < n && i < to; ++i)
+			return new MethodList(Loader, type, from, to);
+		}
+
+		private void LoadMethodImpl(IType type, int typeIndex)
+		{
+			var rows = Mdb.LookupRows(MdbTableId.MethodImpl, MDB.MethodImpl.Class, typeIndex, true);
+			foreach (var row in rows)
 			{
-				var m = methods[i];
-				type.Members.Add(m);
+				MdbIndex bodyIdx = row[MDB.MethodImpl.MethodBody].Value;
+				MdbIndex declIdx = row[MDB.MethodImpl.MethodDeclaration].Value;
+
+				var body = Loader.GetMethodDefOrRef(bodyIdx, new Context(type));
+
+				var decl = Loader.GetMethodDefOrRef(declIdx, new Context(type, body));
+
+				body.ImplementedMethods = new[] { decl };
+				body.IsExplicitImplementation = true;
 			}
 		}
 
-		private static UserDefinedType CreateType(string ns, string name, TypeAttributes flags, IList<IGenericParameter> genericParameters)
+		private static UserDefinedType CreateType(TypeKind kind, IList<IGenericParameter> genericParameters)
 		{
-			UserDefinedType type;
-			bool isIface = IsInterface(flags);
 			if (genericParameters != null && genericParameters.Any())
 			{
-				type = new GenericType
-					{
-						TypeKind = (isIface ? TypeKind.Interface : TypeKind.Class),
-						Namespace = ns,
-						Name = name
-					};
+				var type = new GenericType {TypeKind = kind};
 				foreach (var parameter in genericParameters)
 				{
-					((GenericType)type).GenericParameters.Add(parameter);
+					type.GenericParameters.Add(parameter);
 					parameter.DeclaringType = type;
 				}
+				return type;
 			}
-			else if (isIface)
-			{
-				type = new UserDefinedType(TypeKind.Interface)
-					{
-						Namespace = ns,
-						Name = name
-					};
-			}
-			else
-			{
-				type = CreateSystemType(ns, name)
-				       ?? new UserDefinedType(TypeKind.Class)
-					       {
-						       Namespace = ns,
-						       Name = name
-					       };
-			}
-
-			SetTypeFlags(type, flags);
-
-			return type;
-		}
-
-		private static UserDefinedType CreateSystemType(string ns, string name)
-		{
-			if (ns != SystemTypes.Namespace) return null;
-
-			//TODO: PERF use dictionary
-			foreach (var sysType in SystemTypes.Types)
-			{
-				if (name == sysType.Name)
-				{
-					var type = new UserDefinedType(sysType.Kind)
-						{
-							Namespace = ns,
-							Name = name
-						};
-					sysType.Value = type;
-					type.SystemType = sysType;
-					return type;
-				}
-			}
-
-			return null;
+			return new UserDefinedType(kind);
 		}
 
 		private static void SetTypeFlags(IType type, TypeAttributes flags)

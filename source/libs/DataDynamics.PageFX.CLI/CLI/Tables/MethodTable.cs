@@ -1,4 +1,5 @@
-﻿using DataDynamics.PageFX.CLI.IL;
+﻿using System;
+using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 
@@ -36,6 +37,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 					IsStatic = isStatic
 				};
 
+			// for ref from types
+			row.Object = method;
+
 			var genericParams = Loader.GenericParameters.Find(token);
 			foreach (var genericParameter in genericParams)
 			{
@@ -60,7 +64,10 @@ namespace DataDynamics.PageFX.CLI.Tables
 				Loader.Assembly.EntryPoint = method;
 			}
 
-			LoadParams(method, row, index);
+			var sigBlob = row[MDB.MethodDef.Signature].Blob;
+			var sig = MdbSignature.DecodeMethodSignature(sigBlob);
+
+			SetParams(method, row, index, sig);
 
 			uint rva = row[MDB.MethodDef.RVA].Value;
 			if (rva != 0) //abstract or extern
@@ -68,34 +75,46 @@ namespace DataDynamics.PageFX.CLI.Tables
 				method.Body = new LateMethodBody(Loader, method, rva);
 			}
 
+			method.CustomAttributes = new CustomAttributes(Loader, method, token);
+
+			method.TypeResolver = () => ResolveReturnType(method, sig);
+			
 			return method;
 		}
 
-		private void LoadParams(IMethod method, MdbRow row, int index)
+		private void SetParams(Method method, MdbRow row, int index, MdbMethodSignature signature)
 		{
-			var parameters = Loader.Parameters;
-			int paramNum = parameters.Count;
-			int paramList = row[MDB.MethodDef.ParamList].Index - 1;
-			int nextParamList;
-			if (index + 1 < Count)
-			{
-				var nm = Mdb.GetRow(MdbTableId.MethodDef, index + 1);
-				nextParamList = nm[MDB.MethodDef.ParamList].Index - 1;
-			}
-			else nextParamList = paramNum;
-
-			for (int pi = paramList; pi < paramNum && pi < nextParamList; ++pi)
-			{
-				var param = parameters[pi];
-				if (param.Index == 0)
-				{
-					//0 refers to the owner method's return type;
-					continue;
-				}
-				method.Parameters.Add(param);
-			}
+			int from = row[MDB.MethodDef.ParamList].Index - 1;
+			
+			method.Parameters = new ParamList(Loader, method, from, signature, () => ResolveDeclType(method));
 		}
 
+		private IType ResolveReturnType(IMethod method, MdbMethodSignature sig)
+		{
+			var declType = method.DeclaringType ?? ResolveDeclType(method);
+			if (declType == null)
+			{
+				throw new InvalidOperationException();
+			}
+			return ResolveReturnType(declType, method, sig);
+		}
+
+		private IType ResolveReturnType(IType declType, IMethod method, MdbMethodSignature sig)
+		{
+			var context = new Context(declType, method);
+
+			var type = Loader.ResolveType(sig.Type, context);
+			if (type == null)
+				throw new InvalidOperationException();
+
+			return type;
+		}
+
+		private IType ResolveDeclType(IMethod method)
+		{
+			return Loader.ResolveDeclType(method);
+		}
+		
 		private static Visibility ToVisibility(MethodAttributes f)
 		{
 			var v = f & MethodAttributes.MemberAccessMask;

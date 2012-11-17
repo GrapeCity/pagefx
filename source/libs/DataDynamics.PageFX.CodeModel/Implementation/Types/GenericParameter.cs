@@ -209,7 +209,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public ITypeCollection Types
         {
-            get { return EmptyTypeCollection.Instance; }
+            get { return TypeCollection.Empty; }
         }
 
         public IFieldCollection Fields

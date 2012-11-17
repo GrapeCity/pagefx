@@ -558,17 +558,52 @@ namespace DataDynamics.PageFX.CLI.Metadata
             writer.WriteEndElement();
         }
 
-	    public MdbRow LookupRow(MdbTableId tableId, MdbColumn column, MdbIndex target)
-	    {
-			return LookupRowImpl(tableId, column, target, false);
-	    }
+	    public IEnumerable<MdbRow> LookupRows(MdbTableId tableId, MdbColumn column, int target, bool simple)
+		{
+			var table = this[tableId];
+			if (table == null)
+				return Enumerable.Empty<MdbRow>();
 
-	    public MdbRow LookupRowByIndex(MdbTableId tableId, MdbColumn column, int targetIndex)
-	    {
-		    return LookupRowImpl(tableId, column, targetIndex, true);
-	    }
+			IList<int> list;
+			if (table.Lookup.TryGetValue(target, out list))
+			{
+				return GetRows(tableId, list);
+			}
 
-		private MdbRow LookupRowImpl(MdbTableId tableId, MdbColumn column, int target, bool simple)
+			var rowCount = GetRowCount(tableId);
+			while (table.LastLookupRowIndex < rowCount)
+			{
+				var row = GetRow(tableId, table.LastLookupRowIndex);
+				int index = simple ? row[column].Index - 1 : (int)((MdbIndex)row[column].Value);
+
+				list = new List<int> {table.LastLookupRowIndex};
+
+				for (table.LastLookupRowIndex++; table.LastLookupRowIndex < rowCount; table.LastLookupRowIndex++)
+				{
+					row = GetRow(tableId, table.LastLookupRowIndex);
+					int nextIndex = simple ? row[column].Index - 1 : (int)((MdbIndex)row[column].Value);
+					if (index != nextIndex) break;
+
+					list.Add(table.LastLookupRowIndex);
+				}
+
+				table.Lookup.Add(index, list);
+
+				if (index == target)
+				{
+					return GetRows(tableId, list);
+				}
+			}
+
+			return Enumerable.Empty<MdbRow>();
+		}
+
+		private IEnumerable<MdbRow> GetRows(MdbTableId tableId, IEnumerable<int> rows)
+		{
+			return rows.Select(i => GetRow(tableId, i));
+		}
+
+		public MdbRow LookupRow(MdbTableId tableId, MdbColumn column, int target, bool simple)
 		{
 			var table = this[tableId];
 			if (table == null)

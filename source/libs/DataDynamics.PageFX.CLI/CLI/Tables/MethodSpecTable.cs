@@ -7,18 +7,20 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class MethodSpecTable
 	{
 		private readonly AssemblyLoader _loader;
-		private readonly IMethod[] _methods;
+		private IMethod[] _methods;
 
 		public MethodSpecTable(AssemblyLoader loader)
 		{
 			_loader = loader;
-
-			int n = loader.Mdb.GetRowCount(MdbTableId.MethodSpec);
-			_methods = new IMethod[n];
 		}
 
 		public IMethod Get(int index, Context context)
 		{
+			if (_methods == null)
+			{
+				int n = _loader.Mdb.GetRowCount(MdbTableId.MethodSpec);
+				_methods = new IMethod[n];
+			}
 			return _methods[index] ?? (_methods[index] = Resolve(index, context));
 		}
 

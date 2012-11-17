@@ -174,17 +174,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         #region IModuleCollection Members
 
-        public new void Sort()
-        {
-            Sort((x, y) => String.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
-
-            foreach (var m in this)
-            {
-                m.Types.Sort();
-            }
-        }
-
-        public IModule this[string name]
+	    public IModule this[string name]
         {
             get { return Find(m => m.Name == name); }
         }

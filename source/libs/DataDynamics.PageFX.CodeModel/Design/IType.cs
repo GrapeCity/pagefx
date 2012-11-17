@@ -133,8 +133,6 @@ namespace DataDynamics.PageFX.CodeModel
         void Add(IType type);
 
         bool Contains(IType type);
-
-        void Sort();
     }
 
     public enum TypeNameKind

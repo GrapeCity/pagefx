@@ -520,9 +520,9 @@ namespace DataDynamics.PageFX.CodeModel
 
         static SystemTypes()
         {
-            var bf = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField;
+            const BindingFlags bf = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField;
             var fields = typeof(SystemTypeCode).GetFields(bf);
-            _types = new SystemType[fields.Length];
+            SysTypes = new SystemType[fields.Length];
             foreach (var field in fields)
             {
                 var code = (SystemTypeCode)field.GetValue(null);
@@ -532,8 +532,9 @@ namespace DataDynamics.PageFX.CodeModel
                 var cs_attr = field.GetAttribute<CSharpAttribute>(false);
                 if (cs_attr != null)
                     st.CSharpKeyword = cs_attr.Value;
-                _types[i] = st;
+                SysTypes[i] = st;
             }
+	        Lookup = SysTypes.ToDictionary(x => x.Name, x => x);
         }
 
         public static void Reset()
@@ -544,11 +545,18 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
 
-        public static SystemType[] Types
+		public static SystemType Find(string name)
+		{
+			SystemType type;
+			return Lookup.TryGetValue(name, out type) ? type : null;
+		}
+
+	    public static SystemType[] Types
         {
-            get { return _types; }
+            get { return SysTypes; }
         }
-        static readonly SystemType[] _types;
+        private static readonly SystemType[] SysTypes;
+	    private static readonly Dictionary<string, SystemType> Lookup;
 
         //public static SystemType Find(IType type)
         //{
@@ -604,7 +612,7 @@ namespace DataDynamics.PageFX.CodeModel
             if (tc == TypeCode.Object)
             {
                 //TODO:
-                foreach (var st in _types)
+                foreach (var st in SysTypes)
                 {
                     if (st.Value != null && st.Value.FullName == type.FullName)
                     {

@@ -46,12 +46,7 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
 
-        public void Sort()
-        {
-            _list.Sort((x, y) => x.Name.CompareTo(y.Name));
-        }
-
-        public bool Contains(IType type)
+	    public bool Contains(IType type)
         {
             return this[type.FullName] != null;
         }
@@ -126,6 +121,64 @@ namespace DataDynamics.PageFX.CodeModel
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
         #endregion
+
+		public static readonly ITypeCollection Empty = new EmptyImpl();
+
+		private sealed class EmptyImpl : ITypeCollection
+		{
+			#region Impl
+			public int Count
+			{
+				get { return 0; }
+			}
+
+			public IType this[int index]
+			{
+				get { return null; }
+			}
+
+			public IType this[string fullname]
+			{
+				get { return null; }
+			}
+
+			public void Add(IType type)
+			{
+			}
+
+			public bool Contains(IType type)
+			{
+				return false;
+			}
+
+			public IEnumerator<IType> GetEnumerator()
+			{
+				return Enumerable.Empty<IType>().GetEnumerator();
+			}
+			
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			public CodeNodeType NodeType
+			{
+				get { return CodeNodeType.Types; }
+			}
+
+			public IEnumerable<ICodeNode> ChildNodes
+			{
+				get { return this.Cast<ICodeNode>(); }
+			}
+
+			public object Tag { get; set; }
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				return "";
+			}
+			#endregion
+		}
     }
 
     internal sealed class SimpleTypeCollection : List<IType>, ITypeCollection
@@ -156,77 +209,5 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return this.FirstOrDefault(t => t.FullName == fullname); }
         }
-    }
-
-    internal sealed class EmptyTypeCollection : ITypeCollection
-    {
-        public static readonly ITypeCollection Instance = new EmptyTypeCollection();
-
-        #region ITypeCollection Members
-        public int Count
-        {
-            get { return 0; }
-        }
-
-        public IType this[int index]
-        {
-            get { return null; }
-        }
-
-        public IType this[string fullname]
-        {
-            get { return null; }
-        }
-
-        public void Add(IType type)
-        {
-        }
-
-        public bool Contains(IType type)
-        {
-            return false;
-        }
-
-        public void Sort()
-        {
-        }
-        #endregion
-
-        #region IEnumerable<IType> Members
-        public IEnumerator<IType> GetEnumerator()
-        {
-            return Enumerable.Empty<IType>().GetEnumerator();
-        }
-        #endregion
-
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-        #endregion
-
-        #region ICodeNode Members
-
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Types; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return this.Cast<ICodeNode>(); }
-        }
-
-        public object Tag { get; set; }
-
-        #endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return "";
-        }
-        #endregion
     }
 }

@@ -10,18 +10,21 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class MemberRefTable
 	{
 		private readonly AssemblyLoader _loader;
-		private readonly ITypeMember[] _members;
+		private ITypeMember[] _members;
 
 		public MemberRefTable(AssemblyLoader loader)
 		{
 			_loader = loader;
-
-			int n = loader.Mdb.GetRowCount(MdbTableId.MemberRef);
-			_members = new ITypeMember[n];
 		}
 
 		public ITypeMember Get(int index, Context context)
 		{
+			if (_members == null)
+			{
+				int n = _loader.Mdb.GetRowCount(MdbTableId.MemberRef);
+				_members = new ITypeMember[n];
+			}
+
 			return _members[index] ?? (_members[index] = Resolve(index, context));
 		}
 

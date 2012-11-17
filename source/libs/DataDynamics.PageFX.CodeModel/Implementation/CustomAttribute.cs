@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents custom attribute.
     /// </summary>
-    public class CustomAttribute : ICustomAttribute
+    public sealed class CustomAttribute : ICustomAttribute
     {
         #region Constructors
         public CustomAttribute()
@@ -140,40 +140,19 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
     }
 
-    public class CustomAttributeCollection : List<ICustomAttribute>, ICustomAttributeCollection
+    public sealed class CustomAttributeCollection : List<ICustomAttribute>, ICustomAttributeCollection
     {
-        #region ICustomAttributeCollection Members
-        public ICustomAttribute[] this[IType type]
+	    public ICustomAttribute[] this[IType type]
         {
-            get
-            {
-                var list = new List<ICustomAttribute>();
-                foreach (var attr in list)
-                {
-                    if (attr.Type == type)
-                        list.Add(attr);
-                }
-                return list.ToArray();
-            }
+            get { return this.Where(x => x.Type == type).ToArray(); }
         }
 
         public ICustomAttribute[] this[string typeFullName]
         {
-            get
-            {
-                var list = new List<ICustomAttribute>();
-                foreach (var attr in list)
-                {
-                    if (attr.Type.FullName == typeFullName)
-                        list.Add(attr);
-                }
-                return list.ToArray();
-            }
+            get { return this.Where(x => x.Type.FullName == typeFullName).ToArray(); }
         }
-        #endregion
 
-        #region ICodeNode Members
-        public CodeNodeType NodeType
+	    public CodeNodeType NodeType
         {
             get { return CodeNodeType.Attributes; }
         }
@@ -188,23 +167,20 @@ namespace DataDynamics.PageFX.CodeModel
     	/// </summary>
     	public object Tag { get; set; }
 
-    	#endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+	    public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
     }
 
     public class CustomAttributeProvider : ICustomAttributeProvider
     {
         public ICustomAttributeCollection CustomAttributes
         {
-            get { return _attributes; }
+            get { return _attributes ?? (_attributes = new CustomAttributeCollection()); }
+			set { _attributes = value; }
         }
-        private readonly CustomAttributeCollection _attributes = new CustomAttributeCollection();
+        private ICustomAttributeCollection _attributes;
     }
 
 	public static class CustomAttributeProviderExtensions

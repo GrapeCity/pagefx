@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// <summary>
         /// Gets collection of custom attributes.
         /// </summary>
-        ICustomAttributeCollection CustomAttributes { get; }
+		ICustomAttributeCollection CustomAttributes { get; }
     }
 
     /// <summary>
@@ -52,10 +52,13 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents collection of <see cref="ICustomAttribute"/>s.
     /// </summary>
-    public interface ICustomAttributeCollection : IList<ICustomAttribute>, ICodeNode
+    public interface ICustomAttributeCollection : IReadOnlyList<ICustomAttribute>, ICodeNode
     {
         ICustomAttribute[] this[IType type] { get; }
+
         ICustomAttribute[] this[string typeFullName] { get; }
+
+	    void Add(ICustomAttribute attribute);
     }
 }
 

@@ -6,18 +6,18 @@ namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal sealed class ConstantTable
 	{
-		private readonly MdbReader _mdb;
+		private readonly AssemblyLoader _loader;
 		
-		public ConstantTable(MdbReader mdb)
+		public ConstantTable(AssemblyLoader loader)
 		{
-			_mdb = mdb;
+			_loader = loader;
 		}
 
 		public object this[MdbIndex parent]
 		{
 			get
 			{
-				var row = _mdb.LookupRow(MdbTableId.Constant, MDB.Constant.Parent, parent);
+				var row = _loader.Mdb.LookupRow(MdbTableId.Constant, MDB.Constant.Parent, parent, false);
 				if (row == null) return null;
 
 				var type = (ElementType)row[MDB.Constant.Type].Value;

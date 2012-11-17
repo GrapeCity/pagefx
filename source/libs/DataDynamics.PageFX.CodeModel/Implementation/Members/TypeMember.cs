@@ -7,6 +7,8 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public abstract class TypeMember : CustomAttributeProvider, ITypeMember, IXmlSerializationFeedback
     {
+		private IType _type;
+
         #region ITypeMember Members
         /// <summary>
         /// Gets the assembly in which the member is declared.
@@ -73,12 +75,21 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public IType DeclaringType { get; set; }
 
-        /// <summary>
-        /// Gets or sets the type of this member (for methods it's return type)
-        /// </summary>
-        public IType Type { get; set; }
+	    /// <summary>
+	    /// Gets or sets the type of this member (for methods it's return type)
+	    /// </summary>
+	    public IType Type
+	    {
+			get { return _type ?? (_type = ResolveType()); }
+			set { _type = value; }
+	    }
 
-        /// <summary>
+	    protected virtual IType ResolveType()
+	    {
+		    return null;
+	    }
+
+	    /// <summary>
         /// Gets visibility of this member.
         /// </summary>
         public virtual Visibility Visibility { get; set; }
@@ -102,22 +113,17 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
 
-        internal Modifiers Modifiers
-        {
-            get { return _mods; }
-            set { _mods = value; }
-        }
-        Modifiers _mods;
+	    internal Modifiers Modifiers { get; set; }
 
-        internal bool GetModifier(Modifiers mod)
+	    internal bool GetModifier(Modifiers mod)
         {
-            return (_mods & mod) != 0;
+            return (Modifiers & mod) != 0;
         }
 
         internal void SetModifier(bool value, Modifiers mod)
         {
-            if (value) _mods |= mod;
-            else _mods &= ~mod;
+            if (value) Modifiers |= mod;
+            else Modifiers &= ~mod;
         }
 
         public virtual bool IsStatic

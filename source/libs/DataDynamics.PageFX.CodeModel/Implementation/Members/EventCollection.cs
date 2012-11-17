@@ -1,17 +1,71 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using DataDynamics.PageFX.CodeModel.Syntax;
+
 namespace DataDynamics.PageFX.CodeModel
 {
     [XmlElementName("Events")]
-    public sealed class EventCollection : TypeMemberCollection<IEvent>, IEventCollection
+    public sealed class EventCollection : IEventCollection
     {
-        public EventCollection(IType owner) : base(owner)
+	    private readonly IType _owner;
+	    private readonly IList<IEvent> _list = new List<IEvent>();
+
+	    public EventCollection(IType owner)
         {
+	        _owner = owner;
         }
 
-        #region IEventCollection Members
-        public IEvent this[string name]
+	    public void Add(IEvent item)
+	    {
+		    if (item == null)
+				throw new ArgumentNullException("item");
+
+		    item.DeclaringType = _owner;
+			_list.Add(item);
+	    }
+
+	    public IEvent this[string name]
         {
-            get { return _list.Find(e => e.Name == name); }
+            get { return this.FirstOrDefault(e => e.Name == name); }
         }
-        #endregion
+
+	    public IEnumerator<IEvent> GetEnumerator()
+	    {
+		    return _list.GetEnumerator();
+	    }
+
+	    IEnumerator IEnumerable.GetEnumerator()
+	    {
+		    return GetEnumerator();
+	    }
+
+	    public int Count
+	    {
+			get { return _list.Count; }
+	    }
+
+	    public IEvent this[int index]
+	    {
+			get { return _list[index]; }
+	    }
+
+	    public string ToString(string format, IFormatProvider formatProvider)
+	    {
+			return SyntaxFormatter.Format(this, format, formatProvider);
+	    }
+
+	    public CodeNodeType NodeType
+	    {
+		    get { return CodeNodeType.Events; }
+	    }
+
+	    public IEnumerable<ICodeNode> ChildNodes
+	    {
+			get { return this.Cast<ICodeNode>(); }
+	    }
+
+	    public object Tag { get; set; }
     }
 }

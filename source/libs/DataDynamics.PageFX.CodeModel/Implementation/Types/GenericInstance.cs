@@ -772,12 +772,6 @@ namespace DataDynamics.PageFX.CodeModel
 				return _types.Contains(type);
 			}
 
-			public void Sort()
-			{
-				//list.Sort((x, y) => string.Compare(x.FullName, y.FullName));
-				throw new NotSupportedException();
-			}
-
 			public CodeNodeType NodeType
 			{
 				get { return CodeNodeType.Types; }
