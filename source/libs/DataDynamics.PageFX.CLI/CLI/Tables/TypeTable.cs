@@ -33,8 +33,6 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 			// to avoid problems with self refs in fields/methods,etc
 			Rows[index] = type;
 
-			RegisterType(type);
-
 			type.MetadataToken = token;
 
 			//TODO: lazy resolving of class layout
@@ -47,6 +45,8 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 				type.DeclaringType = declType;
 				declType.Types.Add(type);
 			}
+
+			RegisterType(type);
 
 			//TODO: lazy fields/methods collections
 			SetFieldsAndMethods(row, index, type);

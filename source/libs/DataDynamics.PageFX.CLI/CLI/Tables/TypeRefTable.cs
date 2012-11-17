@@ -20,12 +20,12 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 		{
 			var row = Mdb.GetRow(MdbTableId.TypeRef, index);
 
-			MdbIndex rs = row[MDB.TypeRef.ResolutionScope].Value;
+			MdbIndex scope = row[MDB.TypeRef.ResolutionScope].Value;
 			var name = row[MDB.TypeRef.TypeName].String;
 			var ns = row[MDB.TypeRef.TypeNamespace].String;
 			var fullname = QName(ns, name);
 
-			var type = FindType(rs, fullname);
+			var type = FindType(scope, fullname);
 
 			if (type == null)
 			{
@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 				if (DebugHooks.BreakInvalidTypeReference)
 				{
 					Debugger.Break();
-					FindType(rs, fullname);
+					FindType(scope, fullname);
 				}
 #endif
 				throw new BadMetadataException(string.Format("Unable to resolve type reference {0}", fullname));

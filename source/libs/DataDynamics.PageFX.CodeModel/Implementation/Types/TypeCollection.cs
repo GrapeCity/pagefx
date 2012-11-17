@@ -81,15 +81,16 @@ namespace DataDynamics.PageFX.CodeModel
             if (_owner != null)
             {
                 type.DeclaringType = _owner;
-                AddToCache(type.Name, type);
+				// this is needed to resolve subclass refs
+				AddToCache(type.Name, type);
             }
             AddToCache(type.FullName, type);
         }
 
         private void AddToCache(string key, IType type)
         {
-            IType type2;
-            if (_cache.TryGetValue(key, out type2))
+            IType typeInCache;
+            if (_cache.TryGetValue(key, out typeInCache))
                 return;
             _cache.Add(key, type);
         }
