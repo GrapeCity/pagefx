@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class ParamTable : MetadataTable<IParameter>
 	{
 		public ParamTable(AssemblyLoader loader)
-			: base(loader, MdbTableId.Param)
+			: base(loader)
 		{
 		}
 
@@ -15,10 +15,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.Param; }
 		}
 
-		protected override IParameter ParseRow(int index)
+		protected override IParameter ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.Param, index);
-
 			var token = MdbIndex.MakeToken(MdbTableId.Param, index + 1);
 			var value = Loader.Const[token];
 

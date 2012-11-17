@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class TypeTable : MetadataTable<IType>
 	{
 		public TypeTable(AssemblyLoader loader) 
-			: base(loader, MdbTableId.TypeDef)
+			: base(loader)
 		{
 		}
 
@@ -17,10 +17,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.TypeDef; }
 		}
 
-		protected override IType ParseRow(int index)
+		protected override IType ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.TypeDef, index);
-
 			var flags = (TypeAttributes)row[MDB.TypeDef.Flags].Value;
 			string name = row[MDB.TypeDef.TypeName].String;
 			string ns = row[MDB.TypeDef.TypeNamespace].String;

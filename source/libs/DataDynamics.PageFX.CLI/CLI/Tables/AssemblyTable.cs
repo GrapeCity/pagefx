@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class AssemblyTable : MetadataTable<AssemblyReference>
 	{
 		public AssemblyTable(AssemblyLoader loader)
-			: base(loader, MdbTableId.Assembly)
+			: base(loader)
 		{
 		}
 
@@ -16,11 +16,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.Assembly; }
 		}
 
-		protected override AssemblyReference ParseRow(int index)
+		protected override AssemblyReference ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.Assembly, 0);
-
-
 			var flags = ((AssemblyFlags)row[MDB.Assembly.Flags].Value);
 			var hashAlgorithm = (HashAlgorithmId)row[MDB.Assembly.HashAlgId].Value;
 

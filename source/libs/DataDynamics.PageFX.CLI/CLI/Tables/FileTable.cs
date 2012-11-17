@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal sealed class FileTable : MetadataTable<IManifestFile>
 	{
-		public FileTable(AssemblyLoader loader) : base(loader, MdbTableId.File)
+		public FileTable(AssemblyLoader loader) : base(loader)
 		{
 		}
 
@@ -20,10 +20,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return this.FirstOrDefault(x => x.Name == name); }
 		}
 
-		protected override IManifestFile ParseRow(int index)
+		protected override IManifestFile ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.File, index);
-
 			var flags = (FileFlags)row[MDB.File.Flags].Value;
 
 			return new ManifestFile

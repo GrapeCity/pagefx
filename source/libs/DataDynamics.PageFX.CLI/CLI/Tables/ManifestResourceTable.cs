@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class ManifestResourceTable : MetadataTable<IManifestResource>, IManifestResourceCollection
 	{
 		public ManifestResourceTable(AssemblyLoader loader)
-			: base(loader, MdbTableId.ManifestResource)
+			: base(loader)
 		{
 		}
 
@@ -22,10 +22,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return this.FirstOrDefault(x => x.Name == name); }
 		}
 
-		protected override IManifestResource ParseRow(int index)
+		protected override IManifestResource ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.ManifestResource, index);
-
 			string name = row[MDB.ManifestResource.Name].String;
 			var offset = (int)row[MDB.ManifestResource.Offset].Value;
 			var flags = (ManifestResourceAttributes)row[MDB.ManifestResource.Flags].Value;

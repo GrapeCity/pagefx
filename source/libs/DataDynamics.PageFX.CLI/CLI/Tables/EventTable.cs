@@ -5,7 +5,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal sealed class EventTable : MetadataTable<IEvent>
 	{
-		public EventTable(AssemblyLoader loader) : base(loader, MdbTableId.Event)
+		public EventTable(AssemblyLoader loader) : base(loader)
 		{
 		}
 
@@ -14,10 +14,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.Event; }
 		}
 
-		protected override IEvent ParseRow(int index)
+		protected override IEvent ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.Event, index);
-
 			var flags = (EventAttributes)row[MDB.Event.EventFlags].Value;
 			var name = row[MDB.Event.Name].String;
 

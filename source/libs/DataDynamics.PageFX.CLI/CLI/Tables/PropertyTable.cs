@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class PropertyTable : MetadataTable<IProperty>
 	{
 		public PropertyTable(AssemblyLoader loader)
-			: base(loader, MdbTableId.Property)
+			: base(loader)
 		{
 		}
 
@@ -15,10 +15,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.Property; }
 		}
 
-		protected override IProperty ParseRow(int index)
+		protected override IProperty ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.Property, index);
-
 			var flags = (PropertyAttributes)row[MDB.Property.Flags].Value;
 			var name = row[MDB.Property.Name].String;
 			var token = MdbIndex.MakeToken(MdbTableId.Property, index + 1);

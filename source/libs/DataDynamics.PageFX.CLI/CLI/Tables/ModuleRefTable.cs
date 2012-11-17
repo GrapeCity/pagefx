@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class ModuleRefTable : MetadataTable<IModule>
 	{
 		public ModuleRefTable(AssemblyLoader loader)
-			: base(loader, MdbTableId.ModuleRef)
+			: base(loader)
 		{
 		}
 
@@ -15,9 +15,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.ModuleRef; }
 		}
 
-		protected override IModule ParseRow(int index)
+		protected override IModule ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.ModuleRef, index);
 			string name = row[MDB.ModuleRef.Name].String;
 
 			//var f = GetFile(name);

@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	{
 		private readonly FieldLayout _layout = new FieldLayout();
 
-		public FieldTable(AssemblyLoader loader) : base(loader, MdbTableId.Field)
+		public FieldTable(AssemblyLoader loader) : base(loader)
 		{
 		}
 
@@ -17,10 +17,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.Field; }
 		}
 
-		protected override IField ParseRow(int index)
+		protected override IField ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.Field, index);
-
 			var flags = (FieldAttributes)row[MDB.Field.Flags].Value;
 			var name = row[MDB.Field.Name].String;
 

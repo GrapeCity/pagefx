@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal sealed class AssemblyRefTable : MetadataTable<IAssembly>
 	{
-		public AssemblyRefTable(AssemblyLoader loader) : base(loader, MdbTableId.AssemblyRef)
+		public AssemblyRefTable(AssemblyLoader loader) : base(loader)
 		{
 		}
 
@@ -15,9 +15,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.AssemblyRef; }
 		}
 
-		protected override IAssembly ParseRow(int index)
+		protected override IAssembly ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.AssemblyRef, index);
 			var asmref = new AssemblyReference
 				{
 					Version = GetVersion(row, 0),

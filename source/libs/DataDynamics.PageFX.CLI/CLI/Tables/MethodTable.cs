@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class MethodTable : MetadataTable<IMethod>
 	{
 		public MethodTable(AssemblyLoader loader)
-			: base(loader, MdbTableId.MethodDef)
+			: base(loader)
 		{
 		}
 
@@ -16,12 +16,10 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.MethodDef; }
 		}
 
-		protected override IMethod ParseRow(int index)
+		protected override IMethod ParseRow(MdbRow row, int index)
 		{
 			MdbIndex entryPoint = Mdb.CLIHeader.EntryPointToken;
 			bool checkEntryPoint = entryPoint.Table == MdbTableId.MethodDef;
-
-			var row = Mdb.GetRow(MdbTableId.MethodDef, index);
 
 			var implFlags = (MethodImplAttributes)row[MDB.MethodDef.ImplFlags].Value;
 			var flags = (MethodAttributes)row[MDB.MethodDef.Flags].Value;

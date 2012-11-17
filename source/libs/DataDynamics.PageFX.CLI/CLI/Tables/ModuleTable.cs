@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class ModuleTable : MetadataTable<IModule>
 	{
 		public ModuleTable(AssemblyLoader loader)
-			: base(loader, MdbTableId.Module)
+			: base(loader)
 		{
 		}
 
@@ -16,10 +16,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.Module; }
 		}
 
-		protected override IModule ParseRow(int index)
+		protected override IModule ParseRow(MdbRow row, int index)
 		{
-			var row = Mdb.GetRow(MdbTableId.Module, index);
-
 			var module = new Module
 				{
 					Name = row[MDB.Module.Name].String,

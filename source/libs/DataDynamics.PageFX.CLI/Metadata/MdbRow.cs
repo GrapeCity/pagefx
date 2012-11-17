@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
     /// <summary>
     /// Represents row in MDB table.
     /// </summary>
-    public class MdbRow
+    public sealed class MdbRow
     {
         /// <summary>
         /// Gets the index of this row.
@@ -24,7 +24,8 @@ namespace DataDynamics.PageFX.CLI.Metadata
         {
             get { return _cells; }
         }
-        private readonly MdbCell[] _cells;
+
+	    private readonly MdbCell[] _cells;
 
         public MdbCell this[int index]
         {
