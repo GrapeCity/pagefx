@@ -18,18 +18,18 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		public IType Get(int index, Context context)
 		{
-			var type = _types[index];
-			if (type != null) return type;
+			return _types[index] ?? (_types[index] = Resolve(index, context));
+		}
 
+		private IType Resolve(int index, Context context)
+		{
 			var row = _loader.Mdb.GetRow(MdbTableId.TypeSpec, index);
 			var blob = row[MDB.TypeSpec.Signature].Blob;
 			var sig = MdbSignature.DecodeTypeSignature(blob);
 
-			type = _loader.ResolveType(sig, context);
+			var type = _loader.ResolveType(sig, context);
 			if (type == null)
 				throw new BadMetadataException(string.Format("Unable to resolve signature {0}", sig));
-
-			_types[index] = type;
 
 			return type;
 		}

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using DataDynamics.PageFX.CLI.Metadata;
 
@@ -8,9 +7,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class ConstantTable
 	{
 		private readonly MdbReader _mdb;
-		private readonly Dictionary<MdbIndex, object> _values = new Dictionary<MdbIndex, object>();
-		private int _lastIndex; // index of last parsed row
-
+		
 		public ConstantTable(MdbReader mdb)
 		{
 			_mdb = mdb;
@@ -20,31 +17,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			get
 			{
-				object value;
-				if (_values.TryGetValue(parent, out value))
-					return value;
+				var row = _mdb.LookupRow(MdbTableId.Constant, MDB.Constant.Parent, parent);
+				if (row == null) return null;
 
-				var n = _mdb.GetRowCount(MdbTableId.Constant);
+				var type = (ElementType)row[MDB.Constant.Type].Value;
+				var blob = row[MDB.Constant.Value].Blob;
 
-				for (; _lastIndex < n; _lastIndex++)
-				{
-					var row = _mdb.GetRow(MdbTableId.Constant, _lastIndex);
-
-					MdbIndex rowParent = row[MDB.Constant.Parent].Value;
-					var type = (ElementType)row[MDB.Constant.Type].Value;
-					var blob = row[MDB.Constant.Value].Blob;
-					value = ReadValue(type, blob);
-
-					_values.Add(rowParent, value);
-
-					if (rowParent == parent)
-					{
-						_lastIndex++;
-						return value;
-					}
-				}
-
-				return null;
+				return ReadValue(type, blob);
 			}
 		}
 

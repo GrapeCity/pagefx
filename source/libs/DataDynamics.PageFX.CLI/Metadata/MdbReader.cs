@@ -557,5 +557,52 @@ namespace DataDynamics.PageFX.CLI.Metadata
             writer.WriteAttributeString("sorted", XmlConvert.ToString(table.IsSorted));
             writer.WriteEndElement();
         }
+
+	    public MdbRow LookupRow(MdbTableId tableId, MdbColumn column, MdbIndex target)
+	    {
+			return LookupRowImpl(tableId, column, target, false);
+	    }
+
+	    public MdbRow LookupRowByIndex(MdbTableId tableId, MdbColumn column, int targetIndex)
+	    {
+		    return LookupRowImpl(tableId, column, targetIndex, true);
+	    }
+
+		private MdbRow LookupRowImpl(MdbTableId tableId, MdbColumn column, int target, bool simple)
+		{
+			var table = this[tableId];
+			if (table == null)
+				return null;
+
+			IList<int> list;
+			if (table.Lookup.TryGetValue(target, out list))
+			{
+				return GetRow(tableId, list[0]);
+			}
+
+			var rowCount = GetRowCount(tableId);
+			for (; table.LastLookupRowIndex < rowCount; table.LastLookupRowIndex++)
+			{
+				var row = GetRow(tableId, table.LastLookupRowIndex);
+				int index = simple ? row[column].Index - 1 : (int)((MdbIndex)row[column].Value);
+
+				if (index == target)
+				{
+					table.Lookup.Add(target, new List<int> { table.LastLookupRowIndex });
+					table.LastLookupRowIndex++;
+					return row;
+				}
+
+				if (!table.Lookup.TryGetValue(index, out list))
+				{
+					list = new List<int>();
+					table.Lookup.Add(index, list);
+				}
+
+				list.Add(table.LastLookupRowIndex);
+			}
+
+			return null;
+		}
     }
 }

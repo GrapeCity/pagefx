@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using DataDynamics.PageFX.CLI.Metadata;
+﻿using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal sealed class FieldTable : MetadataTable<IField>
 	{
-		private readonly FieldLayout _layout = new FieldLayout();
-
 		public FieldTable(AssemblyLoader loader) : base(loader)
 		{
 		}
@@ -35,7 +32,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 					IsSpecialName = ((flags & FieldAttributes.SpecialName) != 0),
 					IsRuntimeSpecialName = ((flags & FieldAttributes.RTSpecialName) != 0),
 					Name = name,
-					Offset = _layout.Find(Mdb, index),
+					Offset = GetOffset(Mdb, index),
 					Value = value
 				};
 		}
@@ -60,36 +57,10 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return Visibility.Public;
 		}
 
-		private sealed class FieldLayout
+		private static int GetOffset(MdbReader mdb, int fieldIndex)
 		{
-			private readonly Dictionary<int,int> _offsets = new Dictionary<int, int>();
-			private int _lastIndex;
-
-			public int Find(MdbReader mdb, int fieldIndex)
-			{
-				int offset;
-				if (_offsets.TryGetValue(fieldIndex, out offset))
-					return offset;
-
-				int n = mdb.GetRowCount(MdbTableId.FieldLayout);
-				for (; _lastIndex < n; _lastIndex++)
-				{
-					var row = mdb.GetRow(MdbTableId.FieldLayout, _lastIndex);
-
-					int owner = row[MDB.FieldLayout.Field].Index - 1;
-					offset = (int)row[MDB.FieldLayout.Offset].Value;
-
-					_offsets.Add(owner, offset);
-
-					if (owner == fieldIndex)
-					{
-						_lastIndex++;
-						return offset;
-					}
-				}
-
-				return -1;
-			}
+			var row = mdb.LookupRowByIndex(MdbTableId.FieldLayout, MDB.FieldLayout.Field, fieldIndex);
+			return row == null ? -1 : (int)row[MDB.FieldLayout.Offset].Value;
 		}
 	}
 }

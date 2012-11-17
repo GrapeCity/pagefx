@@ -47,33 +47,34 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return ns + "." + name;
 		}
 
+		private IType FindType(MdbIndex scope, string fullname)
+		{
+			var c = GetTypeContainer(scope);
+			if (c != null)
+				return c.Types[fullname];
+			return null;
+		}
+
 		private ITypeContainer GetTypeContainer(MdbIndex idx)
 		{
+			var index = idx.Index - 1;
 			switch (idx.Table)
 			{
 				case MdbTableId.Module:
-					return Loader.Modules[idx.Index - 1];
+					return Loader.Modules[index];
 
 				case MdbTableId.ModuleRef:
-					return Loader.ModuleRefs[idx.Index - 1];
+					return Loader.ModuleRefs[index];
 
 				case MdbTableId.AssemblyRef:
-					return Loader.AssemblyRefs[idx.Index - 1];
+					return Loader.AssemblyRefs[index];
 
 				case MdbTableId.TypeRef:
-					return this[idx.Index - 1];
+					return this[index];
 
 				default:
 					throw new BadMetadataException();
 			}
-		}
-
-		private IType FindType(MdbIndex rs, string fullname)
-		{
-			var c = GetTypeContainer(rs);
-			if (c != null)
-				return c.Types[fullname];
-			return null;
 		}
 	}
 }

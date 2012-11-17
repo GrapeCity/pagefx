@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DataDynamics.PageFX.CLI.Metadata
@@ -62,9 +63,14 @@ namespace DataDynamics.PageFX.CLI.Metadata
         /// </summary>
         internal MdbRow[] Rows { get; set; }
 
+		// Lookup by reference key
+		internal Dictionary<int, IList<int>> Lookup = new Dictionary<int, IList<int>>();
+	    internal int LastLookupRowIndex;
+
     	internal MdbTable(MdbTableId id, params MdbColumn[] columns)
         {
         	Id = id;
+			
         	foreach (var col in columns.Select(c => c.Clone()))
         	{
         		col.TableId = id;

@@ -275,13 +275,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var contextType = FixContextType(arrType.ElementType);
 
 			var types = ResolveMethodSignature(sig, new Context(contextType), false);
+
 			int n = types.Length;
 			for (int i = 0; i < n - 1; ++i)
 			{
 				m.Parameters.Add(new Parameter(types[i], "i" + i, i + 1));
 			}
 			m.Parameters.Add(new Parameter(types[n - 1], "value", n));
-
 
 			return m;
 		}

@@ -21,7 +21,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var module = new Module
 				{
 					Name = row[MDB.Module.Name].String,
-					Version = row[MDB.Module.Mvid].Guid
+					Version = row[MDB.Module.Mvid].Guid,
+					IsMain = true,
+					RefResolver = Loader,
+					MetadataTokenResolver = Loader,
+					Resources = Loader.ManifestResources
 				};
 
 			var file = Loader.Files[module.Name];
@@ -29,11 +33,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 			{
 				throw new NotImplementedException();
 			}
-
-			module.IsMain = true;
-			module.RefResolver = Loader;
-			module.MetadataTokenResolver = Loader;
-			module.Resources = Loader.ManifestResources;
 
 			return module;
 		}
