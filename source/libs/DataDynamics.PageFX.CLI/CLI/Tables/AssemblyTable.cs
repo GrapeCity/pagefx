@@ -2,7 +2,7 @@
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 
-namespace DataDynamics.PageFX.CLI.CLI.Tables
+namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal sealed class AssemblyTable : MetadataTable<AssemblyReference>
 	{

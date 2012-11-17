@@ -119,15 +119,12 @@ namespace DataDynamics.PageFX.CodeModel
 
         IType ITypeCollection.this[string fullname]
         {
-            get
-            {
-                return FindType(fullname);
-            }
+            get { return FindType(fullname); }
         }
 
         bool ITypeCollection.Contains(IType type)
         {
-            return FindType(type.FullName) != null;
+            return type != null && FindType(type.FullName) != null;
         }
 
         void ITypeCollection.Add(IType type)

@@ -28,7 +28,12 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static IProperty FindProperty(this IType type, string name, bool inherit)
         {
-            return type.FindMember(inherit, t => t.Properties.FirstOrDefault(p => !p.IsIndexer && p.Name == name));
+	        return type.FindMember(inherit,
+	                               t =>
+		                               {
+			                               var set = t.Properties.Find(name) ?? Enumerable.Empty<IProperty>();
+			                               return set.FirstOrDefault(p => !p.IsIndexer);
+		                               });
         }
 
         public static IType GetCommonBaseType(this IType a, IType b)
@@ -214,9 +219,9 @@ namespace DataDynamics.PageFX.CodeModel
                         {
                             var from = (IArrayType)source;
                             var to = (IArrayType)target;
-                            if (@from.Rank != to.Rank)
+                            if (from.Rank != to.Rank)
                                 return false;
-                            if (@from.ElementType.IsImplicitCast(to.ElementType))
+                            if (from.ElementType.IsImplicitCast(to.ElementType))
                                 return true;
                         }
                     }

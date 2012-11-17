@@ -128,7 +128,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
     }
 
-    internal class SimpleTypeCollection : List<IType>, ITypeCollection
+    internal sealed class SimpleTypeCollection : List<IType>, ITypeCollection
     {
         public string ToString(string format, IFormatProvider formatProvider)
         {
@@ -150,18 +150,11 @@ namespace DataDynamics.PageFX.CodeModel
             get { return this.Cast<ICodeNode>(); }
         }
 
-        public object Tag
-        {
-            get { return null; }
-            set { throw new NotSupportedException(); }
-        }
+        public object Tag { get; set; }
 
         public IType this[string fullname]
         {
-            get
-            {
-                return this.FirstOrDefault(t => t.FullName == fullname);
-            }
+            get { return this.FirstOrDefault(t => t.FullName == fullname); }
         }
     }
 

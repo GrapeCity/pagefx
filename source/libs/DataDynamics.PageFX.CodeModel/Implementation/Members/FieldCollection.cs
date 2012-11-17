@@ -72,9 +72,9 @@ namespace DataDynamics.PageFX.CodeModel
             return ToString(null, null);
         }
 
-    	public static readonly IFieldCollection Empty = new EmptyFieldCollection();
+    	public static readonly IFieldCollection Empty = new EmptyImpl();
 
-		private sealed class EmptyFieldCollection : IFieldCollection
+		private sealed class EmptyImpl : IFieldCollection
 		{
 			public int Count
 			{
@@ -105,11 +105,7 @@ namespace DataDynamics.PageFX.CodeModel
 				get { return this.Cast<ICodeNode>(); }
 			}
 
-			public object Tag
-			{
-				get { return null; }
-				set { }
-			}
+			public object Tag { get; set; }
 
 			public string ToString(string format, IFormatProvider formatProvider)
 			{

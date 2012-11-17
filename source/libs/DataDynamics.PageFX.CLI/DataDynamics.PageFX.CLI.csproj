@@ -70,7 +70,9 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CLI\Context.cs" />
     <Compile Include="CLI\Extensions.cs" />
+    <Compile Include="CLI\SignatureResolver.cs" />
     <Compile Include="CLI\Tables\AssemblyRefTable.cs" />
     <Compile Include="CLI\Tables\AssemblyTable.cs" />
     <Compile Include="CLI\Tables\ClassLayoutTable.cs" />
@@ -81,13 +83,16 @@
     <Compile Include="CLI\Tables\GenericParamTable.cs" />
     <Compile Include="CLI\Tables\IMetadataTable.cs" />
     <Compile Include="CLI\Tables\ManifestResourceTable.cs" />
+    <Compile Include="CLI\Tables\MemberRefTable.cs" />
     <Compile Include="CLI\Tables\MetadataTable.cs" />
+    <Compile Include="CLI\Tables\MethodSpecTable.cs" />
     <Compile Include="CLI\Tables\MethodTable.cs" />
     <Compile Include="CLI\Tables\ModuleRefTable.cs" />
     <Compile Include="CLI\Tables\ModuleTable.cs" />
     <Compile Include="CLI\Tables\ParamTable.cs" />
     <Compile Include="CLI\Tables\PropertyTable.cs" />
     <Compile Include="CLI\Tables\TypeRefTable.cs" />
+    <Compile Include="CLI\Tables\TypeSpecTable.cs" />
     <Compile Include="CLI\Tables\TypeTable.cs" />
     <Compile Include="Execution\ArrayIterator.cs" />
     <Compile Include="Execution\ArrayInvoker.cs" />

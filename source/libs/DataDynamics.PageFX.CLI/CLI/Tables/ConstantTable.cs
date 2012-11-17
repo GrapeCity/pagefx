@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using DataDynamics.PageFX.CLI.Metadata;
 
-namespace DataDynamics.PageFX.CLI.CLI.Tables
+namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal sealed class ConstantTable
 	{

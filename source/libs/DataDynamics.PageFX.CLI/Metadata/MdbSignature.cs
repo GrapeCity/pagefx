@@ -117,7 +117,6 @@ namespace DataDynamics.PageFX.CLI.Metadata
         public ArrayShape ArrayShape;
         public int GenericParamNumber = -1;
         public MdbMethodSignature Method;
-        public IType ResolvedType;
 
         public MdbTypeSignature(ElementType e)
         {

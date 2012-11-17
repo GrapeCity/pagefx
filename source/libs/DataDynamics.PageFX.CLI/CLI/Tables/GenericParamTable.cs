@@ -7,7 +7,7 @@ using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
-namespace DataDynamics.PageFX.CLI.CLI.Tables
+namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal sealed class GenericParamTable
 	{

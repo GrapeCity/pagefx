@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.CLI.Metadata;
 
-namespace DataDynamics.PageFX.CLI.CLI.Tables
+namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal abstract class MetadataTable<T> : IMetadataTable<T> where T:class 
 	{
