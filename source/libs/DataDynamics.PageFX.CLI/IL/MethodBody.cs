@@ -36,9 +36,16 @@ namespace DataDynamics.PageFX.CLI.IL
 		private readonly Hashtable _tokenCache = new Hashtable();
 
         #region ctor
-        public MethodBody(IMethodContext context, BufferedBinaryReader reader)
+        public MethodBody(IMethod method, IMethodContext context, BufferedBinaryReader reader)
         {
-            _method = context.CurrentMethod;
+	        if (method == null)
+				throw new ArgumentNullException("method");
+	        if (context == null)
+				throw new ArgumentNullException("context");
+	        if (reader == null)
+				throw new ArgumentNullException("reader");
+
+	        _method = method;
             _method.Body = this;
 
             int lsb = reader.ReadUInt8();
@@ -66,8 +73,8 @@ namespace DataDynamics.PageFX.CLI.IL
                             sehBlocks = ReadSehBlocks(reader);
                         }
 
-                        _code = ReadCode(context, code);
-                        _vars = context.ResolveLocalVariables(localSig, out _hasGenericVars);
+                        _code = ReadCode(method, context, code);
+                        _vars = context.ResolveLocalVariables(method, localSig, out _hasGenericVars);
                     }
                     break;
 
@@ -76,7 +83,7 @@ namespace DataDynamics.PageFX.CLI.IL
                     {
                         int codeSize = (lsb >> 2);
                         var code = reader.ReadBlock(codeSize);
-                        _code = ReadCode(context, code);
+                        _code = ReadCode(method, context, code);
                     }
                     break;
 
@@ -88,7 +95,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
             if (sehBlocks != null)
             {
-                _protectedBlocks = TranslateSehBlocks(context, sehBlocks, _code);
+                _protectedBlocks = TranslateSehBlocks(method, context, sehBlocks, _code);
             }
 
             context.LinkDebugInfo(this);
@@ -216,13 +223,13 @@ namespace DataDynamics.PageFX.CLI.IL
 
         #region Private Members
         #region ReadCode
-        ILStream ReadCode(IMethodContext context, byte[] code)
+        private ILStream ReadCode(IMethod method, IMethodContext context, byte[] code)
         {
             var list = new ILStream();
             var reader = new BufferedBinaryReader(code);
             while (reader.Position < reader.Length)
             {
-                var instr = ReadInstruction(context, reader);
+                var instr = ReadInstruction(method, context, reader);
                 instr.Index = list.Count;
                 list.Add(instr);
 
@@ -232,13 +239,13 @@ namespace DataDynamics.PageFX.CLI.IL
             return list;
         }
 
-        Instruction ReadInstruction(IMethodContext context, BufferedBinaryReader reader)
+        private Instruction ReadInstruction(IMethod method, IMethodContext context, BufferedBinaryReader reader)
         {
-            var instr = new Instruction
-            {
-                Offset = ((int)reader.Position),
-                OpCode = OpCodes.Nop
-            };
+	        var instr = new Instruction
+		        {
+			        Offset = ((int)reader.Position),
+			        OpCode = OpCodes.Nop
+		        };
 
             byte op = reader.ReadUInt8();
             OpCode? opCode;
@@ -318,7 +325,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 case OperandType.InlineString:
                     {
                         int token = reader.ReadInt32();
-                        instr.Value = context.ResolveMetadataToken(token);
+                        instr.Value = context.ResolveMetadataToken(method, token);
                     }
                     break;
 
@@ -331,7 +338,7 @@ namespace DataDynamics.PageFX.CLI.IL
                         int token = reader.ReadInt32();
                         instr.MetadataToken = token;
                         
-                        object val = context.ResolveMetadataToken(token);
+                        object val = context.ResolveMetadataToken(method, token);
                         if (val is ITypeMember)
                             AddToken(token);
 
@@ -341,7 +348,7 @@ namespace DataDynamics.PageFX.CLI.IL
                             if (DebugHooks.BreakInvalidMetadataToken)
                             {
                                 Debugger.Break();
-                                val = context.ResolveMetadataToken(token);
+                                val = context.ResolveMetadataToken(method, token);
                             }
 #endif
                             throw new BadTokenException(token);
@@ -440,7 +447,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #endregion
 
         #region TranslateSehBlocks
-        HandlerBlock CreateHandlerBlock(IMethodContext context, IInstructionList code, SEHBlock block)
+        private HandlerBlock CreateHandlerBlock(IMethod method, IMethodContext context, IInstructionList code, SEHBlock block)
         {
             switch (block.Type)
             {
@@ -448,7 +455,7 @@ namespace DataDynamics.PageFX.CLI.IL
                     {
                         int token = block.Value;
                         AddToken(token);
-                        var type = context.ResolveType(token);
+                        var type = context.ResolveType(method, token);
                         if (!_hasGenericExceptions && GenericType.IsGenericContext(type))
                             _hasGenericExceptions = true;
                         var h = new HandlerBlock(BlockType.Catch)
@@ -526,7 +533,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return tryBlock;
         }
 
-        IReadOnlyList<TryCatchBlock> TranslateSehBlocks(IMethodContext context, IList<SEHBlock> blocks, ILStream code)
+        private IReadOnlyList<TryCatchBlock> TranslateSehBlocks(IMethod method, IMethodContext context, IList<SEHBlock> blocks, ILStream code)
         {
         	var list = new List<TryCatchBlock>();
             var handlers = new BlockList();
@@ -536,7 +543,7 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 var block = blocks[i];
                 tryBlock = EnshureTryBlock(blocks, i, tryBlock, code, block, list);
-                var handler = CreateHandlerBlock(context, code, block);
+                var handler = CreateHandlerBlock(method, context, code, block);
                 int entryIndex = code.GetOffsetIndex(block.HandlerOffset);
                 int exitIndex = GetIndex(code, block.HandlerOffset, block.HandlerLength);
                 handler.EntryPoint = code[entryIndex];

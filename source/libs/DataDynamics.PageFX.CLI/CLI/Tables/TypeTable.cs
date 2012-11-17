@@ -70,7 +70,7 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 
 			MdbIndex baseIndex = row[MDB.TypeDef.Extends].Value;
 
-			var baseType = Loader.GetTypeDefOrRef(baseIndex, type, type.DeclaringMethod);
+			var baseType = Loader.GetTypeDefOrRef(baseIndex, new Context(type));
 			type.BaseType = baseType;
 
 			var thisType = type as UserDefinedType;

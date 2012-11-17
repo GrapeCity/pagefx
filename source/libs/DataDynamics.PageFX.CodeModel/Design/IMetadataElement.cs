@@ -13,8 +13,6 @@ namespace DataDynamics.PageFX.CodeModel
 
     public interface IMetadataTokenResolver
     {
-        object ResolveMetadataToken(int token);
-
         object ResolveMetadataToken(IMethod method, int token);
     }
 }

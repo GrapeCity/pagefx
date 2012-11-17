@@ -245,12 +245,7 @@ namespace DataDynamics.PageFX.CLI.CLI.Tables
 
 					MdbIndex cid = row[MDB.GenericParamConstraint.Constraint].Value;
 
-					var gparam = _owner;
-					var declType = gparam.DeclaringType;
-					if (gparam.DeclaringMethod != null)
-						declType = gparam.DeclaringMethod.DeclaringType;
-
-					var constraint = _loader.GetTypeDefOrRef(cid, declType, gparam.DeclaringMethod);
+					var constraint = _loader.GetTypeDefOrRef(cid, new Context(_owner));
 					if (constraint == null)
 						throw new BadMetadataException(string.Format("Invalid constraint index {0}", cid));
 
