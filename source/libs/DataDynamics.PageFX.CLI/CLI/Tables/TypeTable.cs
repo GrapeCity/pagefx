@@ -62,8 +62,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			RegisterType(type);
 
-			//TODO: lazy fields/methods collections
-			SetFieldsAndMethods(row, index, type);
+			var nextRow = index + 1 < Count ? Mdb.GetRow(MdbTableId.TypeDef, index + 1) : null;
+			SetFieldsAndMethods(row, nextRow, type);
 
 			//TODO: lazy resolving of base type
 			SetBaseType(row, type);
@@ -92,16 +92,23 @@ namespace DataDynamics.PageFX.CLI.Tables
 			type.BaseType = baseType;
 
 			var thisType = type as UserDefinedType;
-			if (thisType != null && thisType.TypeKind != TypeKind.Primitive)
+			if (thisType == null || thisType.TypeKind == TypeKind.Primitive) return;
+
+			TypeKind kind;
+			if (TypeKindByBase.TryGetValue(baseType.FullName, out kind))
 			{
-				if (baseType.FullName == "System.Enum")
-					thisType.TypeKind = TypeKind.Enum;
-				else if (baseType.FullName == "System.ValueType")
-					thisType.TypeKind = TypeKind.Struct;
-				else if (baseType.FullName == "System.Delegate" || baseType.FullName == "System.MulticastDelegate")
-					thisType.TypeKind = TypeKind.Delegate;
+				thisType.TypeKind = kind;
 			}
 		}
+
+		private static readonly Dictionary<string, TypeKind> TypeKindByBase =
+			new Dictionary<string, TypeKind>
+				{
+					{"System.Enum", TypeKind.Enum},
+					{"System.ValueType", TypeKind.Struct},
+					{"System.Delegate", TypeKind.Delegate},
+					{"System.MulticastDelegate", TypeKind.Delegate},
+				};
 
 		private static ClassLayout ResolveLayout(MdbReader mdb, int typeIndex)
 		{
@@ -123,59 +130,32 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return this[enclosingIndex];
 		}
 
-		private void SetFieldsAndMethods(MdbRow row, int index, IType type)
+		private void SetFieldsAndMethods(MdbRow row, MdbRow nextRow, IType type)
 		{
-			var fields = GetFields(row, index, type);
-			var methods = GetMethods(row, index, type);
+			var fields = GetFields(row, nextRow, type);
+			var methods = GetMethods(row, nextRow, type);
 
 			//TODO: remove, lazy loading
-			foreach (var field in fields)
-			{
-			}
-
-			foreach (var method in methods)
-			{
-			}
+			foreach (var field in fields){}
+			foreach (var method in methods){}
 
 			var members = (TypeMemberCollection)type.Members;
 			members.Fields = fields;			
 			members.Methods = methods;
 		}
 
-		private IFieldCollection GetFields(MdbRow row, int index, IType type)
+		private IFieldCollection GetFields(MdbRow row, MdbRow nextRow, IType type)
 		{
-			int from = row[MDB.TypeDef.FieldList].Index - 1;
-			if (from < 0) return FieldCollection.Empty;
-
-			var fields = Loader.Fields;
-			int n = fields.Count;
-			int to = n;
-
-			if (index + 1 < Count)
-			{
-				var nextRow = Mdb.GetRow(MdbTableId.TypeDef, index + 1);
-				to = nextRow[MDB.TypeDef.FieldList].Index - 1;
-			}
-
-			return new FieldList(Loader, type, from, to);
+			var range = Loader.GetFieldRange(row, nextRow);
+			if (range == null) return FieldCollection.Empty;
+			return new FieldList(Loader, type, range[0], range[1]);
 		}
 
-		private IMethodCollection GetMethods(MdbRow row, int index, IType type)
+		private IMethodCollection GetMethods(MdbRow row, MdbRow nextRow, IType type)
 		{
-			int from = row[MDB.TypeDef.MethodList].Index - 1;
-			if (from < 0) return MethodCollection.Empty;
-
-			var methods = Loader.Methods;
-			int n = methods.Count;
-			int to = n;
-
-			if (index + 1 < Count)
-			{
-				var nextRow = Mdb.GetRow(MdbTableId.TypeDef, index + 1);
-				to = nextRow[MDB.TypeDef.MethodList].Index - 1;
-			}
-
-			return new MethodList(Loader, type, from, to);
+			var range = Loader.GetMethodRange(row, nextRow);
+			if (range == null) return MethodCollection.Empty;
+			return new MethodList(Loader, type, range[0], range[1]);
 		}
 
 		private void LoadMethodImpl(IType type, int typeIndex)

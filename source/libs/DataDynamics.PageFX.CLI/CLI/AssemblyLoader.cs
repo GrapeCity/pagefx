@@ -207,49 +207,112 @@ namespace DataDynamics.PageFX.CLI
             }
         }
         #endregion
-        
-        #region LoadMethodSemanticsTable
-		internal IType ResolveDeclType(IMethod method)
+
+		#region ResolveDeclType
+
+		//TODO: combine with type lookup by fullname
+	    private readonly Dictionary<int, int> _methodDeclTypeLookup = new Dictionary<int, int>();
+	    private readonly Dictionary<int, int> _fieldDeclTypeLookup = new Dictionary<int, int>();
+	    private int _lastDeclTypeIndex;
+
+		internal IType ResolveDeclType(ITypeMember member)
 		{
-			if (method.DeclaringType != null)
-				return method.DeclaringType;
+			if (!(member is IMethod || member is IField))
+				throw new InvalidOperationException();
 
-			int index = ((MdbIndex)method.MetadataToken).Index - 1;
+			if (member.DeclaringType != null)
+				return member.DeclaringType;
 
-			//TODO: PERF subject
-			var mdb = Mdb;
-			int n = mdb.GetRowCount(MdbTableId.TypeDef);
-			for (int i = 0; i < n; i++)
+			int index = ((MdbIndex)member.MetadataToken).Index - 1;
+
+			bool isMethod = member is IMethod;
+			var lookup = isMethod ? _methodDeclTypeLookup : _fieldDeclTypeLookup;
+			int typeIndex;
+			if (lookup.TryGetValue(index, out typeIndex))
 			{
-				var row = mdb.GetRow(MdbTableId.TypeDef, i);
-				var range = GetMethodList(mdb, row, i);
-				if (range != null && index >= range[0] && index < range[1])
+				return Types[typeIndex];
+			}
+
+			var mdb = Mdb;
+			int typeCount = mdb.GetRowCount(MdbTableId.TypeDef);
+			for (; _lastDeclTypeIndex < typeCount; _lastDeclTypeIndex++)
+			{
+				var row = mdb.GetRow(MdbTableId.TypeDef, _lastDeclTypeIndex);
+				var nextRow = _lastDeclTypeIndex + 1 < typeCount ? mdb.GetRow(MdbTableId.TypeDef, _lastDeclTypeIndex + 1) : null;
+
+				var methodRange = GetMethodRange(row, nextRow);
+				var fieldRange = GetFieldRange(row, nextRow);
+
+				if (methodRange != null)
 				{
-					return Types[i];
+					foreach (var i in GetRange(methodRange, MdbTableId.MethodDef))
+					{
+						_methodDeclTypeLookup.Add(i, _lastDeclTypeIndex);
+					}
+				}
+
+				if (fieldRange != null)
+				{
+					foreach (var i in GetRange(fieldRange, MdbTableId.Field))
+					{
+						_fieldDeclTypeLookup.Add(i, _lastDeclTypeIndex);
+					}
+				}
+				
+				if (isMethod && methodRange != null && index >= methodRange[0] && index < methodRange[1])
+				{
+					return Types[_lastDeclTypeIndex++];
+				}
+				if (fieldRange != null && index >= fieldRange[0] && index < fieldRange[1])
+				{
+					return Types[_lastDeclTypeIndex++];
 				}
 			}
 
 			return null;
 		}
 
-		private static int[] GetMethodList(MdbReader mdb, MdbRow row, int index)
+		private IEnumerable<int> GetRange(int[] range, MdbTableId tableId)
+		{
+			var n = Mdb.GetRowCount(tableId);
+			for (int i = range[0]; i < n && i < range[1]; i++)
+			{
+				yield return i;
+			}
+		}
+
+		internal int[] GetMethodRange(MdbRow row, MdbRow nextRow)
 		{
 			int from = row[MDB.TypeDef.MethodList].Index - 1;
 			if (from < 0) return null;
 
-			int n = mdb.GetRowCount(MdbTableId.MethodDef);
-			int to = n;
-
-			if (index + 1 < mdb.GetRowCount(MdbTableId.TypeDef))
+			int to = Mdb.GetRowCount(MdbTableId.MethodDef);
+			if (nextRow != null)
 			{
-				var nextRow = mdb.GetRow(MdbTableId.TypeDef, index + 1);
 				to = nextRow[MDB.TypeDef.MethodList].Index - 1;
 			}
 
 			return new[] { from, to };
 		}
 
-        void LoadMethodSemanticsTable()
+		internal int[] GetFieldRange(MdbRow row, MdbRow nextRow)
+		{
+			int from = row[MDB.TypeDef.FieldList].Index - 1;
+			if (from < 0) return null;
+
+			int to = Mdb.GetRowCount(MdbTableId.Field);
+			if (nextRow != null)
+			{
+				to = nextRow[MDB.TypeDef.FieldList].Index - 1;
+			}
+
+			return new[] { from, to };
+		}
+
+		#endregion
+
+		#region LoadMethodSemanticsTable
+		private void LoadMethodSemanticsTable()
         {
             int n = Mdb.GetRowCount(MdbTableId.MethodSemantics);
             for (int i = 0; i < n; ++i)
@@ -605,12 +668,12 @@ namespace DataDynamics.PageFX.CLI
 				}
 				else
 				{
-					_typeLookup.Add(fname, row.Index);
+					_typeLookup.Add(fname, _lastTypeIndex);
 				}
 
 				if (fullName == fname)
 				{
-					return Types[row.Index];
+					return Types[_lastTypeIndex++];
 				}
 			}
 
