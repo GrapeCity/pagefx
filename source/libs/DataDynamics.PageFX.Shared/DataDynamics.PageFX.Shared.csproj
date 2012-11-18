@@ -40,7 +40,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_2_0</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_2_0;NUNIT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -57,6 +57,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -105,6 +109,7 @@
     <Compile Include="Compression\ZLib\ZByteArray.cs" />
     <Compile Include="Compression\ZLib\Zlib.cs" />
     <Compile Include="Compression\ZLib\ZStream.cs" />
+    <Compile Include="System.Collections.Generic\MemoizeEnumerable.cs" />
     <Compile Include="System.Collections.Generic\ReadOnlyList.cs" />
     <Compile Include="Graphics\ColorExtensions.cs" />
     <Compile Include="Graphics\Enums.cs" />
@@ -121,6 +126,7 @@
     <Compile Include="PageFX\PFCOptions.cs" />
     <Compile Include="PageFX\Warnings.cs" />
     <Compile Include="System.Collections.Generic\Tuples.cs" />
+    <Compile Include="Tests\MemoizationTests.cs" />
     <Compile Include="Utils\CodeTextWriter.cs" />
     <Compile Include="Utils\EnumExtensions.cs" />
     <Compile Include="Utils\Filters.cs" />

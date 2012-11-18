@@ -75,7 +75,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			//TODO: lazy resolving of base type
 			SetBaseType(row, type);
 
-			type.Interfaces = new InterfaceImpl(Loader, type, index);
+			type.Interfaces = new InterfaceImpl(Loader, type);
 
 			LoadMethodImpl(type, index);
 

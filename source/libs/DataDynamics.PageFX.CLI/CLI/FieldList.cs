@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.CLI
 		private readonly int _from;
 		private readonly int _to;
 		private IDictionary<string,IField> _lookup;
-		private IList<IField> _list;
+		private IReadOnlyList<IField> _list;
 
 		public FieldList(AssemblyLoader loader, IType owner, int from, int to)
 		{
@@ -26,20 +26,12 @@ namespace DataDynamics.PageFX.CLI
 
 		public int Count
 		{
-			get
-			{
-				Load();
-				return _list.Count;
-			}
+			get { return List.Count; }
 		}
 
 		public IField this[int index]
 		{
-			get
-			{
-				Load();
-				return _list[index];
-			}
+			get { return List[index]; }
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
@@ -79,10 +71,7 @@ namespace DataDynamics.PageFX.CLI
 
 		public IEnumerator<IField> GetEnumerator()
 		{
-			for (int i = 0; i < Count; i++)
-			{
-				yield return this[i];
-			}
+			return List.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -90,18 +79,21 @@ namespace DataDynamics.PageFX.CLI
 			return GetEnumerator();
 		}
 
-		private void Load()
+		private IReadOnlyList<IField> List
 		{
-			if (_list != null) return;
+			get { return _list ?? (_list = Populate().Memoize()); }
+		}
 
-			_list = new List<IField>();
-
+		private IEnumerable<IField> Populate()
+		{
 			int n = _loader.Fields.Count;
 			for (int i = _from; i < n && i < _to; ++i)
 			{
 				var field = _loader.Fields[i];
+
 				field.DeclaringType = _owner;
-				_list.Add(field);
+
+				yield return field;
 			}
 		}
 	}

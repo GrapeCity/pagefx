@@ -14,8 +14,7 @@ namespace DataDynamics.PageFX.CLI
 		private readonly AssemblyLoader _loader;
 		private readonly ICustomAttributeProvider _owner;
 		private readonly MdbIndex _ownerIndex;
-		private readonly List<ICustomAttribute> _list = new List<ICustomAttribute>();
-		private bool _loaded;
+		private IReadOnlyList<ICustomAttribute> _list;
 
 		public CustomAttributes(AssemblyLoader loader, ICustomAttributeProvider owner, MdbIndex ownerIndex)
 		{
@@ -26,10 +25,7 @@ namespace DataDynamics.PageFX.CLI
 
 		public IEnumerator<ICustomAttribute> GetEnumerator()
 		{
-			for (int i = 0; i < Count; i++)
-			{
-				yield return this[i];
-			}
+			return List.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -39,20 +35,12 @@ namespace DataDynamics.PageFX.CLI
 
 		public int Count
 		{
-			get
-			{
-				Load();
-				return _list.Count;
-			}
+			get { return List.Count; }
 		}
 
 		public ICustomAttribute this[int index]
 		{
-			get
-			{
-				Load();
-				return _list[index];
-			}
+			get { return List[index]; }
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
@@ -87,13 +75,13 @@ namespace DataDynamics.PageFX.CLI
 			throw new NotSupportedException();
 		}
 
-		private void Load()
+		private IReadOnlyList<ICustomAttribute> List
 		{
-			//TODO: lazy loading
-			if (_loaded) return;
+			get { return _list ?? (_list = Populate().Memoize()); }
+		}
 
-			_loaded = true;
-
+		private IEnumerable<ICustomAttribute> Populate()
+		{
 			var rows = _loader.Mdb.LookupRows(MdbTableId.CustomAttribute, MDB.CustomAttribute.Parent, _ownerIndex, false);
 
 			foreach (var row in rows)
@@ -121,9 +109,8 @@ namespace DataDynamics.PageFX.CLI
 					ReadArguments(attr, value);
 				}
 
-				_list.Add(attr);
-
-				ReviewAttribute(attr);
+				if (ReviewAttribute(attr))
+					yield return attr;
 			}
 		}
 
@@ -462,7 +449,7 @@ namespace DataDynamics.PageFX.CLI
 			}
 		}
 
-		private void ReviewAttribute(ICustomAttribute attr)
+		private bool ReviewAttribute(ICustomAttribute attr)
 		{
 			var type = attr.Owner as IType;
 			if (type != null)
@@ -470,9 +457,8 @@ namespace DataDynamics.PageFX.CLI
 				if (attr.Type.FullName == "System.Runtime.CompilerServices.CompilerGeneratedAttribute")
 				{
 					type.IsCompilerGenerated = true;
-					return;
 				}
-				return;
+				return true;
 			}
 
 			var param = attr.Owner as IParameter;
@@ -480,10 +466,12 @@ namespace DataDynamics.PageFX.CLI
 			{
 				if (attr.Type.FullName == "System.ParamArrayAttribute")
 				{
-					_list.Remove(attr);
 					param.HasParams = true;
+					return false;
 				}
 			}
+
+			return true;
 		}
 	}
 }

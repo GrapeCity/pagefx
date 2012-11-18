@@ -44,7 +44,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			var pos = (int)row[MDB.GenericParam.Number].Value;
 			var flags = (GenericParamAttributes)row[MDB.GenericParam.Flags].Value;
-			var token = MdbIndex.MakeToken(MdbTableId.GenericParam, index);
+			var token = MdbIndex.MakeToken(MdbTableId.GenericParam, index + 1);
 
 			var param = new GenericParameter
 				{
@@ -56,7 +56,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 					ID = ++_id
 				};
 
-			param.Constraints = new Constraints(_loader, param, index);
+			param.Constraints = new Constraints(_loader, param);
 			param.CustomAttributes = new CustomAttributes(_loader, param, token);
 
 			return param;
@@ -98,27 +98,33 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			private readonly AssemblyLoader _loader;
 			private readonly IGenericParameter _owner;
-			private readonly int _ownerIndex;
-			private readonly List<IType> _list = new List<IType>();
+			private IReadOnlyList<IType> _list;
 			private IType _baseType;
 			private bool _resolveBaseType = true;
-			private int _startIndex = -1;
 
-			public Constraints(AssemblyLoader loader, IGenericParameter owner, int ownerIndex)
+			public Constraints(AssemblyLoader loader, IGenericParameter owner)
 			{
 				_loader = loader;
 				_owner = owner;
-				_ownerIndex = ownerIndex;
+			}
+
+			private int OwnerIndex
+			{
+				get { return ((MdbIndex)_owner.MetadataToken).Index - 1; }
 			}
 
 			public IType BaseType
 			{
 				get
 				{
-					if (_resolveBaseType)
+					if (_resolveBaseType && _baseType == null)
 					{
-						_baseType = Load(-1, true);
 						_resolveBaseType = false;
+						foreach (var type in List)
+						{
+							if (_baseType != null)
+								break;
+						}
 					}
 					return _baseType;
 				}
@@ -126,10 +132,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			public IEnumerator<IType> GetEnumerator()
 			{
-				for (int i = 0; i < Count; i++)
-				{
-					yield return this[i];
-				}
+				return List.GetEnumerator();
 			}
 
 			IEnumerator IEnumerable.GetEnumerator()
@@ -139,22 +142,12 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			public int Count
 			{
-				get
-				{
-					Load(-1, false);
-					return _list.Count;
-				}
+				get { return List.Count; }
 			}
 
 			public IType this[int index]
 			{
-				get
-				{
-					if (index < 0) throw new ArgumentOutOfRangeException("index");
-					if (index < _list.Count)
-						return _list[index];
-					return Load(index, false);
-				}
+				get { return List[index]; }
 			}
 
 			public CodeNodeType NodeType
@@ -189,20 +182,18 @@ namespace DataDynamics.PageFX.CLI.Tables
 				return SyntaxFormatter.Format(this, format, formatProvider);
 			}
 
-			private IType Load(int index, bool baseType)
+			private IReadOnlyList<IType> List
 			{
-				//TODO: possible subject for PERF
+				get { return _list ?? (_list = Populate().Memoize()); }
+			}
 
+			private IEnumerable<IType> Populate()
+			{
 				var mdb = _loader.Mdb;
-				int n = mdb.GetRowCount(MdbTableId.GenericParamConstraint);
-				for (int i = _startIndex >= 0 ? _startIndex : 0; i < n; ++i)
+				var rows = mdb.LookupRows(MdbTableId.GenericParamConstraint, MDB.GenericParamConstraint.Owner, OwnerIndex, true);
+
+				foreach (var row in rows)
 				{
-					var row = mdb.GetRow(MdbTableId.GenericParamConstraint, i);
-					int owner = row[MDB.GenericParamConstraint.Owner].Index - 1;
-					if (owner != _ownerIndex) continue;
-
-					if (_startIndex < 0) _startIndex = i;
-
 					MdbIndex cid = row[MDB.GenericParamConstraint.Constraint].Value;
 
 					var constraint = _loader.GetTypeDefOrRef(cid, new Context(_owner));
@@ -211,22 +202,14 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 					if (constraint.TypeKind == TypeKind.Interface)
 					{
-						_list.Add(constraint);
-
-						if (index >= 0 && index < _list.Count)
-							return constraint;
+						yield return constraint;
 					}
 					else
 					{
-						if (baseType)
-							return constraint;
+						if (_baseType == null)
+							_baseType = constraint;
 					}
 				}
-
-				if (index >= 0)
-					throw new ArgumentOutOfRangeException("index");
-
-				return null;
 			}
 		}
 	}

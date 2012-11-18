@@ -14,9 +14,10 @@ namespace DataDynamics.PageFX.CLI
 		private readonly int _from;
 		private readonly int _to;
 		private IDictionary<string, IMethod[]> _lookup;
-		private IList<IMethod> _list;
+		private IReadOnlyList<IMethod> _list;
 		private IList<IMethod> _ctors;
 		private IMethod _cctor;
+		private readonly List<IMethod> _instances = new List<IMethod>();
 
 		public MethodList(AssemblyLoader loader, IType owner, int from, int to)
 		{
@@ -38,19 +39,18 @@ namespace DataDynamics.PageFX.CLI
 
 		public int Count
 		{
-			get
-			{
-				Load();
-				return _list.Count;
-			}
+			get { return List.Count + _instances.Count; }
 		}
 
 		public IMethod this[int index]
 		{
 			get
 			{
-				Load();
-				return _list[index];
+				if (_instances.Count == 0)
+					return List[index];
+				if (index < 0 || index >= Count)
+					throw new ArgumentOutOfRangeException("index");
+				return index < List.Count ? List[index] : _instances[index - List.Count];
 			}
 		}
 
@@ -73,12 +73,13 @@ namespace DataDynamics.PageFX.CLI
 
 		public void Add(IMethod method)
 		{
-			if (method == null) throw new ArgumentNullException("method");
+			if (method == null)
+				throw new ArgumentNullException("method");
 
 			if (!method.IsGenericInstance)
 				throw new InvalidOperationException();
 
-			_list.Add(method);
+			_instances.Add(method);
 		}
 
 		public IEnumerable<IMethod> Constructors
@@ -101,9 +102,13 @@ namespace DataDynamics.PageFX.CLI
 
 		public IEnumerator<IMethod> GetEnumerator()
 		{
-			for (int i = 0; i < Count; i++)
+			foreach (var method in List)
 			{
-				yield return this[i];
+				yield return method;
+			}
+			foreach (var method in _instances)
+			{
+				yield return method;
 			}
 		}
 
@@ -112,11 +117,13 @@ namespace DataDynamics.PageFX.CLI
 			return GetEnumerator();
 		}
 
-		private void Load()
+		private IReadOnlyList<IMethod> List
 		{
-			if (_list != null) return;
+			get { return _list ?? (_list = Populate().Memoize()); }
+		}
 
-			_list = new List<IMethod>();
+		private IEnumerable<IMethod> Populate()
+		{
 			_ctors = new List<IMethod>();
 
 			int n = _loader.Methods.Count;
@@ -133,8 +140,13 @@ namespace DataDynamics.PageFX.CLI
 
 				method.DeclaringType = _owner;
 
-				_list.Add(method);
+				yield return method;
 			}
+		}
+
+		private void Load()
+		{
+			foreach (var method in List){}
 		}
 	}
 }

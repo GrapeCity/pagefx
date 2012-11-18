@@ -10,7 +10,7 @@ namespace DataDynamics.PageFX.CLI
 	internal sealed class EventList : IEventCollection
 	{
 		private readonly IType _owner;
-		private List<IEvent> _list;
+		private IReadOnlyList<IEvent> _list;
 		private Dictionary<string, IEvent> _lookup;
 
 		public EventList(IType owner)
@@ -18,22 +18,19 @@ namespace DataDynamics.PageFX.CLI
 			_owner = owner;
 		}
 
+		private IReadOnlyList<IEvent> List
+		{
+			get { return _list ?? (_list = _owner.Methods.Select(x => x.Association as IEvent).Where(x => x != null).Memoize()); }
+		}
+
 		public int Count
 		{
-			get
-			{
-				Load();
-				return _list.Count;
-			}
+			get { return List.Count; }
 		}
 
 		public IEvent this[int index]
 		{
-			get
-			{
-				Load();
-				return _list[index];
-			}
+			get { return List[index]; }
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
@@ -62,7 +59,10 @@ namespace DataDynamics.PageFX.CLI
 		{
 			get
 			{
-				Load();
+				if (_lookup == null)
+				{
+					_lookup = this.ToDictionary(x => x.Name, x => x);
+				}
 				IEvent item;
 				return _lookup.TryGetValue(name, out item) ? item : null;
 			}
@@ -70,28 +70,12 @@ namespace DataDynamics.PageFX.CLI
 
 		public IEnumerator<IEvent> GetEnumerator()
 		{
-			for (int i = 0; i < Count; i++)
-			{
-				yield return this[i];
-			}
+			return List.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
-		}
-
-		private void Load()
-		{
-			if (_list != null) return;
-
-			_list = _owner.Methods.Select(x => x.Association as IEvent).Where(x => x != null).ToList();
-			_lookup = _list.ToDictionary(x => x.Name, x => x);
-
-			foreach (var e in _list)
-			{
-				e.DeclaringType = _owner;
-			}
 		}
 	}
 }

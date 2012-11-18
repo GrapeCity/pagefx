@@ -12,33 +12,27 @@ namespace DataDynamics.PageFX.CLI
 	{
 		private readonly AssemblyLoader _loader;
 		private readonly IType _owner;
-		private readonly int _ownerIndex;
-		private readonly List<IType> _list = new List<IType>();
-		private bool _loaded;
+		private IReadOnlyList<IType> _list;
 
-		public InterfaceImpl(AssemblyLoader loader, IType owner, int ownerIndex)
+		public InterfaceImpl(AssemblyLoader loader, IType owner)
 		{
 			_loader = loader;
 			_owner = owner;
-			_ownerIndex = ownerIndex;
+		}
+
+		private int OwnerIndex
+		{
+			get { return ((MdbIndex)_owner.MetadataToken).Index - 1; }
 		}
 
 		public int Count
 		{
-			get 
-			{
-				Load();
-				return _list.Count;
-			}
+			get { return List.Count; }
 		}
 
 		public IType this[int index]
 		{
-			get 
-			{ 
-				Load();
-				return _list[index];
-			}
+			get { return List[index]; }
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
@@ -75,10 +69,7 @@ namespace DataDynamics.PageFX.CLI
 
 		public IEnumerator<IType> GetEnumerator()
 		{
-			for (int i = 0; i < Count; i++)
-			{
-				yield return this[i];
-			}
+			return List.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -86,31 +77,24 @@ namespace DataDynamics.PageFX.CLI
 			return GetEnumerator();
 		}
 
-		private void Load()
+		private IReadOnlyList<IType> List
 		{
-			if (_loaded) return;
+			get { return _list ?? (_list = Populate().Memoize()); }
+		}
 
-			_loaded = true;
-
-			var rows = _loader.Mdb.LookupRows(MdbTableId.InterfaceImpl, MDB.InterfaceImpl.Class, _ownerIndex, true);
-			var ifaces = rows.Select(row =>
+		private IEnumerable<IType> Populate()
+		{
+			var rows = _loader.Mdb.LookupRows(MdbTableId.InterfaceImpl, MDB.InterfaceImpl.Class, OwnerIndex, true);
+			return rows.Select(row =>
 				{
 					MdbIndex ifaceIndex = row[MDB.InterfaceImpl.Interface].Value;
 					var iface = _loader.GetTypeDefOrRef(ifaceIndex, new Context(_owner));
 					if (iface == null)
 						throw new BadMetadataException();
+					foreach (var ifaceMethod in iface.Methods)
+						AddImplementedMethod(_owner, ifaceMethod);
 					return iface;
 				});
-
-			_list.AddRange(ifaces);
-
-			for (int i = 0; i < _list.Count; ++i)
-			{
-				var iface = _list[i];
-
-				foreach (var ifaceMethod in iface.Methods)
-					AddImplementedMethod(_owner, ifaceMethod);
-			}
 		}
 
 		private static void AddImplementedMethod(IType type, IMethod ifaceMethod)

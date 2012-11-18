@@ -193,9 +193,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 								throw new ArgumentOutOfRangeException();
 						}
 
-						//TODO: lazy resolving
-						property.DeclaringType = _method.DeclaringType;
-
 						property.ResolveTypeAndParameters();
 						
 						return property;
@@ -218,9 +215,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 							default:
 								throw new ArgumentOutOfRangeException();
 						}
-
-						//TODO: lazy resolving
-						e.DeclaringType = _method.DeclaringType;
 
 						e.ResolveType();
 

@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.CLI
 	{
 		private readonly IType _owner;
 		private Dictionary<string, IProperty[]> _lookup;
-		private List<IProperty> _list;
+		private IReadOnlyList<IProperty> _list;
 
 		public PropertyList(IType owner)
 		{
@@ -20,7 +20,10 @@ namespace DataDynamics.PageFX.CLI
 
 		public IEnumerable<IProperty> Find(string name)
 		{
-			Load();
+			if (_lookup == null)
+			{
+				_lookup = this.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => x.ToArray());
+			}
 			IProperty[] properties;
 			return _lookup.TryGetValue(name, out properties) ? properties : Enumerable.Empty<IProperty>();
 		}
@@ -30,22 +33,19 @@ namespace DataDynamics.PageFX.CLI
 			throw new NotSupportedException();
 		}
 
+		private IReadOnlyList<IProperty> List
+		{
+			get { return _list ?? (_list = _owner.Methods.Select(x => x.Association as IProperty).Where(x => x != null).Memoize()); }
+		}
+
 		public int Count
 		{
-			get
-			{
-				Load();
-				return _list.Count;
-			}
+			get { return List.Count; }
 		}
 
 		public IProperty this[int index]
 		{
-			get
-			{
-				Load();
-				return _list[index];
-			}
+			get { return List[index]; }
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
@@ -67,28 +67,12 @@ namespace DataDynamics.PageFX.CLI
 
 		public IEnumerator<IProperty> GetEnumerator()
 		{
-			for (int i = 0; i < Count; i++)
-			{
-				yield return this[i];
-			}
+			return List.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
-		}
-
-		private void Load()
-		{
-			if (_list != null) return;
-
-			_list = _owner.Methods.Select(x => x.Association as IProperty).Where(x => x != null).ToList();
-			_lookup = _list.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => x.ToArray());
-
-			foreach (var property in _list)
-			{
-				property.DeclaringType = _owner;
-			}
 		}
 	}
 }

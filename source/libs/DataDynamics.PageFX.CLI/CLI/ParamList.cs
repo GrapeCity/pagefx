@@ -10,12 +10,11 @@ namespace DataDynamics.PageFX.CLI
 {
 	internal sealed class ParamList : IParameterCollection
 	{
-		private AssemblyLoader _loader;
+		private readonly AssemblyLoader _loader;
 		private readonly IMethod _owner;
 		private readonly int _from;
-		private MdbMethodSignature _signature;
-		private readonly List<IParameter> _list = new List<IParameter>();
-		private bool _loaded;
+		private readonly MdbMethodSignature _signature;
+		private IReadOnlyList<IParameter> _list;
 
 		public ParamList(AssemblyLoader loader, IMethod owner, int from, MdbMethodSignature signature)
 		{
@@ -27,10 +26,7 @@ namespace DataDynamics.PageFX.CLI
 
 		public IEnumerator<IParameter> GetEnumerator()
 		{
-			for (int i = 0; i < Count; i++)
-			{
-				yield return this[i];
-			}
+			return List.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -40,20 +36,12 @@ namespace DataDynamics.PageFX.CLI
 
 		public int Count
 		{
-			get
-			{
-				Load();
-				return _list.Count;
-			}
+			get { return List.Count; }
 		}
 
 		public IParameter this[int index]
 		{
-			get
-			{
-				Load();
-				return _list[index];
-			}
+			get { return List[index]; }
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
@@ -83,12 +71,13 @@ namespace DataDynamics.PageFX.CLI
 			throw new NotSupportedException();
 		}
 
-		private void Load()
+		private IReadOnlyList<IParameter> List
 		{
-			if (_loaded) return;
+			get { return _list ?? (_list = Populate().Memoize()); }
+		}
 
-			_loaded = true;
-
+		private IEnumerable<IParameter> Populate()
+		{
 			var context = ResolveContext();
 
 			for (int i = _from, k = 0; k < _signature.Params.Length; ++i)
@@ -109,11 +98,8 @@ namespace DataDynamics.PageFX.CLI
 				//var p = new Parameter(ptype, "arg" + (i + 1), i + 1);
 				//method.Parameters.Add(p);
 
-				_list.Add(param);
+				yield return param;
 			}
-
-			_loader = null;
-			_signature = null;
 		}
 
 		private Context ResolveContext()

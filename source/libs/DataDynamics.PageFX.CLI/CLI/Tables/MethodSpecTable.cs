@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var args = ReadMethodSpecArgs(blob, context);
 
 			var spec = GenericType.CreateMethodInstance(method.DeclaringType, method, args);
-			spec.MetadataToken = MdbIndex.MakeToken(MdbTableId.MethodSpec, index);
+			spec.MetadataToken = MdbIndex.MakeToken(MdbTableId.MethodSpec, index + 1);
 
 			return spec;
 		}

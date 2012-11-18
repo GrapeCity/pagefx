@@ -5,7 +5,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents type property.
     /// </summary>
-    public class Property : TypeMember, IProperty
+    public sealed class Property : TypeMember, IProperty
     {
         /// <summary>
         /// Gets the kind of this member.
@@ -195,7 +195,7 @@ namespace DataDynamics.PageFX.CodeModel
                 }
             }
         }
-        IMethod _getter;
+        private IMethod _getter;
 
         public IMethod Setter
         {
@@ -212,7 +212,7 @@ namespace DataDynamics.PageFX.CodeModel
                 }
             }
         }
-        IMethod _setter;
+        private IMethod _setter;
 
         public IExpression Initializer { get; set; }
 
@@ -221,17 +221,17 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsIndexer
         {
-            get
-            {
-                return _parameters.Count > 0;
-            }
+            get { return _parameters.Count > 0; }
         }
         #endregion
 
-        #region IConstantProvider Members
+	    public object Value { get; set; }
 
-    	public object Value { get; set; }
-
-    	#endregion
+		protected override IType ResolveDeclaringType()
+		{
+			return _getter != null
+				       ? _getter.DeclaringType
+				       : (_setter != null ? _setter.DeclaringType : null);
+		}
     }
 }
