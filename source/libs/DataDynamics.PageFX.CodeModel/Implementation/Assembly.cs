@@ -5,12 +5,22 @@ using System.Linq;
 
 namespace DataDynamics.PageFX.CodeModel
 {
+	public interface IAssemblyLoader : IMetadataTokenResolver
+	{
+		void ResolveAssemblyReferences();
+
+		IMethod ResolveEntryPoint();
+	}
+
     /// <summary>
     /// Implementation of <see cref="IAssembly"/>.
     /// </summary>
     [XmlElementName("Assembly")]
     public sealed class AssemblyImpl : AssemblyReference, IAssembly, ITypeCollection
     {
+		private readonly ModuleCollection _modules;
+	    private IMethod _entryPoint;
+
         public AssemblyImpl()
         {
             _modules = new ModuleCollection(this);
@@ -18,10 +28,11 @@ namespace DataDynamics.PageFX.CodeModel
 
 	    public override IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] {_modules}; }
+            get { return _modules.Cast<ICodeNode>(); }
         }
 
         #region IAssembly Members
+
         public bool IsCorlib { get; set;  }
 
         /// <summary>
@@ -35,26 +46,31 @@ namespace DataDynamics.PageFX.CodeModel
         public string Location { get; set; }
 
         /// <summary>
-        /// Gets or sets hash algorithm calculated when assembly was being signed.
-        /// </summary>
-        public HashAlgorithmId HashAlgorithm { get; set; }
-
-        /// <summary>
         /// Gets or sets auxiliary marker that can be used for some needs.
         /// </summary>
         public int Marker { get; set; }
 
-        public IMethod EntryPoint { get; set; }
+	    public IMethod EntryPoint
+	    {
+			get { return _entryPoint ?? (_entryPoint = ResolveEntryPoint()); }
+			set { _entryPoint = value; }
+	    }
 
-        /// <summary>
+		public IAssemblyLoader Loader { get; set; }
+
+	    private IMethod ResolveEntryPoint()
+	    {
+		    return Loader != null ? Loader.ResolveEntryPoint() : null;
+	    }
+
+	    /// <summary>
         /// Gets the list of assembly modules.
         /// </summary>
         public IModuleCollection Modules
         {
             get { return _modules; }
         }
-        readonly ModuleCollection _modules;
-
+        
         public IModule MainModule
         {
             get
@@ -79,7 +95,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return _mainModule;
             }
         }
-        IModule _mainModule;
+        private IModule _mainModule;
 
         public IType FindType(string fullname)
         {
@@ -96,6 +112,7 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region ITypeCollection Members
+
         int IReadOnlyList<IType>.Count
         {
             get { return _modules.Sum(module => module.Types.Count); }
@@ -137,22 +154,17 @@ namespace DataDynamics.PageFX.CodeModel
 
 	    #endregion
 
-        #region IEnumerable<IType> Members
-        IEnumerator<IType> IEnumerable<IType>.GetEnumerator()
+	    IEnumerator<IType> IEnumerable<IType>.GetEnumerator()
         {
         	return _modules.SelectMany(module => module.Types).GetEnumerator();
         }
 
-    	#endregion
-
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
+	    IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<IType>)this).GetEnumerator();
         }
-        #endregion
 
-        public override bool Equals(object obj)
+	    public override bool Equals(object obj)
         {
             var asm = obj as IAssembly;
             if (asm == null) return false;

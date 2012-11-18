@@ -7,11 +7,6 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public interface IAssemblyReferencesResolver
-    {
-        void ResolveAssemblyReferences();
-    }
-
     public sealed class Module : CustomAttributeProvider, IModule, IXmlSerializationFeedback
     {
 		private readonly AssemblyCollection _refs = new AssemblyCollection();
@@ -30,16 +25,16 @@ namespace DataDynamics.PageFX.CodeModel
 
         public bool IsMain { get; set; }
 
-        public IAssemblyReferencesResolver RefResolver { get; set; }
+        public IAssemblyLoader Loader { get; set; }
 
         public IAssemblyCollection References
         {
             get 
             {
-                if (_resolveRefs && RefResolver != null)
+                if (_resolveRefs && Loader != null)
                 {
                     _resolveRefs = false;
-                    RefResolver.ResolveAssemblyReferences();
+                    Loader.ResolveAssemblyReferences();
                 }
                 return _refs;
             }
@@ -61,12 +56,10 @@ namespace DataDynamics.PageFX.CodeModel
             get { throw new NotSupportedException(); }
         }
 
-        public IMetadataTokenResolver MetadataTokenResolver { get; set; }
-
         public object ResolveMetadataToken(IMethod method, int token)
         {
-            if (MetadataTokenResolver != null)
-                return MetadataTokenResolver.ResolveMetadataToken(method, token);
+            if (Loader != null)
+				return Loader.ResolveMetadataToken(method, token);
             return null;
         }
 

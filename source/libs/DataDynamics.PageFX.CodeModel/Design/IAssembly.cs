@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX.CodeModel
         byte[] HashValue { get; set; }
 
 		/// <summary>
-		/// Gets or sets hash algorithm.
+		/// Gets or sets hash algorithm calculated when assembly was being signed.
 		/// </summary>
 		HashAlgorithmId HashAlgorithm { get; set; }
 
@@ -71,11 +71,6 @@ namespace DataDynamics.PageFX.CodeModel
         /// Gets or sets type of this assembly
         /// </summary>
         AssemblyType Type { get; set; }
-
-        /// <summary>
-        /// Gets or sets hash algorithm calculated when assembly was being signed.
-        /// </summary>
-        HashAlgorithmId HashAlgorithm { get; set; }
 
         /// <summary>
         /// Gets or sets auxiliary marker that can be used for some needs.

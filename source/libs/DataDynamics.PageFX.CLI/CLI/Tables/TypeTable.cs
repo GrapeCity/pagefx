@@ -140,9 +140,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 			members.Methods = methods;
 			members.Properties = new PropertyList(type);
 			members.Events = new EventList(type);
-
-			//TODO: remove, lazy loading
-			foreach (var method in methods) { }
 		}
 
 		private IFieldCollection GetFields(MdbRow row, MdbRow nextRow, IType type)
@@ -247,19 +244,17 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			get
 			{
-				EnsureLoaded();
 				IType type;
-				return _cache.TryGetValue(fullname, out type) ? type : null;
+				if (_cache.TryGetValue(fullname, out type))
+					return type;
+
+				if (this.Any(item => _cache.TryGetValue(fullname, out type)))
+				{
+					return type;
+				}
+
+				return null;
 			}
-		}
-
-		private void EnsureLoaded()
-		{
-			if (Count == 0) return;
-			var lastRow = Mdb.GetRow(MdbTableId.TypeDef, Count - 1);
-			if (lastRow.Object != null) return;
-
-			foreach (var type in this){}
 		}
 
 		public void Add(IType type)

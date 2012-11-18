@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.CLI
     /// Represents loader of CLI managed assemblies.
     /// Implementation of Code Model Deserializer for CLI.
     /// </summary>
-    internal sealed class AssemblyLoader : IMethodContext, IDisposable, IAssemblyReferencesResolver
+    internal sealed class AssemblyLoader : IAssemblyLoader, IMethodContext, IDisposable
     {
 		private AssemblyLoader _corlib;
 	    private readonly TypeSpecTable _typeSpec;
@@ -47,21 +47,25 @@ namespace DataDynamics.PageFX.CLI
 				throw new ArgumentNullException("path");
 			if (!Path.IsPathRooted(path))
 				path = Path.Combine(Environment.CurrentDirectory, path);
-			var reader = new AssemblyLoader();
-			return reader.LoadFromFile(path);
+			var loader = new AssemblyLoader();
+			return loader.LoadFromFile(path);
 		}
 
 		public static IAssembly Load(Stream s)
 		{
-			var reader = new AssemblyLoader();
-			return reader.LoadFromStream(s);
+			var loader = new AssemblyLoader();
+			return loader.LoadFromStream(s);
 		}
 
 	    private IAssembly LoadFromFile(string path)
         {
             Mdb = new MdbReader(path);
             //_mdb.Dump(@"c:\mdb.xml");
-            Assembly = new AssemblyImpl {Location = path};
+		    Assembly = new AssemblyImpl
+			    {
+					Loader = this,
+				    Location = path
+			    };
             LoadCore();
             return Assembly;
         }
@@ -69,7 +73,7 @@ namespace DataDynamics.PageFX.CLI
 		private IAssembly LoadFromStream(Stream s)
         {
             Mdb = new MdbReader(s);
-            Assembly = new AssemblyImpl();
+			Assembly = new AssemblyImpl {Loader = this};
             LoadCore();
             return Assembly;
         }
@@ -139,7 +143,8 @@ namespace DataDynamics.PageFX.CLI
 	        LoadCorlib();
 
 	        //TODO: remove loading, do lazy loading
-	        Types.Load();
+			//TODO: eliminate SystemTypes
+	        //Types.Load();
         }
 
 	    #region LoadAssemblyTable
@@ -187,6 +192,17 @@ namespace DataDynamics.PageFX.CLI
 		    AssemblyRefs.Load();
         }
 
+	    public IMethod ResolveEntryPoint()
+	    {
+			MdbIndex token = Mdb.CLIHeader.EntryPointToken;
+		    if (token.Table != MdbTableId.MethodDef)
+			    return null;
+		    int index = token.Index - 1;
+		    if (index < 0 || index >= Methods.Count)
+			    return null;
+		    return Methods[index];
+	    }
+
 	    private void LoadCorlib()
         {
             int n = AssemblyRefs.Count;
@@ -200,7 +216,10 @@ namespace DataDynamics.PageFX.CLI
 				foreach (var asm in AssemblyRefs)
 				{
 					if (asm.IsCorlib)
+					{
+						_corlib = (AssemblyLoader)((AssemblyImpl)asm).Loader;
 						break;
+					}						
 				}
             }
         }

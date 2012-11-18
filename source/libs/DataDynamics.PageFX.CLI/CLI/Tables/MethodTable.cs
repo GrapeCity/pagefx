@@ -19,9 +19,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		protected override IMethod ParseRow(MdbRow row, int index)
 		{
-			MdbIndex entryPoint = Mdb.CLIHeader.EntryPointToken;
-			bool checkEntryPoint = entryPoint.Table == MdbTableId.MethodDef;
-
 			var implFlags = (MethodImplAttributes)row[MDB.MethodDef.ImplFlags].Value;
 			var flags = (MethodAttributes)row[MDB.MethodDef.Flags].Value;
 
@@ -58,7 +55,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			method.IsSpecialName = (flags & MethodAttributes.SpecialName) != 0;
 			method.IsRuntimeSpecialName = (flags & MethodAttributes.RTSpecialName) != 0;
 
-			if (checkEntryPoint && entryPoint.Index - 1 == index)
+			MdbIndex entryPoint = Mdb.CLIHeader.EntryPointToken;
+			if (entryPoint.Table == MdbTableId.MethodDef && entryPoint.Index - 1 == index)
 			{
 				method.IsEntryPoint = true;
 				Loader.Assembly.EntryPoint = method;

@@ -22,9 +22,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 				{
 					Name = row[MDB.Module.Name].String,
 					Version = row[MDB.Module.Mvid].Guid,
-					RefResolver = Loader,
-					MetadataTokenResolver = Loader,
-					
+					Loader = Loader
 				};
 
 			var token = MdbIndex.MakeToken(MdbTableId.Module, index + 1);

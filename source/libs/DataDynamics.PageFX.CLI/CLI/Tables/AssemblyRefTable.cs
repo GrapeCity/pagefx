@@ -32,9 +32,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var mod = Loader.Assembly.MainModule as Module;
 			if (mod != null)
 			{
-				mod.RefResolver = null;
+				mod.Loader = null;
 				mod.References.Add(asm);
-				mod.RefResolver = Loader;
+				mod.Loader = Loader;
 			}
 			else
 			{
