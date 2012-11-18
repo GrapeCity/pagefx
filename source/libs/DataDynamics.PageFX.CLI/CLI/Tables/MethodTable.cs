@@ -65,9 +65,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 			}
 
 			var sigBlob = row[MDB.MethodDef.Signature].Blob;
-			var sig = MdbSignature.DecodeMethodSignature(sigBlob);
+			var signature = MdbSignature.DecodeMethodSignature(sigBlob);
 
-			SetParams(method, row, index, sig);
+			method.Meta = new MetaMethod(Loader, method, signature);
+
+			SetParams(method, row, signature);
 
 			uint rva = row[MDB.MethodDef.RVA].Value;
 			if (rva != 0) //abstract or extern
@@ -77,44 +79,16 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			method.CustomAttributes = new CustomAttributes(Loader, method, token);
 
-			method.TypeResolver = () => ResolveReturnType(method, sig);
-			
 			return method;
 		}
 
-		private void SetParams(Method method, MdbRow row, int index, MdbMethodSignature signature)
+		private void SetParams(Method method, MdbRow row, MdbMethodSignature signature)
 		{
 			int from = row[MDB.MethodDef.ParamList].Index - 1;
 			
-			method.Parameters = new ParamList(Loader, method, from, signature, () => ResolveDeclType(method));
+			method.Parameters = new ParamList(Loader, method, from, signature);
 		}
 
-		private IType ResolveReturnType(IMethod method, MdbMethodSignature sig)
-		{
-			var declType = method.DeclaringType ?? ResolveDeclType(method);
-			if (declType == null)
-			{
-				throw new InvalidOperationException();
-			}
-			return ResolveReturnType(declType, method, sig);
-		}
-
-		private IType ResolveReturnType(IType declType, IMethod method, MdbMethodSignature sig)
-		{
-			var context = new Context(declType, method);
-
-			var type = Loader.ResolveType(sig.Type, context);
-			if (type == null)
-				throw new InvalidOperationException();
-
-			return type;
-		}
-
-		private IType ResolveDeclType(IMethod method)
-		{
-			return Loader.ResolveDeclType(method);
-		}
-		
 		private static Visibility ToVisibility(MethodAttributes f)
 		{
 			var v = f & MethodAttributes.MemberAccessMask;
@@ -133,6 +107,51 @@ namespace DataDynamics.PageFX.CLI.Tables
 					return Visibility.Protected;
 			}
 			return Visibility.Public;
+		}
+
+		private sealed class MetaMethod : IMetaMethod
+		{
+			private readonly AssemblyLoader _loader;
+			private readonly Method _method;
+			private readonly MdbMethodSignature _signature;
+			private IType _type;
+			private IType _declType;
+
+			public MetaMethod(AssemblyLoader loader, Method method, MdbMethodSignature signature)
+			{
+				_loader = loader;
+				_method = method;
+				_signature = signature;
+			}
+
+			public IType Type
+			{
+				get { return _type ?? (_type = ResolveType()); }
+			}
+
+			public IType DeclaringType
+			{
+				get { return _declType ?? (_declType = ResolveDeclType()); }
+			}
+
+			private IType ResolveDeclType()
+			{
+				var type = _loader.ResolveDeclType(_method);
+				if (type == null)
+					throw new InvalidOperationException();
+				return type;
+			}
+
+			private IType ResolveType()
+			{
+				var context = new Context(DeclaringType, _method);
+
+				var type = _loader.ResolveType(_signature.Type, context);
+				if (type == null)
+					throw new InvalidOperationException();
+
+				return type;
+			}
 		}
 	}
 }

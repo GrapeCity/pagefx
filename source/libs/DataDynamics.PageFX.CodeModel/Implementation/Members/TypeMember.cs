@@ -8,8 +8,9 @@ namespace DataDynamics.PageFX.CodeModel
     public abstract class TypeMember : CustomAttributeProvider, ITypeMember, IXmlSerializationFeedback
     {
 		private IType _type;
+	    private IType _declType;
 
-        #region ITypeMember Members
+	    #region ITypeMember Members
         /// <summary>
         /// Gets the assembly in which the member is declared.
         /// </summary>
@@ -70,10 +71,14 @@ namespace DataDynamics.PageFX.CodeModel
             get { return Name; }
         }
 
-        /// <summary>
-        /// Gets or sets the type that declares this member.
-        /// </summary>
-        public IType DeclaringType { get; set; }
+	    /// <summary>
+	    /// Gets or sets the type that declares this member.
+	    /// </summary>
+	    public IType DeclaringType
+	    {
+			get { return _declType ?? (_declType = ResolveDeclaringType()); }
+			set { _declType = value; }
+	    }
 
 	    /// <summary>
 	    /// Gets or sets the type of this member (for methods it's return type)
@@ -82,6 +87,11 @@ namespace DataDynamics.PageFX.CodeModel
 	    {
 			get { return _type ?? (_type = ResolveType()); }
 			set { _type = value; }
+	    }
+
+	    protected virtual IType ResolveDeclaringType()
+	    {
+		    return null;
 	    }
 
 	    protected virtual IType ResolveType()

@@ -220,9 +220,6 @@ namespace DataDynamics.PageFX.CLI
 			if (!(member is IMethod || member is IField))
 				throw new InvalidOperationException();
 
-			if (member.DeclaringType != null)
-				return member.DeclaringType;
-
 			int index = ((MdbIndex)member.MetadataToken).Index - 1;
 
 			bool isMethod = member is IMethod;
@@ -322,7 +319,7 @@ namespace DataDynamics.PageFX.CLI
                 int methodIndex = row[MDB.MethodSemantics.Method].Index - 1;
 
                 var method = Methods[methodIndex];
-	            var declType = ResolveDeclType(method);
+	            var declType = method.DeclaringType;
 				
                 var sem = (MethodSemanticsAttributes)row[MDB.MethodSemantics.Semantics].Value;
 

@@ -15,30 +15,14 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return MdbTableId.Field; }
 		}
 
-		public IField Get(IType declType, int index)
-		{
-			var field = this[index];
-
-			if (field.DeclaringType == null)
-			{
-				field.Type = ResolveFieldType(declType, index);
-
-				if (field.Value == null)
-				{
-					field.Value = ResolveValue(Loader.Mdb, field.Type, index);
-				}
-			}
-
-			return field;
-		}
-
 		protected override IField ParseRow(MdbRow row, int index)
 		{
 			var flags = (FieldAttributes)row[MDB.Field.Flags].Value;
 			var name = row[MDB.Field.Name].String;
 
 			var token = MdbIndex.MakeToken(MdbTableId.Field, index + 1);
-			var value = Loader.Const[token];
+			var sigBlob = row[MDB.Field.Signature].Blob;
+			var signature = MdbSignature.DecodeFieldSignature(sigBlob);
 
 			var field = new Field
 				{
@@ -49,23 +33,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 					IsReadOnly = ((flags & FieldAttributes.InitOnly) != 0),
 					IsSpecialName = ((flags & FieldAttributes.SpecialName) != 0),
 					IsRuntimeSpecialName = ((flags & FieldAttributes.RTSpecialName) != 0),
-					Name = name,
-					Offset = GetOffset(Mdb, index),
-					Value = value
+					Name = name
 				};
 
+			field.Meta = new MetaField(Loader, field, signature);
 			field.CustomAttributes = new CustomAttributes(Loader, field, token);
 
 			return field;
-		}
-
-		private IType ResolveFieldType(IType declType, int index)
-		{
-			var row = Loader.Mdb.GetRow(MdbTableId.Field, index);
-			var sigBlob = row[MDB.Field.Signature].Blob;
-			var sig = MdbSignature.DecodeFieldSignature(sigBlob);
-
-			return Loader.ResolveType(sig.Type, new Context(declType));
 		}
 
 		private static int GetOffset(MdbReader mdb, int fieldIndex)
@@ -74,7 +48,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return row == null ? -1 : (int)row[MDB.FieldLayout.Offset].Value;
 		}
 
-		private object ResolveValue(MdbReader mdb, IType fieldType, int fieldIndex)
+		private static object ResolveBlobValue(MdbReader mdb, IType fieldType, int fieldIndex)
 		{
 			var row = mdb.LookupRow(MdbTableId.FieldRVA, MDB.FieldRVA.Field, fieldIndex, true);
 			if (row == null) return null;
@@ -83,7 +57,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			if (size > 0)
 			{
 				uint rva = row[MDB.FieldRVA.RVA].Value;
-				var reader = Mdb.SeekRVA(rva);
+				var reader = mdb.SeekRVA(rva);
 				return reader.ReadBlock(size);
 			}
 
@@ -118,6 +92,73 @@ namespace DataDynamics.PageFX.CLI.Tables
 					return Visibility.Protected;
 			}
 			return Visibility.Public;
+		}
+
+		private sealed class MetaField : IMetaField
+		{
+			private readonly AssemblyLoader _loader;
+			private readonly IField _field;
+			private readonly MdbFieldSignature _signature;
+			private IType _type;
+			private IType _declType;
+			private int _offset = -100;
+			private object _value;
+
+			public MetaField(AssemblyLoader loader, IField field, MdbFieldSignature signature)
+			{
+				_loader = loader;
+				_field = field;
+				_signature = signature;
+				_value = this;
+			}
+
+			public IType Type
+			{
+				get { return _type ?? (_type = ResolveType()); }
+			}
+
+			public IType DeclaringType
+			{
+				get { return _declType ?? (_declType = ResolveDeclType()); }
+			}
+
+			public object Value
+			{
+				get { return _value == this ? _value = ResolveValue() : _value; }
+			}
+
+			public int Offset
+			{
+				get { return _offset == -100 ? _offset = ResolveOffset() : _offset; }
+			}
+
+			private object ResolveValue()
+			{
+				MdbIndex token = _field.MetadataToken;
+				return _loader.Const[token] ?? ResolveBlobValue(_loader.Mdb, Type, token.Index - 1);
+			}
+
+			private int ResolveOffset()
+			{
+				MdbIndex token = _field.MetadataToken;
+				return GetOffset(_loader.Mdb, token.Index - 1);
+			}
+
+			private IType ResolveType()
+			{
+				var type = _loader.ResolveType(_signature.Type, new Context(DeclaringType));
+				if (type == null)
+					throw new InvalidOperationException();
+				return type;
+			}
+
+			private IType ResolveDeclType()
+			{
+				var type = _loader.ResolveDeclType(_field);
+				if (type == null)
+					throw new InvalidOperationException();
+				return type;
+			}
 		}
 	}
 }

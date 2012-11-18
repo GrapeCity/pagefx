@@ -99,7 +99,7 @@ namespace DataDynamics.PageFX.CLI
 			int n = _loader.Fields.Count;
 			for (int i = _from; i < n && i < _to; ++i)
 			{
-				var field = _loader.Fields.Get(_owner, i);
+				var field = _loader.Fields[i];
 				field.DeclaringType = _owner;
 				_list.Add(field);
 			}

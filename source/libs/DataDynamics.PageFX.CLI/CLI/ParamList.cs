@@ -14,17 +14,15 @@ namespace DataDynamics.PageFX.CLI
 		private readonly IMethod _owner;
 		private readonly int _from;
 		private MdbMethodSignature _signature;
-		private Func<IType> _resolveDeclType;
 		private readonly List<IParameter> _list = new List<IParameter>();
 		private bool _loaded;
 
-		public ParamList(AssemblyLoader loader, IMethod owner, int from, MdbMethodSignature signature, Func<IType> resolveDeclType)
+		public ParamList(AssemblyLoader loader, IMethod owner, int from, MdbMethodSignature signature)
 		{
 			_loader = loader;
 			_owner = owner;
 			_from = from;
 			_signature = signature;
-			_resolveDeclType = resolveDeclType;
 		}
 
 		public IEnumerator<IParameter> GetEnumerator()
@@ -116,12 +114,13 @@ namespace DataDynamics.PageFX.CLI
 
 			_loader = null;
 			_signature = null;
-			_resolveDeclType = null;
 		}
 
 		private Context ResolveContext()
 		{
-			var declType = _owner.DeclaringType ?? _resolveDeclType();
+			var declType = _owner.DeclaringType;
+			if (declType == null)
+				throw new InvalidOperationException();
 			return new Context(declType, _owner);
 		}
 	}

@@ -392,11 +392,23 @@ namespace DataDynamics.PageFX.CodeModel
         	return method.Parameters.Count(p => !p.HasResolvedType);
         }
 
-		public Func<IType> TypeResolver { get; set; }
+		public IMetaMethod Meta { get; set; }
 
 		protected override IType ResolveType()
 		{
-			return TypeResolver != null ? TypeResolver() : null;
+			return Meta != null ? Meta.Type : null;
+		}
+
+		protected override IType ResolveDeclaringType()
+		{
+			return Meta != null ? Meta.DeclaringType : null;
 		}
     }
+
+	public interface IMetaMethod
+	{
+		IType Type { get; }
+
+		IType DeclaringType { get; }
+	}
 }

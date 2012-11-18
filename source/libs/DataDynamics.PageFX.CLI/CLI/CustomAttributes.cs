@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX.CLI
 				}
 
 				var value = row[MDB.CustomAttribute.Value].Blob;
-				var attrType = _loader.ResolveDeclType(ctor);
+				var attrType = ctor.DeclaringType;
 
 				var attr = new CustomAttribute
 					{

@@ -136,7 +136,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var methods = GetMethods(row, nextRow, type);
 
 			//TODO: remove, lazy loading
-			foreach (var field in fields){}
 			foreach (var method in methods){}
 
 			var members = (TypeMemberCollection)type.Members;
