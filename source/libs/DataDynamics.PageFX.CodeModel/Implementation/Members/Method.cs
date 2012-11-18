@@ -13,17 +13,14 @@ namespace DataDynamics.PageFX.CodeModel
 		private readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
 		private IParameterCollection _parameters;
 		private readonly CustomAttributeCollection _returnAttrs = new CustomAttributeCollection();
+		private ITypeMember _association;
 
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
         public override MemberType MemberType
         {
-            get
-            {
-                if (IsConstructor) return MemberType.Constructor;
-                return MemberType.Method;
-            }
+            get { return IsConstructor ? MemberType.Constructor : MemberType.Method; }
         }
 
         #region IMethod Members
@@ -93,21 +90,17 @@ namespace DataDynamics.PageFX.CodeModel
         public MethodCallingConvention CallingConvention { get; set; }
 
         #region Impl Flags
-        public MethodImplAttributes ImplFlags
-        {
-            get { return _implFlags; }
-            set { _implFlags = value; }
-        }
-        MethodImplAttributes _implFlags;
 
-        /// <summary>
+	    public MethodImplAttributes ImplFlags { get; set; }
+
+	    /// <summary>
         /// Gets or sets value indicating what kind of implementation is provided for this method.
         /// </summary>
         public MethodCodeType CodeType
         {
             get
             {
-                switch (_implFlags & MethodImplAttributes.CodeTypeMask)
+                switch (ImplFlags & MethodImplAttributes.CodeTypeMask)
                 {
                     case MethodImplAttributes.Native:
                         return MethodCodeType.Native;
@@ -122,23 +115,23 @@ namespace DataDynamics.PageFX.CodeModel
             {
                 if (value != CodeType)
                 {
-                    _implFlags &= ~MethodImplAttributes.CodeTypeMask;
+                    ImplFlags &= ~MethodImplAttributes.CodeTypeMask;
                     switch (value)
                     {
                         case MethodCodeType.IL:
-                            _implFlags |= MethodImplAttributes.IL;
+                            ImplFlags |= MethodImplAttributes.IL;
                             break;
 
                         case MethodCodeType.Native:
-                            _implFlags |= MethodImplAttributes.Native;
+                            ImplFlags |= MethodImplAttributes.Native;
                             break;
 
                         case MethodCodeType.OPTIL:
-                            _implFlags |= MethodImplAttributes.OPTIL;
+                            ImplFlags |= MethodImplAttributes.OPTIL;
                             break;
 
                         case MethodCodeType.Runtime:
-                            _implFlags |= MethodImplAttributes.Runtime;
+                            ImplFlags |= MethodImplAttributes.Runtime;
                             break;
 
                         default:
@@ -155,12 +148,12 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                return (_implFlags & MethodImplAttributes.Unmanaged) == 0;
+                return (ImplFlags & MethodImplAttributes.Unmanaged) == 0;
             }
             set
             {
-                if (value) _implFlags &= ~MethodImplAttributes.Unmanaged;
-                else _implFlags |= MethodImplAttributes.Unmanaged;
+                if (value) ImplFlags &= ~MethodImplAttributes.Unmanaged;
+                else ImplFlags |= MethodImplAttributes.Unmanaged;
             }
         }
 
@@ -169,11 +162,11 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsForwardRef
         {
-            get { return (_implFlags & MethodImplAttributes.ForwardRef) != 0; }
+            get { return (ImplFlags & MethodImplAttributes.ForwardRef) != 0; }
             set
             {
-                if (value) _implFlags |= MethodImplAttributes.ForwardRef;
-                else _implFlags &= ~MethodImplAttributes.ForwardRef;
+                if (value) ImplFlags |= MethodImplAttributes.ForwardRef;
+                else ImplFlags &= ~MethodImplAttributes.ForwardRef;
             }
         }
 
@@ -182,11 +175,11 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsPreserveSig
         {
-            get { return (_implFlags & MethodImplAttributes.PreserveSig) != 0; }
+            get { return (ImplFlags & MethodImplAttributes.PreserveSig) != 0; }
             set
             {
-                if (value) _implFlags |= MethodImplAttributes.PreserveSig;
-                else _implFlags &= ~MethodImplAttributes.PreserveSig;
+                if (value) ImplFlags |= MethodImplAttributes.PreserveSig;
+                else ImplFlags &= ~MethodImplAttributes.PreserveSig;
             }
         }
 
@@ -195,11 +188,11 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsInternalCall
         {
-            get { return (_implFlags & MethodImplAttributes.InternalCall) != 0; }
+            get { return (ImplFlags & MethodImplAttributes.InternalCall) != 0; }
             set
             {
-                if (value) _implFlags |= MethodImplAttributes.InternalCall;
-                else _implFlags &= ~MethodImplAttributes.InternalCall;
+                if (value) ImplFlags |= MethodImplAttributes.InternalCall;
+                else ImplFlags &= ~MethodImplAttributes.InternalCall;
             }
         }
 
@@ -208,11 +201,11 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool IsSynchronized
         {
-            get { return (_implFlags & MethodImplAttributes.Synchronized) != 0; }
+            get { return (ImplFlags & MethodImplAttributes.Synchronized) != 0; }
             set
             {
-                if (value) _implFlags |= MethodImplAttributes.Synchronized;
-                else _implFlags &= ~MethodImplAttributes.Synchronized;
+                if (value) ImplFlags |= MethodImplAttributes.Synchronized;
+                else ImplFlags &= ~MethodImplAttributes.Synchronized;
             }
         }
 
@@ -221,11 +214,11 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         public bool NoInlining
         {
-            get { return (_implFlags & MethodImplAttributes.NoInlining) != 0; }
+            get { return (ImplFlags & MethodImplAttributes.NoInlining) != 0; }
             set
             {
-                if (value) _implFlags |= MethodImplAttributes.NoInlining;
-                else _implFlags &= ~MethodImplAttributes.NoInlining;
+                if (value) ImplFlags |= MethodImplAttributes.NoInlining;
+                else ImplFlags &= ~MethodImplAttributes.NoInlining;
             }
         }
         #endregion
@@ -270,11 +263,19 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return _returnAttrs; }
         }
-        
 	    
-	    public ITypeMember Association { get; set; }
+	    public ITypeMember Association
+	    {
+			get { return _association ?? (_association = ResolveAssociation()); }
+			set { _association = value; }
+	    }
 
-        public bool IsGetter
+	    private ITypeMember ResolveAssociation()
+	    {
+		    return Meta != null ? Meta.Association : null;
+	    }
+
+	    public bool IsGetter
         {
              get
              {
@@ -410,5 +411,7 @@ namespace DataDynamics.PageFX.CodeModel
 		IType Type { get; }
 
 		IType DeclaringType { get; }
+
+		ITypeMember Association { get; }
 	}
 }

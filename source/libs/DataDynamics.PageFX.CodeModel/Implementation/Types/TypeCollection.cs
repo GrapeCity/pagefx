@@ -115,14 +115,12 @@ namespace DataDynamics.PageFX.CodeModel
 
     	#endregion
 
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+	    public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-		public static readonly ITypeCollection Empty = new EmptyImpl();
+	    public static readonly ITypeCollection Empty = new EmptyImpl();
 
 		private sealed class EmptyImpl : ITypeCollection
 		{

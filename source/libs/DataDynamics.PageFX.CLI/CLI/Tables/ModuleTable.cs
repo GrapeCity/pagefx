@@ -22,10 +22,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 				{
 					Name = row[MDB.Module.Name].String,
 					Version = row[MDB.Module.Mvid].Guid,
-					IsMain = true,
 					RefResolver = Loader,
 					MetadataTokenResolver = Loader,
-					Resources = Loader.ManifestResources
+					
 				};
 
 			var token = MdbIndex.MakeToken(MdbTableId.Module, index + 1);
@@ -36,6 +35,10 @@ namespace DataDynamics.PageFX.CLI.Tables
 			{
 				throw new NotImplementedException();
 			}
+
+			module.IsMain = true;
+			module.Resources = Loader.ManifestResources;
+			module.Types = Loader.Types;
 
 			return module;
 		}

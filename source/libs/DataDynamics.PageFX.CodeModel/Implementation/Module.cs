@@ -14,8 +14,13 @@ namespace DataDynamics.PageFX.CodeModel
 
     public sealed class Module : CustomAttributeProvider, IModule, IXmlSerializationFeedback
     {
-        #region IModule Members
-        public IAssembly Assembly { get; set; }
+		private readonly AssemblyCollection _refs = new AssemblyCollection();
+		private bool _resolveRefs = true;
+		private readonly ManifestFileCollection _files = new ManifestFileCollection();
+		private IManifestResourceCollection _resources;
+		private ITypeCollection _types;
+
+	    public IAssembly Assembly { get; set; }
 
         public string Name { get; set; }
 
@@ -39,22 +44,18 @@ namespace DataDynamics.PageFX.CodeModel
                 return _refs;
             }
         }
-        readonly AssemblyCollection _refs = new AssemblyCollection();
-        bool _resolveRefs = true;
 
         public IManifestFileCollection Files
         {
             get { return _files; }
         }
-        readonly ManifestFileCollection _files = new ManifestFileCollection();
 
         public IManifestResourceCollection Resources
         {
 			get { return _resources ?? EmptyResourceCollection.Instance; }
 			set { _resources = value; }
         }
-        private IManifestResourceCollection _resources;
-
+        
         public IUnmanagedResourceCollection UnmanagedResources
         {
             get { throw new NotSupportedException(); }
@@ -68,17 +69,14 @@ namespace DataDynamics.PageFX.CodeModel
                 return MetadataTokenResolver.ResolveMetadataToken(method, token);
             return null;
         }
-        #endregion
 
-        #region ITypeContainer Members
-        public ITypeCollection Types
+	    public ITypeCollection Types
         {
-            get { return _types; }
+            get { return _types ?? (_types = new TypeCollection()); }
+			set { _types = value; }
         }
-        private readonly TypeCollection _types = new TypeCollection();
-        #endregion
 
-        #region ICodeNode Members
+	    #region ICodeNode Members
 
         public CodeNodeType NodeType
         {
@@ -129,7 +127,7 @@ namespace DataDynamics.PageFX.CodeModel
 
 			public IEnumerator<IManifestResource> GetEnumerator()
 			{
-				yield break;
+				return Enumerable.Empty<IManifestResource>().GetEnumerator();
 			}
 
 			IEnumerator IEnumerable.GetEnumerator()
@@ -160,13 +158,17 @@ namespace DataDynamics.PageFX.CodeModel
     [XmlElementName("Modules")]
     public sealed class ModuleCollection : List<IModule>, IModuleCollection
     {
+		private readonly IAssembly _assembly;
+
         public ModuleCollection(IAssembly assembly)
         {
-            _assembly = assembly;
-        }
-        readonly IAssembly _assembly;
+	        if (assembly == null)
+				throw new ArgumentNullException("assembly");
 
-        public new void Add(IModule module)
+	        _assembly = assembly;
+        }
+
+	    public new void Add(IModule module)
         {
             module.Assembly = _assembly;
             base.Add(module);

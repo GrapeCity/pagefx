@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CLI.Tables
 {
-	internal sealed class TypeTable : MetadataTable<IType>
+	internal sealed class TypeTable : MetadataTable<IType>, ITypeCollection
 	{
+		private readonly Dictionary<string, IType> _cache = new Dictionary<string, IType>();
+
 		public TypeTable(AssemblyLoader loader) 
 			: base(loader)
 		{
@@ -36,6 +40,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			type.Namespace = ns;
 			type.Name = name;
 			SetTypeFlags(type, flags);
+			type.Module = Loader.MainModule;
 
 			if (sysType != null)
 			{
@@ -59,11 +64,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 				type.DeclaringType = declType;
 				declType.Types.Add(type);
 			}
-
-			RegisterType(type);
+			else
+			{
+				_cache.Add(type.FullName, type);
+			}
 
 			var nextRow = index + 1 < Count ? Mdb.GetRow(MdbTableId.TypeDef, index + 1) : null;
-			SetFieldsAndMethods(row, nextRow, type);
+			SetMembers(row, nextRow, type);
 
 			//TODO: lazy resolving of base type
 			SetBaseType(row, type);
@@ -73,13 +80,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 			LoadMethodImpl(type, index);
 
 			return type;
-		}
-
-		private void RegisterType(IType type)
-		{
-			var mod = Loader.MainModule;
-			type.Module = mod;
-			mod.Types.Add(type);
 		}
 
 		private void SetBaseType(MdbRow row, IType type)
@@ -130,17 +130,19 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return this[enclosingIndex];
 		}
 
-		private void SetFieldsAndMethods(MdbRow row, MdbRow nextRow, IType type)
+		private void SetMembers(MdbRow row, MdbRow nextRow, IType type)
 		{
 			var fields = GetFields(row, nextRow, type);
 			var methods = GetMethods(row, nextRow, type);
 
-			//TODO: remove, lazy loading
-			foreach (var method in methods){}
-
 			var members = (TypeMemberCollection)type.Members;
 			members.Fields = fields;			
 			members.Methods = methods;
+			members.Properties = new PropertyList(type);
+			members.Events = new EventList(type);
+
+			//TODO: remove, lazy loading
+			foreach (var method in methods) { }
 		}
 
 		private IFieldCollection GetFields(MdbRow row, MdbRow nextRow, IType type)
@@ -222,6 +224,52 @@ namespace DataDynamics.PageFX.CLI.Tables
 					return Visibility.NestedPrivate;
 			}
 			return Visibility.Internal;
+		}
+
+		public string ToString(string format, IFormatProvider formatProvider)
+		{
+			return SyntaxFormatter.Format(this, format, formatProvider);
+		}
+
+		public CodeNodeType NodeType
+		{
+			get { return CodeNodeType.Types; }
+		}
+
+		public IEnumerable<ICodeNode> ChildNodes
+		{
+			get { return this.Cast<ICodeNode>(); }
+		}
+
+		public object Tag { get; set; }
+
+		public IType this[string fullname]
+		{
+			get
+			{
+				EnsureLoaded();
+				IType type;
+				return _cache.TryGetValue(fullname, out type) ? type : null;
+			}
+		}
+
+		private void EnsureLoaded()
+		{
+			if (Count == 0) return;
+			var lastRow = Mdb.GetRow(MdbTableId.TypeDef, Count - 1);
+			if (lastRow.Object != null) return;
+
+			foreach (var type in this){}
+		}
+
+		public void Add(IType type)
+		{
+			throw new NotSupportedException();
+		}
+
+		public bool Contains(IType type)
+		{
+			return type != null && this.Any(x => x == type);
 		}
 	}
 }

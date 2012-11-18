@@ -140,8 +140,6 @@ namespace DataDynamics.PageFX.CLI
 
 	        //TODO: remove loading, do lazy loading
 	        Types.Load();
-			
-            LoadMethodSemanticsTable();
         }
 
 	    #region LoadAssemblyTable
@@ -307,87 +305,6 @@ namespace DataDynamics.PageFX.CLI
 		}
 
 		#endregion
-
-		#region LoadMethodSemanticsTable
-		private void LoadMethodSemanticsTable()
-        {
-            int n = Mdb.GetRowCount(MdbTableId.MethodSemantics);
-            for (int i = 0; i < n; ++i)
-            {
-                var row = Mdb.GetRow(MdbTableId.MethodSemantics, i);
-
-                int methodIndex = row[MDB.MethodSemantics.Method].Index - 1;
-
-                var method = Methods[methodIndex];
-	            var declType = method.DeclaringType;
-				
-                var sem = (MethodSemanticsAttributes)row[MDB.MethodSemantics.Semantics].Value;
-
-                MdbIndex assoc = row[MDB.MethodSemantics.Association].Value;
-                int assocRowIndex = assoc.Index - 1;
-                switch (assoc.Table)
-                {
-                    case MdbTableId.Property:
-                        {
-                            var property = Properties[assocRowIndex];
-
-                            method.Association = property;
-                            switch (sem)
-                            {
-                            	case MethodSemanticsAttributes.Getter:
-                            		property.Getter = method;
-                            		break;
-                            	case MethodSemanticsAttributes.Setter:
-                            		property.Setter = method;
-                            		break;
-                            	default:
-                            		throw new ArgumentOutOfRangeException();
-                            }
-
-                            property.ResolveTypeAndParameters();
-
-                            if (property.DeclaringType == null)
-                            {
-                                declType.Members.Add(property);
-                            }
-                        }
-                        break;
-
-                    case MdbTableId.Event:
-                        {
-                            var e = Events[assocRowIndex];
-                            method.Association = e;
-
-							switch (sem)
-							{
-								case MethodSemanticsAttributes.AddOn:
-									e.Adder = method;
-									break;
-								case MethodSemanticsAttributes.RemoveOn:
-									e.Remover = method;
-									break;
-								case MethodSemanticsAttributes.Fire:
-									e.Raiser = method;
-									break;
-								default:
-									throw new ArgumentOutOfRangeException();
-							}
-
-                        	e.ResolveType();
-
-                            if (e.DeclaringType == null)
-                            {
-                                declType.Members.Add(e);
-                            }
-                        }
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-        }
-        #endregion
 
 	    public MethodBody LoadMethodBody(IMethod method, uint rva)
         {

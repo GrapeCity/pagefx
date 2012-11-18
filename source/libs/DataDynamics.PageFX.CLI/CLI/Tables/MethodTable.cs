@@ -116,6 +116,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 			private readonly MdbMethodSignature _signature;
 			private IType _type;
 			private IType _declType;
+			private ITypeMember _association;
+			private bool _associationResolved;
 
 			public MetaMethod(AssemblyLoader loader, Method method, MdbMethodSignature signature)
 			{
@@ -132,6 +134,16 @@ namespace DataDynamics.PageFX.CLI.Tables
 			public IType DeclaringType
 			{
 				get { return _declType ?? (_declType = ResolveDeclType()); }
+			}
+
+			public ITypeMember Association
+			{
+				get
+				{
+					if (_associationResolved) return _association;
+					_associationResolved = true;
+					return (_association = ResolveAssociation());
+				}
 			}
 
 			private IType ResolveDeclType()
@@ -151,6 +163,72 @@ namespace DataDynamics.PageFX.CLI.Tables
 					throw new InvalidOperationException();
 
 				return type;
+			}
+
+			private ITypeMember ResolveAssociation()
+			{
+				MdbIndex token = _method.MetadataToken;
+
+				var row = _loader.Mdb.LookupRow(MdbTableId.MethodSemantics, MDB.MethodSemantics.Method, token.Index - 1, true);
+				if (row == null) return null;
+				
+				var sem = (MethodSemanticsAttributes)row[MDB.MethodSemantics.Semantics].Value;
+
+				MdbIndex assoc = row[MDB.MethodSemantics.Association].Value;
+				switch (assoc.Table)
+				{
+					case MdbTableId.Property:
+						var property = _loader.Properties[assoc.Index - 1];
+
+						_method.Association = property;
+						switch (sem)
+						{
+							case MethodSemanticsAttributes.Getter:
+								property.Getter = _method;
+								break;
+							case MethodSemanticsAttributes.Setter:
+								property.Setter = _method;
+								break;
+							default:
+								throw new ArgumentOutOfRangeException();
+						}
+
+						//TODO: lazy resolving
+						property.DeclaringType = _method.DeclaringType;
+
+						property.ResolveTypeAndParameters();
+						
+						return property;
+
+					case MdbTableId.Event:
+						var e = _loader.Events[assoc.Index - 1];
+
+						_method.Association = e;
+						switch (sem)
+						{
+							case MethodSemanticsAttributes.AddOn:
+								e.Adder = _method;
+								break;
+							case MethodSemanticsAttributes.RemoveOn:
+								e.Remover = _method;
+								break;
+							case MethodSemanticsAttributes.Fire:
+								e.Raiser = _method;
+								break;
+							default:
+								throw new ArgumentOutOfRangeException();
+						}
+
+						//TODO: lazy resolving
+						e.DeclaringType = _method.DeclaringType;
+
+						e.ResolveType();
+
+						return e;
+
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
 			}
 		}
 	}
