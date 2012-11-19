@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 					IsRuntimeSpecialName = ((flags & EventAttributes.RTSpecialName) != 0)
 				};
 
-			e.CustomAttributes = new CustomAttributes(Loader, e, token);
+			e.CustomAttributes = new CustomAttributes(Loader, e);
 
 			return e;
 		}

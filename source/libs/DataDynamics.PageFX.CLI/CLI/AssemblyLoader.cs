@@ -173,8 +173,10 @@ namespace DataDynamics.PageFX.CLI
 	        Assembly.PublicKeyToken = asmref.PublicKeyToken;
 	        Assembly.Culture = asmref.Culture;
 
-	        var token = MdbIndex.MakeToken(MdbTableId.Assembly, 1);
-	        ((CustomAttributeProvider)Assembly).CustomAttributes = new CustomAttributes(this, Assembly, token);
+			var token = MdbIndex.MakeToken(MdbTableId.Assembly, 1);
+	        Assembly.MetadataToken = token;
+			
+	        ((CustomAttributeProvider)Assembly).CustomAttributes = new CustomAttributes(this, Assembly);
 
 	        return false;
         }

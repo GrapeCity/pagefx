@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 				};
 
 			field.Meta = new MetaField(Loader, field, signature);
-			field.CustomAttributes = new CustomAttributes(Loader, field, token);
+			field.CustomAttributes = new CustomAttributes(Loader, field);
 
 			return field;
 		}

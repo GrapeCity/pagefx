@@ -31,10 +31,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 				{
 					Name = row[MDB.File.Name].String,
 					HashValue = row[MDB.File.HashValue].Blob,
-					ContainsMetadata = flags == FileFlags.ContainsMetadata
+					ContainsMetadata = flags == FileFlags.ContainsMetadata,
+					MetadataToken = token
 				};
 
-			file.CustomAttributes = new CustomAttributes(Loader, file, token);
+			file.CustomAttributes = new CustomAttributes(Loader, file);
 
 			return file;
 		}

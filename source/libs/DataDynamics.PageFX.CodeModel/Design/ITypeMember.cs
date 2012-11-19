@@ -5,7 +5,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Base interface for type members.
     /// </summary>
-    public interface ITypeMember : IMetadataElement, ICustomAttributeProvider, ICodeNode, IDocumentationProvider
+    public interface ITypeMember : ICustomAttributeProvider, ICodeNode, IDocumentationProvider
     {
         /// <summary>
         /// Gets the assembly in which the member is declared.

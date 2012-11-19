@@ -26,10 +26,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 					Flags = ((ParamAttributes)row[MDB.Param.Flags].Value),
 					Index = ((int)row[MDB.Param.Sequence].Value),
 					Name = row[MDB.Param.Name].String,
-					Value = value
+					Value = value,
+					MetadataToken = token
 				};
 
-			param.CustomAttributes = new CustomAttributes(Loader, param, token);
+			param.CustomAttributes = new CustomAttributes(Loader, param);
 
 			return param;
 		}

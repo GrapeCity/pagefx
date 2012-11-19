@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 					Value = value
 				};
 
-			property.CustomAttributes = new CustomAttributes(Loader, property, token);
+			property.CustomAttributes = new CustomAttributes(Loader, property);
 
 			return property;
 		}

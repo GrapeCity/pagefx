@@ -19,15 +19,16 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		protected override IModule ParseRow(MdbRow row, int index)
 		{
+			var token = MdbIndex.MakeToken(MdbTableId.Module, index + 1);
 			var module = new Module
 				{
 					Name = row[MDB.Module.Name].String,
 					Version = row[MDB.Module.Mvid].Guid,
-					Loader = Loader
+					Loader = Loader,
+					MetadataToken = token
 				};
 
-			var token = MdbIndex.MakeToken(MdbTableId.Module, index + 1);
-			module.CustomAttributes = new CustomAttributes(Loader, module, token);
+			module.CustomAttributes = new CustomAttributes(Loader, module);
 
 			var file = Loader.Files[module.Name];
 			if (file != null)

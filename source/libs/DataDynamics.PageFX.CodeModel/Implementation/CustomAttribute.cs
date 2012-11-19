@@ -181,6 +181,11 @@ namespace DataDynamics.PageFX.CodeModel
 			set { _attributes = value; }
         }
         private ICustomAttributeCollection _attributes;
+
+		/// <summary>
+		/// Gets or sets value that identifies a metadata element. 
+		/// </summary>
+	    public int MetadataToken { get; set; }
     }
 
 	public static class CustomAttributeProviderExtensions

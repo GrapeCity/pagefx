@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents something with custom attributes
     /// </summary>
-    public interface ICustomAttributeProvider
+    public interface ICustomAttributeProvider : IMetadataElement
     {
         /// <summary>
         /// Gets collection of custom attributes.

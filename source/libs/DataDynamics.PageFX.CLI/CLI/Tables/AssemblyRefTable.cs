@@ -17,6 +17,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		protected override IAssembly ParseRow(MdbRow row, int index)
 		{
+			var token = MdbIndex.MakeToken(MdbTableId.AssemblyRef, index + 1);
 			var asmref = new AssemblyReference
 				{
 					Version = GetVersion(row, 0),
@@ -24,7 +25,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 					PublicKeyToken = row[MDB.AssemblyRef.PublicKeyOrToken].Blob,
 					Name = row[MDB.AssemblyRef.Name].String,
 					Culture = row[MDB.AssemblyRef.Culture].Culture,
-					HashValue = row[MDB.AssemblyRef.HashValue].Blob
+					HashValue = row[MDB.AssemblyRef.HashValue].Blob,
+					MetadataToken = token
 				};
 
 			var asm = Loader.ResolveAssembly(asmref);

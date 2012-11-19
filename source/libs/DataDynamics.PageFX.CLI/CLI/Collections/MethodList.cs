@@ -13,10 +13,11 @@ namespace DataDynamics.PageFX.CLI.Collections
 		private readonly IType _owner;
 		private readonly int _from;
 		private readonly int _to;
-		private IDictionary<string, IMethod[]> _lookup;
+		private IDictionary<string, List<IMethod>> _lookup;
 		private IReadOnlyList<IMethod> _list;
-		private IList<IMethod> _ctors;
+		private IReadOnlyList<IMethod> _ctors;
 		private IMethod _cctor;
+		private bool _resolveStaticCtor = true;
 		private readonly List<IMethod> _instances = new List<IMethod>();
 
 		public MethodList(AssemblyLoader loader, IType owner, int from, int to)
@@ -31,10 +32,10 @@ namespace DataDynamics.PageFX.CLI.Collections
 		{
 			if (_lookup == null)
 			{
-				_lookup = this.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => x.ToArray());
+				_lookup = this.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => x.ToList());
 			}
-			IMethod[] list;
-			return _lookup.TryGetValue(name, out list) ? list : Enumerable.Empty<IMethod>();
+			List<IMethod> list;
+			return _lookup.TryGetValue(name, out list) ? list.AsReadOnly() : Enumerable.Empty<IMethod>();
 		}
 
 		public int Count
@@ -80,22 +81,35 @@ namespace DataDynamics.PageFX.CLI.Collections
 				throw new InvalidOperationException();
 
 			_instances.Add(method);
+
+			// update lookup
+			if (_lookup != null)
+			{
+				List<IMethod> list;
+				if (!_lookup.TryGetValue(method.Name, out list))
+				{
+					list = new List<IMethod>();
+					_lookup.Add(method.Name, list);
+				}
+
+				list.Add(method);
+			}
 		}
 
 		public IEnumerable<IMethod> Constructors
 		{
-			get
-			{
-				Load();
-				return _ctors;
-			}
+			get { return _ctors ?? (_ctors = List.Where(x => !x.IsStatic && x.IsConstructor).AsReadOnlyList()); }
 		}
 
 		public IMethod StaticConstructor
 		{
 			get
 			{
-				Load();
+				if (_resolveStaticCtor && _cctor == null)
+				{
+					_resolveStaticCtor = false;
+					_cctor = List.FirstOrDefault(x => x.IsStatic && x.IsConstructor);
+				}
 				return _cctor;
 			}
 		}
@@ -124,29 +138,16 @@ namespace DataDynamics.PageFX.CLI.Collections
 
 		private IEnumerable<IMethod> Populate()
 		{
-			_ctors = new List<IMethod>();
-
 			int n = _loader.Methods.Count;
+
 			for (int i = _from; i < n && i < _to; ++i)
 			{
 				var method = _loader.Methods[i];
-
-				if (method.IsConstructor)
-				{
-					_ctors.Add(method);
-					if (method.IsStatic)
-						_cctor = method;
-				}
 
 				method.DeclaringType = _owner;
 
 				yield return method;
 			}
-		}
-
-		private void Load()
-		{
-			foreach (var method in List){}
 		}
 	}
 }

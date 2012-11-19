@@ -71,15 +71,19 @@ namespace DataDynamics.PageFX.CLI.Tables
 				method.Body = new LateMethodBody(Loader, method, rva);
 			}
 
-			method.CustomAttributes = new CustomAttributes(Loader, method, token);
+			method.CustomAttributes = new CustomAttributes(Loader, method);
 
 			return method;
 		}
 
 		private IParameterCollection GetParams(Method method, MdbRow row, MdbMethodSignature signature)
 		{
+			if (signature.Params.Length == 0)
+				return ParameterCollection.Empty;
+
 			int from = row[MDB.MethodDef.ParamList].Index - 1;
 			if (from < 0) return ParameterCollection.Empty;
+
 			return new ParamList(Loader, method, from, signature);
 		}
 

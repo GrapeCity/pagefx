@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 				};
 
 			param.Constraints = new Constraints(_loader, param);
-			param.CustomAttributes = new CustomAttributes(_loader, param, token);
+			param.CustomAttributes = new CustomAttributes(_loader, param);
 
 			return param;
 		}

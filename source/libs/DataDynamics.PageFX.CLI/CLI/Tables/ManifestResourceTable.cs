@@ -29,16 +29,17 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var offset = (int)row[MDB.ManifestResource.Offset].Value;
 			var flags = (ManifestResourceAttributes)row[MDB.ManifestResource.Flags].Value;
 			var isPublic = (flags & ManifestResourceAttributes.VisibilityMask) == ManifestResourceAttributes.Public;
+			var token = MdbIndex.MakeToken(MdbTableId.ManifestResource, index + 1);
 
 			var resource = new ManifestResource
 				{
 					Name = name,
 					Offset = offset,
-					IsPublic = isPublic
+					IsPublic = isPublic,
+					MetadataToken = token
 				};
 
-			var token = MdbIndex.MakeToken(MdbTableId.ManifestResource, index + 1);
-			resource.CustomAttributes = new CustomAttributes(Loader, resource, token);
+			resource.CustomAttributes = new CustomAttributes(Loader, resource);
 
 			MdbIndex impl = row[MDB.ManifestResource.Implementation].Value;
 			if (impl == 0)

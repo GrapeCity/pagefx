@@ -22,7 +22,12 @@ namespace DataDynamics.PageFX.CLI.Tables
 			//var f = GetFile(name);
 			//var res = GetResource(name);
 
-			var mod = new Module { Name = name };
+			var token = MdbIndex.MakeToken(MdbTableId.ModuleRef, index + 1);
+			var mod = new Module
+				{
+					Name = name,
+					MetadataToken = token
+				};
 
 			Loader.Assembly.Modules.Add(mod);
 

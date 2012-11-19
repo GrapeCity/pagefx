@@ -11,6 +11,7 @@ namespace DataDynamics.PageFX.CodeModel
 	    private IType _declType;
 
 	    #region ITypeMember Members
+
         /// <summary>
         /// Gets the assembly in which the member is declared.
         /// </summary>
@@ -154,10 +155,6 @@ namespace DataDynamics.PageFX.CodeModel
             set { SetModifier(value, Modifiers.RuntimeSpecialName); }
         }
 
-        /// <summary>
-        /// Gets or sets value that identifies a metadata element. 
-        /// </summary>
-        public int MetadataToken { get; set; }
         #endregion
 
         #region ICodeNode Members

@@ -146,7 +146,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			row.Object = type;
 
 			type.MetadataToken = token;
-			type.CustomAttributes = new CustomAttributes(Loader, type, token);
+			type.CustomAttributes = new CustomAttributes(Loader, type);
 
 			//TODO: lazy resolving of class layout
 			type.Layout = ResolveLayout(Mdb, index);

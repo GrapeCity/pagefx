@@ -29,6 +29,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 				publicKeyToken = publicKey.ComputePublicKeyToken(hashAlgorithm);
 			}
 
+			var token = MdbIndex.MakeToken(MdbTableId.Assembly, index + 1);
 			return new AssemblyReference
 				{
 					Name = row[MDB.Assembly.Name].String,
@@ -37,7 +38,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 					Culture = row[MDB.Assembly.Culture].Culture,
 					HashAlgorithm = hashAlgorithm,
 					PublicKey = publicKey,
-					PublicKeyToken = publicKeyToken
+					PublicKeyToken = publicKeyToken,
+					MetadataToken = token
 				};
 		}
 

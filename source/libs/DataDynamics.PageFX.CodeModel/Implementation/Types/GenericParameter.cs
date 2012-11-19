@@ -60,15 +60,7 @@ namespace DataDynamics.PageFX.CodeModel
             set { }
         }
 
-        /// <summary>
-        /// Gets or sets value that identifies a metadata element. 
-        /// </summary>
-        public int MetadataToken
-        {
-            get;
-            set;
-        }
-        #endregion
+		#endregion
 
         #region IGenericParameter Members
         public IType DeclaringType { get; set; }

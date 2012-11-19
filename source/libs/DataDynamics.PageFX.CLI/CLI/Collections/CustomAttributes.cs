@@ -13,14 +13,12 @@ namespace DataDynamics.PageFX.CLI.Collections
 	{
 		private readonly AssemblyLoader _loader;
 		private readonly ICustomAttributeProvider _owner;
-		private readonly MdbIndex _ownerIndex;
 		private IReadOnlyList<ICustomAttribute> _list;
 
-		public CustomAttributes(AssemblyLoader loader, ICustomAttributeProvider owner, MdbIndex ownerIndex)
+		public CustomAttributes(AssemblyLoader loader, ICustomAttributeProvider owner)
 		{
 			_loader = loader;
 			_owner = owner;
-			_ownerIndex = ownerIndex;
 		}
 
 		public IEnumerator<ICustomAttribute> GetEnumerator()
@@ -82,36 +80,45 @@ namespace DataDynamics.PageFX.CLI.Collections
 
 		private IEnumerable<ICustomAttribute> Populate()
 		{
-			var rows = _loader.Mdb.LookupRows(MdbTableId.CustomAttribute, MDB.CustomAttribute.Parent, _ownerIndex, false);
+			var target = (MdbIndex)_owner.MetadataToken;
+			var rows = _loader.Mdb.LookupRows(MdbTableId.CustomAttribute, MDB.CustomAttribute.Parent, target, false);
+
+			var context = ResolveAttributeContext(_owner);
 
 			foreach (var row in rows)
 			{
-				MdbIndex ctorIndex = row[MDB.CustomAttribute.Type].Value;
-				var ctor = GetCustomAttributeConstructor(ctorIndex, ResolveAttributeContext(_owner));
+				MdbIndex ctorIndex = row[MDB.CustomAttribute.Type].Value;				
+				var ctor = GetCustomAttributeConstructor(ctorIndex, context);
 				if (ctor == null)
 				{
 					//TODO: warning
 					continue;
 				}
 
-				var value = row[MDB.CustomAttribute.Value].Blob;
-				var attrType = ctor.DeclaringType;
-
-				var attr = new CustomAttribute
-					{
-						Constructor = ctor,
-						Type = attrType,
-						Owner = _owner
-					};
-
-				if (value != null && value.Length > 0) //non null
-				{
-					ReadArguments(attr, value);
-				}
+				var attr = CreateAttribute(row, ctor);
 
 				if (ReviewAttribute(attr))
 					yield return attr;
 			}
+		}
+
+		private CustomAttribute CreateAttribute(MdbRow row, IMethod ctor)
+		{
+			var value = row[MDB.CustomAttribute.Value].Blob;
+			var attrType = ctor.DeclaringType;
+
+			var attr = new CustomAttribute
+				{
+					Constructor = ctor,
+					Type = attrType,
+					Owner = _owner
+				};
+
+			if (value != null && value.Length > 0) //non null
+			{
+				ReadArguments(attr, value);
+			}
+			return attr;
 		}
 
 		private static Context ResolveAttributeContext(ICustomAttributeProvider provider)
