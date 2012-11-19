@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DataDynamics.PageFX.CLI.Collections;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Syntax;
@@ -10,9 +11,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 	internal sealed class TypeTable : MetadataTable<IType>, ITypeCollection
 	{
 		private readonly Dictionary<string, IType> _cache = new Dictionary<string, IType>();
+		private readonly Dictionary<int, int> _methodDeclTypeLookup = new Dictionary<int, int>();
+		private readonly Dictionary<int, int> _fieldDeclTypeLookup = new Dictionary<int, int>();
+		private int _lastIndex;
 
-		public TypeTable(AssemblyLoader loader) 
-			: base(loader)
+		public TypeTable(AssemblyLoader loader) : base(loader)
 		{
 		}
 
@@ -20,6 +23,97 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			get { return MdbTableId.TypeDef; }
 		}
+
+		#region ResolveDeclType
+
+		internal IType ResolveDeclType(ITypeMember member)
+		{
+			if (!(member is IMethod || member is IField))
+				throw new InvalidOperationException();
+
+			int index = member.RowIndex();
+
+			bool isMethod = member is IMethod;
+			var lookup = isMethod ? _methodDeclTypeLookup : _fieldDeclTypeLookup;
+			int typeIndex;
+			if (lookup.TryGetValue(index, out typeIndex))
+			{
+				return this[typeIndex];
+			}
+
+			var mdb = Mdb;
+			int typeCount = mdb.GetRowCount(MdbTableId.TypeDef);
+			for (; _lastIndex < typeCount; _lastIndex++)
+			{
+				var row = mdb.GetRow(MdbTableId.TypeDef, _lastIndex);
+				var nextRow = _lastIndex + 1 < typeCount ? mdb.GetRow(MdbTableId.TypeDef, _lastIndex + 1) : null;
+
+				var methodRange = GetMethodRange(row, nextRow);
+				var fieldRange = GetFieldRange(row, nextRow);
+
+				if (methodRange != null)
+				{
+					PutMethodRange(methodRange, _lastIndex);
+				}
+
+				if (fieldRange != null)
+				{
+					PutFieldRange(fieldRange, _lastIndex);
+				}
+
+				if (isMethod && methodRange != null && index >= methodRange[0] && index < methodRange[1])
+				{
+					return this[_lastIndex++];
+				}
+				if (fieldRange != null && index >= fieldRange[0] && index < fieldRange[1])
+				{
+					return this[_lastIndex++];
+				}
+			}
+
+			return null;
+		}
+
+		private void PutMethodRange(int[] range, int typeIndex)
+		{
+			bool first = true;
+			foreach (var methodIndex in GetRange(range, MdbTableId.MethodDef))
+			{
+				if (first && _methodDeclTypeLookup.ContainsKey(methodIndex))
+				{
+					// break since all range should be cached at once
+					break;
+				}
+				first = false;
+				_methodDeclTypeLookup.Add(methodIndex, typeIndex);
+			}
+		}
+
+		private void PutFieldRange(int[] range, int typeIndex)
+		{
+			bool first = true;
+			foreach (var fieldIndex in GetRange(range, MdbTableId.Field))
+			{
+				if (first && _fieldDeclTypeLookup.ContainsKey(fieldIndex))
+				{
+					// break since all range should be cached at once
+					break;
+				}
+				first = false;
+				_fieldDeclTypeLookup.Add(fieldIndex, typeIndex);
+			}
+		}
+
+		private IEnumerable<int> GetRange(int[] range, MdbTableId tableId)
+		{
+			var n = Mdb.GetRowCount(tableId);
+			for (int i = range[0]; i < n && i < range[1]; i++)
+			{
+				yield return i;
+			}
+		}
+
+		#endregion
 
 		protected override IType ParseRow(MdbRow row, int index)
 		{
@@ -144,20 +238,55 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		private IFieldCollection GetFields(MdbRow row, MdbRow nextRow, IType type)
 		{
-			var range = Loader.GetFieldRange(row, nextRow);
+			var range = GetFieldRange(row, nextRow);
 			if (range == null) return FieldCollection.Empty;
+
+			PutFieldRange(range, type.RowIndex());
+
 			return new FieldList(Loader, type, range[0], range[1]);
 		}
 
 		private IMethodCollection GetMethods(MdbRow row, MdbRow nextRow, IType type)
 		{
-			var range = Loader.GetMethodRange(row, nextRow);
+			var range = GetMethodRange(row, nextRow);
 			if (range == null) return MethodCollection.Empty;
+
+			PutMethodRange(range, type.RowIndex());
+
 			return new MethodList(Loader, type, range[0], range[1]);
+		}
+
+		private int[] GetMethodRange(MdbRow row, MdbRow nextRow)
+		{
+			int from = row[MDB.TypeDef.MethodList].Index - 1;
+			if (from < 0) return null;
+
+			int to = Mdb.GetRowCount(MdbTableId.MethodDef);
+			if (nextRow != null)
+			{
+				to = nextRow[MDB.TypeDef.MethodList].Index - 1;
+			}
+
+			return from == to ? null : new[] { @from, to };
+		}
+
+		private int[] GetFieldRange(MdbRow row, MdbRow nextRow)
+		{
+			int from = row[MDB.TypeDef.FieldList].Index - 1;
+			if (from < 0) return null;
+
+			int to = Mdb.GetRowCount(MdbTableId.Field);
+			if (nextRow != null)
+			{
+				to = nextRow[MDB.TypeDef.FieldList].Index - 1;
+			}
+
+			return from == to ? null : new[] { @from, to };
 		}
 
 		private void LoadMethodImpl(IType type, int typeIndex)
 		{
+			//TODO: try to do lazy loading
 			var rows = Mdb.LookupRows(MdbTableId.MethodImpl, MDB.MethodImpl.Class, typeIndex, true);
 			foreach (var row in rows)
 			{

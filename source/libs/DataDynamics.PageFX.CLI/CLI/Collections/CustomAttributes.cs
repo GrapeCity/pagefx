@@ -7,7 +7,7 @@ using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
-namespace DataDynamics.PageFX.CLI
+namespace DataDynamics.PageFX.CLI.Collections
 {
 	internal sealed class CustomAttributes : ICustomAttributeCollection
 	{
@@ -352,12 +352,12 @@ namespace DataDynamics.PageFX.CLI
 			{
 				var p = ctor.Parameters[i];
 				var arg = new Argument
-				{
-					Type = p.Type,
-					Kind = ArgumentKind.Fixed,
-					Name = p.Name,
-					Value = ReadValue(reader, p.Type)
-				};
+					{
+						Type = p.Type,
+						Kind = ArgumentKind.Fixed,
+						Name = p.Name,
+						Value = ReadValue(reader, p.Type)
+					};
 				attr.Arguments.Add(arg);
 			}
 
@@ -365,9 +365,9 @@ namespace DataDynamics.PageFX.CLI
 			for (int i = 0; i < numNamed; ++i)
 			{
 				var arg = new Argument
-				{
-					Kind = ((ArgumentKind)reader.ReadUInt8())
-				};
+					{
+						Kind = ((ArgumentKind)reader.ReadUInt8())
+					};
 				var elemType = (ElementType)reader.ReadUInt8();
 				if (elemType == ElementType.CustomArgsEnum)
 				{

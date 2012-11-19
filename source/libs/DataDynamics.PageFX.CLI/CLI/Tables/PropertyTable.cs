@@ -1,4 +1,5 @@
-﻿using DataDynamics.PageFX.CLI.Metadata;
+﻿using DataDynamics.PageFX.CLI.Collections;
+using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.Tables

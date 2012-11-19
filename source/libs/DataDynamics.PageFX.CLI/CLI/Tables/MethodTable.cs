@@ -1,4 +1,5 @@
 ﻿using System;
+using DataDynamics.PageFX.CLI.Collections;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
@@ -31,7 +32,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 					Name = row[MDB.MethodDef.Name].String,
 					ImplFlags = implFlags,
 					Visibility = ToVisibility(flags),
-					IsStatic = isStatic
+					IsStatic = isStatic,
+					IsAbstract = !isStatic && (flags & MethodAttributes.Abstract) != 0,
+					IsFinal = !isStatic && (flags & MethodAttributes.Final) != 0,
+					IsNewSlot = !isStatic && (flags & MethodAttributes.NewSlot) != 0,
+					IsVirtual = !isStatic && (flags & MethodAttributes.Virtual) != 0,
+					IsSpecialName = (flags & MethodAttributes.SpecialName) != 0,
+					IsRuntimeSpecialName = (flags & MethodAttributes.RTSpecialName) != 0
 				};
 
 			// for ref from types
@@ -43,17 +50,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 				method.GenericParameters.Add(genericParameter);
 				genericParameter.DeclaringMethod = method;
 			}
-
-			if (!isStatic)
-			{
-				method.IsAbstract = (flags & MethodAttributes.Abstract) != 0;
-				method.IsFinal = (flags & MethodAttributes.Final) != 0;
-				method.IsNewSlot = (flags & MethodAttributes.NewSlot) != 0;
-				method.IsVirtual = (flags & MethodAttributes.Virtual) != 0;
-			}
-
-			method.IsSpecialName = (flags & MethodAttributes.SpecialName) != 0;
-			method.IsRuntimeSpecialName = (flags & MethodAttributes.RTSpecialName) != 0;
 
 			MdbIndex entryPoint = Mdb.CLIHeader.EntryPointToken;
 			if (entryPoint.Table == MdbTableId.MethodDef && entryPoint.Index - 1 == index)
@@ -67,7 +63,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			method.Meta = new MetaMethod(Loader, method, signature);
 
-			SetParams(method, row, signature);
+			method.Parameters = GetParams(method, row, signature);
 
 			uint rva = row[MDB.MethodDef.RVA].Value;
 			if (rva != 0) //abstract or extern
@@ -80,11 +76,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return method;
 		}
 
-		private void SetParams(Method method, MdbRow row, MdbMethodSignature signature)
+		private IParameterCollection GetParams(Method method, MdbRow row, MdbMethodSignature signature)
 		{
 			int from = row[MDB.MethodDef.ParamList].Index - 1;
-			
-			method.Parameters = new ParamList(Loader, method, from, signature);
+			if (from < 0) return ParameterCollection.Empty;
+			return new ParamList(Loader, method, from, signature);
 		}
 
 		private static Visibility ToVisibility(MethodAttributes f)

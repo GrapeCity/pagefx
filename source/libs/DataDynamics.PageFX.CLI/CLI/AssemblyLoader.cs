@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using DataDynamics.PageFX.CLI.Collections;
 using DataDynamics.PageFX.CLI.Tables;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Metadata;
@@ -132,7 +133,7 @@ namespace DataDynamics.PageFX.CLI
             //To avoid circular references assembly is added to cache
             AssemblyResolver.AddToCache(Assembly);
 
-            _loaders.Add(this);
+            Loaders.Add(this);
 
 			// load modules
 			foreach (var mod in Modules)
@@ -142,8 +143,7 @@ namespace DataDynamics.PageFX.CLI
 
 	        LoadCorlib();
 
-	        //TODO: remove loading, do lazy loading
-			//TODO: eliminate SystemTypes
+	        //TODO: eliminate SystemTypes
 	        //Types.Load();
         }
 
@@ -225,105 +225,10 @@ namespace DataDynamics.PageFX.CLI
         }
         #endregion
 
-		#region ResolveDeclType
-
-		//TODO: combine with type lookup by fullname
-	    private readonly Dictionary<int, int> _methodDeclTypeLookup = new Dictionary<int, int>();
-	    private readonly Dictionary<int, int> _fieldDeclTypeLookup = new Dictionary<int, int>();
-	    private int _lastDeclTypeIndex;
-
-		internal IType ResolveDeclType(ITypeMember member)
+	    internal IType ResolveDeclType(ITypeMember member)
 		{
-			if (!(member is IMethod || member is IField))
-				throw new InvalidOperationException();
-
-			int index = ((MdbIndex)member.MetadataToken).Index - 1;
-
-			bool isMethod = member is IMethod;
-			var lookup = isMethod ? _methodDeclTypeLookup : _fieldDeclTypeLookup;
-			int typeIndex;
-			if (lookup.TryGetValue(index, out typeIndex))
-			{
-				return Types[typeIndex];
-			}
-
-			var mdb = Mdb;
-			int typeCount = mdb.GetRowCount(MdbTableId.TypeDef);
-			for (; _lastDeclTypeIndex < typeCount; _lastDeclTypeIndex++)
-			{
-				var row = mdb.GetRow(MdbTableId.TypeDef, _lastDeclTypeIndex);
-				var nextRow = _lastDeclTypeIndex + 1 < typeCount ? mdb.GetRow(MdbTableId.TypeDef, _lastDeclTypeIndex + 1) : null;
-
-				var methodRange = GetMethodRange(row, nextRow);
-				var fieldRange = GetFieldRange(row, nextRow);
-
-				if (methodRange != null)
-				{
-					foreach (var i in GetRange(methodRange, MdbTableId.MethodDef))
-					{
-						_methodDeclTypeLookup.Add(i, _lastDeclTypeIndex);
-					}
-				}
-
-				if (fieldRange != null)
-				{
-					foreach (var i in GetRange(fieldRange, MdbTableId.Field))
-					{
-						_fieldDeclTypeLookup.Add(i, _lastDeclTypeIndex);
-					}
-				}
-				
-				if (isMethod && methodRange != null && index >= methodRange[0] && index < methodRange[1])
-				{
-					return Types[_lastDeclTypeIndex++];
-				}
-				if (fieldRange != null && index >= fieldRange[0] && index < fieldRange[1])
-				{
-					return Types[_lastDeclTypeIndex++];
-				}
-			}
-
-			return null;
+			return Types.ResolveDeclType(member);
 		}
-
-		private IEnumerable<int> GetRange(int[] range, MdbTableId tableId)
-		{
-			var n = Mdb.GetRowCount(tableId);
-			for (int i = range[0]; i < n && i < range[1]; i++)
-			{
-				yield return i;
-			}
-		}
-
-		internal int[] GetMethodRange(MdbRow row, MdbRow nextRow)
-		{
-			int from = row[MDB.TypeDef.MethodList].Index - 1;
-			if (from < 0) return null;
-
-			int to = Mdb.GetRowCount(MdbTableId.MethodDef);
-			if (nextRow != null)
-			{
-				to = nextRow[MDB.TypeDef.MethodList].Index - 1;
-			}
-
-			return new[] { from, to };
-		}
-
-		internal int[] GetFieldRange(MdbRow row, MdbRow nextRow)
-		{
-			int from = row[MDB.TypeDef.FieldList].Index - 1;
-			if (from < 0) return null;
-
-			int to = Mdb.GetRowCount(MdbTableId.Field);
-			if (nextRow != null)
-			{
-				to = nextRow[MDB.TypeDef.FieldList].Index - 1;
-			}
-
-			return new[] { from, to };
-		}
-
-		#endregion
 
 	    public MethodBody LoadMethodBody(IMethod method, uint rva)
         {
@@ -474,10 +379,10 @@ namespace DataDynamics.PageFX.CLI
         #endregion
 
         #region DebugInfo
-        bool _initDebugInfo = true;
-        PdbReader _pdbReader;
+		private bool _initDebugInfo = true;
+		private PdbReader _pdbReader;
 
-        bool IsFrameworkLib
+        private bool IsFrameworkLib
         {
             get 
             {
@@ -487,7 +392,7 @@ namespace DataDynamics.PageFX.CLI
             }
         }
 
-        PdbReader CreatePdbReader()
+		private PdbReader CreatePdbReader()
         {
             if (!GlobalSettings.EmitDebugInfo) return null;
 
@@ -523,15 +428,15 @@ namespace DataDynamics.PageFX.CLI
         #endregion
 
         #region IDisposable
-        public static List<AssemblyLoader> _loaders = new List<AssemblyLoader>();
+        public static List<AssemblyLoader> Loaders = new List<AssemblyLoader>();
 
 	    public static void Clean()
 	    {
 		    GenericParamTable.ResetId();
-            while (_loaders.Count > 0)
+            while (Loaders.Count > 0)
             {
-                var al = _loaders[0];
-                _loaders.RemoveAt(0);
+                var al = Loaders[0];
+                Loaders.RemoveAt(0);
                 al.Dispose();
             }
         }
@@ -569,48 +474,7 @@ namespace DataDynamics.PageFX.CLI
 
 	    public IType FindSystemType(string fullName)
 	    {
-		    return _corlib.LookupType(fullName);
+		    return _corlib.Types[fullName];
 	    }
-
-		private readonly Dictionary<string, int> _typeLookup = new Dictionary<string, int>();
-	    private int _lastTypeIndex;
-
-		private IType LookupType(string fullName)
-		{
-			int index;
-			if (_typeLookup.TryGetValue(fullName, out index))
-			{
-				return Types[index];
-			}
-
-			var n = Mdb.GetRowCount(MdbTableId.TypeDef);
-			for (; _lastTypeIndex < n; _lastTypeIndex++)
-			{
-				var row = Mdb.GetRow(MdbTableId.TypeDef, _lastTypeIndex);
-
-				var ns = row[MDB.TypeDef.TypeNamespace].String;
-				if (string.IsNullOrEmpty(ns)) continue;
-
-				var name = row[MDB.TypeDef.TypeName].String;
-				var fname = ns + "." + name;
-
-				if (_typeLookup.TryGetValue(fname, out index))
-				{
-					if (index != row.Index)
-						throw new InvalidOperationException();
-				}
-				else
-				{
-					_typeLookup.Add(fname, _lastTypeIndex);
-				}
-
-				if (fullName == fname)
-				{
-					return Types[_lastTypeIndex++];
-				}
-			}
-
-			return null;
-		}
     }
 }

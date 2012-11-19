@@ -5,7 +5,7 @@ using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
-namespace DataDynamics.PageFX.CLI
+namespace DataDynamics.PageFX.CLI.Collections
 {
 	internal sealed class EventList : IEventCollection
 	{

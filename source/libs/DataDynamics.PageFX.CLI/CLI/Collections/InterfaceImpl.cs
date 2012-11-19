@@ -6,7 +6,7 @@ using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
-namespace DataDynamics.PageFX.CLI
+namespace DataDynamics.PageFX.CLI.Collections
 {
 	internal sealed class InterfaceImpl : ITypeCollection
 	{
@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.CLI
 
 		private int OwnerIndex
 		{
-			get { return ((MdbIndex)_owner.MetadataToken).Index - 1; }
+			get { return _owner.RowIndex(); }
 		}
 
 		public int Count

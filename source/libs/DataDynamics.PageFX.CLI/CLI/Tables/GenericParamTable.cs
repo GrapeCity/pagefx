@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DataDynamics.PageFX.CLI.Collections;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Syntax;
@@ -110,7 +111,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			private int OwnerIndex
 			{
-				get { return ((MdbIndex)_owner.MetadataToken).Index - 1; }
+				get { return _owner.RowIndex(); }
 			}
 
 			public IType BaseType
