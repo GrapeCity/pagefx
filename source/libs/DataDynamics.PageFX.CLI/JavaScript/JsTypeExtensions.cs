@@ -45,8 +45,12 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public static bool IsString(this IType type)
 		{
-			if (type == null) return false;
-			return type == SystemTypes.String || type.FullName == AvmStringClassName;
+			return type.IsSystemString() || type.IsAvmString();
+		}
+
+		private static bool IsSystemString(this IType type)
+		{
+			return type.Is(SystemTypeCode.String);
 		}
 
 		public static bool IsAvmString(this IType type)
@@ -139,11 +143,9 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				default:
 					if (type.TypeKind == TypeKind.Struct)
 					{
-						if (type == SystemTypes.ValueType)
+						var st = type.SystemType();
+						if (st != null && (st.Code == SystemTypeCode.ValueType || st.Code == SystemTypeCode.Enum))
 							return null;
-						if (type == SystemTypes.Enum)
-							return null;
-
 						return type.New();
 					}
 					return null;

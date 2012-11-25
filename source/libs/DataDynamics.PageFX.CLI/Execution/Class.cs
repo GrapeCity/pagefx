@@ -105,8 +105,8 @@ namespace DataDynamics.PageFX.CLI.Execution
 				{
 					_equalsMethod.Value = Type.FindMethodHierarchically(
 						"Equals",
-						x => x.Parameters.Count == 1 && x.Parameters[0].Type == SystemTypes.Object,
-						x => x == SystemTypes.ValueType || x == SystemTypes.Object);
+						x => x.Parameters.Count == 1 && x.Parameters[0].Type.Is(SystemTypeCode.Object),
+						x => x.Is(SystemTypeCode.ValueType) || x.Is(SystemTypeCode.Object));
 				}
 				return _equalsMethod.Value;
 			}
@@ -121,7 +121,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 					_getHashCodeMethod.Value = Type.FindMethodHierarchically(
 						"GetHashCode",
 						x => x.Parameters.Count == 0,
-						x => x == SystemTypes.ValueType || x == SystemTypes.Object);
+						x => x.Is(SystemTypeCode.ValueType) || x.Is(SystemTypeCode.Object));
 				}
 				return _getHashCodeMethod.Value;
 			}

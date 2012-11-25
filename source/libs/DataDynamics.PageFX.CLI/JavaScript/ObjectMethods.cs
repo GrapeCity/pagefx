@@ -34,14 +34,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			{
 				case ObjectMethodId.Equals:
 					return method.Parameters.Count == 1
-					       && method.Parameters[0].Type == SystemTypes.Object
-					       && method.Type == SystemTypes.Boolean;
+					       && method.Parameters[0].Type.Is(SystemTypeCode.Object)
+					       && method.Type.Is(SystemTypeCode.Boolean);
 				case ObjectMethodId.GetHashCode:
 					return method.Parameters.Count == 0
-					       && method.Type == SystemTypes.Int32;
+					       && method.Type.Is(SystemTypeCode.Int32);
 				case ObjectMethodId.ToString:
 					return method.Parameters.Count == 0
-					       && method.Type == SystemTypes.String;
+					       && method.Type.Is(SystemTypeCode.String);
 				default:
 					throw new ArgumentOutOfRangeException("id");
 			}

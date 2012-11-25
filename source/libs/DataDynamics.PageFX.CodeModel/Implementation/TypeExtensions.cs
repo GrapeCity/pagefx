@@ -318,7 +318,7 @@ namespace DataDynamics.PageFX.CodeModel
 
             while (type != null)
             {
-                if (type == SystemTypes.Object) break;
+                if (type.Is(SystemTypeCode.Object)) break;
                 if (type.Interfaces.Any(i => i == iface))
                     return true;
                 type = type.BaseType;
@@ -355,7 +355,7 @@ namespace DataDynamics.PageFX.CodeModel
 
 			while (type != null)
 			{
-				if (type == SystemTypes.Object) break;
+				if (type == typeof(object)) break;
 				if (type.GetInterfaces().Any(i => i.FullName == iface.FullName))
 					return true;
 				type = type.BaseType;
@@ -611,7 +611,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             if (method.Type == null) return true;
             if (method.IsConstructor) return true;
-            return method.Type == SystemTypes.Void;
+	        return method.Type.Is(SystemTypeCode.Void);
         }
 
     	public static bool IsEqual(this IType a, IType b)

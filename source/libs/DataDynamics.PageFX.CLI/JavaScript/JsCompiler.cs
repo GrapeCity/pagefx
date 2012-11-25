@@ -989,7 +989,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			JsNode call = null;
 
 			//TODO: inplace inline calls
-			if (method.DeclaringType == SystemTypes.Boolean && method.IsToString())
+			if (method.DeclaringType.Is(SystemTypeCode.Boolean) && method.IsToString())
 			{
 				call = obj.Ternary("True", "False");
 			}

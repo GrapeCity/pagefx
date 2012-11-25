@@ -84,7 +84,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 			else
 			{
-				if (type == SystemTypes.Boolean)
+				if (type.Is(SystemTypeCode.Boolean))
 				{
 					val = val.Op("!!");
 				}

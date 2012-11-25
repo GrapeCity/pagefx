@@ -818,10 +818,17 @@ namespace DataDynamics.PageFX.CodeModel
 
 		public static SystemType SystemType(this IType type)
 		{
+			if (type == null) return null;
 			return type.Namespace == Namespace ? Find(type.Name) : null;
 		}
 
-	    public static bool IsNumeric(this IType type)
+		public static bool Is(this IType type, SystemTypeCode typeCode)
+		{
+			var st = type.SystemType();
+			return st != null && st.Code == typeCode;
+		}
+
+		public static bool IsNumeric(this IType type)
         {
             if (type == null) return false;
             var st = type.SystemType();

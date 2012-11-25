@@ -287,34 +287,45 @@ namespace DataDynamics.PageFX.CLI.Collections
 
 		private object ReadValue(BufferedBinaryReader reader, IType type)
 		{
-			if (type == SystemTypes.Boolean)
-				return reader.ReadBoolean();
-			if (type == SystemTypes.Char)
-				return reader.ReadChar();
-			if (type == SystemTypes.Int8)
-				return reader.ReadInt8();
-			if (type == SystemTypes.UInt8)
-				return reader.ReadUInt8();
-			if (type == SystemTypes.Int16)
-				return reader.ReadInt16();
-			if (type == SystemTypes.UInt16)
-				return reader.ReadUInt16();
-			if (type == SystemTypes.Int32)
-				return reader.ReadInt32();
-			if (type == SystemTypes.UInt32)
-				return reader.ReadUInt32();
-			if (type == SystemTypes.Int64)
-				return reader.ReadInt64();
-			if (type == SystemTypes.UInt64)
-				return reader.ReadUInt64();
-			if (type == SystemTypes.Single)
-				return reader.ReadSingle();
-			if (type == SystemTypes.Double)
-				return reader.ReadDouble();
-			if (type == SystemTypes.String)
-				return reader.ReadCountedUtf8();
-			if (type == SystemTypes.Type)
-				return ReadType(reader);
+			var st = type.SystemType();
+			if (st != null)
+			{
+				switch (st.Code)
+				{
+					case SystemTypeCode.Boolean:
+						return reader.ReadBoolean();
+					case SystemTypeCode.Int8:
+						return reader.ReadInt8();
+					case SystemTypeCode.UInt8:
+						return reader.ReadUInt8();
+					case SystemTypeCode.Int16:
+						return reader.ReadInt16();
+					case SystemTypeCode.UInt16:
+						return reader.ReadUInt16();
+					case SystemTypeCode.Int32:
+						return reader.ReadInt32();
+					case SystemTypeCode.UInt32:
+						return reader.ReadUInt32();
+					case SystemTypeCode.Int64:
+						return reader.ReadInt64();
+					case SystemTypeCode.UInt64:
+						return reader.ReadUInt64();
+					case SystemTypeCode.Single:
+						return reader.ReadSingle();
+					case SystemTypeCode.Double:
+						return reader.ReadDouble();
+					case SystemTypeCode.Char:
+						return reader.ReadChar();
+					case SystemTypeCode.String:
+						return reader.ReadCountedUtf8();
+					case SystemTypeCode.Object:
+						//boxed value type
+						var e = (ElementType)reader.ReadInt8();
+						return ReadValue(reader, e);
+					case SystemTypeCode.Type:
+						return ReadType(reader);
+				}
+			}
 
 			if (type.TypeKind == TypeKind.Enum)
 			{
@@ -334,13 +345,6 @@ namespace DataDynamics.PageFX.CLI.Collections
 					arr.SetValue(val, i);
 				}
 				return arr;
-			}
-
-			//boxed value type
-			if (type == SystemTypes.Object)
-			{
-				var e = (ElementType)reader.ReadInt8();
-				return ReadValue(reader, e);
 			}
 
 			return null;

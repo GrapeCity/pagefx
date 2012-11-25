@@ -47,7 +47,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private void CallClassInit(MethodContext context, JsFunction func, IType type)
 		{
-			if (type == null || type == SystemTypes.Object || type == SystemTypes.ValueType) return;
+			if (type == null || type.Is(SystemTypeCode.Object) || type.Is(SystemTypeCode.ValueType)) return;
 
 			if (type.BaseType != null)
 			{
