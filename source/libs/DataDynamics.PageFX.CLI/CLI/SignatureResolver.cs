@@ -19,41 +19,41 @@ namespace DataDynamics.PageFX.CLI
 			switch (sig.Element)
 			{
 				case ElementType.Void:
-					return ResolveSystemType(SystemTypes.Void, "System.Void");
+					return ResolveSystemType("System.Void");
 				case ElementType.Boolean:
-					return ResolveSystemType(SystemTypes.Boolean, "System.Boolean");
+					return ResolveSystemType("System.Boolean");
 				case ElementType.Char:
-					return ResolveSystemType(SystemTypes.Char, "System.Char");
+					return ResolveSystemType("System.Char");
 				case ElementType.Int8:
-					return ResolveSystemType(SystemTypes.Int8, "System.SByte");
+					return ResolveSystemType("System.SByte");
 				case ElementType.UInt8:
-					return ResolveSystemType(SystemTypes.UInt8, "System.Byte");
+					return ResolveSystemType("System.Byte");
 				case ElementType.Int16:
-					return ResolveSystemType(SystemTypes.Int16, "System.Int16");
+					return ResolveSystemType("System.Int16");
 				case ElementType.UInt16:
-					return ResolveSystemType(SystemTypes.UInt16, "System.UInt16");
+					return ResolveSystemType("System.UInt16");
 				case ElementType.Int32:
-					return ResolveSystemType(SystemTypes.Int32, "System.Int32");
+					return ResolveSystemType("System.Int32");
 				case ElementType.UInt32:
-					return ResolveSystemType(SystemTypes.UInt32, "System.UInt32");
+					return ResolveSystemType("System.UInt32");
 				case ElementType.Int64:
-					return ResolveSystemType(SystemTypes.Int64, "System.Int64");
+					return ResolveSystemType("System.Int64");
 				case ElementType.UInt64:
-					return ResolveSystemType(SystemTypes.UInt64, "System.UInt64");
+					return ResolveSystemType("System.UInt64");
 				case ElementType.Single:
-					return ResolveSystemType(SystemTypes.Single, "System.Single");
+					return ResolveSystemType("System.Single");
 				case ElementType.Double:
-					return ResolveSystemType(SystemTypes.Double, "System.Double");
+					return ResolveSystemType("System.Double");
 				case ElementType.String:
-					return ResolveSystemType(SystemTypes.String, "System.String");
+					return ResolveSystemType("System.String");
 				case ElementType.TypedReference:
-					return ResolveSystemType(SystemTypes.TypedReference, "System.TypedReference");
+					return ResolveSystemType("System.TypedReference");
 				case ElementType.IntPtr:
-					return ResolveSystemType(SystemTypes.IntPtr, "System.IntPtr");
+					return ResolveSystemType("System.IntPtr");
 				case ElementType.UIntPtr:
-					return ResolveSystemType(SystemTypes.UIntPtr, "System.UIntPtr");
+					return ResolveSystemType("System.UIntPtr");
 				case ElementType.Object:
-					return ResolveSystemType(SystemTypes.Object, "System.Object");
+					return ResolveSystemType("System.Object");
 
 				case ElementType.Ptr:
 					{
@@ -131,10 +131,10 @@ namespace DataDynamics.PageFX.CLI
 					break;
 
 				case ElementType.CustomArgsType:
-					return SystemTypes.Type;
+					return ResolveSystemType("System.Type");
 
 				case ElementType.CustomArgsBoxedObject:
-					return SystemTypes.Object;
+					return ResolveSystemType("System.Object");
 
 				case ElementType.CustomArgsField:
 					break;
@@ -145,9 +145,9 @@ namespace DataDynamics.PageFX.CLI
 			return null;
 		}
 
-		private IType ResolveSystemType(IType type, string fullName)
+		private IType ResolveSystemType(string fullName)
 		{
-			return type ?? _loader.FindSystemType(fullName);
+			return _loader.FindSystemType(fullName);
 		}
 
 		private static Exception BadTypeSig(MdbTypeSignature sig)

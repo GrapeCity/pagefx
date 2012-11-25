@@ -277,7 +277,7 @@ namespace DataDynamics.PageFX.CLI
             switch (i.Table)
             {
                 case MdbTableId.TypeDef:
-                    if (index < 0) return ResolveSystemType(SystemTypes.Object, "System.Object");
+                    if (index < 0) return FindSystemType("System.Object");
                     return Types[index];
 
                 case MdbTableId.TypeRef:
@@ -468,11 +468,6 @@ namespace DataDynamics.PageFX.CLI
             Dispose(false);
         }
         #endregion
-
-		private IType ResolveSystemType(IType type, string fullName)
-		{
-			return type ?? FindSystemType(fullName);
-		}
 
 	    public IType FindSystemType(string fullName)
 	    {

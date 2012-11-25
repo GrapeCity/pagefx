@@ -197,7 +197,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var m = new Method
 				{
 					Name = CLRNames.Constructor,
-					Type = SystemTypes.Void,
+					Type = _loader.FindSystemType("System.Void"),
 					DeclaringType = type
 				};
 
@@ -268,7 +268,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var m = new Method
 				{
 					Name = CLRNames.Array.Setter,
-					Type = SystemTypes.Void,
+					Type = _loader.FindSystemType("System.Void"),
 					IsInternalCall = true,
 					DeclaringType = type
 				};
