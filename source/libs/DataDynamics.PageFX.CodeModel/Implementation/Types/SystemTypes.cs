@@ -558,11 +558,6 @@ namespace DataDynamics.PageFX.CodeModel
         private static readonly SystemType[] SysTypes;
 	    private static readonly Dictionary<string, SystemType> Lookup;
 
-        //public static SystemType Find(IType type)
-        //{
-        //    return System.Array.Find(Types, delegate(SystemType st) { return st.Value == type; });
-        //}
-
         public static IType GetType(TypeCode code)
         {
             switch (code)
