@@ -74,11 +74,11 @@ namespace DataDynamics.PageFX.FLI
         	return FindInstance(asm, name.FullName);
         }
 
-        private AssemblyIndex(IAssembly asm)
+        private AssemblyIndex(IAssembly assembly)
         {
-            if (asm == null)
-                throw new ArgumentNullException("asm");
-            Build(asm);
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
+            Build(assembly);
         }
 
 	    private void Build(IAssembly root)

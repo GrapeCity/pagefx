@@ -603,21 +603,20 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static bool IsVoid(this IMethod method)
         {
-            if (method.Type == null) return true;
-            if (method.IsConstructor) return true;
-	        return method.Type.Is(SystemTypeCode.Void);
+	        return method.Type == null
+	               || method.IsConstructor
+	               || method.Type.Is(SystemTypeCode.Void);
         }
 
-    	public static bool IsEqual(this IType a, IType b)
+	    public static bool IsEqual(this IType a, IType b)
     	{
     		if (a == null) return b == null;
     		if (b == null) return false;
     		if (ReferenceEquals(a, b)) return true;
-    		if (a.TypeKind != b.TypeKind) return false;
-    		if (!a.DeclaringType.IsEqual(b.DeclaringType)) return false;
-    		if (a.DeclaringMethod != b.DeclaringMethod) return false;
-    		if (a.FullName != b.FullName) return false;
-    		return true;
+		    return a.TypeKind == b.TypeKind
+		           && a.DeclaringType.IsEqual(b.DeclaringType)
+		           && a.DeclaringMethod == b.DeclaringMethod
+		           && a.FullName == b.FullName;
     	}
 
     	public static int EvalHashCode(this IType type)
@@ -879,7 +878,7 @@ namespace DataDynamics.PageFX.CodeModel
 					    if (type.FullName == "System.DBNull")
 						    return typeCodeOffset + (int)TypeCode.DBNull;
 
-					    if (type.FullName == "System.DateTime")
+					    if (type.Is(SystemTypeCode.DateTime))
 						    return typeCodeOffset + (int)TypeCode.DateTime;
 
 					    return (int)type.TypeKind;

@@ -10,23 +10,20 @@ namespace DataDynamics.PageFX.FLI
     /// <summary>
     /// Links abc/swc resources inside assembly.
     /// </summary>
-    internal class Linker : ISwcLinker
+    internal sealed class Linker : ISwcLinker
     {
-        #region ctor
-        private const int LinkFlag = 0x400;
+	    private const int LinkFlag = 0x400;
         private const int LinkedOk = 0x800;
 
-        const StringComparison strcmp = StringComparison.InvariantCultureIgnoreCase;
-        readonly IAssembly _assembly;
-        AbcCache _cache;
+	    private readonly IAssembly _assembly;
+		private AbcCache _cache;
 
-        public Linker(IAssembly asm)
+        private Linker(IAssembly asm)
         {
             _assembly = asm;
         }
-        #endregion
 
-        #region Start - EntryPoint
+	    #region Start - EntryPoint
         public static bool Start(IAssembly asm)
         {
             var l = new Linker(asm);
@@ -50,12 +47,12 @@ namespace DataDynamics.PageFX.FLI
                 DebugService.DoCancel();
 #endif
                 string resName = res.Name;
-                if (resName.EndsWith(".abc", strcmp))
+	            if (resName.EndsWith(".abc", StringComparison.InvariantCultureIgnoreCase))
                 {
                     LinkAbc(res.Data);
                     result = true;
                 }
-                else if (resName.EndsWith(".swc", strcmp))
+                else if (resName.EndsWith(".swc", StringComparison.InvariantCultureIgnoreCase))
                 {
                     string swcName = GetResFileName(resName);
 
@@ -73,7 +70,7 @@ namespace DataDynamics.PageFX.FLI
             return result;
         }
 
-        static string GetResFileName(string resName)
+        private static string GetResFileName(string resName)
         {
             int i = resName.LastIndexOf('.');
             string name = resName.Substring(0, i).Trim();
@@ -83,15 +80,15 @@ namespace DataDynamics.PageFX.FLI
             return name;
         }
 
-        SwcDepFile LoadSwcDep(string swcName)
+        private SwcDepFile LoadSwcDep(string swcName)
         {
             foreach (var res in _assembly.MainModule.Resources)
             {
                 string resName = res.Name;
-                if (resName.EndsWith(".swcdep", strcmp))
+                if (resName.EndsWith(".swcdep", StringComparison.InvariantCultureIgnoreCase))
                 {
                     string fname = GetResFileName(resName);
-                    if (string.Compare(fname, swcName, true) == 0)
+					if (string.Equals(fname, swcName, StringComparison.InvariantCultureIgnoreCase))
                     {
                         var f = new SwcDepFile();
                         f.Load(res.Data);
@@ -111,9 +108,6 @@ namespace DataDynamics.PageFX.FLI
 
         public void LinkType(AbcInstance instance)
         {
-            //var type = _assembly.Types[instance.FullName];
-            //if (type != null)
-            //    LinkType(type, instance);
         }
 
         public object ResolveExternalReference(string id)
@@ -122,10 +116,9 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        #region LinkAbc
-        AbcFile _abc;
+	    private AbcFile _abc;
 
-        void LinkAbc(byte[] data)
+        private void LinkAbc(byte[] data)
         {
 #if PERF
             int start = Environment.TickCount;
@@ -139,12 +132,10 @@ namespace DataDynamics.PageFX.FLI
             Console.WriteLine("LinkAbc: {0}", Environment.TickCount - start);
 #endif
         }
-        #endregion
 
-        #region LinkSwc
-        SwcFile _swc;
+	    private SwcFile _swc;
 
-        void LinkSwc(string name, byte[] data, SwcDepFile deps)
+        private void LinkSwc(string name, byte[] data, SwcDepFile deps)
         {
 #if PERF
             int start = Environment.TickCount;
@@ -162,10 +153,8 @@ namespace DataDynamics.PageFX.FLI
             Console.WriteLine("LinkSwc: {0}", Environment.TickCount - start);
 #endif
         }
-        #endregion
 
-        #region LinkTypes
-        void LinkTypes()
+	    private void LinkTypes()
         {
             foreach (var type in _assembly.Types)
             {
@@ -181,32 +170,23 @@ namespace DataDynamics.PageFX.FLI
             return AssemblyIndex.FindType(_assembly, fullname);
         }
 
-        AbcInstance FindInstance(IType type)
+        private AbcInstance FindInstance(IType type)
         {
             return _cache.FindInstance(type);
         }
 
-        bool IsCoreAPI
-        {
-            get 
-            { 
-                //return _cache.IsCoreAPI;
-                return IsCorLib;
-            }
-        }
-
-        static bool IsLinked(IType type)
+	    private static bool IsLinked(IType type)
         {
             var instance = type.Tag as AbcInstance;
             return instance != null;
         }
 
-        bool IsCorLib
+        private bool IsCorLib
         {
             get { return _assembly.IsCorlib; }
         }
 
-        void LinkType(IType type)
+        private void LinkType(IType type)
         {
             if (LinkInternalType(type)) return;
             if (IsLinked(type)) return;
@@ -255,12 +235,12 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        void LinkType(IType type, AbcInstance instance)
+        private void LinkType(IType type, AbcInstance instance)
         {
             type.Tag = instance;
             instance.Type = type;
 
-            if (IsCoreAPI)
+            if (IsCorLib)
             {
                 if (instance.IsGlobal)
                 {
@@ -281,16 +261,14 @@ namespace DataDynamics.PageFX.FLI
             LinkMethods(type, instance, false);
             LinkFields(type, instance);
         }
-        #endregion
 
-        #region LinkMethods
-        void LinkMethods(IType type, IAbcTraitProvider owner, bool isGlobal)
+	    private void LinkMethods(IType type, IAbcTraitProvider owner, bool isGlobal)
         {
             foreach (var method in type.Methods)
                 LinkMethod(method, owner, isGlobal);
         }
 
-        static AbcMethod FindMethod(AbcInstance instance, IMethod method)
+        private static AbcMethod FindMethod(AbcInstance instance, IMethod method)
         {
             var t = instance.FindTrait(method);
             if (t == null)
@@ -300,12 +278,12 @@ namespace DataDynamics.PageFX.FLI
             return t.Method;
         }
 
-        AbcMethod FindGlobalMethod(IMethod method)
+        private AbcMethod FindGlobalMethod(IMethod method)
         {
             return _cache.FindGlobalMethod(method);
         }
 
-        void LinkMethod(IMethod method, IAbcTraitProvider owner, bool isGlobal)
+        private void LinkMethod(IMethod method, IAbcTraitProvider owner, bool isGlobal)
         {
 #if DEBUG
             DebugService.DoCancel();
@@ -339,7 +317,7 @@ namespace DataDynamics.PageFX.FLI
             LinkMethod(method, abcMethod);
         }
 
-        void LinkMethod(IMethod method, AbcMethod abcMethod)
+        private void LinkMethod(IMethod method, AbcMethod abcMethod)
         {
             if (abcMethod == null)
                 throw new InvalidOperationException("Unable to find method " + method);
@@ -354,10 +332,8 @@ namespace DataDynamics.PageFX.FLI
             //if (instance != null && !instance.IsNative && abcMethod.IsNative)
             //    instance.IsNative = true;
         }
-        #endregion
 
-        #region LinkEvent
-        private static bool LinkEvent(IMethod method, AbcInstance instance)
+	    private static bool LinkEvent(IMethod method, AbcInstance instance)
         {
             var e = method.Association as IEvent;
             if (e == null) return false;
@@ -399,16 +375,14 @@ namespace DataDynamics.PageFX.FLI
                                           	? Const.Delegate.AddEventListeners
                                           	: Const.Delegate.RemoveEventListeners, 2);
         }
-        #endregion
 
-        #region LinkFields
-        void LinkFields(IType type, AbcInstance instance)
+	    private void LinkFields(IType type, AbcInstance instance)
         {
             foreach (var field in type.Fields)
                 LinkField(field, instance);
         }
 
-        void LinkField(IField field, AbcInstance instance)
+        private void LinkField(IField field, AbcInstance instance)
         {
 #if DEBUG
             DebugService.DoCancel();
@@ -426,16 +400,14 @@ namespace DataDynamics.PageFX.FLI
             LinkField(field, t);
         }
 
-        static void LinkField(IField field, AbcTrait trait)
+        private static void LinkField(IField field, AbcTrait trait)
         {
             if (trait == null)
                 throw new InvalidOperationException("Unable to link field " + field);
             field.Tag = trait;
         }
-        #endregion
 
-        #region LinkInternalType
-        static bool LinkInternalType(IType type)
+	    private static bool LinkInternalType(IType type)
         {
             if (type.IsInternalType())
             {
@@ -445,19 +417,15 @@ namespace DataDynamics.PageFX.FLI
             }
             return false;
         }
-        #endregion
 
-        #region LinkGlobalType
-        void LinkGlobalType(IType type)
+	    private void LinkGlobalType(IType type)
         {
             var tag = new GlobalType(type);
             Debug.Assert(type.Tag == tag);
             LinkMethods(type, null, true);
         }
-        #endregion
 
-        #region LinkVector
-        void LinkVector(IType type, ICustomAttribute attr)
+	    private void LinkVector(IType type, ICustomAttribute attr)
         {
             var v = type.Tag as VectorType;
             if (v != null) return;
@@ -472,10 +440,8 @@ namespace DataDynamics.PageFX.FLI
             v = new VectorType(type, paramType);
             Debug.Assert(type.Tag == v);
         }
-        #endregion
 
-        #region Utils
-        AbcTrait GetTrait(ICustomAttributeProvider cp, IAbcTraitProvider owner)
+	    private AbcTrait GetTrait(ICustomAttributeProvider cp, IAbcTraitProvider owner)
         {
             foreach (var attr in cp.CustomAttributes)
             {
@@ -511,14 +477,14 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        AbcFile GetAbcFile(ITypeMember member)
+        private AbcFile GetAbcFile(ITypeMember member)
         {
             var type = member as IType ?? member.DeclaringType;
 
         	return GetAbcFileCore(type);
         }
 
-        AbcFile GetAbcFileCore(ICustomAttributeProvider cp)
+        private AbcFile GetAbcFileCore(ICustomAttributeProvider cp)
         {
             if (_abc != null) return _abc;
             if (_swc == null) return null;
@@ -540,17 +506,17 @@ namespace DataDynamics.PageFX.FLI
             return _swc.GetLibrary(lib).GetAbcFiles()[file];
         }
 
-        static int GetIndex(ICustomAttribute attr)
+        private static int GetIndex(ICustomAttribute attr)
         {
             return GetInt(attr, 0);
         }
 
-        static int GetInt(ICustomAttribute attr, int index)
+        private static int GetInt(ICustomAttribute attr, int index)
         {
             return ((IConvertible)attr.Arguments[index].Value).ToInt32(null);
         }
 
-        static bool ShouldLink(ICustomAttributeProvider cp)
+        private static bool ShouldLink(ICustomAttributeProvider cp)
         {
             if (cp is IType)
             {
@@ -586,6 +552,5 @@ namespace DataDynamics.PageFX.FLI
 
             return false;
         }
-        #endregion
     }
 }
