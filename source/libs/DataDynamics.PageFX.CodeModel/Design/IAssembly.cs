@@ -60,7 +60,10 @@ namespace DataDynamics.PageFX.CodeModel
     /// </summary>
     public interface IAssembly : IAssemblyReference, ICustomAttributeProvider, ITypeContainer
     {
-        bool IsCorlib { get; set;  }
+		/// <summary>
+		/// Specifies whether this assembly is corlib.
+		/// </summary>
+        bool IsCorlib { get; set; }
 
         /// <summary>
         /// Gets or sets path to this assembly
@@ -82,8 +85,14 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         IMethod EntryPoint { get; set; }
 
+		/// <summary>
+		/// Gets assembly modules.
+		/// </summary>
         IModuleCollection Modules { get; }
 
+		/// <summary>
+		/// Gets main module.
+		/// </summary>
         IModule MainModule { get; }
 
         IType FindType(string fullname);

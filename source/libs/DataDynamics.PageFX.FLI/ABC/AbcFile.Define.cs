@@ -761,7 +761,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (type.TypeKind == TypeKind.Reference)
                 return BuiltinTypes.Object;
 
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st != null)
             {
                 switch (st.Code)

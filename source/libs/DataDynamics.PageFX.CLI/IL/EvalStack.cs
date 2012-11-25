@@ -1,113 +1,11 @@
 //NOTE: Stack values can be vars, args, fields, array elements, metadata tokens
 
 using System.Collections.Generic;
-using System.Text;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
-    #region EvalItem
-    internal struct EvalItem
-    {
-        public IValue value;
-        public Instruction instruction;
-        public Instruction last;
-        
-        public EvalItem(Instruction instruction)
-        {
-            this.instruction = instruction;
-            value = null;
-            last = null;
-        }
-
-        public EvalItem(Instruction instruction, IValue value)
-        {
-            this.instruction = instruction;
-            this.value = value;
-            last = null;
-        }
-
-        public EvalItem(Instruction instruction, Instruction last)
-        {
-            this.instruction = instruction;
-            this.last = last;
-            value = null;
-        }
-
-        public IType Type
-        {
-            get { return value == null ? null : value.Type; }
-        }
-
-        public bool IsNull
-        {
-            get
-            {
-                var c = value as ConstValue;
-                if (c != null) return c.value == null;
-                return false;
-            }
-        }
-
-        public bool IsToken
-        {
-            get { return value.Kind == ValueKind.Token; }
-        }
-
-        public bool Is(InstructionCode c)
-        {
-            return instruction.Code == c;
-        }
-
-        public bool IsInstance
-        {
-            get { return instruction.Code == InstructionCode.Isinst; }
-        }
-
-        public bool IsTypeToken
-        {
-            get
-            {
-                if (value != null)
-                {
-                    var v = value as TokenValue;
-                    if (v == null) return false;
-                    return v.member is IType;
-                }
-                else
-                {
-                    var i = instruction;
-                    if (i == null) return false;
-                    if (i.Code != InstructionCode.Ldtoken) return false;
-                    return i.Value is IType;
-                }
-            }
-        }
-
-        public bool IsPointer
-        {
-            get { return value.IsPointer; }
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            if (instruction != null)
-            {
-                sb.Append(instruction.ToString());
-                if (value != null)
-                    sb.Append("\n");
-            }
-            if (value != null)
-            {
-                sb.Append(value.ToString());
-            }
-            return sb.ToString();
-        }
-    }
-    #endregion
-
-    internal class EvalStack : Stack<EvalItem>
+	internal sealed class EvalStack : Stack<EvalItem>
     {
         public EvalStack Clone()
         {
@@ -133,7 +31,7 @@ namespace DataDynamics.PageFX.CLI.IL
             while (n-- > 0)
             {
                 var v = Pop();
-                last = v.last;
+                last = v.Last;
             }
             return last;
         }

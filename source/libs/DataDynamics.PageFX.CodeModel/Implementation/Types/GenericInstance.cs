@@ -248,12 +248,6 @@ namespace DataDynamics.PageFX.CodeModel
             get { return Type != null ? Type.ValueType : null; }
         }
 
-        public SystemType SystemType
-        {
-            get { return null; }
-            set { throw new NotSupportedException(); }
-        }
-
         public IFieldCollection Fields
         {
             get

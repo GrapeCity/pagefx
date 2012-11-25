@@ -713,7 +713,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             var valType = value.Type;
 
-            if (_block.IsFirstAssignment && value.instruction.IsCall())
+            if (_block.IsFirstAssignment && value.Instruction.IsCall())
             {
                 _block.IsFirstAssignment = false;
             }
@@ -979,7 +979,7 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 throw new ILTranslatorException();
             }
-            Push(new Func(obj.value, method));
+            Push(new Func(obj.Value, method));
             return _provider.LoadFunction(method);
         }
         #endregion
@@ -1017,7 +1017,7 @@ namespace DataDynamics.PageFX.CLI.IL
             var type = field.Type;
             BeforeStoreValue(code, value, type);
 
-            var ov = obj.value;
+            var ov = obj.Value;
             if (ov.IsPointer)
             {
                 if (ov.IsMockPointer)
@@ -1059,7 +1059,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             var addr = Pop();
 
-            var v = addr.value;
+            var v = addr.Value;
             var code = new Code();
 
             var type = v.Type;
@@ -1187,7 +1187,7 @@ namespace DataDynamics.PageFX.CLI.IL
 			// NOTE: output type defines type of pointer
 			_instruction.OutputType = addr.Type;
 
-			switch (addr.value.Kind)
+			switch (addr.Value.Kind)
             {
                 case ValueKind.Const:
                 case ValueKind.Var:
@@ -1200,7 +1200,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
                 case ValueKind.This:
                     {
-                        var v = (ThisValue)addr.value;
+                        var v = (ThisValue)addr.Value;
                         var vt = v.Type;
                         if (_provider.HasCopy(vt))
                         {
@@ -1211,7 +1211,7 @@ namespace DataDynamics.PageFX.CLI.IL
                     break;
 
                 default:
-                    StorePtr(code, addr.value, value.Type);
+                    StorePtr(code, addr.Value, value.Type);
                     break;
             }
 
@@ -1238,7 +1238,7 @@ namespace DataDynamics.PageFX.CLI.IL
         #region stack operations
 		private IInstruction[] Op_Dup()
         {
-            var v = Peek().value;
+            var v = Peek().Value;
             switch (v.Kind)
             {
                 case ValueKind.MockThisPtr:
@@ -1536,7 +1536,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
             if (IsUI64(targetType))
             {
-                var st = sourceType.SystemType;
+                var st = sourceType.SystemType();
                 if (st != null && st.IsIntegral32)
                 {
                     var retType = ReturnType;
@@ -1635,7 +1635,7 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 var obj = Pop();
                 rtype = obj.Type;
-                switch (obj.value.Kind)
+                switch (obj.Value.Kind)
                 {
                     case ValueKind.This:
                     case ValueKind.ThisPtr:
@@ -1710,11 +1710,11 @@ namespace DataDynamics.PageFX.CLI.IL
 		private IInstruction[] InitializeArray()
         {
             var token = Pop();
-            var f = token.instruction.Field;
+            var f = token.Instruction.Field;
             var arr = Pop();
             var arrType = (IArrayType)arr.Type;
             var elemType = arrType.ElementType;
-            var vals = CLR.ReadArrayValues(f, elemType.SystemType.Code);
+            var vals = CLR.ReadArrayValues(f, elemType.SystemType().Code);
 
             int n = vals.Count;
             var code = new Code();
@@ -1743,7 +1743,7 @@ namespace DataDynamics.PageFX.CLI.IL
 		private IInstruction[] TypeOf()
         {
             var token = Pop();
-            var type = token.instruction.Type;
+            var type = token.Instruction.Type;
             PushResult(SystemTypes.Type);
             return _provider.TypeOf(type);
         }
@@ -1775,7 +1775,7 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             var addr = Pop();
 
-            switch (addr.value.Kind)
+            switch (addr.Value.Kind)
             {
                 case ValueKind.Const:
                 case ValueKind.Var:
@@ -1795,7 +1795,7 @@ namespace DataDynamics.PageFX.CLI.IL
             var il = _provider.InitObject(type);
             code.AddRange(il);
 
-            StorePtr(code, addr.value, type);
+            StorePtr(code, addr.Value, type);
             
             return code.ToArray();
         }
@@ -2056,7 +2056,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
 		private IValue PopValue()
         {
-            return Pop().value;
+            return Pop().Value;
         }
 
 		private void CastToInt32(Code code, ref IType type)

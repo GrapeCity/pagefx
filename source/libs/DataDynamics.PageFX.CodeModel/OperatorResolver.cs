@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CodeModel
 
 		public IMethod Find(BinaryOperator op, IType left, IType right)
 		{
-			string key = ((int)op).ToString() + (int)left.SystemType.Code + (int)right.SystemType.Code;
+			string key = ((int)op).ToString() + (int)left.SystemType().Code + (int)right.SystemType().Code;
 			IMethod m;
 			if (!_cache.TryGetValue(key, out m))
 			{
@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX.CodeModel
 
 		public IMethod Find(UnaryOperator op, IType type)
 		{
-			string key = ((int)op).ToString() + (int)type.SystemType.Code;
+			string key = ((int)op).ToString() + (int)type.SystemType().Code;
 			IMethod m;
 			if (!_cache.TryGetValue(key, out m))
 			{
@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.CodeModel
 
 		public IMethod Find(IType type, bool isTrue)
 		{
-			string key = (isTrue ? OpNames.True : OpNames.False) + (int)type.SystemType.Code;
+			string key = (isTrue ? OpNames.True : OpNames.False) + (int)type.SystemType().Code;
 			IMethod m;
 			if (!_cache.TryGetValue(key, out m))
 			{
@@ -44,7 +44,5 @@ namespace DataDynamics.PageFX.CodeModel
 			}
 			return m;
 		}
-
-		
 	}
 }

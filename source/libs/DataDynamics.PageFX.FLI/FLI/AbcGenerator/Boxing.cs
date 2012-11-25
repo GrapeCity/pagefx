@@ -159,7 +159,7 @@ namespace DataDynamics.PageFX.FLI
 					                }
 
 					                code.GetBoxedValue(varValue);
-					                code.TryCastToSystemType(null, vtype.SystemType);
+					                code.TryCastToSystemType(null, vtype.SystemType());
 					                code.ReturnValue();
 				                }
 			                );
@@ -181,7 +181,7 @@ namespace DataDynamics.PageFX.FLI
             code.ThrowInvalidCastException();
             ifNotNumber.BranchTarget = code.Label();
             code.GetLocal(varValue);
-            if (!code.TryCastToSystemType(null, type.SystemType))
+            if (!code.TryCastToSystemType(null, type.SystemType()))
                 code.Coerce(type, true);
             code.ReturnValue();
         }

@@ -99,19 +99,19 @@ namespace DataDynamics.PageFX.CodeModel
             {
                 if (b.IsEnum)
                     return a.ValueType.GetCommonAncestor(b.ValueType);
-                if (b.SystemType != null)
+                if (b.IsSystemType())
                     return a.ValueType.GetCommonAncestor(b);
             }
 
             if (b.IsEnum)
             {
-                if (a.SystemType != null)
+                if (a.IsSystemType())
                     return a.GetCommonAncestor(b.ValueType);
             }
 
-        	if (a.SystemType != null)
+        	if (a.IsSystemType())
             {
-            	if (b.SystemType == null) return a;
+            	if (!b.IsSystemType()) return a;
 
                 var cd = SystemTypes.GetCommonDenominator(a, b);
                 if (cd != null) return cd;
@@ -229,9 +229,9 @@ namespace DataDynamics.PageFX.CodeModel
 
                 case TypeKind.Primitive:
                     {
-                        var t = target.SystemType;
+                        var t = target.SystemType();
                         if (t == null) return false;
-                        var s = source.SystemType;
+                        var s = source.SystemType();
                         if (s == null) return false;
                         switch (t.Code)
                         {
@@ -431,7 +431,7 @@ namespace DataDynamics.PageFX.CodeModel
         public static bool IsDecimalOrInt64(IType type)
         {
             if (type == null) return false;
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st == null) return false;
             return st.IsDecimalOrInt64;
         }
@@ -489,16 +489,16 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static bool HasImplicitConversion(IType from, IType to)
         {
-            if (@from == to) return true;
-            var sf = @from.SystemType;
+            if (from == to) return true;
+            var sf = from.SystemType();
             if (sf == null)
-                return HasCustomImplicitOperator(@from, to);
-            var st = to.SystemType;
+                return HasCustomImplicitOperator(from, to);
+            var st = to.SystemType();
             if (st == null)
-                return HasCustomImplicitOperator(@from, to);
+                return HasCustomImplicitOperator(from, to);
             if (ImplicitNumericConversions[(int)sf.Code, (int)st.Code])
                 return true;
-            return HasCustomImplicitOperator(@from, to);
+            return HasCustomImplicitOperator(from, to);
         }
         #endregion
 
@@ -535,7 +535,7 @@ namespace DataDynamics.PageFX.CodeModel
             //NOTE: enums is also boxable types
             if (type == null) return false;
             if (type.IsEnum) return true;
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st != null)
             {
                 switch (st.Code)
@@ -907,7 +907,7 @@ namespace DataDynamics.PageFX.CodeModel
 
 			    case TypeKind.Primitive:
 				    {
-					    var st = type.SystemType;
+					    var st = type.SystemType();
 					    if (st == null)
 						    throw new InvalidOperationException();
 					    return typeCodeOffset + (int)st.TypeCode;

@@ -1,15 +1,19 @@
+using System;
+using System.Globalization;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
-    class ConstValue : IValue
+    internal sealed class ConstValue : IValue
     {
         readonly IType _type;
-        public readonly object value;
+        public readonly object Value;
 
         public ConstValue(object value)
         {
-            this.value = value;
+            Value = value;
+
+			// TODO: pass type to ctor
             if (value != null)
                 _type = SystemTypes.GetType(value);
         }
@@ -36,7 +40,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         public override string ToString()
         {
-            string v = value != null ? value.ToString() : "null";
+            string v = Value != null ? Convert.ToString(Value, CultureInfo.InvariantCulture) : "null";
             return string.Format("Const({0})", v);
         }
     }

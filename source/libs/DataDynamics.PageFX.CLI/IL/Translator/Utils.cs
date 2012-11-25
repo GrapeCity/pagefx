@@ -48,10 +48,10 @@ namespace DataDynamics.PageFX.CLI.IL
             if (rt.IsEnum)
                 rt = rt.ValueType;
 
-            var l = lt.SystemType;
+            var l = lt.SystemType();
             if (l == null)
                 throw new ILTranslatorException();
-            var r = rt.SystemType;
+            var r = rt.SystemType();
             if (r == null)
                 throw new ILTranslatorException();
             if (!l.IsNumeric)

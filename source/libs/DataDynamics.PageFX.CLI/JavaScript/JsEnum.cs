@@ -121,7 +121,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private static object CompileValue(JsCompiler compiler, IType type, object value)
 		{
-			var st = type.SystemType;
+			var st = type.SystemType();
 			if (st == null)
 				throw new ArgumentException("Type is not system");
 			switch (st.Code)

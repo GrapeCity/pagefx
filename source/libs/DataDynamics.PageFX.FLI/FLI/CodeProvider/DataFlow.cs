@@ -12,7 +12,7 @@ namespace DataDynamics.PageFX.FLI
         #region DeclareVariable
         static bool IsValueType(IType type)
         {
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st != null)
             {
                 switch (st.Code)
@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.FLI
                 return EmptyCode;
             }
 
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st != null)
                 return DeclateSystemTypeVar(st, v);
 
@@ -73,7 +73,7 @@ namespace DataDynamics.PageFX.FLI
                 case TypeKind.Enum:
                     {
                         var vtype = type.ValueType;
-                        st = vtype.SystemType;
+                        st = vtype.SystemType();
                         return DeclateSystemTypeVar(st, v);
                     }
 

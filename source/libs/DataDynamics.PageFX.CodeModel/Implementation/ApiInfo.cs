@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         static bool IsExcludedSystemType(IType type)
         {
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st == null) return false;
             switch (st.Code)
             {

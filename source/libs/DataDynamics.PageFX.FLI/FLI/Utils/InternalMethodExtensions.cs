@@ -26,7 +26,7 @@ namespace DataDynamics.PageFX.FLI
 
 		public static string GetConvertMethodName(this IType target)
 		{
-			var st = target.SystemType;
+			var st = target.SystemType();
 			if (st == null) return "";
 			switch (st.Code)
 			{
@@ -62,9 +62,9 @@ namespace DataDynamics.PageFX.FLI
 
 		public static ConvertMethodId GetConvertMethodId(this IType source, IType target)
 		{
-			var t = target.SystemType;
+			var t = target.SystemType();
 			if (t == null) return ConvertMethodId.Unknown;
-			var s = source.SystemType;
+			var s = source.SystemType();
 			if (s == null) return ConvertMethodId.Unknown;
 			switch (t.Code)
 			{

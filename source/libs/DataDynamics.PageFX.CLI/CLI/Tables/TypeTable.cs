@@ -139,7 +139,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 			if (sysType != null)
 			{
 				sysType.Value = type;
-				type.SystemType = sysType;
 			}
 
 			// to avoid problems with self refs in fields/methods,etc

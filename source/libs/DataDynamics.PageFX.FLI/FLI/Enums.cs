@@ -1,6 +1,6 @@
 namespace DataDynamics.PageFX.FLI
 {
-    enum NumberType
+    internal enum NumberType
     {
         Float,
         Int32,
@@ -9,13 +9,13 @@ namespace DataDynamics.PageFX.FLI
         UInt64
     }
 
-    enum AbcGenMode
+    internal enum AbcGenMode
     {
         Default,
         Full,
     }
 
-    enum OutputFormat
+    internal enum OutputFormat
     {
         ABC,
         SWF,

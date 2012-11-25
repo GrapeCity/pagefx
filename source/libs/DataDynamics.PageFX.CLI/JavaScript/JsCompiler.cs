@@ -1251,9 +1251,10 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private static bool CompileFieldsFor(IType type)
 		{
-			if (type.SystemType != null)
+			var st = type.SystemType();
+			if (st != null)
 			{
-				switch (type.SystemType.Code)
+				switch (st.Code)
 				{
 					case SystemTypeCode.Void:
 					case SystemTypeCode.Array:

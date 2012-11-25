@@ -234,12 +234,6 @@ namespace DataDynamics.PageFX.CodeModel
             get { return null; }
         }
 
-        public SystemType SystemType
-        {
-            get { return null; }
-            set { throw new NotSupportedException(); }
-        }
-
         public IType Type
         {
             get { return null; }

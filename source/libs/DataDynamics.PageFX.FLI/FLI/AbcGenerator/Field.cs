@@ -114,12 +114,12 @@ namespace DataDynamics.PageFX.FLI
             return trait.Name;
         }
 
-        static bool UseGlobalPackage(IType declType)
+        private static bool UseGlobalPackage(IType declType)
         {
             if (declType.IsEnum)
                 return true;
 
-            var st = declType.SystemType;
+            var st = declType.SystemType();
             if (st != null)
                 return true;
 

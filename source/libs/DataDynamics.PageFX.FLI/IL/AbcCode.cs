@@ -1745,7 +1745,7 @@ namespace DataDynamics.PageFX.FLI.IL
             if (target == null) return false;
             if (target.IsEnum)
                 target = target.ValueType;
-            var to = target.SystemType;
+            var to = target.SystemType();
             if (to == null) return false;
             return TryCastToSystemType(source, to);
         }
@@ -1759,7 +1759,7 @@ namespace DataDynamics.PageFX.FLI.IL
             {
                 if (source.IsEnum)
                     source = source.ValueType;
-                from = source.SystemType;
+                from = source.SystemType();
             }
 
             switch (to.TypeCode)
@@ -2860,7 +2860,7 @@ namespace DataDynamics.PageFX.FLI.IL
             if (type.IsEnum)
                 type = type.ValueType;
 
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st != null)
             {
                 switch (st.Code)

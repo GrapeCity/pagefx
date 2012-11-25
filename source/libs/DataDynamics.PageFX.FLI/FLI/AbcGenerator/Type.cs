@@ -371,12 +371,12 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        AbcInstance DefineEnumSuperType(IType type)
+        private AbcInstance DefineEnumSuperType(IType type)
         {
             if (!type.IsEnum)
                 throw new InvalidOperationException("type is not enum");
             var vtype = type.ValueType;
-            var st = vtype.SystemType;
+            var st = vtype.SystemType();
             if (st == null)
                 throw new InvalidOperationException(string.Format("invalid enum type {0}", type.FullName));
             int index = GetEnumIndex(st);

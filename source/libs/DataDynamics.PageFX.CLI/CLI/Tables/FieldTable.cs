@@ -69,10 +69,8 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			if (type.Layout != null)
 				return type.Layout.Size;
-			var st = type.SystemType;
-			if (st == null)
-				return -1;
-			return st.Size;
+			var st = type.SystemType();
+			return st == null ? -1 : st.Size;
 		}
 
 		private static Visibility ToVisibility(FieldAttributes f)

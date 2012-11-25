@@ -639,11 +639,9 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static TypeCode GetTypeCode(this IType type)
         {
-			if (type != null && type.SystemType != null)
-			{
-				return type.SystemType.TypeCode;
-			}
-	        return TypeCode.Empty;
+	        if (type == null) return TypeCode.Empty;
+			var st = type.SystemType();
+			return st != null ? st.TypeCode : TypeCode.Empty;
         }
 
 	    #region Type Properties
@@ -806,22 +804,32 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return Get(SystemTypeCode.Attribute); }
         }
+
+		public static IType NativeUInt
+		{
+			get { return UInt32; }
+		}
+
+		public static IType NativeInt
+		{
+			get { return Int32; }
+		}
         #endregion
 
-        public static IType NativeUInt
-        {
-            get { return UInt32; }
-        }
+		public static bool IsSystemType(this IType type)
+		{
+			return type.SystemType() != null;
+		}
 
-        public static IType NativeInt
-        {
-            get { return Int32; }
-        }
+		public static SystemType SystemType(this IType type)
+		{
+			return type.Namespace == Namespace ? Find(type.Name) : null;
+		}
 
-        public static bool IsNumeric(this IType type)
+	    public static bool IsNumeric(this IType type)
         {
             if (type == null) return false;
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st == null) return false;
             return st.IsNumeric;
         }
@@ -829,41 +837,36 @@ namespace DataDynamics.PageFX.CodeModel
         public static bool IsIntegral(this IType type)
         {
             if (type == null) return false;
-            var st = type.SystemType;
-            if (st == null) return false;
-            return st.IsIntegral;
+            var st = type.SystemType();
+            return st != null && st.IsIntegral;
         }
 
         public static bool IsSigned(this IType type)
         {
             if (type == null) return false;
-            var st = type.SystemType;
-            if (st == null) return false;
-            return st.IsSigned;
+            var st = type.SystemType();
+            return st != null && st.IsSigned;
         }
 
         public static bool IsUnsigned(this IType type)
         {
             if (type == null) return false;
-            var st = type.SystemType;
-            if (st == null) return false;
-            return st.IsUnsigned;
+            var st = type.SystemType();
+            return st != null && st.IsUnsigned;
         }
 
         public static IType ToSigned(IType type)
         {
             if (type == null) return null;
-            var st = type.SystemType;
-            if (st == null) return null;
-            return st.Signed;
+            var st = type.SystemType();
+            return st == null ? null : st.Signed;
         }
 
         public static IType ToUnsigned(IType type)
         {
             if (type == null) return null;
-            var st = type.SystemType;
-            if (st == null) return null;
-            return st.Unsigned;
+            var st = type.SystemType();
+            return st == null ? null : st.Unsigned;
         }
 
         private static IEnumerable<IType> GetDescendingOrder()
@@ -889,7 +892,7 @@ namespace DataDynamics.PageFX.CodeModel
     	public static IType UInt32OR64(IType type)
         {
             if (type == null) return null;
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st == null) return null;
             switch (st.Code)
             {

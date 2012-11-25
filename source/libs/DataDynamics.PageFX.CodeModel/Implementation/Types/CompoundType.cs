@@ -170,12 +170,6 @@ namespace DataDynamics.PageFX.CodeModel
             get { return ElementType != null ? ElementType.ValueType : null; }
         }
 
-        public SystemType SystemType
-        {
-            get { return null; }
-            set { throw new NotSupportedException(); }
-        }
-
         public virtual ClassLayout Layout
         {
             get { return ElementType != null ? ElementType.Layout : null; }

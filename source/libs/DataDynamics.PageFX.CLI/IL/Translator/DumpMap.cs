@@ -80,7 +80,7 @@ namespace DataDynamics.PageFX.CLI.IL
             for (int i = 0; i < arr.Length; ++i)
             {
                 if (i > 0) writer.Write(", ");
-                writer.Write(arr[i].value.ToString());
+                writer.Write(arr[i].Value.ToString());
             }
             writer.WriteLine();
 
@@ -91,7 +91,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 for (int i = 0; i < arr.Length; ++i)
                 {
                     if (i > 0) writer.Write(", ");
-                    writer.Write(arr[i].value.ToString());
+                    writer.Write(arr[i].Value.ToString());
                 }
                 writer.WriteLine();
             }

@@ -15,22 +15,14 @@ namespace DataDynamics.PageFX.CodeModel
             return type;
         }
 
-        public static bool IsNumeric(IType type)
-        {
-            if (type == null) return false;
-            var st = type.SystemType;
-            if (st == null) return false;
-            return st.IsNumeric;
-        }
-
         public static IType GetResultType(IType left, IType right, BinaryOperator op)
         {
             left = Fix(left);
             right = Fix(right);
 
-            if (!IsNumeric(left))
+            if (!left.IsNumeric())
                 throw new ArgumentException("Type is not numeric type", "left");
-            if (!IsNumeric(right))
+            if (!right.IsNumeric())
                 throw new ArgumentException("Type is not numeric type", "right");
 
             //decimal, double, float, long, ulong, int, uint
@@ -41,7 +33,7 @@ namespace DataDynamics.PageFX.CodeModel
                 case BinaryOperator.LeftShift:
                 case BinaryOperator.RightShift:
                     {
-                        var l = left.SystemType;
+                        var l = left.SystemType();
                         if (l.LessThenInt32)
                             return SystemTypes.Int32;
                         return left;
@@ -49,8 +41,8 @@ namespace DataDynamics.PageFX.CodeModel
             }
 
             {
-                var l = left.SystemType;
-                var r = right.SystemType;
+                var l = left.SystemType();
+                var r = right.SystemType();
                 if (l.IsDecimal || r.IsDecimal)
                     return SystemTypes.Decimal;
                 if (l.IsDouble || r.IsDouble)
@@ -75,14 +67,14 @@ namespace DataDynamics.PageFX.CodeModel
         {
             type = Fix(type);
 
-            if (!IsNumeric(type))
+            if (!type.IsNumeric())
                 throw new ArgumentException("Type is not numeric type", "type");
 
             //The not instruction is unary and returns the same type as the input.
             if (op == UnaryOperator.BitwiseNot)
                 return type;
 
-            var st = type.SystemType;
+            var st = type.SystemType();
 
             if (op == UnaryOperator.Negate)
             {

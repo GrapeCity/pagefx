@@ -218,7 +218,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static NumberType GetNumberType(this IType type)
         {
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st != null)
             {
                 switch (st.Code)
@@ -265,7 +265,7 @@ namespace DataDynamics.PageFX.FLI
             if (type.IsEnum) return false;
             if (type.IsInterface) return false;
             if (type.IsArray) return false;
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st != null)
             {
                 switch (st.Code)
@@ -302,9 +302,11 @@ namespace DataDynamics.PageFX.FLI
             {
                 return !type.IsArrayInitializer();
             }
+
             if (type.IsEnum)
                 type = type.ValueType;
-            var st = type.SystemType;
+
+            var st = type.SystemType();
             if (st != null)
             {
                 switch (st.Code)
@@ -316,6 +318,7 @@ namespace DataDynamics.PageFX.FLI
                         return true;
                 }
             }
+
             return false;
         }
 

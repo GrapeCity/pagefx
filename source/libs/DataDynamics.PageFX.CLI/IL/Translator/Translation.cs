@@ -698,7 +698,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
             var v = Peek();
             if (instr == null)
-                instr = v.instruction;
+                instr = v.Instruction;
 
             if (instr != null)
             {
@@ -710,7 +710,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
             }
 
-            if (v.value.Kind == ValueKind.Token)
+            if (v.Value.Kind == ValueKind.Token)
                 return false;
 
             var vtype = v.Type;
@@ -971,7 +971,7 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 var stack = bb.Stack;
                 var item = stack.Pop();
-                stack.PushResult(item.instruction, target);
+                stack.PushResult(item.Instruction, target);
 
                 var code = bb.TranslatedCode;
                 int n = code.Count;
@@ -1059,7 +1059,7 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 v = Peek();
                 if (v.IsPointer)
-                    ptr = v.value;
+                    ptr = v.Value;
                 return _instruction.BoxingType;
             }
 
@@ -1072,7 +1072,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
             v = Peek();
             if (v.IsPointer)
-                ptr = v.value;
+                ptr = v.Value;
 
             if (IsBoxableType(v.Type))
                 return v.Type;

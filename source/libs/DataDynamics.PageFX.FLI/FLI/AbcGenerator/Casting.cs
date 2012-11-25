@@ -458,11 +458,11 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region Cache of Casting Operators
-        static string GetCastOperatorKey(IType source, IType target)
+        private static string GetCastOperatorKey(IType source, IType target)
         {
-            var s = source.SystemType;
+            var s = source.SystemType();
             if (s == null) return null;
-            var t = target.SystemType;
+            var t = target.SystemType();
             if (t == null) return null;
             return ((int)s.Code).ToString() + ((int)t.Code);
         }

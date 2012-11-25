@@ -145,7 +145,7 @@ namespace DataDynamics.PageFX.CLI.IL
             else if (instr.Code == InstructionCode.Newarr)
             {
                 var n = stack.Pop();
-                var last = n.last;
+                var last = n.Last;
                 stack.Push(new EvalItem(instr, last));
             }
             else
@@ -205,9 +205,9 @@ namespace DataDynamics.PageFX.CLI.IL
             {
                 var p = method.Parameters[i];
                 var arg = stack.Pop();
-                last = arg.last;
-                SetParam(arg.instruction, p, method);
-                p.Instruction = arg.instruction;
+                last = arg.Last;
+                SetParam(arg.Instruction, p, method);
+                p.Instruction = arg.Instruction;
                 //p.Instruction = last;
 
                 if (isGetTypeFromHandle && !arg.IsTypeToken)
@@ -219,9 +219,9 @@ namespace DataDynamics.PageFX.CLI.IL
             if (instr.HasReceiver())
             {
                 var r = stack.Pop();
-                last = r.last;
-                r.instruction.ReceiverFor = instr;
-                r.instruction.BoxingType = ResolveBoxingType(instr, type);
+                last = r.Last;
+                r.Instruction.ReceiverFor = instr;
+                r.Instruction.BoxingType = ResolveBoxingType(instr, type);
             }
 
             last = FixReceiverInsertPoint(last, method);
@@ -438,7 +438,7 @@ namespace DataDynamics.PageFX.CLI.IL
             dup = null;
             if (stack.Count == 0) return false;
             var v = stack.Peek();
-            dup = v.instruction;
+            dup = v.Instruction;
             if (dup == null) return false;
             return dup.Code == InstructionCode.Dup;
         }

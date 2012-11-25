@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CodeModel
 		public static T Find<T>(this IParameterizedMemberCollection<T> collection, string name, Func<T, bool> predicate)
 			where T : IParameterizedMember
 		{
-			return collection.Find(name).Where(predicate).FirstOrDefault();
+			return collection.Find(name).FirstOrDefault(predicate);
 		}
 
 		public static T Find<T>(this IParameterizedMemberCollection<T> collection, string name, int argc)

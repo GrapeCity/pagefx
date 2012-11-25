@@ -654,7 +654,7 @@ namespace DataDynamics.PageFX.FLI
 
         private static object ToIntegralType(IType type, object value)
         {
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st == null)
                 throw new ArgumentException("Type is not system");
             switch (st.Code)

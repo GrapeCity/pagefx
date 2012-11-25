@@ -47,7 +47,7 @@ namespace DataDynamics.PageFX.FLI
         {
             if (type == null) return false;
 
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st != null) return false;
 
             switch (type.FullName)

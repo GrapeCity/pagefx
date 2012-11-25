@@ -226,24 +226,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return _valueType;
             }
         }
-        IType _valueType;
-
-        public SystemType SystemType
-        {
-            get { return _systemType; }
-            set
-            {
-                if (value != _systemType)
-                {
-                    if (_systemType != null)
-                        _systemType.Value = null;
-                    _systemType = value;
-                    if (_systemType != null)
-                        _systemType.Value = this;
-                }
-            }
-        }
-        SystemType _systemType;
+        private IType _valueType;
 
         public ClassLayout Layout { get; set; }
 
@@ -317,7 +300,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get
             {
-                var st = SystemType;
+                var st = this.SystemType();
                 return st != null ? st.CSharpKeyword : "";
             }
         }
@@ -478,7 +461,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static string GetKeyword(string lang, IType type)
         {
-            var st = type.SystemType;
+            var st = type.SystemType();
             if (st != null)
             {
                 string name = st.Code.EnumString(lang);

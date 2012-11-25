@@ -64,8 +64,6 @@ namespace DataDynamics.PageFX.CodeModel
 
         IType ValueType { get; }
 
-        SystemType SystemType { get; set; }
-        
         /// <summary>
         /// Gets the fields declared in this type.
         /// </summary>
