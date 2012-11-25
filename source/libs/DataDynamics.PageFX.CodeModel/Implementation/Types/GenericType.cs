@@ -32,7 +32,7 @@ namespace DataDynamics.PageFX.CodeModel
                     {
                         var arrayType = (IArrayType)type;
                         var elemType = Resolve(contextType, contextMethod, arrayType.ElementType);
-                        if (elemType != arrayType.ElementType)
+                        if (!ReferenceEquals(elemType, arrayType.ElementType))
                             return TypeFactory.MakeArray(elemType, arrayType.Dimensions);
                         return type;
                     }
@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.CodeModel
                     {
                         var ct = (ICompoundType)type;
                         var elemType = Resolve(contextType, contextMethod, ct.ElementType);
-                        if (elemType != ct.ElementType)
+                        if (!ReferenceEquals(elemType, ct.ElementType))
                             return TypeFactory.MakePointerType(elemType);
                         return type;
                     }
@@ -50,7 +50,7 @@ namespace DataDynamics.PageFX.CodeModel
                     {
                         var ct = (ICompoundType)type;
                         var elemType = Resolve(contextType, contextMethod, ct.ElementType);
-                        if (elemType != ct.ElementType)
+                        if (!ReferenceEquals(elemType, ct.ElementType))
                             return TypeFactory.MakeReferenceType(elemType);
                         return type;
                     }

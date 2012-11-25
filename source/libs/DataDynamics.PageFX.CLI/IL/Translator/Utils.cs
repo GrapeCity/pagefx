@@ -23,35 +23,32 @@ namespace DataDynamics.PageFX.CLI.IL
 
 	    private void Cast(Code code, IType source, IType target)
         {
-            if (target != source)
-            {
-                var cast = _provider.Cast(source, target, false);
-                if (cast != null)
-                    code.AddRange(cast);
-            }
+		    if (ReferenceEquals(target, source)) return;
+
+		    var cast = _provider.Cast(source, target, false);
+		    if (cast != null)
+			    code.AddRange(cast);
         }
 
 		private void Cast(Code code, IType source, IType target, bool swap)
         {
-            if (target != source)
-            {
-                if (swap) Swap(code);
-                Cast(code, source, target);
-                if (swap) Swap(code);
-            }
+			if (ReferenceEquals(target, source)) return;
+			if (swap) Swap(code);
+			Cast(code, source, target);
+			if (swap) Swap(code);
         }
 
-		private static IType GetBitwiseCD(IType lt, IType rt)
+		private static IType GetBitwiseCD(IType leftType, IType rightType)
         {
-            if (lt.IsEnum)
-                lt = lt.ValueType;
-            if (rt.IsEnum)
-                rt = rt.ValueType;
+            if (leftType.IsEnum)
+                leftType = leftType.ValueType;
+            if (rightType.IsEnum)
+                rightType = rightType.ValueType;
 
-            var l = lt.SystemType();
+            var l = leftType.SystemType();
             if (l == null)
                 throw new ILTranslatorException();
-            var r = rt.SystemType();
+            var r = rightType.SystemType();
             if (r == null)
                 throw new ILTranslatorException();
             if (!l.IsNumeric)
@@ -65,10 +62,10 @@ namespace DataDynamics.PageFX.CLI.IL
                     switch (r.Code)
                     {
                         case SystemTypeCode.Decimal:
-                            return rt;
+                            return rightType;
 
                         default:
-                            return lt;
+                            return leftType;
                     }
 
                 case SystemTypeCode.Single:
@@ -76,43 +73,43 @@ namespace DataDynamics.PageFX.CLI.IL
                     {
                         case SystemTypeCode.Decimal:
                         case SystemTypeCode.Double:
-                            return rt;
+                            return rightType;
 
                         default:
-                            return lt;
+                            return leftType;
                     }
 
                 case SystemTypeCode.Boolean:
-                    return rt;
+                    return rightType;
 
                 case SystemTypeCode.Int8:
                 case SystemTypeCode.UInt8:
                     if (r.Size <= 1)
-                        return lt;
-                    return rt;
+                        return leftType;
+                    return rightType;
 
                 case SystemTypeCode.Int16:
                 case SystemTypeCode.UInt16:
                 case SystemTypeCode.Char:
                     if (r.Size <= 2)
-                        return lt;
-                    return rt;
+                        return leftType;
+                    return rightType;
 
                 case SystemTypeCode.Int32:
                 case SystemTypeCode.UInt32:
                     if (r.Size <= 4)
-                        return lt;
-                    return rt;
+                        return leftType;
+                    return rightType;
 
                 case SystemTypeCode.Int64:
                 case SystemTypeCode.UInt64:
                     if (r.Size <= 8)
-                        return lt;
-                    return rt;
+                        return leftType;
+                    return rightType;
 
                 case SystemTypeCode.Decimal:
                 default:
-                    return lt;
+                    return leftType;
             }
         }
 

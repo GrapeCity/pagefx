@@ -452,11 +452,6 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			return false;
 		}
 
-		public IInstruction[] UnwrapString()
-		{
-			return NopArray;
-		}
-
 		public bool HasCopy(IType type)
 		{
 			return true;

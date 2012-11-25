@@ -340,7 +340,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		private object CompileExceptionType(IType type)
 		{
-			if (type == null || type == SystemTypes.Object || type == SystemTypes.Exception)
+			if (type == null || type.Is(SystemTypeCode.Object) || type.Is(SystemTypeCode.Exception))
 			{
 				return JsUndefined.Value;
 			}
@@ -1100,14 +1100,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			}
 
 			var baseType = type.BaseType;
-			var baseClass = CompileClass(baseType == SystemTypes.ValueType || type.IsEnum ? SystemTypes.Object : baseType);
+			var baseClass = CompileClass(baseType.Is(SystemTypeCode.ValueType) || type.IsEnum ? SystemTypes.Object : baseType);
 
 			if (string.IsNullOrEmpty(type.Namespace))
 				_program.DefineNamespace("$global");
 			else
 				_program.DefineNamespace(type.Namespace);
 
-			klass = new JsClass(type, baseType == SystemTypes.ValueType || type.IsString() ? null : baseClass);
+			klass = new JsClass(type, baseType.Is(SystemTypeCode.ValueType) || type.IsString() ? null : baseClass);
 
 			type.Tag = klass;
 
@@ -1222,7 +1222,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		{
 			if (type.IsInterface || type is ICompoundType)
 				return true;
-			if (type == SystemTypes.Type || type == SystemTypes.Array)
+			if (type.Is(SystemTypeCode.Type) || type.Is(SystemTypeCode.Array))
 				return true;
 			return false;
 		}

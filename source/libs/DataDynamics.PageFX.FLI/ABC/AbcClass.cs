@@ -77,7 +77,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             get
             {
                 if (_instance != null)
-                    return _instance.ABC;
+                    return _instance.Abc;
                 return null;
             }
         }

@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.CodeModel
             DeclaringType = declType;
 
             _retType = GenericType.Resolve(declType, this, _method.Type);
-            if (_retType != _method.Type)
+            if (!ReferenceEquals(_retType, _method.Type))
                 _signatureChanged = true;
 
             foreach (var p in method.Parameters)
@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.CodeModel
                 var p2 = new Parameter(ptype, p.Name, p.Index);
                 _params.Add(p2);
 
-                if (ptype != p.Type)
+                if (!ReferenceEquals(ptype, p.Type))
                 {
                     _signatureChanged = true;
                     p2.HasResolvedType = true;

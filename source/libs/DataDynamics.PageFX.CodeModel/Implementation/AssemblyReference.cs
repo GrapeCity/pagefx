@@ -105,7 +105,7 @@ namespace DataDynamics.PageFX.CodeModel
                 s.Append('.');
                 s.Append(Version.Revision);
                 s.Append(", Culture=");
-            	s.Append(Culture == CultureInfo.InvariantCulture ? "neutral" : Culture.Name);
+            	s.Append(ReferenceEquals(Culture, CultureInfo.InvariantCulture) ? "neutral" : Culture.Name);
             	if (PublicKeyToken != null && PublicKeyToken.Length > 0)
                 {
                     s.Append(", PublicKeyToken=");

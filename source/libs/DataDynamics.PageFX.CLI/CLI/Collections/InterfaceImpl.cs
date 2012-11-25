@@ -64,7 +64,7 @@ namespace DataDynamics.PageFX.CLI.Collections
 
 		public bool Contains(IType type)
 		{
-			return type != null && this.Any(x => x == type);
+			return type != null && this.Any(x => ReferenceEquals(x, type));
 		}
 
 		public IEnumerator<IType> GetEnumerator()

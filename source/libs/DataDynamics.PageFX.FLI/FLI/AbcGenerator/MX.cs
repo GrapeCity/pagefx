@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.FLI
     	private void DefineFlexAppMembers(AbcInstance instance)
         {
             if (!IsMxApplication) return;
-            if (instance.Type != sfc.TypeFlexApp) return;
+            if (!ReferenceEquals(instance.Type, sfc.TypeFlexApp)) return;
 
             if (AbcGenConfig.FlexAppCtorAsHandler)
                 DefineFlexAppInitializer(instance);

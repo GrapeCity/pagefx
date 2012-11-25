@@ -167,7 +167,7 @@ namespace DataDynamics.PageFX.CodeModel
 				return null;
 
 			var arg = attr.Arguments[0];
-			if (arg.Type == SystemTypes.Type)
+			if (arg.Type.Is(SystemTypeCode.Type))
 				return (IType)arg.Value;
 
 			return null;
@@ -183,10 +183,10 @@ namespace DataDynamics.PageFX.CodeModel
 				return null;
 
 			var arg = attr.Arguments[0];
-			if (arg.Type == SystemTypes.String)
+			if (arg.Type.Is(SystemTypeCode.String))
 				return (string)arg.Value;
 
-			if (arg.Type == SystemTypes.Type)
+			if (arg.Type.Is(SystemTypeCode.Type))
 			{
 				var type = (IType)arg.Value;
 				return type.FullName;

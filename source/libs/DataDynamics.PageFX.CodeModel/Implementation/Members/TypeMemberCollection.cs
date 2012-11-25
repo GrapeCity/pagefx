@@ -94,7 +94,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public void Add(ITypeMember m)
         {
-            if (m.DeclaringType == _owner)
+            if (ReferenceEquals(m.DeclaringType, _owner))
                 return;
 
             m.DeclaringType = _owner;

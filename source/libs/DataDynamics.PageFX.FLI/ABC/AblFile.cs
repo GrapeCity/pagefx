@@ -245,7 +245,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         static void BuildDeps(AblFile abl, SwcFile swc, AbcInstance instance)
         {
-            var abc = instance.ABC;
+            var abc = instance.Abc;
 
             BuildTypeRefs(abl, swc, abc, instance);
             BuildNamespaceRefs(abl, abc, swc);
@@ -260,9 +260,9 @@ namespace DataDynamics.PageFX.FLI.ABC
                 if (type != null) //file ref
                 {
                     if (type == instance) continue;
-                    if (type.ABC == abc) continue;
+                    if (type.Abc == abc) continue;
 
-                    var dep = new DepFileRef(type.ABC.Index) { Kind = tr.DepKind };
+                    var dep = new DepFileRef(type.Abc.Index) { Kind = tr.DepKind };
                     abc.AddDep(dep);
                 }
                 else //external type ref

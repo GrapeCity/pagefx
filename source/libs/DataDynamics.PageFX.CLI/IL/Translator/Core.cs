@@ -726,7 +726,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 Cast(code, valType, type);
             }
 
-            if (type == SystemTypes.String)
+            if (type.Is(SystemTypeCode.String))
             {
 				// String are implemented via native string, so no need to copy it.
             }
@@ -746,11 +746,8 @@ namespace DataDynamics.PageFX.CLI.IL
             var method = _instruction.ParameterFor;
             if (MustPreventBoxing(method, p))
             {
-                if (valueType == SystemTypes.String)
+                if (valueType.Is(SystemTypeCode.String))
                 {
-                    var il = _provider.UnwrapString();
-                    if (il != null)
-                        code.AddRange(il);
                     _castToParamType = false;
                     return;
                 }
@@ -1534,13 +1531,13 @@ namespace DataDynamics.PageFX.CLI.IL
             if (next.BasicBlock != _instruction.BasicBlock) return false;
             if (next.Code != InstructionCode.Ret) return false;
 
-            if (IsUI64(targetType))
+            if (targetType.IsInt64())
             {
                 var st = sourceType.SystemType();
                 if (st != null && st.IsIntegral32)
                 {
                     var retType = ReturnType;
-                    if (IsUI64(retType))
+                    if (retType.IsInt64())
                     {
                         _provider.DonotCopyReturnValue = true;
                         PushResult(retType);
@@ -1553,11 +1550,7 @@ namespace DataDynamics.PageFX.CLI.IL
             return false;
         }
 
-		private static bool IsUI64(IType type)
-        {
-            return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
-        }
-        #endregion
+	    #endregion
 
         #region cast, isinst, box, unbox
 		private IInstruction[] Op_Castclass()
@@ -1685,7 +1678,7 @@ namespace DataDynamics.PageFX.CLI.IL
             bool basecall = false;
             if (!thiscall && !virtcall
 				&& !method.IsStatic && !method.IsConstructor
-                && receiverType != method.DeclaringType)
+                && !ReferenceEquals(receiverType, method.DeclaringType))
                 basecall = receiverType.IsSubclassOf(method.DeclaringType);
 
             if (basecall) flags |= CallFlags.Basecall;

@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.FLI.SWC
             AddNamespaceRef("AS3");
 
             GetSigRefs();
-            GetExpressionRefs(def.ABC);
+            GetExpressionRefs(def.Abc);
 
 			return _deps.Select(d => new[] { d.ID, d.Type }).ToList();
         }

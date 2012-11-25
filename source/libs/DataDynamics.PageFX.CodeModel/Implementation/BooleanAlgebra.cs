@@ -24,12 +24,7 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public static class BooleanAlgebra
     {
-        public static bool IsBoolean(IType type)
-        {
-            return type == SystemTypes.Boolean;
-        }
-
-        public static int ToBooleanConstant(IExpression e)
+	    public static int ToBooleanConstant(IExpression e)
         {
             var ce = e as IConstantExpression;
             if (ce != null)
@@ -151,10 +146,10 @@ namespace DataDynamics.PageFX.CodeModel
                 if (be != null)
                 {
                     var be2 = InvertBoolOrRelation(be);
-                    if (be2 != be) return be2;
+                    if (!ReferenceEquals(be2, be)) return be2;
                 }
                 var e2 = Simplify(e.Expression);
-                if (e2 != e.Expression)
+                if (!ReferenceEquals(e2, e.Expression))
                     return new UnaryExpression(e2, UnaryOperator.BooleanNot);
             }
             return e;
@@ -162,7 +157,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         private static IExpression SimplifyEquality(IExpression left, IExpression right, BinaryOperator op)
         {
-            if (IsBoolean(left.ResultType))
+            if (left.ResultType.Is(SystemTypeCode.Boolean))
             {
                 if (op == BinaryOperator.Equality)
                 {
@@ -223,7 +218,7 @@ namespace DataDynamics.PageFX.CodeModel
                     right = InvertRelation(right as IBinaryExpression);
                     return new BinaryExpression(left, right, op);
                 }
-                if (left != e.Left || right != e.Right)
+                if (!ReferenceEquals(left, e.Left) || !ReferenceEquals(right, e.Right))
                     return new BinaryExpression(left, right, op);
                 return e;
             }
@@ -240,7 +235,7 @@ namespace DataDynamics.PageFX.CodeModel
         public static IExpression Simplify(IExpression e)
         {
             var type = e.ResultType;
-            if (IsBoolean(type))
+            if (type.Is(SystemTypeCode.Boolean))
             {
                 var ce = e as IConditionExpression;
                 if (ce != null)
@@ -292,11 +287,11 @@ namespace DataDynamics.PageFX.CodeModel
             if (be != null)
             {
                 e2 = InvertBoolOrRelation(be);
-                if (e2 != e) return e2;
+                if (!ReferenceEquals(e2, e)) return e2;
             }
 
             e2 = ToBool(e, BinaryOperator.Equality);
-            if (e2 != e) return e2;
+            if (!ReferenceEquals(e2, e)) return e2;
 
             return new UnaryExpression(e, UnaryOperator.BooleanNot);
         }
@@ -316,33 +311,35 @@ namespace DataDynamics.PageFX.CodeModel
         private static IExpression ToBool(IExpression e, BinaryOperator op)
         {
             var type = e.ResultType;
-            if (!IsBoolean(type))
-            {
-                var st = type.SystemType();
-                if (st != null)
-                {
-                    switch (st.Code)
-                    {
-                        case SystemTypeCode.Int8:
-                        case SystemTypeCode.UInt8:
-                        case SystemTypeCode.Int16:
-                        case SystemTypeCode.UInt16:
-                        case SystemTypeCode.Int32:
-                        case SystemTypeCode.UInt32:
-                        case SystemTypeCode.Int64:
-                        case SystemTypeCode.UInt64:
-                        case SystemTypeCode.Single:
-                        case SystemTypeCode.Double:
-                        case SystemTypeCode.Decimal:
-                            return new BinaryExpression(e, new ConstExpression(0), op);
+	        if (type.Is(SystemTypeCode.Boolean))
+	        {
+		        return e;
+	        }
 
-                        case SystemTypeCode.Char:
-                            return new BinaryExpression(e, new ConstExpression('\0'), op);
-                    }
-                }
-                return new BinaryExpression(e, new ConstExpression(null), op);
-            }
-            return e;
+	        var st = type.SystemType();
+	        if (st != null)
+	        {
+		        switch (st.Code)
+		        {
+			        case SystemTypeCode.Int8:
+			        case SystemTypeCode.UInt8:
+			        case SystemTypeCode.Int16:
+			        case SystemTypeCode.UInt16:
+			        case SystemTypeCode.Int32:
+			        case SystemTypeCode.UInt32:
+			        case SystemTypeCode.Int64:
+			        case SystemTypeCode.UInt64:
+			        case SystemTypeCode.Single:
+			        case SystemTypeCode.Double:
+			        case SystemTypeCode.Decimal:
+				        return new BinaryExpression(e, new ConstExpression(0), op);
+
+			        case SystemTypeCode.Char:
+				        return new BinaryExpression(e, new ConstExpression('\0'), op);
+		        }
+	        }
+			
+	        return new BinaryExpression(e, new ConstExpression(null), op);
         }
 
         public static IExpression ToBool(IExpression e)

@@ -288,7 +288,7 @@ namespace DataDynamics.PageFX.CLI.IL
             IType type2 = null;
             if (!PeekType(e2, ref type2)) return;
 
-            if (type1 == type2) return;
+            if (ReferenceEquals(type1, type2)) return;
 
             var commonAncestor = type1.GetCommonAncestor(type2);
 
@@ -621,8 +621,9 @@ namespace DataDynamics.PageFX.CLI.IL
             var m = call.Method;
             if (m.IsStatic) return;
             if (m.IsConstructor) return;
+
             var rtype = PeekType();
-            if (rtype != m.DeclaringType)
+            if (!ReferenceEquals(rtype, m.DeclaringType))
             {
                 var cast = new Code();
                 Cast(cast, rtype, m.DeclaringType);
@@ -716,7 +717,7 @@ namespace DataDynamics.PageFX.CLI.IL
             var vtype = v.Type;
             var ptype = GetParamType(p);
 
-            if (vtype != ptype)
+            if (!ReferenceEquals(vtype, ptype))
             {
                 CheckCast(vtype, ptype);
 
@@ -754,24 +755,24 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             if (source.IsNumeric())
             {
-                if (!IsNumEnumOrObject(target))
+                if (!IsNumericOrEnumOrObject(target))
                     return true;
             }
             else if (target.IsNumeric())
             {
-                if (!IsNumEnumOrObject(source))
+                if (!IsNumericOrEnumOrObject(source))
                     return true;
             }
             return false;
         }
 
-		private static bool IsNumEnumOrObject(IType type)
+		private static bool IsNumericOrEnumOrObject(IType type)
         {
             if (type == null) return false;
             return type.IsNumeric()
                    || type.IsEnum
-                   || type == SystemTypes.Object
-                   || type == SystemTypes.ValueType;
+                   || type.Is(SystemTypeCode.Object)
+                   || type.Is(SystemTypeCode.ValueType);
         }
         #endregion
 
@@ -893,7 +894,7 @@ namespace DataDynamics.PageFX.CLI.IL
             var topF = F.Stack.Peek();
             var typeT = topT.Type;
             var typeF = topF.Type;
-            if (typeT == typeF && typeT == type) return false;
+            if (ReferenceEquals(typeT, typeF) && ReferenceEquals(typeT, type)) return false;
 
             if (IsInvalidCast(typeT, type))
                 return false;
@@ -901,10 +902,10 @@ namespace DataDynamics.PageFX.CLI.IL
             if (IsInvalidCast(typeF, type))
                 return false;
 
-            if (typeT != type)
+            if (!ReferenceEquals(typeT, type))
                 InsertCast(T, typeT, type);
 
-            if (typeF != type)
+            if (!ReferenceEquals(typeF, type))
                 InsertCast(F, typeF, type);
 
             return true;
@@ -960,9 +961,9 @@ namespace DataDynamics.PageFX.CLI.IL
             return tn == fn;
         }
 
-        void InsertCast(Node bb, IType source, IType target)
+        private void InsertCast(Node bb, IType source, IType target)
         {
-            if (source == target) return;
+            if (ReferenceEquals(source, target)) return;
 
             CheckCast(source, target);
 
@@ -1024,17 +1025,12 @@ namespace DataDynamics.PageFX.CLI.IL
         }
 
 		private void EmitCast(IType source, IType target)
-        {
-            if (target != source)
-            {
-                //Not working for arrays
-                //Pop();
-                //PushResult(target);
-                EmitBlockCode(_provider.Cast(source, target, false));
-            }
-        }
+		{
+			if (ReferenceEquals(target, source)) return;
+			EmitBlockCode(_provider.Cast(source, target, false));
+		}
 
-		private void EmitSwap()
+	    private void EmitSwap()
         {
             var i = _provider.Swap();
             if (i == null)

@@ -276,7 +276,7 @@ namespace DataDynamics.PageFX.FLI.SWF
         private SwfTag CreateImageTag(int id, Image image)
         {
             int ver = Version;
-            if (image.RawFormat == ImageFormat.Jpeg)
+            if (ReferenceEquals(image.RawFormat, ImageFormat.Jpeg))
                 return new SwfTagDefineBitsJPEG2(id, image);
 
             if (ver >= 3)

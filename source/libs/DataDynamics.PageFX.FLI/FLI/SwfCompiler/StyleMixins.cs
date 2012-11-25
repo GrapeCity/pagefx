@@ -69,7 +69,7 @@ namespace DataDynamics.PageFX.FLI
 			{
 				string name = mixin.FullName;
 				AddMixin(name);
-				app.Import(mixin.ABC);
+				app.Import(mixin.Abc);
 			}
 		}
 

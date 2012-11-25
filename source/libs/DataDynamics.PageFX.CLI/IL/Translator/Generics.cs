@@ -55,7 +55,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 }
 
                 var type = ResolveType(var.Type);
-                if (type != var.Type)
+                if (!ReferenceEquals(type, var.Type))
                 {
                     if (var.GenericType == null)
                         var.GenericType = var.Type;
@@ -81,13 +81,14 @@ namespace DataDynamics.PageFX.CLI.IL
                 if (hb.GenericExceptionType != null)
                     hb.ExceptionType = hb.GenericExceptionType;
                 var type = ResolveType(hb.ExceptionType);
-                if (type != hb.ExceptionType)
+                if (!ReferenceEquals(type, hb.ExceptionType))
                 {
                     if (hb.GenericExceptionType == null)
                         hb.GenericExceptionType = hb.ExceptionType;
                     hb.ExceptionType = type;
                 }
             }
+
             ResolveGenericExceptions(block.Kids);
 
             var pb = block as TryCatchBlock;

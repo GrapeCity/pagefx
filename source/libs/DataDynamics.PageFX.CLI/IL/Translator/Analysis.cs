@@ -419,7 +419,7 @@ namespace DataDynamics.PageFX.CLI.IL
 
         private bool IsBoxableType(IType type)
         {
-            return type != null && type != _declType
+            return type != null && !ReferenceEquals(type, _declType)
                    && type.IsBoxableType();
         }
 

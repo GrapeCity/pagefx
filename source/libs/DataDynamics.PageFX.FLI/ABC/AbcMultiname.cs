@@ -510,7 +510,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 			return new object[] { Namespace, NamespaceSet, _name }.EvalHashCode() ^ (int)Kind;
         }
 
-        bool HasNamespace(AbcNamespace ns)
+        private bool HasNamespace(AbcNamespace ns)
         {
             if (NamespaceSet == null) return false;
             return ((IEnumerable<AbcNamespace>)NamespaceSet).Contains(ns);
@@ -518,47 +518,39 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public bool IsQName
         {
-            get
-            {
-                return Kind == AbcConstKind.QName || Kind == AbcConstKind.QNameA; 
-            }
+            get { return Kind == AbcConstKind.QName || Kind == AbcConstKind.QNameA; }
         }
 
         public bool IsMultiname
         {
-            get
-            {
-                return Kind == AbcConstKind.Multiname
-                    || Kind == AbcConstKind.MultinameA;
-            }
+            get { return Kind == AbcConstKind.Multiname || Kind == AbcConstKind.MultinameA; }
         }
 
         public override bool Equals(object obj)
         {
             if (obj == this) return true;
+
             var mn = obj as AbcMultiname;
             if (mn != null)
             {
                 if (mn.Kind == Kind)
                 {
-                    if (!Equals(mn._name, _name)) return false;
-                    if (!Equals(mn.Namespace, Namespace)) return false;
-                    if (!Equals(mn.NamespaceSet, NamespaceSet)) return false;
-                    return true;
+	                return Equals(mn._name, _name)
+	                       && Equals(mn.Namespace, Namespace)
+	                       && Equals(mn.NamespaceSet, NamespaceSet);
                 }
                 if (IsQName && mn.IsMultiname)
                 {
-                    if (!Equals(mn._name, _name)) return false;
-                    return mn.HasNamespace(Namespace);
+	                return Equals(mn._name, _name) && mn.HasNamespace(Namespace);
                 }
-                if (mn.IsQName && IsMultiname)
-                {
-                    if (!Equals(mn._name, _name)) return false;
-                    return HasNamespace(mn.Namespace);
-                }
-                return false;
+	            if (mn.IsQName && IsMultiname)
+	            {
+		            return Equals(mn._name, _name) && HasNamespace(mn.Namespace);
+	            }
+	            return false;
             }
-            string s = obj as string;
+
+            var s = obj as string;
             return s != null && Equals(s);
         }
 

@@ -91,7 +91,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 					_toString.Value = Type.FindMethodHierarchically(
 						"ToString",
 						x => x.Parameters.Count == 0,
-						x => x == SystemTypes.ValueType || x == SystemTypes.Object);
+						x => x.Is(SystemTypeCode.ValueType) || x.Is(SystemTypeCode.Object));
 				}
 				return _toString.Value;
 			}
@@ -155,7 +155,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			var list = new List<IType>();
 
-			while (type != null && type != SystemTypes.Object && type != SystemTypes.ValueType)
+			while (type != null && !type.Is(SystemTypeCode.Object) && !type.Is(SystemTypeCode.ValueType))
 			{
 				list.Add(type);
 

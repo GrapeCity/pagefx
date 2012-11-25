@@ -4,15 +4,7 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public static class ExpressionService
     {
-        public static bool CanStatement(IExpression e)
-        {
-            if (e is ICallExpression) return true;
-            var be = e as IBinaryExpression;
-            if (be != null) return be.Operator == BinaryOperator.Assign;
-            return false;
-        }
-
-        public static bool CanBrace(IExpression e)
+	    public static bool CanBrace(IExpression e)
         {
             if (e is IBinaryExpression) return true;
             if (e is IConditionExpression) return true;
@@ -95,12 +87,7 @@ namespace DataDynamics.PageFX.CodeModel
             }
         }
 
-        public static bool IsConst(IExpression e)
-        {
-            return e is IConstantExpression;
-        }
-
-        public static IExpression ToChar(IExpression e)
+	    public static IExpression ToChar(IExpression e)
         {
             var constExp = e as IConstantExpression;
             if (constExp != null)
@@ -124,7 +111,7 @@ namespace DataDynamics.PageFX.CodeModel
             var castExp = e as ICastExpression;
             if (castExp != null && castExp.Operator == CastOperator.Cast)
             {
-                if (castExp.TargetType == SystemTypes.UInt16)
+                if (castExp.TargetType.Is(SystemTypeCode.UInt16))
                 {
                     castExp.TargetType = SystemTypes.Char;
                     return e;
@@ -136,10 +123,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static IExpression FixConstant(IExpression e, IType type)
         {
-            if (type == SystemTypes.Boolean)
+            if (type.Is(SystemTypeCode.Boolean))
                 return BooleanAlgebra.ToBool(e);
 
-            if (type == SystemTypes.Char)
+            if (type.Is(SystemTypeCode.Char))
                 return ToChar(e);
 
             return e;

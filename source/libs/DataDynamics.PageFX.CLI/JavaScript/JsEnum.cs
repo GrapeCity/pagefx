@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				//TODO: inline [U]Int64.GetHashCode implementation
 				func.Body.Add(value.Get("GetHashCode").Call().Return());
 			}
-			else if (type.ValueType != SystemTypes.Int32)
+			else if (!type.ValueType.Is(SystemTypeCode.Int32))
 			{
 				func.Body.Add("$conv".Id().Call(value, type.ValueType.JsTypeCode(), SystemTypes.Int32.JsTypeCode()).Return());
 			}

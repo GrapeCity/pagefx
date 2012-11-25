@@ -617,9 +617,8 @@ namespace DataDynamics.PageFX.FLI
 		private static bool HasSameBaseMethod(this IMethod method)
 		{
 			var bm = method.BaseMethod;
-			if (bm == null) return false;
-			if (bm.Type != method.Type) return false;
-			return AreEquals(bm.Visibility, method.Visibility);
+			return bm != null && ReferenceEquals(bm.Type, method.Type)
+			       && AreEquals(bm.Visibility, method.Visibility);
 		}
 
 		public static bool IsObjectOverrideMethod(this IMethod method)
@@ -638,17 +637,17 @@ namespace DataDynamics.PageFX.FLI
 			return false;
 		}
 
-		public static bool IsStaticCall(this IMethod m)
+		public static bool IsStaticCall(this IMethod method)
 		{
-			return m.IsStatic || m.AsStaticCall();
+			return method.IsStatic || method.AsStaticCall();
 		}
 
-		public static bool AsStaticCall(this IMethod m)
+		public static bool AsStaticCall(this IMethod method)
 		{
-			if (m.IsStatic) return false;
-			if (m.DeclaringType == SystemTypes.String)
+			if (method.IsStatic) return false;
+			if (method.DeclaringType.Is(SystemTypeCode.String))
 			{
-				return !m.IsInternalCall;
+				return !method.IsInternalCall;
 			}
 			return false;
 		}
@@ -718,10 +717,10 @@ namespace DataDynamics.PageFX.FLI
 		{
 			if (m == null) return false;
 			return m.CustomAttributes.Any(attr =>
-			                              	{
-			                              		string type = attr.TypeName;
-			                              		return type == Attrs.ABC || type == Attrs.QName;
-			                              	});
+				{
+					string type = attr.TypeName;
+					return type == Attrs.ABC || type == Attrs.QName;
+				});
 		}
 
 		public static bool IsAbcMethod(this IMethod m)

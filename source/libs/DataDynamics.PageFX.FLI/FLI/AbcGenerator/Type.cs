@@ -288,10 +288,12 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineSuperType
-        void DefineSuperType(IType type, out AbcMultiname superName, out AbcInstance superType)
+		//TODO: avoid usage of out parameters
+        private void DefineSuperType(IType type, out AbcMultiname superName, out AbcInstance superType)
         {
             superName = null;
             superType = null;
+
             if (type.IsInterface) return;
 
             if (type.IsEnum)
@@ -301,7 +303,7 @@ namespace DataDynamics.PageFX.FLI
                 return;
             }
 
-            if (type == SystemTypes.Exception)
+            if (type.Is(SystemTypeCode.Exception))
             {
                 superType = AssemblyTag.AvmGlobalTypes.Error;
                 superName = _abc.BuiltinTypes.Error;
@@ -315,16 +317,16 @@ namespace DataDynamics.PageFX.FLI
                 //In fact .NET developer will never use this class, or no need to use this class.
                 if (baseType.IsAvmObject())
                     baseType = SystemTypes.Object;
+
                 superName = DefineTypeName(baseType);
                 superType = baseType.Tag as AbcInstance;
+				return;
             }
-            else
-            {
-                if (type == SystemTypes.Object)
-                {
-                    superName = _abc.BuiltinTypes.Object;
-                }
-            }
+
+	        if (type.Is(SystemTypeCode.Object))
+	        {
+		        superName = _abc.BuiltinTypes.Object;
+	        }
         }
 
         readonly AbcInstance[] _enumSuperTypes = new AbcInstance[8];
@@ -411,14 +413,14 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineInterfaces
-        static bool OnlyDeclareInterfaces(IType type)
+        private static bool OnlyDeclareInterfaces(IType type)
         {
-            if (type == SystemTypes.String)
+            if (type.Is(SystemTypeCode.String))
                 return true;
             return false;
         }
 
-        IList<AbcMultiname> DefineInterfaces(IType type)
+        private IList<AbcMultiname> DefineInterfaces(IType type)
         {
             if (type.Interfaces == null) return null;
             int n = type.Interfaces.Count;
@@ -510,7 +512,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineMembers
-        void DefineMembers(IType type)
+        private void DefineMembers(IType type)
         {
             var instance = type.Tag as AbcInstance;
             if (instance == null) return;
@@ -521,7 +523,7 @@ namespace DataDynamics.PageFX.FLI
             //For array types we define only System.Array.
             //Therefore in order to correctly define memebers
             //we should use System.Array instead of SomeType[].
-            if (instance.Type != type)
+            if (!ReferenceEquals(instance.Type, type))
                 type = instance.Type;
 
             if (!type.IsInterface)
@@ -632,9 +634,9 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        void DefineCompiledMethods(IType type, AbcInstance super)
+        private void DefineCompiledMethods(IType type, AbcInstance super)
         {
-            if (type == SystemTypes.Exception) return;
+            if (type.Is(SystemTypeCode.Exception)) return;
 
             //NOTE: super.Traits.Count can be changed during execution
             for (int i = 0; i < super.Traits.Count; ++i)

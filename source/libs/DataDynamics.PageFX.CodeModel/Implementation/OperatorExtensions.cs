@@ -161,7 +161,7 @@ namespace DataDynamics.PageFX.CodeModel
             var op = methods.FirstOrDefault(m => m.IsCastOperator(source, target));
             if (check && op == null)
             {
-            	op = FindCastOperator(type == source ? target : source, source, target, false);
+            	op = FindCastOperator(ReferenceEquals(type, source) ? target : source, source, target, false);
             	if (op != null) return op;
                 throw new InvalidOperationException("Unable to find cast operator");
             }
@@ -170,13 +170,12 @@ namespace DataDynamics.PageFX.CodeModel
 
         private static bool IsCastOperator(this IMethod method, IType source, IType target)
         {
-            if (method.Parameters.Count != 1) return false;
-            if (method.Type != target) return false;
-            if (method.Parameters[0].Type != source) return false;
-            return true;
+	        return method.Parameters.Count == 1
+	               && ReferenceEquals(method.Type, target)
+	               && ReferenceEquals(method.Parameters[0].Type, source);
         }
 
-    	public static IMethod FindMethod(this BinaryOperator op, IType left, IType right)
+	    public static IMethod FindMethod(this BinaryOperator op, IType left, IType right)
         {
             string name = op.GetMethodName();
             var set = left.Methods.Find(name);
@@ -200,27 +199,22 @@ namespace DataDynamics.PageFX.CodeModel
         private static bool IsBinaryOperator(this IMethod method, BinaryOperator op, IType left, IType right)
         {
             if (method.Parameters.Count != 2) return false;
-            if (method.Parameters[0].Type != left) return false;
+            if (!ReferenceEquals(method.Parameters[0].Type, left)) return false;
             if (op.IsShift()) return true;
-            if (method.Parameters[1].Type != right) return false;
-            return true;
+            return ReferenceEquals(method.Parameters[1].Type, right);
         }
 
         private static bool IsUnaryOperator(IMethod method, IType type)
         {
-            if (method.Parameters.Count != 1) return false;
-            if (method.Parameters[0].Type != type) return false;
-            return true;
+	        return method.Parameters.Count == 1 && ReferenceEquals(method.Parameters[0].Type, type);
         }
 
-        private static bool IsBooleanOperator(IMethod method)
-        {
-            if (method.Parameters.Count != 1) return false;
-            if (method.Type != SystemTypes.Boolean) return false;
-            return true;
-        }
+	    private static bool IsBooleanOperator(IMethod method)
+	    {
+		    return method.Parameters.Count == 1 && method.Type.Is(SystemTypeCode.Boolean);
+	    }
 
-		private static string GetMethodName(this BinaryOperator op)
+	    private static string GetMethodName(this BinaryOperator op)
 		{
 			return "op_" + op;
 		}

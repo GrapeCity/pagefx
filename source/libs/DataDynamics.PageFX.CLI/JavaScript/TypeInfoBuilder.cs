@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 			var func = new JsFunction(null);
 
-			if (type == SystemTypes.Array)
+			if (type.Is(SystemTypeCode.Array))
 			{
 				func.Body.Add("$types".Id().Get("this".Id().Get("m_type")).Call().Return());
 			}

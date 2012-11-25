@@ -167,12 +167,14 @@ namespace DataDynamics.PageFX.CodeModel
 			// fix for cast operators
 			if (method.IsStatic && method.Name.StartsWith("op_"))
 				return true;
+
 			var baseMethod = method.BaseMethod;
 			if (baseMethod != null)
 			{
-				if (baseMethod.Type != method.Type)
+				if (!ReferenceEquals(baseMethod.Type, method.Type))
 					return true;
 			}
+
 			return false;
 		}
 

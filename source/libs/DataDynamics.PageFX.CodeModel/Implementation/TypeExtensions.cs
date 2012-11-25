@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             if (a == null) return b;
             if (b == null) return a;
-            if (a == b) return a;
+            if (ReferenceEquals(a, b)) return a;
 
             //A : B
             if (a.IsSubclassOf(b))
@@ -52,12 +52,12 @@ namespace DataDynamics.PageFX.CodeModel
 
             //A : C
             //B : C
-            var C = a.BaseType;
-            while (C != null)
+            var c = a.BaseType;
+            while (c != null)
             {
-                if (b.IsSubclassOf(C))
-                    return C;
-                C = C.BaseType;
+                if (b.IsSubclassOf(c))
+                    return c;
+                c = c.BaseType;
             }
 
             return SystemTypes.Object;
@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             if (a == null) return b;
             if (b == null) return a;
-            if (a == b) return a;
+            if (ReferenceEquals(a, b)) return a;
 
             //a : b
             if (a.Implements(b))
@@ -93,7 +93,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             if (a == null) return b;
             if (b == null) return a;
-            if (a == b) return a;
+            if (ReferenceEquals(a, b)) return a;
 
             if (a.IsEnum)
             {
@@ -123,12 +123,12 @@ namespace DataDynamics.PageFX.CodeModel
             return b.IsInterface ? b : a.GetCommonBaseType(b);
         }
 
-        private static readonly string[] GenericArrayInterfaces =
-        {
-            CLRNames.Types.IEnumerableT,
-            CLRNames.Types.ICollectionT,
-            CLRNames.Types.IListT
-        };
+	    private static readonly string[] GenericArrayInterfaces =
+		    {
+			    CLRNames.Types.IEnumerableT,
+			    CLRNames.Types.ICollectionT,
+			    CLRNames.Types.IListT
+		    };
 
         public static bool IsGenericInstance(this IType type, string fullname)
         {
@@ -145,12 +145,11 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static bool IsIEnumerableInstance(this IType type, IType arg)
         {
-            if (!type.IsIEnumerableInstance()) return false;
-            var gi = (IGenericInstance)type;
-            return gi.GenericArguments[0] == arg;
+	        return type.IsIEnumerableInstance()
+	               && ReferenceEquals(((IGenericInstance)type).GenericArguments[0], arg);
         }
 
-        public static bool IsIEnumerableChar(this IType type)
+	    public static bool IsIEnumerableChar(this IType type)
         {
             return type.IsIEnumerableInstance(SystemTypes.Char);
         }
@@ -181,11 +180,11 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static bool IsGenericArrayInterface(this IType type, IType arg)
         {
-            if (!type.IsGenericArrayInterface()) return false;
-            return ((IGenericInstance)type).GenericArguments[0] == arg;
+	        return type.IsGenericArrayInterface()
+	               && ReferenceEquals(((IGenericInstance)type).GenericArguments[0], arg);
         }
 
-        public static IType GetTypeArgument(this IType type, int arg)
+	    public static IType GetTypeArgument(this IType type, int arg)
         {
             var genericInstance = type as IGenericInstance;
 			if (genericInstance == null)
@@ -198,10 +197,10 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static bool IsImplicitCast(this IType source, IType target)
         {
-            if (source == target) return true;
+            if (ReferenceEquals(source, target)) return true;
             if (source == null) return true;
 
-            if (target == SystemTypes.Object)
+            if (target.Is(SystemTypeCode.Object))
                 return true;
 
             switch (target.TypeKind)
@@ -314,12 +313,12 @@ namespace DataDynamics.PageFX.CodeModel
             }
 
             if (type.IsInterface)
-                return type.Interfaces.Any(i => i == iface);
+                return type.Interfaces.Any(i => ReferenceEquals(i, iface));
 
             while (type != null)
             {
                 if (type.Is(SystemTypeCode.Object)) break;
-                if (type.Interfaces.Any(i => i == iface))
+                if (type.Interfaces.Any(i => ReferenceEquals(i, iface)))
                     return true;
                 type = type.BaseType;
             }
@@ -366,14 +365,15 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static bool IsSubclassOf(this IType type, IType baseType)
         {
-            if (type == null) return false;
-            if (baseType == null) return false;
-            var bt = type.BaseType;
-            while (bt != null)
+            if (type == null || baseType == null) return false;
+
+            type = type.BaseType;
+            while (type != null)
             {
-                if (bt == baseType) return true;
-                bt = bt.BaseType;
+                if (ReferenceEquals(type, baseType)) return true;
+                type = type.BaseType;
             }
+
             return false;
         }
 
@@ -442,9 +442,9 @@ namespace DataDynamics.PageFX.CodeModel
 
         static TypeExtensions()
         {
-            const int N = (int)SystemTypeCode.Max;
-            ImplicitNumericConversions = new bool[N,N];
-            ExplicitNumericConversions = new bool[N,N];
+            const int count = (int)SystemTypeCode.Max;
+	        ImplicitNumericConversions = new bool[count,count];
+	        ExplicitNumericConversions = new bool[count,count];
 
             string text = typeof(TypeExtensions).GetTextResource("implicit.txt");
             LoadConversions(text, ImplicitNumericConversions);
@@ -470,63 +470,57 @@ namespace DataDynamics.PageFX.CodeModel
                     var arr = line.Split(sep, StringSplitOptions.RemoveEmptyEntries);
                     int n = arr.Length;
                     var from = SystemType.ParseCode(arr[0]);
-                    if (@from == SystemTypeCode.None)
+                    if (from == SystemTypeCode.None)
                         throw new InvalidOperationException();
                     for (int i = 1; i < n; ++i)
                     {
                         var to = SystemType.ParseCode(arr[i]);
                         if (to != SystemTypeCode.None)
-                            table[(int)@from, (int)to] = true;
+                            table[(int)from, (int)to] = true;
                     }
                 }
             }
         }
 
-        private static bool HasCustomImplicitOperator(IType from, IType to)
+	    public static bool HasImplicitConversion(IType from, IType to)
         {
-            return false;
+            if (ReferenceEquals(from, to)) return true;
+            var sf = from.SystemType();
+            if (sf == null) return false;
+            var st = to.SystemType();
+            if (st == null) return false;
+            return ImplicitNumericConversions[(int)sf.Code, (int)st.Code];
         }
 
-        public static bool HasImplicitConversion(IType from, IType to)
-        {
-            if (from == to) return true;
-            var sf = from.SystemType();
-            if (sf == null)
-                return HasCustomImplicitOperator(from, to);
-            var st = to.SystemType();
-            if (st == null)
-                return HasCustomImplicitOperator(from, to);
-            if (ImplicitNumericConversions[(int)sf.Code, (int)st.Code])
-                return true;
-            return HasCustomImplicitOperator(from, to);
-        }
         #endregion
 
         public static bool IsThisMethod(IMethod thisMethod, IMethod method)
         {
-            if (thisMethod.IsStatic) return false;
-            if (method.IsStatic) return false;
+			if (thisMethod.IsStatic || method.IsStatic) return false;
+            
             var type = method.DeclaringType;
             var t = thisMethod.DeclaringType;
             while (t != null)
             {
-                if (type == t) return true;
+                if (ReferenceEquals(type, t)) return true;
                 t = t.BaseType;
             }
+
             return false;
         }
 
         public static bool IsBaseMethod(this IMethod thisMethod, IMethod baseMethod)
         {
-            if (thisMethod.IsStatic) return false;
-            if (baseMethod.IsStatic) return false;
+            if (thisMethod.IsStatic || baseMethod.IsStatic) return false;
+            
             var type = baseMethod.DeclaringType;
             var t = thisMethod.DeclaringType.BaseType;
             while (t != null)
             {
-                if (type == t) return true;
+                if (ReferenceEquals(type, t)) return true;
                 t = t.BaseType;
             }
+
             return false;
         }
 
@@ -718,13 +712,8 @@ namespace DataDynamics.PageFX.CodeModel
     	{
     		if (type == null) return false;
     		if (type.IsInterface) return false;
-    		int n = 0;
-    		foreach (var m in type.Methods.Where(m => !m.IsStatic && m.IsConstructor))
-    		{
-    			if (n >= 1) return false;
-    			++n;
-    		}
-    		return true;
+    		var ctors = type.Methods.Where(m => !m.IsStatic && m.IsConstructor);
+    		return ctors.Take(2).Count() == 1;
     	}
 
     	public static IType GetElementType(this IType type)
@@ -858,14 +847,15 @@ namespace DataDynamics.PageFX.CodeModel
 
 	    public static bool IsInt64(this IType type)
 	    {
-		    return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
+		    var t = type.SystemType();
+		    return t != null && (t.Code == SystemTypeCode.Int64 || t.Code == SystemTypeCode.UInt64);
 	    }
 
 	    public static bool IsInt64Based(this IType type)
 	    {
 		    if (type.IsEnum)
 			    type = type.ValueType;
-		    return type == SystemTypes.Int64 || type == SystemTypes.UInt64;
+		    return type.IsInt64();
 	    }
 
 	    public static int GetCorlibKind(this IType type)
@@ -876,7 +866,7 @@ namespace DataDynamics.PageFX.CodeModel
 		    {
 			    case TypeKind.Class:
 				    {
-					    if (type == SystemTypes.String)
+					    if (type.Is(SystemTypeCode.String))
 						    return typeCodeOffset + (int)TypeCode.String;
 					    return 0;
 				    }

@@ -65,7 +65,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region DefineStringIConvertibleMethod
-        void DefineStringIConvertibleMethod(IMethod method)
+        private void DefineStringIConvertibleMethod(IMethod method)
         {
             var m = method.Tag as AbcMethod;
             if (m == null) return;
@@ -102,9 +102,7 @@ namespace DataDynamics.PageFX.FLI
             }
             else
             {
-                convertMethod =
-                    convertType.FindMethod(method.Name, paramCount + 1,
-                                  args => args[0].Type == SystemTypes.String);
+                convertMethod = convertType.FindMethod(method.Name, paramCount + 1, args => args[0].Type.Is(SystemTypeCode.String));
             }
 
             if (convertMethod == null)

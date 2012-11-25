@@ -1462,13 +1462,12 @@ namespace DataDynamics.PageFX.FLI.IL
             Generator.DefineType(type);
         }
 
-        static bool AsNative(IType type)
+        private static bool AsNative(IType type)
         {
-            if (type == SystemTypes.Object) return true;
-            return false;
+	        return type.Is(SystemTypeCode.Object);
         }
 
-        public void As(IType type)
+	    public void As(IType type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -1581,7 +1580,7 @@ namespace DataDynamics.PageFX.FLI.IL
             source = ChangeType(source);
             target = ChangeType(target);
 
-            if (source == target)
+            if (ReferenceEquals(source, target))
                 return;
 
             if (checkOverflow)
@@ -1596,7 +1595,7 @@ namespace DataDynamics.PageFX.FLI.IL
                 return;
             }
 
-            if (target == SystemTypes.Object)
+            if (target.Is(SystemTypeCode.Object))
             {
                 if (IsNative(source)) return;
 
@@ -1641,7 +1640,7 @@ namespace DataDynamics.PageFX.FLI.IL
                 return;
             }
 
-            if (target == SystemTypes.String)
+            if (target.Is(SystemTypeCode.String))
             {
                 CastToString();
                 return;
@@ -1650,24 +1649,22 @@ namespace DataDynamics.PageFX.FLI.IL
             Coerce(target, true);
         }
 
-        void CastToString()
+        private void CastToString()
         {
             var m = Generator.DefineCastToString();
             GetlexSwapCall(m);
         }
 
-        static bool IsUnbox(IType source, IType target)
+        private static bool IsUnbox(IType source, IType target)
         {
             if (!target.IsValueType()) return false;
-            if (source == null) return true;
-            if (source == SystemTypes.Object) return true;
-            return false;
+            return source == null || source.Is(SystemTypeCode.Object);
         }
 
         #region CastToStringInterface
-        void CastToStringInterface(IType source, IType target)
+        private void CastToStringInterface(IType source, IType target)
         {
-            if (source == SystemTypes.String)
+            if (source.Is(SystemTypeCode.String))
             {
                 CoerceObject();
                 return;
@@ -1712,12 +1709,12 @@ namespace DataDynamics.PageFX.FLI.IL
         }
         #endregion
 
-        void CastOverflow(IType source, IType target)
+        private void CastOverflow(IType source, IType target)
         {
             CallConvert(source, target);
         }
 
-        void CallCastToMethod(IType target)
+        private void CallCastToMethod(IType target)
         {
             var typeName = abc.GetTypeName(target, true);
             var m = Generator.DefineCastToMethod(target, true);
@@ -1725,14 +1722,13 @@ namespace DataDynamics.PageFX.FLI.IL
             Coerce(typeName);
         }
 
-        void CallCastOp(IType source, IType target, IType type)
+        private void CallCastOp(IType source, IType target, IType type)
         {
             var m = Generator.GetCastOperator(source, target);
             if (m == null)
             {
                 var op = type.FindCastOperator(source, target);
-                Debug.Assert(target == op.Type);
-
+                
                 m = DefineAbcMethod(op);
                 Generator.CacheCastOperator(source, target, m);
             }
@@ -2390,7 +2386,7 @@ namespace DataDynamics.PageFX.FLI.IL
         public void HasElemType(IType elemType, Action getArr)
         {
             getArr();
-            if (elemType == SystemTypes.Char)
+            if (elemType.Is(SystemTypeCode.Char))
             {
                 Call(ArrayMethodId.IsCharArray);
             }
@@ -3172,7 +3168,7 @@ namespace DataDynamics.PageFX.FLI.IL
             bool call = AbcGenConfig.UseIsNull;
             if (AbcGenConfig.UseIsNull)
             {
-                if (type != null && type != SystemTypes.Object)
+                if (type != null && !type.Is(SystemTypeCode.Object))
                 {
                     PushNull();
                     Add(InstructionCode.Equals);

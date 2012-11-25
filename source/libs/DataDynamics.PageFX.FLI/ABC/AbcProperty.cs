@@ -3,16 +3,16 @@ using System.IO;
 
 namespace DataDynamics.PageFX.FLI.ABC
 {
-    public class AbcProperty
+    public sealed class AbcProperty
     {
         public AbcMultiname Name
         {
             get
             {
-                if (_getter != null)
-                    return _getter.Trait.Name;
-                if (_setter != null)
-                    return _setter.Trait.Name;
+                if (Getter != null)
+                    return Getter.Trait.Name;
+                if (Setter != null)
+                    return Setter.Trait.Name;
                 return null;
             }
         }
@@ -21,29 +21,19 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             get
             {
-                if (_getter != null)
-                    return _getter.ReturnType;
-                if (_setter != null)
-                    return _setter.ReturnType;
+                if (Getter != null)
+                    return Getter.ReturnType;
+                if (Setter != null)
+                    return Setter.ReturnType;
                 return null;
             }
         }
 
-        public AbcMethod Getter
-        {
-            get { return _getter; }
-            set { _getter = value; }
-        }
-        private AbcMethod _getter;
+	    public AbcMethod Getter { get; set; }
 
-        public AbcMethod Setter
-        {
-            get { return _setter; }
-            set { _setter = value; }
-        }
-        private AbcMethod _setter;
+	    public AbcMethod Setter { get; set; }
 
-        private static void DumpAccessor(TextWriter writer, AbcMethod m, string tab)
+	    private static void DumpAccessor(TextWriter writer, AbcMethod m, string tab)
         {
             if (m != null)
             {
@@ -103,8 +93,8 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             writer.WriteLine(tab + "{");
 
-            DumpAccessor(writer, _getter, tab + "\t");
-            DumpAccessor(writer, _setter, tab + "\t");
+            DumpAccessor(writer, Getter, tab + "\t");
+            DumpAccessor(writer, Setter, tab + "\t");
 
             writer.WriteLine(tab + "}");
         }
@@ -114,7 +104,7 @@ namespace DataDynamics.PageFX.FLI.ABC
     {
         public AbcProperty this[AbcMultiname name]
         {
-            get { return Find(p => p.Name == name); }
+            get { return Find(p => ReferenceEquals(p.Name, name)); }
         }
 
         public void Dump(TextWriter writer, string tab, bool isStatic)

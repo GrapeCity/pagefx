@@ -56,24 +56,15 @@ namespace DataDynamics.PageFX.FLI
         /// <returns></returns>
         public static bool UseNativeObject(this IType type)
         {
-            if (type == null) return false;
+	        if (type == null) return false;
 
-            if (type.TypeKind == TypeKind.Reference)
-                return true;
-
-            if (type == SystemTypes.Object)
-                return true;
-
-            if (type.IsStringInterface())
-                return true;
-
-            if (type.IsGenericArrayInterface())
-                return true;
-
-            return false;
+	        return type.TypeKind == TypeKind.Reference
+	               || type.Is(SystemTypeCode.Object)
+	               || type.IsStringInterface()
+	               || type.IsGenericArrayInterface();
         }
 
-    	public static bool IsNativeType(this IType type, string fullname)
+	    public static bool IsNativeType(this IType type, string fullname)
         {
             if (type == null) return false;
             var instance = type.Tag as AbcInstance;
@@ -188,14 +179,9 @@ namespace DataDynamics.PageFX.FLI
 
         #region numeric types
 
-	    public static bool IsDecimal(this IType type)
+	    public static bool IsDecimalOrInt64(this IType type)
         {
-            return type == SystemTypes.Decimal;
-        }
-
-        public static bool IsDecimalOrInt64(this IType type)
-        {
-            return IsDecimal(type) || TypeExtensions.IsInt64(type);
+            return type.Is(SystemTypeCode.Decimal) || type.IsInt64();
         }
 
         public static bool IsDecimalOrInt64(IType type1, IType type2)
@@ -205,13 +191,13 @@ namespace DataDynamics.PageFX.FLI
 
         public static IType SelectDecimalOrInt64(IType type1, IType type2)
         {
-            if (IsDecimal(type1))
+            if (type1.Is(SystemTypeCode.Decimal))
                 return type1;
-            if (IsDecimal(type2))
+            if (type2.Is(SystemTypeCode.Decimal))
                 return type2;
-            if (TypeExtensions.IsInt64(type1))
+            if (type1.IsInt64())
                 return type1;
-            if (TypeExtensions.IsInt64(type2))
+            if (type2.IsInt64())
                 return type2;
             return null;
         }
@@ -252,8 +238,8 @@ namespace DataDynamics.PageFX.FLI
 	    public static bool HasCopy(IType type)
         {
             if (type == null) return false;
-            if (type == SystemTypes.ValueType) return false;
-            if (type == SystemTypes.Enum) return false;
+            if (type.Is(SystemTypeCode.ValueType)) return false;
+            if (type.Is(SystemTypeCode.Enum)) return false;
             if (type.TypeKind == TypeKind.Struct) return true;
             return IsDecimalOrInt64(type);
         }
@@ -325,9 +311,8 @@ namespace DataDynamics.PageFX.FLI
         public static bool IsInitRequiredField(IType type)
         {
             if (IsInitRequired(type)) return true;
-            if (type == SystemTypes.Double) return true;
-            if (type == SystemTypes.Single) return true;
-            return false;
+			//TODO: write a comment why double and single types requires initialization
+            return type.Is(SystemTypeCode.Double) || type.Is(SystemTypeCode.Single);
         }
 
         public static bool HasInitFields(IType type, bool isStatic)

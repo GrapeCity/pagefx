@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.FLI
 
             var instance = DefineAbcInstance(method.DeclaringType);
 
-            Debug.Assert(instance.ABC == _abc);
+            Debug.Assert(instance.Abc == _abc);
 
             var thisName = _abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
             var retType = DefineReturnType(method.Type);

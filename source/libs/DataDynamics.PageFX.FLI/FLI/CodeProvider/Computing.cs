@@ -3,7 +3,7 @@ using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI
 {
-    partial class AvmCodeProvider
+    internal partial class AvmCodeProvider
     {
         public IInstruction[] Op(BinaryOperator op, IType left, IType right, IType result, bool checkOverflow)
         {
@@ -26,14 +26,14 @@ namespace DataDynamics.PageFX.FLI
 
         public IInstruction Increment(IType type)
         {
-            if (type == SystemTypes.Int32)
+            if (type.Is(SystemTypeCode.Int32))
                 return new Instruction(InstructionCode.Increment_i);
             return new Instruction(InstructionCode.Increment);
         }
 
         public IInstruction Decrement(IType type)
         {
-            if (type == SystemTypes.Int32)
+            if (type.Is(SystemTypeCode.Int32))
                 return new Instruction(InstructionCode.Decrement_i);
             return new Instruction(InstructionCode.Decrement);
         }

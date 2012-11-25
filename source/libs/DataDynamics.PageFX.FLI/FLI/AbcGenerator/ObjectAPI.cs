@@ -168,19 +168,19 @@ namespace DataDynamics.PageFX.FLI
                 });
         }
 
-        void ImplementObjectMethod(IMethod method, AbcMethod abcMethod)
+        private void ImplementObjectMethod(IMethod method, AbcMethod abcMethod)
         {
             if (method == null) return;
             if (method.IsStatic) return;
             if (method.IsConstructor) return;
             var declType = method.DeclaringType;
-            if (declType != SystemTypes.Object) return;
+            if (!declType.Is(SystemTypeCode.Object)) return;
 
             DefinePrototype(AvmTypeCode.Object, abcMethod);
             DefinePrototype(AvmTypeCode.String, abcMethod);
         }
 
-        void DefinePrototype_GetType(AbcInstance instance, IType type)
+        private void DefinePrototype_GetType(AbcInstance instance, IType type)
         {
             _newAPI.SetProtoFunction(
                     instance.Name,

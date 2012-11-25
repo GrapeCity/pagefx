@@ -7,9 +7,11 @@ using DataDynamics.PageFX.FLI.ABC;
 
 namespace DataDynamics.PageFX.FLI
 {
-    internal class AssemblyIndex
+	//TODO: lazy caching of types/instances
+
+    internal sealed class AssemblyIndex
     {
-        readonly Hashtable _typeCache = new Hashtable();
+        private readonly Hashtable _typeCache = new Hashtable();
 
         public static object ResolveRef(IAssembly asm, string id)
         {
@@ -18,7 +20,7 @@ namespace DataDynamics.PageFX.FLI
             if (instance != null)
             {
                 if (instance.InSwc)
-                    return instance.ABC;
+                    return instance.Abc;
             }
             return instance;
         }
@@ -72,26 +74,26 @@ namespace DataDynamics.PageFX.FLI
         	return FindInstance(asm, name.FullName);
         }
 
-        AssemblyIndex(IAssembly asm)
+        private AssemblyIndex(IAssembly asm)
         {
             if (asm == null)
                 throw new ArgumentNullException("asm");
             Build(asm);
         }
 
-		void Build(IAssembly root)
-		{
-			root.ProcessReferences(
-				false,
-				asm =>
-					{
-						if (asm != root)
-							Linker.Start(asm);
-						CacheTypes(asm);
-					});
-		}
+	    private void Build(IAssembly root)
+	    {
+		    root.ProcessReferences(
+			    false,
+			    asm =>
+				    {
+					    if (!ReferenceEquals(asm, root))
+						    Linker.Start(asm);
+					    CacheTypes(asm);
+				    });
+	    }
 
-	    void CacheTypes(IAssembly asm)
+	    private void CacheTypes(IAssembly asm)
         {
             AssemblyTag.Instance(asm).Index = this;
             foreach (var type in asm.Types)
@@ -109,13 +111,13 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        IType FindTypeCore(string name)
+        private IType FindTypeCore(string name)
         {
             if (name == null) return null;
             return _typeCache[name] as IType;
         }
 
-        AbcInstance FindInstanceCore(string name)
+        private AbcInstance FindInstanceCore(string name)
         {
             var type = FindTypeCore(name);
             if (type != null)

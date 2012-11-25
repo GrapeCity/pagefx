@@ -533,7 +533,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                     instance.IsLinkedExternally = true;
                     if (instance.InSwc)
                     {
-                        var abc = instance.ABC;
+                        var abc = instance.Abc;
                         if (!abc.Importing)
                         {
                             Debug.Assert(abc != this);
@@ -556,7 +556,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             if (instance.InSwc)
             {
-                var abc = instance.ABC;
+                var abc = instance.Abc;
                 if (!abc.Importing)
                 {
                     Debug.Assert(abc != this);

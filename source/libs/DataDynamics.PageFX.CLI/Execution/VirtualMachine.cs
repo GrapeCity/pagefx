@@ -1251,13 +1251,13 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private void Op_Call(CallContext context, IMethod method, bool virtcall)
 		{
-			if (method.IsConstructor && method.DeclaringType == SystemTypes.Object)
+			if (method.IsConstructor && method.DeclaringType.Is(SystemTypeCode.Object))
 			{
 				return;
 			}
 
 			var declType = method.DeclaringType;
-			if (declType == SystemTypes.Object)
+			if (declType.Is(SystemTypeCode.Object))
 			{
 				if (method.Name == "GetType")
 				{
@@ -1392,19 +1392,22 @@ namespace DataDynamics.PageFX.CLI.Execution
 			var invoker = GetInvoker(obj.GetType());
 			if (invoker != null)
 			{
-				object[] copy = new object[args.Length - 1];
+				var copy = new object[args.Length - 1];
 				Array.Copy(args, 1, copy, 0, args.Length - 1);
-
 				return invoker.Invoke(method, obj, copy);
 			}
 
 			//TODO: introduce vtable to optimize virtual call
 			var instance = obj as Instance;
+			if (instance == null)
+			{
+				throw new NotImplementedException();
+			}
 
 			var type = instance.Type;
 
 			bool basecall = false;
-			if (!virtcall && type != method.DeclaringType
+			if (!virtcall && !ReferenceEquals(type, method.DeclaringType)
 				&& !method.IsStatic && !method.IsConstructor)
 				basecall = type.IsSubclassOf(method.DeclaringType);
 

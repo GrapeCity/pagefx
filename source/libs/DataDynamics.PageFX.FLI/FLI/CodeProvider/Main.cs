@@ -5,7 +5,7 @@ using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI
 {
-    partial class AvmCodeProvider : ICodeProvider
+    internal partial class AvmCodeProvider : ICodeProvider
     {
         #region Fields
         readonly AbcGenerator _generator;
@@ -224,12 +224,12 @@ namespace DataDynamics.PageFX.FLI
         {
             if (arg == null) return false;
             if (!method.IsAbcMethod()) return false;
-            var ptype = arg.Type.UnwrapRef();
-            return ptype == SystemTypes.Object;
+            var type = arg.Type.UnwrapRef();
+            return type.Is(SystemTypeCode.Object);
         }
 
         #region Utils
-        int VarCount
+        private int VarCount
         {
             get
             {
@@ -238,60 +238,39 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        IVariable GetVar(int index)
+        private IVariable GetVar(int index)
         {
             return _method.Body.LocalVariables[index];
         }
 
-        bool HasLocalVariables
+        private bool HasLocalVariables
         {
             get { return VarCount > 0; }
         }
 
-        void EnsureType(IType type)
+        private void EnsureType(IType type)
         {
             _generator.DefineType(type);
         }
 
-        void EnsureMethod(IMethod method)
+        private void EnsureMethod(IMethod method)
         {
             _generator.DefineMethod(method);
         }
 
-        /// <summary>
-        /// Returns true if given method is ctor of this or base type
-        /// </summary>
-        /// <param name="method"></param>
-        /// <returns></returns>
-        bool IsThisOrBaseCtor(IMethod method)
+	    private bool IsBaseCtor(IMethod method)
         {
-            if (!method.IsConstructor) return false;
-            if (!_method.IsConstructor) return false;
-            if (_method.IsStatic) return false;
-            if (method.IsStatic) return false;
-            var type = method.DeclaringType;
-            var t = _method.DeclaringType;
-            while (t != null)
-            {
-                if (type == t) return true;
-                t = t.BaseType;
-            }
-            return false;
-        }
-
-        bool IsBaseCtor(IMethod method)
-        {
-            if (!method.IsConstructor) return false;
-            if (!_method.IsConstructor) return false;
-            if (_method.IsStatic) return false;
-            if (method.IsStatic) return false;
+			if (_method.IsStatic || method.IsStatic) return false;
+            if (!_method.IsConstructor || !method.IsConstructor) return false;
+            
             var type = method.DeclaringType;
             var t = _method.DeclaringType.BaseType;
             while (t != null)
             {
-                if (type == t) return true;
+                if (ReferenceEquals(type, t)) return true;
                 t = t.BaseType;
             }
+
             return false;
         }
 
@@ -312,12 +291,12 @@ namespace DataDynamics.PageFX.FLI
             EnsureMethod(method);
         }
 
-        AbcMethod DefineAbcMethod(IMethod m)
+        private AbcMethod DefineAbcMethod(IMethod m)
         {
             return _generator.DefineAbcMethod(m);
         }
 
-        AbcInstance DefineAbcInstance(IType type)
+        private AbcInstance DefineAbcInstance(IType type)
         {
             return _generator.DefineAbcInstance(type);
         }

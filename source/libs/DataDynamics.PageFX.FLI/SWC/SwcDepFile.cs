@@ -358,14 +358,14 @@ namespace DataDynamics.PageFX.FLI.SWC
                     var instance = type.Tag as AbcInstance;
                     if (instance != null)
                     {
-                        if (instance.SWC == lib.SWC)
+                        if (instance.Swc == lib.SWC)
                         {
-                            int libIndex = instance.ABC.SWF.Index;
-                            int abcIndex = instance.ABC.Index;
+                            int libIndex = instance.Abc.SWF.Index;
+                            int abcIndex = instance.Abc.Index;
                             if (libIndex != lib.Index || abcIndex != abc.Index)
                                 f.AddFileRef(libIndex, abcIndex);
                         }
-                        else if (!instance.ABC.IsCoreAPI)
+                        else if (!instance.Abc.IsCoreAPI)
                         {
                             f.AddTypeRef(fullName);
                         }

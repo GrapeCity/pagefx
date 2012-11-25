@@ -24,9 +24,9 @@ namespace DataDynamics.PageFX.FLI
         void DefineDebuggerDisplay(IType type, AbcInstance instance)
         {
 			if (type.IsInterface) return;
-            if (type == SystemTypes.Object) return;
-            if (type == SystemTypes.String) return;
-            if (type == SystemTypes.Array) return;
+            if (type.Is(SystemTypeCode.Object)) return;
+            if (type.Is(SystemTypeCode.String)) return;
+            if (type.Is(SystemTypeCode.Array)) return;
 
             //MSDN: DebuggerDisplay attribute takes precedence over the ToString() override
             var attr = type.FindAttribute(Attrs.DebuggerDisplay);
@@ -123,12 +123,12 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region Utils
-        bool IsCollection(IType type)
+        private bool IsCollection(IType type)
         {
             if (type == null) return false;
             if (type.TypeKind != TypeKind.Class) return false;
-            if (type == SystemTypes.String) return false;
-            if (type == SystemTypes.Array) return false;
+            if (type.Is(SystemTypeCode.String)) return false;
+            if (type.Is(SystemTypeCode.Array)) return false;
             if (type.Implements(GetType(CorlibTypeId.IEnumerable)))
             {
                 //TODO: Do extra filter
@@ -137,7 +137,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        bool IsDictionary(IType type)
+        private bool IsDictionary(IType type)
         {
             if (type == null) return false;
             if (type.TypeKind != TypeKind.Class) return false;

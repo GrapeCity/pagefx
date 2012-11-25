@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.CLI.Collections
 
 		public ICustomAttribute[] this[IType type]
 		{
-			get { return this.Where(x => x.Type == type).ToArray(); }
+			get { return this.Where(x => ReferenceEquals(x.Type, type)).ToArray(); }
 		}
 
 		public ICustomAttribute[] this[string typeFullName]
@@ -85,21 +85,14 @@ namespace DataDynamics.PageFX.CLI.Collections
 
 			var context = ResolveAttributeContext(_owner);
 
-			foreach (var row in rows)
-			{
-				MdbIndex ctorIndex = row[MDB.CustomAttribute.Type].Value;				
-				var ctor = GetCustomAttributeConstructor(ctorIndex, context);
-				if (ctor == null)
-				{
-					//TODO: warning
-					continue;
-				}
-
-				var attr = CreateAttribute(row, ctor);
-
-				if (ReviewAttribute(attr))
-					yield return attr;
-			}
+			return (from row in rows
+			        let ctorIndex = row[MDB.CustomAttribute.Type].Value
+			        let ctor = GetCustomAttributeConstructor(ctorIndex, context)
+			        where ctor != null
+			        select CreateAttribute(row, ctor)
+			        into attr
+			        where ReviewAttribute(attr)
+			        select attr).Cast<ICustomAttribute>();
 		}
 
 		private CustomAttribute CreateAttribute(MdbRow row, IMethod ctor)

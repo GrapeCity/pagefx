@@ -43,10 +43,5 @@ namespace DataDynamics.PageFX.FLI
             code.Unbox(type);
             return code.ToArray();
         }
-
-        public IInstruction[] UnwrapString()
-        {
-	        return new IInstruction[0];
-        }
     }
 }

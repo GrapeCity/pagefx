@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.CodeModel
             while (stack.Count > 0)
             {
                 var asm = stack.Pop();
-                if (!(excludeRoot && asm == root))
+                if (!(excludeRoot && ReferenceEquals(asm, root)))
                     yield return asm;
                 foreach (var ar in asm.MainModule.References)
                 {

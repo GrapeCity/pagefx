@@ -505,7 +505,7 @@ namespace DataDynamics.PageFX.FLI.SWC
                 {
                     defInstance.ImportAbcFiles.Add(depAbc);
                     if (AddNsRefs)
-                        defInstance.ABC.AddNsRef(ns);
+                        defInstance.Abc.AddNsRef(ns);
                 }
                 return;
             }

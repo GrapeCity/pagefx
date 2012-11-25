@@ -20,7 +20,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// <returns></returns>
         public bool IsDefined(AbcInstance instance)
         {
-        	return instance.IsNative || AllFrames.Any(abc => instance.ABC == abc);
+        	return instance.IsNative || AllFrames.Any(abc => instance.Abc == abc);
         }
 
     	/// <summary>
@@ -31,11 +31,8 @@ namespace DataDynamics.PageFX.FLI.ABC
         public bool IsDefined(AbcMultiname name)
         {
             int index = name.Index;
-            if (index < 0 || index >= _multinames.Count)
-                return false;
-            if (_multinames[index] != name)
-                return false;
-            return true;
+            if (index < 0 || index >= _multinames.Count) return false;
+            return ReferenceEquals(_multinames[index], name);
         }
 
         /// <summary>
@@ -46,11 +43,8 @@ namespace DataDynamics.PageFX.FLI.ABC
         public bool IsDefined(AbcMethod method)
         {
             int index = method.Index;
-            if (index < 0 || index >= _methods.Count)
-                return false;
-            if (_methods[index] != method)
-                return false;
-            return true;
+            if (index < 0 || index >= _methods.Count) return false;
+            return ReferenceEquals(_methods[index], method);
         }
 
         /// <summary>
@@ -780,7 +774,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 {
                     if (type.ValueType == null)
                         throw new InvalidOperationException("Invalid enum type");
-                    return GetTypeName(type.ValueType, native);
+                    return GetTypeName(type.ValueType, true);
                 }
 
                 if (st != null)

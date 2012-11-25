@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (method.DeclaringType.IsInterface) return false;
 			return !method.IsStatic
 			       && method.Parameters.Count == 0
-			       && method.Type == SystemTypes.Type
+			       && method.Type.Is(SystemTypeCode.Type)
 			       && method.Name == "GetType";
 		}
 

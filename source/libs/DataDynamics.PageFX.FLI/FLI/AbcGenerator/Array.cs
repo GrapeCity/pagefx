@@ -380,7 +380,7 @@ namespace DataDynamics.PageFX.FLI
 
             string name = (item ? "get_item_"  : "get_elem_") + elemType.GetSigName();
             var elemTypeName = DefineReturnType(elemType);
-            var oppositeType = elemType == SystemTypes.Int64 ? SystemTypes.UInt64 : SystemTypes.Int64;
+            var oppositeType = elemType.Is(SystemTypeCode.Int64) ? SystemTypes.UInt64 : SystemTypes.Int64;
             var oppositeTypeName = DefineReturnType(oppositeType);
 
             return instance.DefineInstanceMethod(

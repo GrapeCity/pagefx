@@ -7,10 +7,10 @@ using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI
 {
-    partial class AvmCodeProvider
+    internal partial class AvmCodeProvider
     {
         #region DeclareVariable
-        static bool IsValueType(IType type)
+        private static bool IsValueType(IType type)
         {
             var st = type.SystemType();
             if (st != null)
@@ -30,7 +30,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        static readonly IInstruction[] EmptyCode = new IInstruction[0];
+        private static readonly IInstruction[] EmptyCode = new IInstruction[0];
 
         public IInstruction[] DeclareVariable(IVariable v)
         {
@@ -83,7 +83,7 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        IInstruction[] DeclateSystemTypeVar(SystemType sysType, IVariable var)
+        private IInstruction[] DeclateSystemTypeVar(SystemType sysType, IVariable var)
         {
             if (sysType == null)
                 throw new ArgumentNullException("sysType");
@@ -142,7 +142,7 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        IInstruction[] SetValueType(IType type, IVariable var)
+        private IInstruction[] SetValueType(IType type, IVariable var)
         {
             var code = new AbcCode(_abc);
             code.InitObject(type);
@@ -152,7 +152,7 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        IInstruction[] SetFalse(IVariable var)
+        private IInstruction[] SetFalse(IVariable var)
         {
             var code = new AbcCode(_abc);
             code.PushBool(false);
@@ -160,7 +160,7 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        IInstruction[] SetIntZero(IVariable var)
+        private IInstruction[] SetIntZero(IVariable var)
         {
             var code = new AbcCode(_abc);
             code.PushInt(0);
@@ -168,7 +168,7 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        IInstruction[] SetUIntZero(IVariable var)
+        private IInstruction[] SetUIntZero(IVariable var)
         {
             var code = new AbcCode(_abc);
             code.PushUInt(0);
@@ -176,7 +176,7 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        IInstruction[] SetDoubleZero(IVariable var)
+        private IInstruction[] SetDoubleZero(IVariable var)
         {
             var code = new AbcCode(_abc);
             code.PushDouble(0);
@@ -184,7 +184,7 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        IInstruction[] SetNull(IType type, IVariable var)
+        private IInstruction[] SetNull(IType type, IVariable var)
         {
             EnsureType(type);
             var code = new AbcCode(_abc);
@@ -215,12 +215,12 @@ namespace DataDynamics.PageFX.FLI
             return code.ToArray();
         }
 
-        bool UseThisForStaticReceiver(IType type)
+        private bool UseThisForStaticReceiver(IType type)
         {
-            return _method.IsStatic && _method.DeclaringType == type;
+            return _method.IsStatic && ReferenceEquals(_method.DeclaringType, type);
         }
 
-        void LoadStaticInstance(AbcCode code, IType type)
+        private void LoadStaticInstance(AbcCode code, IType type)
         {
             EnsureType(type);
             var instance = type.Tag as AbcInstance;
@@ -241,7 +241,7 @@ namespace DataDynamics.PageFX.FLI
         }
         #endregion
 
-        IInstruction[] LoadLocal(int index)
+        private IInstruction[] LoadLocal(int index)
         {
             var code = new AbcCode(_abc);
             code.GetLocal(index);

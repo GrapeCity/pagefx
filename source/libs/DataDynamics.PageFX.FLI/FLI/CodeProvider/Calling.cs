@@ -10,7 +10,7 @@ namespace DataDynamics.PageFX.FLI
     partial class AvmCodeProvider
     {
         #region LoadReceiver
-        static bool HasGlobalReceiver(IMethod method)
+        private static bool HasGlobalReceiver(IMethod method)
         {
 			//TODO: simplify using custom attributes
             var type = method.DeclaringType;
@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX.FLI
                 if (method.Name == "trace")
                     return true;
             }
-			if (type == SystemTypes.String)
+			if (type.Is(SystemTypeCode.String))
 			{
 				if (method.Name == "fromCharCode")
 					return true;
@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        void LoadGlobalReceiver(AbcCode code, IMethod method)
+        private void LoadGlobalReceiver(AbcCode code, IMethod method)
         {
             var type = method.DeclaringType;
 
@@ -52,7 +52,7 @@ namespace DataDynamics.PageFX.FLI
                 return;
             }
 
-			if (type == SystemTypes.String)
+			if (type.Is(SystemTypeCode.String))
 			{
 				code.Getlex(AvmTypeCode.String);
 				return;
@@ -71,7 +71,7 @@ namespace DataDynamics.PageFX.FLI
 			throw new InvalidOperationException();
         }
 
-        static bool HasReceiver(IMethod method, bool newobj)
+        private static bool HasReceiver(IMethod method, bool newobj)
         {
             if (newobj) return true;
             
@@ -505,7 +505,7 @@ namespace DataDynamics.PageFX.FLI
                     return;
                 }
 
-                if (type == SystemTypes.String)
+                if (type.Is(SystemTypeCode.String))
                 {
                     code.Call(abcMethod);
                     return;
@@ -522,10 +522,10 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region CallStaticCtor
-        bool NeedCallStaticCtor(ITypeMember member)
+        private bool NeedCallStaticCtor(ITypeMember member)
         {
             if (member == null) return false;
-            if (member.DeclaringType == _declType) return false;
+            if (ReferenceEquals(member.DeclaringType, _declType)) return false;
 
             var method = member as IMethod;
             if (method != null)
@@ -538,14 +538,14 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        void CallStaticCtor(AbcCode code, ITypeMember member)
+        private void CallStaticCtor(AbcCode code, ITypeMember member)
         {
             if (!_method.IsStatic) return;
             if (!_method.IsConstructor) return;
             if (!NeedCallStaticCtor(member)) return;
 
             var declType = member.DeclaringType;
-            if (declType == _declType) return;
+            if (ReferenceEquals(declType, _declType)) return;
             _generator.CallStaticCtor(code, declType);
         }
         #endregion
@@ -556,28 +556,28 @@ namespace DataDynamics.PageFX.FLI
             get { return _generator.IsSwf; }
         }
 
-        bool IsMxApp
+        private bool IsMxApp
         {
             get { return _generator.IsMxApplication; }
         }
 
-        bool IsMxAppCtor
+        private bool IsMxAppCtor
         {
             get
             {
                 if (!_method.IsConstructor) return false;
                 if (_method.Parameters.Count > 0) return false;
                 if (!IsMxApp) return false;
-                return _declType == _generator.sfc.TypeFlexApp;
+                return ReferenceEquals(_declType, _generator.sfc.TypeFlexApp);
             }
         }
 
-        bool IsMxAppBaseCtor(IMethod method)
+        private bool IsMxAppBaseCtor(IMethod method)
         {
             return IsMxAppCtor && IsBaseCtor(method);
         }
 
-        bool ShouldPopBaseCtorCall(IMethod method)
+        private bool ShouldPopBaseCtorCall(IMethod method)
         {
             if (AbcGenConfig.FlexAppCtorAsHandler && IsMxAppBaseCtor(method))
                 return true;
@@ -588,10 +588,10 @@ namespace DataDynamics.PageFX.FLI
 
         private bool IsString
         {
-            get { return _declType == SystemTypes.String; }
+            get { return _declType.Is(SystemTypeCode.String); }
         }
 
-        static AbcMultiname GetCallName(object tag)
+        private static AbcMultiname GetCallName(object tag)
         {
             var prop = tag as AbcMultiname;
             if (prop != null)

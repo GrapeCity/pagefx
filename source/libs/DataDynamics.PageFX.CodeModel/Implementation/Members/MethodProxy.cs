@@ -132,7 +132,7 @@ namespace DataDynamics.PageFX.CodeModel
 				var p2 = new Parameter(ptype, p.Name, p.Index);
 				collection.Add(p2);
 
-				if (ptype != p.Type)
+				if (!ReferenceEquals(ptype, p.Type))
 				{
 					_signatureChanged = true;
 					p2.HasResolvedType = true;
@@ -327,7 +327,7 @@ namespace DataDynamics.PageFX.CodeModel
             get { return _instance; }
             set 
             {
-                if (value != _instance)
+                if (!ReferenceEquals(value, _instance))
                     throw new InvalidOperationException();
             }
         }
@@ -340,7 +340,7 @@ namespace DataDynamics.PageFX.CodeModel
 				{
 					_type = GenericType.Resolve(_instance, _method, _method.Type);
 
-					if (_type != _method.Type)
+					if (!ReferenceEquals(_type, _method.Type))
 						_signatureChanged = true;
 				}
 

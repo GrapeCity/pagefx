@@ -412,7 +412,7 @@ namespace abc
 
                     if (withScript)
                     {
-                        var abc = instance.ABC;
+                        var abc = instance.Abc;
                         if (abc != null)
                         {
                             var script = instance.Script;

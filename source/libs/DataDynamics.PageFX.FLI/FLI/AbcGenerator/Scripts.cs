@@ -142,7 +142,7 @@ namespace DataDynamics.PageFX.FLI
                     {
                         code.PushThisScope();
 
-                        if (IsSwc && instance.Type == SystemTypes.Object)
+                        if (IsSwc && instance.Type.Is(SystemTypeCode.Object))
                         {
                             code.AddRange(_newAPI);
                         }

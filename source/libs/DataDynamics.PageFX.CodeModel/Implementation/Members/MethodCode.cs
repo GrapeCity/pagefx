@@ -59,7 +59,7 @@ namespace DataDynamics.PageFX.CodeModel
             else
             {
                 var type = method.DeclaringType;
-                if (type == _body.Method.DeclaringType)
+                if (ReferenceEquals(type, _body.Method.DeclaringType))
                 {
                     Call(new ThisReferenceExpression(type), method);
                 }

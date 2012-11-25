@@ -121,7 +121,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             }
         }
 
-        public string ID
+        public string Id
         {
             get
             {
@@ -257,21 +257,11 @@ namespace DataDynamics.PageFX.FLI.ABC
             get { return HasGlobalName(Const.AvmGlobalTypes.Error); }
         }
 
-        public AbcFile ABC
-        {
-            get { return _abc; }
-            set { _abc = value; }
-        }
-        AbcFile _abc;
+	    public AbcFile Abc { get; set; }
 
-        public AbcNamespace ProtectedNamespace
-        {
-            get { return _protectedNamespace; }
-            set { _protectedNamespace = value; }
-        }
-        AbcNamespace _protectedNamespace;
+	    public AbcNamespace ProtectedNamespace { get; set; }
 
-        public bool HasProtectedNamespace
+	    public bool HasProtectedNamespace
         {
             get { return (Flags & AbcClassFlags.ProtectedNamespace) != 0; }
             set
@@ -297,7 +287,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 }
             }
         }
-        AbcMethod _initializer;
+        private AbcMethod _initializer;
 
         internal AbcMethod StaticCtor;
         internal AbcTrait StaticCtorFlag;
@@ -311,7 +301,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public bool HasInterface(AbcInstance iface)
         {
-        	return Interfaces.Any(mn => mn == iface.Name);
+        	return Interfaces.Any(mn => ReferenceEquals(mn, iface.Name));
         }
 
         public AbcTraitCollection Traits
@@ -358,44 +348,29 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         internal bool InSwc
         {
-            get
-            {
-                if (_abc != null)
-                    return _abc.InSwc;
-                return false;
-            }
+            get { return Abc != null && Abc.InSwc; }
         }
 
-        internal SwcFile SWC
+        internal SwcFile Swc
         {
-            get
-            {
-                if (_abc != null)
-                    return _abc.SWC;
-                return null;
-            }
+            get { return Abc != null ? Abc.SWC : null; }
         }
 
         internal bool UseExternalLinking
         {
             get
             {
-                if (_abc != null)
-                    return _abc.UseExternalLinking;
+                if (Abc != null)
+                    return Abc.UseExternalLinking;
                 return false;
             }
         }
 
         internal bool IsLinkedExternally { get; set; }
 
-        internal Embed Embed
-        {
-            get { return _embed; }
-            set { _embed = value; }
-        }
-        internal Embed _embed;
+	    internal Embed Embed { get; set; }
 
-        internal bool IsEmbeddedAsset
+	    internal bool IsEmbeddedAsset
         {
             get { return Embed != null; }
         }
@@ -448,13 +423,13 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcNamespace GetPrivateNamespace()
         {
-            return _abc.DefinePrivateNamespace(this);
+            return Abc.DefinePrivateNamespace(this);
         }
 
         public AbcMultiname DefinePrivateName(string name)
         {
             var ns = GetPrivateNamespace();
-            return _abc.DefineQName(ns, name);
+            return Abc.DefineQName(ns, name);
         }
 
         //public AbcTrait GetSlot(string name)
@@ -475,8 +450,8 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            var traitName = _abc.DefineName(name);
-            var typeName = _abc.DefineTypeNameStrict(type);
+            var traitName = Abc.DefineName(name);
+            var typeName = Abc.DefineTypeNameStrict(type);
 
             var trait = AbcTrait.CreateSlot(typeName, traitName);
 
@@ -516,13 +491,13 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            var traitName = _abc.DefineName(name);
+            var traitName = Abc.DefineName(name);
 
             var traits = isStatic ? Class.Traits : Traits;
             var trait = traits.Find(traitName, AbcTraitKind.Slot);
             if (trait != null) return trait;
 
-            var typeName = _abc.DefineTypeNameStrict(type);
+            var typeName = Abc.DefineTypeNameStrict(type);
 
             trait = AbcTrait.CreateSlot(typeName, traitName);
             traits.Add(trait);
@@ -566,7 +541,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (klass == null)
                 throw new InvalidOperationException(string.Format("Class is not defined yet for Instance {0}", FullName));
 
-            var traitName = _abc.DefineName(name);
+            var traitName = Abc.DefineName(name);
 
             bool isStatic = (sem & AbcMethodSemantics.Static) != 0;
 
@@ -575,7 +550,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (trait != null)
                 return trait.Method;
 
-            var retType = _abc.DefineTypeNameStrict(returnType);
+            var retType = Abc.DefineTypeNameStrict(returnType);
 
             var method = new AbcMethod 
             {
@@ -596,20 +571,20 @@ namespace DataDynamics.PageFX.FLI.ABC
                 if (args.Length == 1 && args[0] is IMethod)
                 {
                     var m = (IMethod)args[0];
-                    _abc.generator.DefineParameters(method, m);
+                    Abc.generator.DefineParameters(method, m);
                 }
                 else
                 {
-                    _abc.DefineParams(method.Parameters, args);
+                    Abc.DefineParams(method.Parameters, args);
                 }
             }
 
             var body = new AbcMethodBody(method);
-            _abc.AddMethod(method);
+            Abc.AddMethod(method);
 
             if (coder != null)
             {
-                var code = new AbcCode(_abc);
+                var code = new AbcCode(Abc);
                 coder(code);
                 body.Finish(code);
             }
@@ -705,12 +680,12 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         internal AbcMethod DefinePtrGetter(AbcCoder coder)
         {
-            return DefineInstanceGetter(_abc.PtrValueName, AvmTypeCode.Object, coder);
+            return DefineInstanceGetter(Abc.PtrValueName, AvmTypeCode.Object, coder);
         }
 
         internal AbcMethod DefinePtrSetter(AbcCoder coder)
         {
-            return DefineInstanceSetter(_abc.PtrValueName, AvmTypeCode.Object, coder);
+            return DefineInstanceSetter(Abc.PtrValueName, AvmTypeCode.Object, coder);
         }
         #endregion
         #endregion
@@ -725,7 +700,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             if ((Flags & AbcClassFlags.ProtectedNamespace) != 0)
             {
-                _protectedNamespace = reader.ReadAbcNamespace();
+                ProtectedNamespace = reader.ReadAbcNamespace();
             }
 
             int intrf_count = (int)reader.ReadUIntEncoded();
@@ -751,7 +726,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             if ((Flags & AbcClassFlags.ProtectedNamespace) != 0)
             {
-                writer.WriteUIntEncoded((uint)_protectedNamespace.Index);
+                writer.WriteUIntEncoded((uint)ProtectedNamespace.Index);
             }
 
             int n = _interfaces.Count;
@@ -792,11 +767,11 @@ namespace DataDynamics.PageFX.FLI.ABC
 
             writer.WriteElementString("flags", Flags.ToString());
 
-            if ((Flags & AbcClassFlags.ProtectedNamespace) != 0 && _protectedNamespace != null)
+            if ((Flags & AbcClassFlags.ProtectedNamespace) != 0 && ProtectedNamespace != null)
             {
                 writer.WriteStartElement("protectedNamespace");
-                writer.WriteAttributeString("name", _protectedNamespace.Name.Value);
-                writer.WriteAttributeString("kind", _protectedNamespace.Kind.ToString());
+                writer.WriteAttributeString("name", ProtectedNamespace.Name.Value);
+                writer.WriteAttributeString("kind", ProtectedNamespace.Kind.ToString());
                 writer.WriteEndElement();
             }
 
@@ -1016,8 +991,8 @@ namespace DataDynamics.PageFX.FLI.ABC
         #region Utils
         internal bool IsInheritedFrom(AbcMultiname typename)
         {
-            if (SuperName == typename) return true;
-        	return _interfaces.Any(iface => iface == typename);
+            if (ReferenceEquals(SuperName, typename)) return true;
+        	return _interfaces.Any(iface => ReferenceEquals(iface, typename));
         }
 
         internal bool IsTypeUsed(AbcMultiname typename)
@@ -1040,7 +1015,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                     case AbcTraitKind.Const:
                     case AbcTraitKind.Slot:
                         {
-                            if (t.SlotType == typename)
+                            if (ReferenceEquals(t.SlotType, typename))
                                 return true;
                         }
                         break;
@@ -1091,7 +1066,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             //                throw new InvalidOperationException();
             //#endif
             instance.Index = Count;
-            instance.ABC = _abc;
+            instance.Abc = _abc;
             _cache[instance.FullName] = instance;
             base.Add(instance);
         }
@@ -1130,7 +1105,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcInstance FindStrict(AbcMultiname name)
         {
-            return Find(i => i.Name == name);
+            return Find(i => ReferenceEquals(i.Name, name));
         }
 
         public AbcInstance this[AbcMultiname name]
@@ -1173,7 +1148,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             if (!AbcDumpService.DumpInstances) return;
             writer.WriteStartElement("instances");
-            writer.WriteAttributeString("count", Count.ToString());
+            writer.WriteAttributeString("count", XmlConvert.ToString(Count));
             foreach (var i in this)
                 i.DumpXml(writer);
             writer.WriteEndElement();

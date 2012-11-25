@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.FLI.Inlining
 		public static void GetItem1(IMethod method, AbcCode code)
 		{
 			var p0 = method.Parameters[0].Type;
-			if (p0 == SystemTypes.Int32)
+			if (p0.Is(SystemTypeCode.Int32))
 			{
 				code.GetNativeArrayItem();
 				code.CoerceXML();

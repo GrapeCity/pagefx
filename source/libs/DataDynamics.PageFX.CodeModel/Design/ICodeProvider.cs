@@ -587,9 +587,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// <returns></returns>
         bool IsDuplicate(IInstruction a, IInstruction b);
 
-        IInstruction[] UnwrapString();
-
-        bool HasCopy(IType type);
+	    bool HasCopy(IType type);
 
         IInstruction[] CopyToThis(IType valueType);
 

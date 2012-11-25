@@ -740,24 +740,9 @@ namespace DataDynamics.PageFX.CodeModel
             get { return Get(SystemTypeCode.IntPtr); }
         }
 
-        public static IType UIntPtr
-        {
-            get { return Get(SystemTypeCode.UIntPtr); }
-        }
-
         public static IType String
         {
             get { return Get(SystemTypeCode.String); }
-        }
-
-        public static IType ValueType
-        {
-            get { return Get(SystemTypeCode.ValueType); }
-        }
-
-        public static IType Enum
-        {
-            get { return Get(SystemTypeCode.Enum); }
         }
 
         public static IType Object
@@ -773,11 +758,6 @@ namespace DataDynamics.PageFX.CodeModel
         public static IType Type
         {
             get { return Get(SystemTypeCode.Type); }
-        }
-
-        public static IType TypedReference
-        {
-            get { return Get(SystemTypeCode.TypedReference); }
         }
 
         public static IType Delegate
@@ -888,7 +868,7 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static IType GetCommonDenominator(IType a, IType b)
         {
-        	return GetDescendingOrder().FirstOrDefault(type => a == type || b == type);
+        	return GetDescendingOrder().FirstOrDefault(type => ReferenceEquals(a, type) || ReferenceEquals(b, type));
         }
 
     	public static IType UInt32OR64(IType type)
@@ -912,18 +892,13 @@ namespace DataDynamics.PageFX.CodeModel
             return null;
         }
 
-        static bool IsUInt64(IType type)
-        {
-            return type == UInt64;
-        }
-
-        public static IType UInt32OR64(IType a, IType b)
+	    public static IType UInt32OR64(IType a, IType b)
         {
             a = UInt32OR64(a);
             b = UInt32OR64(b);
             if (a == null) return b;
             if (b == null) return null;
-            if (IsUInt64(a) || IsUInt64(b))
+            if (a.Is(SystemTypeCode.UInt64) || b.Is(SystemTypeCode.UInt64))
                 return UInt64;
             return UInt32;
         }

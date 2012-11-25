@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
-using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI
 {
@@ -24,14 +23,14 @@ namespace DataDynamics.PageFX.FLI
         {
             //NOTE: flex compiler lookups inside instance to resolve type refs
             var declType = method.DeclaringType;
-            if (declType == SystemTypes.DateTime)
+            if (declType.Is(SystemTypeCode.DateTime))
             {
                 //NOTE: Date property can hide global Date type therefore we must rename it.
                 if (method.IsAccessor()
                     && method.Association.Name == "Date")
                     return "DATE";
             }
-            else if (declType == SystemTypes.Type)
+            else if (declType.Is(SystemTypeCode.Type))
             {
                 //NOTE: Namespace property can hide global Namespace type therefore we must rename it.
                 if (method.IsAccessor()
@@ -99,7 +98,7 @@ namespace DataDynamics.PageFX.FLI
             }
             else
             {
-                if (method.DeclaringType == SystemTypes.Exception)
+                if (method.DeclaringType.Is(SystemTypeCode.Exception))
                 {
                     if (method.IsObjectOverrideMethod())
                         isOverride = false;
@@ -549,7 +548,8 @@ namespace DataDynamics.PageFX.FLI
         private void DefineSubclassOverrideMethods(AbcInstance instance, IMethod method)
         {
             var type = instance.Type;
-            if (type == SystemTypes.Enum) return;
+            if (type.Is(SystemTypeCode.Enum)) return;
+
 			//warning: do not use foreach since instance.Subclasses is modifiable collection.
             for (int i = 0; i < instance.Subclasses.Count; ++i)
             {
@@ -793,7 +793,7 @@ namespace DataDynamics.PageFX.FLI
             if (!IsSwf) return false;
             if (!method.IsConstructor) return false;
             if (method.Parameters.Count != 0) return false;
-            return method.DeclaringType == sfc.TypeFlexApp;
+            return ReferenceEquals(method.DeclaringType, sfc.TypeFlexApp);
         }
     }
 }

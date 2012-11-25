@@ -10,12 +10,10 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 {
     internal class SyntaxWriter
     {
-        #region Fields
-        string _tab = "";
-        readonly TextWriter _writer;
-        #endregion
+	    private string _tab = "";
+		private readonly TextWriter _writer;
 
-        #region Constructors
+	    #region Constructors
         public SyntaxWriter(TextWriter writer)
         {
             _writer = writer;
@@ -101,7 +99,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
         private static readonly Hashtable Keywords = new Hashtable();
 
-        static SyntaxWriter()
+		static SyntaxWriter()
         {
             RegisterKeywords("abstract", "event", "new", "struct", "as", "explicit", "null", "switch", "base",
                              "extern", "object", "this", "bool", "false", "operator", "throw", "break", "finally",
@@ -114,7 +112,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                              "namespace", "string");
         }
 
-        static void RegisterKeywords(params string[] keywords)
+		private static void RegisterKeywords(params string[] keywords)
         {
             foreach (var k in keywords)
             {
@@ -124,21 +122,12 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region Public Properties
-        public string Language
-        {
-            get { return _lang; }
-            set { _lang = value; }
-        }
-        string _lang;
 
-        public FormatMode Mode
-        {
-            get { return _mode; }
-            set { _mode = value; }
-        }
-        FormatMode _mode;
+	    public string Language { get; set; }
 
-        bool _useRegions;
+	    public FormatMode Mode { get; set; }
+
+	    bool _useRegions;
         //bool _sortMembers;
         #endregion
 
@@ -185,7 +174,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        int _length;
+		private int _length;
 
         public void Write(string s)
         {
@@ -224,7 +213,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
         public string FormatEnum<T>(T value) where T:struct 
         {
-            return value.EnumString(_lang);
+            return value.EnumString(Language);
         }
 
         private string GetKeyword<T>(T value) where T:struct 
@@ -343,27 +332,27 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region ICodeNode
-        void Add<T>(Action<T> method)
+		private void Add<T>(Action<T> method)
             where T : class, ICodeNode
         {
             _writers.Add(method);
         }
 
-        void AddStatement<T>(Action<T> method)
+		private void AddStatement<T>(Action<T> method)
             where T : class, IStatement
         {
             _statements.Add(method);
         }
 
-        void AddExpression<T>(Action<T> method)
+		private void AddExpression<T>(Action<T> method)
             where T : class, IExpression
         {
             _expressions.Add(method);
         }
 
-        readonly ActionSelector _writers = new ActionSelector();
-        readonly ActionSelector _statements = new ActionSelector();
-        readonly ActionSelector _expressions = new ActionSelector();
+		private readonly ActionSelector _writers = new ActionSelector();
+		private readonly ActionSelector _statements = new ActionSelector();
+		private readonly ActionSelector _expressions = new ActionSelector();
 
         public void Init(string format)
         {
@@ -408,7 +397,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 throw new NotImplementedException();
         }
 
-        void WriteKids(ICodeNode node)
+		private void WriteKids(ICodeNode node)
         {
             var kids = node.ChildNodes;
             if (kids != null)
@@ -417,7 +406,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteVariable(IVariable v)
+		private void WriteVariable(IVariable v)
         {
             BeginStatement();
             WriteReferenceName(v.Type);
@@ -426,7 +415,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             EndStatement();
         }
 
-        void WriteVariableCollection(IVariableCollection collection)
+		private void WriteVariableCollection(IVariableCollection collection)
         {
             bool sep = false;
             foreach (var v in collection)
@@ -445,7 +434,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return type.Name;
         }
 
-        string GetActiveNamespace()
+		private string GetActiveNamespace()
         {
             if (_scopeStack.Count > 0)
             {
@@ -456,7 +445,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return null;
         }
 
-        string GetNamespace(IType type)
+		private string GetNamespace(IType type)
         {
             string ns = GetActiveNamespace();
             string tns = type.Namespace;
@@ -465,7 +454,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return tns;
         }
 
-        string GetFullName(IType type)
+		private string GetFullName(IType type)
         {
             return type.DisplayName;
         }
@@ -495,7 +484,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
                 default:
                     {
-                        string k = UserDefinedType.GetKeyword(_lang, type);
+                        string k = UserDefinedType.GetKeyword(Language, type);
                         if (!string.IsNullOrEmpty(k))
                             return k;
                         return GetFullName(type);
@@ -503,7 +492,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteReferenceName(IType type)
+		private void WriteReferenceName(IType type)
         {
             if (type == null)
             {
@@ -513,17 +502,17 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write(GetReferenceName(type));
         }
 
-        void WriteFullName(IType type)
+		private void WriteFullName(IType type)
         {
             Write(GetFullName(type));
         }
 
-        void WriteTypeName(IType type)
+		private void WriteTypeName(IType type)
         {
             WriteID(GetName(type));
         }
 
-        void WriteID(string name)
+		private void WriteID(string name)
         {
             if (Keywords.Contains(name))
                 Write("@");
@@ -533,17 +522,17 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
         #region Type Members
         #region IAssembly
-        readonly Hashtable _usings = new Hashtable();
-        const string System_Runtime_CompilerServices = "System.Runtime.CompilerServices";
+		private readonly Hashtable _usings = new Hashtable();
+		private const string System_Runtime_CompilerServices = "System.Runtime.CompilerServices";
 
-        void WriteUsings(IAssembly asm)
+		private void WriteUsings(IAssembly asm)
         {
             WriteUsingNamespace("System");
             WriteUsingNamespace(System_Runtime_CompilerServices);
             WriteLine();
         }
 
-        void WriteUsingNamespace(string ns)
+		private void WriteUsingNamespace(string ns)
         {
             if (!_usings.Contains(ns))
             {
@@ -552,9 +541,9 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        IAssembly _assembly;
+		private IAssembly _assembly;
 
-        void WriteAssembly(IAssembly asm)
+		private void WriteAssembly(IAssembly asm)
         {
             _assembly = asm;
 
@@ -576,14 +565,14 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region IModule
-        void WriteModule(IModule mod)
+		private void WriteModule(IModule mod)
         {
             WriteKids(mod);
         }
         #endregion
 
         #region IModuleCollection
-        void WriteModuleCollection(IModuleCollection collection)
+		private void WriteModuleCollection(IModuleCollection collection)
         {
             WriteKids(collection);
         }
@@ -601,7 +590,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return ClassSemantics.None;
         }
 
-        static bool HasCustomAttributes(ICustomAttributeProvider p)
+		private static bool HasCustomAttributes(ICustomAttributeProvider p)
         {
             if (p == null) return false;
             if (HasImplAttribute(p as IMethod)) return true;
@@ -609,12 +598,12 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return p.CustomAttributes.Count > 0;
         }
 
-        bool IsFull
+		private bool IsFull
         {
-            get { return _mode == FormatMode.Full || _mode == FormatMode.FullDeclaration; }
+            get { return Mode == FormatMode.Full || Mode == FormatMode.FullDeclaration; }
         }
 
-        void WriteAttributes(ICustomAttributeProvider p)
+		private void WriteAttributes(ICustomAttributeProvider p)
         {
             if (p == null) return;
             if (IsFull)
@@ -627,17 +616,15 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        static bool HasBase(IType type)
+		private static bool HasBase(IType type)
         {
             if (type.TypeKind == TypeKind.Interface) return false;
             if (type.TypeKind == TypeKind.Struct) return false;
             var baseType = type.BaseType;
-            if (baseType == null) return false;
-            if (baseType == SystemTypes.Object) return false;
-            return true;
+			return baseType != null && !baseType.Is(SystemTypeCode.Object);
         }
 
-        static IMethod IsDelegate(IType type)
+		private static IMethod IsDelegate(IType type)
         {
             if (type.TypeKind != TypeKind.Delegate) return null;
             var list = type.Methods.Find("Invoke");
@@ -645,7 +632,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 			return list.FirstOrDefault();
         }
 
-        void WriteType(IType type)
+		private void WriteType(IType type)
         {
             if (!ExportService.CanWrite(type))
                 return;
@@ -657,7 +644,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 return;
             }
 
-            bool full = _mode == FormatMode.Full;
+            bool full = Mode == FormatMode.Full;
 
             if (full && _assembly == null)
                 WriteUsings(type.Assembly);
@@ -675,7 +662,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
             WriteAttributes(type);
 
-            bool fulldecl = full || _mode == FormatMode.FullDeclaration;
+            bool fulldecl = full || Mode == FormatMode.FullDeclaration;
 
             //declaration
             WriteTab();
@@ -730,7 +717,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 EndNamespace(type.Namespace);
         }
 
-        void WriteCustomCode(string code)
+		private void WriteCustomCode(string code)
         {
             if (string.IsNullOrEmpty(code)) return;
             WriteLine();
@@ -741,7 +728,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             WriteLine();
         }
 
-        void WriteBaseTypes(IType type)
+		private void WriteBaseTypes(IType type)
         {
             int ifaceNum = type.Interfaces.Count;
             if (HasBase(type))
@@ -768,7 +755,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region ITypeCollection
-        void WriteTypeCollection(ITypeCollection collection)
+		private void WriteTypeCollection(ITypeCollection collection)
         {
             foreach (var type in collection)
             {
@@ -778,9 +765,9 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region IEnumerable<ICodeNode>
-        bool _doubleEOL;
+		private bool _doubleEOL;
 
-        void WriteNodes<T>(IEnumerable<T> nodes, string region) where T : ICodeNode
+		private void WriteNodes<T>(IEnumerable<T> nodes, string region) where T : ICodeNode
         {
             bool reg = !string.IsNullOrEmpty(region);
         	var list = nodes.ToList();
@@ -819,13 +806,13 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region IEnumerable<ITypeMember>
-        class MemberSet
+		private class MemberSet
         {
             public Visibility Visibility;
             public readonly List<ITypeMember> List = new List<ITypeMember>();
         }
 
-        void WriteMembers<T>(IEnumerable<T> collection, string region) where T : ITypeMember
+		private void WriteMembers<T>(IEnumerable<T> collection, string region) where T : ITypeMember
         {
             if (_useRegions)
             {
@@ -873,22 +860,22 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region Value
-        void WriteNull()
+		private void WriteNull()
         {
             WriteKeyword(Keyword.Null, false);
         }
 
-        void WriteString(string s)
+		private void WriteString(string s)
         {
             Write(Escaper.Escape(s));
         }
 
-        static string ToHex(object v)
+		private static string ToHex(object v)
         {
             return "0x" + ((IFormattable)v).ToString("x", null);
         }
 
-        void WriteValue(object value)
+		private void WriteValue(object value)
         {
             if (value == null)
             {
@@ -976,7 +963,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region IArgument
-        void WriteEnumValue(IType type, object value)
+		private void WriteEnumValue(IType type, object value)
         {
             foreach (var field in type.Fields)
             {
@@ -997,7 +984,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             WriteValue(value);
         }
 
-        void WriteArgument(IArgument arg)
+		private void WriteArgument(IArgument arg)
         {
             var type = arg.Type;
             if (type != null && type.TypeKind == TypeKind.Enum)
@@ -1030,16 +1017,16 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region IArgumentCollection
-        void WriteArgumentCollection(IArgumentCollection collection)
+		private void WriteArgumentCollection(IArgumentCollection collection)
         {
             WriteKids(collection);
         }
         #endregion
 
         #region ICustomAttribute
-        const string SuffixAttribute = "Attribute";
+		private const string SuffixAttribute = "Attribute";
 
-        void WriteCustomAttribute(ICustomAttribute attr)
+		private void WriteCustomAttribute(ICustomAttribute attr)
         {
             if (attr.Type != null && attr.Type.FullName == "System.Reflection.DefaultMemberAttribute")
                 return;
@@ -1072,7 +1059,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region ICustomAttributeCollection
-        void WriteCustomAttributeCollection(ICustomAttributeCollection attrs)
+		private void WriteCustomAttributeCollection(ICustomAttributeCollection attrs)
         {
             bool old = _doubleEOL;
             _doubleEOL = false;
@@ -1082,14 +1069,14 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region IFieldCollection
-        void WriteFieldCollection(IFieldCollection list)
+		private void WriteFieldCollection(IFieldCollection list)
         {
             WriteMembers(list, "Fields");
         }
         #endregion
 
         #region IField
-        void WriteField(IField field)
+		private void WriteField(IField field)
         {
             if (IsFull)
             {
@@ -1129,14 +1116,14 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region IMethodCollection
-        void WriteMethodCollection(IMethodCollection list)
+		private void WriteMethodCollection(IMethodCollection list)
         {
             WriteMembers(list, "Methods");
         }
         #endregion
 
         #region IMethod
-        void WriteParameterCollection(IParameterCollection list)
+		private void WriteParameterCollection(IParameterCollection list)
         {
             bool sep = false;
             foreach (var p in list)
@@ -1147,7 +1134,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteParameter(IParameter p)
+		private void WriteParameter(IParameter p)
         {
             WriteCustomAttributeCollection(p.CustomAttributes);
 
@@ -1168,7 +1155,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write(p.Name);
         }
 
-        void BeginBlock()
+		private void BeginBlock()
         {
             WriteLine();
             WriteTab();
@@ -1177,7 +1164,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Indent();
         }
 
-        void EndBlock()
+		private void EndBlock()
         {
             WriteLine();
             Unindent();
@@ -1185,14 +1172,14 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             WritePunctuator(Punctuator.EndBlock);
         }
 
-        static bool HasBody(IMethod method)
+		private static bool HasBody(IMethod method)
         {
             if (method.IsAbstract) return false;
             if (method.Body == null) return false;
             return true;
         }
 
-        static bool IsExtern(IMethod method)
+		private static bool IsExtern(IMethod method)
         {
             if (method == null) return false;
             if (method.IsInternalCall) return true;
@@ -1201,7 +1188,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return false;
         }
 
-        static bool IsExtern(IPolymorphicMember m)
+		private static bool IsExtern(IPolymorphicMember m)
         {
             var method = m as IMethod;
             if (method != null)
@@ -1212,7 +1199,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return false;
         }
 
-        static bool HasImplAttribute(IMethod method)
+		private static bool HasImplAttribute(IMethod method)
         {
             if (method == null) return false;
             if (method.CodeType != MethodCodeType.IL) return true;
@@ -1224,7 +1211,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return false;
         }
 
-        void WriteFullDecl(string ns, string decl)
+		private void WriteFullDecl(string ns, string decl)
         {
             if (!string.IsNullOrEmpty(ns))
             {
@@ -1237,13 +1224,13 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write(decl);
         }
 
-        void WriteImplOpt(string name, bool sep)
+		private void WriteImplOpt(string name, bool sep)
         {
             if (sep) Write(" | ");
             WriteFullDecl(System_Runtime_CompilerServices, "MethodImplOptions." + name);
         }
 
-        static MethodImplOptions GetImplOptions(IMethod m)
+		private static MethodImplOptions GetImplOptions(IMethod m)
         {
             MethodImplOptions res = 0;
             if (m.IsInternalCall)
@@ -1264,7 +1251,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return res;
         }
 
-        void WriteImplOptions(MethodImplOptions v, ref bool sep)
+		private void WriteImplOptions(MethodImplOptions v, ref bool sep)
         {
             if ((v & MethodImplOptions.InternalCall) != 0)
             {
@@ -1293,14 +1280,14 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void BeginMethodImplAttribute()
+		private void BeginMethodImplAttribute()
         {
             WriteTab();
             Write("[");
             WriteFullDecl(System_Runtime_CompilerServices, "MethodImpl(");
         }
 
-        void WriteMethodImplAttribute(MethodImplOptions opts)
+		private void WriteMethodImplAttribute(MethodImplOptions opts)
         {
             BeginMethodImplAttribute();
             bool sep = false;
@@ -1308,7 +1295,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write(")]");
         }
 
-        bool WriteMethodAttributes(IMethod method)
+		private bool WriteMethodAttributes(IMethod method)
         {
             bool hasAttrs = method.CustomAttributes.Count > 0;
             if (hasAttrs)
@@ -1337,14 +1324,14 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return hasAttrs;
         }
 
-        IMethod _curMethod;
+		private IMethod _curMethod;
 
-        static string GetCtorName(IType type)
+		private static string GetCtorName(IType type)
         {
             return type.Name;
         }
 
-        static string GetAssociationName(IMethod method)
+		private static string GetAssociationName(IMethod method)
         {
             var assoc = method.Association;
             if (assoc == null) return null;
@@ -1376,18 +1363,18 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
 
         bool _skipAssociatedMethods = true;
 
-        void WriteXmlComment(string text, string tag, params string[] attrs)
+		private void WriteXmlComment(string text, string tag, params string[] attrs)
         {
             _writer.WriteXmlComments(text, _tab, tag, attrs);
         }
 
-        void WriteSummary(string text)
+		private void WriteSummary(string text)
         {
             if (string.IsNullOrEmpty(text)) return;
             WriteXmlComment(text, "summary");
         }
 
-        void WriteMethodDocumentation(IMethod method)
+		private void WriteMethodDocumentation(IMethod method)
         {
             if (method.Association != null) return;
 
@@ -1404,9 +1391,11 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             WriteXmlComment(method.ReturnDocumentation, "returns");
         }
 
-        static bool IsNew(IMethod method)
+		//TODO: use existing method extension
+        private static bool IsNew(IMethod method)
         {
             if (method == null) return false;
+
             var type = method.DeclaringType;
             var baseType = type.BaseType;
             while (baseType != null)
@@ -1415,15 +1404,16 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 {
                     if (Signature.Equals(baseMethod, method, false))
                     {
-                        return baseMethod.Type != method.Type;
+                        return !ReferenceEquals(baseMethod.Type, method.Type);
                     }
                 }
                 baseType = baseType.BaseType;
             }
+
             return false;
         }
 
-        static bool IsNew(IPolymorphicMember m)
+        private static bool IsNew(IPolymorphicMember m)
         {
             var method = m as IMethod;
             if (method != null)
@@ -1434,7 +1424,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return false;
         }
 
-        void WriteKeywords(IPolymorphicMember m)
+		private void WriteKeywords(IPolymorphicMember m)
         {
             if (m.DeclaringType.TypeKind == TypeKind.Interface)
                 return;
@@ -1496,7 +1486,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        static bool IsPrivate(Visibility v)
+		private static bool IsPrivate(Visibility v)
         {
             switch(v)
             {
@@ -1507,13 +1497,13 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return false;
         }
 
-        void WriteMethod(IMethod method)
+		private void WriteMethod(IMethod method)
         {
             var assoc = method.Association;
             if (assoc != null && _skipAssociatedMethods && Scope != null)
                 return;
 
-            bool full = _mode == FormatMode.Full;
+            bool full = Mode == FormatMode.Full;
 
             if (full)
             {
@@ -1591,7 +1581,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteGenericParams(IEnumerable<IGenericParameter> parameters)
+		private void WriteGenericParams(IEnumerable<IGenericParameter> parameters)
         {
             if (parameters == null) return;
             bool begin = false;
@@ -1610,7 +1600,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 Write(">");
         }
 
-        void WriteGenericArgs(IEnumerable<IType> args)
+		private void WriteGenericArgs(IEnumerable<IType> args)
         {
             if (args == null) return;
             bool begin = false;
@@ -1629,7 +1619,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 Write(">");
         }
 
-        static IExpression ToCtorCall(IStatement st)
+		private static IExpression ToCtorCall(IStatement st)
         {
             var est = st as IExpressionStatement;
             if (est == null) return null;
@@ -1644,7 +1634,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return null;
         }
 
-        void WriteCtorBody(IList<IStatement> body)
+		private void WriteCtorBody(IList<IStatement> body)
         {
             bool sep = true;
             bool comma = false;
@@ -1684,7 +1674,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #region IProperty
         void WriteProperty(IProperty prop)
         {
-            bool full = _mode == FormatMode.Full;
+            bool full = Mode == FormatMode.Full;
 
             if (full)
             {
@@ -1756,7 +1746,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             var declType = e.DeclaringType;
             bool isIface = declType.TypeKind == TypeKind.Interface;
 
-            bool full = _mode == FormatMode.Full;
+            bool full = Mode == FormatMode.Full;
 
             if (full)
             {
@@ -1822,7 +1812,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         //    }
         //}
 
-        void WriteStatement(IStatement st)
+		private void WriteStatement(IStatement st)
         {
             _cst = st;
             //_statementStack.Push(st);
@@ -1833,7 +1823,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             //_statementStack.Pop();
         }
 
-        void WriteStatementCollection(IStatementCollection collection)
+		private void WriteStatementCollection(IStatementCollection collection)
         {
             bool sep = false;
             foreach (var st in collection)
@@ -1848,7 +1838,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         const int bfOneStatement = 1;
         const int bfElse = 2;
 
-        bool AsOneStatement(IStatement st)
+		private bool AsOneStatement(IStatement st)
         {
             if (_cst == null) return false;
             var f = _cst as IIfStatement;
@@ -1873,7 +1863,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             return true;
         }
 
-        void WriteBlock(IList<IStatement> body, int startIndex, int bf)
+		private void WriteBlock(IList<IStatement> body, int startIndex, int bf)
         {
             int n = body.Count;
             if (startIndex >= n)
@@ -1926,48 +1916,48 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             EndBlock();
         }
 
-        void WriteBlock(string name, IList<IStatement> body, int bf)
+		private void WriteBlock(string name, IList<IStatement> body, int bf)
         {
             WriteTab();
             Write(name);
             WriteBlock(body, 0, bf);
         }
 
-        void BeginStatement()
+		private void BeginStatement()
         {
             WriteTab();
         }
 
-        void EndStatement()
+		private void EndStatement()
         {
             Write(";");
         }
 
-        void WriteKeywordStatement(Keyword k)
+		private void WriteKeywordStatement(Keyword k)
         {
             BeginStatement();
             WriteKeyword(k, false);
             EndStatement();
         }
 
-        void WriteContinueStatement(IContinueStatement s)
+		private void WriteContinueStatement(IContinueStatement s)
         {
             WriteKeywordStatement(Keyword.Continue);
         }
 
-        void WriteBreakStatement(IBreakStatement s)
+		private void WriteBreakStatement(IBreakStatement s)
         {
             WriteKeywordStatement(Keyword.Break);
         }
 
-        void WriteExpressionStatement(IExpressionStatement s)
+		private void WriteExpressionStatement(IExpressionStatement s)
         {
             BeginStatement();
             WriteExpression(s.Expression);
             EndStatement();
         }
 
-        void WriteReturnStatement(IReturnStatement s)
+		private void WriteReturnStatement(IReturnStatement s)
         {
             BeginStatement();
             WriteKeyword(Keyword.Return, false);
@@ -1979,7 +1969,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             EndStatement();
         }
 
-        void WriteVariableDeclarationStatement(IVariableDeclarationStatement s)
+		private void WriteVariableDeclarationStatement(IVariableDeclarationStatement s)
         {
             BeginStatement();
             WriteReferenceName(s.Variable.Type);
@@ -1994,7 +1984,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             EndStatement();
         }
 
-        void WriteLabeledStatement(ILabeledStatement s)
+		private void WriteLabeledStatement(ILabeledStatement s)
         {
             if (s.Statement == null)
                 throw new InvalidOperationException();
@@ -2007,7 +1997,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             WriteStatement(s.Statement);
         }
 
-        void WriteGotoStatement(IGotoStatement s)
+		private void WriteGotoStatement(IGotoStatement s)
         {
             BeginStatement();
             Write("goto ");
@@ -2032,7 +2022,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             EndStatement();
         }
 
-        void WriteCondition(IExpression e)
+		private void WriteCondition(IExpression e)
         {
             if (e != null)
                 WriteExpression(e);
@@ -2040,9 +2030,9 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
                 Write("(true)");
         }
 
-        bool _elseif;
+		private bool _elseif;
 
-        void WriteIfStatement(IIfStatement s)
+		private void WriteIfStatement(IIfStatement s)
         {
             if (_elseif)
             {
@@ -2063,7 +2053,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteLoopStatement(ILoopStatement s)
+		private void WriteLoopStatement(ILoopStatement s)
         {
             BeginStatement();
             var type = s.LoopType;
@@ -2092,7 +2082,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteSwitchStatement(ISwitchStatement s)
+		private void WriteSwitchStatement(ISwitchStatement s)
         {
             BeginStatement();
             Write("switch (");
@@ -2109,7 +2099,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             EndBlock();
         }
 
-        void WriteSwitchCase(ISwitchCase sc)
+		private void WriteSwitchCase(ISwitchCase sc)
         {
             for (int i = sc.From; i <= sc.To;  ++i)
             {
@@ -2121,7 +2111,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             WriteBlock(sc.Body, 0, bfOneStatement);
         }
 
-        void WriteTryCatchStatement(ITryCatchStatement s)
+		private void WriteTryCatchStatement(ITryCatchStatement s)
         {
             WriteBlock("try", s.Try, 0);
             WriteStatementCollection(s.CatchClauses);
@@ -2137,7 +2127,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteCatchClause(ICatchClause c)
+		private void WriteCatchClause(ICatchClause c)
         {
             WriteTab();
             Write("catch");
@@ -2155,7 +2145,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             WriteBlock(c.Body, 0, 0);
         }
 
-        void WriteThrowExceptionStatement(IThrowExceptionStatement s)
+		private void WriteThrowExceptionStatement(IThrowExceptionStatement s)
         {
             BeginStatement();
             Write("throw");
@@ -2167,13 +2157,13 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             EndStatement();
         }
 
-        void WriteMemoryInitializeStatement(IMemoryInitializeStatement s)
+		private void WriteMemoryInitializeStatement(IMemoryInitializeStatement s)
         {
             BeginStatement();
             EndStatement();
         }
 
-        void WriteMemoryCopyStatement(IMemoryCopyStatement s)
+		private void WriteMemoryCopyStatement(IMemoryCopyStatement s)
         {
             BeginStatement();
             EndStatement();
@@ -2181,43 +2171,43 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         #endregion
 
         #region IExpression
-        void WriteExpression(IExpression e)
+		private void WriteExpression(IExpression e)
         {
             if (!_expressions.Run(e))
                 throw new NotImplementedException();
         }
 
-        void WriteConstExpression(IConstantExpression e)
+		private void WriteConstExpression(IConstantExpression e)
         {
             WriteValue(e.Value);
         }
 
-        void WriteThisReferenceExpression(IThisReferenceExpression e)
+		private void WriteThisReferenceExpression(IThisReferenceExpression e)
         {
             Write(GetKeyword(Keyword.This));
         }
 
-        void WriteBaseReferenceExpression(IBaseReferenceExpression e)
+		private void WriteBaseReferenceExpression(IBaseReferenceExpression e)
         {
             Write(GetKeyword(Keyword.Base));
         }
 
-        void WriteTypeReferenceExpression(ITypeReferenceExpression e)
+		private void WriteTypeReferenceExpression(ITypeReferenceExpression e)
         {
             WriteReferenceName(e.Type);
         }
 
-        void WriteVariableReferenceExpression(IVariableReferenceExpression e)
+		private void WriteVariableReferenceExpression(IVariableReferenceExpression e)
         {
             Write(e.Variable.Name);
         }
 
-        void WriteArgumentReferenceExpression(IArgumentReferenceExpression e)
+		private void WriteArgumentReferenceExpression(IArgumentReferenceExpression e)
         {
             Write(e.Argument.Name);
         }
 
-        void WriteMethodReferenceExpression(IMethodReferenceExpression e)
+		private void WriteMethodReferenceExpression(IMethodReferenceExpression e)
         {
             if (e.Method.IsConstructor)
             {
@@ -2234,26 +2224,24 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        bool CanSkipTarget(IMemberReferenceExpression e)
+        private bool CanSkipTarget(IMemberReferenceExpression e)
         {
             if (_curMethod == null) return false;
             var tr = e.Target as ITypeReferenceExpression;
-            if (tr == null) return false;
-            if (tr.Type == _curMethod.DeclaringType) return true;
-            return false;
+            return tr != null && ReferenceEquals(tr.Type, _curMethod.DeclaringType);
         }
 
-        void WritePropertyReferenceExpression(IPropertyReferenceExpression e)
+        private void WritePropertyReferenceExpression(IPropertyReferenceExpression e)
         {
             WriteMemberReferenceExpression(e);
         }
 
-        void WriteFieldReferenceExpression(IFieldReferenceExpression e)
+		private void WriteFieldReferenceExpression(IFieldReferenceExpression e)
         {
             WriteMemberReferenceExpression(e);
         }
 
-        void WriteMemberReferenceExpression(IMemberReferenceExpression e)
+		private void WriteMemberReferenceExpression(IMemberReferenceExpression e)
         {
             if (!CanSkipTarget(e))
             {
@@ -2263,7 +2251,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write(e.Member.Name);
         }
 
-        void WriteExpressions(IEnumerable<IExpression> list, string separator)
+		private void WriteExpressions(IEnumerable<IExpression> list, string separator)
         {
             bool sep = false;
             foreach (var e in list)
@@ -2274,7 +2262,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteArguments(IReadOnlyList<IParameter> parameters, IList<IExpression> args, string prefix, string suffix)
+		private void WriteArguments(IReadOnlyList<IParameter> parameters, IList<IExpression> args, string prefix, string suffix)
         {
             Write(prefix);
             for (int i = 0; i < args.Count; ++i)
@@ -2289,7 +2277,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write(suffix);
         }
 
-        void WriteMethodArguments(IMethod method, IList<IExpression> args)
+		private void WriteMethodArguments(IMethod method, IList<IExpression> args)
         {
             const string prefix = "(";
             const string suffx = ")";
@@ -2302,13 +2290,13 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             WriteArguments(method.Parameters, args, prefix, suffx);
         }
 
-        void WriteCallExpression(ICallExpression e)
+		private void WriteCallExpression(ICallExpression e)
         {
             WriteExpression(e.Method);
             WriteMethodArguments(e.Method.Method, e.Arguments);
         }
 
-        void WriteFencedExpression(IExpression e)
+		private void WriteFencedExpression(IExpression e)
         {
             bool cb = ExpressionService.CanBrace(e);
             if (cb) Write("(");
@@ -2316,7 +2304,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (cb) Write(")");
         }
 
-        void WriteCastExpression(ICastExpression e)
+		private void WriteCastExpression(ICastExpression e)
         {
             var type = e.TargetType;
             var ee = e.Expression;
@@ -2342,7 +2330,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteBinaryExpression(IBinaryExpression e)
+		private void WriteBinaryExpression(IBinaryExpression e)
         {
             bool isNotAssign = e.Operator != BinaryOperator.Assign;
             var left = e.Left;
@@ -2377,7 +2365,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteUnaryExpression(IUnaryExpression e)
+		private void WriteUnaryExpression(IUnaryExpression e)
         {
             if (e.Operator == UnaryOperator.PostIncrement || e.Operator == UnaryOperator.PostDecrement)
             {
@@ -2397,12 +2385,12 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteBoxExpression(IBoxExpression e)
+		private void WriteBoxExpression(IBoxExpression e)
         {
             WriteExpression(e.Expression);
         }
 
-        void WriteUnboxExpression(IUnboxExpression e)
+		private void WriteUnboxExpression(IUnboxExpression e)
         {
             Write("(");
             Write("(");
@@ -2412,7 +2400,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write(")");
         }
 
-        void WriteConditionExpression(IConditionExpression e)
+		private void WriteConditionExpression(IConditionExpression e)
         {
             bool b = ExpressionService.CanBrace(e.Condition);
 
@@ -2435,19 +2423,19 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (b) Write(")");
         }
 
-        void WriteExpressionCollection(IExpressionCollection e)
+		private void WriteExpressionCollection(IExpressionCollection e)
         {
             WriteExpressions(e, ", ");
         }
 
-        void WriteNewObjectExpression(INewObjectExpression e)
+		private void WriteNewObjectExpression(INewObjectExpression e)
         {
             Write("new ");
             WriteReferenceName(e.ObjectType);
             WriteMethodArguments(e.Constructor, e.Arguments);
         }
 
-        void WriteNewArrayExpression(INewArrayExpression e)
+		private void WriteNewArrayExpression(INewArrayExpression e)
         {
             Write("new ");
             WriteReferenceName(e.ElementType);
@@ -2462,7 +2450,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             }
         }
 
-        void WriteIndexerExpression(IIndexerExpression e)
+		private void WriteIndexerExpression(IIndexerExpression e)
         {
             WriteExpression(e.Property.Target);
             Write("[");
@@ -2470,7 +2458,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write("]");
         }
 
-        void WriteArrayIndexerExpression(IArrayIndexerExpression e)
+		private void WriteArrayIndexerExpression(IArrayIndexerExpression e)
         {
             WriteExpression(e.Array);
             Write("[");
@@ -2478,13 +2466,13 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write("]");
         }
 
-        void WriteArrayLengthExpression(IArrayLengthExpression e)
+		private void WriteArrayLengthExpression(IArrayLengthExpression e)
         {
             WriteExpression(e.Array);
             Write(".Length");
         }
 
-        void WriteAddressOfExpression(IAddressOfExpression e)
+		private void WriteAddressOfExpression(IAddressOfExpression e)
         {
             Write("&");
             bool b = ExpressionService.CanBrace(e.Expression);
@@ -2493,7 +2481,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (b) Write(")");
         }
 
-        void WriteAddressDereferenceExpression(IAddressDereferenceExpression e)
+		private void WriteAddressDereferenceExpression(IAddressDereferenceExpression e)
         {
             Write("*");
             bool b = ExpressionService.CanBrace(e.Expression);
@@ -2502,7 +2490,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (b) Write(")");
         }
 
-        void WriteAddressOutExpression(IAddressOutExpression e)
+		private void WriteAddressOutExpression(IAddressOutExpression e)
         {
             Write("out ");
             bool b = ExpressionService.CanBrace(e.Expression);
@@ -2511,7 +2499,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (b) Write(")");
         }
 
-        void WriteAddressRefExpression(IAddressRefExpression e)
+		private void WriteAddressRefExpression(IAddressRefExpression e)
         {
             Write("ref ");
             bool b = ExpressionService.CanBrace(e.Expression);
@@ -2520,7 +2508,7 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             if (b) Write(")");
         }
 
-        void WriteNewDelegateExpression(INewDelegateExpression e)
+		private void WriteNewDelegateExpression(INewDelegateExpression e)
         {
             Write("new ");
             WriteFullName(e.DelegateType);
@@ -2529,20 +2517,20 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
             Write(")");
         }
 
-        void WriteDelegateInvokeExpression(IDelegateInvokeExpression e)
+		private void WriteDelegateInvokeExpression(IDelegateInvokeExpression e)
         {
             Write(e.Target);
             WriteMethodArguments(e.Method, e.Arguments);
         }
 
-        void WriteTypeOfExpression(ITypeOfExpression e)
+		private void WriteTypeOfExpression(ITypeOfExpression e)
         {
             Write("typeof(");
             WriteReferenceName(e.Type);
             Write(")");
         }
 
-        void WriteSizeOfExpression(ISizeOfExpression e)
+		private void WriteSizeOfExpression(ISizeOfExpression e)
         {
             Write("sizeof(");
             WriteReferenceName(e.Type);
@@ -2550,11 +2538,9 @@ namespace DataDynamics.PageFX.CodeModel.Syntax
         }
         #endregion
 
-        #region Object Override Members
-        public override string ToString()
+	    public override string ToString()
         {
             return _writer.ToString();
         }
-        #endregion
     }
 }

@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static void CheckInt64(IType type)
         {
-            if (type == SystemTypes.Int64 && !SupportNativeInt64)
+            if (type.Is(SystemTypeCode.Int64) && !SupportNativeInt64)
                 throw new InvalidOperationException("AVM does not supported 64-bit integral numbers");
         }
     }

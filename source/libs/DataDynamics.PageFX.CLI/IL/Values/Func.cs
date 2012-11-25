@@ -3,24 +3,23 @@ using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
-    class Func : IValue
+    internal sealed class Func : IValue
     {
-        public IValue obj;
-        public IMethod method;
+        public IValue Obj;
+        public IMethod Method;
 
         public Func(IMethod f)
         {
-            method = f;
+            Method = f;
         }
 
         public Func(IValue obj, IMethod f)
         {
-            this.obj = obj;
-            method = f;
+            Obj = obj;
+            Method = f;
         }
 
-        #region IValue Members
-        public IType Type
+	    public IType Type
         {
             get { return SystemTypes.IntPtr; }
         }
@@ -39,17 +38,16 @@ namespace DataDynamics.PageFX.CLI.IL
         {
             get { return false; }
         }
-        #endregion
 
-        public override string ToString()
+	    public override string ToString()
         {
             var sb = new StringBuilder();
             sb.Append("Func: ");
-            if (obj != null)
+            if (Obj != null)
             {
-                sb.Append(obj + ".");
+                sb.Append(Obj + ".");
             }
-            sb.Append(method.ToString());
+            sb.Append(Method);
             return sb.ToString();
         }
     }

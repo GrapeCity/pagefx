@@ -657,7 +657,7 @@ namespace DataDynamics.PageFX.FLI
             return null;
         }
 
-        IType BuildMemberType(AbcMultiname name)
+        private IType BuildMemberType(AbcMultiname name)
         {
 			if (name.IsObject)
 			{
@@ -2050,7 +2050,7 @@ namespace DataDynamics.PageFX.FLI
                 var instance = type.Tag as AbcInstance;
                 if (instance != null)
                 {
-                    DefineSwcAbcFileAttribute(owner, instance.ABC);
+                    DefineSwcAbcFileAttribute(owner, instance.Abc);
                     DefineIndexAttribute(owner, Attrs.AbcInstance, instance.Index);
                 }
             }

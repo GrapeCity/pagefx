@@ -8,85 +8,65 @@ namespace DataDynamics.PageFX.FLI.ABC
     /// <summary>
     /// Represents method paramater.
     /// </summary>
-    public class AbcParameter : ISupportXmlDump
+    public sealed class AbcParameter : ISupportXmlDump
     {
-        #region ctors
-        public AbcParameter()
+	    public AbcParameter()
         {
         }
 
         public AbcParameter(AbcMultiname type)
         {
-            _type = type;
+            Type = type;
         }
 
         public AbcParameter(AbcMultiname type, AbcConst<string> name)
         {
-            _type = type;
-            _name = name;
+            Type = type;
+            Name = name;
         }
-        #endregion
 
-        #region Properties
-        public AbcConst<string> Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private AbcConst<string> _name;
+	    #region Properties
 
-        public bool HasName
+	    public AbcConst<string> Name { get; set; }
+
+	    public bool HasName
         {
             get
             {
                 //if (_name == null) return false;
                 //return !string.IsNullOrEmpty(_name.Value);
-                return _name != null;
+                return Name != null;
             }
         }
 
-        public AbcMultiname Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
-        private AbcMultiname _type;
+	    public AbcMultiname Type { get; set; }
 
-        public object Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-        private object _value;
+	    public object Value { get; set; }
 
-        public bool IsOptional
-        {
-            get { return _isOptional; }
-            set { _isOptional = value; }
-        }
-        private bool _isOptional;
-        #endregion
+	    public bool IsOptional { get; set; }
+
+	    #endregion
 
         #region Dump
         public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("param");
-            if (_name != null)
-                writer.WriteAttributeString("name", _name.Value);
+            if (Name != null)
+                writer.WriteAttributeString("name", Name.Value);
 
-            if (_type != null)
+            if (Type != null)
             {
-                writer.WriteAttributeString("type", _type.ToString());
+                writer.WriteAttributeString("type", Type.ToString());
             }
 
-            if (_isOptional)
+            if (IsOptional)
             {
-                writer.WriteAttributeString("value", _value != null ? _value.ToString() : "null");
+                writer.WriteAttributeString("value", Value != null ? Value.ToString() : "null");
             }
 
-            if (_type != null)
+            if (Type != null)
             {
-                _type.DumpXml(writer, "type");
+                Type.DumpXml(writer, "type");
             }
 
             writer.WriteEndElement();
@@ -102,16 +82,16 @@ namespace DataDynamics.PageFX.FLI.ABC
         public string ToString(string typeFormat)
         {
             var s = new StringBuilder();
-            if (_name != null && !string.IsNullOrEmpty(_name.Value))
+            if (Name != null && !string.IsNullOrEmpty(Name.Value))
             {
-                s.Append(_name.Value);
+                s.Append(Name.Value);
                 s.Append(":");
             }
-            s.Append(_type != null ? _type.ToString(typeFormat) : "*");
-            if (_isOptional)
+            s.Append(Type != null ? Type.ToString(typeFormat) : "*");
+            if (IsOptional)
             {
                 s.Append(" = ");
-                s.Append(_value != null ? _value.ToString() : "null");
+                s.Append(Value != null ? Value.ToString() : "null");
             }
             return s.ToString();
         }
@@ -121,7 +101,7 @@ namespace DataDynamics.PageFX.FLI.ABC
     /// <summary>
     /// List of <see cref="AbcParameter"/> objects.
     /// </summary>
-    public class AbcParameterList : List<AbcParameter>, ISupportXmlDump
+    public sealed class AbcParameterList : List<AbcParameter>, ISupportXmlDump
     {
         #region Dump
         public void DumpXml(XmlWriter writer)

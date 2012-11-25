@@ -78,7 +78,7 @@ namespace DataDynamics.PageFX.FLI
 
         #region DefineGetTypeIdMethod
         //Called when GetTypeId method is used.
-        AbcMethod DefineGetTypeIdMethod(IType type, AbcInstance instance)
+        private AbcMethod DefineGetTypeIdMethod(IType type, AbcInstance instance)
         {
             if (type == null) return null;
             if (instance == null) return null;
@@ -86,7 +86,7 @@ namespace DataDynamics.PageFX.FLI
             if (instance.IsInterface) return null;
             if (instance.IsForeign) return null;
 
-            var abc = instance.ABC;
+            var abc = instance.Abc;
             if (IsSwf)
             {
                 if (!((IEnumerable<AbcFile>)sfc.AbcFrames).Contains(abc))
@@ -110,7 +110,7 @@ namespace DataDynamics.PageFX.FLI
 
             //File.AppendAllText("c:\\GetTypeId.txt", type.FullName + "\n");
 
-            if (type == SystemTypes.Exception)
+            if (type.Is(SystemTypeCode.Exception))
             {
                 //DefinePrototype_GetType(instance, type);
 
@@ -138,10 +138,11 @@ namespace DataDynamics.PageFX.FLI
             return method;
         }
 
-        bool IsOverrideGetTypeId(IType type, AbcInstance instance)
+        private bool IsOverrideGetTypeId(IType type, AbcInstance instance)
         {
-            if (type == SystemTypes.Exception)
+            if (type.Is(SystemTypeCode.Exception))
                 return false;
+
             var bt = type.BaseType;
             var st = instance.SuperType;
             while (bt != null && st != null)
@@ -178,7 +179,7 @@ namespace DataDynamics.PageFX.FLI
                     DebugService.DoCancel();
 #endif
                     var instance = abc.Instances[i];
-                    if (instance.ABC != abc)
+                    if (instance.Abc != abc)
                     {
                         throw new InvalidOperationException();
                     }
@@ -187,7 +188,7 @@ namespace DataDynamics.PageFX.FLI
                     if (type == null) continue;
 
                     //NOTE: System.Array defines GetType explicitly
-                    if (type == SystemTypes.Array)
+                    if (type.Is(SystemTypeCode.Array))
                     {
                         var m = type.Methods.Find("GetType", 0);
                         if (m == null)

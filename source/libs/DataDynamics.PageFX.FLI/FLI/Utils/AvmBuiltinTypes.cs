@@ -245,11 +245,11 @@ namespace DataDynamics.PageFX.FLI
 
         public InstructionCode GetCoercionInstructionCode(AbcMultiname type)
         {
-            if (type == Int32) return InstructionCode.Coerce_i;
-            if (type == UInt32) return InstructionCode.Coerce_u;
-            if (type == String) return InstructionCode.Coerce_s;
-            if (type == Boolean) return InstructionCode.Coerce_b;
-            if (type == Object) return InstructionCode.Coerce_o;
+			if (ReferenceEquals(type, Int32)) return InstructionCode.Coerce_i;
+            if (ReferenceEquals(type, UInt32)) return InstructionCode.Coerce_u;
+            if (ReferenceEquals(type, String)) return InstructionCode.Coerce_s;
+            if (ReferenceEquals(type, Boolean)) return InstructionCode.Coerce_b;
+            if (ReferenceEquals(type, Object)) return InstructionCode.Coerce_o;
             return InstructionCode.Coerce;
         }
     }

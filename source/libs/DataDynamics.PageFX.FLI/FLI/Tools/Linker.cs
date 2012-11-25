@@ -372,7 +372,7 @@ namespace DataDynamics.PageFX.FLI
             if (e.Adder == method)
             {
                 //stack transition: dispatcher, delegate -> ...
-                var code = new AbcCode(instance.ABC);
+                var code = new AbcCode(instance.Abc);
                 code.Swap();
                 code.PushString(eventName);
                 code.CallVoid(GetDelegateMethodName(true), 2);
@@ -383,7 +383,7 @@ namespace DataDynamics.PageFX.FLI
             if (e.Remover == method)
             {
                 //stack transition: delegate -> ...
-                var code = new AbcCode(instance.ABC);
+                var code = new AbcCode(instance.Abc);
                 code.Swap();
                 code.PushString(eventName);
                 code.CallVoid(GetDelegateMethodName(false), 2);

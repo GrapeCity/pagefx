@@ -215,7 +215,7 @@ namespace DataDynamics.PageFX.FLI.IL
 
 	        var qn1 = instr.Operand as AbcMultiname;
             var qn2 = prev.Operand as AbcMultiname;
-            if (qn1 != null && qn2 != null && qn1 == qn2)
+            if (qn1 != null && qn2 != null && ReferenceEquals(qn1, qn2))
             {
                 RemoveAt(i);
                 --i;

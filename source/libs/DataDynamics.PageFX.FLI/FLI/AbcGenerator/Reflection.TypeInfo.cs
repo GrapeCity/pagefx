@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX.FLI
         /// Returns instance that stores reflection data for API builtin in target player (AVM, Flash, AIR).
         /// </summary>
         /// <returns></returns>
-        AbcInstance DefineReflectionInstance()
+        private AbcInstance DefineReflectionInstance()
         {
             if (_instanceReflection != null) return _instanceReflection;
             var name = DefinePfxName("PlayerReflectionData", false);
@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.FLI
         }
         AbcInstance _instanceReflection;
 
-        AbcInstance FixInstance(AbcInstance instance)
+        private AbcInstance FixInstance(AbcInstance instance)
         {
             if (instance.IsNative)
                 return DefineReflectionInstance();
@@ -52,7 +52,7 @@ namespace DataDynamics.PageFX.FLI
         }
 
         #region FieldInfo
-        void NewFieldInfo(AbcCode code, AbcInstance instance, IField field, int varField)
+        private void NewFieldInfo(AbcCode code, AbcInstance instance, IField field, int varField)
         {
             var trait = field.Tag as AbcTrait;
             if (trait == null)
@@ -99,7 +99,7 @@ namespace DataDynamics.PageFX.FLI
             code.GetLocal(varField);
         }
 
-        AbcMethod DefineMyFieldsInitializer(AbcInstance instance, IType type)
+        private AbcMethod DefineMyFieldsInitializer(AbcInstance instance, IType type)
         {
             var myfields = new List<IField>(type.Fields.Where(f => !f.IsStatic));
             if (myfields.Count == 0) return null;
@@ -120,7 +120,7 @@ namespace DataDynamics.PageFX.FLI
                     });
         }
 
-        bool IsMemberwiseCloneCompiled
+        private bool IsMemberwiseCloneCompiled
         {
             get 
             {
@@ -133,9 +133,9 @@ namespace DataDynamics.PageFX.FLI
                 return _isMemberwiseCloneCompiled.Value;
             }
         }
-        bool? _isMemberwiseCloneCompiled;
+        private bool? _isMemberwiseCloneCompiled;
 
-        bool MustInitFields
+        private bool MustInitFields
         {
             get 
             {
@@ -145,7 +145,7 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        void InitFields(AbcCode code, AbcInstance instance, IType type)
+        private void InitFields(AbcCode code, AbcInstance instance, IType type)
         {
             if (!MustInitFields) return;
             if (type.IsInterface) return;
@@ -160,7 +160,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region CustomAttributes
-        AbcMethod DefineCustomAttributesInitializer(AbcInstance instance, ICustomAttributeProvider provider)
+        private AbcMethod DefineCustomAttributesInitializer(AbcInstance instance, ICustomAttributeProvider provider)
         {
             instance = FixInstance(instance);
 
@@ -186,7 +186,7 @@ namespace DataDynamics.PageFX.FLI
 	                });
         }
 
-        void NewAttribute(AbcCode code, ICustomAttribute attr, int varAttr)
+        private void NewAttribute(AbcCode code, ICustomAttribute attr, int varAttr)
         {
             code.NewObject(attr.Constructor,
                            () =>
@@ -220,7 +220,7 @@ namespace DataDynamics.PageFX.FLI
             code.GetLocal(varAttr);
         }
 
-        void InitCustomAttributes(AbcCode code, AbcInstance instance, ICustomAttributeProvider provider, int var)
+        private void InitCustomAttributes(AbcCode code, AbcInstance instance, ICustomAttributeProvider provider, int var)
         {
             var init = DefineCustomAttributesInitializer(instance, provider);
             code.GetLocal(var);
@@ -232,7 +232,7 @@ namespace DataDynamics.PageFX.FLI
         #region Method Wrappers
         int MethodWrappperCounter;
 
-        static bool ShouldWrap(IMethod m)
+        private static bool ShouldWrap(IMethod m)
         {
             var am = m.Tag as AbcMethod;
             if (am == null) return false;
@@ -241,7 +241,7 @@ namespace DataDynamics.PageFX.FLI
             return false;
         }
 
-        AbcMethod DefineMetodWrapper(IMethod m, bool init)
+        private AbcMethod DefineMetodWrapper(IMethod m, bool init)
         {
             var am = m.Tag as AbcMethod;
             if (am == null) return null;
@@ -332,7 +332,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region Methods & Constructors
-        void NewParameterInfo(AbcCode code, AbcInstance instance, IParameter param, int varMethod, int varParam)
+        private void NewParameterInfo(AbcCode code, AbcInstance instance, IParameter param, int varMethod, int varParam)
         {
             var pitype = CorlibTypes[CorlibTypeId.ParameterInfo];
             if (param.Type == null)
@@ -361,7 +361,7 @@ namespace DataDynamics.PageFX.FLI
             code.GetLocal(varParam);
         }
 
-        static MethodAttributes GetMethodAttributes(IMethod method)
+        private static MethodAttributes GetMethodAttributes(IMethod method)
         {
             MethodAttributes ma = 0;
 
@@ -407,7 +407,7 @@ namespace DataDynamics.PageFX.FLI
         }
 
         #region NewMethodInfo
-        void NewMethodInfo(AbcCode code, AbcInstance instance, IMethod method,
+        private void NewMethodInfo(AbcCode code, AbcInstance instance, IMethod method,
             int varMethod, int varParams, int varParam,
             IType mtype, int index)
         {
@@ -457,7 +457,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         // Pointer and Reference type parameters currently not supported
-        static bool IsUnsupportedMethod(IMethod m)
+        private static bool IsUnsupportedMethod(IMethod m)
         {
             var am = m.Tag as AbcMethod;
             if (am == null)
@@ -468,7 +468,7 @@ namespace DataDynamics.PageFX.FLI
             return m.Parameters.Any(p => p.IsByRef || p.Type.TypeKind == TypeKind.Pointer || GenericType.HasGenericParams(p.Type));
         }
 
-        AbcMethod DefineMethodsInitializer(AbcInstance instance, IType type, bool ctor)
+        private AbcMethod DefineMethodsInitializer(AbcInstance instance, IType type, bool ctor)
         {
             var provname = type.GetSigName();
             string prefix = "init_methods_";
@@ -501,7 +501,7 @@ namespace DataDynamics.PageFX.FLI
                     });
         }
 
-        void InitMethods(AbcCode code, AbcInstance instance, IType type, int var)
+        private void InitMethods(AbcCode code, AbcInstance instance, IType type, int var)
         {
             var init = DefineMethodsInitializer(instance, type, false);
             code.GetLocal(var);
@@ -509,7 +509,7 @@ namespace DataDynamics.PageFX.FLI
             code.SetProperty(Const.Type.MethodsInit);
         }
 
-        void InitConstructors(AbcCode code, AbcInstance instance, IType type, int var)
+        private void InitConstructors(AbcCode code, AbcInstance instance, IType type, int var)
         {
             // TODO: problem is here
             var init = DefineMethodsInitializer(instance, type, true);
@@ -525,7 +525,7 @@ namespace DataDynamics.PageFX.FLI
         /// </summary>
         /// <param name="code"></param>
         /// <param name="prop"></param>
-        void NewPropertyInfo(AbcCode code, AbcInstance instance, IProperty prop, int varProp)
+        private void NewPropertyInfo(AbcCode code, AbcInstance instance, IProperty prop, int varProp)
         {
             var type = CorlibTypes[CorlibTypeId.PropertyInfo];
             var ctor = type.FindConstructor(0);
@@ -550,7 +550,7 @@ namespace DataDynamics.PageFX.FLI
             code.GetLocal(varProp);
         }
 
-        static void SetAccessor(AbcCode code, IMethod accessor, FieldId fieldId, int varProp)
+        private static void SetAccessor(AbcCode code, IMethod accessor, FieldId fieldId, int varProp)
         {
             if (accessor == null) return;
             var am = accessor.Tag as AbcMethod;
@@ -566,7 +566,7 @@ namespace DataDynamics.PageFX.FLI
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        AbcMethod DefinePropertiesInitializer(AbcInstance instance, IType type)
+        private AbcMethod DefinePropertiesInitializer(AbcInstance instance, IType type)
         {
             var provname = type.GetSigName();
             if (provname == null)
@@ -590,7 +590,7 @@ namespace DataDynamics.PageFX.FLI
 	                });
         }
 
-        void InitProperties(AbcCode code, AbcInstance instance, IType type, int varObj)
+        private void InitProperties(AbcCode code, AbcInstance instance, IType type, int varObj)
         {
             var propertiesInitializer = DefinePropertiesInitializer(instance, type);
             code.GetLocal(varObj);
@@ -600,7 +600,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region EnumInfo
-        AbcMethod DefineEnumInfoInitializer(IType type)
+        private AbcMethod DefineEnumInfoInitializer(IType type)
         {
             var enumInstance = type.Tag as AbcInstance;
             if (enumInstance == null)
@@ -682,7 +682,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region TypeInfo
-        void InitTypeInfo(AbcCode code, IType type, int typeId)
+        private void InitTypeInfo(AbcCode code, IType type, int typeId)
         {
             var instance = DefineAbcInstance(type);
 
@@ -783,14 +783,14 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        void SetUnderlyingType(AbcCode code, IType utype)
+        private void SetUnderlyingType(AbcCode code, IType utype)
         {
             code.GetLocal(varType);
             code.PushInt(GetTypeId(utype));
             code.SetProperty(Const.Type.UnderlyingType);
         }
 
-        void InitTypeFuncs(AbcCode code, IType type, AbcInstance instance)
+        private void InitTypeFuncs(AbcCode code, IType type, AbcInstance instance)
         {
             var f = DefineBoxMethod(type);
             if (f != null)
@@ -831,7 +831,7 @@ namespace DataDynamics.PageFX.FLI
             }
         }
 
-        static List<IType> GetInterfaces(IType type)
+        private static List<IType> GetInterfaces(IType type)
         {
             var list = new List<IType>();
             var hash = new Hashtable();
@@ -839,7 +839,7 @@ namespace DataDynamics.PageFX.FLI
             return list;
         }
 
-        static void GetInterfaces(IType type, List<IType> list, Hashtable hash)
+        private static void GetInterfaces(IType type, List<IType> list, Hashtable hash)
         {
             if (type.BaseType != null)
                 GetInterfaces(type.BaseType, list, hash);

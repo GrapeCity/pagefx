@@ -698,10 +698,10 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
         #endregion
 
-        internal bool IsTypeUsed(AbcMultiname typename)
+        internal bool IsTypeUsed(AbcMultiname typeName)
         {
-            if (ReturnType == typename) return true;
-        	return Parameters.Any(p => p.Type == typename);
+            if (ReferenceEquals(ReturnType, typeName)) return true;
+        	return Parameters.Any(p => ReferenceEquals(p.Type, typeName));
         }
 
         internal int MethodInfoIndex { get; set; }

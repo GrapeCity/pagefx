@@ -116,7 +116,7 @@ namespace DataDynamics.PageFX.CodeModel
                     }
 
                 case TypeKind.Enum:
-                    return type1 == type2;
+                    return ReferenceEquals(type1, type2);
             }
 
             var gi1 = type1 as IGenericInstance;
@@ -137,7 +137,7 @@ namespace DataDynamics.PageFX.CodeModel
                 return true;
             }
 
-            return type1 == type2;
+            return ReferenceEquals(type1, type2);
         }
 
         public static bool Equals(IMethod m1, IMethod m2, bool checkReturnTypes, bool checkNames)

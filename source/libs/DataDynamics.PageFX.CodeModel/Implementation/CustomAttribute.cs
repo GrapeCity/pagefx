@@ -144,7 +144,7 @@ namespace DataDynamics.PageFX.CodeModel
     {
 	    public ICustomAttribute[] this[IType type]
         {
-            get { return this.Where(x => x.Type == type).ToArray(); }
+            get { return this.Where(x => ReferenceEquals(x.Type, type)).ToArray(); }
         }
 
         public ICustomAttribute[] this[string typeFullName]

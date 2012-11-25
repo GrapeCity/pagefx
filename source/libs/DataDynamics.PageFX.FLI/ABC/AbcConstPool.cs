@@ -216,7 +216,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             if (c == null) return false;
             int i = c.Index;
             if (i < 0 || i >= Count) return false;
-            return c == this[i];
+            return ReferenceEquals(c, this[i]);
         }
 
         /// <summary>
