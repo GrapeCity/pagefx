@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Debugger.Interop;
 
 namespace DataDynamics.PageFX.VisualStudio.Debugger
 {
-    class FdbHost : IDebugger, IDisposable
+    internal sealed class FdbHost : IDebugger, IDisposable
     {
         #region State
         enum State
@@ -1126,7 +1126,7 @@ namespace DataDynamics.PageFX.VisualStudio.Debugger
             }
         }
 
-        class ExpressionEvaluator : IConverter<string, string>
+        private class ExpressionEvaluator : FormatExpression.IEvaluator
         {
             readonly Property _property;
 
@@ -1135,7 +1135,7 @@ namespace DataDynamics.PageFX.VisualStudio.Debugger
                 _property = prop;
             }
 
-            public string Convert(string exp)
+            public string Evaluate(string exp)
             {
                 if (exp.IsSimpleId())
                 {

@@ -131,7 +131,6 @@
     <Compile Include="Utils\EnumExtensions.cs" />
     <Compile Include="Utils\Filters.cs" />
     <Compile Include="Utils\FormatExpression.cs" />
-    <Compile Include="Utils\Converters.cs" />
     <Compile Include="Utils\SimpleConfig.cs" />
     <Compile Include="System\Tricks.cs" />
     <Compile Include="Utils\CliOption.cs" />

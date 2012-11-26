@@ -6,13 +6,16 @@ using System.Text;
 
 namespace DataDynamics
 {
-    using Evaluator = IConverter<string, string>;
-
     public class FormatExpression
     {
         static readonly StringBuilder SB = new StringBuilder();
 
-        public static string Eval(Evaluator frame, string exp)
+		public interface IEvaluator
+		{
+			string Evaluate(string expression);
+		}
+
+        public static string Eval(IEvaluator frame, string exp)
         {
             if (string.IsNullOrEmpty(exp)) return exp;
             var list = Parse(exp);
@@ -26,13 +29,6 @@ namespace DataDynamics
             }
             return SB.ToString();
         }
-
-        #region For Testing
-        public static string EvalIdentity(string exp)
-        {
-            return Eval(IdentityConverter<string>.Instance, exp);
-        }
-        #endregion
 
         #region Parsing
         static IEnumerable<IItem> Parse(string exp)
@@ -141,10 +137,10 @@ namespace DataDynamics
         #region Items
         interface IItem
         {
-            string Eval(Evaluator evaluator);
+            string Eval(IEvaluator evaluator);
         }
 
-        class Str : IItem
+        private sealed class Str : IItem
         {
             readonly string _value;
 
@@ -153,7 +149,7 @@ namespace DataDynamics
                 _value = value;
             }
 
-            public string Eval(Evaluator evaluator)
+            public string Eval(IEvaluator evaluator)
             {
                 return _value;
             }
@@ -164,7 +160,7 @@ namespace DataDynamics
             }
         }
 
-        class Exp : IItem
+        private sealed class Exp : IItem
         {
             public Exp(string exp)
             {
@@ -173,11 +169,11 @@ namespace DataDynamics
 
             readonly string _exp;
 
-            public string Eval(Evaluator evaluator)
+            public string Eval(IEvaluator evaluator)
             {
                 try
                 {
-                    return evaluator.Convert(_exp);
+                    return evaluator.Evaluate(_exp);
                 }
                 catch (Exception e)
                 {

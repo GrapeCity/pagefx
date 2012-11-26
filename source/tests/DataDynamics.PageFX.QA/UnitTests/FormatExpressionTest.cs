@@ -6,9 +6,17 @@ namespace DataDynamics.Tests
     [TestFixture]
     public class FormatExpressionTest
     {
+		private class DummyEvaluator : FormatExpression.IEvaluator
+		{
+			public string Evaluate(string expression)
+			{
+				return expression;
+			}
+		}
+
         static string Eval(string exp)
         {
-            return FormatExpression.EvalIdentity(exp);
+            return FormatExpression.Eval(new DummyEvaluator(), exp);
         }
 
         [Test]
