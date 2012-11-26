@@ -518,6 +518,9 @@ namespace DataDynamics.PageFX.CodeModel
     {
         public const string Namespace = "System";
 
+		private static readonly SystemType[] SysTypes;
+		private static readonly Dictionary<string, SystemType> Lookup;
+
         static SystemTypes()
         {
             const BindingFlags bf = BindingFlags.Static | BindingFlags.Public | BindingFlags.GetField;
@@ -555,9 +558,7 @@ namespace DataDynamics.PageFX.CodeModel
         {
             get { return SysTypes; }
         }
-        private static readonly SystemType[] SysTypes;
-	    private static readonly Dictionary<string, SystemType> Lookup;
-
+        
         public static IType GetType(TypeCode code)
         {
             switch (code)

@@ -404,7 +404,7 @@ namespace DataDynamics.PageFX.FLI
         }
         private LazyValue<AbcMethod>[] _methodsConvert;
 
-        void AddConvertMethods(ICollection<LazyValue<AbcMethod>> list, string name)
+        private void AddConvertMethods(ICollection<LazyValue<AbcMethod>> list, string name)
         {
             var type = GetType(CorlibTypeId.Convert);
             list.Add(LazyMethod(type, name, SystemTypes.Boolean));
@@ -482,43 +482,43 @@ namespace DataDynamics.PageFX.FLI
             return LazyFields[(int)id].Value;
         }
 
-        public LazyField[] LazyFields
+        private LazyField[] LazyFields
         {
             get 
             {
                 if (_lazyFields != null)
                     return _lazyFields;
 
-                _lazyFields = new []
-                {
-                    //Delegate Fields
-                    NewLazyField(SystemTypes.Delegate, Const.Delegate.Target),
-                    NewLazyField(SystemTypes.Delegate, Const.Delegate.Function),
-                    NewLazyField(SystemTypes.MulticastDelegate, Const.Delegate.Prev),
+	            _lazyFields = new[]
+		            {
+			            //Delegate Fields
+			            NewLazyField(SystemTypes.Delegate, Const.Delegate.Target),
+			            NewLazyField(SystemTypes.Delegate, Const.Delegate.Function),
+			            NewLazyField(SystemTypes.MulticastDelegate, Const.Delegate.Prev),
 
-                    NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.ClassImpl),
-                    NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.NameImpl),
-                    NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.MemberImpl),
+			            NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.ClassImpl),
+			            NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.NameImpl),
+			            NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.MemberImpl),
 
-                    NewLazyField(GetType(CorlibTypeId.MethodBase), Const.MethodBase.Name),
-                    NewLazyField(GetType(CorlibTypeId.MethodBase), Const.MethodBase.Function),
-                    NewLazyField(GetType(CorlibTypeId.MethodBase), Const.MethodBase.Attributes),
-                    NewLazyField(GetType(CorlibTypeId.MethodBase), Const.MethodBase.Parameters),
+			            NewLazyField(GetType(CorlibTypeId.MethodBase), Const.MethodBase.Name),
+			            NewLazyField(GetType(CorlibTypeId.MethodBase), Const.MethodBase.Function),
+			            NewLazyField(GetType(CorlibTypeId.MethodBase), Const.MethodBase.Attributes),
+			            NewLazyField(GetType(CorlibTypeId.MethodBase), Const.MethodBase.Parameters),
 
-                    NewLazyField(GetType(CorlibTypeId.ConstructorInfo), Const.ConstructorInfo.CreateFunction),
+			            NewLazyField(GetType(CorlibTypeId.ConstructorInfo), Const.ConstructorInfo.CreateFunction),
 
-                    NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_name"),
-                    NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_propType"),
-                    NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_getMethod"),
-                    NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_setMethod")
-                };
+			            NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_name"),
+			            NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_propType"),
+			            NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_getMethod"),
+			            NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_setMethod")
+		            };
 
                 return _lazyFields;
             }
         }
-        LazyField[] _lazyFields;
+        private LazyField[] _lazyFields;
 
-        static LazyField NewLazyField(IType type, string name)
+        private static LazyField NewLazyField(IType type, string name)
         {
             return new LazyField(() => type.FindField(name, true));
         }

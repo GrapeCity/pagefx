@@ -2,7 +2,7 @@
 
 namespace DataDynamics
 {
-    public class LazyValue<T> where T : class
+    public sealed class LazyValue<T> where T : class
     {
 		private T _value;
 		private readonly Func<T> _eval;
@@ -21,6 +21,7 @@ namespace DataDynamics
                 if (_value == null)
                 {
                     _value = _eval();
+
                     if (_value == null)
                         throw new InvalidOperationException("Evaluated value cannot be null");
                 }
