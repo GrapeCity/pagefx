@@ -6,7 +6,6 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    [XmlElementName("Members")]
     public class TypeMemberCollection : ITypeMemberCollection
     {
 		private IFieldCollection _fields;

@@ -2,12 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public sealed class Module : CustomAttributeProvider, IModule, IXmlSerializationFeedback
+    public sealed class Module : CustomAttributeProvider, IModule
     {
 		private readonly AssemblyCollection _refs = new AssemblyCollection();
 		private bool _resolveRefs = true;
@@ -95,18 +94,6 @@ namespace DataDynamics.PageFX.CodeModel
         }
         #endregion
 
-        #region IXmlSerializationFeedback Members
-        string IXmlSerializationFeedback.XmlElementName
-        {
-            get { return null; }
-        }
-
-        void IXmlSerializationFeedback.WriteProperties(XmlWriter writer)
-        {
-            writer.WriteElementString("Name", Name);
-        }
-        #endregion
-
         #region Object Override Members
         public override string ToString()
         {
@@ -148,7 +135,6 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// List of <see cref="Module"/> objects.
     /// </summary>
-    [XmlElementName("Modules")]
     public sealed class ModuleCollection : List<IModule>, IModuleCollection
     {
 		private readonly IAssembly _assembly;

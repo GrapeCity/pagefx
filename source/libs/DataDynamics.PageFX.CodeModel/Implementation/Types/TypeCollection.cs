@@ -6,7 +6,6 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    [XmlElementName("Types")]
     public sealed class TypeCollection : ITypeCollection
     {
         private readonly Dictionary<string, IType> _cache = new Dictionary<string, IType>();

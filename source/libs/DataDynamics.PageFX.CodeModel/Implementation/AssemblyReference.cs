@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Xml;
 
 namespace DataDynamics.PageFX.CodeModel
 {
     /// <summary>
     /// Assembly reference
     /// </summary>
-    public class AssemblyReference : CustomAttributeProvider, IAssemblyReference, IXmlSerializationFeedback
+    public class AssemblyReference : CustomAttributeProvider, IAssemblyReference
     {
         #region Constructors
         public AssemblyReference()
@@ -240,21 +239,6 @@ namespace DataDynamics.PageFX.CodeModel
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return FullName;
-        }
-        #endregion
-
-        #region IXmlSerializationFeedback Members
-        string IXmlSerializationFeedback.XmlElementName
-        {
-            get { return null; }
-        }
-
-        void IXmlSerializationFeedback.WriteProperties(XmlWriter writer)
-        {
-            writer.WriteElementString("Name", Name);
-            writer.WriteElementString("FullName", FullName);
-            writer.WriteElementString("Version", Version.ToString());
-            //TODO:
         }
         #endregion
     }

@@ -15,7 +15,6 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Implementation of <see cref="IAssembly"/>.
     /// </summary>
-    [XmlElementName("Assembly")]
     public sealed class AssemblyImpl : AssemblyReference, IAssembly, ITypeCollection
     {
 		private readonly ModuleCollection _modules;

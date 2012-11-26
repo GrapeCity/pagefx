@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
@@ -342,24 +341,8 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
 
         #region XmlSerialization
-        public override string XmlElementName
-        {
-            get
-            {
-                return TypeKind.ToString();
-            }
-        }
 
-        public override void WriteProperties(XmlWriter writer)
-        {
-            base.WriteProperties(writer);
-
-            if (BaseType != null)
-            {
-                writer.WriteElementString("BaseType", BaseType.FullName);
-            }
-        }
-        #endregion
+	    #endregion
 
         #region Name Utils
         public static string GetName(IType type, TypeNameKind kind)

@@ -83,7 +83,6 @@ namespace DataDynamics.PageFX.CodeModel
         #endregion
     }
 
-    [XmlElementName("Variables")]
     public class VariableCollection : List<IVariable>, IVariableCollection
     {
         #region IVariableCollection Members

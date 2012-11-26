@@ -7,7 +7,6 @@ using Enumerable = System.Linq.Enumerable;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    [XmlElementName("Methods")]
 	public class MethodCollection : MultiMemberCollection<IMethod>, IMethodCollection
     {
         public MethodCollection(IType owner) : base(owner)

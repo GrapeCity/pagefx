@@ -107,4 +107,105 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         IStatementCollection Else { get; set; }
     }
+
+	public enum LoopType
+	{
+		Endless,
+		PreTested,
+		PostTested,
+	}
+
+	public interface ILoopStatement : IStatement
+	{
+		LoopType LoopType { get; set; }
+		IExpression Condition { get; set; }
+		IStatementCollection Body { get; }
+	}
+
+	public interface IForStatement : IStatement
+	{
+		IStatement Initializer { get; set; }
+		IExpression Condition { get; set; }
+		IStatement Increment { get; set; }
+		IStatementCollection Body { get; }
+	}
+
+	public interface IForEachStatement : IStatement
+	{
+		IVariable Variable { get; set; }
+		IExpression Expression { get; set; }
+		IStatementCollection Body { get; }
+	}
+
+	public interface ISwitchStatement : IStatement
+	{
+		IExpression Expression { get; set; }
+		IStatementCollection<ISwitchCase> Cases { get; }
+	}
+
+	public interface ISwitchCase : IStatement
+	{
+		int From { get; set; }
+		int To { get; set; }
+		IStatementCollection Body { get; }
+	}
+
+	public interface ITryCatchStatement : IStatement
+	{
+		IStatementCollection Try { get; }
+		IStatementCollection CatchClauses { get; }
+		IStatementCollection Fault { get; }
+		IStatementCollection Finally { get; }
+	}
+
+	public interface ICatchClause : IStatement
+	{
+		IType ExceptionType { get; set; }
+		IExpression Condition { get; set; }
+		IVariable Variable { get; set; }
+		IStatementCollection Body { get; }
+	}
+
+	public interface IThrowExceptionStatement : IStatement
+	{
+		IExpression Expression { get; set; }
+	}
+
+	// TODO: consider to remove below interfaces with impls
+
+	public interface ILockStatement : IStatement
+	{
+		IStatementCollection Body { get; }
+
+		IExpression Expression { get; set; }
+	}
+
+	public interface IFixedStatement : IStatement
+	{
+		IStatementCollection Body { get; }
+
+		IExpression Expression { get; set; }
+
+		IVariable Variable { get; set; }
+	}
+
+	/// <summary>
+	/// Memory block copy
+	/// </summary>
+	public interface IMemoryCopyStatement : IStatement
+	{
+		IExpression Destination { get; set; }
+		IExpression Source { get; set; }
+		IExpression Size { get; set; }
+	}
+
+	/// <summary>
+	/// Initialization of memory block
+	/// </summary>
+	public interface IMemoryInitializeStatement : IStatement
+	{
+		IExpression Value { get; set; }
+		IExpression Offset { get; set; }
+		IExpression Size { get; set; }
+	}
 }

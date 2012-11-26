@@ -6,7 +6,6 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    [XmlElementName("Fields")]
     public sealed class FieldCollection : IFieldCollection
     {
     	private readonly HashList<string, IField> _list = new HashList<string, IField>(x => x.Name);

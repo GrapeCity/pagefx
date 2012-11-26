@@ -6,7 +6,6 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    [XmlElementName("Events")]
     public sealed class EventCollection : IEventCollection
     {
 	    private readonly IType _owner;

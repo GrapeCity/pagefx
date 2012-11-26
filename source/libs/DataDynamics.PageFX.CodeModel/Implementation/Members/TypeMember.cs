@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public abstract class TypeMember : CustomAttributeProvider, ITypeMember, IXmlSerializationFeedback
+    public abstract class TypeMember : CustomAttributeProvider, ITypeMember
     {
 		private IType _type;
 	    private IType _declType;
@@ -180,19 +179,6 @@ namespace DataDynamics.PageFX.CodeModel
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
-        }
-        #endregion
-
-        #region IXmlSerializationFeedback Members
-        public virtual string XmlElementName
-        {
-            get { return MemberType.ToString(); }
-        }
-
-        public virtual void WriteProperties(XmlWriter writer)
-        {
-            writer.WriteElementString("Name", Name);
-            writer.WriteElementString("Visibility", Visibility.ToString());
         }
         #endregion
 

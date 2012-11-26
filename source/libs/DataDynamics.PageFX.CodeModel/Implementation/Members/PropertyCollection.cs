@@ -3,7 +3,6 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    [XmlElementName("Properties")]
     public sealed class PropertyCollection : MultiMemberCollection<IProperty>, IPropertyCollection
     {
         public PropertyCollection(IType owner) : base(owner)
