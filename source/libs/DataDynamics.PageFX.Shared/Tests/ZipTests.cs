@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿#if NUNIT
+using System.IO;
 using NUnit.Framework;
 using DataDynamics.Compression.Zip;
 
@@ -47,3 +48,4 @@ namespace DataDynamics.PageFX.Tests
         }
     }
 }
+#endif

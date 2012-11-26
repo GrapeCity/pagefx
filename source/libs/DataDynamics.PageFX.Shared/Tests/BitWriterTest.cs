@@ -1,3 +1,4 @@
+#if NUNIT
 using System;
 using System.IO;
 using NUnit.Framework;
@@ -63,3 +64,4 @@ namespace DataDynamics
         }
     }
 }
+#endif

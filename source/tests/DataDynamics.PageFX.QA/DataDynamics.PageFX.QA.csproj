@@ -89,9 +89,6 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.FLI\FLI\Utils\Function.cs">
-      <Link>UnitTests\Function.cs</Link>
-    </Compile>
     <Compile Include="..\..\libs\mono\mcs\class\corlib\System\Int64.cs">
       <Link>UnitTests\Int64.cs</Link>
     </Compile>
@@ -1526,14 +1523,8 @@
     <Compile Include="UnitTests\ABCImportTest.cs" />
     <Compile Include="UnitTests\AILTest.cs" />
     <Compile Include="UnitTests\ArithmeticTest.cs" />
-    <Compile Include="UnitTests\BitReaderTest.cs" />
-    <Compile Include="UnitTests\BitWriterTest.cs" />
-    <Compile Include="UnitTests\CommandLineTest.cs" />
-    <Compile Include="UnitTests\FormatExpressionTest.cs" />
     <Compile Include="UnitTests\DebugTest.cs" />
-    <Compile Include="UnitTests\FunctionTests.cs" />
     <Compile Include="UnitTests\NegativeTests.cs" />
-    <Compile Include="UnitTests\StrTest.cs" />
     <Compile Include="UnitTests\ABCIOTest.cs" />
     <Compile Include="Framework\TestEngine.cs" />
     <Compile Include="UnitTests\SwfIOTest.cs" />
@@ -1542,8 +1533,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UnitTests\IEEEFloatTest.cs" />
-    <Compile Include="UnitTests\MiscTests.cs" />
     <Compile Include="Tools\FlashShell.cs" />
     <Compile Include="UI\GeneralOptionsPage.cs">
       <SubType>UserControl</SubType>
@@ -1607,7 +1596,6 @@
       <DependentUpon>ThumbnailViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="UnitTests\SwfTagsTest.cs" />
-    <Compile Include="UnitTests\ZipTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CLI\DataDynamics.PageFX.CLI.csproj">

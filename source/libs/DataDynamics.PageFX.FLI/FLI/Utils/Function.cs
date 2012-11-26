@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DataDynamics.PageFX
 {
-    class Function
+    internal sealed class Function
     {
         public string Name { get; set; }
 
@@ -166,7 +166,7 @@ namespace DataDynamics.PageFX
             return func;
         }
 
-        static object IdToValue(string id)
+        private static object IdToValue(string id)
         {
             if (string.Compare(id, "true", true) == 0)
                 return true;

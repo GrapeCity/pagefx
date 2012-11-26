@@ -1,3 +1,4 @@
+#if NUNIT
 using System.IO;
 using NUnit.Framework;
 
@@ -27,3 +28,4 @@ namespace DataDynamics.Tests
         }
     }
 }
+#endif

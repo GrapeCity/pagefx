@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿#if NUNIT
+using NUnit.Framework;
 
 namespace DataDynamics.Tests
 {
@@ -62,3 +63,4 @@ namespace DataDynamics.Tests
         }
     }
 }
+#endif

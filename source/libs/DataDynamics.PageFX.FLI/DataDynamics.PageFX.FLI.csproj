@@ -356,6 +356,7 @@
     <Compile Include="SWF\Tags\Text\SwfTagDefineFontInfo.cs" />
     <Compile Include="SWF\Tags\Video\SwfTagVideoFrame.cs" />
     <Compile Include="SWF\Tags\Video\SwfTagDefineVideoStream.cs" />
+    <Compile Include="Tests\FunctionTests.cs" />
     <Compile Include="Tests\InstructionsTest.cs" />
     <Compile Include="Tests\MiscTests.cs" />
   </ItemGroup>

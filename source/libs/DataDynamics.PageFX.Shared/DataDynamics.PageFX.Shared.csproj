@@ -126,7 +126,15 @@
     <Compile Include="PageFX\PFCOptions.cs" />
     <Compile Include="PageFX\Warnings.cs" />
     <Compile Include="System.Collections.Generic\Tuples.cs" />
+    <Compile Include="Tests\BitReaderTest.cs" />
+    <Compile Include="Tests\BitWriterTest.cs" />
+    <Compile Include="Tests\CommandLineTest.cs" />
+    <Compile Include="Tests\FormatExpressionTest.cs" />
+    <Compile Include="Tests\IEEEFloatTest.cs" />
     <Compile Include="Tests\MemoizationTests.cs" />
+    <Compile Include="Tests\MiscTests.cs" />
+    <Compile Include="Tests\StrTest.cs" />
+    <Compile Include="Tests\ZipTests.cs" />
     <Compile Include="Utils\CodeTextWriter.cs" />
     <Compile Include="Utils\EnumExtensions.cs" />
     <Compile Include="Utils\Filters.cs" />

@@ -1,7 +1,8 @@
-﻿using System.Globalization;
+﻿#if NUNIT
+using System.Globalization;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.Tests
+namespace DataDynamics.PageFX.FLI.Tests
 {
     [TestFixture]
     public class FunctionTests
@@ -124,3 +125,4 @@ namespace DataDynamics.PageFX.Tests
         }
     }
 }
+#endif
