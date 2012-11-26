@@ -143,6 +143,67 @@ namespace DataDynamics.PageFX.CodeModel
     {
         IType TargetType { get; set; }
     }
+
+	public interface IThisReferenceExpression : IExpression
+	{
+		IType Type { get; set; }
+	}
+
+	public interface IBaseReferenceExpression : IExpression
+	{
+		IType Type { get; set; }
+	}
+
+	public interface IArgumentReferenceExpression : IExpression
+	{
+		IParameter Argument { get; set; }
+	}
+
+	public interface IMemberReferenceExpression : IExpression
+	{
+		IExpression Target { get; set; }
+		ITypeMember Member { get; set; }
+	}
+
+	public interface IFieldReferenceExpression : IMemberReferenceExpression
+	{
+		IField Field { get; set; }
+	}
+
+	public interface IPropertyReferenceExpression : IMemberReferenceExpression
+	{
+		IProperty Property { get; set; }
+	}
+
+	public interface IMethodReferenceExpression : IMemberReferenceExpression
+	{
+		IMethod Method { get; set; }
+	}
+
+	public interface IEventReferenceExpression : IMemberReferenceExpression
+	{
+		IEvent Event { get; set; }
+	}
+
+	public interface ITypeReferenceExpression : IExpression
+	{
+		IType Type { get; set; }
+	}
+
+	public interface IVariableDeclarationExpression : IExpression
+	{
+		IVariable Variable { get; set; }
+	}
+
+	public interface IVariableReferenceExpression : IExpression
+	{
+		IVariable Variable { get; set; }
+	}
+
+	public interface ITypeReferenceProvider
+	{
+		IEnumerable<IType> GetTypeReferences();
+	}
     
     public interface IIndexerExpression : IExpression
     {
@@ -155,4 +216,81 @@ namespace DataDynamics.PageFX.CodeModel
         IMethodReferenceExpression Method { get; set; }
         IExpressionCollection Arguments { get; }
     }
+
+	public interface INewArrayExpression : IExpression
+	{
+		IType ElementType { get; set; }
+		IExpressionCollection Dimensions { get; }
+		IExpressionCollection Initializers { get; }
+	}
+
+	public interface IArrayIndexerExpression : IExpression
+	{
+		IExpression Array { get; set; }
+		IExpressionCollection Index { get; }
+	}
+
+	public interface IArrayLengthExpression : IExpression
+	{
+		IExpression Array { get; set; }
+	}
+
+	public interface INewDelegateExpression : IExpression
+	{
+		IType DelegateType { get; set; }
+		IMethodReferenceExpression Method { get; set; }
+	}
+
+	public interface IDelegateInvokeExpression : IExpression
+	{
+		IExpression Target { get; set; }
+		IMethod Method { get; set; }
+		IExpressionCollection Arguments { get; }
+	}
+
+	public interface IAnonymousMethodExpression : IExpression
+	{
+		IStatementCollection Body { get; }
+
+		IType DelegateType { get; set; }
+
+		IParameterCollection Parameters { get; }
+
+		IType ReturnType { get; set; }
+	}
+
+	public interface ILambdaExpression : IExpression
+	{
+		IVariableCollection Parameters { get; }
+		IExpression Body { get; set; }
+	}
+
+	/// <summary>
+	/// *exp
+	/// </summary>
+	public interface IAddressDereferenceExpression : IEnclosingExpression
+	{
+		IType Type { get; set; }
+	}
+
+	/// <summary>
+	/// &exp
+	/// </summary>
+	public interface IAddressOfExpression : IEnclosingExpression
+	{
+	}
+
+	/// <summary>
+	/// out exp
+	/// </summary>
+	public interface IAddressOutExpression : IEnclosingExpression
+	{
+	}
+
+	/// <summary>
+	/// ref exp
+	/// </summary>
+	public interface IAddressRefExpression : IEnclosingExpression
+	{
+	}
 }

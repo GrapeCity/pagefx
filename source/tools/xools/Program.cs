@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml;
 using DataDynamics;
 
 namespace xools
 {
-    class Program
+    internal class Program
     {
         static CommandLine cl;
 
