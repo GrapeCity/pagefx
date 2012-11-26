@@ -1,3 +1,5 @@
+using DataDynamics.PageFX.CodeModel.Expressions;
+
 namespace DataDynamics.PageFX.CodeModel
 {
     /// <summary>

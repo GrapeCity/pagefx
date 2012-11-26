@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.CodeModel.Expressions
 {
     public sealed class StackAllocateExpression : Expression, IStackAllocateExpression
     {

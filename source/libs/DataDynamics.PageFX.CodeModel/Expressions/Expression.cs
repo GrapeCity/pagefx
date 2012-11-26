@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.CodeModel.Expressions
 {
     public abstract class Expression : IExpression
     {

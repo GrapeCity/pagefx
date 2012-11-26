@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.CodeModel.Statements
 {
     public class GotoStatement : Statement, IGotoStatement
     {

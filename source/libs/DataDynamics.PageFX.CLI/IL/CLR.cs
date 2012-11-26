@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.Expressions;
 
 namespace DataDynamics.PageFX.CLI.IL
 {

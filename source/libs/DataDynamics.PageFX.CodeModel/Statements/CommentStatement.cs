@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.CodeModel.Statements
 {
     public class CommentStatement : Statement, ICommentStatement
     {

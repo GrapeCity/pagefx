@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.CodeModel.Expressions
 {
     public class UnboxExpression : EnclosingExpression, IUnboxExpression, ITypeReferenceProvider
     {

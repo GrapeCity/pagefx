@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.CodeModel.Expressions
 {
     public sealed class ExpressionCollection : List<IExpression>, IExpressionCollection
     {

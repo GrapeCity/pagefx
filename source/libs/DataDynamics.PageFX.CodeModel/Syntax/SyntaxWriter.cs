@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DataDynamics.PageFX.CodeModel.Expressions;
+using DataDynamics.PageFX.CodeModel.Statements;
 
 namespace DataDynamics.PageFX.CodeModel.Syntax
 {

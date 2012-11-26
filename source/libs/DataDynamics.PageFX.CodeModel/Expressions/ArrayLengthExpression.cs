@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.CodeModel.Expressions
 {
     public sealed class ArrayLengthExpression : Expression, IArrayLengthExpression
     {

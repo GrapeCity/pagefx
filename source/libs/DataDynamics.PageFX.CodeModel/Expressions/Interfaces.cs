@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using DataDynamics.PageFX.CodeModel.Statements;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.CodeModel.Expressions
 {
     /// <summary>
     /// Base interface for expressions

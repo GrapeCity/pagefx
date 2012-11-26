@@ -1,3 +1,6 @@
+using DataDynamics.PageFX.CodeModel.Expressions;
+using DataDynamics.PageFX.CodeModel.Statements;
+
 namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class MethodCode
