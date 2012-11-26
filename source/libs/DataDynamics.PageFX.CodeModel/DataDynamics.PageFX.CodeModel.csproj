@@ -69,11 +69,6 @@
     <Compile Include="Corlib.cs" />
     <Compile Include="Design\ClassLayout.cs" />
     <Compile Include="Design\Enums.cs" />
-    <Compile Include="Design\Expressions\Arrays.cs" />
-    <Compile Include="Design\Expressions\Basic.cs" />
-    <Compile Include="Design\Expressions\Delegates.cs" />
-    <Compile Include="Design\Expressions\Unsafe.cs" />
-    <Compile Include="Design\Expressions\Unused.cs" />
     <Compile Include="Design\Flags.cs" />
     <Compile Include="Design\IArgument.cs" />
     <Compile Include="Design\IArrayType.cs" />
@@ -96,8 +91,6 @@
     <Compile Include="Design\ICodeProvider.cs" />
     <Compile Include="Design\ILanguageInfrastructure.cs" />
     <Compile Include="Design\IManifestResource.cs" />
-    <Compile Include="Design\Expressions\LINQ.cs" />
-    <Compile Include="Design\Expressions\References.cs" />
     <Compile Include="Design\IMethod.cs" />
     <Compile Include="Design\IMethodBody.cs" />
     <Compile Include="Design\IOptionalModifier.cs" />
@@ -112,10 +105,13 @@
     <Compile Include="Design\IVariable.cs" />
     <Compile Include="Design\SehBlocks.cs" />
     <Compile Include="Design\SequencePoint.cs" />
-    <Compile Include="Design\Statements\TryCatch.cs" />
-    <Compile Include="Design\Statements\Loops.cs" />
-    <Compile Include="Design\Statements\Unused.cs" />
-    <Compile Include="Design\Statements\Switch.cs" />
+    <Compile Include="Expressions\Arrays.cs" />
+    <Compile Include="Expressions\Basic.cs" />
+    <Compile Include="Expressions\Delegates.cs" />
+    <Compile Include="Expressions\LINQ.cs" />
+    <Compile Include="Expressions\References.cs" />
+    <Compile Include="Expressions\Unsafe.cs" />
+    <Compile Include="Expressions\Unused.cs" />
     <Compile Include="Implementation\ApiInfo.cs" />
     <Compile Include="Implementation\Arithmetic.cs" />
     <Compile Include="Implementation\AssemblyExtensions.cs" />
@@ -164,8 +160,12 @@
     <Compile Include="Implementation\Members\ReadOnlyMemberCollection.cs" />
     <Compile Include="Implementation\Types\GenericType.cs" />
     <Compile Include="OperatorResolver.cs" />
+    <Compile Include="Statements\Basic.cs" />
+    <Compile Include="Statements\Loops.cs" />
+    <Compile Include="Statements\Switch.cs" />
+    <Compile Include="Statements\TryCatch.cs" />
+    <Compile Include="Statements\Unused.cs" />
     <Compile Include="Syntax\Attributes.cs" />
-    <Compile Include="Design\Statements\Basic.cs" />
     <Compile Include="Syntax\EnumExtensions.cs" />
     <Compile Include="Syntax\Enums.cs" />
     <Compile Include="Implementation\Assembly.cs" />
@@ -236,10 +236,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Implementation\implicit.txt" />
+    <EmbeddedResource Include="Resources\implicit.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Implementation\explicit.txt" />
+    <EmbeddedResource Include="Resources\explicit.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
