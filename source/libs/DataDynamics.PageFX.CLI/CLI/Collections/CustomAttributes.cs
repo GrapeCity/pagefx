@@ -80,13 +80,13 @@ namespace DataDynamics.PageFX.CLI.Collections
 
 		private IEnumerable<ICustomAttribute> Populate()
 		{
-			var target = (MdbIndex)_owner.MetadataToken;
-			var rows = _loader.Mdb.LookupRows(MdbTableId.CustomAttribute, MDB.CustomAttribute.Parent, target, false);
+			var target = (SimpleIndex)_owner.MetadataToken;
+			var rows = _loader.Metadata.LookupRows(TableId.CustomAttribute, Schema.CustomAttribute.Parent, target, false);
 
 			var context = ResolveAttributeContext(_owner);
 
 			return (from row in rows
-			        let ctorIndex = row[MDB.CustomAttribute.Type].Value
+			        let ctorIndex = row[Schema.CustomAttribute.Type].Value
 			        let ctor = GetCustomAttributeConstructor(ctorIndex, context)
 			        where ctor != null
 			        select CreateAttribute(row, ctor)
@@ -95,9 +95,9 @@ namespace DataDynamics.PageFX.CLI.Collections
 			        select attr).Cast<ICustomAttribute>();
 		}
 
-		private CustomAttribute CreateAttribute(MdbRow row, IMethod ctor)
+		private CustomAttribute CreateAttribute(MetadataRow row, IMethod ctor)
 		{
-			var value = row[MDB.CustomAttribute.Value].Blob;
+			var value = row[Schema.CustomAttribute.Value].Blob;
 			var attrType = ctor.DeclaringType;
 
 			var attr = new CustomAttribute
@@ -343,9 +343,10 @@ namespace DataDynamics.PageFX.CLI.Collections
 			return null;
 		}
 
-		private void ReadArguments(ICustomAttribute attr, byte[] blob)
+		private void ReadArguments(ICustomAttribute attr, BufferedBinaryReader reader)
 		{
-			var reader = new BufferedBinaryReader(blob);
+			reader.Seek(0, SeekOrigin.Begin);
+
 			ushort prolog = reader.ReadUInt16();
 			if (prolog != 0x01)
 				throw new BadSignatureException("Invalid prolog in custom attribute value");
@@ -431,16 +432,16 @@ namespace DataDynamics.PageFX.CLI.Collections
 			arg.Member = p;
 		}
 
-		private IMethod GetCustomAttributeConstructor(MdbIndex i, Context context)
+		private IMethod GetCustomAttributeConstructor(SimpleIndex i, Context context)
 		{
 			try
 			{
 				switch (i.Table)
 				{
-					case MdbTableId.MethodDef:
+					case TableId.MethodDef:
 						return _loader.Methods[i.Index - 1];
 
-					case MdbTableId.MemberRef:
+					case TableId.MemberRef:
 						return _loader.GetMemberRef(i.Index - 1, context) as IMethod;
 
 					default:

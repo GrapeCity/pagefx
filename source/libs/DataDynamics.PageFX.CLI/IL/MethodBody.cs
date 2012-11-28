@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX.CLI.IL
                         int codeSize = reader.ReadInt32();
                         int localSig = reader.ReadInt32();
                         flags = (MethodBodyFlags)((msb & 0x0F) << 8 | lsb);
-                        var code = reader.ReadBlock(codeSize);
+                        var code = reader.ReadBytes(codeSize);
 
                         if ((flags & MethodBodyFlags.MoreSects) != 0)
                         {
@@ -83,7 +83,7 @@ namespace DataDynamics.PageFX.CLI.IL
                 case MethodBodyFlags.TinyFormat1:
                     {
                         int codeSize = (lsb >> 2);
-                        var code = reader.ReadBlock(codeSize);
+                        var code = reader.ReadBytes(codeSize);
                         _code = ReadCode(method, context, code);
                     }
                     break;

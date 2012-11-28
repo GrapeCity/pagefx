@@ -5,6 +5,6 @@ namespace DataDynamics.PageFX.CLI.Tables
 {
 	internal interface IMetadataTable<T> : IReadOnlyList<T>
 	{
-		MdbTableId Id { get; }
+		TableId Id { get; }
 	}
 }

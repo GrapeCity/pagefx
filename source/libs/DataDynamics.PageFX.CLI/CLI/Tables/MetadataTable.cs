@@ -15,11 +15,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 			Loader = loader;
 		}
 
-		public abstract MdbTableId Id { get; }
+		public abstract TableId Id { get; }
 		
 		public int Count
 		{
-			get { return Loader.Mdb.GetRowCount(Id); }
+			get { return Loader.Metadata.GetRowCount(Id); }
 		}
 
 		public T this[int index]
@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 				if (index < 0 || index >= Count)
 					throw new ArgumentOutOfRangeException("index");
 
-				var row = Loader.Mdb.GetRow(Id, index);
+				var row = Loader.Metadata.GetRow(Id, index);
 				
 				if (row.Object == null)
 					row.Object = ParseRow(row, index);
@@ -56,11 +56,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return GetEnumerator();
 		}
 
-		protected MdbReader Mdb
+		protected MetadataReader Metadata
 		{
-			get { return Loader.Mdb; }
+			get { return Loader.Metadata; }
 		}
 
-		protected abstract T ParseRow(MdbRow row, int index);
+		protected abstract T ParseRow(MetadataRow row, int index);
 	}
 }

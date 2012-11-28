@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CLI
     {
 		public static int RowIndex(this IMetadataElement element)
 		{
-			return ((MdbIndex)element.MetadataToken).Index - 1;
+			return ((SimpleIndex)element.MetadataToken).Index - 1;
 		}
 
         public static string ReadCountedUtf8(this BufferedBinaryReader reader)
@@ -19,5 +19,11 @@ namespace DataDynamics.PageFX.CLI
             int len = reader.ReadPackedInt(b0);
             return reader.ReadUtf8(len);
         }
+
+		public static byte[] ToArray(this BufferedBinaryReader reader)
+		{
+			reader.Seek(0, SeekOrigin.Begin);
+			return reader.ReadBytes((int)reader.Length);
+		}
     }
 }

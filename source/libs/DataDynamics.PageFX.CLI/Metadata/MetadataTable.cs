@@ -4,16 +4,14 @@ using System.Linq;
 namespace DataDynamics.PageFX.CLI.Metadata
 {
     /// <summary>
-    /// Represents Metadata Table.
+    /// Represents metadata table.
     /// </summary>
-    public sealed class MdbTable
+    public sealed class MetadataTable
     {
-    	private readonly MdbColumnCollection _columns = new MdbColumnCollection();
-
-    	/// <summary>
+	    /// <summary>
     	/// Gets the table id.
     	/// </summary>
-    	public MdbTableId Id { get; private set; }
+    	public TableId Id { get; private set; }
 
     	/// <summary>
         /// Gets the table name.
@@ -33,15 +31,12 @@ namespace DataDynamics.PageFX.CLI.Metadata
         /// </summary>
         public long Offset { get; set; }
 
-        /// <summary>
-        /// Gets the table columns
-        /// </summary>
-        public MdbColumnCollection Columns
-        {
-            get { return _columns; }
-        }
+	    /// <summary>
+	    /// Gets the table columns
+	    /// </summary>
+	    public MetadataColumnCollection Columns { get; private set; }
 
-    	/// <summary>
+	    /// <summary>
     	/// Gets the number of rows in this table.
     	/// </summary>
     	public int RowCount { get; internal set; }
@@ -61,20 +56,21 @@ namespace DataDynamics.PageFX.CLI.Metadata
         /// <summary>
         /// Row cache
         /// </summary>
-        internal MdbRow[] Rows { get; set; }
+        internal MetadataRow[] Rows { get; set; }
 
 		// Lookup by reference key
 		internal Dictionary<int, IList<int>> Lookup = new Dictionary<int, IList<int>>();
 	    internal int LastLookupRowIndex;
 
-    	internal MdbTable(MdbTableId id, params MdbColumn[] columns)
+    	internal MetadataTable(TableId id, params MetadataColumn[] columns)
         {
-        	Id = id;
+    		Columns = new MetadataColumnCollection();
+    		Id = id;
 			
         	foreach (var col in columns.Select(c => c.Clone()))
         	{
         		col.TableId = id;
-        		_columns.Add(col);
+        		Columns.Add(col);
         	}
         }
 

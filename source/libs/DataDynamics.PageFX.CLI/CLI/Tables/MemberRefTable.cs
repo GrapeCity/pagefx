@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			if (_members == null)
 			{
-				int n = _loader.Mdb.GetRowCount(MdbTableId.MemberRef);
+				int n = _loader.Metadata.GetRowCount(TableId.MemberRef);
 				_members = new ITypeMember[n];
 			}
 
@@ -30,13 +30,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		private ITypeMember Resolve(int index, Context context)
 		{
-			var row = _loader.Mdb.GetRow(MdbTableId.MemberRef, index);
+			var row = _loader.Metadata.GetRow(TableId.MemberRef, index);
 
-			string name = row[MDB.MemberRef.Name].String;
-			var sigBlob = row[MDB.MemberRef.Signature].Blob;
-			var sig = MdbSignature.DecodeSignature(sigBlob);
+			string name = row[Schema.MemberRef.Name].String;
+			var sigBlob = row[Schema.MemberRef.Signature].Blob;
+			var sig = MetadataSignature.DecodeMember(sigBlob);
 
-			MdbIndex ownerIndex = row[MDB.MemberRef.Class].Value;
+			SimpleIndex ownerIndex = row[Schema.MemberRef.Class].Value;
 			var owner = GetMemberOwner(ownerIndex, context);
 
 			var member = FindMember(owner, name, sig, context);
@@ -57,30 +57,30 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return member;
 		}
 
-		private IType GetMemberOwner(MdbIndex owner, Context context)
+		private IType GetMemberOwner(SimpleIndex owner, Context context)
 		{
 			int index = owner.Index - 1;
 			switch (owner.Table)
 			{
-				case MdbTableId.TypeDef:
+				case TableId.TypeDef:
 					return _loader.Types[index];
 
-				case MdbTableId.TypeRef:
+				case TableId.TypeRef:
 					return _loader.TypeRefs[index];
 
-				case MdbTableId.ModuleRef:
+				case TableId.ModuleRef:
 					throw new NotImplementedException();
 
-				case MdbTableId.TypeSpec:
+				case TableId.TypeSpec:
 					return _loader.GetTypeSpec(index, context);
 
-				case MdbTableId.MethodDef:
+				case TableId.MethodDef:
 					throw new NotImplementedException();
 			}
 			return null;
 		}
 
-		private ITypeMember FindMember(IType type, string name, MdbSignature sig, Context context)
+		private ITypeMember FindMember(IType type, string name, MetadataSignature sig, Context context)
 		{
 			if (type == null) return null;
 
@@ -88,16 +88,16 @@ namespace DataDynamics.PageFX.CLI.Tables
 			if (type.IsArray)
 			{
 				if (name == CLRNames.Constructor)
-					return CreateArrayCtor(type, (MdbMethodSignature)sig);
+					return CreateArrayCtor(type, (MethodSignature)sig);
 
 				if (name == CLRNames.Array.Getter)
-					return GetArrayGetter(type, (MdbMethodSignature)sig);
+					return GetArrayGetter(type, (MethodSignature)sig);
 
 				if (name == CLRNames.Array.Address)
-					return GetArrayAddress(type, (MdbMethodSignature)sig);
+					return GetArrayAddress(type, (MethodSignature)sig);
 
 				if (name == CLRNames.Array.Setter)
-					return GetArraySetter(type, (MdbMethodSignature)sig);
+					return GetArraySetter(type, (MethodSignature)sig);
 			}
 
 			IType[] types = null;
@@ -106,15 +106,15 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var typeContext = new Context(type, context != null && context.IsGeneric);
 			switch (sig.Kind)
 			{
-				case MdbSignatureKind.Field:
+				case SignatureKind.Field:
 					kind = MemberType.Field;
 					break;
 
-				case MdbSignatureKind.Method:
-					return FindMethod(type, name, (MdbMethodSignature)sig, typeContext);
+				case SignatureKind.Method:
+					return FindMethod(type, name, (MethodSignature)sig, typeContext);
 
-				case MdbSignatureKind.Property:
-					types = ResolveMethodSignature((MdbMethodSignature)sig, typeContext, true);
+				case SignatureKind.Property:
+					types = ResolveMethodSignature((MethodSignature)sig, typeContext, true);
 					kind = MemberType.Property;
 					break;
 
@@ -133,7 +133,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return null;
 		}
 
-		private IType[] ResolveMethodSignature(MdbMethodSignature sig, Context context, bool withReturnType)
+		private IType[] ResolveMethodSignature(MethodSignature sig, Context context, bool withReturnType)
 		{
 			int n = sig.Params.Length + (withReturnType ? 1 : 0);
 			
@@ -186,7 +186,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			}
 		}
 
-		private IMethod CreateArrayCtor(IType type, MdbMethodSignature sig)
+		private IMethod CreateArrayCtor(IType type, MethodSignature sig)
 		{
 			var types = ResolveMethodSignature(sig, new Context(type), false);
 
@@ -211,7 +211,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return m;
 		}
 
-		private IMethod GetArrayGetter(IType type, MdbMethodSignature sig)
+		private IMethod GetArrayGetter(IType type, MethodSignature sig)
 		{
 			var arrType = (ArrayType)type;
 			if (arrType.Getter != null)
@@ -234,7 +234,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return m;
 		}
 
-		private IMethod GetArrayAddress(IType type, MdbMethodSignature sig)
+		private IMethod GetArrayAddress(IType type, MethodSignature sig)
 		{
 			var arrType = (ArrayType)type;
 			if (arrType.Address != null)
@@ -258,7 +258,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return m;
 		}
 
-		private IMethod GetArraySetter(IType type, MdbMethodSignature sig)
+		private IMethod GetArraySetter(IType type, MethodSignature sig)
 		{
 			var arrType = (ArrayType)type;
 
@@ -301,7 +301,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return type;
 		}
 
-		private IEnumerable<IMethod> GetMatchedMethods(IType type, string name, MdbMethodSignature sig, Context context)
+		private IEnumerable<IMethod> GetMatchedMethods(IType type, string name, MethodSignature sig, Context context)
 		{
 			int paramNum = sig.Params.Length;
 			var set = type.Methods.Find(name);
@@ -326,7 +326,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			}
 		}
 
-		private IMethod FindMethod(IType type, string name, MdbMethodSignature sig, Context context)
+		private IMethod FindMethod(IType type, string name, MethodSignature sig, Context context)
 		{
 			IMethod result = null;
 			while (type != null)
@@ -351,7 +351,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return result;
 		}
 
-		private bool ProbeMethodSig(IMethod method, MdbMethodSignature sig, Context context)
+		private bool ProbeMethodSig(IMethod method, MethodSignature sig, Context context)
 		{
 			var t = _loader.ResolveType(sig.Type, context);
 			if (!Signature.TypeEquals(method.Type, t))

@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			if (_types == null)
 			{
-				int n = _loader.Mdb.GetRowCount(MdbTableId.TypeSpec);
+				int n = _loader.Metadata.GetRowCount(TableId.TypeSpec);
 				_types = new IType[n];
 			}
 			return _types[index] ?? (_types[index] = Resolve(index, context));
@@ -25,9 +25,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		private IType Resolve(int index, Context context)
 		{
-			var row = _loader.Mdb.GetRow(MdbTableId.TypeSpec, index);
-			var blob = row[MDB.TypeSpec.Signature].Blob;
-			var sig = MdbSignature.DecodeTypeSignature(blob);
+			var row = _loader.Metadata.GetRow(TableId.TypeSpec, index);
+			var blob = row[Schema.TypeSpec.Signature].Blob;
+			var sig = TypeSignature.Decode(blob);
 
 			var type = _loader.ResolveType(sig, context);
 			if (type == null)

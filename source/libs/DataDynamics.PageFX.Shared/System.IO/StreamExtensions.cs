@@ -286,8 +286,7 @@ namespace System.IO
         }
         #endregion
 
-        #region Utils
-        private const int DefaultBufferLength = 4096;
+	    private const int DefaultBufferLength = 4096;
 
     	public static void CopyTo(this Stream input, Stream output)
         {
@@ -345,9 +344,8 @@ namespace System.IO
         	ms.Close();
         	return ms.ToArray();
         }
-        #endregion
 
-        public static string ReadText(this Stream s)
+	    public static string ReadText(this Stream s)
         {
             using (var reader = new StreamReader(s))
                 return reader.ReadToEnd();

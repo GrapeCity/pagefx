@@ -1,21 +1,22 @@
 using System.Xml;
+using DataDynamics.PageFX.CLI.Metadata;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.CLI.Tools
 {
-    public static class MdbXmlExport
+    public static class MetadataXmlExport
     {
         public static void Export(string inputPath, string outputPath)
         {
             var xws = new XmlWriterSettings {Indent = true, IndentChars = "  "};
-            using (var reader = new MdbReader(inputPath))
+            using (var reader = new MetadataReader(inputPath))
             using (var writer = XmlWriter.Create(outputPath, xws))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("mdb");
 
-                for (int i = 0; i < MdbReader.MaxTableNum; ++i)
+                for (int i = 0; i < MetadataReader.MaxTableNum; ++i)
                 {
-                    var id = (MdbTableId)i;
+                    var id = (TableId)i;
                     var table = reader[id];
                     if (table != null)
                     {

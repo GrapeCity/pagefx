@@ -10,22 +10,22 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.AssemblyRef; }
+			get { return TableId.AssemblyRef; }
 		}
 
-		protected override IAssembly ParseRow(MdbRow row, int index)
+		protected override IAssembly ParseRow(MetadataRow row, int index)
 		{
-			var token = MdbIndex.MakeToken(MdbTableId.AssemblyRef, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.AssemblyRef, index + 1);
 			var asmref = new AssemblyReference
 				{
 					Version = GetVersion(row, 0),
-					Flags = ((AssemblyFlags)row[MDB.AssemblyRef.Flags].Value),
-					PublicKeyToken = row[MDB.AssemblyRef.PublicKeyOrToken].Blob,
-					Name = row[MDB.AssemblyRef.Name].String,
-					Culture = row[MDB.AssemblyRef.Culture].Culture,
-					HashValue = row[MDB.AssemblyRef.HashValue].Blob,
+					Flags = ((AssemblyFlags)row[Schema.AssemblyRef.Flags].Value),
+					PublicKeyToken = row[Schema.AssemblyRef.PublicKeyOrToken].Blob.ToArray(),
+					Name = row[Schema.AssemblyRef.Name].String,
+					Culture = row[Schema.AssemblyRef.Culture].Culture,
+					HashValue = row[Schema.AssemblyRef.HashValue].Blob.ToArray(),
 					MetadataToken = token
 				};
 
@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return asm;
 		}
 
-		private static Version GetVersion(MdbRow row, int i)
+		private static Version GetVersion(MetadataRow row, int i)
 		{
 			return new Version((int)row[i].Value,
 							   (int)row[i + 1].Value,

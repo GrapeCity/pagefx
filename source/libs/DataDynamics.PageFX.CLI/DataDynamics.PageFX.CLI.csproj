@@ -238,21 +238,23 @@
     <Compile Include="JavaScript\MethodContext.cs" />
     <Compile Include="JavaScript\ObjectMethods.cs" />
     <Compile Include="JavaScript\TypeInfoBuilder.cs" />
+    <Compile Include="Metadata\ArrayShape.cs" />
+    <Compile Include="Metadata\ColumnType.cs" />
     <Compile Include="Metadata\Enums.cs" />
-    <Compile Include="Metadata\MdbHtmlExport.cs" />
-    <Compile Include="Metadata\MdbCell.cs" />
-    <Compile Include="Metadata\MdbColumn.cs" />
-    <Compile Include="Metadata\MdbRow.cs" />
-    <Compile Include="Metadata\MdbSignature.cs" />
-    <Compile Include="Metadata\MdbTable.cs" />
-    <Compile Include="Metadata\MdbTables.cs" />
-    <Compile Include="Metadata\MdbXmlExport.cs" />
+    <Compile Include="Metadata\FieldSignature.cs" />
+    <Compile Include="Metadata\MethodSignature.cs" />
+    <Compile Include="Metadata\TableId.cs" />
+    <Compile Include="Metadata\TypeSignature.cs" />
+    <Compile Include="Metadata\MetadataCell.cs" />
+    <Compile Include="Metadata\MetadataColumn.cs" />
+    <Compile Include="Metadata\MetadataRow.cs" />
+    <Compile Include="Metadata\MetadataSignature.cs" />
+    <Compile Include="Metadata\MetadataTable.cs" />
+    <Compile Include="Metadata\Schema.cs" />
     <Compile Include="Metadata\Exceptions.cs" />
-    <Compile Include="Metadata\MdbCodedIndex.cs" />
-    <Compile Include="Metadata\MdbReader.cs" />
-    <Compile Include="Metadata\MdbStream.cs" />
-    <Compile Include="Metadata\MdbIndex.cs" />
-    <Compile Include="Metadata\StrongNameTools.cs" />
+    <Compile Include="Metadata\CodedIndex.cs" />
+    <Compile Include="Metadata\MetadataReader.cs" />
+    <Compile Include="Metadata\SimpleIndex.cs" />
     <Compile Include="CLI\AssemblyLoader.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -265,6 +267,9 @@
     <Compile Include="PDB\PdbDump.cs" />
     <Compile Include="Metadata\Image.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\MetadataHtmlExport.cs" />
+    <Compile Include="Tools\MetadataXmlExport.cs" />
+    <Compile Include="Tools\StrongNameTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.CodeModel.csproj">
@@ -299,6 +304,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

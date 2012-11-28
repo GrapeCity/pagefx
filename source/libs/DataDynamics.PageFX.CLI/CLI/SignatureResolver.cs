@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.CLI
 			_loader = loader;
 		}
 
-		public IType ResolveType(MdbTypeSignature sig, Context context)
+		public IType ResolveType(TypeSignature sig, Context context)
 		{
 			switch (sig.Element)
 			{
@@ -150,12 +150,12 @@ namespace DataDynamics.PageFX.CLI
 			return _loader.FindSystemType(fullName);
 		}
 
-		private static Exception BadTypeSig(MdbTypeSignature sig)
+		private static Exception BadTypeSig(TypeSignature sig)
 		{
 			return new BadSignatureException(string.Format("Unable to resolve type signature {0}", sig));
 		}
 
-		private IEnumerable<IType> ResolveGenericArgs(MdbTypeSignature sig, Context context)
+		private IEnumerable<IType> ResolveGenericArgs(TypeSignature sig, Context context)
 		{
 			int n = sig.GenericParams.Length;
 			var args = new IType[n];

@@ -12,18 +12,18 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.Module; }
+			get { return TableId.Module; }
 		}
 
-		protected override IModule ParseRow(MdbRow row, int index)
+		protected override IModule ParseRow(MetadataRow row, int index)
 		{
-			var token = MdbIndex.MakeToken(MdbTableId.Module, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.Module, index + 1);
 			var module = new Module
 				{
-					Name = row[MDB.Module.Name].String,
-					Version = row[MDB.Module.Mvid].Guid,
+					Name = row[Schema.Module.Name].String,
+					Version = row[Schema.Module.Mvid].Guid,
 					Loader = Loader,
 					MetadataToken = token
 				};

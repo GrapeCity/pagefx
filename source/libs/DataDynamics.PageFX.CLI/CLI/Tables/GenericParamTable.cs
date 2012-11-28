@@ -26,33 +26,33 @@ namespace DataDynamics.PageFX.CLI.Tables
 			{
 				if (_array == null)
 				{
-					int n = _loader.Mdb.GetRowCount(MdbTableId.GenericParam);
+					int n = _loader.Metadata.GetRowCount(TableId.GenericParam);
 					_array = new IGenericParameter[n];
 				}
 				return _array[index] ?? (_array[index] = Create(index));
 			}
 		}
 
-		public IList<IGenericParameter> Find(MdbIndex target)
+		public IList<IGenericParameter> Find(SimpleIndex target)
 		{
-			var rows = _loader.Mdb.LookupRows(MdbTableId.GenericParam, MDB.GenericParam.Owner, target, false);
+			var rows = _loader.Metadata.LookupRows(TableId.GenericParam, Schema.GenericParam.Owner, target, false);
 			return rows.Select(x => this[x.Index]).ToList().AsReadOnly();
 		}
 
 		private IGenericParameter Create(int index)
 		{
-			var row = _loader.Mdb.GetRow(MdbTableId.GenericParam, index);
+			var row = _loader.Metadata.GetRow(TableId.GenericParam, index);
 
-			var pos = (int)row[MDB.GenericParam.Number].Value;
-			var flags = (GenericParamAttributes)row[MDB.GenericParam.Flags].Value;
-			var token = MdbIndex.MakeToken(MdbTableId.GenericParam, index + 1);
+			var pos = (int)row[Schema.GenericParam.Number].Value;
+			var flags = (GenericParamAttributes)row[Schema.GenericParam.Flags].Value;
+			var token = SimpleIndex.MakeToken(TableId.GenericParam, index + 1);
 
 			var param = new GenericParameter
 				{
 					Position = pos,
 					Variance = ToVariance(flags),
 					SpecialConstraints = ToSpecConstraints(flags),
-					Name = row[MDB.GenericParam.Name].String,
+					Name = row[Schema.GenericParam.Name].String,
 					MetadataToken = token,
 					ID = ++_id
 				};
@@ -190,12 +190,12 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			private IEnumerable<IType> Populate()
 			{
-				var mdb = _loader.Mdb;
-				var rows = mdb.LookupRows(MdbTableId.GenericParamConstraint, MDB.GenericParamConstraint.Owner, OwnerIndex, true);
+				var mdb = _loader.Metadata;
+				var rows = mdb.LookupRows(TableId.GenericParamConstraint, Schema.GenericParamConstraint.Owner, OwnerIndex, true);
 
 				foreach (var row in rows)
 				{
-					MdbIndex cid = row[MDB.GenericParamConstraint.Constraint].Value;
+					SimpleIndex cid = row[Schema.GenericParamConstraint.Constraint].Value;
 
 					var constraint = _loader.GetTypeDefOrRef(cid, new Context(_owner));
 					if (constraint == null)

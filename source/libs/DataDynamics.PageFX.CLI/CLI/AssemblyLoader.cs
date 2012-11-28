@@ -25,7 +25,7 @@ namespace DataDynamics.PageFX.CLI
 
 	    internal IAssembly Assembly { get; private set; }
 	    internal IModule MainModule { get { return Assembly.MainModule; } }
-	    internal MdbReader Mdb { get; private set; }
+	    internal MetadataReader Metadata { get; private set; }
 
 	    internal AssemblyRefTable AssemblyRefs { get; private set; }
 		internal ModuleRefTable ModuleRefs { get; private set; }
@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.CLI
 
 	    private IAssembly LoadFromFile(string path)
         {
-            Mdb = new MdbReader(path);
+            Metadata = new MetadataReader(path);
             //_mdb.Dump(@"c:\mdb.xml");
 		    Assembly = new AssemblyImpl
 			    {
@@ -73,7 +73,7 @@ namespace DataDynamics.PageFX.CLI
 
 		private IAssembly LoadFromStream(Stream s)
         {
-            Mdb = new MdbReader(s);
+            Metadata = new MetadataReader(s);
 			Assembly = new AssemblyImpl {Loader = this};
             LoadCore();
             return Assembly;
@@ -151,7 +151,7 @@ namespace DataDynamics.PageFX.CLI
 
         private bool LoadAssemblyTable()
         {
-	        int n = Mdb.GetRowCount(MdbTableId.Assembly);
+	        int n = Metadata.GetRowCount(TableId.Assembly);
 	        if (n > 1)
 		        throw new BadMetadataException("The Assembly table shall contain zero or one row");
 
@@ -173,7 +173,7 @@ namespace DataDynamics.PageFX.CLI
 	        Assembly.PublicKeyToken = asmref.PublicKeyToken;
 	        Assembly.Culture = asmref.Culture;
 
-			var token = MdbIndex.MakeToken(MdbTableId.Assembly, 1);
+			var token = SimpleIndex.MakeToken(TableId.Assembly, 1);
 	        Assembly.MetadataToken = token;
 			
 	        ((CustomAttributeProvider)Assembly).CustomAttributes = new CustomAttributes(this, Assembly);
@@ -196,8 +196,8 @@ namespace DataDynamics.PageFX.CLI
 
 	    public IMethod ResolveEntryPoint()
 	    {
-			MdbIndex token = Mdb.EntryPointToken;
-		    if (token.Table != MdbTableId.MethodDef)
+			SimpleIndex token = Metadata.EntryPointToken;
+		    if (token.Table != TableId.MethodDef)
 			    return null;
 		    int index = token.Index - 1;
 		    if (index < 0 || index >= Methods.Count)
@@ -234,7 +234,7 @@ namespace DataDynamics.PageFX.CLI
 
 	    public MethodBody LoadMethodBody(IMethod method, uint rva)
         {
-            var reader = Mdb.SeekRVA(rva);
+            var reader = Metadata.SeekRVA(rva);
             var body = new MethodBody(method, this, reader);
             method.Body = body;
             return body;
@@ -245,15 +245,15 @@ namespace DataDynamics.PageFX.CLI
             return _memberRef.Get(index, context);
         }
 
-	    internal IMethod GetMethodDefOrRef(MdbIndex i, Context context)
+	    internal IMethod GetMethodDefOrRef(SimpleIndex i, Context context)
         {
             int index = i.Index - 1;
             switch (i.Table)
             {
-                case MdbTableId.MethodDef:
+                case TableId.MethodDef:
                     return Methods[index];
 
-                case MdbTableId.MemberRef:
+                case TableId.MemberRef:
                     return GetMemberRef(index, context) as IMethod;
 
                 default:
@@ -271,19 +271,19 @@ namespace DataDynamics.PageFX.CLI
             return _typeSpec.Get(index, context);
         }
 
-	    internal IType GetTypeDefOrRef(MdbIndex i, Context context)
+	    internal IType GetTypeDefOrRef(SimpleIndex i, Context context)
         {
             int index = i.Index - 1;
             switch (i.Table)
             {
-                case MdbTableId.TypeDef:
+                case TableId.TypeDef:
                     if (index < 0) return FindSystemType("System.Object");
                     return Types[index];
 
-                case MdbTableId.TypeRef:
+                case TableId.TypeRef:
                     return TypeRefs[index];
 
-                case MdbTableId.TypeSpec:
+                case TableId.TypeSpec:
                     return GetTypeSpec(index, context);
 
                 default:
@@ -291,7 +291,7 @@ namespace DataDynamics.PageFX.CLI
             }
         }
 
-	    internal IType ResolveType(MdbTypeSignature sig, Context context)
+	    internal IType ResolveType(TypeSignature sig, Context context)
         {
             return _signatureResolver.ResolveType(sig, context);
         }
@@ -299,47 +299,46 @@ namespace DataDynamics.PageFX.CLI
 	    #region IMethodContext Members
         public IVariableCollection ResolveLocalVariables(IMethod method, int sig, out bool hasGenericVars)
         {
-            hasGenericVars = false;
-            
-            var list = new VariableCollection();
-            if (sig == 0) return list;
+	        hasGenericVars = false;
+
+	        var list = new VariableCollection();
+	        if (sig == 0) return list;
 
 	        var context = new Context(method);
-            MdbIndex idx = sig;
-            var row = Mdb.GetRow(MdbTableId.StandAloneSig, idx.Index - 1);
-            var blob = row[MDB.StandAloneSig.Signature].Blob;
-            using (var reader = new BufferedBinaryReader(blob))
-            {
-                int prolog = reader.ReadPackedInt();
-                if (prolog != 0x07)
-                    throw new BadSignatureException("Invalid local variable signature.");
+	        SimpleIndex idx = sig;
+	        var row = Metadata.GetRow(TableId.StandAloneSig, idx.Index - 1);
 
-                int varCount = reader.ReadPackedInt();
-                for (int i = 0; i < varCount; ++i)
-                {
-                    var typeSig = MdbSignature.DecodeTypeSignature(reader);
-                    var type = ResolveType(typeSig, context);
+			var reader = row[Schema.StandAloneSig.Signature].Blob;
+	        int prolog = reader.ReadPackedInt();
+	        if (prolog != 0x07)
+		        throw new BadSignatureException("Invalid local variable signature.");
 
-                    if (!hasGenericVars && GenericType.IsGenericContext(type))
-                        hasGenericVars = true;
+	        int varCount = reader.ReadPackedInt();
+	        for (int i = 0; i < varCount; ++i)
+	        {
+		        var typeSig = TypeSignature.Decode(reader);
+		        var type = ResolveType(typeSig, context);
 
-	                var v = new Variable
-		                {
-			                Index = i,
-			                Type = type,
-			                Name = string.Format("v{0}", i)
-		                };
-                    list.Add(v);
-                }
-            }
-            return list;
+		        if (!hasGenericVars && GenericType.IsGenericContext(type))
+			        hasGenericVars = true;
+
+		        var v = new Variable
+			        {
+				        Index = i,
+				        Type = type,
+				        Name = string.Format("v{0}", i)
+			        };
+		        list.Add(v);
+	        }
+
+	        return list;
         }
 
-        public IType ResolveType(IMethod method, int sig)
+	    public IType ResolveType(IMethod method, int sig)
         {
             if (method == null) return null;
 
-            MdbIndex i = sig;
+            SimpleIndex i = sig;
 			var type = GetTypeDefOrRef(i, new Context(method));
 
             return type;
@@ -350,30 +349,30 @@ namespace DataDynamics.PageFX.CLI
             uint msb = (uint)token >> 24;
             int index = token & 0xFFFFFF;
             if (msb == 0x70)
-                return Mdb.GetUserString((uint)index);
+                return Metadata.GetUserString((uint)index);
 
-            var tableId = (MdbTableId)msb;
+            var tableId = (TableId)msb;
 	        var context = new Context(method);
 	        switch (tableId)
             {
-                case MdbTableId.TypeRef:
-                case MdbTableId.TypeDef:
-                case MdbTableId.TypeSpec:
+                case TableId.TypeRef:
+                case TableId.TypeDef:
+                case TableId.TypeSpec:
                     return GetTypeDefOrRef(token, context);
 
-                case MdbTableId.Field:
+                case TableId.Field:
                     return Fields[index - 1];
 
-                case MdbTableId.MethodDef:
+                case TableId.MethodDef:
                     return Methods[index - 1];
 
-                case MdbTableId.MemberRef:
+                case TableId.MemberRef:
 					return GetMemberRef(index - 1, context);
 
-                case MdbTableId.MethodSpec:
+                case TableId.MethodSpec:
 					return GetMethodSpec(index - 1, context);
 
-                case MdbTableId.StandAloneSig:
+                case TableId.StandAloneSig:
                     return null;
             }
             return null;

@@ -11,21 +11,21 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.Param; }
+			get { return TableId.Param; }
 		}
 
-		protected override IParameter ParseRow(MdbRow row, int index)
+		protected override IParameter ParseRow(MetadataRow row, int index)
 		{
-			var token = MdbIndex.MakeToken(MdbTableId.Param, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.Param, index + 1);
 			var value = Loader.Const[token];
 
 			var param = new Parameter
 				{
-					Flags = ((ParamAttributes)row[MDB.Param.Flags].Value),
-					Index = ((int)row[MDB.Param.Sequence].Value),
-					Name = row[MDB.Param.Name].String,
+					Flags = ((ParamAttributes)row[Schema.Param.Flags].Value),
+					Index = ((int)row[Schema.Param.Sequence].Value),
+					Name = row[Schema.Param.Name].String,
 					Value = value,
 					MetadataToken = token
 				};

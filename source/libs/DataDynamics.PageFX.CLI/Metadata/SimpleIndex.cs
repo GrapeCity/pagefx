@@ -2,28 +2,28 @@ using System;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {
-    public struct MdbIndex : IEquatable<MdbIndex>
+    public struct SimpleIndex : IEquatable<SimpleIndex>
     {
         private uint _value;
         
-        public MdbIndex(MdbTableId table, int index)
+        public SimpleIndex(TableId table, int index)
         {
             _value = ((uint)table << 24) | (uint)index;
         }
 
-        public MdbIndex(uint value)
+        public SimpleIndex(uint value)
         {
             _value = value;
         }
 
-        public MdbIndex(int value)
+        public SimpleIndex(int value)
         {
             _value = (uint)value;
         }
 
-        public MdbTableId Table
+        public TableId Table
         {
-            get { return (MdbTableId)(_value >> 24); }
+            get { return (TableId)(_value >> 24); }
             set { _value |= ((uint)value & 0xFF) << 24; }
         }
 
@@ -33,44 +33,44 @@ namespace DataDynamics.PageFX.CLI.Metadata
             set { _value |= (uint)(value & 0xFFFFFF); }
         }
 
-        public static implicit operator int(MdbIndex i)
+        public static implicit operator int(SimpleIndex i)
         {
             return (int)i._value;
         }
 
-        public static implicit operator uint (MdbIndex i)
+        public static implicit operator uint (SimpleIndex i)
         {
             return i._value;
         }
 
-        public static implicit operator MdbIndex(int value)
+        public static implicit operator SimpleIndex(int value)
         {
-            return new MdbIndex(value);
+            return new SimpleIndex(value);
         }
 
-        public static implicit operator MdbIndex(uint value)
+        public static implicit operator SimpleIndex(uint value)
         {
-            return new MdbIndex(value);
+            return new SimpleIndex(value);
         }
 
-        public static bool operator !=(MdbIndex i1, MdbIndex i2)
+        public static bool operator !=(SimpleIndex i1, SimpleIndex i2)
         {
             return !i1.Equals(i2);
         }
 
-        public static bool operator ==(MdbIndex a, MdbIndex b)
+        public static bool operator ==(SimpleIndex a, SimpleIndex b)
         {
             return a.Equals(b);
         }
 
-        public bool Equals(MdbIndex i)
+        public bool Equals(SimpleIndex i)
         {
             return _value == i._value;
         }
 
         public override bool Equals(object obj)
         {
-            return obj is MdbIndex && Equals((MdbIndex)obj);
+            return obj is SimpleIndex && Equals((SimpleIndex)obj);
         }
 
         public override int GetHashCode()
@@ -83,7 +83,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
             return string.Format("{0}[{1}]", Table, Index);
         }
 
-        public static int MakeToken(MdbTableId table, int index)
+        public static int MakeToken(TableId table, int index)
         {
             return (int)(((uint)table << 24) | (uint)index);
         }

@@ -13,23 +13,22 @@ namespace DataDynamics.PageFX.CLI.Tables
 			_loader = loader;
 		}
 
-		public object this[MdbIndex parent]
+		public object this[SimpleIndex parent]
 		{
 			get
 			{
-				var row = _loader.Mdb.LookupRow(MdbTableId.Constant, MDB.Constant.Parent, parent, false);
+				var row = _loader.Metadata.LookupRow(TableId.Constant, Schema.Constant.Parent, parent, false);
 				if (row == null) return null;
 
-				var type = (ElementType)row[MDB.Constant.Type].Value;
-				var blob = row[MDB.Constant.Value].Blob;
+				var type = (ElementType)row[Schema.Constant.Type].Value;
+				var reader = row[Schema.Constant.Value].Blob;
 
-				return ReadValue(type, blob);
+				return ReadValue(type, reader);
 			}
 		}
 
-		private static object ReadValue(ElementType type, byte[] blob)
+		private static object ReadValue(ElementType type, BufferedBinaryReader reader)
 		{
-			var reader = new BufferedBinaryReader(blob);
 			switch (type)
 			{
 				case ElementType.Boolean:
@@ -69,13 +68,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 					return reader.ReadDouble();
 
 				case ElementType.String:
-					return Encoding.Unicode.GetString(blob);
+					return Encoding.Unicode.GetString(reader.ToArray());
 
 				case ElementType.Class:
 					return null;
 
 				default:
-					return blob;
+					return reader.ToArray();
 			}
 		}
 	}

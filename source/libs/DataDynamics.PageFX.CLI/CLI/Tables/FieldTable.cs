@@ -11,19 +11,19 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.Field; }
+			get { return TableId.Field; }
 		}
 
-		protected override IField ParseRow(MdbRow row, int index)
+		protected override IField ParseRow(MetadataRow row, int index)
 		{
-			var flags = (FieldAttributes)row[MDB.Field.Flags].Value;
-			var name = row[MDB.Field.Name].String;
+			var flags = (FieldAttributes)row[Schema.Field.Flags].Value;
+			var name = row[Schema.Field.Name].String;
 
-			var token = MdbIndex.MakeToken(MdbTableId.Field, index + 1);
-			var sigBlob = row[MDB.Field.Signature].Blob;
-			var signature = MdbSignature.DecodeFieldSignature(sigBlob);
+			var token = SimpleIndex.MakeToken(TableId.Field, index + 1);
+			var sigBlob = row[Schema.Field.Signature].Blob;
+			var signature = FieldSignature.Decode(sigBlob);
 
 			var field = new Field
 				{
@@ -43,23 +43,23 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return field;
 		}
 
-		private static int GetOffset(MdbReader mdb, int fieldIndex)
+		private static int GetOffset(MetadataReader metadata, int fieldIndex)
 		{
-			var row = mdb.LookupRow(MdbTableId.FieldLayout, MDB.FieldLayout.Field, fieldIndex, true);
-			return row == null ? -1 : (int)row[MDB.FieldLayout.Offset].Value;
+			var row = metadata.LookupRow(TableId.FieldLayout, Schema.FieldLayout.Field, fieldIndex, true);
+			return row == null ? -1 : (int)row[Schema.FieldLayout.Offset].Value;
 		}
 
-		private static object ResolveBlobValue(MdbReader mdb, IType fieldType, int fieldIndex)
+		private static object ResolveBlobValue(MetadataReader metadata, IType fieldType, int fieldIndex)
 		{
-			var row = mdb.LookupRow(MdbTableId.FieldRVA, MDB.FieldRVA.Field, fieldIndex, true);
+			var row = metadata.LookupRow(TableId.FieldRVA, Schema.FieldRVA.Field, fieldIndex, true);
 			if (row == null) return null;
 
 			int size = GetTypeSize(fieldType);
 			if (size > 0)
 			{
-				uint rva = row[MDB.FieldRVA.RVA].Value;
-				var reader = mdb.SeekRVA(rva);
-				return reader.ReadBlock(size);
+				uint rva = row[Schema.FieldRVA.RVA].Value;
+				var reader = metadata.SeekRVA(rva);
+				return reader.ReadBytes(size);
 			}
 
 			throw new InvalidOperationException();
@@ -97,13 +97,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			private readonly AssemblyLoader _loader;
 			private readonly IField _field;
-			private readonly MdbFieldSignature _signature;
+			private readonly FieldSignature _signature;
 			private IType _type;
 			private IType _declType;
 			private int _offset = -100;
 			private object _value;
 
-			public MetaField(AssemblyLoader loader, IField field, MdbFieldSignature signature)
+			public MetaField(AssemblyLoader loader, IField field, FieldSignature signature)
 			{
 				_loader = loader;
 				_field = field;
@@ -133,14 +133,14 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			private object ResolveValue()
 			{
-				MdbIndex token = _field.MetadataToken;
-				return _loader.Const[token] ?? ResolveBlobValue(_loader.Mdb, Type, token.Index - 1);
+				SimpleIndex token = _field.MetadataToken;
+				return _loader.Const[token] ?? ResolveBlobValue(_loader.Metadata, Type, token.Index - 1);
 			}
 
 			private int ResolveOffset()
 			{
-				MdbIndex token = _field.MetadataToken;
-				return GetOffset(_loader.Mdb, token.Index - 1);
+				SimpleIndex token = _field.MetadataToken;
+				return GetOffset(_loader.Metadata, token.Index - 1);
 			}
 
 			private IType ResolveType()

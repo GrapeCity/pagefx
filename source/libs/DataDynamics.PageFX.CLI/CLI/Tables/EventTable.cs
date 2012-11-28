@@ -10,17 +10,17 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.Event; }
+			get { return TableId.Event; }
 		}
 
-		protected override IEvent ParseRow(MdbRow row, int index)
+		protected override IEvent ParseRow(MetadataRow row, int index)
 		{
-			var flags = (EventAttributes)row[MDB.Event.EventFlags].Value;
-			var name = row[MDB.Event.Name].String;
+			var flags = (EventAttributes)row[Schema.Event.EventFlags].Value;
+			var name = row[Schema.Event.Name].String;
 
-			var token = MdbIndex.MakeToken(MdbTableId.Event, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.Event, index + 1);
 			var e = new Event
 				{
 					MetadataToken = token,

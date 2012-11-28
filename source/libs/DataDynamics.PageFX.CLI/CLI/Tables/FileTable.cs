@@ -11,9 +11,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.File; }
+			get { return TableId.File; }
 		}
 
 		public IManifestFile this[string name]
@@ -21,16 +21,16 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return this.FirstOrDefault(x => x.Name == name); }
 		}
 
-		protected override IManifestFile ParseRow(MdbRow row, int index)
+		protected override IManifestFile ParseRow(MetadataRow row, int index)
 		{
-			var flags = (FileFlags)row[MDB.File.Flags].Value;
+			var flags = (FileFlags)row[Schema.File.Flags].Value;
 
-			var token = MdbIndex.MakeToken(MdbTableId.File, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.File, index + 1);
 
 			var file = new ManifestFile
 				{
-					Name = row[MDB.File.Name].String,
-					HashValue = row[MDB.File.HashValue].Blob,
+					Name = row[Schema.File.Name].String,
+					HashValue = row[Schema.File.HashValue].Blob.ToArray(),
 					ContainsMetadata = flags == FileFlags.ContainsMetadata,
 					MetadataToken = token
 				};

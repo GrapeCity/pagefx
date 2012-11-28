@@ -2,7 +2,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using DataDynamics.PageFX.CodeModel;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.CLI.Tools
 {
     internal static class StrongNameTools
     {

@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.CLI.Metadata;
+using DataDynamics.PageFX.CLI.Tools;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.SWF;
@@ -22,7 +23,7 @@ namespace DataDynamics.PageFX
             string path = typeof(int).Assembly.Location;
             string dir = "c:\\tests\\cli";
             Directory.CreateDirectory(dir);
-            MdbHtmlExport.Export(path, Path.Combine(dir, "mscorlib"));
+            MetadataHtmlExport.Export(path, Path.Combine(dir, "mscorlib"));
         }
 
         private static void ExportMscorlibToXml()
@@ -30,7 +31,7 @@ namespace DataDynamics.PageFX
             string path = typeof(int).Assembly.Location;
             string dir = "c:\\tests\\cli";
             Directory.CreateDirectory(dir);
-            MdbXmlExport.Export(path, Path.Combine(dir, "mscorlib.xml"));
+            MetadataXmlExport.Export(path, Path.Combine(dir, "mscorlib.xml"));
         }
         #endregion
 
@@ -282,7 +283,7 @@ namespace DataDynamics.PageFX
         #region DumpMdbTableIds
         static void DumpMdbTableIds()
         {
-			var vals = (MdbTableId[])Enum.GetValues(typeof(MdbTableId));
+			var vals = (TableId[])Enum.GetValues(typeof(TableId));
             using (var writer = new StreamWriter("c:\\pfx.mdbtables"))
             {
                 foreach (var o in vals)

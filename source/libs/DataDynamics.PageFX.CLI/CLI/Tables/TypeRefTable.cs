@@ -11,16 +11,16 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.TypeRef; }
+			get { return TableId.TypeRef; }
 		}
 
-		protected override IType ParseRow(MdbRow row, int index)
+		protected override IType ParseRow(MetadataRow row, int index)
 		{
-			MdbIndex scope = row[MDB.TypeRef.ResolutionScope].Value;
-			var name = row[MDB.TypeRef.TypeName].String;
-			var ns = row[MDB.TypeRef.TypeNamespace].String;
+			SimpleIndex scope = row[Schema.TypeRef.ResolutionScope].Value;
+			var name = row[Schema.TypeRef.TypeName].String;
+			var ns = row[Schema.TypeRef.TypeNamespace].String;
 			var fullname = QName(ns, name);
 
 			var type = FindType(scope, fullname);
@@ -47,7 +47,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return ns + "." + name;
 		}
 
-		private IType FindType(MdbIndex scope, string fullname)
+		private IType FindType(SimpleIndex scope, string fullname)
 		{
 			var c = GetTypeContainer(scope);
 			if (c != null)
@@ -55,21 +55,21 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return null;
 		}
 
-		private ITypeContainer GetTypeContainer(MdbIndex idx)
+		private ITypeContainer GetTypeContainer(SimpleIndex idx)
 		{
 			var index = idx.Index - 1;
 			switch (idx.Table)
 			{
-				case MdbTableId.Module:
+				case TableId.Module:
 					return Loader.Modules[index];
 
-				case MdbTableId.ModuleRef:
+				case TableId.ModuleRef:
 					return Loader.ModuleRefs[index];
 
-				case MdbTableId.AssemblyRef:
+				case TableId.AssemblyRef:
 					return Loader.AssemblyRefs[index];
 
-				case MdbTableId.TypeRef:
+				case TableId.TypeRef:
 					return this[index];
 
 				default:

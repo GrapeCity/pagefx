@@ -13,23 +13,23 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.MethodDef; }
+			get { return TableId.MethodDef; }
 		}
 
-		protected override IMethod ParseRow(MdbRow row, int index)
+		protected override IMethod ParseRow(MetadataRow row, int index)
 		{
-			var implFlags = (MethodImplAttributes)row[MDB.MethodDef.ImplFlags].Value;
-			var flags = (MethodAttributes)row[MDB.MethodDef.Flags].Value;
+			var implFlags = (MethodImplAttributes)row[Schema.MethodDef.ImplFlags].Value;
+			var flags = (MethodAttributes)row[Schema.MethodDef.Flags].Value;
 
 			bool isStatic = (flags & MethodAttributes.Static) != 0;
-			var token = MdbIndex.MakeToken(MdbTableId.MethodDef, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.MethodDef, index + 1);
 
 			var method = new Method
 				{
 					MetadataToken = token,
-					Name = row[MDB.MethodDef.Name].String,
+					Name = row[Schema.MethodDef.Name].String,
 					ImplFlags = implFlags,
 					Visibility = ToVisibility(flags),
 					IsStatic = isStatic,
@@ -51,21 +51,21 @@ namespace DataDynamics.PageFX.CLI.Tables
 				genericParameter.DeclaringMethod = method;
 			}
 
-			MdbIndex entryPoint = Mdb.EntryPointToken;
-			if (entryPoint.Table == MdbTableId.MethodDef && entryPoint.Index - 1 == index)
+			SimpleIndex entryPoint = Metadata.EntryPointToken;
+			if (entryPoint.Table == TableId.MethodDef && entryPoint.Index - 1 == index)
 			{
 				method.IsEntryPoint = true;
 				Loader.Assembly.EntryPoint = method;
 			}
 
-			var sigBlob = row[MDB.MethodDef.Signature].Blob;
-			var signature = MdbSignature.DecodeMethodSignature(sigBlob);
+			var sigBlob = row[Schema.MethodDef.Signature].Blob;
+			var signature = MethodSignature.Decode(sigBlob);
 
 			method.Meta = new MetaMethod(Loader, method, signature);
 
 			method.Parameters = GetParams(method, row, signature);
 
-			uint rva = row[MDB.MethodDef.RVA].Value;
+			uint rva = row[Schema.MethodDef.RVA].Value;
 			if (rva != 0) //abstract or extern
 			{
 				method.Body = new LateMethodBody(Loader, method, rva);
@@ -76,12 +76,12 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return method;
 		}
 
-		private IParameterCollection GetParams(Method method, MdbRow row, MdbMethodSignature signature)
+		private IParameterCollection GetParams(Method method, MetadataRow row, MethodSignature signature)
 		{
 			if (signature.Params.Length == 0)
 				return ParameterCollection.Empty;
 
-			int from = row[MDB.MethodDef.ParamList].Index - 1;
+			int from = row[Schema.MethodDef.ParamList].Index - 1;
 			if (from < 0) return ParameterCollection.Empty;
 
 			return new ParamList(Loader, method, from, signature);
@@ -111,13 +111,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			private readonly AssemblyLoader _loader;
 			private readonly Method _method;
-			private readonly MdbMethodSignature _signature;
+			private readonly MethodSignature _signature;
 			private IType _type;
 			private IType _declType;
 			private ITypeMember _association;
 			private bool _associationResolved;
 
-			public MetaMethod(AssemblyLoader loader, Method method, MdbMethodSignature signature)
+			public MetaMethod(AssemblyLoader loader, Method method, MethodSignature signature)
 			{
 				_loader = loader;
 				_method = method;
@@ -165,17 +165,17 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			private ITypeMember ResolveAssociation()
 			{
-				MdbIndex token = _method.MetadataToken;
+				SimpleIndex token = _method.MetadataToken;
 
-				var row = _loader.Mdb.LookupRow(MdbTableId.MethodSemantics, MDB.MethodSemantics.Method, token.Index - 1, true);
+				var row = _loader.Metadata.LookupRow(TableId.MethodSemantics, Schema.MethodSemantics.Method, token.Index - 1, true);
 				if (row == null) return null;
 				
-				var sem = (MethodSemanticsAttributes)row[MDB.MethodSemantics.Semantics].Value;
+				var sem = (MethodSemanticsAttributes)row[Schema.MethodSemantics.Semantics].Value;
 
-				MdbIndex assoc = row[MDB.MethodSemantics.Association].Value;
+				SimpleIndex assoc = row[Schema.MethodSemantics.Association].Value;
 				switch (assoc.Table)
 				{
-					case MdbTableId.Property:
+					case TableId.Property:
 						var property = _loader.Properties[assoc.Index - 1];
 
 						_method.Association = property;
@@ -195,7 +195,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 						
 						return property;
 
-					case MdbTableId.Event:
+					case TableId.Event:
 						var e = _loader.Events[assoc.Index - 1];
 
 						_method.Association = e;

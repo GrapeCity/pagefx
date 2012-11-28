@@ -10,19 +10,19 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.ModuleRef; }
+			get { return TableId.ModuleRef; }
 		}
 
-		protected override IModule ParseRow(MdbRow row, int index)
+		protected override IModule ParseRow(MetadataRow row, int index)
 		{
-			string name = row[MDB.ModuleRef.Name].String;
+			string name = row[Schema.ModuleRef.Name].String;
 
 			//var f = GetFile(name);
 			//var res = GetResource(name);
 
-			var token = MdbIndex.MakeToken(MdbTableId.ModuleRef, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.ModuleRef, index + 1);
 			var mod = new Module
 				{
 					Name = name,

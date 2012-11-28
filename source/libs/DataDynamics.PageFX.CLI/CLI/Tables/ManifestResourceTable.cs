@@ -13,9 +13,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.ManifestResource; }
+			get { return TableId.ManifestResource; }
 		}
 
 		public IManifestResource this[string name]
@@ -23,13 +23,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 			get { return this.FirstOrDefault(x => x.Name == name); }
 		}
 
-		protected override IManifestResource ParseRow(MdbRow row, int index)
+		protected override IManifestResource ParseRow(MetadataRow row, int index)
 		{
-			string name = row[MDB.ManifestResource.Name].String;
-			var offset = (int)row[MDB.ManifestResource.Offset].Value;
-			var flags = (ManifestResourceAttributes)row[MDB.ManifestResource.Flags].Value;
+			string name = row[Schema.ManifestResource.Name].String;
+			var offset = (int)row[Schema.ManifestResource.Offset].Value;
+			var flags = (ManifestResourceAttributes)row[Schema.ManifestResource.Flags].Value;
 			var isPublic = (flags & ManifestResourceAttributes.VisibilityMask) == ManifestResourceAttributes.Public;
-			var token = MdbIndex.MakeToken(MdbTableId.ManifestResource, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.ManifestResource, index + 1);
 
 			var resource = new ManifestResource
 				{
@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 			resource.CustomAttributes = new CustomAttributes(Loader, resource);
 
-			MdbIndex impl = row[MDB.ManifestResource.Implementation].Value;
+			SimpleIndex impl = row[Schema.ManifestResource.Implementation].Value;
 			if (impl == 0)
 			{
 
@@ -50,17 +50,17 @@ namespace DataDynamics.PageFX.CLI.Tables
 			{
 				switch (impl.Table)
 				{
-					case MdbTableId.File:
+					case TableId.File:
 						{
 							//if (offset != 0)
 							//    throw new BadMetadataException(string.Format("Offset of manifest resource {0} shall be zero.", mr.Name));
-							var reader = Mdb.SeekResourceOffset(offset);
+							var reader = Metadata.SeekResourceOffset(offset);
 							int size = reader.ReadInt32();
-							resource.Data = reader.ReadBlock(size);
+							resource.Data = reader.ReadBytes(size);
 						}
 						break;
 
-					case MdbTableId.AssemblyRef:
+					case TableId.AssemblyRef:
 						{
 							throw new NotSupportedException();
 						}

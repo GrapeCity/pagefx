@@ -32,7 +32,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
     [Serializable]
     public class BadTokenException : Exception
     {
-        public BadTokenException(int token) : base(string.Format("Unable to resolve token {0}", (MdbIndex)token))
+        public BadTokenException(int token) : base(string.Format("Unable to resolve token {0}", (SimpleIndex)token))
         {
             Token = token;
         }

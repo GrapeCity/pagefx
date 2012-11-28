@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 			if (_methods == null)
 			{
-				int n = _loader.Mdb.GetRowCount(MdbTableId.MethodSpec);
+				int n = _loader.Metadata.GetRowCount(TableId.MethodSpec);
 				_methods = new IMethod[n];
 			}
 			return _methods[index] ?? (_methods[index] = Resolve(index, context));
@@ -26,25 +26,24 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		private IMethod Resolve(int index, Context context)
 		{
-			var row = _loader.Mdb.GetRow(MdbTableId.MethodSpec, index);
-			MdbIndex idx = row[MDB.MethodSpec.Method].Value;
+			var row = _loader.Metadata.GetRow(TableId.MethodSpec, index);
+			SimpleIndex idx = row[Schema.MethodSpec.Method].Value;
 			var method = _loader.GetMethodDefOrRef(idx, new Context(context, true));
 
 			if (method == null)
 				throw new BadTokenException(idx);
 
-			var blob = row[MDB.MethodSpec.Instantiation].Blob;
+			var blob = row[Schema.MethodSpec.Instantiation].Blob;
 			var args = ReadMethodSpecArgs(blob, context);
 
 			var spec = GenericType.CreateMethodInstance(method.DeclaringType, method, args);
-			spec.MetadataToken = MdbIndex.MakeToken(MdbTableId.MethodSpec, index + 1);
+			spec.MetadataToken = SimpleIndex.MakeToken(TableId.MethodSpec, index + 1);
 
 			return spec;
 		}
 
-		private IType[] ReadMethodSpecArgs(byte[] blob, Context context)
+		private IType[] ReadMethodSpecArgs(BufferedBinaryReader reader, Context context)
 		{
-			var reader = new BufferedBinaryReader(blob);
 			if (reader.ReadByte() != 0x0A)
 				throw new BadSignatureException("Invalid MethodSpec signature");
 
@@ -52,7 +51,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			var args = new IType[n];
 			for (int i = 0; i < n; ++i)
 			{
-				var sig = MdbSignature.DecodeTypeSignature(reader);
+				var sig = TypeSignature.Decode(reader);
 				args[i] = _loader.ResolveType(sig, context);
 			}
 

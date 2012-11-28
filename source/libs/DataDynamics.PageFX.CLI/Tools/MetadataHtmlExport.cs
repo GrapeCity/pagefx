@@ -1,9 +1,10 @@
 using System.IO;
 using System.Xml;
+using DataDynamics.PageFX.CLI.Metadata;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.CLI.Tools
 {
-    public static class MdbHtmlExport
+    public static class MetadataHtmlExport
     {
         private static void WriteStyle(string outputDir)
         {
@@ -17,7 +18,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
             }
         }
 
-        private static void ExportTable(MdbReader reader, MdbTable table, string outdir)
+        private static void ExportTable(MetadataReader reader, MetadataTable table, string outdir)
         {
         	var xws = new XmlWriterSettings {Indent = true, IndentChars = "  "};
         	string path = Path.Combine(outdir, table.Name + ".htm");
@@ -70,11 +71,11 @@ namespace DataDynamics.PageFX.CLI.Metadata
 
                         switch (cell.Column.Type)
                         {
-                            case MdbColumnType.SimpleIndex:
-                            case MdbColumnType.CodedIndex:
+                            case ColumnType.SimpleIndex:
+                            case ColumnType.CodedIndex:
                                 {
                                     writer.WriteStartElement("a");
-                                    MdbIndex idx = cell.Value;
+                                    SimpleIndex idx = cell.Value;
                                     writer.WriteAttributeString("href", idx.Table + ".htm#row" + idx.Index);
                                     writer.WriteString(idx.Table + "[" + idx.Index + "]");
                                     writer.WriteEndElement();
@@ -98,12 +99,12 @@ namespace DataDynamics.PageFX.CLI.Metadata
 
         public static void Export(string path, string outdir)
         {
-            using (var reader = new MdbReader(path))
+            using (var reader = new MetadataReader(path))
             {
                 Directory.CreateDirectory(outdir);
-                for (int i = 0; i < MdbReader.MaxTableNum; ++i)
+                for (int i = 0; i < MetadataReader.MaxTableNum; ++i)
                 {
-                    var id = (MdbTableId)i;
+                    var id = (TableId)i;
                     var table = reader[id];
                     if (table != null)
                     {

@@ -19,9 +19,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.TypeDef; }
+			get { return TableId.TypeDef; }
 		}
 
 		#region ResolveDeclType
@@ -41,12 +41,12 @@ namespace DataDynamics.PageFX.CLI.Tables
 				return this[typeIndex];
 			}
 
-			var mdb = Mdb;
-			int typeCount = mdb.GetRowCount(MdbTableId.TypeDef);
+			var mdb = Metadata;
+			int typeCount = mdb.GetRowCount(TableId.TypeDef);
 			for (; _lastIndex < typeCount; _lastIndex++)
 			{
-				var row = mdb.GetRow(MdbTableId.TypeDef, _lastIndex);
-				var nextRow = _lastIndex + 1 < typeCount ? mdb.GetRow(MdbTableId.TypeDef, _lastIndex + 1) : null;
+				var row = mdb.GetRow(TableId.TypeDef, _lastIndex);
+				var nextRow = _lastIndex + 1 < typeCount ? mdb.GetRow(TableId.TypeDef, _lastIndex + 1) : null;
 
 				var methodRange = GetMethodRange(row, nextRow);
 				var fieldRange = GetFieldRange(row, nextRow);
@@ -77,7 +77,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 		private void PutMethodRange(int[] range, int typeIndex)
 		{
 			bool first = true;
-			foreach (var methodIndex in GetRange(range, MdbTableId.MethodDef))
+			foreach (var methodIndex in GetRange(range, TableId.MethodDef))
 			{
 				if (first && _methodDeclTypeLookup.ContainsKey(methodIndex))
 				{
@@ -92,7 +92,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 		private void PutFieldRange(int[] range, int typeIndex)
 		{
 			bool first = true;
-			foreach (var fieldIndex in GetRange(range, MdbTableId.Field))
+			foreach (var fieldIndex in GetRange(range, TableId.Field))
 			{
 				if (first && _fieldDeclTypeLookup.ContainsKey(fieldIndex))
 				{
@@ -104,9 +104,9 @@ namespace DataDynamics.PageFX.CLI.Tables
 			}
 		}
 
-		private IEnumerable<int> GetRange(int[] range, MdbTableId tableId)
+		private IEnumerable<int> GetRange(int[] range, TableId tableId)
 		{
-			var n = Mdb.GetRowCount(tableId);
+			var n = Metadata.GetRowCount(tableId);
 			for (int i = range[0]; i < n && i < range[1]; i++)
 			{
 				yield return i;
@@ -115,13 +115,13 @@ namespace DataDynamics.PageFX.CLI.Tables
 
 		#endregion
 
-		protected override IType ParseRow(MdbRow row, int index)
+		protected override IType ParseRow(MetadataRow row, int index)
 		{
-			var flags = (TypeAttributes)row[MDB.TypeDef.Flags].Value;
-			string name = row[MDB.TypeDef.TypeName].String;
-			string ns = row[MDB.TypeDef.TypeNamespace].String;
+			var flags = (TypeAttributes)row[Schema.TypeDef.Flags].Value;
+			string name = row[Schema.TypeDef.TypeName].String;
+			string ns = row[Schema.TypeDef.TypeNamespace].String;
 
-			var token = MdbIndex.MakeToken(MdbTableId.TypeDef, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.TypeDef, index + 1);
 			var genericParams = Loader.GenericParameters.Find(token);
 
 			bool isIface = IsInterface(flags);
@@ -148,7 +148,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			type.CustomAttributes = new CustomAttributes(Loader, type);
 
 			//TODO: lazy resolving of class layout
-			type.Layout = ResolveLayout(Mdb, index);
+			type.Layout = ResolveLayout(Metadata, index);
 
 			//TODO: lazy resolving of declaring type
 			var declType = ResolveDeclaringType(index);
@@ -162,7 +162,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 				_cache.Add(type.FullName, type);
 			}
 
-			var nextRow = index + 1 < Count ? Mdb.GetRow(MdbTableId.TypeDef, index + 1) : null;
+			var nextRow = index + 1 < Count ? Metadata.GetRow(TableId.TypeDef, index + 1) : null;
 			SetMembers(row, nextRow, type);
 
 			//TODO: lazy resolving of base type
@@ -175,11 +175,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return type;
 		}
 
-		private void SetBaseType(MdbRow row, IType type)
+		private void SetBaseType(MetadataRow row, IType type)
 		{
 			if (type.FullName == "System.Object") return;
 
-			MdbIndex baseIndex = row[MDB.TypeDef.Extends].Value;
+			SimpleIndex baseIndex = row[Schema.TypeDef.Extends].Value;
 
 			var baseType = Loader.GetTypeDefOrRef(baseIndex, new Context(type));
 			type.BaseType = baseType;
@@ -203,27 +203,27 @@ namespace DataDynamics.PageFX.CLI.Tables
 					{"System.MulticastDelegate", TypeKind.Delegate},
 				};
 
-		private static ClassLayout ResolveLayout(MdbReader mdb, int typeIndex)
+		private static ClassLayout ResolveLayout(MetadataReader metadata, int typeIndex)
 		{
-			var row = mdb.LookupRow(MdbTableId.ClassLayout, MDB.ClassLayout.Parent, typeIndex, true);
+			var row = metadata.LookupRow(TableId.ClassLayout, Schema.ClassLayout.Parent, typeIndex, true);
 			if (row == null)
 				return null;
 
-			var size = (int)row[MDB.ClassLayout.ClassSize].Value;
-			var pack = (int)row[MDB.ClassLayout.PackingSize].Value;
+			var size = (int)row[Schema.ClassLayout.ClassSize].Value;
+			var pack = (int)row[Schema.ClassLayout.PackingSize].Value;
 			return new ClassLayout(size, pack);
 		}
 
 		private IType ResolveDeclaringType(int index)
 		{
-			var row = Mdb.LookupRow(MdbTableId.NestedClass, MDB.NestedClass.Class, index, true);
+			var row = Metadata.LookupRow(TableId.NestedClass, Schema.NestedClass.Class, index, true);
 			if (row == null) return null;
 
-			int enclosingIndex = row[MDB.NestedClass.EnclosingClass].Index - 1;
+			int enclosingIndex = row[Schema.NestedClass.EnclosingClass].Index - 1;
 			return this[enclosingIndex];
 		}
 
-		private void SetMembers(MdbRow row, MdbRow nextRow, IType type)
+		private void SetMembers(MetadataRow row, MetadataRow nextRow, IType type)
 		{
 			var fields = GetFields(row, nextRow, type);
 			var methods = GetMethods(row, nextRow, type);
@@ -235,7 +235,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			members.Events = new EventList(type);
 		}
 
-		private IFieldCollection GetFields(MdbRow row, MdbRow nextRow, IType type)
+		private IFieldCollection GetFields(MetadataRow row, MetadataRow nextRow, IType type)
 		{
 			var range = GetFieldRange(row, nextRow);
 			if (range == null) return FieldCollection.Empty;
@@ -245,7 +245,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return new FieldList(Loader, type, range[0], range[1]);
 		}
 
-		private IMethodCollection GetMethods(MdbRow row, MdbRow nextRow, IType type)
+		private IMethodCollection GetMethods(MetadataRow row, MetadataRow nextRow, IType type)
 		{
 			var range = GetMethodRange(row, nextRow);
 			if (range == null) return MethodCollection.Empty;
@@ -255,29 +255,29 @@ namespace DataDynamics.PageFX.CLI.Tables
 			return new MethodList(Loader, type, range[0], range[1]);
 		}
 
-		private int[] GetMethodRange(MdbRow row, MdbRow nextRow)
+		private int[] GetMethodRange(MetadataRow row, MetadataRow nextRow)
 		{
-			int from = row[MDB.TypeDef.MethodList].Index - 1;
+			int from = row[Schema.TypeDef.MethodList].Index - 1;
 			if (from < 0) return null;
 
-			int to = Mdb.GetRowCount(MdbTableId.MethodDef);
+			int to = Metadata.GetRowCount(TableId.MethodDef);
 			if (nextRow != null)
 			{
-				to = nextRow[MDB.TypeDef.MethodList].Index - 1;
+				to = nextRow[Schema.TypeDef.MethodList].Index - 1;
 			}
 
 			return from == to ? null : new[] { @from, to };
 		}
 
-		private int[] GetFieldRange(MdbRow row, MdbRow nextRow)
+		private int[] GetFieldRange(MetadataRow row, MetadataRow nextRow)
 		{
-			int from = row[MDB.TypeDef.FieldList].Index - 1;
+			int from = row[Schema.TypeDef.FieldList].Index - 1;
 			if (from < 0) return null;
 
-			int to = Mdb.GetRowCount(MdbTableId.Field);
+			int to = Metadata.GetRowCount(TableId.Field);
 			if (nextRow != null)
 			{
-				to = nextRow[MDB.TypeDef.FieldList].Index - 1;
+				to = nextRow[Schema.TypeDef.FieldList].Index - 1;
 			}
 
 			return from == to ? null : new[] { @from, to };
@@ -286,11 +286,11 @@ namespace DataDynamics.PageFX.CLI.Tables
 		private void LoadMethodImpl(IType type, int typeIndex)
 		{
 			//TODO: try to do lazy loading
-			var rows = Mdb.LookupRows(MdbTableId.MethodImpl, MDB.MethodImpl.Class, typeIndex, true);
+			var rows = Metadata.LookupRows(TableId.MethodImpl, Schema.MethodImpl.Class, typeIndex, true);
 			foreach (var row in rows)
 			{
-				MdbIndex bodyIdx = row[MDB.MethodImpl.MethodBody].Value;
-				MdbIndex declIdx = row[MDB.MethodImpl.MethodDeclaration].Value;
+				SimpleIndex bodyIdx = row[Schema.MethodImpl.MethodBody].Value;
+				SimpleIndex declIdx = row[Schema.MethodImpl.MethodDeclaration].Value;
 
 				var body = Loader.GetMethodDefOrRef(bodyIdx, new Context(type));
 

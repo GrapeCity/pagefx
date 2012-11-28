@@ -8,51 +8,28 @@ using System.Xml;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {
-    //ref: Partition II, 24.2.1 Metadata root
+	//ref: Partition II, 24.2.1 Metadata root
 
-    #region class MdbTableHeapHeader
-    //Size = (4 + 1 + 1 + 1 + 1 + 8 + 8) = 24
-    public sealed class MdbTableHeapHeader
-    {
-        public byte MajorVersion;
-        public byte MinorVersion;
-        public byte HeapSizes;
-        public ulong Valid;
-        public ulong Sorted;
-
-        public MdbTableHeapHeader(BufferedBinaryReader reader)
-        {
-            int r1 = reader.ReadInt32(); //reserved, always 0
-            MajorVersion = reader.ReadUInt8();
-            MinorVersion = reader.ReadUInt8();
-            HeapSizes = reader.ReadUInt8();
-            int r2 = reader.ReadUInt8(); //reserved, always 1
-            Valid = reader.ReadUInt64();
-            Sorted = reader.ReadUInt64();
-        }
-    }
-    #endregion
-
-    /// <summary>
+	/// <summary>
     /// MetaDataBase Reader
     /// </summary>
-    public sealed class MdbReader : IDisposable
+    public sealed class MetadataReader : IDisposable
     {
 	    private readonly BufferedBinaryReader _reader;
 		private readonly Image _image = new Image();
 
-        private MdbStream _strings;
-        private MdbStream _userStrings;
-        private MdbStream _blob;
-        private List<Guid> _guids;
+        private StringHeap _strings;
+		private UserStringHeap _userStrings;
+		private GuidHeap _guids;
+		private BlobHeap _blob;		
         
-	    public MdbReader(string path)
+	    public MetadataReader(string path)
         {
 			_reader = new BufferedBinaryReader(path);
 	        Load();
         }
 
-        public MdbReader(Stream s)
+        public MetadataReader(Stream s)
         {
 			_reader = new BufferedBinaryReader(s);
 			Load();
@@ -77,7 +54,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
         }
 
         // Use C# destructor syntax for finalization code.
-        ~MdbReader()
+        ~MetadataReader()
         {
             // Simply call Dispose(false).
             Dispose(false);
@@ -105,7 +82,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
             get { return (int)_image.Resources.Size; }
         }
 
-	    public MdbIndex EntryPointToken
+	    public SimpleIndex EntryPointToken
 	    {
 			get { return _image.EntryPointToken; }
 	    }
@@ -116,7 +93,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
             return _reader;
         }
 
-        public MdbTable this[MdbTableId tableId]
+        public MetadataTable this[TableId tableId]
         {
             get
             {
@@ -127,21 +104,21 @@ namespace DataDynamics.PageFX.CLI.Metadata
             }
         }
 
-        public IEnumerable<MdbRow> GetRows(MdbTableId tableId)
+        public IEnumerable<MetadataRow> GetRows(TableId tableId)
         {
             int n = GetRowCount(tableId);
             for (int i = 0; i < n; ++i)
                 yield return GetRow(tableId, i);
         }
 
-        public int GetRowCount(MdbTableId id)
+        public int GetRowCount(TableId id)
         {
             var table = this[id];
             if (table == null) return 0;
             return table.RowCount;
         }
 
-        public MdbRow GetRow(MdbTableId tableId, int rowIndex)
+        public MetadataRow GetRow(TableId tableId, int rowIndex)
         {
             var table = this[tableId];
             if (table == null)
@@ -155,21 +132,21 @@ namespace DataDynamics.PageFX.CLI.Metadata
             _reader.Position = table.Offset + rowIndex * table.RowSize;
 
             int n = table.Columns.Count;
-            var cells = new MdbCell[n];
+            var cells = new MetadataCell[n];
             for (int i = 0; i < n; ++i)
             {
                 var col = table.Columns[i];
                 cells[i] = ReadCell(col);
             }
 
-            row = new MdbRow(rowIndex, cells);
+            row = new MetadataRow(rowIndex, cells);
 
             table.Rows[rowIndex] = row;
 
             return row;
         }
 
-        public MdbRow this[MdbTableId tableId, int rowIndex]
+        public MetadataRow this[TableId tableId, int rowIndex]
         {
             get
             {
@@ -177,52 +154,52 @@ namespace DataDynamics.PageFX.CLI.Metadata
             }
         }
 
-        private MdbCell ReadCell(MdbColumn column)
+        private MetadataCell ReadCell(MetadataColumn column)
         {    
             switch(column.Type)
             {
-                case MdbColumnType.Int32:
+                case ColumnType.Int32:
                     {
                         uint i = _reader.ReadUInt32();
-                        return new MdbCell(column, i);
+                        return new MetadataCell(column, i);
                     }
 
-                case MdbColumnType.Int16:
+                case ColumnType.Int16:
                     {
                         uint i = _reader.ReadUInt16();
-                        return new MdbCell(column, i);
+                        return new MetadataCell(column, i);
                     }
 
-                case MdbColumnType.StringIndex:
+                case ColumnType.StringIndex:
                     {
                         uint i = _reader.ReadIndex(_strIdxSize);
-                        string s = GetString(i);
-                        return new MdbCell(column, i, s);
+                        string s = FetchString(i);
+                        return new MetadataCell(column, i, s);
                     }
 
-                case MdbColumnType.BlobIndex:
+                case ColumnType.BlobIndex:
                     {
                         uint i = _reader.ReadIndex(_blobIdxSize);
                         var data = GetBlob(i);
-                        return new MdbCell(column, i, data);
+                        return new MetadataCell(column, i, data);
                     }
 
-                case MdbColumnType.GuidIndex:
+                case ColumnType.GuidIndex:
                     {
                         uint i = _reader.ReadIndex(_guidIdxSize);
-                        return new MdbCell(column, i, GetGuid(i));
+                        return new MetadataCell(column, i, FetchGuid(i));
                     }
 
-                case MdbColumnType.SimpleIndex:
+                case ColumnType.SimpleIndex:
                     {
                         uint i = ReadIndex(column.SimpleIndex);
-                        return new MdbCell(column, i);
+                        return new MetadataCell(column, i);
                     }
 
-                case MdbColumnType.CodedIndex:
+                case ColumnType.CodedIndex:
                     {
                         uint i = ReadIndex(column.CodedIndex);
-                        return new MdbCell(column, i);
+                        return new MetadataCell(column, i);
                     }
 
                 default:
@@ -230,14 +207,14 @@ namespace DataDynamics.PageFX.CLI.Metadata
             }
         }
 
-        private MdbIndex ReadIndex(MdbTableId id)
+        private SimpleIndex ReadIndex(TableId id)
         {
             int size = GetSimpleIndexSize(id);
             uint index = _reader.ReadIndex(size);
-            return new MdbIndex(id, (int)index);
+            return new SimpleIndex(id, (int)index);
         }
 
-        private MdbIndex ReadIndex(MdbCodedIndex i)
+        private SimpleIndex ReadIndex(CodedIndex i)
         {
             int size = GetCodedIndexSize(i);
             uint index = _reader.ReadIndex(size);
@@ -246,39 +223,39 @@ namespace DataDynamics.PageFX.CLI.Metadata
         #endregion
 
         #region ColumnSize
-        static int GetIndexSize(int n)
+        private static int GetIndexSize(int n)
         {
             return n >= 0x10000 ? 4 : 2;
         }
 
-        int GetSimpleIndexSize(MdbTableId id)
+        private int GetSimpleIndexSize(TableId id)
         {
             int n = GetRowCount(id);
             return GetIndexSize(n);
         }
 
-        private int GetMaxRowCount(IEnumerable<MdbTableId> tables)
+        private int GetMaxRowCount(IEnumerable<TableId> tables)
         {
         	return tables.Select(id => GetRowCount(id)).Concat(new[] {0}).Max();
         }
 
     	int[] _codedIndexSizes;
-        int GetCodedIndexSize(MdbCodedIndex i)
+        private int GetCodedIndexSize(CodedIndex i)
         {
             return _codedIndexSizes[i.ID];
         }
 
-        int GetColumnSize(MdbColumn c)
+        private int GetColumnSize(MetadataColumn c)
         {
             switch (c.Type)
             {
-                case MdbColumnType.Int32: return 4;
-                case MdbColumnType.Int16: return 2;
-                case MdbColumnType.StringIndex: return _strIdxSize;
-                case MdbColumnType.BlobIndex: return _blobIdxSize;
-                case MdbColumnType.GuidIndex: return _guidIdxSize;
-                case MdbColumnType.SimpleIndex: return GetSimpleIndexSize(c.SimpleIndex);
-                case MdbColumnType.CodedIndex: return GetCodedIndexSize(c.CodedIndex);
+                case ColumnType.Int32: return 4;
+                case ColumnType.Int16: return 2;
+                case ColumnType.StringIndex: return _strIdxSize;
+                case ColumnType.BlobIndex: return _blobIdxSize;
+                case ColumnType.GuidIndex: return _guidIdxSize;
+                case ColumnType.SimpleIndex: return GetSimpleIndexSize(c.SimpleIndex);
+                case ColumnType.CodedIndex: return GetCodedIndexSize(c.CodedIndex);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -307,107 +284,114 @@ namespace DataDynamics.PageFX.CLI.Metadata
 
 			var runtimeVersion = _reader.ReadZeroTerminatedString(_reader.ReadInt32());
 
-			// align for dword boundary		
+			// align for dword boundary
 			_reader.Align4();
 
 			// Flags		2
 			_reader.Advance(2);
 
-			int n = _reader.ReadUInt16();
-			var streams = new MdbStream[n];
-			for (int i = 0; i < n; i++)
-			{
-				streams[i] = new MdbStream(_reader);
-			}
-
-            foreach (var mds in streams)
-            {
-                mds.Offset += mdbOffset;
-                LoadStream(mds);
-            }
+	        LoadHeaps(mdbOffset);
         }
 
-        #region LoadStream
-        private void LoadStream(MdbStream mds)
+		private static IEnumerable<int> Range(int n)
+		{
+			for (int i = 0; i < n; i++)
+				yield return i;
+		}
+
+        #region LoadHeaps
+		private void LoadHeaps(uint startOffset)
         {
-            string name = mds.Name;
-            if (name == "#~" || name == "#-")
-            {
-                if (_tables != null)
-                    throw new BadMetadataException("Multiple table heaps.");
+			// heap headers
+			int n = _reader.ReadUInt16();
+			var headers = Range(n)
+				.Select(x =>
+				        new
+					        {
+								Offset = startOffset + _reader.ReadUInt32(),
+						        Size = _reader.ReadUInt32(),
+						        Name = _reader.ReadAlignedString(16)
+					        }).ToArray();
 
-                _reader.Position = mds.Offset;
-                LoadTables();
-                return;
-            }
+			foreach (var header in headers)
+			{
+				switch (header.Name)
+				{
+					case "#-":
+					case "#~":
+						if (_tables != null)
+							throw new BadMetadataException("Multiple table heaps.");
+						_reader.Position = header.Offset;
+						LoadTables();
+						break;
 
-            if (name == "#Strings")
-            {
-                if (_strings != null)
-                    throw new BadMetadataException("Multiple #Strings heaps.");
-                _strings = mds;
-                return;
-            }
+					case "#Strings":
+						if (_strings != null)
+							throw new BadMetadataException("Multiple #Strings heaps.");
+						_strings = new StringHeap(_reader.Slice(header.Offset, header.Size));
+						break;
 
-            if (name == "#US")
-            {
-                if (_userStrings != null)
-                    throw new BadMetadataException("Multiple #US heaps.");
-                _userStrings = mds;
-                return;
-            }
+					case "#US":
+						if (_userStrings != null)
+							throw new BadMetadataException("Multiple #US heaps.");
+						_userStrings = new UserStringHeap(_reader.Slice(header.Offset, header.Size));
+						break;
 
-            if (name == "#GUID")
-            {
-                if (_guids != null)
-                    throw new BadMetadataException("Multiple #GUID heaps.");
-                _guids = new List<Guid>();
-                _reader.Position = mds.Offset;
-                long endPos = mds.Offset + mds.Size;
-                while (_reader.Position < endPos)
-                {
-                    var guid = _reader.ReadBlock(16);
-                    _guids.Add(new Guid(guid));
-                }
-                return;
-            }
+					case "#GUID":
+						if (_guids != null)
+							throw new BadMetadataException("Multiple #GUID heaps.");
+						_guids = new GuidHeap(_reader.Slice(header.Offset, header.Size));
+						break;
 
-            if (name == "#Blob")
-            {
-                if (_blob != null)
-                    throw new BadMetadataException("Multiple #Blob heaps.");
-                _blob = mds;
-                return;
-            }
+					case "#Blob":
+						if (_blob != null)
+							throw new BadMetadataException("Multiple #Blob heaps.");
+						_blob = new BlobHeap(_reader.Slice(header.Offset, header.Size));
+						break;
 
-            throw new BadMetadataException("Unknown meta-data stream.");
+					default:
+						throw new BadMetadataException("Unknown meta-data stream.");
+				}
+			}
         }
         #endregion
 
-        private int _strIdxSize;
+		#region LoadTables
+		private int _strIdxSize;
 		private int _blobIdxSize;
 		private int _guidIdxSize;
-		private MdbTable[] _tables;
+		private MetadataTable[] _tables;
         internal const int MaxTableNum = 64;
 
         private void LoadTables()
         {
-            var header = new MdbTableHeapHeader(_reader);
+	        _reader.Advance(4); //reserved: 4, always 0
+
+	        var header = new
+		        {
+			        MajorVersion = _reader.ReadUInt8(),
+			        MinorVersion = _reader.ReadUInt8(),
+			        HeapSizes = _reader.ReadUInt8(),
+			        _ = _reader.Advance(1), //reserved: 1, always 1
+			        Valid = _reader.ReadUInt64(),
+			        Sorted = _reader.ReadUInt64(),
+		        };
+
             _strIdxSize = (((header.HeapSizes & 1) == 0) ? 2 : 4);
             _guidIdxSize = (((header.HeapSizes & 2) == 0) ? 2 : 4);
             _blobIdxSize = (((header.HeapSizes & 4) == 0) ? 2 : 4);
 
             //Read table row nums
             ulong present = header.Valid;
-            _tables = new MdbTable[MaxTableNum];
+            _tables = new MetadataTable[MaxTableNum];
             for (int i = 0; i < MaxTableNum; i++)
             {
                 //NOTE: If flag set table is presented
                 if (((present >> i) & 1) != 0)
                 {
                     int rowNum = _reader.ReadInt32();
-                    var id = (MdbTableId)i;
-                    var table = MDB.CreateTable(id);
+                    var id = (TableId)i;
+                    var table = Schema.CreateTable(id);
                     table.RowCount = rowNum;
                     table.IsSorted = ((header.Sorted >> i) & 1) != 0;
                     _tables[i] = table;
@@ -415,11 +399,11 @@ namespace DataDynamics.PageFX.CLI.Metadata
             }
 
             //Prepare coded index sizes
-            int n = MdbCodedIndex.All.Length;
+            int n = CodedIndex.All.Length;
             _codedIndexSizes = new int[n];
             for (int i = 0; i < n; ++i)
             {
-                var ci = MdbCodedIndex.All[i];
+                var ci = CodedIndex.All[i];
                 Debug.Assert(ci.ID == i);
                 int mn = GetMaxRowCount(ci.Tables);
                 int mn2 = mn << ci.Bits;
@@ -438,74 +422,168 @@ namespace DataDynamics.PageFX.CLI.Metadata
                     int rowSize = table.Columns.Sum(column => GetColumnSize(column));
                 	table.RowSize = rowSize;
                     table.Size = table.RowCount * rowSize;
-                    table.Rows = new MdbRow[table.RowCount];
+                    table.Rows = new MetadataRow[table.RowCount];
                     pos += table.Size;
                 }
             }
         }
-        #endregion
+		#endregion
+		#endregion
 
-        #region Heap Access
-        private string GetString(uint offset)
+		#region Heaps
+
+		private string FetchString(uint offset)
         {
             if (_strings == null)
                 throw new BadMetadataException("#Strings heap not found.");
-            if (offset >= _strings.Size)
-                throw new BadMetadataException("Invalid #Strings heap index.");
-            long pos = _reader.Position;
-            _reader.Position = _strings.Offset + offset;
-            string s = _reader.ReadUtf8();
-            _reader.Position = pos;
-            return s;
+	        return _strings.Fetch(offset);
         }
 
-        private byte[] GetBlob(uint offset)
+		public string GetUserString(uint offset)
+		{
+			if (_userStrings == null)
+				throw new BadMetadataException("#US heap not found.");
+			return _userStrings.Fetch(offset);
+		}
+
+		private Guid FetchGuid(uint index)
+		{
+			if (index == 0) 
+				return Guid.Empty;
+			if (_guids == null)
+				throw new BadMetadataException("#GUID heap not found.");
+			//guid index is 1 based
+			return _guids.Fetch((int)(index - 1));
+		}
+
+		private BufferedBinaryReader GetBlob(uint offset)
         {
             if (_blob == null)
                 throw new BadMetadataException("#Blob heap not found.");
-            if (offset >= _blob.Size)
-                throw new BadMetadataException("Invalid #Blob heap offset.");
-            long pos = _reader.Position;
-            _reader.Position = _blob.Offset + offset;
-            int length = _reader.ReadPackedInt();
-            var res = new byte[0];
-            if (length > 0)
-                res = _reader.ReadBlock(length);
-            _reader.Position = pos;
-            return res;
+			return _blob.Fetch(offset);
         }
 
-        private Guid GetGuid(uint index)
-        {
-            if (index == 0) 
-                return Guid.Empty;
-            if (_guids == null)
-                throw new BadMetadataException("#GUID heap not found.");
-            //guid index is 1 based
-            index = index - 1;
-            if (index >= _guids.Count)
-                throw new BadMetadataException("Invalid #GUID heap index.");
-            return _guids[(int)index];
-        }
+		private sealed class StringHeap
+		{
+			private readonly BufferedBinaryReader _heap;
+			private readonly Dictionary<uint, string> _cache = new Dictionary<uint, string>();
+			
+			public StringHeap(BufferedBinaryReader heap)
+			{
+				_heap = heap;
+			}
 
-        public string GetUserString(uint offset)
-        {
-            if (_userStrings == null)
-                throw new BadMetadataException("#US heap not found.");
-            if (offset == 0)
-                throw new BadMetadataException("Invalid #US heap offset.");
-            long pos = _reader.Position;
-            _reader.Position = _userStrings.Offset + offset;
-            int length = _reader.ReadPackedInt();
-            var bytes = _reader.ReadBlock(length);
-            _reader.Position = pos;
-            if (bytes[length - 1] == 0 || bytes[length - 1] == 1)
-                length--;
-            return Encoding.Unicode.GetString(bytes, 0, length);
-        }
-        #endregion
+			public string Fetch(uint offset)
+			{
+				if (offset >= _heap.Length)
+					throw new BadMetadataException("Invalid #Strings heap index.");
 
-        internal void Dump(string path)
+				string value;
+				if (_cache.TryGetValue(offset, out value))
+					return value;
+
+				_heap.Seek(offset, SeekOrigin.Begin);
+
+				value = _heap.ReadUtf8();
+				_cache.Add(offset, value);
+
+				return value;
+			}
+		}
+
+		private sealed class UserStringHeap
+		{
+			private readonly BufferedBinaryReader _heap;
+
+			public UserStringHeap(BufferedBinaryReader heap)
+			{
+				_heap = heap;
+			}
+
+			public string Fetch(uint offset)
+			{
+				if (offset == 0)
+					throw new BadMetadataException("Invalid #US heap offset.");
+
+
+				_heap.Seek(offset, SeekOrigin.Begin);
+
+				int length = _heap.ReadPackedInt();
+				var bytes = _heap.ReadBytes(length);
+				
+				if (bytes[length - 1] == 0 || bytes[length - 1] == 1)
+					length--;
+
+				return Encoding.Unicode.GetString(bytes, 0, length);
+			}
+		}
+
+		private sealed class GuidHeap
+		{
+			private readonly BufferedBinaryReader _heap;
+			private IReadOnlyList<Guid> _list;
+
+			public GuidHeap(BufferedBinaryReader heap)
+			{
+				_heap = heap;
+			}
+
+			public Guid Fetch(int index)
+			{
+				return List[index];
+			}
+
+			private IReadOnlyList<Guid> List
+			{
+				get { return _list ?? (_list = Populate().Memoize()); }
+			}
+
+			private IEnumerable<Guid> Populate()
+			{
+				_heap.Seek(0, SeekOrigin.Begin);
+
+				long size = _heap.Length;
+				while (size > 0)
+				{
+					var guid = _heap.ReadBytes(16);
+					yield return new Guid(guid);
+					size -= 16;
+				}
+			}
+		}
+
+		private sealed class BlobHeap
+		{
+			private readonly BufferedBinaryReader _heap;
+
+			public BlobHeap(BufferedBinaryReader heap)
+			{
+				_heap = heap;
+			}
+
+			public BufferedBinaryReader Fetch(uint offset)
+			{
+				if (offset >= _heap.Length)
+					throw new BadMetadataException("Invalid #Blob heap offset.");
+
+				_heap.Seek(offset, SeekOrigin.Begin);
+
+				int length = _heap.ReadPackedInt();
+				if (length <= 0)
+				{
+					return Zero;
+				}
+
+				return _heap.Slice(_heap.Position, length);
+			}
+
+			private static readonly BufferedBinaryReader Zero = new BufferedBinaryReader(new byte[0]);
+		}
+
+		#endregion
+
+		#region Dump
+		internal void Dump(string path)
         {
             var xws = new XmlWriterSettings { Indent = true, IndentChars = "  " };
             using (var writer = XmlWriter.Create(path, xws))
@@ -527,25 +605,26 @@ namespace DataDynamics.PageFX.CLI.Metadata
             writer.WriteEndElement();
         }
 
-        static void Dump(XmlWriter writer, MdbTable table)
+        private static void Dump(XmlWriter writer, MetadataTable table)
         {
             writer.WriteStartElement("table");
             writer.WriteAttributeString("name", table.Name);
             writer.WriteAttributeString("id", string.Format("{0} (0x{0:X2})", (int)table.Id));
-            writer.WriteAttributeString("offset", table.Offset.ToString());
-            writer.WriteAttributeString("size", table.Size.ToString());
+            writer.WriteAttributeString("offset", XmlConvert.ToString(table.Offset));
+            writer.WriteAttributeString("size", XmlConvert.ToString(table.Size));
             writer.WriteAttributeString("aligned", XmlConvert.ToString((table.Size % 4) == 0));
-            writer.WriteAttributeString("row-count", table.RowCount.ToString());
-            writer.WriteAttributeString("row-size", table.RowSize.ToString());
+            writer.WriteAttributeString("row-count", XmlConvert.ToString(table.RowCount));
+            writer.WriteAttributeString("row-size", XmlConvert.ToString(table.RowSize));
             writer.WriteAttributeString("sorted", XmlConvert.ToString(table.IsSorted));
             writer.WriteEndElement();
         }
+		#endregion
 
-	    public IEnumerable<MdbRow> LookupRows(MdbTableId tableId, MdbColumn column, int target, bool simple)
+		public IEnumerable<MetadataRow> LookupRows(TableId tableId, MetadataColumn column, int target, bool simple)
 		{
 			var table = this[tableId];
 			if (table == null)
-				return Enumerable.Empty<MdbRow>();
+				return Enumerable.Empty<MetadataRow>();
 
 			IList<int> list;
 			if (table.Lookup.TryGetValue(target, out list))
@@ -557,14 +636,14 @@ namespace DataDynamics.PageFX.CLI.Metadata
 			while (table.LastLookupRowIndex < rowCount)
 			{
 				var row = GetRow(tableId, table.LastLookupRowIndex);
-				int index = simple ? row[column].Index - 1 : (int)((MdbIndex)row[column].Value);
+				int index = simple ? row[column].Index - 1 : (int)((SimpleIndex)row[column].Value);
 
 				list = new List<int> {table.LastLookupRowIndex};
 
 				for (table.LastLookupRowIndex++; table.LastLookupRowIndex < rowCount; table.LastLookupRowIndex++)
 				{
 					row = GetRow(tableId, table.LastLookupRowIndex);
-					int nextIndex = simple ? row[column].Index - 1 : (int)((MdbIndex)row[column].Value);
+					int nextIndex = simple ? row[column].Index - 1 : (int)((SimpleIndex)row[column].Value);
 					if (index != nextIndex) break;
 
 					list.Add(table.LastLookupRowIndex);
@@ -578,15 +657,15 @@ namespace DataDynamics.PageFX.CLI.Metadata
 				}
 			}
 
-			return Enumerable.Empty<MdbRow>();
+			return Enumerable.Empty<MetadataRow>();
 		}
 
-		private IEnumerable<MdbRow> GetRows(MdbTableId tableId, IEnumerable<int> rows)
+		private IEnumerable<MetadataRow> GetRows(TableId tableId, IEnumerable<int> rows)
 		{
 			return rows.Select(i => GetRow(tableId, i));
 		}
 
-		public MdbRow LookupRow(MdbTableId tableId, MdbColumn column, int target, bool simple)
+		public MetadataRow LookupRow(TableId tableId, MetadataColumn column, int target, bool simple)
 		{
 			var table = this[tableId];
 			if (table == null)
@@ -602,7 +681,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
 			for (; table.LastLookupRowIndex < rowCount; table.LastLookupRowIndex++)
 			{
 				var row = GetRow(tableId, table.LastLookupRowIndex);
-				int index = simple ? row[column].Index - 1 : (int)((MdbIndex)row[column].Value);
+				int index = simple ? row[column].Index - 1 : (int)((SimpleIndex)row[column].Value);
 
 				if (index == target)
 				{

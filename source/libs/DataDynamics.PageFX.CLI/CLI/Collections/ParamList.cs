@@ -13,10 +13,10 @@ namespace DataDynamics.PageFX.CLI.Collections
 		private readonly AssemblyLoader _loader;
 		private readonly IMethod _owner;
 		private readonly int _from;
-		private readonly MdbMethodSignature _signature;
+		private readonly MethodSignature _signature;
 		private IReadOnlyList<IParameter> _list;
 
-		public ParamList(AssemblyLoader loader, IMethod owner, int from, MdbMethodSignature signature)
+		public ParamList(AssemblyLoader loader, IMethod owner, int from, MethodSignature signature)
 		{
 			_loader = loader;
 			_owner = owner;

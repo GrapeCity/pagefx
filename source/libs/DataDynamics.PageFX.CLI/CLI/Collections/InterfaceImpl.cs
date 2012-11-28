@@ -84,10 +84,10 @@ namespace DataDynamics.PageFX.CLI.Collections
 
 		private IEnumerable<IType> Populate()
 		{
-			var rows = _loader.Mdb.LookupRows(MdbTableId.InterfaceImpl, MDB.InterfaceImpl.Class, OwnerIndex, true);
+			var rows = _loader.Metadata.LookupRows(TableId.InterfaceImpl, Schema.InterfaceImpl.Class, OwnerIndex, true);
 			return rows.Select(row =>
 				{
-					MdbIndex ifaceIndex = row[MDB.InterfaceImpl.Interface].Value;
+					SimpleIndex ifaceIndex = row[Schema.InterfaceImpl.Interface].Value;
 					var iface = _loader.GetTypeDefOrRef(ifaceIndex, new Context(_owner));
 					if (iface == null)
 						throw new BadMetadataException();

@@ -11,16 +11,16 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.Property; }
+			get { return TableId.Property; }
 		}
 
-		protected override IProperty ParseRow(MdbRow row, int index)
+		protected override IProperty ParseRow(MetadataRow row, int index)
 		{
-			var flags = (PropertyAttributes)row[MDB.Property.Flags].Value;
-			var name = row[MDB.Property.Name].String;
-			var token = MdbIndex.MakeToken(MdbTableId.Property, index + 1);
+			var flags = (PropertyAttributes)row[Schema.Property.Flags].Value;
+			var name = row[Schema.Property.Name].String;
+			var token = SimpleIndex.MakeToken(TableId.Property, index + 1);
 			var value = Loader.Const[token];
 
 			var property = new Property

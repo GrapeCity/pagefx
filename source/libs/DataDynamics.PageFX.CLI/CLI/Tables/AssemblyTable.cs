@@ -1,5 +1,6 @@
 ﻿using System;
 using DataDynamics.PageFX.CLI.Metadata;
+using DataDynamics.PageFX.CLI.Tools;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.Tables
@@ -11,31 +12,31 @@ namespace DataDynamics.PageFX.CLI.Tables
 		{
 		}
 
-		public override MdbTableId Id
+		public override TableId Id
 		{
-			get { return MdbTableId.Assembly; }
+			get { return TableId.Assembly; }
 		}
 
-		protected override AssemblyReference ParseRow(MdbRow row, int index)
+		protected override AssemblyReference ParseRow(MetadataRow row, int index)
 		{
-			var flags = ((AssemblyFlags)row[MDB.Assembly.Flags].Value);
-			var hashAlgorithm = (HashAlgorithmId)row[MDB.Assembly.HashAlgId].Value;
+			var flags = ((AssemblyFlags)row[Schema.Assembly.Flags].Value);
+			var hashAlgorithm = (HashAlgorithmId)row[Schema.Assembly.HashAlgId].Value;
 
 			byte[] publicKey = null;
 			byte[] publicKeyToken = null;
 			if ((flags & AssemblyFlags.PublicKey) != 0)
 			{
-				publicKey = row[MDB.Assembly.PublicKey].Blob;
+				publicKey = row[Schema.Assembly.PublicKey].Blob.ToArray();
 				publicKeyToken = publicKey.ComputePublicKeyToken(hashAlgorithm);
 			}
 
-			var token = MdbIndex.MakeToken(MdbTableId.Assembly, index + 1);
+			var token = SimpleIndex.MakeToken(TableId.Assembly, index + 1);
 			return new AssemblyReference
 				{
-					Name = row[MDB.Assembly.Name].String,
+					Name = row[Schema.Assembly.Name].String,
 					Version = GetVersion(row, 1),
 					Flags = flags,
-					Culture = row[MDB.Assembly.Culture].Culture,
+					Culture = row[Schema.Assembly.Culture].Culture,
 					HashAlgorithm = hashAlgorithm,
 					PublicKey = publicKey,
 					PublicKeyToken = publicKeyToken,
@@ -43,7 +44,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 				};
 		}
 
-		private static Version GetVersion(MdbRow row, int i)
+		private static Version GetVersion(MetadataRow row, int i)
 		{
 			return new Version((int)row[i].Value,
 							   (int)row[i + 1].Value,

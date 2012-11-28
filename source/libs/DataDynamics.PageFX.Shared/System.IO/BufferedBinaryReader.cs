@@ -1,9 +1,9 @@
 namespace System.IO
 {
     /// <summary>
-    /// Reader on bytes stream
+    /// Reader on bytes stream.
     /// </summary>
-    public sealed class BufferedBinaryReader : Stream
+    public class BufferedBinaryReader : Stream
     {
 	    private readonly byte[] _buffer;
         private long _pos;
@@ -11,14 +11,12 @@ namespace System.IO
 	    /// <summary>
         /// Ctor
         /// </summary>
-        /// <param name="fileName">Name of the file</param>
-        public BufferedBinaryReader(string fileName)
+        /// <param name="path">The path to file to load.</param>
+        public BufferedBinaryReader(string path)
         {
-            using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (var stream = File.OpenRead(path))
             {
-                _pos = 0;
-                _buffer = new byte[stream.Length];
-                stream.Read(_buffer, 0, (int)stream.Length);
+	            _buffer = stream.ToByteArray();
             }
         }
 
@@ -28,17 +26,13 @@ namespace System.IO
         /// <param name="stream">Stream with data</param>
         public BufferedBinaryReader(Stream stream)
         {
-            _pos = 0;
-            _buffer = new byte[stream.Length];
-            int total = 0;
-            while (total != stream.Length)
-            {
-                int readed = stream.Read(_buffer, total, (int)stream.Length - total);
-                total += readed;
-            }
+	        if (stream == null)
+				throw new ArgumentNullException("stream");
+
+	        _buffer = stream.ToByteArray();
         }
 
-        /// <summary>
+	    /// <summary>
         /// Ctor
         /// </summary>
         /// <param name="buffer">Source array</param>
@@ -133,7 +127,7 @@ namespace System.IO
         /// <returns></returns>
         public bool ReadBoolean()
         {
-            return _buffer[_pos++] != 0;
+            return ReadUInt8() != 0;
         }
 
         /// <summary>
@@ -151,7 +145,7 @@ namespace System.IO
         /// <returns></returns>
         public float ReadSingle()
         {
-            var val = new MemoryStream(ReadBlock(4));
+            var val = new MemoryStream(ReadBytes(4));
             using (var reader = new BinaryReader(val))
             {
                 return reader.ReadSingle();
@@ -164,7 +158,7 @@ namespace System.IO
         /// <returns></returns>
         public double ReadDouble()
         {
-            var val = new MemoryStream(ReadBlock(8));
+            var val = new MemoryStream(ReadBytes(8));
             using (var reader = new BinaryReader(val))
             {
                 return reader.ReadDouble();
@@ -177,7 +171,7 @@ namespace System.IO
         /// <returns></returns>
         public sbyte ReadSByte()
         {
-            return (sbyte)_buffer[_pos++];
+            return (sbyte)ReadUInt8();
         }
 
         /// <summary>
@@ -186,7 +180,7 @@ namespace System.IO
         /// <returns></returns>
         public sbyte ReadInt8()
         {
-            return (sbyte)_buffer[_pos++];
+            return (sbyte)ReadUInt8();
         }
 
         /// <summary>
@@ -204,8 +198,8 @@ namespace System.IO
         /// <returns></returns>
         public ushort ReadUInt16()
         {
-            int b1 = _buffer[_pos++];
-            int b2 = _buffer[_pos++];
+			int b1 = ReadUInt8();
+			int b2 = ReadUInt8();
             //return (ushort)(b2 | (b1 << 8));
             return (ushort)(b1 | (b2 << 8));
         }
@@ -225,10 +219,10 @@ namespace System.IO
         /// <returns></returns>
         public uint ReadUInt32()
         {
-            uint b1 = _buffer[_pos++];
-            uint b2 = _buffer[_pos++];
-            uint b3 = _buffer[_pos++];
-            uint b4 = _buffer[_pos++];
+            uint b1 = ReadUInt8();
+			uint b2 = ReadUInt8();
+			uint b3 = ReadUInt8();
+			uint b4 = ReadUInt8();
             //return b4 | (b3 << 8) | (b2 << 16) | (b1 << 24);
             return b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
         }
@@ -280,7 +274,7 @@ namespace System.IO
             return ((b0 & 0x3F) << 24) | (b1 << 16) | (b2 << 8) | b3;
         }
 
-        public int ReadPackedInt()
+		public int ReadPackedInt()
         {
             int b0 = ReadUInt8();
             return ReadPackedInt(b0);
@@ -291,7 +285,7 @@ namespace System.IO
         /// </summary>
         /// <param name="count"></param>
         /// <returns></returns>
-        public byte[] ReadBlock(int count)
+		public byte[] ReadBytes(int count)
         {
             var buf = new byte[count];
             Array.Copy(_buffer, _pos, buf, 0, count);
@@ -299,13 +293,12 @@ namespace System.IO
             return buf;
         }
 
-        public uint ReadIndex(int size)
-        {
-            if (size == 2) return ReadUInt16();
-            return ReadUInt32();
-        }
+		public uint ReadIndex(int size)
+		{
+			return size == 2 ? ReadUInt16() : ReadUInt32();
+		}
 
-        public string ReadUtf8()
+	    public string ReadUtf8()
         {
             return ReadUtf8(-1);
         }
@@ -332,7 +325,7 @@ namespace System.IO
         ///	And the conversion between hexadecimal and decimal? Come on, this is not a math tutorial! In case you don't know, use a calculator.
         /// </summary>
         /// <returns></returns>
-        public string ReadUtf8(int bytesToRead) // bytesToRead==-1 reads string till \0
+		public string ReadUtf8(int bytesToRead) // bytesToRead==-1 reads string till \0
         {
             long bufferPos = _pos;
 
@@ -471,10 +464,10 @@ namespace System.IO
             return new string(result);
         }
 
-        public string ReadZeroTerminatedString(int length)
+		public string ReadZeroTerminatedString(int length)
         {
 			var buffer = new char[length];
-			var bytes = ReadBlock(length);
+			var bytes = ReadBytes(length);
 
 			var len = 0;
 			while (len < length)
@@ -489,11 +482,11 @@ namespace System.IO
 			return new string(buffer, 0, len);
         }
 
-		public string ReadAlignedString(int length)
+		public string ReadAlignedString(int maxLength)
 		{
 			int read = 0;
-			var buffer = new char[length];
-			while (read < length)
+			var buffer = new char[maxLength];
+			while (read < maxLength)
 			{
 				var current = ReadByte();
 				if (current == 0)
@@ -507,14 +500,56 @@ namespace System.IO
 			return new string(buffer, 0, read);
 		}
 
-	    public void Align4()
+		public void Align4()
         {
             _pos = ((_pos + 3) / 4) * 4;
         }
 
-	    public void Advance(int bytes)
+	    public long Advance(int bytes)
 	    {
-		    _pos += bytes;
+		    return _pos += bytes;
 	    }
+
+		public BufferedBinaryReader Slice(long start, long size)
+		{
+			return new SliceImpl(_buffer, start, size);
+		}
+
+		private sealed class SliceImpl : BufferedBinaryReader
+		{
+			private readonly long _start;
+			private readonly long _size;
+
+			public SliceImpl(byte[] buffer, long start, long size) : base(buffer)
+			{
+				_start = start;
+				_size = size;
+				_pos = start;
+			}
+
+			public override long Seek(long offset, SeekOrigin origin)
+			{
+				switch (origin)
+				{
+					case SeekOrigin.Begin:
+						_pos = _start + offset;
+						break;
+					case SeekOrigin.Current:
+						_pos += offset;
+						break;
+					case SeekOrigin.End:
+						_pos = _start + Length - offset;
+						break;
+					default:
+						throw new ArgumentOutOfRangeException("origin");
+				}
+				return _pos;
+			}
+
+			public override long Length
+			{
+				get { return _size; }
+			}
+		}
     }
 }
