@@ -7,11 +7,11 @@ using System.Text;
 using System.Windows.Forms;
 using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.CLI.Metadata;
+using DataDynamics.PageFX.CLI.PDB;
 using DataDynamics.PageFX.CLI.Tools;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.SWF;
-using DataDynamics.PageFX.PDB;
 
 namespace DataDynamics.PageFX
 {

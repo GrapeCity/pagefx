@@ -12,9 +12,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
 using DataDynamics.PageFX.CLI.Metadata;
+using DataDynamics.PageFX.CLI.PDB;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Statements;
-using DataDynamics.PageFX.PDB;
 
 namespace DataDynamics.PageFX.CLI.IL
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace DataDynamics.PageFX.PDB.Interop
+namespace DataDynamics.PageFX.CLI.PDB.Interop
 {
     [ComImport]
     [Guid(Guids.IID_IMetaDataDispenserEx)]

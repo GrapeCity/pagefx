@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml;
 
-namespace DataDynamics.PageFX.PDB
+namespace DataDynamics.PageFX.CLI.PDB
 {
     //http://blogs.msdn.com/jmstall/articles/sample_pdb2xml.aspx
 
