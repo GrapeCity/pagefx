@@ -100,6 +100,15 @@
     <Compile Include="CLI\Tables\TypeRefTable.cs" />
     <Compile Include="CLI\Tables\TypeSpecTable.cs" />
     <Compile Include="CLI\Tables\TypeTable.cs" />
+    <Compile Include="ControlFlow\Edge.cs" />
+    <Compile Include="ControlFlow\FlowGraphExtensions.cs" />
+    <Compile Include="ControlFlow\GraphBuilder.cs" />
+    <Compile Include="ControlFlow\Node.cs" />
+    <Compile Include="ControlFlow\NodeList.cs" />
+    <Compile Include="ControlFlow\Services\DotService.cs" />
+    <Compile Include="ControlFlow\Services\DumpService.cs" />
+    <Compile Include="ControlFlow\Services\FormatService.cs" />
+    <Compile Include="ControlFlow\Services\NameService.cs" />
     <Compile Include="Execution\ArrayIterator.cs" />
     <Compile Include="Execution\ArrayInvoker.cs" />
     <Compile Include="Execution\Class.cs" />
@@ -125,8 +134,6 @@
     <Compile Include="GAC\IAssemblyName.cs" />
     <Compile Include="GAC\IInstallReferenceEnum.cs" />
     <Compile Include="GAC\IInstallReferenceItem.cs" />
-    <Compile Include="CFG\GraphBuilder.cs" />
-    <Compile Include="CFG\FlowGraphExtensions.cs" />
     <Compile Include="IL\BlockExtensions.cs" />
     <Compile Include="IL\EvalItem.cs" />
     <Compile Include="IL\HandlerBlock.cs" />
@@ -142,9 +149,6 @@
     <Compile Include="IL\TryCatchBlock.cs" />
     <Compile Include="IL\Values\Arg.cs" />
     <Compile Include="IL\CIL.cs" />
-    <Compile Include="CFG\NodeList.cs" />
-    <Compile Include="CFG\Services\DumpService.cs" />
-    <Compile Include="CFG\Edge.cs" />
     <Compile Include="IL\CLR.cs" />
     <Compile Include="IL\Values\ComputedValue.cs" />
     <Compile Include="IL\Values\ArgPtr.cs">
@@ -167,7 +171,6 @@
     <Compile Include="IL\Values\ConstValue.cs" />
     <Compile Include="IL\EvalStack.cs" />
     <Compile Include="IL\Exceptions.cs" />
-    <Compile Include="CFG\Services\FormatService.cs" />
     <Compile Include="IL\ILStream.cs" />
     <Compile Include="IL\Translator\Main.cs" />
     <Compile Include="IL\IMethodContext.cs" />
@@ -175,10 +178,7 @@
     <Compile Include="IL\LateMethodBody.cs" />
     <Compile Include="IL\MethodBody.cs" />
     <Compile Include="IL\InstructionCode.cs" />
-    <Compile Include="CFG\Node.cs" />
     <Compile Include="IL\Block.cs" />
-    <Compile Include="CFG\Services\DotService.cs" />
-    <Compile Include="CFG\Services\NameService.cs" />
     <Compile Include="IL\SEHBlock.cs" />
     <Compile Include="IL\Values\ThisValue.cs" />
     <Compile Include="IL\Values\IValue.cs" />

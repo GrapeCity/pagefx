@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using DataDynamics.PageFX.CLI.IL;
 
-namespace DataDynamics.PageFX.CLI.CFG
+namespace DataDynamics.PageFX.CLI.ControlFlow.Services
 {
     internal class DumpService
     {

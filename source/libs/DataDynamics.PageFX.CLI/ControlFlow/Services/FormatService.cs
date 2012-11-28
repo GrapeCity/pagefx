@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace DataDynamics.PageFX.CLI.CFG
+namespace DataDynamics.PageFX.CLI.ControlFlow.Services
 {
     [Flags]
     internal enum FormatOptions

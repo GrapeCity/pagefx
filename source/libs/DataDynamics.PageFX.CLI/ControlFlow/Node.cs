@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DataDynamics.PageFX.CLI.ControlFlow.Services;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Statements;
 
-namespace DataDynamics.PageFX.CLI.CFG
+namespace DataDynamics.PageFX.CLI.ControlFlow
 {
     //http://en.wikipedia.org/wiki/Basic_block
 

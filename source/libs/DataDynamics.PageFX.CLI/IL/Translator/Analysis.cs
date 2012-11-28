@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using DataDynamics.PageFX.CLI.CFG;
+using DataDynamics.PageFX.CLI.ControlFlow;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL

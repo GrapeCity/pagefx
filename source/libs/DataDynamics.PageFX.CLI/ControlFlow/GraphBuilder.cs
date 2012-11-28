@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
 
-namespace DataDynamics.PageFX.CLI.CFG
+namespace DataDynamics.PageFX.CLI.ControlFlow
 {
 	/// <summary>
 	/// Builds control flow graph.

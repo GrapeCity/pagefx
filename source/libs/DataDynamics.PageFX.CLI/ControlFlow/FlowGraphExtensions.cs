@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CLI.CFG
+namespace DataDynamics.PageFX.CLI.ControlFlow
 {
     internal static class FlowGraphExtensions
     {
