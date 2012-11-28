@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using DataDynamics.PE;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {
@@ -39,35 +38,27 @@ namespace DataDynamics.PageFX.CLI.Metadata
     /// </summary>
     public sealed class MdbReader : IDisposable
     {
-        #region Fields
-        private BufferedBinaryReader _reader;
-        //private List<string> _strings;
+	    private readonly BufferedBinaryReader _reader;
+		private readonly Image _image = new Image();
+
         private MdbStream _strings;
         private MdbStream _userStrings;
-        //private List<byte[]> _blob;
         private MdbStream _blob;
         private List<Guid> _guids;
-        private PEImage _image;
-        #endregion
-
-        #region Constructors
-        public MdbReader(string path) 
-            : this(new PEImage(path))
+        
+	    public MdbReader(string path)
         {
+			_reader = new BufferedBinaryReader(path);
+	        Load();
         }
 
         public MdbReader(Stream s)
-            : this(new PEImage(s))
         {
+			_reader = new BufferedBinaryReader(s);
+			Load();
         }
 
-        public MdbReader(PEImage image)
-        {
-            Load(image);
-        }
-        #endregion
-
-        #region IDisposable Members
+	    #region IDisposable Members
         //Implement IDisposable.
         public void Dispose()
         {
@@ -94,18 +85,16 @@ namespace DataDynamics.PageFX.CLI.Metadata
         #endregion
 
         #region Public Members
-        int _resourceOrigin = -1;
+        private int _resourceOrigin = -1;
 
         public BufferedBinaryReader SeekResourceOffset(int offset)
         {
             if (_resourceOrigin < 0)
             {
-                int pos = _image.TranslateRVA(_cliHeader.Resources.RVA);
-                if (pos < 0)
-                    throw new BadMetadataException();
+                int pos = _image.ResolveVirtualAddress(_image.Resources.VirtualAddress);
                 _resourceOrigin = pos;
             }
-            if (offset >= _cliHeader.Resources.Size)
+            if (offset >= _image.Resources.Size)
                 throw new BadMetadataException();
             _reader.Position = _resourceOrigin + offset;
             return _reader;
@@ -113,20 +102,17 @@ namespace DataDynamics.PageFX.CLI.Metadata
 
         public int SizeOfResources
         {
-            get
-            {
-                if (_cliHeader != null)
-                    return (int)_cliHeader.Resources.Size;
-                return 0;
-            }
+            get { return (int)_image.Resources.Size; }
         }
 
-        public BufferedBinaryReader SeekRVA(uint rva)
+	    public MdbIndex EntryPointToken
+	    {
+			get { return _image.EntryPointToken; }
+	    }
+
+	    public BufferedBinaryReader SeekRVA(uint rva)
         {
-            int pos = _image.TranslateRVA(rva);
-            if (pos < 0)
-                throw new BadMetadataException();
-            _reader.Position = pos;
+			_reader.Position = _image.ResolveVirtualAddress(rva);
             return _reader;
         }
 
@@ -299,18 +285,42 @@ namespace DataDynamics.PageFX.CLI.Metadata
         #endregion
 
         #region Loading
-        void Load(PEImage image)
+        private void Load()
         {
-            _image = image;
-            _reader = image.Reader;
+			_image.Load(_reader);
 
-            //CLIHeader
-            uint mdbOffset = ReadCLIHeader(image);
+            uint mdbOffset = (uint)_reader.Position;
 
             _reader.Position = mdbOffset;
-            var header = new MdbHeader(_reader);
 
-            foreach (var mds in header.Streams)
+			// Metadata Header
+			// Signature
+			if (_reader.ReadUInt32() != 0x424A5342)
+			{
+				throw new BadMetadataException("Invalid metadata header.");
+			}
+
+			// MajorVersion			2
+			// MinorVersion			2
+			// Reserved				4
+			_reader.Advance(8);
+
+			var runtimeVersion = _reader.ReadZeroTerminatedString(_reader.ReadInt32());
+
+			// align for dword boundary		
+			_reader.Align4();
+
+			// Flags		2
+			_reader.Advance(2);
+
+			int n = _reader.ReadUInt16();
+			var streams = new MdbStream[n];
+			for (int i = 0; i < n; i++)
+			{
+				streams[i] = new MdbStream(_reader);
+			}
+
+            foreach (var mds in streams)
             {
                 mds.Offset += mdbOffset;
                 LoadStream(mds);
@@ -318,7 +328,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
         }
 
         #region LoadStream
-        void LoadStream(MdbStream mds)
+        private void LoadStream(MdbStream mds)
         {
             string name = mds.Name;
             if (name == "#~" || name == "#-")
@@ -374,40 +384,13 @@ namespace DataDynamics.PageFX.CLI.Metadata
         }
         #endregion
 
-        #region CLI Header
-        /// <summary>
-        /// CLI Header
-        /// </summary>
-        public CLIHeader CLIHeader
-        {
-            get { return _cliHeader; }
-        }
-        CLIHeader _cliHeader;
-
-        uint ReadCLIHeader(PEImage image)
-        {
-            if (!image.GotoDirectory(PEDictionaryEntry.ENTRY_COM_DESCRIPTOR))
-                throw new BadImageFormatException("No COM DESCRIPTOR (CLI Header)");
-
-            var cli = new CLIHeader(image.Reader);
-            if (cli.MetaData.Size == 0)
-                throw new BadImageFormatException("Metadata is empty");
-
-            _cliHeader = cli;
-            int offset = image.TranslateRVA(cli.MetaData.RVA);
-            if (offset <= 0)
-                throw new BadImageFormatException("Invalid metadata offset");
-            return (uint)offset;
-        }
-        #endregion
-
-        int _strIdxSize;
-        int _blobIdxSize;
-        int _guidIdxSize;
-        MdbTable[] _tables;
+        private int _strIdxSize;
+		private int _blobIdxSize;
+		private int _guidIdxSize;
+		private MdbTable[] _tables;
         internal const int MaxTableNum = 64;
 
-        void LoadTables()
+        private void LoadTables()
         {
             var header = new MdbTableHeapHeader(_reader);
             _strIdxSize = (((header.HeapSizes & 1) == 0) ? 2 : 4);

@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
     /// </summary>
     public sealed class MdbTable
     {
-    	private readonly MdbColumnList _columns = new MdbColumnList();
+    	private readonly MdbColumnCollection _columns = new MdbColumnCollection();
 
     	/// <summary>
     	/// Gets the table id.
@@ -36,7 +36,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
         /// <summary>
         /// Gets the table columns
         /// </summary>
-        public MdbColumnList Columns
+        public MdbColumnCollection Columns
         {
             get { return _columns; }
         }

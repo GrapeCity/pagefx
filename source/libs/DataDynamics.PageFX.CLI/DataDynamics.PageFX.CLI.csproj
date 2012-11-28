@@ -249,7 +249,6 @@
     <Compile Include="Metadata\MdbXmlExport.cs" />
     <Compile Include="Metadata\Exceptions.cs" />
     <Compile Include="Metadata\MdbCodedIndex.cs" />
-    <Compile Include="Metadata\MdbHeader.cs" />
     <Compile Include="Metadata\MdbReader.cs" />
     <Compile Include="Metadata\MdbStream.cs" />
     <Compile Include="Metadata\MdbIndex.cs" />
@@ -264,19 +263,7 @@
     <Compile Include="PDB\PdbReader.cs" />
     <Compile Include="PDB\SymbolExtensions.cs" />
     <Compile Include="PDB\PdbDump.cs" />
-    <Compile Include="PE\CLIHeader.cs" />
-    <Compile Include="PE\COFFHeader.cs" />
-    <Compile Include="PE\DOSHeader.cs" />
-    <Compile Include="PE\Enums.cs" />
-    <Compile Include="PE\NTHeader.cs" />
-    <Compile Include="PE\PEDataDirectory.cs" />
-    <Compile Include="PE\PEDebugDirectory.cs" />
-    <Compile Include="PE\PEDebugInfo.cs" />
-    <Compile Include="PE\PEDictionaryEntry.cs" />
-    <Compile Include="PE\PEDirectory.cs" />
-    <Compile Include="PE\PEHeader.cs" />
-    <Compile Include="PE\PEImage.cs" />
-    <Compile Include="PE\PESection.cs" />
+    <Compile Include="Metadata\Image.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

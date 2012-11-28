@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace System.IO
 {
     /// <summary>
@@ -7,23 +5,20 @@ namespace System.IO
     /// </summary>
     public sealed class BufferedBinaryReader : Stream
     {
-        #region Fields
-        private readonly byte[] _buffer;
+	    private readonly byte[] _buffer;
         private long _pos;
-        #endregion
 
-        #region Constructors
-        /// <summary>
+	    /// <summary>
         /// Ctor
         /// </summary>
         /// <param name="fileName">Name of the file</param>
         public BufferedBinaryReader(string fileName)
         {
-            using (Stream val = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
                 _pos = 0;
-                _buffer = new byte[val.Length];
-                val.Read(_buffer, 0, (int)val.Length);
+                _buffer = new byte[stream.Length];
+                stream.Read(_buffer, 0, (int)stream.Length);
             }
         }
 
@@ -51,10 +46,8 @@ namespace System.IO
         {
             _buffer = buffer;
         }
-        #endregion
 
-        #region Stream Members
-        /// <summary>
+	    /// <summary>
         ///  Current cursor position
         /// </summary>
         public override long Position
@@ -88,17 +81,30 @@ namespace System.IO
 
         public override void Flush()
         {
-            throw new NotImplementedException();
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            throw new NotImplementedException();
+	        switch (origin)
+	        {
+		        case SeekOrigin.Begin:
+			        Position = offset;
+			        break;
+		        case SeekOrigin.Current:
+			        Position += offset;
+			        break;
+		        case SeekOrigin.End:
+			        Position = Length - offset;
+			        break;
+		        default:
+			        throw new ArgumentOutOfRangeException("origin");
+	        }
+	        return Position;
         }
 
         public override void SetLength(long value)
         {
-            throw new NotImplementedException();
+			throw new NotSupportedException();
         }
 
         public override int Read(byte[] buffer, int offset, int count)
@@ -118,12 +124,10 @@ namespace System.IO
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
-        #endregion
 
-        #region Public Members
-        /// <summary>
+	    /// <summary>
         /// Read bool value from stream
         /// </summary>
         /// <returns></returns>
@@ -467,31 +471,50 @@ namespace System.IO
             return new string(result);
         }
 
-        public string ReadNullTerminatedAsciiString()
+        public string ReadZeroTerminatedString(int length)
         {
-            var s = new StringBuilder();
-            while (true)
-            {
-                byte c = ReadUInt8();
-                if (c == 0) break;
-                s.Append((char)c);
-            }
-            return s.ToString();
+			var buffer = new char[length];
+			var bytes = ReadBlock(length);
+
+			var len = 0;
+			while (len < length)
+			{
+				var current = bytes[len];
+				if (current == 0)
+					break;
+
+				buffer[len++] = (char)current;
+			}
+
+			return new string(buffer, 0, len);
         }
 
-        public string ReadAscii(int len, bool trimZero)
-        {
-            var buf = ReadBlock(len);
-            string s = Encoding.ASCII.GetString(buf);
-            if (trimZero)
-                return s.Trim('\0');
-            return s;
-        }
+		public string ReadAlignedString(int length)
+		{
+			int read = 0;
+			var buffer = new char[length];
+			while (read < length)
+			{
+				var current = ReadByte();
+				if (current == 0)
+					break;
 
-        public void Align4()
+				buffer[read++] = (char)current;
+			}
+
+			Advance(-1 + ((read + 4) & ~3) - read);
+
+			return new string(buffer, 0, read);
+		}
+
+	    public void Align4()
         {
             _pos = ((_pos + 3) / 4) * 4;
         }
-        #endregion
+
+	    public void Advance(int bytes)
+	    {
+		    _pos += bytes;
+	    }
     }
 }

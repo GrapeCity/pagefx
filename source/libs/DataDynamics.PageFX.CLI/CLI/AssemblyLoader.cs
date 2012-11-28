@@ -196,7 +196,7 @@ namespace DataDynamics.PageFX.CLI
 
 	    public IMethod ResolveEntryPoint()
 	    {
-			MdbIndex token = Mdb.CLIHeader.EntryPointToken;
+			MdbIndex token = Mdb.EntryPointToken;
 		    if (token.Table != MdbTableId.MethodDef)
 			    return null;
 		    int index = token.Index - 1;

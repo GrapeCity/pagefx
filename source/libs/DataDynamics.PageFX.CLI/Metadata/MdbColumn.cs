@@ -237,7 +237,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
     /// <summary>
     /// List of <see cref="MdbColumn"/>s.
     /// </summary>
-    public sealed class MdbColumnList : IEnumerable<MdbColumn>
+    public sealed class MdbColumnCollection : IEnumerable<MdbColumn>
     {
         private readonly Hashtable _hash = new Hashtable();
         private readonly List<MdbColumn> _list = new List<MdbColumn>();

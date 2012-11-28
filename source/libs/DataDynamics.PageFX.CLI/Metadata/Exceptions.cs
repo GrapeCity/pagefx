@@ -15,10 +15,6 @@ namespace DataDynamics.PageFX.CLI.Metadata
         public BadMetadataException(string message) : base(message)
         {
         }
-
-        public BadMetadataException(string message, Exception inner) : base(message, inner)
-        {
-        }
     }
 
     [Serializable]
@@ -31,10 +27,6 @@ namespace DataDynamics.PageFX.CLI.Metadata
         public BadSignatureException(string message) : base(message)
         {
         }
-
-        public BadSignatureException(string message, Exception inner) : base(message, inner)
-        {
-        }
     }
 
     [Serializable]
@@ -42,13 +34,9 @@ namespace DataDynamics.PageFX.CLI.Metadata
     {
         public BadTokenException(int token) : base(string.Format("Unable to resolve token {0}", (MdbIndex)token))
         {
-            _token = token;
+            Token = token;
         }
 
-        public int Token
-        {
-            get { return _token; }
-        }
-        private readonly int _token;
+	    public int Token { get; private set; }
     }
 }

@@ -51,7 +51,7 @@ namespace DataDynamics.PageFX.CLI.Tables
 				genericParameter.DeclaringMethod = method;
 			}
 
-			MdbIndex entryPoint = Mdb.CLIHeader.EntryPointToken;
+			MdbIndex entryPoint = Mdb.EntryPointToken;
 			if (entryPoint.Table == MdbTableId.MethodDef && entryPoint.Index - 1 == index)
 			{
 				method.IsEntryPoint = true;
