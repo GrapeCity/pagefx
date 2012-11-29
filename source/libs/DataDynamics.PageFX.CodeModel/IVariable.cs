@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX.CodeModel
     /// <summary>
     /// Represents collection of <see cref="IVariable"/>s.
     /// </summary>
-    public interface IVariableCollection : IList<IVariable>, ICodeNode
+    public interface IVariableCollection : IReadOnlyList<IVariable>, ICodeNode
     {
         /// <summary>
         /// Finds local variable by given name.

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CLI.IL;
+using DataDynamics.PageFX.CLI.Translation;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
@@ -240,7 +241,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			if (body == null)
 				throw new NotSupportedException("The method format is not supported");
 
-			var translator = new ILTranslator();
+			var translator = new Translator();
 			var codeProvider = new NopCodeProvider(this, klass, method);
 			translator.Translate(method, method.Body, codeProvider);
 

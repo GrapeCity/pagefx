@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CLI.PDB;
+using DataDynamics.PageFX.CLI.Translation;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Statements;
 
@@ -127,7 +128,7 @@ namespace DataDynamics.PageFX.CLI.IL
         /// <returns><see cref="ITranslator"/></returns>
         public ITranslator CreateTranslator()
         {
-            return new ILTranslator();
+            return new Translator();
         }
 
         public bool HasProtectedBlocks
@@ -196,7 +197,7 @@ namespace DataDynamics.PageFX.CLI.IL
         //Number of compilations
     	public int InstanceCount { get; set; }
 
-		public FlowGraph FlowGraph { get; set; }
+		public ControlFlowGraph ControlFlowGraph { get; set; }
 
         #endregion
 

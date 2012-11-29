@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DataDynamics.PageFX.CLI.Translation;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Statements;
 
@@ -125,10 +126,10 @@ namespace DataDynamics.PageFX.CLI.IL
 			set { Impl.InstanceCount = value; }
     	}
 
-    	public FlowGraph FlowGraph
+    	public ControlFlowGraph ControlFlowGraph
     	{
-			get { return Impl.FlowGraph; }
-			set { Impl.FlowGraph = value; }
+			get { return Impl.ControlFlowGraph; }
+			set { Impl.ControlFlowGraph = value; }
     	}
 
     	#endregion

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection.Emit;
 using System.Text;
-using DataDynamics.PageFX.CLI.ControlFlow;
+using DataDynamics.PageFX.CLI.Translation.ControlFlow;
 using DataDynamics.PageFX.CodeModel;
 
 namespace DataDynamics.PageFX.CLI.IL

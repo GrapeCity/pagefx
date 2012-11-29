@@ -70,15 +70,6 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ControlFlow\Edge.cs" />
-    <Compile Include="ControlFlow\FlowGraphExtensions.cs" />
-    <Compile Include="ControlFlow\GraphBuilder.cs" />
-    <Compile Include="ControlFlow\Node.cs" />
-    <Compile Include="ControlFlow\NodeList.cs" />
-    <Compile Include="ControlFlow\Services\DotService.cs" />
-    <Compile Include="ControlFlow\Services\DumpService.cs" />
-    <Compile Include="ControlFlow\Services\FormatService.cs" />
-    <Compile Include="ControlFlow\Services\NameService.cs" />
     <Compile Include="Execution\ArrayIterator.cs" />
     <Compile Include="Execution\ArrayInvoker.cs" />
     <Compile Include="Execution\Class.cs" />
@@ -105,44 +96,15 @@
     <Compile Include="GAC\IInstallReferenceEnum.cs" />
     <Compile Include="GAC\IInstallReferenceItem.cs" />
     <Compile Include="IL\BlockExtensions.cs" />
-    <Compile Include="IL\EvalItem.cs" />
     <Compile Include="IL\HandlerBlock.cs" />
     <Compile Include="IL\IClrMethodBody.cs" />
     <Compile Include="IL\InstructionExtensions.cs" />
     <Compile Include="IL\MethodBodyExtensions.cs" />
-    <Compile Include="IL\Translator\Analysis.cs" />
-    <Compile Include="IL\Translator\Core.cs" />
-    <Compile Include="IL\Translator\DumpMap.cs" />
-    <Compile Include="IL\Translator\Generics.cs" />
-    <Compile Include="IL\Translator\Translation.cs" />
-    <Compile Include="IL\Translator\Utils.cs" />
     <Compile Include="IL\TryCatchBlock.cs" />
-    <Compile Include="IL\Values\Arg.cs" />
     <Compile Include="IL\CIL.cs" />
     <Compile Include="IL\CLR.cs" />
-    <Compile Include="IL\Values\ComputedValue.cs" />
-    <Compile Include="IL\Values\ArgPtr.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IL\Values\ComputedPtr.cs" />
-    <Compile Include="IL\Values\Elem.cs" />
-    <Compile Include="IL\Values\ElemPtr.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IL\Values\FieldPtr.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IL\Values\FieldValue.cs" />
-    <Compile Include="IL\Values\Func.cs" />
-    <Compile Include="IL\Values\ThisPtr.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IL\Values\TokenValue.cs" />
-    <Compile Include="IL\Values\ConstValue.cs" />
-    <Compile Include="IL\EvalStack.cs" />
     <Compile Include="IL\Exceptions.cs" />
     <Compile Include="IL\ILStream.cs" />
-    <Compile Include="IL\Translator\Main.cs" />
     <Compile Include="IL\IMethodContext.cs" />
     <Compile Include="IL\Instruction.cs" />
     <Compile Include="IL\LateMethodBody.cs" />
@@ -150,12 +112,6 @@
     <Compile Include="IL\InstructionCode.cs" />
     <Compile Include="IL\Block.cs" />
     <Compile Include="IL\SEHBlock.cs" />
-    <Compile Include="IL\Values\ThisValue.cs" />
-    <Compile Include="IL\Values\IValue.cs" />
-    <Compile Include="IL\Values\Var.cs" />
-    <Compile Include="IL\Values\VarPtr.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="JavaScript\ArrayInterfaceImpl.cs" />
     <Compile Include="JavaScript\BoxingImpl.cs" />
     <Compile Include="JavaScript\ClassInitImpl.cs" />
@@ -240,7 +196,7 @@
     <Compile Include="LoaderInternals\Tables\TypeTable.cs" />
     <Compile Include="Metadata\ArrayShape.cs" />
     <Compile Include="Metadata\ColumnType.cs" />
-    <Compile Include="Metadata\Enums.cs" />
+    <Compile Include="Metadata\ElementType.cs" />
     <Compile Include="Metadata\FieldSignature.cs" />
     <Compile Include="Metadata\MethodSignature.cs" />
     <Compile Include="Metadata\TableId.cs" />
@@ -270,6 +226,46 @@
     <Compile Include="Tools\MetadataHtmlExport.cs" />
     <Compile Include="Tools\MetadataXmlExport.cs" />
     <Compile Include="Tools\StrongNameTools.cs" />
+    <Compile Include="Translation\Analyzer.cs" />
+    <Compile Include="Translation\Branch.cs" />
+    <Compile Include="Translation\CallInstructionInfo.cs" />
+    <Compile Include="Translation\Code.cs" />
+    <Compile Include="Translation\TranslatorExtensions.cs" />
+    <Compile Include="Translation\ControlFlow\Edge.cs" />
+    <Compile Include="Translation\ControlFlow\FlowGraphExtensions.cs" />
+    <Compile Include="Translation\ControlFlow\GraphBuilder.cs" />
+    <Compile Include="Translation\ControlFlow\Node.cs" />
+    <Compile Include="Translation\ControlFlow\NodeList.cs" />
+    <Compile Include="Translation\ControlFlow\Services\DotService.cs" />
+    <Compile Include="Translation\ControlFlow\Services\DumpService.cs" />
+    <Compile Include="Translation\ControlFlow\Services\FormatService.cs" />
+    <Compile Include="Translation\ControlFlow\Services\NameService.cs" />
+    <Compile Include="Translation\Core.cs" />
+    <Compile Include="Translation\ILMapDump.cs" />
+    <Compile Include="Translation\Emitter.cs" />
+    <Compile Include="Translation\EvalItem.cs" />
+    <Compile Include="Translation\EvalStack.cs" />
+    <Compile Include="Translation\ControlFlowGraph.cs" />
+    <Compile Include="Translation\GenericResolver.cs" />
+    <Compile Include="Translation\Translator.cs" />
+    <Compile Include="Translation\Translation.cs" />
+    <Compile Include="Translation\TranslatorResult.cs" />
+    <Compile Include="Translation\Values\Arg.cs" />
+    <Compile Include="Translation\Values\ArgPtr.cs" />
+    <Compile Include="Translation\Values\ComputedPtr.cs" />
+    <Compile Include="Translation\Values\ComputedValue.cs" />
+    <Compile Include="Translation\Values\ConstValue.cs" />
+    <Compile Include="Translation\Values\Elem.cs" />
+    <Compile Include="Translation\Values\ElemPtr.cs" />
+    <Compile Include="Translation\Values\FieldPtr.cs" />
+    <Compile Include="Translation\Values\FieldValue.cs" />
+    <Compile Include="Translation\Values\Func.cs" />
+    <Compile Include="Translation\Values\IValue.cs" />
+    <Compile Include="Translation\Values\ThisPtr.cs" />
+    <Compile Include="Translation\Values\ThisValue.cs" />
+    <Compile Include="Translation\Values\TokenValue.cs" />
+    <Compile Include="Translation\Values\Var.cs" />
+    <Compile Include="Translation\Values\VarPtr.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.CodeModel.csproj">
