@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.CLI.Translation
 			var branches = new List<Branch>();
 			var code = new Code(provider);
 
-			code.Append(begin);
+			code.Emit(begin);
 
 			foreach (var bb in body.ControlFlowGraph.Blocks)
 			{
@@ -45,13 +45,13 @@ namespace DataDynamics.PageFX.CLI.Translation
 
 				translator.FixSelfCycle(bb);
 				
-				code.Append(il);
+				code.Emit(il);
 
 				bb.TranslatedExitIndex = code.Count - 1;
 			}
 
 			var end = provider.End();
-			code.Append(end);
+			code.Emit(end);
 
 #if DEBUG
 			DebugHooks.LogInfo("ConcatBlocks succeeded. CodeSize = {0}", code.Count);
@@ -75,16 +75,16 @@ namespace DataDynamics.PageFX.CLI.Translation
 			if (!string.IsNullOrEmpty(translator.DebugFile))
 			{
 				var set = provider.DebugFile(translator.DebugFile);
-				code.Append(set);
+				code.Emit(set);
 			}
 
-			code.Append(provider.Begin());
+			code.Emit(provider.Begin());
 
 			// declare vars
 			if (body.LocalVariables != null)
 			{
 				var set = body.LocalVariables.SelectMany(v => provider.DeclareVariable(v));
-				code.Append(set);
+				code.Emit(set);
 			}
 
 			return code.ToArray();

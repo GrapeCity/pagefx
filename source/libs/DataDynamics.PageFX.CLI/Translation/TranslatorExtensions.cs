@@ -8,7 +8,13 @@ namespace DataDynamics.PageFX.CLI.Translation
 {
 	internal static class TranslatorExtensions
 	{
-		public static Code Append(this Code code, IEnumerable<IInstruction> set)
+		/// <summary>
+		/// Apends instructions set to specified code block.
+		/// </summary>
+		/// <param name="code">The code to append to.</param>
+		/// <param name="set">The instruction set to append.</param>
+		/// <remarks>This method also set index for every instruction in the set.</remarks>		
+		public static Code Emit(this Code code, IEnumerable<IInstruction> set)
 		{
 			if (set == null) return code;
 
@@ -198,6 +204,13 @@ namespace DataDynamics.PageFX.CLI.Translation
 			return code;
 		}
 
+		public static Code CastToInt32(this Code code, ref IType type)
+		{
+			code.Cast(type, SystemTypes.Int32);
+			type = SystemTypes.Int32;
+			return code;
+		}
+
 		/// <summary>
 		/// Called in analysis and translation phases to prepare eval stack for given basic block.
 		/// </summary>
@@ -220,6 +233,49 @@ namespace DataDynamics.PageFX.CLI.Translation
 			var from = e.From;
 			var prevStack = @from.Stack;
 			bb.Stack = prevStack != null ? prevStack.Clone() : new EvalStack();
+		}
+
+		public static int MoveTemp(this Code code, int var)
+		{
+			code.LoadTempVar(var);
+			return code.StoreTempVar();
+		}
+
+		public static Code LoadTempVar(this Code code, int var)
+		{
+			code.AddRange(code.Provider.GetTempVar(var));
+			return code;
+		}
+
+		public static int StoreTempVar(this Code code)
+		{
+			int var;
+			code.AddRange(code.Provider.SetTempVar(out var, false));
+			return var;
+		}
+
+		public static void KillTempVar(this Code code, int var)
+		{
+			code.AddRange(code.Provider.KillTempVar(var));
+		}
+
+		public static Code Nop(this Code code)
+		{
+			var op = code.Provider.Nop();
+			code.Add(op);
+			return code;
+		}
+
+		public static Code DebuggerBreak(this Code code)
+		{
+			code.AddRange(code.Provider.DebuggerBreak());
+			return code;
+		}
+
+		public static Code Rethrow(this Code code, Instruction currentInstruction)
+		{
+			code.AddRange(code.Provider.Rethrow(currentInstruction.SehBlock));
+			return code;
 		}
 	}
 }

@@ -228,7 +228,9 @@ namespace DataDynamics.PageFX.CLI.Translation
 					{
 						il.Add(label);
 					}
-					il.AddRange(Op_Return());
+					var code = new Code(_provider);
+					OpReturn(code, null);
+					il.AddRange(code);
 				}
 				else
 				{

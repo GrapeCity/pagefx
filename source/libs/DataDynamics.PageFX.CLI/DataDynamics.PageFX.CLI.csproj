@@ -229,7 +229,9 @@
     <Compile Include="Translation\Analyzer.cs" />
     <Compile Include="Translation\Branch.cs" />
     <Compile Include="Translation\CallInstructionInfo.cs" />
+    <Compile Include="Translation\Checks.cs" />
     <Compile Include="Translation\Code.cs" />
+    <Compile Include="Translation\InstructionExtensions.cs" />
     <Compile Include="Translation\TranslatorExtensions.cs" />
     <Compile Include="Translation\ControlFlow\Edge.cs" />
     <Compile Include="Translation\ControlFlow\FlowGraphExtensions.cs" />

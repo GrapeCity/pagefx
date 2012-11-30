@@ -19,11 +19,6 @@ namespace DataDynamics.PageFX.CLI.Translation
         /// </summary>
         private Node _block;
 
-        /// <summary>
-        /// Current translated instruction
-        /// </summary>
-        private Instruction _instruction;
-
         private int _bbIndex;
 		private bool _popScope;
 		private bool _castToParamType;
@@ -328,8 +323,7 @@ namespace DataDynamics.PageFX.CLI.Translation
             var code = bb.Code;
             for (int i = 0; i < n; ++i)
             {
-                _instruction = code[i];
-                TranslateInstruction();
+				TranslateInstruction(code[i]);
             }
 
             //FIX: For ternary params
@@ -565,60 +559,43 @@ namespace DataDynamics.PageFX.CLI.Translation
     	#endregion
 
         #region TranslateInstruction
-		private void TranslateInstruction()
+		private void TranslateInstruction(Instruction currentInstruction)
         {
-            _provider.SourceInstruction = _instruction;
+            _provider.SourceInstruction = currentInstruction;
 
-            EmitSequencePoint();
-            AddInstructionPrefix();
+            EmitSequencePoint(currentInstruction);
+            AddInstructionPrefix(currentInstruction);
 
             _castToParamType = true;
 
-            var code = TranslateInstructionCore();
+			var code = new Code(_provider);
+			TranslateInstructionCore(code, currentInstruction);
 
+			var set = code.ToArray();
             //we should box receiver for call on boxable types
-            bool rboxed = BoxReceiver(ref code);
+            bool rboxed = BoxReceiver(currentInstruction, ref set);
             //if (!rboxed)
             //    AdjustReceiverType(ref code);
             
-            if (_instruction.IsEndOfBasicBlock())
+            if (currentInstruction.IsEndOfBasicBlock())
             {
                 CastToBlockParam();
                 PopScope();
             }
 
-            if (FilterInstruction())
+            if (FilterInstruction(currentInstruction))
             {
-                EmitBlockCode(code);
+                EmitBlockCode(set);
                 if (_castToParamType)
-                    CastToParamType();
-                AddInstructionSuffix();
+                    CastToParamType(currentInstruction);
+                AddInstructionSuffix(currentInstruction);
             }
         }
 
-		private void AdjustReceiverType(ref IInstruction[] code)
-        {
-            var call = _instruction.ReceiverFor;
-            if (call == null) return;
-            if (call.Code != InstructionCode.Call) return;
-            var m = call.Method;
-            if (m.IsStatic) return;
-            if (m.IsConstructor) return;
-
-            var rtype = PeekType();
-            if (!ReferenceEquals(rtype, m.DeclaringType))
-            {
-                var cast = new Code(_provider);
-	            cast.Cast(rtype, m.DeclaringType);
-	            EmitBlockCode(code);
-                code = cast.ToArray();
-            }
-        }
-
-		private bool BoxReceiver(ref IInstruction[] code)
+	    private bool BoxReceiver(Instruction currentInstruction, ref IInstruction[] code)
         {
             IValue ptr;
-            var type = GetReceiverBoxingType(out ptr);
+            var type = GetReceiverBoxingType(currentInstruction, out ptr);
             if (type != null)
             {
                 EmitBlockCode(code);
@@ -632,12 +609,12 @@ namespace DataDynamics.PageFX.CLI.Translation
                 code = _provider.BoxPrimitive(type);
                 return true;
             }
-            else if (ptr != null)
+            if (ptr != null)
             {
                 EmitBlockCode(code);
                 //TODO: Add more comments
                 //#BUG 10, see also case 125862
-                if (_instruction.Code == InstructionCode.Dup)
+                if (currentInstruction.Code == InstructionCode.Dup)
                 {
                     var ds = ptr as IDupSource;
                     if (ds != null && ds.DupSource != null)
@@ -669,9 +646,9 @@ namespace DataDynamics.PageFX.CLI.Translation
             }
         }
 
-		private void CastToParamType()
+		private void CastToParamType(Instruction currentInstruction)
         {
-            CastToParamType(_instruction, _instruction.Parameter, false);
+            CastToParamType(currentInstruction, currentInstruction.Parameter, false);
         }
 
 		private bool CastToParamType(Instruction instr, IParameter p, bool force)
@@ -763,9 +740,9 @@ namespace DataDynamics.PageFX.CLI.Translation
         /// <summary>
         /// Adds some code before current translated instruction
         /// </summary>
-		private void AddInstructionPrefix()
+		private void AddInstructionPrefix(Instruction currentInstruction)
         {
-            var stack = _instruction.BeginStack;
+            var stack = currentInstruction.BeginStack;
             while (stack.Count > 0)
             {
                 var item = stack.Pop();
@@ -785,9 +762,9 @@ namespace DataDynamics.PageFX.CLI.Translation
         /// <summary>
         /// Adds some code after current translated instruction.
         /// </summary>
-		private void AddInstructionSuffix()
+		private void AddInstructionSuffix(Instruction currentInstruction)
         {
-            var stack = _instruction.EndStack;
+            var stack = currentInstruction.EndStack;
             while (stack.Count > 0)
             {
                 var item = stack.Pop();
@@ -835,9 +812,9 @@ namespace DataDynamics.PageFX.CLI.Translation
 			get { return _debugFile; }
 	    }
 
-		private void EmitSequencePoint()
+		private void EmitSequencePoint(Instruction currentInstruction)
         {
-            var sp = _instruction.SequencePoint;
+            var sp = currentInstruction.SequencePoint;
             if (sp == null) return;
 
             if (_debugFile == null)
@@ -1022,27 +999,27 @@ namespace DataDynamics.PageFX.CLI.Translation
             return v.Type;
         }
 
-		private IType GetReceiverBoxingType(out IValue ptr)
+		private IType GetReceiverBoxingType(Instruction currentInstruction, out IValue ptr)
         {
             ptr = null;
-            if (_instruction.Code == InstructionCode.Box)
+            if (currentInstruction.Code == InstructionCode.Box)
                 return null;
 
             EvalItem v;
-            if (_instruction.BoxingType != null)
+            if (currentInstruction.BoxingType != null)
             {
                 v = Peek();
                 if (v.IsPointer)
                     ptr = v.Value;
-                return _instruction.BoxingType;
+                return currentInstruction.BoxingType;
             }
 
-            var call = _instruction.ReceiverFor;
+            var call = currentInstruction.ReceiverFor;
             if (call == null) return null;
 
             var m = call.Method;
 
-            Debug.Assert(!IsStackEmpty);
+            Debug.Assert(!IsStackEmpty());
 
             v = Peek();
             if (v.IsPointer)
@@ -1068,14 +1045,14 @@ namespace DataDynamics.PageFX.CLI.Translation
             return p.Type.UnwrapRef();
         }
 
-		private bool IsEndOfTryFinally()
+		private static bool IsEndOfTryFinally(Instruction currentInstruction)
         {
-            return _instruction.IsEndOfTryFinally;
+            return currentInstruction.IsEndOfTryFinally;
         }
 
-		private bool FilterInstruction()
+		private static bool FilterInstruction(Instruction currentInstruction)
         {
-            if (IsEndOfTryFinally()) return false;
+            if (IsEndOfTryFinally(currentInstruction)) return false;
             return true;
         }
         #endregion
