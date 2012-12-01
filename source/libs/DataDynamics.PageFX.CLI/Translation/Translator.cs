@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.CLI.Translation.ControlFlow;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow.Services;
 using DataDynamics.PageFX.CodeModel;
 
@@ -12,16 +11,9 @@ namespace DataDynamics.PageFX.CLI.Translation
     /// Implements <see cref="ITranslator"/> from CIL.
     /// </summary>
     internal partial class Translator : ITranslator
-    {
-	    private IClrMethodBody _body; //input: body of input method
-		private ICodeProvider _provider; //input: code provider
-		private IMethod _method; //input method to translate
+	{
+		private TranslationContext _context;
 		private TranslatorResult _result;
-
-		internal ICodeProvider CodeProvider
-		{
-			get { return _provider; }
-		}
 
 #if PERF
         public static int CallCount;
@@ -42,39 +34,38 @@ namespace DataDynamics.PageFX.CLI.Translation
 				throw new NotSupportedException("Unsupported body format");
             }
 
-        	_body = clrBody;
-            
-            _provider = provider;
-            _method = method;
+			_context = new TranslationContext(new Code(method, clrBody, provider), null);
 
 #if PERF
             ++CallCount;
 #endif
 
-            return TranslateCore();
+            _result = TranslateCore(_context);
+
+			return _result.Output.ToArray();
         }
 
 		public void DumpILMap(string format, string filename)
 		{
-			ILMapDump.Dump(_body, _result, format, filename);
+			ILMapDump.Dump(_context.Body, _result, format, filename);
 		}
 
-		private IInstruction[] TranslateCore()
+		private TranslatorResult TranslateCore(TranslationContext context)
         {
-            if (_method.DeclaringType is IGenericType)
+            if (context.Method.DeclaringType is IGenericType)
                 throw new ILTranslatorException("Not supported");
 
 #if DEBUG
             DebugHooks.LogSeparator();
-            DebugHooks.LogInfo("ILTranslator started for method: {0}", _method);
-            if (DebugHooks.CanBreak(_method)) Debugger.Break();
+            DebugHooks.LogInfo("ILTranslator started for method: {0}", context.Method);
+			if (DebugHooks.CanBreak(context.Method)) Debugger.Break();
 #endif
 
             try
             {
-                var output = Process();
+                var output = Process(context);
 #if DEBUG
-                DebugHooks.LogInfo("ILTranslator succeeded for method: {0}", _method);
+				DebugHooks.LogInfo("ILTranslator succeeded for method: {0}", context.Method);
                 DebugHooks.LogSeparator();
 #endif
 	            return output;
@@ -82,85 +73,58 @@ namespace DataDynamics.PageFX.CLI.Translation
             catch (Exception e)
             {
 #if DEBUG
-                DebugHooks.SetLastError(_method);
+				DebugHooks.SetLastError(context.Method);
 #endif
                 if (e is CompilerException)
                     throw;
-                throw Errors.CILTranslator.UnableToTranslateMethod.CreateInnerException(e, FullMethodName);
+				throw Errors.CILTranslator.UnableToTranslateMethod.CreateInnerException(e, context.FullMethodName);
             }
         }
 
-        private string FullMethodName
+		private TranslatorResult Process(TranslationContext context)
         {
-            get { return _method.DeclaringType.FullName + "." + _method.Name; }
-        }
+            context.Body.InstanceCount++;
 
-	    public const int MaxGenericNesting = 100;
-
-		private static void CalcGenericNesting(IGenericInstance gi, ref int depth)
-        {
-            foreach (var type in gi.GenericArguments)
+            if (Checks.IsGenericNestingExceeds(context))
             {
-                var gi2 = type as IGenericInstance;
-                if (gi2 != null)
-                {
-                    ++depth;
-                    CalcGenericNesting(gi2, ref depth);
-                }
-            }
-        }
-
-        private bool CheckGenericNesting()
-        {
-            var gi = _method.DeclaringType as IGenericInstance;
-            if (gi == null) return false;
-            int depth = 1;
-            CalcGenericNesting(gi, ref depth);
-            return depth > MaxGenericNesting;
-        }
-
-		private IInstruction[] Process()
-        {
-            _body.InstanceCount++;
-
-            if (CheckGenericNesting())
-            {
-                var code = new Code(_provider);
+                var code = context.Code.New();
                 //_code.AddRange(_provider.ThrowRuntimeError("The max nesting of generic instantiations exceeds"));
-                code.AddRange(_provider.ThrowTypeLoadException("The max nesting of generic instantiations exceeds"));
+                code.AddRange(code.Provider.ThrowTypeLoadException("The max nesting of generic instantiations exceeds"));
 
-	            _result = new TranslatorResult { Code = code };
-
-	            return code.ToArray();
+	            return new TranslatorResult { Output = code };
             }
 
-			ControlFlowGraph.Build(_body);
-			PushState();
-			GenericResolver.Resolve(_method, _body);
-			Analyzer.Analyze(_body, _provider);
-			TranslateGraph();
-			var result = Emitter.Emit(_body, this);
-			Branch.Resolve(result.Branches, _provider);
+			ControlFlowGraph.Build(context.Body);
 
-			_provider.Finish();
+			PushState(context);
+
+			GenericResolver.Resolve(context.Method, context.Body);
+
+			Analyzer.Analyze(context.Body, context.Provider);
+
+			TranslateGraph(context);
+
+			var result = Emitter.Emit(context, DebugFile);
+
+			Branch.Resolve(result.Branches, context.Provider);
+
+			context.Provider.Finish();
 
 #if DEBUG
-			_body.VisualizeGraph(_body.ControlFlowGraph.Entry, true);
+			context.Body.VisualizeGraph(context.Body.ControlFlowGraph.Entry, true);
 			DumpILMap("I: N V", "ilmap_i.txt");
 #endif
 
-			PopState();
+			PopState(context);
 
-			_result = result;
-
-			return result.Code.ToArray();
+			return result;
         }
 
-		private void PushState()
+		private static void PushState(TranslationContext context)
         {
-			_body.ControlFlowGraph.PushState();
+			context.Body.ControlFlowGraph.PushState();
             
-            foreach (var instr in _body.Code)
+            foreach (var instr in context.Body.Code)
             {
                 instr.PushState();
 
@@ -170,73 +134,20 @@ namespace DataDynamics.PageFX.CLI.Translation
             }
         }
 
-		private void PopState()
+		private static void PopState(TranslationContext context)
         {
-            if (!IsGenericInstance) return;
+            if (!IsGenericContext(context)) return;
 
-            foreach (var instr in _body.Code)
+            foreach (var instr in context.Body.Code)
                 instr.PopState();
 
-			_body.ControlFlowGraph.PopState();
+			context.Body.ControlFlowGraph.PopState();
         }
 
-		private bool IsGenericInstance
+		private static bool IsGenericContext(TranslationContext context)
 		{
-			get 
-			{
-				if (_method.DeclaringType is IGenericInstance)
-					return true;
-				if (_method.IsGenericInstance)
-					return true;
-				return false;
-			}
-		}
-
-		private Instruction GetInstruction(int index)
-        {
-            var code = _body.Code;
-            if (index < 0 || index >= code.Count)
-                throw new ArgumentOutOfRangeException("index");
-            return code[index];
-        }
-
-		private Node GetInstructionBasicBlock(int index)
-        {
-            var instr = GetInstruction(index);
-            return instr.BasicBlock;
-        }
-
-		private IType ReturnType
-        {
-            get { return _method.Type; }
-        }
-
-		internal void FixSelfCycle(Node bb)
-		{
-			var il = bb.TranslatedCode;
-
-			var last = il[il.Count - 1];
-
-			//TODO: do this only for endfinally
-			//handle self cycle!
-			if (last.IsUnconditionalBranch && bb.FirstSuccessor == bb)
-			{
-				if (_method.IsVoid())
-				{
-					var label = _provider.Label();
-					if (label != null)
-					{
-						il.Add(label);
-					}
-					var code = new Code(_provider);
-					OpReturn(code, null);
-					il.AddRange(code);
-				}
-				else
-				{
-					throw new NotImplementedException();
-				}
-			}
+			var method = context.Method;
+			return method.DeclaringType is IGenericInstance || method.IsGenericInstance;
 		}
     }
 }

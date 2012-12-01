@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.CLI.Translation
 	{
 		public IInstruction[] Begin;
 		public IInstruction[] End;
-		public IList<IInstruction> Code;
+		public IList<IInstruction> Output;
 		public IList<Branch> Branches;
 	}
 }

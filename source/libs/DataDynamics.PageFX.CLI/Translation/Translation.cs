@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow;
@@ -10,84 +7,75 @@ using DataDynamics.PageFX.CodeModel;
 namespace DataDynamics.PageFX.CLI.Translation
 {
 	//STEP3 - Translation of code for every basic block in flow graph
-    partial class Translator
+    internal partial class Translator
     {
-        #region fields
-
-	    /// <summary>
-        /// current analysed or translated basic block
-        /// </summary>
-        private Node _block;
-
-        private int _bbIndex;
+	    private int _bbIndex;
 		private bool _popScope;
-		private bool _castToParamType;
-
-        #endregion
 
 	    /// <summary>
         /// Translates all basic blocks in flow graph.
         /// </summary>
-		private void TranslateGraph()
+		private void TranslateGraph(TranslationContext context)
         {
 #if DEBUG
 			DebugHooks.DoCancel();
-            DebugHooks.LogInfo("TranslateBlocks started for method: {0}", _method);
+            DebugHooks.LogInfo("TranslateBlocks started for method: {0}", context.Method);
 #endif
 
             //Note: CIL pops exception from stack for us if it is not used
-            _provider.PopException = false;
-            _provider.BeforeTranslation();
+            context.Provider.PopException = false;
+            context.Provider.BeforeTranslation();
 
-			foreach (var bb in _body.ControlFlowGraph.Blocks)
+			foreach (var bb in context.Body.ControlFlowGraph.Blocks)
 			{
 #if DEBUG
 				DebugHooks.DoCancel();
 				//if (DebugHooks.CanBreak(_method)) Debugger.Break();
 #endif
-				TranslateBlock(bb);
+				TranslateBlock(context.New(bb));
 			}
 
-        	_provider.AfterTranslation();
+        	context.Provider.AfterTranslation();
 
 #if DEBUG
-            DebugHooks.LogInfo("TranslateBlocks succeeded for method: {0}", _method);
+            DebugHooks.LogInfo("TranslateBlocks succeeded for method: {0}", context.Method);
 #endif
         }
 
 	    /// <summary>
         /// Translates given basic block.
         /// </summary>
-        /// <param name="bb">basic block to translate.</param>
+        /// <param name="context">Specifies context of basic block to translate.</param>
         /// <remarks>
         /// Also enshures translation of blocks that should be translated before the given block.
         /// It includes incoming blocks, previous handler blocks.
         /// </remarks>
-		private void TranslateBlock(Node bb)
-        {
-            if (bb.IsTranslated) return;
+		private void TranslateBlock(TranslationContext context)
+	    {
+		    var block = context.Block;
+            if (block.IsTranslated) return;
 
             //hook to avoid stack overflow exception.
-            if (bb.TranslationIndex < 0)
+            if (block.TranslationIndex < 0)
             {
-                bb.TranslationIndex = _bbIndex;
+                block.TranslationIndex = _bbIndex;
                 ++_bbIndex;
             }
             else
             {
                 //this can happen in loops.
-                bb.TranslationIndex = -1;
-                TranslateBlockCore(bb);
+                block.TranslationIndex = -1;
+                TranslateBlockCore(context);
                 return;
             }
 
-            TranslateBeforeBlock(bb);
+            TranslateBeforeBlock(block);
 
-            bb.TranslationIndex = -1;
+            block.TranslationIndex = -1;
 
-            if (bb.IsTranslated) return;
+            if (block.IsTranslated) return;
 
-            TranslateBlockCore(bb);
+            TranslateBlockCore(context);
         }
 
 	    #region TranslateBeforeBlock
@@ -110,7 +98,7 @@ namespace DataDynamics.PageFX.CLI.Translation
 
             var prev = (HandlerBlock)hb.Owner.Handlers[i - 1];
             var node = prev.EntryPoint.BasicBlock;
-            TranslateBlock(node);
+            TranslateBlock(_context.New(node));
         }
 
 		private static HandlerBlock GetHandlerBlock(Node bb)
@@ -132,7 +120,7 @@ namespace DataDynamics.PageFX.CLI.Translation
             foreach (var e in bb.InEdges)
             {
 				if (ShouldTranslatePredecessor(e, bb))
-                    TranslateBlock(e.From);
+                    TranslateBlock(_context.New(e.From));
             }
         }
 
@@ -212,36 +200,19 @@ namespace DataDynamics.PageFX.CLI.Translation
         	var n = GetBasicBlockSafe(index);
 			if (n != bb) // avoid stackoverflow!
 			{
-				TranslateBlock(n);
+				TranslateBlock(_context.New(n));
 			}
         }
 
     	private Node GetBasicBlockSafe(int index)
     	{
-    		var n = GetInstructionBasicBlock(index);
+    		var n = _context.Code.GetInstructionBasicBlock(index);
     		if (n == null)
     			throw new ILTranslatorException("Invalid index of SEH block");
     		return n;
     	}
 
     	#endregion
-
-        #region CheckStackBalance
-		private void CheckStackBalance(Node bb)
-        {
-            int nbefore = bb.StackBefore.Count;
-            if (bb.InEdges.Select(e => e.From).Any(from => from.IsTranslated && nbefore != from.Stack.Count))
-            {
-            	throw new ILTranslatorException();
-            }
-
-            int nafter = bb.Stack.Count;
-            if (bb.InEdges.Select(e => e.To).Any(to => to.IsTranslated && nafter != to.Stack.Count))
-            {
-            	throw new ILTranslatorException();
-            }
-        }
-        #endregion
 
         #region ReconcileTypes
 		private static bool PeekType(Edge e, ref IType type)
@@ -270,42 +241,49 @@ namespace DataDynamics.PageFX.CLI.Translation
 
             var commonAncestor = type1.GetCommonAncestor(type2);
 
+			var context = _context.New(bb);
             bb.IsFirstAssignment = false;
-            InsertCast(e1.From, type1, commonAncestor);
-            InsertCast(e2.From, type2, commonAncestor);
+            InsertCast(context.New(e1.From), type1, commonAncestor);
+            InsertCast(context.New(e2.From), type2, commonAncestor);
         }
         #endregion
 
         #region TranslateBlockCore
-		private void TranslateBlockCore(Node bb)
-        {
-            bb.IsTranslated = true;
-            _block = bb;
-            bb.EnshureEvalStack();
+		private void TranslateBlockCore(TranslationContext context)
+		{
+			var block = context.Block;
+            block.IsTranslated = true;
 
-            bb.StackBefore = bb.Stack.Clone();
+            block.EnshureEvalStack();
 
-            int n = bb.Code.Count;
+            block.StackBefore = block.Stack.Clone();
+
+            int n = block.Code.Count;
             if (n > 0)
             {
-                TranslateBlockCode(bb);
-                Optimize(bb);
+                TranslateBlockCode(context);
+                Optimize(context);
             }
 
-			EnshureNotEmpty(_block);
-
-            _block = null;
+			// ensure target code is not empty
+			if (context.Block.TranslatedCode.Count == 0)
+			{
+				context.Block.TranslatedCode.Add(context.Provider.Nop());
+			}
         }
 
-		private void Optimize(Node bb)
+		private static void Optimize(TranslationContext context)
         {
             if (!GlobalSettings.EnableOptimization) return;
-            var code = bb.TranslatedCode;
-            int n = code.Count;
-            if (n <= 0) return;
+
+			var block = context.Block;
+            var code = block.TranslatedCode;
+			if (code.Count <= 0) return;
+
             var before = code.ToArray();
-            var after = _provider.OptimizeBasicBlock(before);
+            var after = context.Provider.OptimizeBasicBlock(before);
             if (ReferenceEquals(before, after)) return;
+
             code.Clear();
             code.AddRange(after);
         }
@@ -315,43 +293,42 @@ namespace DataDynamics.PageFX.CLI.Translation
         /// <summary>
         /// Translates code of current translated basic block
         /// </summary>
-		private void TranslateBlockCode(Node bb)
+		private void TranslateBlockCode(TranslationContext context)
         {
-            BeginBlock();
+			BeginBlock(context);
 
-            int n = bb.Code.Count;
-            var code = bb.Code;
-            for (int i = 0; i < n; ++i)
-            {
-				TranslateInstruction(code[i]);
-            }
+	        foreach (var i in context.Block.Code)
+	        {
+		        TranslateInstruction(context.New(), i);
+	        }
 
-            //FIX: For ternary params
-            CastToBlockParam();
+	        //FIX: For ternary params
+            CastToBlockParam(context);
 
-            EndBlock();
+			EndBlock(context);
         }
 
         //Prepares translator for current block.
-		private void BeginBlock()
+		private void BeginBlock(TranslationContext context)
         {
-            LabelBlock();
+            LabelBlock(context);
             PushScope();
-            SehBegin();
+            context.EmitBeginSeh();
         }
 
-		private void EndBlock()
+		private void EndBlock(TranslationContext context)
         {
-            PopScope();
+            PopScope(context);
         }
 
-		private bool CanLabel()
-        {
-            var first = _block.Code[0];
+		private static bool ItShouldBeLabeled(TranslationContext context)
+		{
+			var block = context.Block;
+            var first = block.Code[0];
             if (first.IsBranchTarget)
                 return true;
             
-            if (_block.IsSehBegin)
+            if (block.IsSehBegin)
                 return false;
 
             //if (first.IsUnconditionalBranch
@@ -359,19 +336,20 @@ namespace DataDynamics.PageFX.CLI.Translation
             //    || first.IsReturn)
             //    return false;
 
-            return _block.IsNWay || _block.Predecessors.Any(p => p.IsNWay);
+            return block.IsNWay || block.Predecessors.Any(p => p.IsNWay);
         }
 
-		private void LabelBlock()
+		private void LabelBlock(TranslationContext context)
         {
-            int n = _block.CodeLength;
+            int n = context.Block.CodeLength;
             if (n == 0) return;
-            if (CanLabel())
-            {
-                var label = _provider.Label();
-                if (label != null)
-                    EmitBlockInstruction(label);
-            }
+			if (!ItShouldBeLabeled(context)) return;
+
+			var label = context.Provider.Label();
+			if (label != null)
+			{
+				context.Emit(label);
+			}
         }
 
 		private void PushScope()
@@ -379,291 +357,140 @@ namespace DataDynamics.PageFX.CLI.Translation
             _popScope = true;
         }
 
-		private void PopScope()
+		private void PopScope(TranslationContext context)
         {
             if (_popScope)
             {
                 _popScope = false;
-                SehEnd();
+                context.EmitEndSeh();
             }
         }
         #endregion
 
-        #region Debug Utils
-#if DEBUG
-		private bool IsMain
+	    #region TranslateInstruction
+		private void TranslateInstruction(TranslationContext context, Instruction instruction)
         {
-            get { return _method.IsStatic && _method.Name == "Main"; }
-        }
+            context.Provider.SourceInstruction = instruction;
 
-		private bool IsTest
-		{
-			get { return _method.IsStatic && _method.Name == "Test"; }
-		}
+            EmitSequencePoint(context, instruction);
+            AddInstructionPrefix(context, instruction);
 
-		private bool IsName(string name)
-        {
-            return _method.Name == name;
-        }
+            context.CastToParamType = true;
 
-		private bool IsType(string name)
-        {
-            var type = _method.DeclaringType;
-            return type.FullName == name || type.Name == name;
-        }
-#endif
-        #endregion
+			var core = new InstructionTranslator(context);
+			core.Translate(instruction);
 
-        #region Protected & Handler Blocks
+			var castToParamType = context.CastToParamType;
 
-		private void EnshureNotEmpty(Node bb)
-        {
-            if (bb.TranslatedCode.Count == 0)
-            {
-                AddNop(bb);
-            }
-        }
-
-    	private void AddNop(Node bb)
-    	{
-    		var instr = _provider.Nop();
-    		if (instr == null)
-    			throw new NotSupportedException("nop is not supported");
-    		bb.TranslatedCode.Add(instr);
-    	}
-
-		private void SehBegin()
-        {
-            var block = _block.SehBegin;
-            if (block == null) return;
-            switch (block.Type)
-            {
-                case BlockType.Protected:
-                    {
-                        var il = _provider.BeginTry();
-                        EmitBlockCode(il);
-                    }
-                    break;
-
-                case BlockType.Catch:
-                    {
-                        var handlerBlock = (HandlerBlock)block;
-                    	handlerBlock.ExceptionVariable = GetExceptionVariable(block);
-                        var il = _provider.BeginCatch(handlerBlock);
-                        EmitBlockCode(il);
-                    }
-                    break;
-
-                case BlockType.Fault:
-                    {
-                        var handlerBlock = (HandlerBlock)block;
-                    	var il = _provider.BeginFault(handlerBlock);
-                        EmitBlockCode(il);
-                    }
-                    break;
-
-                case BlockType.Finally:
-                    {
-                        var handlerBlock = (HandlerBlock)block;
-                    	var il = _provider.BeginFinally(handlerBlock);
-                        EmitBlockCode(il);
-                    }
-                    break;
-
-                case BlockType.Filter:
-                    throw new NotSupportedException();
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-		private int GetExceptionVariable(Block b)
-        {
-            if (b.Code == null) return -1;
-            int entryIndex = b.EntryIndex;
-            if (entryIndex < 0) return -1;
-            int exitIndex = b.ExitIndex;
-
-            int n = 0;
-            for (int i = entryIndex; i <= exitIndex; ++i)
-            {
-                var instr = _body.Code[i];
-                int pop = CIL.GetPopCount(_method, instr);
-                if (pop == 1 && n == 0)
-                {
-                    switch (instr.Code)
-                    {
-                        case InstructionCode.Stloc:
-                        case InstructionCode.Stloc_S:
-                            return (int)instr.Value;
-                        case InstructionCode.Stloc_0: return 0;
-                        case InstructionCode.Stloc_1: return 1;
-                        case InstructionCode.Stloc_2: return 2;
-                        case InstructionCode.Stloc_3: return 3;
-                    }
-                    break;
-                }
-                n -= pop;
-                int push = CIL.GetPushCount(instr);
-                n += push;
-            }
-
-            return -1;
-        }
-
-		private void SehEnd()
-        {
-            var block = _block.SehEnd;
-            if (block == null) return;
-            switch (block.Type)
-            {
-                case BlockType.Protected:
-                    {
-                        IInstruction jump;
-                        var code = _provider.EndTry(false, out jump);
-                        EmitBlockCode(code);
-                    }
-                    break;
-
-                case BlockType.Catch:
-                    {
-                        IInstruction jump;
-                        var code = _provider.EndCatch((HandlerBlock)block, false, false, out jump);
-                        EmitBlockCode(code);
-                    }
-                    break;
-
-                case BlockType.Fault:
-                    {
-						var code = _provider.EndFault((HandlerBlock)block);
-                        EmitBlockCode(code);
-                    }
-                    break;
-
-                case BlockType.Finally:
-                    {
-						var code = _provider.EndFinally((HandlerBlock)block);
-                        EmitBlockCode(code);
-                    }
-                    break;
-
-                case BlockType.Filter:
-                    throw new NotImplementedException();
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-    	#endregion
-
-        #region TranslateInstruction
-		private void TranslateInstruction(Instruction currentInstruction)
-        {
-            _provider.SourceInstruction = currentInstruction;
-
-            EmitSequencePoint(currentInstruction);
-            AddInstructionPrefix(currentInstruction);
-
-            _castToParamType = true;
-
-			var code = new Code(_provider);
-			TranslateInstructionCore(code, currentInstruction);
-
+			var code = context.Code;
 			var set = code.ToArray();
+
             //we should box receiver for call on boxable types
-            bool rboxed = BoxReceiver(currentInstruction, ref set);
-            //if (!rboxed)
-            //    AdjustReceiverType(ref code);
+            BoxReceiver(context, instruction, ref set);
             
-            if (currentInstruction.IsEndOfBasicBlock())
+            if (instruction.IsEndOfBasicBlock())
             {
-                CastToBlockParam();
-                PopScope();
+                CastToBlockParam(context);
+                PopScope(context.New());
             }
 
-            if (FilterInstruction(currentInstruction))
+            if (WithSuffix(instruction))
             {
-                EmitBlockCode(set);
-                if (_castToParamType)
-                    CastToParamType(currentInstruction);
-                AddInstructionSuffix(currentInstruction);
+	            context.Emit(set);
+				if (castToParamType)
+                    CastToParamType(context, instruction);
+                AddInstructionSuffix(context, instruction);
             }
         }
 
-	    private bool BoxReceiver(Instruction currentInstruction, ref IInstruction[] code)
+	    private static void BoxReceiver(TranslationContext context, Instruction instruction, ref IInstruction[] code)
         {
             IValue ptr;
-            var type = GetReceiverBoxingType(currentInstruction, out ptr);
+            var type = GetReceiverBoxingType(context, instruction, out ptr);
             if (type != null)
             {
-                EmitBlockCode(code);
+	            context.Emit(code);
 
-                if (ptr != null)
+	            if (ptr != null)
                 {
-                    var c = LoadPtr(ptr);
-                    EmitBlockCode(c);
+					var c = LoadPtr(context, ptr);
+	                context.Emit(c);
                 }
 
-                code = _provider.BoxPrimitive(type);
-                return true;
+                code = context.Provider.BoxPrimitive(type);
+	            return;
             }
             if (ptr != null)
             {
-                EmitBlockCode(code);
-                //TODO: Add more comments
+	            context.Emit(code);
+
+	            //TODO: Add more comments
                 //#BUG 10, see also case 125862
-                if (currentInstruction.Code == InstructionCode.Dup)
+                if (instruction.Code == InstructionCode.Dup)
                 {
                     var ds = ptr as IDupSource;
                     if (ds != null && ds.DupSource != null)
-                        code = LoadPtr(ds.DupSource);
+                        code = LoadPtr(context, ds.DupSource);
                     else
-                        code = LoadPtr(ptr);
-                    EmitBlockCode(code);
+                        code = LoadPtr(context, ptr);
+	                context.Emit(code);
                 }
-                code = LoadPtr(ptr);
-                return true;
+                code = LoadPtr(context, ptr);
             }
-            return false;
         }
+
+	    private static IInstruction[] LoadPtr(TranslationContext context, IValue ptr)
+	    {
+		    var code = context.Code.New();
+		    code.LoadPtr(ptr);
+		    return code.ToArray();
+	    }
 
 	    #endregion
 
         #region CastToParamType, CastToBlockParam
         //FIX: For ternary params
-        private void CastToBlockParam()
+        private static void CastToBlockParam(TranslationContext context)
         {
-            if (_block.Parameter != null)
+	        var block = context.Block;
+            if (block.Parameter != null)
             {
-                var p = _block.Parameter;
-                if (CastToParamType(null, p, true))
-                    CopyValue(GetParamType(p));
-                _block.Parameter = null;
-                _block.PartOfTernaryParam = p;
-                _castToParamType = false;
+                var p = block.Parameter;
+                if (CastToParamType(context, null, p, true))
+                    CopyValue(context, GetParamType(p));
+                block.Parameter = null;
+                block.PartOfTernaryParam = p;
             }
         }
 
-		private void CastToParamType(Instruction currentInstruction)
+	    private static void CopyValue(TranslationContext context, IType type)
+	    {
+		    var copy = context.Provider.CopyValue(type);
+		    if (copy != null)
+		    {
+			    context.Emit(copy);
+		    }
+	    }
+
+	    private static void CastToParamType(TranslationContext context, Instruction instruction)
         {
-            CastToParamType(currentInstruction, currentInstruction.Parameter, false);
+            CastToParamType(context, instruction, instruction.Parameter, false);
         }
 
-		private bool CastToParamType(Instruction instr, IParameter p, bool force)
+		private static bool CastToParamType(TranslationContext context, Instruction instruction, IParameter p, bool force)
         {
             if (p == null) return false;
 
-            if (_block.Stack.Count == 0) return false;
+			var block = context.Block;
+            if (block.Stack.Count == 0) return false;
 
-            var v = Peek();
-            if (instr == null)
-                instr = v.Instruction;
+            var v = block.Stack.Peek();
+            if (instruction == null)
+                instruction = v.Instruction;
 
-            if (instr != null)
+            if (instruction != null)
             {
-                switch (instr.Code)
+                switch (instruction.Code)
                 {
                     case InstructionCode.Box:
                     case InstructionCode.Ldtoken:
@@ -679,15 +506,15 @@ namespace DataDynamics.PageFX.CLI.Translation
 
             if (!ReferenceEquals(vtype, ptype))
             {
-                CheckCast(vtype, ptype);
+	            Checks.CheckValidCast(vtype, ptype);
 
-                if (!force)
+	            if (!force)
                 {
                     if (!NeedCast(vtype, ptype))
                         return true;
                 }
 
-                EmitCast(vtype, ptype);
+	            context.EmitCast(vtype, ptype);
             }
 
             return true;
@@ -702,47 +529,12 @@ namespace DataDynamics.PageFX.CLI.Translation
         }
         #endregion
 
-        #region CheckCast
-		private static void CheckCast(IType source, IType target)
-        {
-            if (IsInvalidCast(source, target))
-            {
-                throw new InvalidOperationException();
-            }
-        }
-
-		private static bool IsInvalidCast(IType source, IType target)
-        {
-            if (source.IsNumeric())
-            {
-                if (!IsNumericOrEnumOrObject(target))
-                    return true;
-            }
-            else if (target.IsNumeric())
-            {
-                if (!IsNumericOrEnumOrObject(source))
-                    return true;
-            }
-            return false;
-        }
-
-		private static bool IsNumericOrEnumOrObject(IType type)
-        {
-            if (type == null) return false;
-            return type.IsNumeric()
-                   || type.IsEnum
-                   || type.Is(SystemTypeCode.Object)
-                   || type.Is(SystemTypeCode.ValueType);
-        }
-        #endregion
-
-        #region Instruction Prefix & Suffix
-        /// <summary>
+	    /// <summary>
         /// Adds some code before current translated instruction
         /// </summary>
-		private void AddInstructionPrefix(Instruction currentInstruction)
+		private static void AddInstructionPrefix(TranslationContext context, Instruction instruction)
         {
-            var stack = currentInstruction.BeginStack;
+            var stack = instruction.BeginStack;
             while (stack.Count > 0)
             {
                 var item = stack.Pop();
@@ -751,7 +543,7 @@ namespace DataDynamics.PageFX.CLI.Translation
                 if (call != null)
                 {
                     //Note: Delegate invokation now is handled as for normal methods
-                    BeginCall(call);
+                    BeginCall(context, call);
                     continue;
                 }
 
@@ -762,9 +554,9 @@ namespace DataDynamics.PageFX.CLI.Translation
         /// <summary>
         /// Adds some code after current translated instruction.
         /// </summary>
-		private void AddInstructionSuffix(Instruction currentInstruction)
+		private static void AddInstructionSuffix(TranslationContext context, Instruction instruction)
         {
-            var stack = currentInstruction.EndStack;
+            var stack = instruction.EndStack;
             while (stack.Count > 0)
             {
                 var item = stack.Pop();
@@ -773,36 +565,35 @@ namespace DataDynamics.PageFX.CLI.Translation
                 if (call != null)
                 {
                     //Note: Delegate invokation now is handled as for normal methods
-                    BeginCall(call);
+                    BeginCall(context, call);
                     continue;
                 }
 
                 throw new ILTranslatorException("Not implemented");
             }
         }
-        #endregion
 
-        #region BeginCall
-		private void BeginCall(CallInstructionInfo call)
+	    private static void BeginCall(TranslationContext context, CallInstructionInfo call)
         {
-            var code = _provider.LoadReceiver(call.Method, call.IsNewobj);
+            var code = context.Provider.LoadReceiver(call.Method, call.IsNewobj);
 
             bool canSwap = false;
             if (code != null && code.Length > 0)
             {
                 canSwap = true;
-                EmitBlockCode(code);
+	            context.Emit(code);
             }
 
-            code = _provider.BeginCall(call.Method);
-            EmitBlockCode(code);
+            code = context.Provider.BeginCall(call.Method);
+			context.Emit(code);
 
-            if (canSwap && call.SwapAfter)
-                EmitSwap();
+			if (canSwap && call.SwapAfter)
+			{
+				context.EmitSwap();
+			}
         }
-        #endregion
 
-        #region EmitSequencePoint
+	    #region EmitSequencePoint
 		private string _debugFile;
 		private string _curDebugFile;
 		private int _curDebugLine = -1;
@@ -812,7 +603,7 @@ namespace DataDynamics.PageFX.CLI.Translation
 			get { return _debugFile; }
 	    }
 
-		private void EmitSequencePoint(Instruction currentInstruction)
+		private void EmitSequencePoint(TranslationContext context, Instruction currentInstruction)
         {
             var sp = currentInstruction.SequencePoint;
             if (sp == null) return;
@@ -824,17 +615,16 @@ namespace DataDynamics.PageFX.CLI.Translation
             else if (_curDebugFile != sp.File)
             {
                 _curDebugFile = sp.File;
-                var il = _provider.DebugFile(_curDebugFile);
-                EmitBlockCode(il);
+	            context.Emit(context.Provider.DebugFile(_curDebugFile));
             }
 
             if (_curDebugLine != sp.StartRow)
             {
                 if (_curDebugLine < 0)
-                    _provider.DebugFirstLine = sp.StartRow;
+                    context.Provider.DebugFirstLine = sp.StartRow;
                 _curDebugLine = sp.StartRow;
-                var il = _provider.DebugLine(_curDebugLine);
-                EmitBlockCode(il);
+
+	            context.Emit(context.Provider.DebugLine(_curDebugLine));
             }
         }
         #endregion
@@ -843,92 +633,91 @@ namespace DataDynamics.PageFX.CLI.Translation
         //NOTE: Fix of avm verify error, 
         //when type of trueValue or falseValue in ternary assignment does not equal 
         //to left part of assignment
-		private bool FixTernaryAssignment(IType type)
-        {
-            if (!_block.IsFirstAssignment) return false;
-            _block.IsFirstAssignment = false;
+		internal static bool FixTernaryAssignment(TranslationContext context, IType type)
+		{
+			var block = context.Block;
 
-            Node T, F;
-            if (!IsTernary(_block, out T, out F))
+            if (!block.IsFirstAssignment) return false;
+            block.IsFirstAssignment = false;
+
+            Node trueNode, falseNode;
+            if (!IsTernary(block, out trueNode, out falseNode))
                 return false;
 
-            if (T.PartOfTernaryParam != null && F.PartOfTernaryParam != null)
+            if (trueNode.PartOfTernaryParam != null && falseNode.PartOfTernaryParam != null)
                 return false;
 
-            var topT = T.Stack.Peek();
-            var topF = F.Stack.Peek();
+            var topT = trueNode.Stack.Peek();
+            var topF = falseNode.Stack.Peek();
             var typeT = topT.Type;
             var typeF = topF.Type;
-            if (ReferenceEquals(typeT, typeF) && ReferenceEquals(typeT, type)) return false;
+            if (ReferenceEquals(typeT, typeF) && ReferenceEquals(typeT, type))
+				return false;
 
-            if (IsInvalidCast(typeT, type))
+            if (Checks.IsInvalidCast(typeT, type))
                 return false;
 
-            if (IsInvalidCast(typeF, type))
+            if (Checks.IsInvalidCast(typeF, type))
                 return false;
 
             if (!ReferenceEquals(typeT, type))
-                InsertCast(T, typeT, type);
+                InsertCast(context.New(trueNode), typeT, type);
 
             if (!ReferenceEquals(typeF, type))
-                InsertCast(F, typeF, type);
+                InsertCast(context.New(falseNode), typeF, type);
 
             return true;
         }
 
         //checks ternary config
-        bool IsTernary(Node bb, out Node T, out Node F)
+        private static bool IsTernary(Node bb, out Node trueNode, out Node falseNode)
         {
             //   C
             //  / \
             // T   F
             //  \ /
             //   V
-            T = null;
-            F = null;
-            var FE = bb.FirstIn;
-            if (FE == null) return false;
-            var TE = FE.NextIn;
-            if (TE == null) return false;
-            if (TE.NextIn != null) return false;
+            trueNode = null;
+            falseNode = null;
+            var falseEdge = bb.FirstIn;
+            if (falseEdge == null) return false;
+            var trueEdge = falseEdge.NextIn;
+            if (trueEdge == null) return false;
+            if (trueEdge.NextIn != null) return false;
 
-            F = FE.From;
-            T = TE.From;
-            if (F == T) return false;
-            if (!F.HasOneIn) return false;
-            if (!T.HasOneIn) return false;
+            falseNode = falseEdge.From;
+            trueNode = trueEdge.From;
+            if (falseNode == trueNode) return false;
+            if (!falseNode.HasOneIn) return false;
+            if (!trueNode.HasOneIn) return false;
 
-            var C = T.FirstIn.From;
-            if (C != F.FirstIn.From) return false;
+            var condition = trueNode.FirstIn.From;
+            if (condition != falseNode.FirstIn.From) return false;
 
-            return CheckTernaryBranches(T, F);
+	        int tn = trueNode.Stack.Count;
+	        if (tn == 0) return false;
+
+	        int fn = falseNode.Stack.Count;
+	        if (fn == 0) return false;
+
+	        return tn == fn;
         }
 
-        private static bool CheckTernaryBranches(Node T, Node F)
-        {
-            int tn = T.Stack.Count;
-            if (tn == 0) return false;
+	    private static void InsertCast(TranslationContext context, IType source, IType target)
+	    {
+		    if (ReferenceEquals(source, target)) return;
 
-            int fn = F.Stack.Count;
-            if (fn == 0) return false;
+	        Checks.CheckValidCast(source, target);
 
-            return tn == fn;
-        }
-
-        private void InsertCast(Node bb, IType source, IType target)
-        {
-            if (ReferenceEquals(source, target)) return;
-
-            CheckCast(source, target);
-
-            var cast = _provider.Cast(source, target, false);
-            if (cast != null)
+			var cast = context.Provider.Cast(source, target, false);
+            if (cast != null && cast.Length > 0)
             {
-                var stack = bb.Stack;
+				var block = context.Block;
+                var stack = block.Stack;
                 var item = stack.Pop();
                 stack.PushResult(item.Instruction, target);
 
-                var code = bb.TranslatedCode;
+                var code = block.TranslatedCode;
                 int n = code.Count;
                 if (n == 0)
                     throw new ILTranslatorException("Translated code is empty");
@@ -946,69 +735,18 @@ namespace DataDynamics.PageFX.CLI.Translation
         #endregion
 
         #region Utils
-        /// <summary>
-        /// Emits given instruction to current block.
-        /// </summary>
-        /// <param name="i">instruction to add.</param>
-		private void EmitBlockInstruction(IInstruction i)
-        {
-            if (i == null)
-                throw new ArgumentNullException("i");
-            var list = _block.TranslatedCode;
-            int n = list.Count;
-            if (n > 0)
-            {
-				//TODO: remove duplicate instructions block optimization phase
-                //Remove duplicate instructions
-                if (_provider.IsDuplicate(list[n - 1], i))
-                    return;
-            }
-            list.Add(i);
-        }
 
-        /// <summary>
-        /// Adds specified code to current block.
-        /// </summary>
-        /// <param name="code">set of instructions to add.</param>
-		private void EmitBlockCode(IEnumerable<IInstruction> code)
-        {
-            if (code != null)
-            {
-                foreach (var instr in code)
-                    EmitBlockInstruction(instr);
-            }
-        }
-
-		private void EmitCast(IType source, IType target)
-		{
-			if (ReferenceEquals(target, source)) return;
-			EmitBlockCode(_provider.Cast(source, target, false));
-		}
-
-	    private void EmitSwap()
-        {
-            var i = _provider.Swap();
-            if (i == null)
-                throw new NotSupportedException("Swap instruction is not supported");
-            EmitBlockInstruction(i);
-        }
-
-		private IType PeekType()
-        {
-            var v = Peek();
-            return v.Type;
-        }
-
-		private IType GetReceiverBoxingType(Instruction currentInstruction, out IValue ptr)
+	    private static IType GetReceiverBoxingType(TranslationContext context, Instruction currentInstruction, out IValue ptr)
         {
             ptr = null;
             if (currentInstruction.Code == InstructionCode.Box)
                 return null;
 
-            EvalItem v;
+		    var block = context.Block;
+			EvalItem v;
             if (currentInstruction.BoxingType != null)
             {
-                v = Peek();
+                v = block.Stack.Peek();
                 if (v.IsPointer)
                     ptr = v.Value;
                 return currentInstruction.BoxingType;
@@ -1019,24 +757,22 @@ namespace DataDynamics.PageFX.CLI.Translation
 
             var m = call.Method;
 
-            Debug.Assert(!IsStackEmpty());
-
-            v = Peek();
+            v = block.Stack.Peek();
             if (v.IsPointer)
                 ptr = v.Value;
 
-            if (IsBoxableType(v.Type))
+            if (IsBoxableType(context, v.Type))
                 return v.Type;
 
-            if (IsBoxableType(m.DeclaringType))
+            if (IsBoxableType(context, m.DeclaringType))
                 return m.DeclaringType;
 
             return null;
         }
 
-		private bool IsBoxableType(IType type)
+		private static bool IsBoxableType(TranslationContext context, IType type)
 		{
-			return type != null && !ReferenceEquals(type, _method.DeclaringType)
+			return type != null && !ReferenceEquals(type, context.Method.DeclaringType)
 				   && type.IsBoxableType();
 		}
 
@@ -1045,16 +781,11 @@ namespace DataDynamics.PageFX.CLI.Translation
             return p.Type.UnwrapRef();
         }
 
-		private static bool IsEndOfTryFinally(Instruction currentInstruction)
-        {
-            return currentInstruction.IsEndOfTryFinally;
-        }
+	    private static bool WithSuffix(Instruction currentInstruction)
+	    {
+		    return !currentInstruction.IsEndOfTryFinally;
+	    }
 
-		private static bool FilterInstruction(Instruction currentInstruction)
-        {
-            if (IsEndOfTryFinally(currentInstruction)) return false;
-            return true;
-        }
-        #endregion
+	    #endregion
     }
 }

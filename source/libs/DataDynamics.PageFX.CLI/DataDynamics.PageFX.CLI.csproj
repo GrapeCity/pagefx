@@ -229,9 +229,14 @@
     <Compile Include="Translation\Analyzer.cs" />
     <Compile Include="Translation\Branch.cs" />
     <Compile Include="Translation\CallInstructionInfo.cs" />
+    <Compile Include="Translation\CastingOperations.cs" />
     <Compile Include="Translation\Checks.cs" />
     <Compile Include="Translation\Code.cs" />
+    <Compile Include="Translation\InstructionTranslator.cs" />
     <Compile Include="Translation\InstructionExtensions.cs" />
+    <Compile Include="Translation\PointerOperations.cs" />
+    <Compile Include="Translation\SehOperations.cs" />
+    <Compile Include="Translation\TranslationContext.cs" />
     <Compile Include="Translation\TranslatorExtensions.cs" />
     <Compile Include="Translation\ControlFlow\Edge.cs" />
     <Compile Include="Translation\ControlFlow\FlowGraphExtensions.cs" />
@@ -242,7 +247,6 @@
     <Compile Include="Translation\ControlFlow\Services\DumpService.cs" />
     <Compile Include="Translation\ControlFlow\Services\FormatService.cs" />
     <Compile Include="Translation\ControlFlow\Services\NameService.cs" />
-    <Compile Include="Translation\Core.cs" />
     <Compile Include="Translation\ILMapDump.cs" />
     <Compile Include="Translation\Emitter.cs" />
     <Compile Include="Translation\EvalItem.cs" />

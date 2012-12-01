@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.CLI.Translation
 					writer.WriteLine(Separator);
 		            for (int i = 0; i < result.Begin.Length; ++i)
 		            {
-			            writer.WriteLine(result.Code[i].ToString(format, null));
+			            writer.WriteLine(result.Output[i].ToString(format, null));
 		            }
 		            writer.WriteLine(Separator);
 	            }

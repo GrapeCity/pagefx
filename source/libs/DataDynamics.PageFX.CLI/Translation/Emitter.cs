@@ -11,30 +11,31 @@ namespace DataDynamics.PageFX.CLI.Translation
 		/// Concatenates code of all basic blocks in order of basic blocks layout.
 		/// Prepares output code (instruction list).
 		/// </summary>
-		public static TranslatorResult Emit(IClrMethodBody body, Translator translator)
+		public static TranslatorResult Emit(TranslationContext context, string debugFile)
 		{
 #if DEBUG
 			DebugHooks.LogInfo("ConcatBlocks started");
 			DebugHooks.DoCancel();
 #endif
 
-			var begin = Begin(body, translator);
+			var begin = Begin(context, debugFile);
 
-			var provider = translator.CodeProvider;
+			var provider = context.Provider;
 			var branches = new List<Branch>();
-			var code = new Code(provider);
+			var output = context.Code.New();
 
-			code.Emit(begin);
+			output.Emit(begin);
 
-			foreach (var bb in body.ControlFlowGraph.Blocks)
+			foreach (var bb in context.Body.ControlFlowGraph.Blocks)
 			{
 #if DEBUG
 				DebugHooks.DoCancel();
 #endif
 				//UNCOMMENT TO CHECK STACK BALANCE
-				//CheckStackBalance(bb);
+				//Checks.CheckStackBalance(bb);
 
-				bb.TranslatedEntryIndex = code.Count;
+				bb.TranslatedEntryIndex = output.Count;
+
 				var il = bb.TranslatedCode;
 
 				var last = il[il.Count - 1];
@@ -43,48 +44,47 @@ namespace DataDynamics.PageFX.CLI.Translation
 					branches.Add(new Branch(last, bb));
 				}
 
-				translator.FixSelfCycle(bb);
+				TranslatorExtensions.FixSelfCycle(context.New(bb));
 				
-				code.Emit(il);
+				output.Emit(il);
 
-				bb.TranslatedExitIndex = code.Count - 1;
+				bb.TranslatedExitIndex = output.Count - 1;
 			}
 
 			var end = provider.End();
-			code.Emit(end);
+			output.Emit(end);
 
 #if DEBUG
-			DebugHooks.LogInfo("ConcatBlocks succeeded. CodeSize = {0}", code.Count);
+			DebugHooks.LogInfo("ConcatBlocks succeeded. CodeSize = {0}", output.Count);
 			DebugHooks.DoCancel();
 #endif
 			return new TranslatorResult
 				{
 					Begin = begin,
 					End = end,
-					Code = code,
+					Output = output,
 					Branches = branches
 				};
 		}
 
-		private static IInstruction[] Begin(IClrMethodBody body, Translator translator)
+		private static IInstruction[] Begin(TranslationContext context, string debugFile)
 		{
-			var provider = translator.CodeProvider;
-			var code = new Code(provider);
+			var provider = context.Provider;
+			var code = context.Code.New();
 
 			// initial debug file
-			if (!string.IsNullOrEmpty(translator.DebugFile))
+			if (!string.IsNullOrEmpty(debugFile))
 			{
-				var set = provider.DebugFile(translator.DebugFile);
-				code.Emit(set);
+				code.DebugFile(debugFile);
 			}
 
-			code.Emit(provider.Begin());
+			code.AddRange(provider.Begin());
 
 			// declare vars
-			if (body.LocalVariables != null)
+			if (context.Body.LocalVariables != null)
 			{
-				var set = body.LocalVariables.SelectMany(v => provider.DeclareVariable(v));
-				code.Emit(set);
+				var set = context.Body.LocalVariables.SelectMany(v => provider.DeclareVariable(v));
+				code.AddRange(set);
 			}
 
 			return code.ToArray();

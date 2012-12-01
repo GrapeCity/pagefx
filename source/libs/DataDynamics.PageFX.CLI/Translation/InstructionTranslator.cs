@@ -1,26 +1,39 @@
 using System;
 using System.Diagnostics;
 using DataDynamics.PageFX.CLI.IL;
+using DataDynamics.PageFX.CLI.Translation.ControlFlow;
 using DataDynamics.PageFX.CLI.Translation.Values;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Expressions;
 
 namespace DataDynamics.PageFX.CLI.Translation
 {
-	//This part contains translation for every CIL instruction.
-	//TODO: Make this phase as independent class
-    internal partial class Translator
+	/// <summary>
+	/// Implements translation for every CIL instruction.
+	/// </summary>
+    internal sealed class InstructionTranslator
     {
-		//TODO: context (method, body, stack, code, instruction)
+	    private readonly TranslationContext _context;
 
-        #region TranslateInstructionCore
-        /// <summary>
+		public InstructionTranslator(TranslationContext context)
+		{
+			_context = context;
+		}
+
+		private Node Block
+		{
+			get { return _context.Block; }
+		}
+
+	    /// <summary>
         /// Translates current instruction to array of instructions for target IL.
         /// This is a big switch by instruction code.
         /// </summary>
         /// <returns>array of instructions which performs the same computation as current translated instruction.</returns>
-		private void TranslateInstructionCore(Code code, Instruction currentInstruction)
-        {
+		public void Translate(Instruction currentInstruction)
+	    {
+		    var code = _context.Code;
+
             //TODO: Add comment for every instruction from ECMA #335
             switch (currentInstruction.Code)
             {
@@ -304,8 +317,8 @@ namespace DataDynamics.PageFX.CLI.Translation
 
                 case InstructionCode.Br_S:
                 case InstructionCode.Br:
-                    OpBranch(code);
-					break;
+		            code.Branch();
+		            break;
 
                 case InstructionCode.Switch:
                     OpSwitch(code, currentInstruction);
@@ -592,8 +605,9 @@ namespace DataDynamics.PageFX.CLI.Translation
 
                 #region exception handling
                 case InstructionCode.Throw:
-					OpThrow(code, currentInstruction);
-					break;
+		            _context.Pop(currentInstruction);
+		            code.Throw();
+		            break;
 
                 case InstructionCode.Rethrow:
 					code.Rethrow(currentInstruction);
@@ -601,12 +615,12 @@ namespace DataDynamics.PageFX.CLI.Translation
 
                 case InstructionCode.Leave:
                 case InstructionCode.Leave_S:
-                    OpLeave(code);
-					break;
+		            code.Branch();
+		            break;
 
                 case InstructionCode.Endfinally:
-                    OpEndfinally(code);
-					break;
+		            code.Branch();
+		            break;
 
                 case InstructionCode.Endfilter:
                     throw new NotSupportedException();
@@ -674,198 +688,29 @@ namespace DataDynamics.PageFX.CLI.Translation
                     throw new ArgumentOutOfRangeException();
             }
         }
-        #endregion
 
-        #region Pointers
-        //Reads value at given mock field ptr
-		private void Load(Code code, MockFieldPtr ptr)
+	    private IValue PopPtr(Instruction currentInstruction, Code code)
         {
-            if (ptr.IsInstance)
-            {
-                code.LoadTempVar(ptr.obj);
-                code.AddRange(_provider.LoadField(ptr.field));
-                code.KillTempVar(ptr.obj);
-            }
-            else
-            {
-                code.AddRange(_provider.LoadField(ptr.field));
-            }
+            var obj = _context.PopValue(currentInstruction);
+			code.LoadPtr(obj);
+			return obj;
         }
 
-        //Writes value at given mock field ptr
-        //value must be onto the stack
-		private void Store(Code code, MockFieldPtr ptr)
-        {
-            if (ptr.IsInstance)
-            {
-                code.LoadTempVar(ptr.obj);
-                code.Add(_provider.Swap());
-                code.AddRange(_provider.StoreField(ptr.field));
-                code.KillTempVar(ptr.obj);
-            }
-            else
-            {
-                code.AddRange(_provider.StoreField(ptr.field));
-            }
-        }
-
-        //Reads value at given mock elem ptr
-		private void Load(Code code, MockElemPtr ptr)
-        {
-            code.LoadTempVar(ptr.arr);
-            code.LoadTempVar(ptr.index);
-            code.AddRange(_provider.GetArrayElem(ptr.elemType));
-            code.KillTempVar(ptr.arr);
-            code.KillTempVar(ptr.index);
-        }
-
-        //Writes value at given mock elem ptr
-        //value must be onto the stack
-		private void Store(Code code, MockElemPtr ptr)
-        {
-            code.LoadTempVar(ptr.arr);
-            code.Add(_provider.Swap());
-            code.LoadTempVar(ptr.index);
-            code.Add(_provider.Swap());
-            code.AddRange(_provider.SetArrayElem(ptr.elemType));
-            code.KillTempVar(ptr.arr);
-            code.KillTempVar(ptr.index);
-        }
-
-		private void LoadIndirect(Code code, IType vtype)
-        {
-            code.AddRange(_provider.LoadIndirect(vtype));
-        }
-
-        private void LoadPtr(Code code, IValue v)
-        {
-            if (!v.IsPointer) return;
-
-	        if (v.IsMockPointer)
-            {
-                switch (v.Kind)
-                {
-                    case ValueKind.MockThisPtr:
-                        code.AddRange(_provider.LoadThis());
-                        break;
-
-                    case ValueKind.MockArgPtr:
-                        code.AddRange(_provider.LoadArgument(((MockArgPtr)v).arg));
-                        break;
-
-                    case ValueKind.MockVarPtr:
-                        code.AddRange(_provider.LoadVariable(((MockVarPtr)v).var));
-                        break;
-
-                    case ValueKind.MockFieldPtr:
-                        Load(code, (MockFieldPtr)v);
-                        break;
-
-                    case ValueKind.MockElemPtr:
-                        Load(code, (MockElemPtr)v);
-                        break;
-                }
-            }
-            else
-            {
-                var vtype = v.Type;
-                LoadIndirect(code, vtype);
-            }
-        }
-
-		private IInstruction[] LoadPtr(IValue v)
-        {
-            var code = new Code(_provider);
-            LoadPtr(code, v);
-            return code.ToArray();
-        }
-
-		private void StorePtr(Code code, IValue addr, IType vtype)
-        {
-            if (addr.IsMockPointer)
-            {
-                switch (addr.Kind)
-                {
-                    case ValueKind.MockThisPtr:
-                        code.AddRange(_provider.StoreThis());
-                        break;
-
-                    case ValueKind.MockArgPtr:
-                        {
-                            var ptr = (MockArgPtr)addr;
-                            code.AddRange(_provider.StoreArgument(ptr.arg));
-                        }
-                        break;
-
-                    case ValueKind.MockVarPtr:
-                        {
-                            var ptr = (MockVarPtr)addr;
-                            code.AddRange(_provider.StoreVariable(ptr.var));
-                        }
-                        break;
-
-                    case ValueKind.MockFieldPtr:
-                        {
-                            var ptr = (MockFieldPtr)addr;
-                            Store(code, ptr);
-                        }
-                        break;
-
-                    case ValueKind.MockElemPtr:
-                        {
-                            var ptr = (MockElemPtr)addr;
-                            Store(code, ptr);
-                        }
-                        break;
-
-                    default:
-                        throw new ILTranslatorException();
-                }
-            }
-            else
-            {
-                var il = _provider.StoreIndirect(vtype);
-                code.AddRange(il);
-            }
-        }
-
-		private IValue PopPtr(Instruction currentInstruction, Code code)
-        {
-            var obj = PopValue(currentInstruction);
-            LoadPtr(code, obj);
-            return obj;
-        }
-        #endregion
-
-        #region load instructions
-
-	    private void CopyValue(Code code, IType type)
-        {
-            var copy = _provider.CopyValue(type);
-            if (copy != null)
-                code.AddRange(copy);
-        }
-
-		private void CopyValue(IType type)
-        {
-            var copy = _provider.CopyValue(type);
-            if (copy != null)
-                EmitBlockCode(copy);
-        }
+	    #region load instructions
 
 		private void BeforeStoreValue(Code code, EvalItem value, IType type)
         {
             var valType = value.Type;
 
-            if (_block.IsFirstAssignment && value.Instruction.IsCall())
+            if (Block.IsFirstAssignment && value.Instruction.IsCall())
             {
-                _block.IsFirstAssignment = false;
+                Block.IsFirstAssignment = false;
             }
 
             type = type.UnwrapRef();
 
 			// fixing possible verifier error (unable to reconcile types)
-            if (!FixTernaryAssignment(type))
+            if (!Translator.FixTernaryAssignment(_context, type))
             {
 	            code.Cast(valType, type);
             }
@@ -875,12 +720,12 @@ namespace DataDynamics.PageFX.CLI.Translation
 				// String are implemented via native string, so no need to copy it.
             }
             else
-            {
-                CopyValue(code, type);
-            }
+			{
+				code.CopyValue(type);
+			}
         }
 
-		private void PassByValue(Instruction currentInstruction, Code code, IType valueType)
+		private void PassByValue(Code code, Instruction currentInstruction, IType valueType)
         {
             var p = currentInstruction.Parameter;
             if (p == null) return;
@@ -888,106 +733,106 @@ namespace DataDynamics.PageFX.CLI.Translation
             var ptype = p.Type.UnwrapRef();
 
             var method = currentInstruction.ParameterFor;
-            if (MustPreventBoxing(method, p))
+            if (MustPreventBoxing(code, method, p))
             {
                 if (valueType.Is(SystemTypeCode.String))
                 {
-                    _castToParamType = false;
+                    _context.CastToParamType = false;
                     return;
                 }
             }
 
 			code.Cast(valueType, ptype);
-			CopyValue(code, ptype);
-            _castToParamType = false;
+			code.CopyValue(ptype);
+			_context.CastToParamType = false;
         }
 
 		private void OpLdc(Code code, Instruction currentInstruction, object value)
         {
             var v = new ConstValue(value);
-            Push(currentInstruction, v);
+			_context.Push(currentInstruction, v);
 
-            code.AddRange(code.Provider.LoadConstant(value));
-            PassByValue(currentInstruction, code, v.Type);
+			code.LoadConstant(value);
+            PassByValue(code, currentInstruction, v.Type);
         }
 
 		private void OpLdthis(Code code, Instruction currentInstruction, bool ptr)
         {
-            var type = _method.DeclaringType;
+            var type = code.Method.DeclaringType;
 
             if (ptr)
             {
-                if (_method.IsStatic)
+                if (code.Method.IsStatic)
                     throw new ILTranslatorException();
 
-                if (_provider.IsThisAddressed)
+                if (code.Provider.IsThisAddressed)
                 {
-                    code.AddRange(_provider.GetThisPtr());
-                    Push(currentInstruction, new ThisPtr(type));
+                    code.GetThisPtr();
+	                _context.Push(currentInstruction, new ThisPtr(type));
                 }
                 else
                 {
-                    Push(currentInstruction, new MockThisPtr(type));
+	                _context.Push(currentInstruction, new MockThisPtr(type));
                 }
             }
             else
             {
                 if (currentInstruction.IsByRef())
                 {
-                    code.AddRange(_provider.GetThisPtr());
-                    Push(currentInstruction, new ThisPtr(type));
+                    code.GetThisPtr();
+	                _context.Push(currentInstruction, new ThisPtr(type));
                 }
                 else
                 {
-                    code.AddRange(_provider.LoadThis());
-                    PassByValue(currentInstruction, code, type);
-                    Push(currentInstruction, new ThisValue(_method));
+                    code.LoadThis();
+                    PassByValue(code, currentInstruction, type);
+	                _context.Push(currentInstruction, new ThisValue(code.Method));
                 }
             }
         }
 
 		private void OpLdarg(Code code, Instruction currentInstruction, int index, bool ptr)
         {
-            var p = _method.Parameters[index];
+            var p = code.Method.Parameters[index];
 
             if (ptr)
             {
                 if (p.IsByRef)
                 {
-                    code.AddRange(_provider.LoadArgument(p));
-                    Push(currentInstruction, new ArgPtr(p));
+                    code.LoadArgument(p);
+	                _context.Push(currentInstruction, new ArgPtr(p));
                 }
                 else if (p.IsAddressed)
                 {
-                    code.AddRange(_provider.GetArgPtr(p));
-                    Push(currentInstruction, new ArgPtr(p));
+                    code.GetArgPtr(p);
+	                _context.Push(currentInstruction, new ArgPtr(p));
                 }
                 else
                 {
-                    Push(currentInstruction, new MockArgPtr(p));
+	                _context.Push(currentInstruction, new MockArgPtr(p));
                 }
             }
             else if (p.IsByRef)
             {
-                code.AddRange(_provider.LoadArgument(p));
-                Push(currentInstruction, new ArgPtr(p));
+                code.LoadArgument(p);
+	            _context.Push(currentInstruction, new ArgPtr(p));
             }
             else
             {
-                code.AddRange(_provider.LoadArgument(p));
-                PassByValue(currentInstruction, code, p.Type);
-                Push(currentInstruction, new Arg(p));
+                code.LoadArgument(p);
+                PassByValue(code, currentInstruction, p.Type);
+	            _context.Push(currentInstruction, new Arg(p));
             }
         }
 
-		private int ToRealArgIndex(int index)
+		private static int ToRealArgIndex(Code code, int index)
 		{
-			return _method.IsStatic ? index : index - 1;
+			return code.Method.IsStatic ? index : index - 1;
 		}
 
 	    private void OpLdarg(Code code, Instruction currentInstruction, int index)
         {
-            index = ToRealArgIndex(index);
+            index = ToRealArgIndex(code, index);
             if (index < 0)
                 OpLdthis(code, currentInstruction, false);
 			else
@@ -996,7 +841,7 @@ namespace DataDynamics.PageFX.CLI.Translation
 
 		private void OpLdarga(Code code, Instruction currentInstruction, int index)
         {
-            index = ToRealArgIndex(index);
+            index = ToRealArgIndex(code, index);
             if (index < 0)
                 OpLdthis(code, currentInstruction, true);
 			else
@@ -1005,26 +850,27 @@ namespace DataDynamics.PageFX.CLI.Translation
 
 		private void OpLdloc(Code code, Instruction currentInstruction, int index)
         {
-            var v = _body.LocalVariables[index];
-            var type = v.Type;
+            var var = code.Body.LocalVariables[index];
+            var type = var.Type;
 
-            code.AddRange(_provider.LoadVariable(v));
-            PassByValue(currentInstruction, code, type);
+            code.LoadVariable(var);
 
-            Push(currentInstruction, new Var(v));
+            PassByValue(code, currentInstruction, type);
+
+			_context.Push(currentInstruction, new Var(var));
         }
 
 		private void OpLdloca(Code code, Instruction currentInstruction, int index)
         {
-            var v = _body.LocalVariables[index];
-            if (v.IsAddressed)
+            var var = code.Body.LocalVariables[index];
+            if (var.IsAddressed)
             {
-	            code.AddRange(_provider.GetVarPtr(v));
-	            Push(currentInstruction, new VarPtr(v));
+	            code.GetVarPtr(var);
+	            _context.Push(currentInstruction, new VarPtr(var));
             }
             else
             {
-				Push(currentInstruction, new MockVarPtr(v));
+	            _context.Push(currentInstruction, new MockVarPtr(var));
             }
         }
 
@@ -1033,10 +879,10 @@ namespace DataDynamics.PageFX.CLI.Translation
             if (!field.IsStatic)
                 PopPtr(currentInstruction, code);
 
-            code.AddRange(_provider.LoadField(field));
-            PassByValue(currentInstruction, code, field.Type);
+            code.LoadField(field);
+            PassByValue(code, currentInstruction, field.Type);
 
-            Push(currentInstruction, new FieldValue(field));
+			_context.Push(currentInstruction, new FieldValue(field));
         }
 
 		private void OpLdflda(Code code, Instruction currentInstruction, IField field)
@@ -1046,27 +892,27 @@ namespace DataDynamics.PageFX.CLI.Translation
 
             if (currentInstruction.IsByRef())
             {
-                code.AddRange(_provider.GetFieldPtr(field));
-                Push(currentInstruction, new FieldPtr(field));
+                code.GetFieldPtr(field);
+	            _context.Push(currentInstruction, new FieldPtr(field));
             }
             else
             {
                 if (field.IsStatic)
                 {
-                    Push(currentInstruction, new MockFieldPtr(field));
+	                _context.Push(currentInstruction, new MockFieldPtr(field));
                 }
                 else
                 {
                     int obj = code.StoreTempVar();
-                    Push(currentInstruction, new MockFieldPtr(field, obj));
+	                _context.Push(currentInstruction, new MockFieldPtr(field, obj));
                 }
             }
         }
 
 		private void OpLdtoken(Instruction currentInstruction)
-        {
-            Push(currentInstruction, new TokenValue(currentInstruction.Member));
-        }
+		{
+			_context.Push(currentInstruction, new TokenValue(currentInstruction.Member));
+		}
 
 		private void OpLdftn(Code code, Instruction currentInstruction)
         {
@@ -1074,55 +920,55 @@ namespace DataDynamics.PageFX.CLI.Translation
             var method = currentInstruction.Method;
             if (method.IsStatic)
             {
-                code.AddRange(_provider.LoadStaticInstance(method.DeclaringType));
+                code.LoadStaticInstance(method.DeclaringType);
             }
             else
             {
                 //TODO: Add option to LoadFunction to save stack state
                 //We need to duplicate target because ldftn instruction does not pop any object from stack
-                code.Add(_provider.Dup());
+                code.Dup();
             }
-            code.AddRange(_provider.LoadFunction(method));
-            Push(currentInstruction, new Func(method));
+            code.LoadFunction(method);
+			_context.Push(currentInstruction, new Func(method));
         }
 
 		private void OpLdvirtftn(Code code, Instruction currentInstruction)
         {
             //stack transition: ..., object -> ..., ftn
-            var obj = Pop(currentInstruction);
+            var obj = _context.Pop(currentInstruction);
             var method = currentInstruction.Method;
             if (method.IsStatic)
             {
                 throw new ILTranslatorException();
             }
-            Push(currentInstruction, new Func(obj.Value, method));
-            code.AddRange(code.Provider.LoadFunction(method));
+			_context.Push(currentInstruction, new Func(obj.Value, method));
+			code.LoadFunction(method);
         }
         #endregion
 
         #region store instructions
 		private void OpStarg(Code code, Instruction currentInstruction, int index)
         {
-            if (!_method.IsStatic)
+            if (!code.Method.IsStatic)
                 --index;
-            var value = Pop(currentInstruction);
-            var p = _method.Parameters[index];
+            var value = _context.Pop(currentInstruction);
+            var p = code.Method.Parameters[index];
             BeforeStoreValue(code, value, p.Type);
-            code.AddRange(_provider.StoreArgument(p));
+            code.StoreArgument(p);
         }
 
 		private void OpStloc(Code code, Instruction currentInstruction, int index)
         {
-            var value = Pop(currentInstruction);
-            var v = _body.LocalVariables[index];
-            BeforeStoreValue(code, value, v.Type);
-            code.AddRange(_provider.StoreVariable(v));
+            var value = _context.Pop(currentInstruction);
+            var var = code.Body.LocalVariables[index];
+            BeforeStoreValue(code, value, var.Type);
+            code.StoreVariable(var);
         }
 
 		private void OpStfld(Code code, Instruction currentInstruction, IField field)
         {
-            var value = Pop(currentInstruction);
-            var obj = Pop(currentInstruction);
+            var value = _context.Pop(currentInstruction);
+            var obj = _context.Pop(currentInstruction);
 
             var type = field.Type;
             BeforeStoreValue(code, value, type);
@@ -1132,18 +978,18 @@ namespace DataDynamics.PageFX.CLI.Translation
             {
                 if (ov.IsMockPointer)
                 {
-                    LoadPtr(code, ov);
+	                code.LoadPtr(ov);
 	                code.Swap();
                 }
                 else
                 {
 	                code.Swap();
-	                LoadIndirect(code, null);
+	                code.LoadIndirect(null);
 	                code.Swap();
                 }
             }
 
-            code.AddRange(_provider.StoreField(field));
+            code.StoreField(field);
         }
 
 		private void OpStsfld(Code code, Instruction currentInstruction, IField field)
@@ -1151,10 +997,10 @@ namespace DataDynamics.PageFX.CLI.Translation
             if (!field.IsStatic)
                 throw new InvalidOperationException();
 
-            var value = Pop(currentInstruction);
+            var value = _context.Pop(currentInstruction);
             BeforeStoreValue(code, value, field.Type);
 
-            code.AddRange(_provider.StoreField(field));
+            code.StoreField(field);
         }
         #endregion
 
@@ -1163,7 +1009,7 @@ namespace DataDynamics.PageFX.CLI.Translation
         //stack transition: ..., addr -> ..., value
 		private void OpLdind(Code code, Instruction currentInstruction)
         {
-            var addr = Pop(currentInstruction);
+            var addr = _context.Pop(currentInstruction);
 
             var v = addr.Value;
 
@@ -1184,93 +1030,93 @@ namespace DataDynamics.PageFX.CLI.Translation
 
                 case ValueKind.This:
                     //TODO: Enshure that this case is only used to unbox primitive value type
-                    code.AddRange(_provider.Unbox(type));
-                    Push(currentInstruction, new ThisValue(type));
-                    break;
+                    code.Unbox(type);
+		            _context.Push(currentInstruction, new ThisValue(type));
+		            break;
 
                 case ValueKind.ThisPtr:
-                    LoadIndirect(code, type);
-                    Push(currentInstruction, new ThisValue(type));
-                    break;
+		            code.LoadIndirect(type);
+		            _context.Push(currentInstruction, new ThisValue(type));
+		            break;
 
                 case ValueKind.MockThisPtr:
-                    code.AddRange(_provider.LoadThis());
-                    Push(currentInstruction, new ThisValue(type));
-                    break;
+                    code.LoadThis();
+		            _context.Push(currentInstruction, new ThisValue(type));
+		            break;
 
                 case ValueKind.Arg:
-                    LoadIndirect(code, type);
-                    Push(currentInstruction, v);
-                    break;
+		            code.LoadIndirect(type);
+		            _context.Push(currentInstruction, v);
+		            break;
 
                 case ValueKind.ArgPtr:
                     {
                         var ptr = (ArgPtr)v;
-                        LoadIndirect(code, type);
-                        Push(currentInstruction, new Arg(ptr.arg));
+	                    code.LoadIndirect(type);
+	                    _context.Push(currentInstruction, new Arg(ptr.arg));
                     }
                     break;
 
                 case ValueKind.MockArgPtr:
                     {
                         var ptr = (MockArgPtr)v;
-                        code.AddRange(_provider.LoadArgument(ptr.arg));
-                        Push(currentInstruction, new Arg(ptr.arg));
+                        code.LoadArgument(ptr.arg);
+	                    _context.Push(currentInstruction, new Arg(ptr.arg));
                     }
                     break;
 
                 case ValueKind.VarPtr:
                     {
                         var ptr = (VarPtr)v;
-                        LoadIndirect(code, type);
-                        Push(currentInstruction, new Var(ptr.var));
+	                    code.LoadIndirect(type);
+	                    _context.Push(currentInstruction, new Var(ptr.var));
                     }
                     break;
 
                 case ValueKind.MockVarPtr:
                     {
                         var ptr = (MockVarPtr)v;
-                        code.AddRange(_provider.LoadVariable(ptr.var));
-                        Push(currentInstruction, new Var(ptr.var));
+                        code.LoadVariable(ptr.var);
+	                    _context.Push(currentInstruction, new Var(ptr.var));
                     }
                     break;
 
                 case ValueKind.FieldPtr:
                     {
                         var ptr = (FieldPtr)v;
-                        LoadIndirect(code, type);
-                        Push(currentInstruction, new FieldValue(ptr.field));
+	                    code.LoadIndirect(type);
+	                    _context.Push(currentInstruction, new FieldValue(ptr.field));
                     }
                     break;
 
                 case ValueKind.MockFieldPtr:
                     {
                         var ptr = (MockFieldPtr)v;
-                        Load(code, ptr);
-                        Push(currentInstruction, new FieldValue(ptr.field));
+	                    code.LoadFieldPtr(ptr);
+	                    _context.Push(currentInstruction, new FieldValue(ptr.field));
                     }
                     break;
 
                 case ValueKind.ElemPtr:
                     {
                         var ptr = (ElemPtr)v;
-                        LoadIndirect(code, type);
-                        Push(currentInstruction, new Elem(ptr.elemType));
+	                    code.LoadIndirect(type);
+	                    _context.Push(currentInstruction, new Elem(ptr.elemType));
                     }
                     break;
 
                 case ValueKind.MockElemPtr:
                     {
                         var ptr = (MockElemPtr)v;
-                        Load(code, ptr);
-                        Push(currentInstruction, new Elem(ptr.elemType));
+	                    code.LoadElemPtr(ptr);
+	                    _context.Push(currentInstruction, new Elem(ptr.elemType));
                     }
                     break;
 
                 case ValueKind.ComputedPtr:
                     {
-                        LoadIndirect(code, type);
-                        PushResult(currentInstruction, v.Type);
+	                    code.LoadIndirect(type);
+	                    _context.PushResult(currentInstruction, v.Type);
                     }
                     break;
             }
@@ -1280,8 +1126,8 @@ namespace DataDynamics.PageFX.CLI.Translation
         //stack transition: ..., addr, val -> ...
 		private void OpStind(Code code, Instruction currentInstruction)
         {
-            var value = Pop(currentInstruction);
-            var addr = Pop(currentInstruction);
+            var value = _context.Pop(currentInstruction);
+            var addr = _context.Pop(currentInstruction);
 
             BeforeStoreValue(code, value, addr.Type);
 
@@ -1303,24 +1149,18 @@ namespace DataDynamics.PageFX.CLI.Translation
                 case ValueKind.This:
                     {
                         var v = (ThisValue)addr.Value;
-                        var vt = v.Type;
-                        if (_provider.HasCopy(vt))
-                        {
-                            var il = _provider.CopyToThis(vt);
-                            code.AddRange(il);
-                        }
+	                    code.CopyToThis(v.Type);
                     }
                     break;
 
                 default:
-                    StorePtr(code, addr.Value, value.Type);
-                    break;
+		            code.StorePtr(addr.Value, value.Type);
+		            break;
             }
         }
         #endregion
 
-        #region ldobj, stobj
-        //copy a value from an address to the stack
+	    //copy a value from an address to the stack
         //stack transition: ..., src -> ..., val
 		private void OpLdobj(Code code, Instruction currentInstruction)
         {
@@ -1333,19 +1173,18 @@ namespace DataDynamics.PageFX.CLI.Translation
         {
             OpStind(code, currentInstruction);
         }
-        #endregion
 
-        #region stack operations
+	    #region stack operations
 		private void OpDup(Code code, Instruction currentInstruction)
         {
-            var v = Peek().Value;
+            var v = _context.Peek().Value;
             switch (v.Kind)
             {
                 case ValueKind.MockThisPtr:
                 case ValueKind.MockArgPtr:
                 case ValueKind.MockVarPtr:
-                    Push(currentInstruction, v);
-                    return;
+		            _context.Push(currentInstruction, v);
+		            return;
 
                 case ValueKind.MockFieldPtr:
                     {
@@ -1354,11 +1193,11 @@ namespace DataDynamics.PageFX.CLI.Translation
 	                    {
 		                    int obj = code.MoveTemp(ptr.obj);
 		                    var newPtr = new MockFieldPtr(ptr.field, obj) {dup_source = ptr};
-		                    Push(currentInstruction, newPtr);
+		                    _context.Push(currentInstruction, newPtr);
 	                    }
 	                    else
 	                    {
-		                    Push(currentInstruction, v);
+		                    _context.Push(currentInstruction, v);
 	                    }
 	                    return;
                     }
@@ -1369,21 +1208,21 @@ namespace DataDynamics.PageFX.CLI.Translation
                         int arr = code.MoveTemp(ptr.arr);
                         int index = code.MoveTemp(ptr.index);
                     	var newPtr = new MockElemPtr(ptr.arrType, ptr.elemType, arr, index) {dup_source = ptr};
-                    	Push(currentInstruction, newPtr);
-                        return;
+	                    _context.Push(currentInstruction, newPtr);
+	                    return;
                     }
 
             }
 
-            Push(currentInstruction, v);
-			code.Add(_provider.Dup());
+			_context.Push(currentInstruction, v);
+			code.Dup();
         }
 
 		private void OpPop(Code code, Instruction currentInstruction)
         {
             if (!currentInstruction.IsHandlerBegin)
             {
-                var v = PopValue(currentInstruction);
+                var v = _context.PopValue(currentInstruction);
                 if (v.IsMockPointer)
                 {
                     switch (v.Kind)
@@ -1393,7 +1232,7 @@ namespace DataDynamics.PageFX.CLI.Translation
                                 var ptr = (MockFieldPtr)v;
                                 if (ptr.IsInstance)
                                 {
-                                    code.AddRange(_provider.KillTempVar(ptr.obj));
+                                    code.KillTempVar(ptr.obj);
                                     return;
                                 }
                                 return;
@@ -1402,8 +1241,8 @@ namespace DataDynamics.PageFX.CLI.Translation
                         case ValueKind.MockElemPtr:
                             {
                                 var ptr = (MockElemPtr)v;
-                                code.AddRange(_provider.KillTempVar(ptr.arr));
-                                code.AddRange(_provider.KillTempVar(ptr.index));
+                                code.KillTempVar(ptr.arr);
+                                code.KillTempVar(ptr.index);
                                 return;
                             }
 
@@ -1413,69 +1252,61 @@ namespace DataDynamics.PageFX.CLI.Translation
                 }
             }
 
-			code.Add(_provider.Pop());
+			code.Pop();
         }
         #endregion
 
         #region branches
-		private void OpBranch(Code code)
-        {
-            code.Add(_provider.Branch());
-        }
 
-		private void OpBranch(Code code, Instruction currentInstruction, BranchOperator op, bool unsigned)
+	    private void OpBranch(Code code, Instruction currentInstruction, BranchOperator op, bool unsigned)
         {
-            IType lt, rt = null;
+            IType leftType, rightType = null;
             if (op == BranchOperator.False || op == BranchOperator.True)
             {
-                var v = Pop(currentInstruction);
+                var v = _context.Pop(currentInstruction);
                 v.ItShouldBeNonPointer();
-                lt = v.Type;
+                leftType = v.Type;
 
-	            currentInstruction.InputTypes = new [] {lt};
+	            currentInstruction.InputTypes = new [] {leftType};
 
-                if (v.IsInstance || !(lt.IsNumeric() || lt.IsEnum))
+                if (v.IsInstance || !(leftType.IsNumeric() || leftType.IsEnum))
                 {
                     op = op == BranchOperator.False ? BranchOperator.Null : BranchOperator.NotNull;
                 }
             }
             else
             {
-                var right = Pop(currentInstruction);
-                var left = Pop(currentInstruction);
+                var right = _context.Pop(currentInstruction);
+                var left = _context.Pop(currentInstruction);
 
                 right.ItShouldBeNonPointer();
                 left.ItShouldBeNonPointer();
 
-                lt = left.Type;
-                rt = right.Type;
+                leftType = left.Type;
+                rightType = right.Type;
 
-	            currentInstruction.InputTypes = new[] {lt, rt};
+	            currentInstruction.InputTypes = new[] {leftType, rightType};
 
                 //FIX: Problem with comparions signed and unsigned numbers.
-                if (unsigned || TranslatorExtensions.IsSignedUnsigned(lt, rt))
+                if (unsigned || CastingOperations.IsSignedUnsigned(leftType, rightType))
                 {
-                    code.ToUnsigned(ref lt, ref rt);
+                    code.ToUnsigned(ref leftType, ref rightType);
                 }
             }
 
-            code.AddRange(_provider.Branch(op, lt, rt));
+            code.Branch(op, leftType, rightType);
         }
 
 		private void OpSwitch(Code code, Instruction currentInstruction)
         {
-            var index = Pop(currentInstruction);
+            var index = _context.Pop(currentInstruction);
             index.ItShouldBeNonPointer();
 
             //NOTE: AVM requires int value for switch instruction
 			code.Cast(index.Type, SystemTypes.Int32);
 
 			var targets = (int[])currentInstruction.Value;
-            int n = targets.Length;
-            var sw = _provider.Switch(n);
-            if (sw == null)
-                throw new NotSupportedException();
-            code.Add(sw);
+			code.Switch(targets.Length);
         }
         #endregion
 
@@ -1492,14 +1323,14 @@ namespace DataDynamics.PageFX.CLI.Translation
 	    private void Op(Code code, Instruction currentInstruction, BinaryOperator op, bool unsigned, bool checkOverflow)
         {
             //stack transition: left, right -> result
-            var right = Pop(currentInstruction);
-            var left = Pop(currentInstruction);
+            var right = _context.Pop(currentInstruction);
+            var left = _context.Pop(currentInstruction);
 
             right.ItShouldBeNonPointer();
             left.ItShouldBeNonPointer();
 
-            var lt = left.Type;
-            var rt = right.Type;
+            var leftType = left.Type;
+            var rightType = right.Type;
 
             //NOTE: Fix for relation operations.
             //NOTE: Sequence of instructions (isinst, null, cgt) does not work in avm.
@@ -1511,10 +1342,10 @@ namespace DataDynamics.PageFX.CLI.Translation
                 {
                     op = BinaryOperator.Inequality;
                 }
-                else if (TranslatorExtensions.IsSignedUnsigned(lt, rt))
+                else if (CastingOperations.IsSignedUnsigned(leftType, rightType))
                 {
                     //TODO: Optimize for constants
-                    code.ToUnsigned(ref lt, ref rt);
+                    code.ToUnsigned(ref leftType, ref rightType);
                 }
             }
 
@@ -1528,46 +1359,42 @@ namespace DataDynamics.PageFX.CLI.Translation
                 {
                     if (op.IsShift())
                     {
-                        code.CastToInt32(ref rt);
-                        code.ToUnsigned(ref lt, true);
+                        code.CastToInt32(ref rightType);
+                        code.ToUnsigned(ref leftType, true);
                     }
                     else
                     {
-                        code.ToUnsigned(ref lt, ref rt);
+                        code.ToUnsigned(ref leftType, ref rightType);
                     }
                 }
                 else
                 {
                     if (op.IsShift())
                     {
-                        code.CastToInt32(ref rt);
+                        code.CastToInt32(ref rightType);
                     }
                     else
                     {
-                        code.CastOperands(op, ref lt, ref rt);
+                        code.CastOperands(op, ref leftType, ref rightType);
                     }
                 }
             }
 
-            var type = BinaryExpression.GetResultType(lt, rt, op);
+            var type = BinaryExpression.GetResultType(leftType, rightType, op);
             if (type == null)
                 throw new ILTranslatorException();
 
-	        currentInstruction.InputTypes = new[] {lt, rt};
+	        currentInstruction.InputTypes = new[] {leftType, rightType};
 	        currentInstruction.OutputType = type;
 
-            PushResult(currentInstruction, type);
+		    _context.PushResult(currentInstruction, type);
 
-            var il = _provider.Op(op, lt, rt, type, checkOverflow);
-            if (il == null || il.Length == 0)
-                throw new ILTranslatorException("No code for given binary operation");
-
-            code.AddRange(il);
+		    code.Op(op, leftType, rightType, type, checkOverflow);
         }
 
 		private void Op(Code code, Instruction currentInstruction, UnaryOperator op, bool checkOverflow)
         {
-            var value = Pop(currentInstruction);
+            var value = _context.Pop(currentInstruction);
             value.ItShouldBeNonPointer();
 
             var vtype = value.Type;
@@ -1578,16 +1405,16 @@ namespace DataDynamics.PageFX.CLI.Translation
 			currentInstruction.InputTypes = new[] {vtype};
 			currentInstruction.OutputType = type;
 
-            PushResult(currentInstruction, type);
+			_context.PushResult(currentInstruction, type);
 
-            code.AddRange(_provider.Op(op, vtype, checkOverflow));
+			code.Op(op, vtype, checkOverflow);
         }
         #endregion
 
         #region conversion operations
 		private void OpConv(Code code, Instruction currentInstruction, IType targetType, bool checkOverflow, bool unsigned)
         {
-            var value = Pop(currentInstruction);
+            var value = _context.Pop(currentInstruction);
             value.ItShouldBeNonPointer();
 
             var sourceType = value.Type;
@@ -1598,25 +1425,19 @@ namespace DataDynamics.PageFX.CLI.Translation
 			if (!checkOverflow && OpConvRet(code, currentInstruction, sourceType, targetType))
                 return;
 
-            PushResult(currentInstruction, targetType);
+			_context.PushResult(currentInstruction, targetType);
 
-            if (unsigned)
+			if (unsigned)
                 code.ToUnsigned(ref sourceType, false);
 
-            ConvCore(code, sourceType, targetType, checkOverflow);
+			code.Cast(sourceType, targetType, checkOverflow);
         }
 
-		private void ConvCore(Code code, IType source, IType target, bool checkOverflow)
-        {
-            var il = _provider.Cast(source, target, checkOverflow);
-            code.AddRange(il);
-        }
-
-		private bool OpConvRet(Code code, Instruction currentInstruction, IType sourceType, IType targetType)
+	    private bool OpConvRet(Code code, Instruction currentInstruction, IType sourceType, IType targetType)
         {
             int nextIndex = currentInstruction.Index + 1;
-            if (nextIndex >= _body.Code.Count) return false;
-            var next = GetInstruction(nextIndex);
+            if (nextIndex >= code.Body.Code.Count) return false;
+            var next = code.GetInstruction(nextIndex);
             if (next.BasicBlock != currentInstruction.BasicBlock) return false;
             if (next.Code != InstructionCode.Ret) return false;
 
@@ -1625,13 +1446,13 @@ namespace DataDynamics.PageFX.CLI.Translation
                 var st = sourceType.SystemType();
                 if (st != null && st.IsIntegral32)
                 {
-                    var retType = ReturnType;
+                    var retType = code.Method.Type;
                     if (retType.IsInt64())
                     {
-                        _provider.DonotCopyReturnValue = true;
-                        PushResult(currentInstruction, retType);
-                        ConvCore(code, sourceType, retType, false);
-                        return true;
+                        code.Provider.DonotCopyReturnValue = true;
+	                    _context.PushResult(currentInstruction, retType);
+	                    code.Cast(sourceType, retType, false);
+	                    return true;
                     }
                 }
             }
@@ -1649,7 +1470,7 @@ namespace DataDynamics.PageFX.CLI.Translation
             var value = PopPtr(currentInstruction, code);
 			code.Cast(value.Type, type);
 
-            PushResult(currentInstruction, type);
+			_context.PushResult(currentInstruction, type);
         }
 
         //test if an object is an instance of a class or interface
@@ -1658,40 +1479,40 @@ namespace DataDynamics.PageFX.CLI.Translation
         {
             var type = currentInstruction.Type;
             PopPtr(currentInstruction, code);
-            code.AddRange(_provider.As(type));
-            PushResult(currentInstruction, type);
+            code.As(type);
+			_context.PushResult(currentInstruction, type);
         }
 
 		private void OpBox(Code code, Instruction currentInstruction)
         {
             var type = currentInstruction.Type;
-            var value = PopValue(currentInstruction);
+            var value = _context.PopValue(currentInstruction);
 
-        	PushResult(currentInstruction, type.IsNullableInstance() ? type.GetTypeArgument(0) : type);
+			_context.PushResult(currentInstruction, type.IsNullableInstance() ? type.GetTypeArgument(0) : type);
 
-            var vtype = type;
+			var vtype = type;
             if (type.IsEnum)
                 vtype = type.ValueType;
 
             var m = currentInstruction.ParameterFor;
-            if (MustPreventBoxing(m, currentInstruction.Parameter))
+            if (MustPreventBoxing(code, m, currentInstruction.Parameter))
             {
                 //TODO: check value types (can be problems with Int64).
-                LoadPtr(code, value);
-                return;
+	            code.LoadPtr(value);
+	            return;
             }
 
-            LoadPtr(code, value);
-			code.Cast(value.Type, vtype);
-			code.AddRange(_provider.Box(type));
+			code.LoadPtr(value)
+			    .Cast(value.Type, vtype)
+			    .Box(type);
         }
 
 		private void OpUnbox(Code code, Instruction currentInstruction)
         {
             var type = currentInstruction.Type;
             PopPtr(currentInstruction, code);
-            code.AddRange(_provider.Unbox(type));
-            PushResult(currentInstruction, type);
+            code.Unbox(type);
+			_context.PushResult(currentInstruction, type);
         }
         #endregion
 
@@ -1701,11 +1522,11 @@ namespace DataDynamics.PageFX.CLI.Translation
             int n = method.Parameters.Count;
             for (int i = 0; i < n; ++i)
             {
-                var arg = Pop(currentInstruction);
+                var arg = _context.Pop(currentInstruction);
             }
             if (currentInstruction.HasReceiver())
             {
-                var obj = Pop(currentInstruction);
+                var obj = _context.Pop(currentInstruction);
                 rtype = obj.Type;
                 switch (obj.Value.Kind)
                 {
@@ -1718,15 +1539,12 @@ namespace DataDynamics.PageFX.CLI.Translation
             return false;
         }
 
-		private void Call(Code code, Instruction currentInstruction, IType receiverType, IMethod method, CallFlags flags)
+		private static void Call(Code code, Instruction currentInstruction, IType receiverType, IMethod method, CallFlags flags)
         {
             if (currentInstruction.Code == InstructionCode.Newobj)
                 flags |= CallFlags.Newobj;
-            var c = _provider.CallMethod(receiverType, method, flags);
-            code.AddRange(c);
-            c = _provider.EndCall(method);
-            if (c != null)
-                code.AddRange(c);
+            code.CallMethod(receiverType, method, flags);
+            code.EndCall(method);
         }
 
 		private void OpCall(Code code, Instruction currentInstruction, bool virtcall)
@@ -1772,11 +1590,11 @@ namespace DataDynamics.PageFX.CLI.Translation
             {
                 if (type.TypeKind == TypeKind.Reference)
                 {
-                    Push(currentInstruction, new ComputedPtr(type.UnwrapRef()));
+	                _context.Push(currentInstruction, new ComputedPtr(type.UnwrapRef()));
                 }
                 else
                 {
-                    PushResult(currentInstruction, method.Type);
+	                _context.PushResult(currentInstruction, method.Type);
                 }
             }
 
@@ -1785,9 +1603,9 @@ namespace DataDynamics.PageFX.CLI.Translation
 
 		private void InitializeArray(Code code, Instruction currentInstruction)
         {
-            var token = Pop(currentInstruction);
+            var token = _context.Pop(currentInstruction);
             var f = token.Instruction.Field;
-            var arr = Pop(currentInstruction);
+            var arr = _context.Pop(currentInstruction);
             var arrType = (IArrayType)arr.Type;
             var elemType = arrType.ElementType;
             var vals = CLR.ReadArrayValues(f, elemType.SystemType().Code);
@@ -1796,29 +1614,29 @@ namespace DataDynamics.PageFX.CLI.Translation
             for (int i = 0; i < n; ++i)
             {
                 //put array onto the stack
-                code.Add(_provider.Dup());
-                code.AddRange(_provider.LoadConstant(i)); //index
-                code.AddRange(_provider.LoadConstant(vals[i]));
-                code.AddRange(_provider.SetArrayElem(elemType));
+	            code.Dup()
+	                .LoadConstant(i) //index
+	                .LoadConstant(vals[i])
+	                .SetArrayElem(elemType);
             }
 
+			//TODO: remove this pop by doing n-1 dups only
             //Note: Now we must remove from stack array because it does InitializeArray CLR method
-            code.Add(_provider.Pop());
+            code.Pop();
         }
 
 		private bool IsGetTypeFromHandle(IMethod m)
         {
             if (!m.IsGetTypeFromHandle()) return false;
-            Debug.Assert(!IsStackEmpty());
-            return Peek().IsTypeToken;
+            return _context.Peek().IsTypeToken;
         }
 
 		private void TypeOf(Code code, Instruction currentInstruction)
         {
-            var token = Pop(currentInstruction);
+            var token = _context.Pop(currentInstruction);
             var type = token.Instruction.Type;
-            PushResult(currentInstruction, SystemTypes.Type);
-            code.AddRange(_provider.TypeOf(type));
+			_context.PushResult(currentInstruction, SystemTypes.Type);
+			code.TypeOf(type);
         }
 
 	    private void OpNewobj(Code code, Instruction currentInstruction)
@@ -1829,16 +1647,16 @@ namespace DataDynamics.PageFX.CLI.Translation
             PopArgs(currentInstruction, ctor, ref rtype);
 
             var type = ctor.DeclaringType;
-            PushResult(currentInstruction, type);
+		    _context.PushResult(currentInstruction, type);
 
-            //FixTernaryAssignment(type);
+		    //FixTernaryAssignment(type);
 
             Call(code, currentInstruction, rtype, ctor, 0);
         }
 
 		private void OpInitobj(Code code, Instruction currentInstruction)
         {
-            var addr = Pop(currentInstruction);
+            var addr = _context.Pop(currentInstruction);
 
             switch (addr.Value.Kind)
             {
@@ -1856,38 +1674,37 @@ namespace DataDynamics.PageFX.CLI.Translation
 
             var type = currentInstruction.Type;
 
-            var il = _provider.InitObject(type);
-            code.AddRange(il);
+            code.InitObject(type);
 
-            StorePtr(code, addr.Value, type);
+			code.StorePtr(addr.Value, type);
         }
         #endregion
 
         #region array instructions
 		private void OpNewarr(Code code, Instruction currentInstruction)
         {
-            var n = Pop(currentInstruction);
+            var n = _context.Pop(currentInstruction);
             n.ItShouldBeNonPointer();
 
             var nType = SystemTypes.Int32;
-            if (!FixTernaryAssignment(nType))
+            if (!Translator.FixTernaryAssignment(_context, nType))
             {
 	            code.Cast(n.Type, nType);
             }
 
 			var elemType = currentInstruction.Type;
 
-            PushResult(currentInstruction, TypeFactory.MakeArray(elemType));
+			_context.PushResult(currentInstruction, TypeFactory.MakeArray(elemType));
 
-            code.AddRange(_provider.NewArray(elemType));
+			code.NewArray(elemType);
         }
 
 		private void OpLdlen(Code code, Instruction currentInstruction)
         {
-            var arr = Pop(currentInstruction);
+            var arr = _context.Pop(currentInstruction);
             arr.ItShouldBeArray();
-            PushResult(currentInstruction, SystemTypes.Int32);
-            code.AddRange(_provider.GetArrayLength());
+			_context.PushResult(currentInstruction, SystemTypes.Int32);
+			code.GetArrayLength();
         }
 
 		private static IType GetElemType(IType type)
@@ -1900,8 +1717,8 @@ namespace DataDynamics.PageFX.CLI.Translation
 
 		private void OpLdelem(Code code, Instruction currentInstruction)
         {
-            var index = Pop(currentInstruction);
-            var arr = Pop(currentInstruction);
+            var index = _context.Pop(currentInstruction);
+            var arr = _context.Pop(currentInstruction);
             arr.ItShouldBeArray();
 
             var elemType = GetElemType(arr.Type);
@@ -1909,16 +1726,16 @@ namespace DataDynamics.PageFX.CLI.Translation
 			currentInstruction.InputTypes = new[] {elemType};
 			currentInstruction.OutputType = elemType;
 
-            code.AddRange(_provider.GetArrayElem(elemType));
-            PassByValue(currentInstruction, code, elemType);
+            code.GetArrayElem(elemType);
+            PassByValue(code, currentInstruction, elemType);
 
-            Push(currentInstruction, new Elem(elemType));
+			_context.Push(currentInstruction, new Elem(elemType));
         }
 
 		private void OpLdelema(Code code, Instruction currentInstruction)
         {
-            var index = Pop(currentInstruction);
-            var arr = Pop(currentInstruction);
+            var index = _context.Pop(currentInstruction);
+            var arr = _context.Pop(currentInstruction);
             arr.ItShouldBeArray();
 
             var elemType = GetElemType(arr.Type);
@@ -1928,16 +1745,15 @@ namespace DataDynamics.PageFX.CLI.Translation
 
 			if (currentInstruction.IsByRef())
             {
-                var il = _provider.GetElemPtr(elemType);
-                code.AddRange(il);
+                code.GetElemPtr(elemType);
 
-                Push(currentInstruction, new ElemPtr(arr.Type, elemType));
+	            _context.Push(currentInstruction, new ElemPtr(arr.Type, elemType));
             }
             else
             {
                 int vindex = code.StoreTempVar();
                 int varr = code.StoreTempVar();
-                Push(currentInstruction, new MockElemPtr(arr.Type, elemType, varr, vindex));
+	            _context.Push(currentInstruction, new MockElemPtr(arr.Type, elemType, varr, vindex));
             }
         }
 
@@ -1945,9 +1761,9 @@ namespace DataDynamics.PageFX.CLI.Translation
         //stack transition: ..., array, index, value, -> ...
 		private void OpStelem(Code code, Instruction currentInstruction)
         {
-            var value = Pop(currentInstruction);
-            var index = Pop(currentInstruction);
-            var arr = Pop(currentInstruction);
+            var value = _context.Pop(currentInstruction);
+            var index = _context.Pop(currentInstruction);
+            var arr = _context.Pop(currentInstruction);
             arr.ItShouldBeArray();
             index.ItShouldBeNonPointer();
 
@@ -1956,91 +1772,24 @@ namespace DataDynamics.PageFX.CLI.Translation
             var elemType = GetElemType(arr.Type);
 
             BeforeStoreValue(code, value, elemType);
-            code.AddRange(_provider.SetArrayElem(elemType));
-        }
-        #endregion
-
-        #region exceptions
-		private void OpThrow(Code code, Instruction currentInstruction)
-        {
-            Pop(currentInstruction);
-            code.AddRange(code.Provider.Throw());
-            //NOTE: Super fix for throw immediatly problem
-            //TODO: Check when nop is not needed, i.e. check end of protected region.
-			code.Nop();
-        }
-
-	    private void OpLeave(Code code)
-        {
-            OpBranch(code);
-        }
-
-		private void OpEndfinally(Code code)
-        {
-            OpBranch(code);
-        }
-
-		private void OpEndfilter()
-        {
+            code.SetArrayElem(elemType);
         }
         #endregion
 
 	    private void OpReturn(Code code, Instruction currentInstruction)
 		{
-			bool isvoid = _method.IsVoid();
+			bool isvoid = code.Method.IsVoid();
 			if (!isvoid)
 			{
-				var v = Pop(currentInstruction);
-				code.Cast(v.Type, _method.Type);
+				var v = _context.Pop(currentInstruction);
+				code.Cast(v.Type, code.Method.Type);
 			}
 			code.AddRange(code.Provider.Return(isvoid));
 		}
 
-	    private bool MustPreventBoxing(IMethod method, IParameter arg)
+	    private static bool MustPreventBoxing(Code code, IMethod method, IParameter arg)
 		{
-			return _provider.MustPreventBoxing(method, arg);
+			return code.Provider.MustPreventBoxing(method, arg);
 		}
-
-	    private void Push(Instruction currentInstruction, IValue value)
-        {
-            _block.Stack.Push(currentInstruction, value);
-        }
-
-		private void PushResult(Instruction currentInstruction, IType type)
-        {
-            Push(currentInstruction, new ComputedValue(type));
-        }
-
-	    private bool IsStackEmpty()
-	    {
-		    return _block.Stack.Count == 0;
-	    }
-
-	    private EvalItem Peek()
-        {
-            return _block.Stack.Peek();
-        }
-
-		private EvalItem Pop(Instruction currentInstruction)
-        {
-            var stack = _block.Stack;
-            if (stack.Count == 0)
-            {
-                if (!currentInstruction.IsHandlerBegin)
-                {
-                    throw new ILTranslatorException("EvalStack is empty");
-                }
-                var cb = currentInstruction.SehBlock as HandlerBlock;
-                if (cb == null)
-                    throw new ILTranslatorException();
-                return new EvalItem(null, new ComputedValue(cb.ExceptionType));
-            }
-            return stack.Pop();
-        }
-
-		private IValue PopValue(Instruction currentInstruction)
-        {
-            return Pop(currentInstruction).Value;
-        }
     }
 }
