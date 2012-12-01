@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
@@ -16,6 +17,8 @@ namespace DataDynamics.PageFX.CodeModel
 		private IMethod[] _implMethods;
 		private IMethod _baseMethod;
 		private bool _resolveBaseMethod = true;
+	    private ITypeMember _association;
+	    private bool _resolveAssociation = true;
 
 	    public MethodProxy(IGenericInstance instance, IMethod method)
         {
@@ -147,9 +150,65 @@ namespace DataDynamics.PageFX.CodeModel
             get { return _method.ReturnCustomAttributes; }
         }
 
-        public ITypeMember Association { get; set; }
+	    public ITypeMember Association
+	    {
+		    get
+		    {
+			    if (_resolveAssociation)
+			    {
+				    _resolveAssociation = false;
+				    _association = ResolveAssociation();
+			    }
+			    return _association;
+		    }
+		    set
+		    {
+				if (value == null)
+					throw new ArgumentNullException("value");
 
-        public bool IsGetter
+			    _association = value;
+			    _resolveAssociation = false;
+		    }
+	    }
+
+	    private ITypeMember ResolveAssociation()
+	    {
+		    var association = _method.Association;
+		    if (association == null)
+			    return null;
+
+		    var property = association as IProperty;
+			if (property != null)
+			{
+				var proxy =  _instance.Properties.OfType<PropertyProxy>().FirstOrDefault(x => ReferenceEquals(x.ProxyOf, association));
+
+				if (property.Getter == _method)
+					proxy.Getter = this;
+				else if (property.Setter == _method)
+					proxy.Setter = this;
+
+				return proxy;
+			}
+
+		    var @event = association as IEvent;
+			if (@event != null)
+			{
+				var proxy = _instance.Events.OfType<EventProxy>().FirstOrDefault(x => ReferenceEquals(x.ProxyOf, association));
+
+				if (@event.Adder == _method)
+					proxy.Adder = this;
+				else if (@event.Remover == _method)
+					proxy.Remover = this;
+				else if (@event.Raiser == _method)
+					proxy.Raiser = this;
+				
+				return proxy;
+			}
+
+			throw new InvalidOperationException();
+	    }
+
+	    public bool IsGetter
         {
             get { return _method.IsGetter; }
         }

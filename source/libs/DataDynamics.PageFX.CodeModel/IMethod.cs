@@ -109,6 +109,7 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         ITypeMember Association { get; set; }
 
+		//TODO: make IsGetter, IsSetter as extension methods for IMethod
         /// <summary>
         /// Determines whether the method is getter for specified property.
         /// </summary>

@@ -6,7 +6,7 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public class TypeMemberCollection : ITypeMemberCollection
+    public sealed class TypeMemberCollection : ITypeMemberCollection
     {
 		private IFieldCollection _fields;
 		private IMethodCollection _methods;
@@ -131,8 +131,7 @@ namespace DataDynamics.PageFX.CodeModel
                 yield return m;
         }
 
-	    #region ICodeNode Members
-        public CodeNodeType NodeType
+	    public CodeNodeType NodeType
         {
             get { return CodeNodeType.TypeMembers; }
         }
@@ -143,20 +142,15 @@ namespace DataDynamics.PageFX.CodeModel
         }
 
         public object Tag { get; set; }
-        #endregion
 
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+	    public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        #region Object Override Methods
-        public override string ToString()
+	    public override string ToString()
         {
             return ToString(null, null);
         }
-        #endregion
     }
 }

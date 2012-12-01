@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.CodeModel
 {
     public sealed class GenericInstance : CustomAttributeProvider, IGenericInstance
     {
-		private readonly ReadOnlyTypeCollection _args;
+		private readonly ITypeCollection _args;
 		private ITypeMemberCollection _members;
 		private IFieldCollection _fields;
 		private IMethodCollection _methods;
@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX.CodeModel
     		if (type == null) throw new ArgumentNullException("type");
     		if (args == null) throw new ArgumentNullException("args");
 
-    		_args = new ReadOnlyTypeCollection(args);
+    		_args = new TypeList(args);
 
 			if (_args.Count != type.GenericParameters.Count)
                 throw new InvalidOperationException();
@@ -34,87 +34,22 @@ namespace DataDynamics.PageFX.CodeModel
         {
         }
 
-        void InitMembers()
+        private void InitMembers()
         {
             if (_members != null) return;
 
-			var fields = new List<ITypeMember>();
-			var methods = new List<ITypeMember>();
-			var properties = new List<ITypeMember>();
-			var events = new List<ITypeMember>();
+			_fields = new FieldList(this);
+			_properties = new PropertyList(this);
+			_events = new EventList(this);
+			_methods = new MethodList(this);
 
-        	Action<ITypeMember> addMember =
-        		m =>
-        			{
-						switch (m.MemberType)
-						{
-							case MemberType.Field:
-								fields.Add(m);
-								break;
-							case MemberType.Method:
-							case MemberType.Constructor:
-								methods.Add(m);
-								break;
-							case MemberType.Property:
-								properties.Add(m);
-								break;
-							case MemberType.Event:
-								events.Add(m);
-								break;
-						}
-        			};
-
-	        Func<IMethod, IMethod> addMethod = m =>
+	        _members = new TypeMemberCollection(this)
 		        {
-			        if (m == null) return null;
-			        var proxy = new MethodProxy(this, m);
-			        addMember(proxy);
-			        return proxy;
+			        Fields = _fields,
+			        Properties = _properties,
+			        Events = _events,
+			        Methods = _methods
 		        };
-
-            foreach (var member in Type.Members)
-            {
-                var f = member as IField;
-                if (f != null)
-                {
-                    addMember(new FieldProxy(this, f));
-                    continue;
-                }
-
-                var method = member as IMethod;
-                if (method != null)
-                {
-                    if (method.Association != null)
-                        continue;
-
-                    addMember(new MethodProxy(this, method));
-                    continue;
-                }
-            }
-
-            foreach (var prop in Type.Properties)
-            {
-	            var getter = addMethod(prop.Getter);
-	            var setter = addMethod(prop.Setter);
-	            addMember(new PropertyProxy(this, prop, getter, setter));
-            }
-
-            foreach (var e in Type.Events)
-            {
-	            var adder = addMethod(e.Adder);
-	            var remover = addMethod(e.Remover);
-	            var raiser = addMethod(e.Raiser);
-
-	            addMember(new EventProxy(this, e, adder, remover, raiser));
-            }
-
-        	var all = fields.Concat(methods).Concat(properties).Concat(events).AsReadOnlyList();
-
-			_members = new ReadOnlyMemberCollection(all);
-			_fields = new ReadOnlyFieldCollection(_members.Segment(0, fields.Count));
-			_methods = new ReadOnlyMethodCollection(_members.Segment(fields.Count, methods.Count));
-			_properties = new ReadOnlyPropertyCollection(_members.Segment(fields.Count + methods.Count, properties.Count));
-			_events = new ReadOnlyEventCollection(_members.Segment(fields.Count + methods.Count + properties.Count, events.Count));
         }
 
     	public IGenericType Type { get; set; }
@@ -233,15 +168,9 @@ namespace DataDynamics.PageFX.CodeModel
 
         public ITypeCollection Interfaces
         {
-			get
-			{
-				return _ifaces ?? (_ifaces = Type.Interfaces != null
-					                             ? new ReadOnlyTypeCollection(
-						                               Type.Interfaces.Select(x => GenericType.Resolve(this, null, x)))
-					                             : ReadOnlyTypeCollection.Empty);
-			}
+			get { return _ifaces ?? (_ifaces = new InterfaceList(this)); }
         }
-        private ReadOnlyTypeCollection _ifaces;
+        private ITypeCollection _ifaces;
 
         public IType ValueType
         {
@@ -568,30 +497,32 @@ namespace DataDynamics.PageFX.CodeModel
 
         #endregion
 
-		#region ReadOnlyFieldCollection
+		#region class LazyList
 
-    	private abstract class WrapCollection<T> : IReadOnlyList<T>, ICodeNode where T:ITypeMember
+		private abstract class LazyList<T> : IReadOnlyList<T>, ICodeNode
     	{
-    		protected readonly IReadOnlyList<ITypeMember> Members;
+    		private IReadOnlyList<T> _list;
 
-    		protected WrapCollection(IReadOnlyList<ITypeMember> members)
-			{
-				Members = members;
-			}
+    		private IReadOnlyList<T> List
+    		{
+    			get { return _list ?? (_list = Populate().Memoize()); }
+    		}
 
+    		protected abstract IEnumerable<T> Populate();
+    		
     		public int Count
     		{
-    			get { return Members.Count; }
+    			get { return List.Count; }
     		}
 
     		public T this[int index]
     		{
-    			get { return (T)Members[index]; }
+    			get { return List[index]; }
     		}
 
     		public IEnumerator<T> GetEnumerator()
     		{
-    			return Members.Cast<T>().GetEnumerator();
+    			return List.GetEnumerator();
     		}
 
     		IEnumerator IEnumerable.GetEnumerator()
@@ -603,7 +534,7 @@ namespace DataDynamics.PageFX.CodeModel
 
 			public IEnumerable<ICodeNode> ChildNodes
 			{
-				get { return Members.Cast<ICodeNode>(); }
+				get { return List.Cast<ICodeNode>(); }
 			}
 
 			public object Tag { get; set; }
@@ -612,18 +543,19 @@ namespace DataDynamics.PageFX.CodeModel
     		{
     			return SyntaxFormatter.Format(this, format, formatProvider);
     		}
-
-    		public void Add(T member)
-    		{
-    			throw new NotSupportedException();
-    		}
     	}
 
-		private sealed class ReadOnlyFieldCollection : WrapCollection<IField>, IFieldCollection
+		#endregion
+
+		#region class FieldList
+
+		private sealed class FieldList : LazyList<IField>, IFieldCollection
 		{
-    		public ReadOnlyFieldCollection(IReadOnlyList<ITypeMember> fields)
-				: base(fields)
+			private readonly GenericInstance _owner;
+
+			public FieldList(GenericInstance owner)
 			{
+				_owner = owner;
 			}
 
 			public override CodeNodeType NodeType
@@ -633,64 +565,173 @@ namespace DataDynamics.PageFX.CodeModel
 
 			public IField this[string name]
 			{
-				get { return (IField)Members.FirstOrDefault(x => x.Name == name); }
+				get { return this.FirstOrDefault(x => x.Name == name); }
+			}
+
+			public void Add(IField item)
+			{
+				throw new NotSupportedException();
+			}
+
+			protected override IEnumerable<IField> Populate()
+			{
+				return _owner.Type.Fields.Select(f => (IField)new FieldProxy(_owner, f));
 			}
 		}
 
 		#endregion
 
-		#region ReadOnlyMethodCollection
+		#region MethodList
 
-		private sealed class ReadOnlyMethodCollection : WrapCollection<IMethod>, IMethodCollection
+		private sealed class MethodList : IMethodCollection
 		{
-			private readonly IDictionary<string, IEnumerable<IMethod>> _groups;
-			private readonly IEnumerable<IMethod> _ctors;
-			private readonly IMethod _cctor;
+			private readonly GenericInstance _owner;
+			private IReadOnlyList<IMethod> _list;
+			private IDictionary<string, List<IMethod>> _lookup;
+			private IEnumerable<IMethod> _ctors;
+			private IMethod _cctor;
+			private bool _resolveStaticCtor = true;
+			private readonly List<IMethod> _instances = new List<IMethod>();
 
-			public ReadOnlyMethodCollection(IReadOnlyList<ITypeMember> methods) : base(methods)
+			public MethodList(GenericInstance owner)
 			{
-				_groups = methods.Cast<IMethod>().GroupBy(x => x.Name).ToDictionary(x => x.Key, x => (IEnumerable<IMethod>)x);
-				_ctors = methods.Cast<IMethod>().Where(x => x.IsConstructor);
-				_cctor = _ctors.FirstOrDefault(x => x.IsStatic);
+				_owner = owner;
+			}
+
+			public int Count
+			{
+				get { return List.Count + _instances.Count; }
+			}
+
+			public IMethod this[int index]
+			{
+				get
+				{
+					if (_instances.Count == 0)
+						return List[index];
+					if (index < 0 || index >= Count)
+						throw new ArgumentOutOfRangeException("index");
+					return index < List.Count ? List[index] : _instances[index - List.Count];
+				}
 			}
 
 			public IEnumerable<IMethod> Find(string name)
 			{
-				IEnumerable<IMethod> group;
-				return _groups.TryGetValue(name, out group) ? group : Enumerable.Empty<IMethod>();
+				if (_lookup == null)
+				{
+					_lookup = this.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => x.ToList());
+				}
+				List<IMethod> list;
+				return _lookup.TryGetValue(name, out list) ? list.AsReadOnly() : Enumerable.Empty<IMethod>();
 			}
 
-			public override CodeNodeType NodeType
+			public CodeNodeType NodeType
 			{
 				get { return CodeNodeType.Methods; }
 			}
 
+			public IEnumerable<ICodeNode> ChildNodes
+			{
+				get { return this.Cast<ICodeNode>(); }
+			}
+
+			public object Tag { get; set; }
+
 			public IEnumerable<IMethod> Constructors
 			{
-				get { return _ctors; }
+				get { return _ctors ?? (_ctors = this.Where(x => x.IsConstructor).Memoize()); }
 			}
 
 			public IMethod StaticConstructor
 			{
-				get { return _cctor; }
+				get
+				{
+					if (_resolveStaticCtor)
+					{
+						_resolveStaticCtor = false;
+						_cctor = Constructors.FirstOrDefault(x => x.IsStatic);
+					}
+					return _cctor;
+				}
+			}
+
+			public void Add(IMethod method)
+			{
+				if (method == null)
+					throw new ArgumentNullException("method");
+
+				if (!method.IsGenericInstance)
+					throw new InvalidOperationException();
+
+				_instances.Add(method);
+
+				// update lookup
+				if (_lookup != null)
+				{
+					List<IMethod> list;
+					if (!_lookup.TryGetValue(method.Name, out list))
+					{
+						list = new List<IMethod>();
+						_lookup.Add(method.Name, list);
+					}
+
+					list.Add(method);
+				}
+			}
+
+			public IEnumerator<IMethod> GetEnumerator()
+			{
+				foreach (var method in List)
+				{
+					yield return method;
+				}
+				foreach (var method in _instances)
+				{
+					yield return method;
+				}
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			private IReadOnlyList<IMethod> List
+			{
+				get { return _list ?? (_list = Populate().Memoize()); }
+			}
+
+			private IEnumerable<IMethod> Populate()
+			{
+				return _owner.Type.Methods.Select(method => (IMethod)new MethodProxy(_owner, method));
+			}
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				return SyntaxFormatter.Format(this, format, formatProvider);
 			}
 		}
 
 		#endregion
 
-		#region ReadOnlyPropertyCollection
+		#region PropertyList
 
-		private sealed class ReadOnlyPropertyCollection : WrapCollection<IProperty>, IPropertyCollection
+		private sealed class PropertyList : LazyList<IProperty>, IPropertyCollection
 		{
-			private readonly IDictionary<string, IEnumerable<IProperty>> _groups;
+			private readonly GenericInstance _owner;
+			private IDictionary<string, IEnumerable<IProperty>> _groups;
 
-			public ReadOnlyPropertyCollection(IReadOnlyList<ITypeMember> properties) : base(properties)
+			public PropertyList(GenericInstance owner)
 			{
-				_groups = properties.Cast<IProperty>().GroupBy(x => x.Name).ToDictionary(x => x.Key, x => (IEnumerable<IProperty>)x);
+				_owner = owner;
 			}
 
 			public IEnumerable<IProperty> Find(string name)
 			{
+				if (_groups == null)
+				{
+					_groups = this.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => (IEnumerable<IProperty>)x);
+				}
 				IEnumerable<IProperty> group;
 				return _groups.TryGetValue(name, out group) ? group : Enumerable.Empty<IProperty>();
 			}
@@ -699,52 +740,63 @@ namespace DataDynamics.PageFX.CodeModel
 			{
 				get { return CodeNodeType.Properties; }
 			}
+
+			public void Add(IProperty item)
+			{
+				throw new NotSupportedException();
+			}
+
+			protected override IEnumerable<IProperty> Populate()
+			{
+				return _owner.Type.Properties.Select(prop => (IProperty)new PropertyProxy(_owner, prop));
+			}
 		}
 
 		#endregion
 
-		#region ReadOnlyEventCollection
+		#region EventList
 
-		private sealed class ReadOnlyEventCollection : WrapCollection<IEvent>, IEventCollection
+		private sealed class EventList : LazyList<IEvent>, IEventCollection
 		{
-			public ReadOnlyEventCollection(IReadOnlyList<ITypeMember> events) : base(events)
+			private readonly GenericInstance _owner;
+
+			public EventList(GenericInstance owner)
 			{
+				_owner = owner;
 			}
 
 			public IEvent this[string name]
 			{
-				get { return (IEvent)Members.FirstOrDefault(x => x.Name == name); }
+				get { return this.FirstOrDefault(x => x.Name == name); }
 			}
 
 			public override CodeNodeType NodeType
 			{
 				get { return CodeNodeType.Events; }
 			}
+
+			public void Add(IEvent item)
+			{
+				throw new NotSupportedException();
+			}
+
+			protected override IEnumerable<IEvent> Populate()
+			{
+				return _owner.Type.Events.Select(e => (IEvent)new EventProxy(_owner, e));
+			}
 		}
 
 		#endregion
 
-		#region ReadOnlyTypeCollection
+		#region TypeList
 
-		private sealed class ReadOnlyTypeCollection : ITypeCollection
+		private sealed class TypeList : LazyList<IType>, ITypeCollection
 		{
-			public static readonly ReadOnlyTypeCollection Empty = new ReadOnlyTypeCollection(Enumerable.Empty<IType>());
-			
-			private readonly IReadOnlyList<IType> _types;
+			private readonly IEnumerable<IType> _types;
 
-			public ReadOnlyTypeCollection(IEnumerable<IType> types)
+			public TypeList(IEnumerable<IType> types)
 			{
-				_types = types.AsReadOnlyList();
-			}
-
-			public int Count
-			{
-				get { return _types.Count; }
-			}
-
-			public IType this[int index]
-			{
-				get { return _types[index]; }
+				_types = types;
 			}
 
 			public IType this[string fullname]
@@ -752,7 +804,7 @@ namespace DataDynamics.PageFX.CodeModel
 				get
 				{
 					//TODO PERF: add dictionary for quick search types by fullname
-					return _types.FirstOrDefault(t => t.FullName == fullname);
+					return this.FirstOrDefault(t => t.FullName == fullname);
 				}
 			}
 
@@ -763,37 +815,73 @@ namespace DataDynamics.PageFX.CodeModel
 
 			public bool Contains(IType type)
 			{
-				return _types.Contains(type);
+				return type != null && this.Any(x => ReferenceEquals(x, type));
 			}
 
-			public CodeNodeType NodeType
+			protected override IEnumerable<IType> Populate()
+			{
+				return _types;
+			}
+
+			public override CodeNodeType NodeType
 			{
 				get { return CodeNodeType.Types; }
-			}
-
-			public IEnumerable<ICodeNode> ChildNodes
-			{
-				get { return _types.Cast<ICodeNode>(); }
-			}
-
-			public object Tag { get; set; }
-
-			public string ToString(string format, IFormatProvider formatProvider)
-			{
-				return SyntaxFormatter.Format(this, format, formatProvider);
-			}
-
-			public IEnumerator<IType> GetEnumerator()
-			{
-				return _types.GetEnumerator();
-			}
-
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
 			}
 		}
 
 		#endregion
-	}
+
+		private sealed class InterfaceList : LazyList<IType>, ITypeCollection
+		{
+			private readonly GenericInstance _owner;
+			private IDictionary<string, IType> _lookup;
+
+			public InterfaceList(GenericInstance owner)
+			{
+				_owner = owner;
+			}
+
+			public override CodeNodeType NodeType
+			{
+				get { return CodeNodeType.Types; }
+			}
+
+			public IType this[string fullname]
+			{
+				get
+				{
+					if (string.IsNullOrEmpty(fullname))
+						return null;
+
+					if (_lookup == null)
+					{
+						_lookup = this.ToDictionary(x => x.FullName, x => x);
+					}
+
+					IType type;
+					return _lookup.TryGetValue(fullname, out type) ? type : null;
+				}
+			}
+
+			public void Add(IType type)
+			{
+				throw new NotSupportedException();
+			}
+
+			public bool Contains(IType type)
+			{
+				return type != null && this.Any(x => ReferenceEquals(x, type));
+			}
+
+			protected override IEnumerable<IType> Populate()
+			{
+				var type = _owner.Type;
+
+				if (type.Interfaces == null)
+					return Enumerable.Empty<IType>();
+
+				return type.Interfaces.Select(x => GenericType.Resolve(_owner, null, x));
+			}
+		}
+    }
 }

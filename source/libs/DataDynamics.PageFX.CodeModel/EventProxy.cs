@@ -1,63 +1,78 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel
 {
-    public class EventProxy : IEvent
+    public sealed class EventProxy : IEvent
     {
         private readonly IGenericInstance _instance;
         private readonly IEvent _event;
-        private readonly IMethod _adder;
-        private readonly IMethod _remover;
-        private readonly IMethod _raiser;
+        private IMethod _adder;
+        private IMethod _remover;
+        private IMethod _raiser;
+	    private bool _resolveAdder = true;
+	    private bool _resolveRemover = true;
+	    private bool _resolveRaiser = true;
 
-        public EventProxy(IGenericInstance instance, IEvent e,
-            IMethod adder, IMethod remover, IMethod raiser)
+	    public EventProxy(IGenericInstance instance, IEvent e)
         {
             _instance = instance;
             _event = e;
-
-            _adder = adder;
-            _remover = remover;
-            _raiser = raiser;
-
-            if (adder != null)
-                adder.Association = this;
-            if (remover != null)
-                remover.Association = this;
-            if (raiser != null)
-                raiser.Association = this;
         }
 
-        #region IEvent Members
-        public IMethod Adder
+		public IEvent ProxyOf
+		{
+			get { return _event; }
+		}
+
+	    public IMethod Adder
         {
-            get { return _adder; }
-            set { throw new NotSupportedException(); }
+            get
+            {
+				if (_resolveAdder)
+				{
+					_resolveAdder = false;
+					_adder = ResolveMethod(x => x.ProxyOf == _event.Adder);
+				}
+
+	            return _adder;
+            }
+			set { _adder = value; }
         }
 
-        public IMethod Remover
+	    public IMethod Remover
         {
-            get { return _remover; }
-            set { throw new NotSupportedException();}
+            get
+            {
+				if (_resolveRemover)
+				{
+					_resolveRemover = false;
+					_remover = ResolveMethod(x => x.ProxyOf == _event.Remover);
+				}
+	            return _remover;
+            }
+			set { _remover = value; }
         }
 
         public IMethod Raiser
         {
-            get { return _raiser; }
-            set { throw new NotSupportedException(); }
+            get
+            {
+				if (_resolveRaiser)
+				{
+					_resolveRaiser = false;
+					_raiser = ResolveMethod(x => x.ProxyOf == _event.Raiser);
+				}
+	            return _raiser;
+            }
+			set { _raiser = value; }
         }
 
-        public bool IsFlash
-        {
-            get;
-            set;
-        }
-        #endregion
+        public bool IsFlash { get; set; }
 
-        #region ITypeMember Members
-        public IAssembly Assembly
+	    public IAssembly Assembly
         {
             get { return _event.Assembly; }
         }
@@ -95,11 +110,7 @@ namespace DataDynamics.PageFX.CodeModel
             set { throw new NotSupportedException(); }
         }
 
-        public IType Type
-        {
-            get;
-            set;
-        }
+        public IType Type { get; set; }
 
         public Visibility Visibility
         {
@@ -138,17 +149,13 @@ namespace DataDynamics.PageFX.CodeModel
             get { return _event.MetadataToken; }
             set { throw new NotSupportedException(); }
         }
-        #endregion
 
-        #region ICustomAttributeProvider Members
-        public ICustomAttributeCollection CustomAttributes
+	    public ICustomAttributeCollection CustomAttributes
         {
             get { return _event.CustomAttributes; }
         }
-        #endregion
 
-        #region ICodeNode Members
-        public CodeNodeType NodeType
+	    public CodeNodeType NodeType
         {
             get { return CodeNodeType.Event; }
         }
@@ -158,31 +165,27 @@ namespace DataDynamics.PageFX.CodeModel
             get { return new ICodeNode[0]; }
         }
 
-        public object Tag
-        {
-            get;
-            set;
-        }
-        #endregion
+        public object Tag { get; set; }
 
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+	    public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        #region IDocumentationProvider Members
-        public string Documentation
+	    public string Documentation
         {
             get { return _event.Documentation; }
             set { throw new NotSupportedException(); }
         }
-        #endregion
 
-        public override string ToString()
+	    public override string ToString()
         {
             return ToString(null, null);
         }
+
+		private IMethod ResolveMethod(Func<IMethod, bool> selector)
+		{
+			return _instance.Methods.FirstOrDefault(selector);
+		}
     }
 }

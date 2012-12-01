@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
 	//ref: Partition II, 24.2.1 Metadata root
 
 	/// <summary>
-    /// MetaDataBase Reader
+    /// Metadata reader.
     /// </summary>
     public sealed class MetadataReader : IDisposable
     {
@@ -148,10 +148,7 @@ namespace DataDynamics.PageFX.CLI.Metadata
 
         public MetadataRow this[TableId tableId, int rowIndex]
         {
-            get
-            {
-                return GetRow(tableId, rowIndex);
-            }
+            get { return GetRow(tableId, rowIndex); }
         }
 
         private MetadataCell ReadCell(MetadataColumn column)

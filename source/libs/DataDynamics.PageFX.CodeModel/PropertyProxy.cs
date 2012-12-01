@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.CodeModel.Expressions;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
@@ -9,48 +10,23 @@ namespace DataDynamics.PageFX.CodeModel
     {
         private readonly IGenericInstance _instance;
 		private readonly IProperty _property;
-		private readonly IMethod _getter;
-		private readonly IMethod _setter;
-		private readonly IType _type;
-		private readonly ParameterCollection _params;
+		private IMethod _getter;
+		private IMethod _setter;
+		private IType _type;
+		private ParameterCollection _params;
 
-        public PropertyProxy(IGenericInstance instance, IProperty property, IMethod getter, IMethod setter)
+        public PropertyProxy(IGenericInstance instance, IProperty property)
         {
-            if (getter == null && setter == null)
-                throw new InvalidOperationException("property must have getter or setter");
-
             _instance = instance;
             _property = property;
-            _getter = getter;
-            _setter = setter;
-
-            if (getter != null)
-                getter.Association = this;
-            if (setter != null)
-                setter.Association = this;
-
-            _params = new ParameterCollection();
-
-            if (getter != null)
-            {
-                _type = getter.Type;
-                foreach (var p in getter.Parameters)
-                {
-                    _params.Add(new Parameter(p.Type, p.Name, p.Index));
-                }
-            }
-            else
-            {
-                int n = setter.Parameters.Count;
-                _type = setter.Parameters[n - 1].Type;
-                for (int i = 0; i < n - 1; ++i)
-                {
-                    _params.Add(setter.Parameters[i]);
-                }
-            }
         }
 
-        #region IProperty Members
+	    public IProperty ProxyOf
+	    {
+			get { return _property; }
+	    }
+
+		#region IProperty Members
         public bool HasDefault
         {
             get { return _property.HasDefault; }
@@ -59,22 +35,29 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IParameterCollection Parameters
         {
-            get { return _params; }
+            get
+            {
+				if (_params == null)
+				{
+					ResolveSignature();
+				}
+	            return _params;
+            }
         }
 
         public IMethod Getter
         {
-            get { return _getter; }
-            set { throw new NotSupportedException(); }
+            get { return _getter ?? (_getter = ResolveGetter()); }
+			set { _getter = value; }
         }
 
-        public IMethod Setter
+	    public IMethod Setter
         {
-            get { return _setter; }
-            set { throw new NotSupportedException(); }
+            get { return _setter ?? (_setter = ResolveSetter()); }
+			set { _setter = value; }
         }
 
-        public IExpression Initializer
+	    public IExpression Initializer
         {
             get { return _property.Initializer; }
             set { throw new NotSupportedException(); }
@@ -161,7 +144,14 @@ namespace DataDynamics.PageFX.CodeModel
 
         public IType Type
         {
-            get { return _type; }
+            get
+            {
+	            if (_type == null)
+	            {
+		            ResolveSignature();
+	            }
+	            return _type;
+            }
             set { throw new NotSupportedException(); }
         }
 
@@ -252,5 +242,60 @@ namespace DataDynamics.PageFX.CodeModel
         {
             return ToString(null, null);
         }
+
+		private IMethod ResolveGetter()
+		{
+			if (_property.Getter == null)
+				return null;
+
+			_getter =  _instance.Methods.First(x => x.ProxyOf == _property.Getter);
+
+			_getter.Association = this;
+
+			return _getter;
+		}
+
+		private IMethod ResolveSetter()
+		{
+			if (_property.Setter == null)
+				return null;
+
+			_setter = _instance.Methods.First(x => x.ProxyOf == _property.Setter);
+
+			_setter.Association = this;
+
+			return _setter;
+		}
+
+	    private void ResolveSignature()
+	    {
+		    if (_property.Getter != null)
+			    ResolveSignatureByGetter(Getter);
+		    else
+			    ResolveSignatureBySetter(Setter);
+	    }
+
+	    private void ResolveSignatureByGetter(IMethod getter)
+		{
+			_type = getter.Type;
+			_params = new ParameterCollection();
+			foreach (var p in getter.Parameters)
+			{
+				_params.Add(new Parameter(p.Type, p.Name, p.Index));
+			}
+		}
+
+		private void ResolveSignatureBySetter(IMethod setter)
+		{
+			int n = setter.Parameters.Count;
+
+			_type = setter.Parameters[n - 1].Type;
+
+			_params = new ParameterCollection();
+			for (int i = 0; i < n - 1; ++i)
+			{
+				_params.Add(setter.Parameters[i]);
+			}
+		}
     }
 }

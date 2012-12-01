@@ -105,7 +105,7 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Collections
 		{
 			get
 			{
-				if (_resolveStaticCtor && _cctor == null)
+				if (_resolveStaticCtor)
 				{
 					_resolveStaticCtor = false;
 					_cctor = List.FirstOrDefault(x => x.IsStatic && x.IsConstructor);
