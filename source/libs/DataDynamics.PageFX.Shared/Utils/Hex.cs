@@ -1,4 +1,3 @@
-using System.Drawing;
 using System.Text;
 
 namespace DataDynamics
@@ -55,12 +54,6 @@ namespace DataDynamics
                 for (int i = 0; i < n; ++i)
                     sb.Append(data[i].ToString(format));
             }
-        }
-
-        public static string ToString(Color color)
-        {
-            const string f = "x2";
-            return "#" + color.R.ToString(f) + color.G.ToString(f) + color.B.ToString(f);
         }
     }
 }

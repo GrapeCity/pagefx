@@ -105,7 +105,6 @@
     <Compile Include="Tools\FlashPlayer.cs" />
     <Compile Include="Utils\CodeTextWriter.cs" />
     <Compile Include="Utils\EnumExtensions.cs" />
-    <Compile Include="Utils\Filters.cs" />
     <Compile Include="Utils\FormatExpression.cs" />
     <Compile Include="Utils\SimpleConfig.cs" />
     <Compile Include="System\Tricks.cs" />

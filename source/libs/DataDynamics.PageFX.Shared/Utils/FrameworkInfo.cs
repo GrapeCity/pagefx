@@ -6,46 +6,12 @@ namespace DataDynamics
 {
     public enum FrameworkVersion
     {
-        [String("1.0")]
-        [String("net_1_0")]
-        [String("net-1.0")]
-        [String("1.0.3705")]
-        [String("v1.0.3705")]
         NET_1_0,
-
-        [String("1.1")]
-        [String("net_1_1")]
-        [String("net-1.1")]
-        [String("1.1.4322")]
-        [String("v1.1.4322")]
-        NET_1_1,
-
-        [String("2.0b")]
-        [String("beta2")]
-        [String("net_2_0b")]
-        [String("net-2.0b")]
-        [String("2.0.50215")]
-        [String("v2.0.50215")]
-        NET_BETA2,
-
-        [String("2.0")]
-        [String("net_2_0")]
-        [String("net-2.0")]
-        [String("2.0.50727")]
-        [String("v2.0.50727")]
-        NET_2_0,
-
-        [String("3.0")]
-        [String("net_3_0")]
-        [String("net-3.0")]
-        [String("v3.0")]
-        NET_3_0,
-
-        [String("3.5")]
-        [String("net_3_5")]
-        [String("net-3.5")]
-        [String("v3.5")]
-        NET_3_5,
+		NET_1_1,
+		NET_BETA2,
+		NET_2_0,
+		NET_3_0,
+		NET_3_5,
     }
 
     public static class FrameworkInfo
@@ -116,16 +82,6 @@ namespace DataDynamics
                 default:
                     throw new ArgumentOutOfRangeException("v");
             }
-        }
-
-        public static string ToString(FrameworkVersion v)
-        {
-            return v.EnumString();
-        }
-
-        public static FrameworkVersion ParseVersion(string s, FrameworkVersion defval)
-        {
-            return s.EnumParse(defval);
         }
     }
 }

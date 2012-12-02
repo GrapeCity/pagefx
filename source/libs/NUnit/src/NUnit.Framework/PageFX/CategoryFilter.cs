@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DataDynamics.PageFX.NUnit
 {
+	using Filter = Func<string, bool>;
+
     internal sealed class CategoryFilter
     {
-        static readonly List<IFilter<string>> ExcludeFilters = new List<IFilter<string>>();
-        static readonly List<IFilter<string>> IncludeFilters = new List<IFilter<string>>();
+		private static readonly List<Filter> ExcludeFilters = new List<Filter>();
+		private static readonly List<Filter> IncludeFilters = new List<Filter>();
 
         public static void Clear()
         {
@@ -14,7 +17,7 @@ namespace DataDynamics.PageFX.NUnit
             ExcludeFilters.Clear();
         }
 
-        static IFilter<string> Parse(string exp)
+		private static Filter Parse(string exp)
         {
             return new CategoryExpression(exp).Filter;
         }
@@ -53,7 +56,7 @@ namespace DataDynamics.PageFX.NUnit
                     return false;
             	return (from f in IncludeFilters
 						from category in categories
-						where f.Pass(category)
+						where f(category)
 						select f).Any();
             }
             if (ExcludeFilters.Count > 0)
@@ -62,7 +65,7 @@ namespace DataDynamics.PageFX.NUnit
                 {
                 	return !(from f in ExcludeFilters
 							 from category in categories
-							 where f.Pass(category)
+							 where f(category)
 							 select f).Any();
                 }
             }

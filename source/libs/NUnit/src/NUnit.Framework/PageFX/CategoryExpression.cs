@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DataDynamics.PageFX.NUnit
 {
-    //see http://www.nunit.org/index.php?p=consoleCommandLine&r=2.4.8
+	using Filter = Func<string, bool>;
 
+    //see http://www.nunit.org/index.php?p=consoleCommandLine&r=2.4.8
+	
     /// <summary>
     /// CategoryExpression parses strings representing boolean
     /// combinations of categories according to the following
@@ -14,7 +17,7 @@ namespace DataDynamics.PageFX.NUnit
     ///   CategoryPrimitive ::= CategoryFilter | '-' CategoryPrimitive
     ///   CategoryTerm ::= CategoryPrimitive | CategoryTerm '&' CategoryPrimitive
     /// </summary>
-    class CategoryExpression
+    internal sealed class CategoryExpression
     {
         private static readonly char[] Operators = new [] { ',', ';', '-', '|', '+', '(', ')' };
 
@@ -22,7 +25,7 @@ namespace DataDynamics.PageFX.NUnit
         int _next;
         string _token;
 
-        IFilter<string> _filter;
+        private Filter _filter;
 
         public CategoryExpression(string text)
         {
@@ -30,63 +33,78 @@ namespace DataDynamics.PageFX.NUnit
             _next = 0;
         }
 
-        public IFilter<string> Filter
+        public Filter Filter
         {
             get
             {
             	return _filter ?? (_filter = GetToken() == null
-            	                             	? TrueFilter<string>.Instance
+            	                             	? True()
             	                             	: GetExpression());
             }
         }
 
-        IFilter<string> GetExpression()
+		private static Filter True()
+		{
+			return s => true;
+		}
+
+        private Filter GetExpression()
         {
-            var term = GetTerm();
-            if (_token != "|")
-                return term;
-
-            var filter = new OrFilter<string>(term);
-            
-            while (_token == "|")
-            {
-                GetToken();
-                filter.Add(GetTerm());
-            }
-
-            return filter;
+	        var terms = GetTerms().ToArray();
+	        return s => terms.Any(f => f(s));
         }
 
-        IFilter<string> GetTerm()
-        {
-            IFilter<string> prim = GetPrimitive();
-            if (_token != "+" && _token != "-")
-                return prim;
+		private IEnumerable<Filter> GetTerms()
+		{
+			var term = GetTerm();
+			if (_token != "|")
+			{
+				yield return term;
+				yield break;
+			}
 
-            var filter = new AndFilter<string>(prim);
-            
-            while (_token == "+" || _token == "-")
-            {
-                string tok = _token;
-                GetToken();
-                prim = GetPrimitive();
-                filter.Add(tok == "-" ? new NotFilter<string>(prim) : prim);
-            }
+			while (_token == "|")
+			{
+				GetToken();
+				yield return GetTerm();
+			}
+		}
 
-            return filter;
+		private Filter GetTerm()
+		{
+			var prims = GetPrims().ToArray();
+			return s => prims.All(f => f(s));
         }
 
-        IFilter<string> GetPrimitive()
+		private IEnumerable<Filter> GetPrims()
+		{
+			var prim = GetPrimitive();
+			if (_token != "+" && _token != "-")
+			{
+				yield return prim;
+				yield break;
+			}
+
+			while (_token == "+" || _token == "-")
+			{
+				string tok = _token;
+				GetToken();
+				prim = GetPrimitive();
+				yield return tok == "-" ? Not(prim) : prim;
+			}
+		}
+
+		private Filter GetPrimitive()
         {
             if (_token == "-")
             {
                 GetToken();
-                return new NotFilter<string>(GetPrimitive());
+                return Not(GetPrimitive());
             }
             if (_token == "(")
             {
                 GetToken();
-                IFilter<string> expr = GetExpression();
+                var expr = GetExpression();
                 GetToken(); // Skip ')'
                 return expr;
             }
@@ -94,16 +112,24 @@ namespace DataDynamics.PageFX.NUnit
             return GetCategoryFilter();
         }
 
-        IFilter<string> GetCategoryFilter()
-        {
-            var filter = new OrFilter<string>();
-            filter.Add(new EqualsFilter<string>(_token));
+		private static Filter Not(Filter filter)
+		{
+			return s => !filter(s);
+		}
 
-            while (GetToken() == "," || _token == ";")
-                filter.Add(new EqualsFilter<string>(GetToken()));
+		private Filter GetCategoryFilter()
+		{
+			var names = GetCategoryNames().ToArray();
+			return s => names.Contains(s);
+		}
 
-            return filter;
-        }
+		private IEnumerable<string> GetCategoryNames()
+		{
+			yield return _token;
+
+			while (GetToken() == "," || _token == ";")
+				yield return GetToken();
+		}
 
         public string GetToken()
         {
@@ -125,18 +151,18 @@ namespace DataDynamics.PageFX.NUnit
             return _token;
         }
 
-        void SkipWhiteSpace()
+        private void SkipWhiteSpace()
         {
             while (_next < _text.Length && Char.IsWhiteSpace(_text[_next]))
                 ++_next;
         }
 
-        bool EndOfText()
+		private bool EndOfText()
         {
             return _next >= _text.Length;
         }
 
-        bool NextIsOperator()
+		private bool NextIsOperator()
         {
         	return Operators.Any(op => op == _text[_next]);
         }

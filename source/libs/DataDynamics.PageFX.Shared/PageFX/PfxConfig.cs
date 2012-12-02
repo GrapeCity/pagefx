@@ -159,9 +159,9 @@ namespace DataDynamics.PageFX
                 {
                     return Config.GetColor(Keys.swf_bgcolor, DefaultBgColor);
                 }
-                internal set 
+                internal set
                 {
-                    Config[Keys.swf_bgcolor] = Hex.ToString(value);
+	                Config[Keys.swf_bgcolor] = "#" + value.R.ToString("x2") + value.G.ToString("x2") + value.B.ToString("x2");
                 }
             }
         }

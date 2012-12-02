@@ -66,7 +66,7 @@ namespace DataDynamics.PageFX
 
         public Color GetColor(string key, Color defval)
         {
-            string s = this[key, Hex.ToString(defval)];
+            string s = this[key, "#" + defval.R.ToString("x2") + defval.G.ToString("x2") + defval.B.ToString("x2")];
             var c = defval;
             if (s.TryParseColor(ref c))
                 return c;
