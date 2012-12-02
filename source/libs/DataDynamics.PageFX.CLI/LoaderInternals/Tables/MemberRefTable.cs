@@ -88,17 +88,20 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 			//special multidimensional array methods
 			if (type.IsArray)
 			{
-				if (name == CLRNames.Constructor)
-					return CreateArrayCtor(type, (MethodSignature)sig);
+				switch (name)
+				{
+					case CLRNames.Constructor:
+						return CreateArrayCtor(new Context(type, context.Method), (MethodSignature)sig);
 
-				if (name == CLRNames.Array.Getter)
-					return GetArrayGetter(type, (MethodSignature)sig);
+					case CLRNames.Array.Getter:
+						return GetArrayGetter(new Context(type, context.Method), (MethodSignature)sig);
 
-				if (name == CLRNames.Array.Address)
-					return GetArrayAddress(type, (MethodSignature)sig);
+					case CLRNames.Array.Address:
+						return GetArrayAddress(new Context(type, context.Method), (MethodSignature)sig);
 
-				if (name == CLRNames.Array.Setter)
-					return GetArraySetter(type, (MethodSignature)sig);
+					case CLRNames.Array.Setter:
+						return GetArraySetter(new Context(type, context.Method), (MethodSignature)sig);
+				}					
 			}
 
 			IType[] types = null;
@@ -187,9 +190,10 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 			}
 		}
 
-		private IMethod CreateArrayCtor(IType type, MethodSignature sig)
+		private IMethod CreateArrayCtor(Context context, MethodSignature sig)
 		{
-			var types = ResolveMethodSignature(sig, new Context(type), false);
+			var type = context.Type;
+			var types = ResolveMethodSignature(sig, context, false);
 
 			var arrType = (ArrayType)type;
 			var ctor = arrType.FindConstructor(types);
@@ -212,8 +216,9 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 			return m;
 		}
 
-		private IMethod GetArrayGetter(IType type, MethodSignature sig)
+		private IMethod GetArrayGetter(Context context, MethodSignature sig)
 		{
+			var type = context.Type;
 			var arrType = (ArrayType)type;
 			if (arrType.Getter != null)
 				return arrType.Getter;
@@ -229,14 +234,15 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 
 			var contextType = FixContextType(arrType.ElementType);
 
-			var types = ResolveMethodSignature(sig, new Context(contextType), false);
+			var types = ResolveMethodSignature(sig, new Context(contextType, context.Method), false);
 			AddParams(m, types, "i");
 
 			return m;
 		}
 
-		private IMethod GetArrayAddress(IType type, MethodSignature sig)
+		private IMethod GetArrayAddress(Context context, MethodSignature sig)
 		{
+			var type = context.Type;
 			var arrType = (ArrayType)type;
 			if (arrType.Address != null)
 				return arrType.Address;
@@ -244,7 +250,7 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 			var m = new Method
 				{
 					Name = CLRNames.Array.Address,
-					Type = _loader.ResolveType(sig.Type, new Context(type)),
+					Type = _loader.ResolveType(sig.Type, context),
 					IsInternalCall = true,
 					DeclaringType = type
 				};
@@ -253,14 +259,15 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 
 			var contextType = FixContextType(arrType.ElementType);
 
-			var types = ResolveMethodSignature(sig, new Context(contextType), false);
+			var types = ResolveMethodSignature(sig, new Context(contextType, context.Method), false);
 			AddParams(m, types, "i");
 
 			return m;
 		}
 
-		private IMethod GetArraySetter(IType type, MethodSignature sig)
+		private IMethod GetArraySetter(Context context, MethodSignature sig)
 		{
+			var type = context.Type;
 			var arrType = (ArrayType)type;
 
 			if (arrType.Setter != null)
@@ -278,7 +285,7 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 
 			var contextType = FixContextType(arrType.ElementType);
 
-			var types = ResolveMethodSignature(sig, new Context(contextType), false);
+			var types = ResolveMethodSignature(sig, new Context(contextType, context.Method), false);
 
 			int n = types.Length;
 			for (int i = 0; i < n - 1; ++i)
@@ -335,10 +342,10 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 				int curSpec = 0;
 				foreach (var method in GetMatchedMethods(type, name, sig, context))
 				{
-					if (!method.SignatureChanged)
+					if (!method.SignatureChanged())
 						return method;
 
-					int spec = Method.GetSpecificity(method);
+					int spec = method.GetSpecificity();
 					if (result == null || spec > curSpec)
 					{
 						result = method;

@@ -8,34 +8,22 @@ namespace DataDynamics.PageFX
 		/// <summary>
 		/// name of constructors. 
 		/// </summary>
-		public static string Constructor
-		{
-			get { return ".ctor"; }
-		}
+		public const string Constructor = ".ctor";
 
 		/// <summary>
 		/// name of static constructors. 
 		/// </summary>
-		public static string StaticConstructor
-		{
-			get { return ".cctor"; }
-		}
+		public const string StaticConstructor = ".cctor";
 
 		/// <summary>
 		/// name used for pointer types 
 		/// </summary>
-		public static string Ptr
-		{
-			get { return "*"; }
-		}
+		public const string Ptr  = "*";
 
         /// <summary>
         /// name used for ref param types 
         /// </summary>
-        public static string Ref
-        {
-            get { return "&"; }
-        }
+        public const string Ref = "&";
 
 	    public static class Array
         {
