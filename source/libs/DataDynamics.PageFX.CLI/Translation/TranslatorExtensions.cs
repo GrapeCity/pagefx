@@ -1,6 +1,6 @@
 ﻿using System;
+using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow;
-using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.Translation
@@ -53,6 +53,41 @@ namespace DataDynamics.PageFX.CLI.Translation
 					throw new NotImplementedException();
 				}
 			}
+		}
+
+		public static void AppendCast(this TranslationContext context, IType source, IType target)
+		{
+			if (ReferenceEquals(source, target)) return;
+
+			Checks.CheckValidCast(source, target);
+
+			var cast = context.Provider.Cast(source, target, false);
+			if (cast != null && cast.Length > 0)
+			{
+				var block = context.Block;
+				var stack = block.Stack;
+				var item = stack.Pop();
+				stack.PushResult(item.Instruction, target);
+
+				var code = block.TranslatedCode;
+				int n = code.Count;
+				if (n == 0)
+					throw new ILTranslatorException("Translated code is empty");
+
+				if (code[n - 1].IsBranchOrSwitch())
+				{
+					code.InsertRange(n - 1, cast);
+				}
+				else
+				{
+					code.AddRange(cast);
+				}
+			}
+		}
+
+		public static IType GetUnwrappedType(this IParameter p)
+		{
+			return p.Type.UnwrapRef();
 		}
 	}
 }

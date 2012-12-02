@@ -711,7 +711,7 @@ namespace DataDynamics.PageFX.CLI.Translation
             type = type.UnwrapRef();
 
 			// fixing possible verifier error (unable to reconcile types)
-            if (!Translator.FixTernaryAssignment(_context, type))
+            if (!TypeReconciler.ReconcileTernaryAssignment(_context, type))
             {
 	            code.Cast(valType, type);
             }
@@ -1688,7 +1688,7 @@ namespace DataDynamics.PageFX.CLI.Translation
             n.ItShouldBeNonPointer();
 
             var nType = SystemTypes.Int32;
-            if (!Translator.FixTernaryAssignment(_context, nType))
+            if (!TypeReconciler.ReconcileTernaryAssignment(_context, nType))
             {
 	            code.Cast(n.Type, nType);
             }

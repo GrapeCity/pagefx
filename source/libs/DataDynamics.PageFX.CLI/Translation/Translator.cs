@@ -11,8 +11,9 @@ namespace DataDynamics.PageFX.CLI.Translation
 	/// <summary>
     /// Implements <see cref="ITranslator"/> from CIL.
     /// </summary>
-    internal partial class Translator : ITranslator
+    internal sealed class Translator : ITranslator
 	{
+		private readonly DebugInfo _debugInfo = new DebugInfo();
 		private TranslationContext _context;
 		private TranslatorResult _result;
 
@@ -103,9 +104,10 @@ namespace DataDynamics.PageFX.CLI.Translation
 
 			Analyzer.Analyze(context.Body, context.Provider);
 
-			TranslateGraph(context);
+			var core = new TranslatorCore(_debugInfo);
+			core.Translate(context);
 
-			var result = Emitter.Emit(context, DebugFile);
+			var result = Emitter.Emit(context, _debugInfo.DebugFile);
 
 			Branch.Resolve(result.Branches, context.Provider);
 

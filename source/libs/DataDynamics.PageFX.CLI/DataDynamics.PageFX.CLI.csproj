@@ -232,6 +232,7 @@
     <Compile Include="Translation\CastingOperations.cs" />
     <Compile Include="Translation\Checks.cs" />
     <Compile Include="Translation\Code.cs" />
+    <Compile Include="Translation\DebugInfo.cs" />
     <Compile Include="Translation\InstructionTranslator.cs" />
     <Compile Include="Translation\InstructionExtensions.cs" />
     <Compile Include="Translation\PointerOperations.cs" />
@@ -254,8 +255,9 @@
     <Compile Include="Translation\ControlFlowGraph.cs" />
     <Compile Include="Translation\GenericResolver.cs" />
     <Compile Include="Translation\Translator.cs" />
-    <Compile Include="Translation\Translation.cs" />
+    <Compile Include="Translation\TranslatorCore.cs" />
     <Compile Include="Translation\TranslatorResult.cs" />
+    <Compile Include="Translation\TypeReconciler.cs" />
     <Compile Include="Translation\Values\Arg.cs" />
     <Compile Include="Translation\Values\ArgPtr.cs" />
     <Compile Include="Translation\Values\ComputedPtr.cs" />
