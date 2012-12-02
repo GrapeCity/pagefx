@@ -72,7 +72,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             int n = (int)reader.ReadUIntEncoded();
             if (n <= 0)
-                throw new BadFormatException();
+                throw new BadImageFormatException();
             for (int i = 0; i < n; ++i)
             {
                 int nsIndex = (int)reader.ReadUIntEncoded();

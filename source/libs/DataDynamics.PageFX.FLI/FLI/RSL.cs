@@ -377,7 +377,7 @@ namespace DataDynamics.PageFX.FLI
 
 		public override string ToString()
 		{
-			return TextFormatter.ToString(this, "", "", " ");
+			return this.Join("", "", " ");
 		}
 	}
 }

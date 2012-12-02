@@ -657,14 +657,14 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
 
         #region EnsureImport
-        void EnsureImport()
+        private void EnsureImport()
         {
             foreach (var instance in _instances)
             {
                 if (instance.Initializer == null)
-                    throw new BadFormatException();
+                    throw new BadImageFormatException();
                 if (instance.Class.Initializer == null)
-                    throw new BadFormatException();
+                    throw new BadImageFormatException();
                 if (!IsDefined(instance.Name))
                     throw Errors.ABC.BadFormat.CreateException();
 
@@ -680,14 +680,14 @@ namespace DataDynamics.PageFX.FLI.ABC
             foreach (var klass in _classes)
             {
                 if (klass.Initializer == null)
-                    throw new BadFormatException();
+                    throw new BadImageFormatException();
                 EnsureTraits(klass);
             }
 
             foreach (var script in _scripts)
             {
                 if (script.Initializer == null)
-                    throw new BadFormatException();
+                    throw new BadImageFormatException();
                 EnsureTraits(script);
             }
 

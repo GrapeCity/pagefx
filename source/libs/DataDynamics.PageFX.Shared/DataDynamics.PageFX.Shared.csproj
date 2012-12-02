@@ -116,7 +116,6 @@
     <Compile Include="Graphics\GPBuilder.cs" />
     <Compile Include="Graphics\KnownPathes.cs" />
     <Compile Include="Graphics\SvgPathRender.cs" />
-    <Compile Include="PageFX.Tools\FlashPlayer.cs" />
     <Compile Include="PageFX\CompilerException.cs" />
     <Compile Include="PageFX\CompilerReport.cs" />
     <Compile Include="PageFX\Error.cs" />
@@ -135,6 +134,7 @@
     <Compile Include="Tests\MiscTests.cs" />
     <Compile Include="Tests\StrTest.cs" />
     <Compile Include="Tests\ZipTests.cs" />
+    <Compile Include="Tools\FlashPlayer.cs" />
     <Compile Include="Utils\CodeTextWriter.cs" />
     <Compile Include="Utils\EnumExtensions.cs" />
     <Compile Include="Utils\Filters.cs" />
@@ -149,24 +149,20 @@
     <Compile Include="Utils\IEEEFloat.cs" />
     <Compile Include="Graphics\ImageExtensions.cs" />
     <Compile Include="Utils\LazyValue.cs" />
-    <Compile Include="Utils\LogWriter.cs" />
     <Compile Include="Utils\Angle.cs" />
     <Compile Include="Utils\NameAttribute.cs" />
     <Compile Include="Utils\FdbProcessHost.cs" />
     <Compile Include="PageFX\PfxCompiler.cs" />
-    <Compile Include="System.IO\DebugWriter.cs" />
     <Compile Include="Utils\PathExtensions.cs" />
     <Compile Include="Tools\Dot.cs" />
     <Compile Include="Utils\ActionSelector.cs" />
     <Compile Include="Utils\CommandLine.cs" />
     <Compile Include="Utils\CommandPromt.cs" />
     <Compile Include="Utils\TODOAttribute.cs" />
-    <Compile Include="Utils\CommonExceptions.cs" />
     <Compile Include="Utils\CompilerConsole.cs" />
     <Compile Include="Utils\Escaper.cs" />
     <Compile Include="Utils\FrameworkInfo.cs" />
     <Compile Include="Utils\Indent.cs" />
-    <Compile Include="Utils\ISupportXmlDump.cs" />
     <Compile Include="Utils\NameExtensions.cs" />
     <Compile Include="Utils\ParseExtensions.cs" />
     <Compile Include="Utils\ReflectionExtensions.cs" />
@@ -183,7 +179,7 @@
     <Compile Include="System.IO\StreamExtensions.cs" />
     <Compile Include="System\EnumerableExtensions.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
-    <Compile Include="System\TextFormatter.cs" />
+    <Compile Include="System.IO\TextWriterExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tools\dot.zip" />
@@ -205,6 +201,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

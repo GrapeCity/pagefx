@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.FLI.FLV
             //header
             string sig = reader.ReadASCII(3);
             if (sig != "FLV")
-                throw new BadFormatException("Not a valid Flash Video file signature");
+                throw new BadImageFormatException("Not a valid Flash Video file signature");
 
             _version = reader.ReadUInt8();
 

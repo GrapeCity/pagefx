@@ -408,7 +408,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
                         int index = (int)reader.ReadUIntEncoded(); //ns_set
                         if (index == 0)
-                            throw new BadFormatException("The value of ns_set cannot be zero.");
+                            throw new BadImageFormatException("The value of ns_set cannot be zero.");
                         NamespaceSet = reader.ABC.NamespaceSets[index];
                     }
                     break;
@@ -419,7 +419,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                     {
                         int index = (int)reader.ReadUIntEncoded(); //ns_set
                         if (index == 0)
-                            throw new BadFormatException("The value of ns_set cannot be zero.");
+                            throw new BadImageFormatException("The value of ns_set cannot be zero.");
                         NamespaceSet = reader.ABC.NamespaceSets[index];
                     }
                     break;
@@ -429,13 +429,13 @@ namespace DataDynamics.PageFX.FLI.ABC
                         int typeIndex = (int)reader.ReadUIntEncoded();
 
                         if (typeIndex == 0 || typeIndex >= reader.MultinameCount)
-                            throw new BadFormatException(string.Format("TypeIndex {0} is out of range", typeIndex));
+                            throw new BadImageFormatException(string.Format("TypeIndex {0} is out of range", typeIndex));
 
                         _type = reader.ABC.Multinames[typeIndex];
 
                         int one = (int)reader.ReadUIntEncoded();
                         if (one != 1)
-                            throw new BadFormatException("TypeName constant must have 1 after type");
+                            throw new BadImageFormatException("TypeName constant must have 1 after type");
 
                         //NOTE: In Tamarin AbcParser does not check paramIndex
                         //Therefore param multiname can be not read yet.

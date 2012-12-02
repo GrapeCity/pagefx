@@ -367,8 +367,12 @@ namespace DataDynamics.PageFX
                 WriteList(writer, _linkResources, "/linkres:", true);
                 WriteList(writer, _recurse, "/recurse:", true);
 
-                TextFormatter.WriteList(writer, _input, " ");
-
+	            foreach (var input in _input)
+	            {
+					writer.Write(" ");
+		            writer.Write(input);
+	            }
+                
                 return writer.ToString();
             }
         }

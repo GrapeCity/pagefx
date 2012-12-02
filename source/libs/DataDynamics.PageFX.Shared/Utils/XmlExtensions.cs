@@ -1,6 +1,4 @@
-using System.Globalization;
 using System.IO;
-using System.Xml;
 
 namespace DataDynamics
 {
@@ -59,40 +57,6 @@ namespace DataDynamics
                 writer.WriteEndTag(tag);
                 writer.WriteLine();
             }
-        }
-
-        public static int GetInt32(this XmlElement element, string attr, int defval)
-        {
-            string s = element.GetAttribute(attr);
-            if (string.IsNullOrEmpty(s))
-                return defval;
-            int v;
-            if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out v))
-                return v;
-            return defval;
-        }
-
-        public static double GetDouble(this XmlElement element, string attr, int defval)
-        {
-            string s = element.GetAttribute(attr);
-            if (string.IsNullOrEmpty(s))
-                return defval;
-            return XmlConvert.ToDouble(s);
-        }
-
-        public static bool GetBool(this XmlElement element, string attr, bool defval)
-        {
-            string s = element.GetAttribute(attr);
-            if (string.IsNullOrEmpty(s))
-                return false;
-            if (string.Compare(s, "true", true) == 0)
-                return true;
-            if (string.Compare(s, "false", true) == 0)
-                return false;
-            int v;
-            if (int.TryParse(s, out v))
-                return v != 0;
-            return false;
         }
     }
 }

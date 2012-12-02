@@ -446,7 +446,7 @@ namespace DataDynamics.PageFX.FLI.SWF
             // "FWS" or "CWS" for ZLIB compressed files (v6.0 or later)
             if (sig != "FWS" && sig != "CWS")
             {
-                throw new BadFormatException("Not a valid SWF (Flash) file signature");
+                throw new BadImageFormatException("Not a valid SWF (Flash) file signature");
             }
 
             _version = reader.ReadUInt8(); // file version

@@ -103,9 +103,6 @@
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\PfxConfig.cs">
       <Link>Shared\PfxConfig.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\System\TextFormatter.cs">
-      <Link>Shared\TextFormatter.cs</Link>
-    </Compile>
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CliOption.cs">
       <Link>Shared\CliOption.cs</Link>
     </Compile>
@@ -114,9 +111,6 @@
     </Compile>
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CommandPromt.cs">
       <Link>Shared\CommandPromt.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CommonExceptions.cs">
-      <Link>Shared\CommonExceptions.cs</Link>
     </Compile>
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CompilerConsole.cs">
       <Link>Shared\CompilerConsole.cs</Link>

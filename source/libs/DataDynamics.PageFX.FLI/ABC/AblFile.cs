@@ -141,7 +141,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         private void ReadHeader(SwfReader reader)
         {
             if (reader.ReadASCII(3) != SIG)
-                throw new BadFormatException("Bad file signature. not " + SIG);
+                throw new BadImageFormatException("Bad file signature. not " + SIG);
             _version = reader.ReadByte();
         }
 

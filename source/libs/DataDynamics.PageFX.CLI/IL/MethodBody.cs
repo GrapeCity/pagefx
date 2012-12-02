@@ -263,7 +263,7 @@ namespace DataDynamics.PageFX.CLI.IL
             }
 
             if (!opCode.HasValue)
-                throw new BadInstructionException(op);
+                throw new BadImageFormatException(string.Format("The format of instruction with code {0} is invalid", op));
 
             instr.OpCode = opCode.Value;
 
@@ -366,7 +366,7 @@ namespace DataDynamics.PageFX.CLI.IL
 					break;
 
 				case OperandType.InlinePhi:
-					throw new BadOperandException(@"Obsolete. The InlinePhi operand is reserved and should not be used!");
+					throw new BadImageFormatException(@"Obsolete. The InlinePhi operand is reserved and should not be used!");
             }
 
             return instr;

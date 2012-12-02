@@ -518,7 +518,7 @@ namespace DataDynamics.PageFX.FLI.IL
             {
                 var mname = _operands[index].Value as AbcMultiname;
                 if (mname == null)
-                    throw new BadInstructionException((int)Code);
+					throw new BadImageFormatException(string.Format("The format of instruction with code {0} is invalid", (int)Code));
                 return mname.StackPop;
             }
             return -1;
@@ -1033,20 +1033,20 @@ namespace DataDynamics.PageFX.FLI.IL
             if (i.Operands != null)
             {
                 if (_operands == null)
-                    throw new BadFormatException(string.Format("Instruction {0} has no operands", Code));
+                    throw new BadImageFormatException(string.Format("Instruction {0} has no operands", Code));
                 int n = i.Operands.Length;
                 if (_operands.Length != n)
-                    throw new BadFormatException(
+                    throw new BadImageFormatException(
                         string.Format("Instruction {0} has incorrect {1} number of operands. Must be {2}.",
                                       Code, _operands.Length, n));
                 for (int k = 0; k < n; ++k)
                 {
                     if (i.Operands[k].Type != _operands[k].Type)
-                        throw new BadFormatException(
+                        throw new BadImageFormatException(
                             string.Format("Instruction {0} has invalid type {1} of operand {2}. Must be {3}.",
                                           Code, _operands[k].Type, k, i.Operands[k].Type));
                     if (_operands[k].Value == null)
-                        throw new BadFormatException(string.Format("Instruction {0} has null value", Code));
+                        throw new BadImageFormatException(string.Format("Instruction {0} has null value", Code));
                 }
             }
         }

@@ -84,9 +84,6 @@
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\Warnings.cs">
       <Link>Warnings.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\System\TextFormatter.cs">
-      <Link>TextFormatter.cs</Link>
-    </Compile>
     <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CliOption.cs">
       <Link>CliOption.cs</Link>
     </Compile>

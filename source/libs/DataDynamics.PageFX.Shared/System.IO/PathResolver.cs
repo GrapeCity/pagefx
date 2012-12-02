@@ -4,9 +4,9 @@ using System.Text;
 
 namespace System.IO
 {
-    public class PathResolver
+    public sealed class PathResolver
     {
-        internal List<string> _dirs = new List<string>();
+        private List<string> _dirs = new List<string>();
 
     	public bool UseCurrentDirectory { get; set; }
 

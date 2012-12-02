@@ -125,7 +125,7 @@ namespace DataDynamics.PageFX.FLI.SWC
                 string scriptName = scriptElem.GetAttribute("name");
                 var abc = lib.FindAbc(scriptName);
                 if (abc == null)
-                    throw new BadFormatException();
+                    throw new BadImageFormatException();
 
                 string defID = GetDefID(scriptElem);
                 string fn = ToFullName(defID);
@@ -171,7 +171,7 @@ namespace DataDynamics.PageFX.FLI.SWC
 
         	if (_libElems.Select(libElem => GetLibName(libElem)).Select(name => GetLibrary(name)).Any(lib => lib == null))
         	{
-        		throw new BadFormatException();
+        		throw new BadImageFormatException();
         	}
         }
 
@@ -658,11 +658,11 @@ namespace DataDynamics.PageFX.FLI.SWC
         {
             var defElem = GetElement(scriptElem, "def");
             if (defElem == null)
-                throw new BadFormatException();
+                throw new BadImageFormatException();
 
             string defID = defElem.GetAttribute("id");
             if (string.IsNullOrEmpty(defID))
-                throw new BadFormatException();
+                throw new BadImageFormatException();
             return defID;
         }
         #endregion

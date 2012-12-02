@@ -117,7 +117,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         {
             _kind = (AbcConstKind)reader.ReadUInt8();
             if (!_kind.IsNamespace())
-                throw new BadFormatException("Invalid namespace kind");
+                throw new BadImageFormatException("Invalid namespace kind");
             Name = reader.ReadAbcString();
         }
 

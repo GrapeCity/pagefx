@@ -108,7 +108,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                 {
                     int i = mn.TypeParameter.Index;
                     if (i == 0 || i >= n)
-                        throw new BadFormatException("Bad index in multiname cpool");
+                        throw new BadImageFormatException("Bad index in multiname cpool");
                     mn.TypeParameter = this[i];
                 }
             }
