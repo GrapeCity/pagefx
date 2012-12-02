@@ -83,24 +83,37 @@ namespace DataDynamics.PageFX.CLI.LoaderInternals.Collections
 
 			for (int i = _from, k = 0; k < _signature.Params.Length; ++i)
 			{
-				var param = _loader.Parameters[i];
-				if (param.Index == 0)
+				if (i >= _loader.Parameters.Count)
 				{
-					//0 refers to the owner method's return type;
-					continue;
+					var type = ResolveParameterType(k++, context);
+					var param = new Parameter(type, "arg" + (i + 1), i + 1);
+					yield return param;
 				}
+				else
+				{
+					var param = _loader.Parameters[i];
+					if (param.Index == 0)
+					{
+						//0 refers to the owner method's return type;
+						continue;
+					}
 
-				var ptype = _loader.ResolveType(_signature.Params[k++], context);
-				if (ptype == null)
-					throw new InvalidOperationException();
+					param.Type = ResolveParameterType(k++, context);
 
-				param.Type = ptype;
-
-				//var p = new Parameter(ptype, "arg" + (i + 1), i + 1);
-				//method.Parameters.Add(p);
-
-				yield return param;
+					yield return param;
+				}
 			}
+		}
+
+		private IType ResolveParameterType(int k, Context context)
+		{
+			var paramSig = _signature.Params[k];
+
+			var type = _loader.ResolveType(paramSig, context);
+			if (type == null)
+				throw new InvalidOperationException();
+
+			return type;
 		}
 
 		private Context ResolveContext()
