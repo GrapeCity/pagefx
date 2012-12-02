@@ -7,6 +7,38 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 {
 	public static class MethodExtensions
 	{
+		public static bool IsGetter(this IMethod method)
+		{
+			if (method is GenericMethodInstance)
+			{
+				return IsGetter(method.InstanceOf);
+			}
+
+			if (method is MethodProxy)
+			{
+				return IsGetter(method.ProxyOf);
+			}
+
+			var prop = method.Association as IProperty;
+			return prop != null && prop.Getter == method;
+		}
+
+		public static bool IsSetter(this IMethod method)
+		{
+			if (method is GenericMethodInstance)
+			{
+				return IsSetter(method.InstanceOf);
+			}
+
+			if (method is MethodProxy)
+			{
+				return IsSetter(method.ProxyOf);
+			}
+
+			var prop = method.Association as IProperty;
+			return prop != null && prop.Setter == method;
+		}
+
 		public static bool IsNew(this IMethod method)
 		{
 			if (method == null) return false;

@@ -109,18 +109,7 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
         /// </summary>
         ITypeMember Association { get; set; }
 
-		//TODO: make IsGetter, IsSetter as extension methods for IMethod
-        /// <summary>
-        /// Determines whether the method is getter for specified property.
-        /// </summary>
-        bool IsGetter { get; }
-
-        /// <summary>
-        /// Determines whether the method is setter for specified property.
-        /// </summary>
-        bool IsSetter { get; }
-
-        /// <summary>
+		/// <summary>
         /// Gets or sets boolean flag indicating whether the method is explicit implementation of some interface method.
         /// </summary>
         bool IsExplicitImplementation { get; set; }

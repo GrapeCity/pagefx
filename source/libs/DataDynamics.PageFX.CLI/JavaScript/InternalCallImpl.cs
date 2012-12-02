@@ -167,7 +167,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 				case InlineKind.Property:
 					//TODO: support static properties
 					var propertyName = info.Name;
-					if (method.IsSetter)
+					if (method.IsSetter())
 					{
 						func.Body.Add("this".Id().Set(propertyName, parameters[0].Id()));
 					}

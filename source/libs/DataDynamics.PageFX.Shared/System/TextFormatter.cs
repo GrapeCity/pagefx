@@ -5,12 +5,7 @@ namespace System
 {
 	public static class TextFormatter
     {
-        public static string ToString<T>(IEnumerable<T> list)
-        {
-            return ToString(list, "", "", ", ");
-        }
-
-        public static string ToString<T>(IEnumerable<T> list, string prefix, string suffix, string separator)
+		public static string ToString<T>(IEnumerable<T> list, string prefix, string suffix, string separator)
         {
             using (var writer = new StringWriter())
             {
@@ -40,12 +35,7 @@ namespace System
             }
         }
 
-        public static void WriteList<T>(TextWriter writer, IEnumerable<T> list, string prefix, string suffix, string separator)
-        {
-            WriteList(writer, list, null, prefix, suffix, separator);
-        }
-
-        public static void WriteList<T>(TextWriter writer, IEnumerable<T> list, string separator)
+		public static void WriteList<T>(TextWriter writer, IEnumerable<T> list, string separator)
         {
             WriteList(writer, list, null, "", "", separator);
         }

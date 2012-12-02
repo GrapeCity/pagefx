@@ -188,17 +188,7 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 			throw new InvalidOperationException();
 	    }
 
-	    public bool IsGetter
-        {
-            get { return _method.IsGetter; }
-        }
-
-        public bool IsSetter
-        {
-            get { return _method.IsSetter; }
-        }
-
-        public bool IsExplicitImplementation
+	    public bool IsExplicitImplementation
         {
             get { return _method.IsExplicitImplementation; }
             set { throw new NotSupportedException(); }

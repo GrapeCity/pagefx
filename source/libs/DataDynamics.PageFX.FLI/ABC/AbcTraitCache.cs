@@ -83,7 +83,7 @@ namespace DataDynamics.PageFX.FLI.ABC
                     ns = type.Namespace;
 
                 var method = m as IMethod;
-                if (method != null && (method.IsGetter || method.IsSetter))
+                if (method != null && (method.IsGetter() || method.IsSetter()))
                 {
                     name = m.Name.Substring(4);
                     return;

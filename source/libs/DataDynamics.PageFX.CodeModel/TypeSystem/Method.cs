@@ -275,33 +275,7 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 		    return Meta != null ? Meta.Association : null;
 	    }
 
-	    public bool IsGetter
-        {
-             get
-             {
-                 var prop = Association as IProperty;
-                 if (prop != null)
-                 {
-                     return prop.Getter == this;
-                 }
-                 return false;
-             }
-        }
-
-        public bool IsSetter
-        {
-             get
-             {
-                 var prop = Association as IProperty;
-                 if (prop != null)
-                 {
-                     return prop.Setter == this;
-                 }
-                 return false;
-             }
-        }
-
-        /// <summary>
+	    /// <summary>
         /// Gets or sets boolean flag indicating whether the method is explicit implementation of some interface method.
         /// </summary>
         public bool IsExplicitImplementation

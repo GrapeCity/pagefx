@@ -273,17 +273,8 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
             get { return _method.Association; }
             set { throw new NotSupportedException(); }
         }
-        public bool IsGetter
-        {
-            get { return _method.IsGetter; }
-        }
-
-        public bool IsSetter
-        {
-            get { return _method.IsSetter; }
-        }
-
-        /// <summary>
+        
+		/// <summary>
         /// Gets or sets boolean flag indicating whether the method is explicit implementation of some interface method.
         /// </summary>
         public bool IsExplicitImplementation

@@ -106,11 +106,11 @@ namespace DataDynamics.PageFX.FLI.Inlining
 			{
 				return false;
 			}
-			if ((attrs & MethodAttrs.Getter) != 0 && !method.IsGetter)
+			if ((attrs & MethodAttrs.Getter) != 0 && !method.IsGetter())
 			{
 				return false;
 			}
-			if ((attrs & MethodAttrs.Setter) != 0 && !method.IsSetter)
+			if ((attrs & MethodAttrs.Setter) != 0 && !method.IsSetter())
 			{
 				return false;
 			}

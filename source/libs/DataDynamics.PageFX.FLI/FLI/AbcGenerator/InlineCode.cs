@@ -80,7 +80,7 @@ namespace DataDynamics.PageFX.FLI
 		    switch (info.Kind)
 		    {
 			    case InlineKind.Property:
-				    if (method.IsSetter)
+				    if (method.IsSetter())
 				    {
 					    code.SetProperty(name);
 				    }
