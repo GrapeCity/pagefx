@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.Tools
 {

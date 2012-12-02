@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.SWF;
 using Microsoft.Win32;
@@ -921,12 +922,6 @@ namespace DataDynamics.PageFX
             catch (Exception e)
             {
                 error = string.Format("Unable to deserialize assembly.\nException:\n{0}", e);
-                return null;
-            }
-
-            if (VerifyAssembly && !AssemblyVerifier.Verify(asm))
-            {
-                error = "Invalid Code Model structure.";
                 return null;
             }
 

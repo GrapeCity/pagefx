@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Syntax;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 using DataDynamics.PageFX.FLI.SWF;
 
 namespace DataDynamics.PageFX.FLI.ABC

@@ -1,4 +1,6 @@
-﻿namespace DataDynamics.PageFX.CodeModel
+﻿using DataDynamics.PageFX.CodeModel.TypeSystem;
+
+namespace DataDynamics.PageFX.CodeModel
 {
     public interface ITypeResolver
     {

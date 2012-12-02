@@ -5,6 +5,7 @@ using DataDynamics.PageFX.CLI.LoaderInternals.Collections;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Syntax;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 {

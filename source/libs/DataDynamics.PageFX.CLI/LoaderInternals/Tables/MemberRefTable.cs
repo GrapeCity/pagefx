@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 {

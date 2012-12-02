@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 using DataDynamics.PageFX.FLI.SWF;

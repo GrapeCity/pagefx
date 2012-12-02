@@ -4,6 +4,7 @@ using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.JavaScript.Inlining;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {

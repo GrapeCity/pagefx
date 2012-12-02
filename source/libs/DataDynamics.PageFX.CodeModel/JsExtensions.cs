@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CodeModel
 {

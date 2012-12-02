@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.Execution
 {

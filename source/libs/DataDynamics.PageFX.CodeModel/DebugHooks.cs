@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 using Microsoft.Win32;
 
 namespace DataDynamics.PageFX

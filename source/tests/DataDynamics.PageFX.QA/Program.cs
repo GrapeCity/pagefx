@@ -9,7 +9,6 @@ using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.CLI.PDB;
 using DataDynamics.PageFX.CLI.Tools;
-using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.SWF;
 
@@ -35,50 +34,7 @@ namespace DataDynamics.PageFX
         }
         #endregion
 
-        #region CLI_TestDeserialization
-        private static void CheckAssembly(IAssembly asm)
-        {
-            AssemblyVerifier.Verify(asm);
-        }
-
-        private static void CLI_TestDeserialization()
-        {
-            using (var dlg = new OpenFileDialog())
-            {
-                dlg.Filter = "CSharp Files (*.cs, *.csc)|*.cs;*.csc|Managed Assemblies (*.dll, *.exe)|*.dll;*.exe";
-                dlg.Multiselect = true;
-                if (dlg.ShowDialog() != DialogResult.OK) return;
-
-                var files = dlg.FileNames;
-                switch (dlg.FilterIndex)
-                {
-                    case 1:
-                        {
-                            string output = "c:\\temp\\app.exe";
-                            var options = new CompilerOptions();
-                            options.Input.AddRange(files);
-                            options.Output = output;
-                            var errs = CompilerConsole.RunErr(options);
-                            if (!errs.HasErrors)
-                            {
-                                var asm = CLI.CommonLanguageInfrastructure.Deserialize(output, null);
-                                CheckAssembly(asm);
-                            }
-                        }
-                        break;
-
-                    case 2:
-                        {
-                            var asm = CLI.CommonLanguageInfrastructure.Deserialize(files[0], null);
-                            CheckAssembly(asm);
-                        }
-                        break;
-                }
-            }
-        }
-        #endregion
-
-        #region Select
+	    #region Select
         private static int[] Select(params string[] items)
         {
             int w = 300;

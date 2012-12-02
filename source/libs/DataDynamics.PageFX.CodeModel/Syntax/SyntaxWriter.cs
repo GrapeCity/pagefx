@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CodeModel.Expressions;
 using DataDynamics.PageFX.CodeModel.Statements;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CodeModel.Syntax
 {

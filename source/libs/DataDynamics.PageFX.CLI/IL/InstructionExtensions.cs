@@ -1,5 +1,6 @@
 ﻿using System.Reflection.Emit;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.IL
 {

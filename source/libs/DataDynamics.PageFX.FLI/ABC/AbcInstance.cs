@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 using DataDynamics.PageFX.FLI.IL;
 using DataDynamics.PageFX.FLI.SWC;
 using DataDynamics.PageFX.FLI.SWF;

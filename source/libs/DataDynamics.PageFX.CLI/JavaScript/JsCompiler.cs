@@ -7,6 +7,9 @@ using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Translation;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
+using IAssembly = DataDynamics.PageFX.CodeModel.TypeSystem.IAssembly;
+using IType = DataDynamics.PageFX.CodeModel.TypeSystem.IType;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {

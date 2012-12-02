@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 using Module = System.Reflection.Module;
 using TypeAttributes = System.Reflection.TypeAttributes;
 

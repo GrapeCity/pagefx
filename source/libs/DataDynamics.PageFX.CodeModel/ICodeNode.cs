@@ -23,4 +23,41 @@ namespace DataDynamics.PageFX.CodeModel
         /// </summary>
         object Tag { get; set; }
     }
+
+	public enum CodeNodeType
+	{
+		Assembly,
+		AssemblyReference,
+		Modules,
+		Module,
+		Namespaces,
+		Namespace,
+		Attribute,
+		Attributes,
+		Type,
+		Types,
+		GenericParameter,
+		GenericParameters,
+		TypeMember,
+		TypeMembers,
+		Field,
+		Fields,
+		Property,
+		Properties,
+		Event,
+		Events,
+		Constructor,
+		Constructors,
+		Method,
+		Methods,
+		Parameter,
+		Parameters,
+		Argument,
+		Arguments,
+		Variable,
+		Variables,
+		Statement,
+		Statements,
+		Expression
+	}
 }

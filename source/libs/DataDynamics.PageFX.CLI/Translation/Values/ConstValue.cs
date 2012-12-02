@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.Translation.Values
 {

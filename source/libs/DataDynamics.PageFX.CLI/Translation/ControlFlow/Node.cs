@@ -6,6 +6,7 @@ using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow.Services;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Statements;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.Translation.ControlFlow
 {

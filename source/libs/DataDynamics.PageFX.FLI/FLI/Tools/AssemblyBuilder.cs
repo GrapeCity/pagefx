@@ -8,6 +8,7 @@ using System.Linq;
 using System.Xml;
 using DataDynamics.Compression.Zip;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 using DataDynamics.PageFX.FLI.SWF;

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 using DataDynamics.PageFX.Flash;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.Tools;

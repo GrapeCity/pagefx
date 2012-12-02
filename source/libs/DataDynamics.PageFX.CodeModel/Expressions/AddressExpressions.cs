@@ -1,3 +1,5 @@
+using DataDynamics.PageFX.CodeModel.TypeSystem;
+
 namespace DataDynamics.PageFX.CodeModel.Expressions
 {
     public sealed class AddressOfExpression : EnclosingExpression, IAddressOfExpression

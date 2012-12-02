@@ -1,4 +1,5 @@
 using System.IO;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CodeModel
 {

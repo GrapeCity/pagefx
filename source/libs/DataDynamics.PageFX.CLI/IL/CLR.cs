@@ -4,6 +4,7 @@ using System.IO;
 using DataDynamics.PageFX.CLI.LoaderInternals;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.Expressions;
+using DataDynamics.PageFX.CodeModel.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.IL
 {
