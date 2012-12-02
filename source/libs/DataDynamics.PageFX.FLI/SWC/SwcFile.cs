@@ -5,11 +5,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using DataDynamics.Compression.Zip;
-using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWF;
+using Ionic.Zip;
 
 namespace DataDynamics.PageFX.FLI.SWC
 {
@@ -19,11 +18,11 @@ namespace DataDynamics.PageFX.FLI.SWC
         public const string CATALOG_XML = "catalog.xml";
 
         #region ctors
-        readonly ZipFile _zip;
+        private readonly ZipFile _zip;
 
         public SwcFile(Stream input)
         {
-            _zip = new ZipFile(input);
+            _zip = ZipFile.Read(input);
             _libs = new HashList<string, SwfMovie>(lib => lib.Name);
         }
 
@@ -54,7 +53,7 @@ namespace DataDynamics.PageFX.FLI.SWC
             get
             {
                 if (_catalog != null) return _catalog;
-                var s = Zip.Extract(_zip, CATALOG_XML);
+                var s = _zip.ExtractEntry(CATALOG_XML);
                 if (s == null)
                 {
                     return null;
@@ -91,7 +90,7 @@ namespace DataDynamics.PageFX.FLI.SWC
 
             var lib = _libs[name];
             if (lib != null) return lib;
-            var stream = Zip.Extract(_zip, name);
+            var stream = _zip.ExtractEntry(name);
             if (stream == null) return null;
 
             lib = new SwfMovie();
@@ -646,9 +645,9 @@ namespace DataDynamics.PageFX.FLI.SWC
         public IEnumerable<SwfMovie> ExtractSwfs()
         {
         	return (from ZipEntry e in _zip
-        	        where e.Name.EndsWith(".swf", StringComparison.OrdinalIgnoreCase)
-        	        let stream = e.Data.ToMemoryStream()
-        	        select new SwfMovie(stream) {Name = e.Name}).ToArray();
+        	        where e.FileName.EndsWith(".swf", StringComparison.OrdinalIgnoreCase)
+        	        let stream = e.OpenReader().ToMemoryStream()
+        	        select new SwfMovie(stream) {Name = e.FileName}).ToArray();
         }
 
     	#endregion
@@ -686,12 +685,12 @@ namespace DataDynamics.PageFX.FLI.SWC
             if (image != null)
                 return image;
 
-            foreach (ZipEntry e in _zip)
+            foreach (var e in _zip)
             {
-                string name = e.Name;
+                string name = e.FileName;
                 if (string.Compare(name, path, true) == 0)
                 {
-                    var ms = e.Data.ToMemoryStream();
+                    var ms = e.OpenReader().ToMemoryStream();
                     image = Image.FromStream(ms);
                     _imageCache[path] = image;
                     return image;

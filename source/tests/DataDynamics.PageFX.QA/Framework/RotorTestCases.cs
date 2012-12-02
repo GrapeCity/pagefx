@@ -1,5 +1,5 @@
 using System.IO;
-using DataDynamics.Compression.Zip;
+using Ionic.Zip;
 
 namespace DataDynamics.PageFX
 {
@@ -15,13 +15,13 @@ namespace DataDynamics.PageFX
                     var stream = typeof(RotorTestCases).GetResourceStream("Rotor.il_bvt.zip");
                     if (stream != null)
                     {
-                        var zip = new ZipFile(stream);
-                        foreach (ZipEntry zipEntry in zip)
+                        var zip = ZipFile.Read(stream);
+                        foreach (var zipEntry in zip)
                         {
-                            string name = zipEntry.Name;
+                            string name = zipEntry.FileName;
                             if (name.EndsWith(".il"))
                             {
-                                stream = zipEntry.Data.ToMemoryStream();
+                                stream = zipEntry.OpenReader().ToMemoryStream();
                                 string text;
                                 using (var reader = new StreamReader(stream))
                                     text = reader.ReadToEnd();

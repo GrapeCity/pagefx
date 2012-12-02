@@ -72,6 +72,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\FireFX\Fireball.Windows.Forms.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\..\..\libs\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\NUnit\nunit.framework.dll</HintPath>
@@ -1518,16 +1521,12 @@
     <EmbeddedResource Include="TestCases\PageFX\Simple\CSharp\ValueTypes\HashCode.cs" />
     <Compile Include="Tools\JsRunner.cs" />
     <Compile Include="UnitTests\ABCALL.cs" />
-    <Compile Include="UnitTests\ABCDefineTest.cs" />
-    <Compile Include="UnitTests\AbcFileTest.cs" />
-    <Compile Include="UnitTests\ABCImportTest.cs" />
+    <Compile Include="UnitTests\ABCIOTest.cs" />
     <Compile Include="UnitTests\AILTest.cs" />
     <Compile Include="UnitTests\ArithmeticTest.cs" />
     <Compile Include="UnitTests\DebugTest.cs" />
     <Compile Include="UnitTests\NegativeTests.cs" />
-    <Compile Include="UnitTests\ABCIOTest.cs" />
     <Compile Include="Framework\TestEngine.cs" />
-    <Compile Include="UnitTests\SwfIOTest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1570,7 +1569,6 @@
     <Compile Include="UI\QAForm.Designer.cs">
       <DependentUpon>QAForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UnitTests\SwfMovieTest.cs" />
     <Compile Include="UnitTests\Int64TestDriver.cs" />
     <Compile Include="Tools\asc.cs" />
     <Compile Include="Tools\AvmShell.cs" />
@@ -1595,7 +1593,6 @@
     <Compile Include="UI\ThumbnailViewer.Designer.cs">
       <DependentUpon>ThumbnailViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="UnitTests\SwfTagsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CLI\DataDynamics.PageFX.CLI.csproj">

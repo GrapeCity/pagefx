@@ -1,5 +1,5 @@
 using System.IO;
-using DataDynamics.Compression.Zip;
+using Ionic.Zip;
 
 namespace DataDynamics
 {
@@ -14,11 +14,11 @@ namespace DataDynamics
                 Directory.CreateDirectory(dir);
                 var asm = typeof(Dot).Assembly;
                 var rs = asm.GetResourceStream("Tools.dot.zip");
-                var zip = new ZipFile(rs);
-                foreach (ZipEntry entry in zip)
+                var zip = ZipFile.Read(rs);
+                foreach (var entry in zip)
                 {
-                    var ms = entry.Data.ToMemoryStream();
-                    ms.Save(Path.Combine(dir, entry.Name));
+                    var ms = entry.OpenReader().ToMemoryStream();
+                    ms.Save(Path.Combine(dir, entry.FileName));
                 }
             }
             return path;

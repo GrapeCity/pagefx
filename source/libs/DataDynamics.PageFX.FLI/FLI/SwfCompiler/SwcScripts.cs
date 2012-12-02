@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using DataDynamics.Compression.Zip;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 using DataDynamics.PageFX.FLI.SWF;
+using Ionic.Zip;
 
 namespace DataDynamics.PageFX.FLI
 {
-    partial class SwfCompiler
+    internal partial class SwfCompiler
     {
         #region CreateScripts
         List<AbcFile> _scripts;
@@ -73,13 +73,13 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region SaveSwc
-        void SaveSwc(string path)
+		private void SaveSwc(string path)
         {
             var zip = CreateSwcZip();
             File.WriteAllBytes(path, zip);
         }
 
-        void SaveSwc(Stream output)
+        private void SaveSwc(Stream output)
         {
             if (output == null)
                 throw new ArgumentNullException("output");
@@ -87,20 +87,21 @@ namespace DataDynamics.PageFX.FLI
             output.Write(zip, 0, zip.Length);
         }
 
-        byte[] CreateSwcZip()
+        private byte[] CreateSwcZip()
         {
-            var zipData = new MemoryStream();
-            using (var zip = new ZipOutputStream(zipData))
-                WriteSwcZip(zip);
-            return zipData.ToArray();
+            var output = new MemoryStream();
+	        var zipFile = new ZipFile();
+			BuildSwcZip(zipFile);
+			zipFile.Save(output);
+            return output.ToArray();
         }
 
-        void WriteSwcZip(ZipOutputStream stream)
+        private void BuildSwcZip(ZipFile zipFile)
         {
-            WriteZipEntry(stream, SwcFile.CATALOG_XML, _catalogBytes);
-            WriteZipEntry(stream, SwcFile.LIBRARY_SWF, _libraryBytes);
+	        zipFile.AddEntry(SwcFile.CATALOG_XML, "", _catalogBytes);
+	        zipFile.AddEntry(SwcFile.LIBRARY_SWF, "", _libraryBytes);
 
-            //For testing purposes.
+	        //For testing purposes.
             //string outpath = OutputPath;
             //if (!string.IsNullOrEmpty(outpath))
             //{
@@ -114,16 +115,13 @@ namespace DataDynamics.PageFX.FLI
             if (_swcFiles != null)
             {
                 foreach (var f in _swcFiles)
-                    WriteZipEntry(stream, f.Path, f.Data);
+                {
+	                zipFile.AddEntry(f.Path, "", f.Data);
+                }
             }
         }
 
-        static void WriteZipEntry(ZipOutputStream stream, string name, byte[] data)
-        {
-            stream.PutNextEntry(new ZipEntry(name));
-            stream.Write(data, 0, data.Length);
-        }
-        #endregion
+	    #endregion
 
         #region Utils
         static string GetScriptName(AbcFile abc)

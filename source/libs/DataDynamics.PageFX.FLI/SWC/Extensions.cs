@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using DataDynamics.Compression.Zip;
 using DataDynamics.PageFX.FLI.ABC;
+using Ionic.Zip;
 
 namespace DataDynamics.PageFX.FLI.SWC
 {
@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.FLI.SWC
 
         public static Stream ExtractSwfLibrary(this Stream input)
         {
-            var zip = new ZipFile(input);
+            var zip = ZipFile.Read(input);
             return zip.ExtractSwfLibrary();
         }
 
@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FLI.SWC
 
         public static Stream ExtractSwfLibrary(this ZipFile zip)
         {
-            return Zip.Extract(zip, e => string.Equals(e.Name, SwcFile.LIBRARY_SWF, StringComparison.CurrentCultureIgnoreCase));
+            return zip.ExtractEntry(e => e.FileName.Equals(SwcFile.LIBRARY_SWF, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

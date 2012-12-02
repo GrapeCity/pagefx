@@ -57,6 +57,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\..\..\libs\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\NUnit\nunit.framework.dll</HintPath>
@@ -73,42 +76,7 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Compression\Zip.cs" />
-    <Compile Include="Compression\Zip\Checksums\Adler32.cs" />
-    <Compile Include="Compression\Zip\Checksums\CRC32.cs" />
-    <Compile Include="Compression\Zip\Checksums\IChecksum.cs" />
-    <Compile Include="Compression\Zip\Checksums\StrangeCRC.cs" />
-    <Compile Include="Compression\Zip\Compression\Deflater.cs" />
-    <Compile Include="Compression\Zip\Compression\DeflaterConstants.cs" />
-    <Compile Include="Compression\Zip\Compression\DeflaterEngine.cs" />
-    <Compile Include="Compression\Zip\Compression\DeflaterHuffman.cs" />
-    <Compile Include="Compression\Zip\Compression\DeflaterPending.cs" />
-    <Compile Include="Compression\Zip\Compression\Inflater.cs" />
-    <Compile Include="Compression\Zip\Compression\InflaterDynHeader.cs" />
-    <Compile Include="Compression\Zip\Compression\InflaterHuffmanTree.cs" />
-    <Compile Include="Compression\Zip\Compression\PendingBuffer.cs" />
-    <Compile Include="Compression\Zip\Compression\Streams\DeflaterOutputStream.cs" />
-    <Compile Include="Compression\Zip\Compression\Streams\InflaterInputStream.cs" />
-    <Compile Include="Compression\Zip\Compression\Streams\OutputWindow.cs" />
-    <Compile Include="Compression\Zip\Compression\Streams\StreamManipulator.cs" />
-    <Compile Include="Compression\Zip\Compression\Tests\InflaterDeflaterTests.cs" />
-    <Compile Include="Compression\Zip\ZipConstants.cs" />
-    <Compile Include="Compression\Zip\ZipEntry.cs" />
-    <Compile Include="Compression\Zip\ZipException.cs" />
-    <Compile Include="Compression\Zip\ZipFile.cs" />
-    <Compile Include="Compression\Zip\ZipInputStream.cs" />
-    <Compile Include="Compression\Zip\ZipOutputStream.cs" />
-    <Compile Include="Compression\ZLib\Adler32.cs" />
-    <Compile Include="Compression\ZLib\Deflate.cs" />
-    <Compile Include="Compression\ZLib\InfBlocks.cs" />
-    <Compile Include="Compression\ZLib\InfCodes.cs" />
-    <Compile Include="Compression\ZLib\Inflate.cs" />
-    <Compile Include="Compression\ZLib\InfTree.cs" />
-    <Compile Include="Compression\ZLib\StaticTree.cs" />
-    <Compile Include="Compression\ZLib\Tree.cs" />
-    <Compile Include="Compression\ZLib\ZByteArray.cs" />
-    <Compile Include="Compression\ZLib\Zlib.cs" />
-    <Compile Include="Compression\ZLib\ZStream.cs" />
+    <Compile Include="Utils\Zip.cs" />
     <Compile Include="System.Collections.Generic\MemoizeEnumerable.cs" />
     <Compile Include="System.Collections.Generic\ReadOnlyList.cs" />
     <Compile Include="Graphics\ColorExtensions.cs" />

@@ -6,12 +6,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using DataDynamics.Compression.Zip;
 using DataDynamics.PageFX.CodeModel;
 using DataDynamics.PageFX.CodeModel.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 using DataDynamics.PageFX.FLI.SWF;
+using Ionic.Zip;
 
 namespace DataDynamics.PageFX.FLI
 {
@@ -58,16 +58,16 @@ namespace DataDynamics.PageFX.FLI
                             };
         }
 
-        static Stream Unzip(string path)
+        private static Stream Unzip(string path)
         {
             var zip = new ZipFile(path);
-            return zip[0].Data.ToMemoryStream();
+            return zip.First().OpenReader().ToMemoryStream();
         }
 
-        static Stream Unzip(Stream stream)
+        private static Stream Unzip(Stream stream)
         {
-            var zip = new ZipFile(stream);
-            return zip[0].Data.ToMemoryStream();
+            var zip = ZipFile.Read(stream);
+            return zip.First().OpenReader().ToMemoryStream();
         }
 
         void Setup(CommandLine cl)
@@ -108,7 +108,7 @@ namespace DataDynamics.PageFX.FLI
         #endregion
 
         #region LoadDocFile
-        bool LoadDocFile(string docpath)
+        private bool LoadDocFile(string docpath)
         {
             if (string.IsNullOrEmpty(docpath))
                 return false;

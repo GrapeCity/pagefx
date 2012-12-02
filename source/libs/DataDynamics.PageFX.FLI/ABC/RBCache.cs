@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using DataDynamics.Compression.Zip;
+using Ionic.Zip;
 
 namespace DataDynamics.PageFX.FLI.ABC
 {
@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.FLI.ABC
     }
 
 	#region class RBCache
-    class RB
+    internal sealed class RB
     {
         public string Name;
         public string Locale;
@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         public string[] Content;
     }
 
-    static class RBCache
+    internal static class RBCache
     {
         static bool _loaded;
         static bool _isFlex;
@@ -157,12 +157,12 @@ namespace DataDynamics.PageFX.FLI.ABC
             bool auto = string.IsNullOrEmpty(locale);
             foreach (ZipEntry entry in zip)
             {
-                string path = entry.Name;
+                string path = entry.FileName;
                 string name = Path.GetFileName(path);
                 if (name != null && name.EndsWith(".properties", StringComparison.InvariantCultureIgnoreCase))
                 {
                     name = Path.GetFileNameWithoutExtension(name);
-                    var rbStream = entry.Data.ToMemoryStream();
+                    var rbStream = entry.OpenReader().ToMemoryStream();
                     var lines = rbStream.GetResourceBundleLines();
                     string loc = locale;
                     if (auto)

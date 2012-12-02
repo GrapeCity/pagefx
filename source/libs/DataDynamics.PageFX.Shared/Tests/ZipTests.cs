@@ -1,7 +1,9 @@
 ﻿#if NUNIT
+using System;
 using System.IO;
+using System.Linq;
+using Ionic.Zip;
 using NUnit.Framework;
-using DataDynamics.Compression.Zip;
 
 namespace DataDynamics.PageFX.Tests
 {
@@ -14,37 +16,31 @@ namespace DataDynamics.PageFX.Tests
             var dataA = new byte[] { 10, 20, 30, 40 };
             var dataB = new byte[] { 50, 60, 70, 80 };
             var ms = new MemoryStream();
-            using (var stream = new ZipOutputStream(ms))
-            {
-                WriteZipEntry(stream, "A", dataA);
-                WriteZipEntry(stream, "B", dataB);
-            }
+	        var zip = new ZipFile();
+	        zip.AddEntry("A", "", dataA);
+	        zip.AddEntry("B", "", dataB);
+			zip.Save(ms);
             ms.Close();
-            byte[] zipBytes = ms.ToArray();
-            var zip = new ZipFile(new MemoryStream(zipBytes));
-            Assert.AreEqual(2, zip.Size);
 
-            var A = zip.GetEntry("A");
+            byte[] zipBytes = ms.ToArray();
+            zip = ZipFile.Read(zipBytes);
+            Assert.AreEqual(2, zip.Count);
+
+            var A = zip.FirstOrDefault(x => x.FileName.Equals("A", StringComparison.InvariantCultureIgnoreCase));
             Assert.IsNotNull(A, "A != null");
             AssertData(A, dataA);
 
-            var B = zip.GetEntry("B");
+            var B = zip.FirstOrDefault(x => x.FileName.Equals("B", StringComparison.InvariantCultureIgnoreCase));
             Assert.IsNotNull(B, "B != null");
             AssertData(B, dataB);
         }
 
         static void AssertData(ZipEntry e, byte[] data)
         {
-            var ms = e.Data.ToMemoryStream();
+            var ms = e.OpenReader().ToMemoryStream();
             ms.Close();
             byte[] d = ms.ToArray();
             Assert.AreEqual(data, d);
-        }
-
-        static void WriteZipEntry(ZipOutputStream stream, string name, byte[] data)
-        {
-            stream.PutNextEntry(new ZipEntry(name));
-            stream.Write(data, 0, data.Length);
         }
     }
 }
