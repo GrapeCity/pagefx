@@ -1,88 +1,56 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel.TypeSystem
 {
-    public class Parameter : CustomAttributeProvider, IParameter
+    public sealed class Parameter : CustomAttributeProvider, IParameter
     {
-        #region Constructors
-        public Parameter()
+	    public Parameter()
         {
         }
 
         public Parameter(IType type, string name)
         {
-            _type = type;
-            _name = name;
+            Type = type;
+            Name = name;
         }
 
         public Parameter(IType type, string name, int index)
         {
-            _type = type;
-            _name = name;
-            _index = index;
+            Type = type;
+            Name = name;
+            Index = index;
         }
-        #endregion
 
-        /// <summary>
+	    /// <summary>
         /// Gets or sets param attributes.
         /// </summary>
         public ParamAttributes Flags { get; set; }
 
-        #region IParameter Members
-        public int Index
-        {
-            get { return _index; }
-            set { _index = value; }
-        }
-        private int _index;
+	    public int Index { get; set; }
 
-        /// <summary>
-        /// Gets or sets param type.
-        /// </summary>
-        public IType Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
-        private IType _type;
+	    /// <summary>
+	    /// Gets or sets param type.
+	    /// </summary>
+	    public IType Type { get; set; }
 
-        /// <summary>
-        /// Gets or sets param name
-        /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
+	    /// <summary>
+	    /// Gets or sets param name
+	    /// </summary>
+	    public string Name { get; set; }
 
-        /// <summary>
-        ///  Gets or sets param value
-        /// </summary>
-        public object Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-        private object _value;
+	    /// <summary>
+	    ///  Gets or sets param value
+	    /// </summary>
+	    public object Value { get; set; }
 
-        /// <summary>
+	    /// <summary>
         /// Gets the flag indicating whether parameter is passed by reference.
         /// </summary>
         public bool IsByRef
         {
-            get
-            {
-                if (_type != null)
-                {
-                    return _type.TypeKind == TypeKind.Reference;
-                }
-                return false;
-            }
+            get { return Type != null && Type.TypeKind == TypeKind.Reference; }
         }
 
         public bool IsIn
@@ -107,14 +75,6 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 
         public IInstruction Instruction { get; set; }
 
-        /// <summary>
-        /// Returns true if type of this parameter was changed during resolving.
-        /// </summary>
-        public bool HasResolvedType { get; set;  }
-        #endregion
-
-        #region ICodeNode Members
-
         public CodeNodeType NodeType
         {
             get { return CodeNodeType.Parameter; }
@@ -130,44 +90,29 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
     	/// </summary>
     	public object Tag { get; set; }
 
-    	#endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+	    public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        #region IDocumentationProvider Members
-        /// <summary>
-        /// Gets or sets documentation of this member
-        /// </summary>
-        public string Documentation
-        {
-            get { return _doc; }
-            set { _doc = value; }
-        }
-        private string _doc;
-        #endregion
+	    /// <summary>
+	    /// Gets or sets documentation of this member
+	    /// </summary>
+	    public string Documentation { get; set; }
 
-        #region ICloneable Members
-        public object Clone()
-        {
-            var p = new Parameter(_type, _name, _index)
-                        {
-                            _doc = _doc,
-                            Flags = Flags,
-                            HasParams = HasParams,
-                            _value = CloneObject(_value),
-                            IsAddressed =  IsAddressed,
-                            HasResolvedType = HasResolvedType,
-                        };
-            return p;
-        }
-        #endregion
+	    public object Clone()
+	    {
+		    return new Parameter(Type, Name, Index)
+			    {
+				    Documentation = Documentation,
+				    Flags = Flags,
+				    HasParams = HasParams,
+				    Value = Clone(Value),
+				    IsAddressed = IsAddressed
+			    };
+	    }
 
-        private static object CloneObject(object obj)
+	    private static object Clone(object obj)
         {
             var c = obj as ICloneable;
             if (c != null)
@@ -179,163 +124,5 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
         {
             return ToString(null, null);
         }
-    }
-
-    /// <summary>
-    /// List of <see cref="Parameter"/>s.
-    /// </summary>
-    public sealed class ParameterCollection : List<IParameter>, IParameterCollection
-    {
-        #region IParamaterCollection Members
-
-        public IParameter this[string name]
-        {
-            get { return Find(p => p.Name == name); }
-        }
-
-        #endregion
-
-        #region ICodeNode Members
-
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Parameters; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return this.Cast<ICodeNode>(); }
-        }
-
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Tag { get; set; }
-
-    	#endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return SyntaxFormatter.Format(this, format, formatProvider);
-        }
-        #endregion
-
-        #region Object Override Methods
-        public override string ToString()
-        {
-            return ToString(null, null);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == this) return true;
-            var c = obj as IParameterCollection;
-            if (c != null)
-            {
-                int n = Count;
-                if (c.Count != n) return false;
-                for (int i = 0; i < n; ++i)
-                {
-                    if (this[i].Type != c[i].Type)
-                        return false;
-                }
-                return true;
-            }
-            var arr = obj as IType[];
-            if (arr != null)
-            {
-                int n = Count;
-                if (arr.Length != n) return false;
-                for (int i = 0; i < n; ++i)
-                {
-                    if (this[i].Type != arr[i])
-                        return false;
-                }
-                return true;
-            }
-            var c2 = obj as ICollection<IType>;
-            if (c2 != null)
-            {
-                int n = Count;
-                if (c2.Count != n) return false;
-                int i = 0;
-                foreach (var type in c2)
-                {
-                    if (this[i].Type != type)
-                        return false;
-                    ++i;
-                }
-                return true;
-            }
-            var e = obj as IEnumerable<IType>;
-            if (e != null)
-            {
-                int n = Count;
-                int i = 0;
-                foreach (var type in e)
-                {
-                    if (this[i].Type != type)
-                        return false;
-                    ++i;
-                }
-                if (i != n) return false;
-                return true;
-            }
-            return false;
-        }
-        #endregion
-
-	    public static readonly IParameterCollection Empty = new EmptyImpl();
-
-		private sealed class EmptyImpl : IParameterCollection
-		{
-			public IEnumerator<IParameter> GetEnumerator()
-			{
-				return Enumerable.Empty<IParameter>().GetEnumerator();
-			}
-
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-
-			public int Count
-			{
-				get { return 0; }
-			}
-
-			public IParameter this[int index]
-			{
-				get { throw new ArgumentOutOfRangeException("index"); }
-			}
-
-			public string ToString(string format, IFormatProvider formatProvider)
-			{
-				return "";
-			}
-
-			public CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Parameters; }
-			}
-
-			public IEnumerable<ICodeNode> ChildNodes
-			{
-				get { return this.Cast<ICodeNode>(); }
-			}
-
-			public object Tag { get; set; }
-
-			public IParameter this[string name]
-			{
-				get { return null; }
-			}
-
-			public void Add(IParameter parameter)
-			{
-				throw new NotSupportedException();
-			}
-		}
     }
 }

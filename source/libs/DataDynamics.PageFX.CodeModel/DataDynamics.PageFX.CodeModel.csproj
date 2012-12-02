@@ -170,6 +170,9 @@
     <Compile Include="TypeSystem\Parameter.cs" />
     <Compile Include="PfxTypeExtensions.cs" />
     <Compile Include="Operators.cs" />
+    <Compile Include="TypeSystem\ParameterCollection.cs" />
+    <Compile Include="TypeSystem\ParameterProxy.cs" />
+    <Compile Include="TypeSystem\ParameterProxyCollection.cs" />
     <Compile Include="TypeSystem\Property.cs" />
     <Compile Include="TypeSystem\PropertyCollection.cs" />
     <Compile Include="TypeSystem\PropertyProxy.cs" />

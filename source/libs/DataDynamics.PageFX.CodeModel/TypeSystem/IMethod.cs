@@ -148,11 +148,6 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
         IMethod ProxyOf { get; }
 
         IMethod InstanceOf { get; }
-
-        /// <summary>
-        /// Returns true if signature was changed during resolving.
-        /// </summary>
-        bool SignatureChanged { get; }
     }
 
 	/// <summary>

@@ -8,12 +8,11 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 {
     public sealed class MethodProxy : IMethod
     {
-		private bool _signatureChanged;
 		private readonly string[] _sigNames = new string[2];
 	    private readonly IGenericInstance _instance;
         private readonly IMethod _method;
         private IType _type;
-        private IParameterCollection _parameters;
+        private readonly IParameterCollection _parameters;
 		private IMethod[] _implMethods;
 		private IMethod _baseMethod;
 		private bool _resolveBaseMethod = true;
@@ -24,6 +23,7 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
         {
             _instance = instance;
             _method = method;
+			_parameters = new ParameterProxyCollection(_method.Parameters, _instance, _method);
         }
 
 	    #region IMethod Members
@@ -122,30 +122,10 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 
         public IParameterCollection Parameters
         {
-            get { return _parameters ?? (_parameters = ResolveParams()); }
+            get { return _parameters; }
         }
 
-		private IParameterCollection ResolveParams()
-		{
-			var collection = new ParameterCollection();
-
-			foreach (var p in _method.Parameters)
-			{
-				var ptype = GenericType.Resolve(_instance, _method, p.Type);
-				var p2 = new Parameter(ptype, p.Name, p.Index);
-				collection.Add(p2);
-
-				if (!ReferenceEquals(ptype, p.Type))
-				{
-					_signatureChanged = true;
-					p2.HasResolvedType = true;
-				}
-			}
-
-			return collection;
-		}
-
-        public ICustomAttributeCollection ReturnCustomAttributes
+	    public ICustomAttributeCollection ReturnCustomAttributes
         {
             get { return _method.ReturnCustomAttributes; }
         }
@@ -307,15 +287,7 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
             get { return _method.InstanceOf; }
         }
 
-        /// <summary>
-        /// Returns true if signature was changed during resolving.
-        /// </summary>
-        public bool SignatureChanged
-        {
-            get { return _signatureChanged; }
-        }
-        
-	    #endregion
+        #endregion
 
         #region IOverridableMember Members
         public bool IsAbstract
@@ -393,19 +365,8 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 
         public IType Type
         {
-            get
-            {
-				if (_type == null)
-				{
-					_type = GenericType.Resolve(_instance, _method, _method.Type);
-
-					if (!ReferenceEquals(_type, _method.Type))
-						_signatureChanged = true;
-				}
-
-	            return _type;
-            }
-            set { throw new NotSupportedException(); }
+            get { return _type ?? (_type = GenericType.Resolve(_instance, _method, _method.Type)); }
+	        set { throw new NotSupportedException(); }
         }
 
         public Visibility Visibility

@@ -345,14 +345,6 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
             get { return null; }
         }
 
-        /// <summary>
-        /// Returns true if signature was changed during resolving.
-        /// </summary>
-        public bool SignatureChanged
-        {
-            get { return false; }
-        }
-
         #endregion
 
         #region ICodeNode Members
@@ -388,12 +380,7 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
             return null;
         }
 
-        public static int GetSpecificity(IMethod method)
-        {
-        	return method.Parameters.Count(p => !p.HasResolvedType);
-        }
-
-		public IMetaMethod Meta { get; set; }
+	    public IMetaMethod Meta { get; set; }
 
 		protected override IType ResolveType()
 		{

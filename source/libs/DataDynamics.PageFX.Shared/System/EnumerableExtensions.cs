@@ -160,42 +160,68 @@ namespace System
 
         public static bool EqualsTo(this IEnumerable x, IEnumerable y)
         {
-            if (x == null) 
+            if (x == null)
                 return y.IsEmpty();
             if (y == null) 
                 return x.IsEmpty();
 
-        	var list1 = x as IList;
-        	var list2 = y as IList;
-			if (list1 != null && list2 != null)
-			{
-				int n = list1.Count;
-				if (list2.Count != n) return false;
-				for (int i = 0; i < n; ++i)
-				{
-					if (!Equals(list1[i], list2[i]))
-						return false;
-				}
-				return true;
-			}
+			var c1 = x as ICollection;
+			var c2 = y as ICollection;
+			if (c1 != null && c2 != null && c1.Count != c2.Count)
+				return false;
 
-        	var ex = x.GetEnumerator();
-            var ey = y.GetEnumerator();
-            while(true)
+        	var it1 = x.GetEnumerator();
+            var it2 = y.GetEnumerator();
+            while (true)
             {
-                if (ex.MoveNext())
+	            var f1 = it1.MoveNext();
+	            var f2 = it2.MoveNext();
+                if (f1 && f2)
                 {
-                    if (!ey.MoveNext())
-                        return false;
-                    if (!Equals(ex.Current, ey.Current))
+                    if (!Equals(it1.Current, it2.Current))
                         return false;
                 }
                 else
                 {
-                    return !ey.MoveNext();
+                    return f1 == f2;
                 }
             }
         }
+
+		public static bool EqualsTo<T>(this IEnumerable<T> x, IEnumerable<T> y)
+		{
+			if (x == null)
+				return y.IsEmpty();
+			if (y == null)
+				return x.IsEmpty();
+
+			var c1 = x as ICollection;
+			var c2 = y as ICollection;
+			if (c1 != null && c2 != null && c1.Count != c2.Count)
+				return false;
+
+			var l1 = x as IReadOnlyList<T>;
+			var l2 = y as IReadOnlyList<T>;
+			if (l1 != null && l2 != null && l1.Count != l2.Count)
+				return false;
+
+			var it1 = x.GetEnumerator();
+			var it2 = y.GetEnumerator();
+			while (true)
+			{
+				var f1 = it1.MoveNext();
+				var f2 = it2.MoveNext();
+				if (f1 && f2)
+				{
+					if (!Equals(it1.Current, it2.Current))
+						return false;
+				}
+				else
+				{
+					return f1 == f2;
+				}
+			}
+		}
 
         public static int EvalHashCode(this IEnumerable args)
         {

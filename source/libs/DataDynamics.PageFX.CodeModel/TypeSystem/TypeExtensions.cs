@@ -781,10 +781,10 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 		    int curSpec = 0;
 		    foreach (var candidate in type.GetSameMethods(method, compareReturnTypes))
 		    {
-			    if (!candidate.SignatureChanged)
+			    if (!candidate.SignatureChanged())
 				    return candidate;
 
-			    int spec = Method.GetSpecificity(candidate);
+				int spec = candidate.GetSpecificity();
 			    if (result == null || spec > curSpec)
 			    {
 				    result = candidate;

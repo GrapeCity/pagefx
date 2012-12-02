@@ -7,17 +7,16 @@ using DataDynamics.PageFX.CodeModel.Syntax;
 
 namespace DataDynamics.PageFX.CodeModel.TypeSystem
 {
-    public sealed class GenericMethodInstance : IMethod
+	public sealed class GenericMethodInstance : IMethod
     {
 		private readonly string[] _sigNames = new string[2];
-	    private readonly IType _retType;
+	    private IType _retType;
         private readonly IMethod _method;
         private readonly IType[] _args;
-        private readonly ParameterCollection _params = new ParameterCollection();
+        private readonly IParameterCollection _params;
 		private IMethod[] _implMethods;
 		private IMethod _baseMethod;
 		private bool _resolveBaseMethod = true;
-		private readonly bool _signatureChanged;
 
         public GenericMethodInstance(IType declType, IMethod method, IType[] args)
         {
@@ -31,37 +30,11 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 
             _method = method;
             _args = args;
+
             DeclaringType = declType;
-
-            _retType = GenericType.Resolve(declType, this, _method.Type);
-            if (!ReferenceEquals(_retType, _method.Type))
-                _signatureChanged = true;
-
-            foreach (var p in method.Parameters)
-            {
-                var ptype = GenericType.Resolve(declType, this, p.Type);
-                var p2 = new Parameter(ptype, p.Name, p.Index);
-                _params.Add(p2);
-
-                if (!ReferenceEquals(ptype, p.Type))
-                {
-                    _signatureChanged = true;
-                    p2.HasResolvedType = true;
-                }
-            }
+            
+			_params = new ParameterProxyCollection(method.Parameters, declType, this);
         }
-
-        /// <summary>
-        /// Returns true if signature was changed during resolving.
-        /// </summary>
-        public bool SignatureChanged
-        {
-            get { return _signatureChanged; }
-        }
-        
-        //public IType ContextType { get; set; }
-
-        //public IMethod ContextMethod { get; set; }
 
         public static IMethod Unwrap(IMethod method)
         {
@@ -447,7 +420,7 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 
         public IType Type
         {
-            get { return _retType; }
+			get { return _retType ?? (_retType = GenericType.Resolve(DeclaringType, this, _method.Type)); }
             set { throw new NotSupportedException(); }
         }
 

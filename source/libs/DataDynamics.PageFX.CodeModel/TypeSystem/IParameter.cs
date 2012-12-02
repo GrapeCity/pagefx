@@ -23,6 +23,7 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
         /// </summary>
         IType Type { get; set; }
 
+		//TODO: remove, make it computable
         /// <summary>
         /// Gets the flag indicating whether parameter is passed by reference.
         /// </summary>
@@ -46,12 +47,12 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
         /// Gets or sets instruction which is used as result for this argument.
         /// </summary>
         IInstruction Instruction { get; set; }
-
-        /// <summary>
-        /// Returns true if type of this parameter was changed during resolving.
-        /// </summary>
-        bool HasResolvedType { get; }
     }
+
+	public interface IParameterProxy : IParameter
+	{
+		IParameter ProxyOf { get; }
+	}
 
     /// <summary>
     /// Represents collection of <see cref="IParameter"/>s.

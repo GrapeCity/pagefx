@@ -79,6 +79,9 @@ namespace DataDynamics.PageFX.CodeModel
 
         public static bool TypeEquals(IType type1, IType type2)
         {
+	        if (ReferenceEquals(type1, type2))
+		        return true;
+
             if (type1.TypeKind != type2.TypeKind)
                 return false;
 

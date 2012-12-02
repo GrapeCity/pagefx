@@ -199,5 +199,39 @@ namespace DataDynamics.PageFX.CodeModel.TypeSystem
 			}
 			return method;
 		}
+
+		public static int GetSpecificity(this IMethod method)
+		{
+			return method.Parameters.Count(p => !p.HasResolvedType());
+		}
+
+		private static bool HasResolvedType(this IParameter p)
+		{
+			var proxy = p as IParameterProxy;
+			return proxy != null && !ReferenceEquals(proxy.Type, proxy.ProxyOf.Type);
+		}
+
+		public static bool SignatureChanged(this IMethod method)
+		{
+			var proxy = method as MethodProxy;
+			var instance = method as GenericMethodInstance;
+			if (proxy == null && instance == null)
+				return false;
+
+			var parent = proxy != null ? proxy.ProxyOf : instance.InstanceOf;
+
+			if (!ReferenceEquals(method.Type, parent.Type))
+				return true;
+
+			for (int i = 0; i < parent.Parameters.Count; i++)
+			{
+				var p1 = parent.Parameters[i];
+				var p2 = method.Parameters[i];
+				if (!ReferenceEquals(p1.Type, p2.Type))
+					return true;
+			}
+
+			return false;
+		}
 	}
 }
