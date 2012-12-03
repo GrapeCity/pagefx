@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using DataDynamics.PageFX.Common.IO;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {

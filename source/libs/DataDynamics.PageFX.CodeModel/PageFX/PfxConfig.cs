@@ -1,13 +1,14 @@
 ﻿using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX
 {
     public class PfxConfig
     {
         #region data
-        static SimpleConfig Config
+        private static SimpleConfig Config
         {
             get
             {
@@ -16,20 +17,20 @@ namespace DataDynamics.PageFX
             }
         }
 
-        static string GetConfigPath()
+        private static string GetConfigPath()
         {
             string exe = GlobalSettings.PfcPath;
             return Path.Combine(Path.GetDirectoryName(exe), "pfc.config");
         }
 
-        static void Load()
+        private static void Load()
         {
             if (_config != null) return;
             string path = GetConfigPath();
             _config = File.Exists(path) ? new SimpleConfig(path) : new SimpleConfig();
         }
 
-        internal static void Save()
+        public static void Save()
         {
             Config.Save(GetConfigPath());
         }
@@ -93,7 +94,7 @@ namespace DataDynamics.PageFX
                 {
                     return Config.GetBool(Keys.compiler_exception_break, true);
                 }
-                internal set 
+                set 
                 {
                     Config[Keys.compiler_exception_break] = value ? "true" : "false";
                 }
@@ -115,7 +116,7 @@ namespace DataDynamics.PageFX
                         DefaultFlashVersion,
                         v => v >= 9 && v <= 10);
                 }
-                internal set 
+                set 
                 {
                     Config[Keys.runtime_version] = value.ToString();
                 }
@@ -181,7 +182,7 @@ namespace DataDynamics.PageFX
                 {
                     return Config[Keys.flex_locale, DefaultLocale];
                 }
-                internal set
+                set
                 {
                     Config[Keys.flex_locale] = value;
                 }
@@ -203,7 +204,7 @@ namespace DataDynamics.PageFX
                 {
                     return Config[Keys.html_template, DefaultTemplate];
                 }
-                internal set 
+                set 
                 {
                     Config[Keys.html_template] = value;
                 }

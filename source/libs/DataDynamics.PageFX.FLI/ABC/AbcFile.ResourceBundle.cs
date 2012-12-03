@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.FLI.IL;
 using DataDynamics.PageFX.FLI.SWC;
 

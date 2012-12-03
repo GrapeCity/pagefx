@@ -1,4 +1,5 @@
 ﻿using System;
+using DataDynamics.PageFX.Common.Utilities;
 using NUnit.Framework;
 
 namespace DataDynamics.Tests

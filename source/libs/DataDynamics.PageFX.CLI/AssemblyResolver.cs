@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using DataDynamics.PageFX.CLI.GAC;
 using DataDynamics.PageFX.CLI.Metadata;
+using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI

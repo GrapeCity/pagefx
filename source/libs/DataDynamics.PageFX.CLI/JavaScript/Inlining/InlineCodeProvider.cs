@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.JavaScript.Inlining

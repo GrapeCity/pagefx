@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FLI.ABC;
 using Ionic.Zip;
 

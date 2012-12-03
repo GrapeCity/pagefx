@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using DataDynamics;
 using DataDynamics.PageFX;
+using DataDynamics.PageFX.Common.Utilities;
 
 
 namespace pfx_bench_report

@@ -9,8 +9,10 @@ using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CodeModel.Expressions;
 using DataDynamics.PageFX.Common.CodeModel.Statements;
 using DataDynamics.PageFX.Common.Collections;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.Common.Syntax
 {

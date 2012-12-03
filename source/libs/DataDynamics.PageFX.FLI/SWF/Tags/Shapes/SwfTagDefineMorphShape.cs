@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Xml;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.FLI.SWF
 {

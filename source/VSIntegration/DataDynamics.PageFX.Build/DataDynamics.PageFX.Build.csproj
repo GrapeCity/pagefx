@@ -63,57 +63,6 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\CompilerException.cs">
-      <Link>CompilerException.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\CompilerReport.cs">
-      <Link>CompilerReport.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\Error.cs">
-      <Link>Error.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\Errors.cs">
-      <Link>Errors.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\GlobalSettings.cs">
-      <Link>GlobalSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\PFCOptions.cs">
-      <Link>PFCOptions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\Warnings.cs">
-      <Link>Warnings.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CliOption.cs">
-      <Link>CliOption.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CommandLine.cs">
-      <Link>CommandLine.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CommandPromt.cs">
-      <Link>CommandPromt.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CompilerConsole.cs">
-      <Link>CompilerConsole.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\EnumExtensions.cs">
-      <Link>EnumExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\FormatAttribute.cs">
-      <Link>FormatAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\FrameworkInfo.cs">
-      <Link>FrameworkInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\ReflectionExtensions.cs">
-      <Link>ReflectionExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\StringAttribute.cs">
-      <Link>StringAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\StringExtensions.cs">
-      <Link>StringExtensions.cs</Link>
-    </Compile>
     <Compile Include="Pfc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -133,6 +82,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.Common.csproj">
+      <Project>{3e823dff-8429-499f-a3f0-3cd3e7b27a37}</Project>
+      <Name>DataDynamics.PageFX.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

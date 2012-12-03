@@ -1,4 +1,6 @@
 using System.IO;
+using DataDynamics.PageFX.Common.Extensions;
+using DataDynamics.PageFX.Common.IO;
 using Ionic.Zip;
 
 namespace DataDynamics.PageFX

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DataDynamics;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace mono_test_adaptor
 {

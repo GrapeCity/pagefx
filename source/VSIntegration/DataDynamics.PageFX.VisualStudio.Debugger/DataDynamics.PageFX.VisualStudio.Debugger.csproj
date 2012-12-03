@@ -54,21 +54,6 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\Escaper.cs">
-      <Link>Shared\Escaper.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\FormatExpression.cs">
-      <Link>Shared\FormatExpression.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\Hex.cs">
-      <Link>Shared\Hex.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\ParseExtensions.cs">
-      <Link>Shared\ParseExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\StringExtensions.cs">
-      <Link>Shared\StringExtensions.cs</Link>
-    </Compile>
     <Compile Include="..\..\libs\DataDynamics.PageFX.FLI\FLI\CodeProvider\DebugUtils.cs">
       <Link>Utils\DebugUtils.cs</Link>
     </Compile>
@@ -109,6 +94,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SampleEngine.rgs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.Common.csproj">
+      <Project>{3e823dff-8429-499f-a3f0-3cd3e7b27a37}</Project>
+      <Name>DataDynamics.PageFX.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

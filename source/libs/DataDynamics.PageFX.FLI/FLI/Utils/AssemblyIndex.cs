@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 

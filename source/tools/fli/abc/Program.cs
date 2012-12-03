@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using DataDynamics;
 using DataDynamics.PageFX.CLI;
+using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;

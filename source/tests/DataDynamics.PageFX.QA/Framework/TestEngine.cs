@@ -6,6 +6,7 @@ using DataDynamics.PageFX.CLI.Execution;
 using DataDynamics.PageFX.CLI.JavaScript;
 using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.Tools;
 using NUnit.Framework;

@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using DataDynamics.PageFX.Common.Extensions;
+using DataDynamics.PageFX.Common.Utilities;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.Tests

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.PageFX.FLI.SWF
 {

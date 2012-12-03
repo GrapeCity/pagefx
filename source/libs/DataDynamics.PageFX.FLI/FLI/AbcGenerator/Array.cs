@@ -9,6 +9,7 @@
 
 using System;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;

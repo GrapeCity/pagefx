@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;

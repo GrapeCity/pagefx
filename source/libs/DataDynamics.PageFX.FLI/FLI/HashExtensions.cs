@@ -1,5 +1,6 @@
 using System;
 using System.Security.Cryptography;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.FLI
 {

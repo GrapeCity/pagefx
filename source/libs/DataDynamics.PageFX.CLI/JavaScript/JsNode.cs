@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {

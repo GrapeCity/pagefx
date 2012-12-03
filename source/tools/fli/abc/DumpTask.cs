@@ -6,6 +6,8 @@ using System.Text;
 using System.Xml;
 using System.Linq;
 using DataDynamics;
+using DataDynamics.PageFX.Common.Extensions;
+using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 using DataDynamics.PageFX.FLI.SWF;

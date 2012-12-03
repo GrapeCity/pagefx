@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Xml;
 using DataDynamics.PageFX.Common.Graphics;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.FLI.SWF
 {

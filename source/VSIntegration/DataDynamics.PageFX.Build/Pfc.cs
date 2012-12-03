@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Text;
+using DataDynamics.PageFX.Common.Utilities;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 

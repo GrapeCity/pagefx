@@ -8,6 +8,7 @@ using DataDynamics.PageFX.CLI.Translation.ControlFlow;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.CLI.IL
 {

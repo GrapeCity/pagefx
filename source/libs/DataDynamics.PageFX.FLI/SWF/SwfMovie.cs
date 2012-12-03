@@ -11,6 +11,7 @@ using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Graphics;
+using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 

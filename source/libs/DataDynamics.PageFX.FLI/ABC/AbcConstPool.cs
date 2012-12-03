@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.FLI.SWF;
 
 namespace DataDynamics.PageFX.FLI.ABC

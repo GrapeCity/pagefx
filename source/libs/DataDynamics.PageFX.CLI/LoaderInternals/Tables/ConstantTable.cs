@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using DataDynamics.PageFX.CLI.Metadata;
+using DataDynamics.PageFX.Common.IO;
 
 namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
 {

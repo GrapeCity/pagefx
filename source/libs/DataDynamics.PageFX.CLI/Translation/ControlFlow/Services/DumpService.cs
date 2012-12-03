@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using DataDynamics.PageFX.CLI.IL;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.CLI.Translation.ControlFlow.Services
 {

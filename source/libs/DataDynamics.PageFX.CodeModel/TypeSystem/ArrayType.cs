@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.Common.TypeSystem

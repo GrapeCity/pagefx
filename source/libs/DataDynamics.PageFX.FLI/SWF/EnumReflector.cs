@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.PageFX.FLI.SWF
 {

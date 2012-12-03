@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using DataDynamics;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace xools
 {

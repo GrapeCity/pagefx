@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Xml;
+using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.Tools
 {

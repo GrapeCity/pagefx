@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.FLI
 {

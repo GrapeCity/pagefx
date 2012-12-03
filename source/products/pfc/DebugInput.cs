@@ -4,6 +4,7 @@ using System.IO;
 using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Services;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX
 {

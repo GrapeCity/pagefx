@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Graphics;
 using DataDynamics.PageFX.FLI.SWC;
 

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.PageFX.FLI.IL
 {

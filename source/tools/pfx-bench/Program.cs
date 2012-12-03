@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using DataDynamics;
 using DataDynamics.PageFX;
+using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FLI;
 
 namespace pfx_bench

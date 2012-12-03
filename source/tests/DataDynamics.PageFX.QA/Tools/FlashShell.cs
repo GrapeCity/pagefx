@@ -1,5 +1,6 @@
 using System.IO;
 using DataDynamics.PageFX;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics
 {

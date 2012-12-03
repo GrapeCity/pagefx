@@ -1,4 +1,5 @@
 ﻿using System;
+using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FLI;
 
 namespace DataDynamics.PageFX

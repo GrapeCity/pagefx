@@ -1,4 +1,6 @@
 using System.Drawing;
+using DataDynamics.PageFX.Common.Extensions;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.Common.Graphics
 {

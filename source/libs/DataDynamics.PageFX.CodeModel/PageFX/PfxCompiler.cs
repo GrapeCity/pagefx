@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
+using DataDynamics.PageFX.Common.Utilities;
 
 #region pfc /help
 /*
@@ -35,7 +36,6 @@ c)       policyFile - path to policy file
 
 namespace DataDynamics.PageFX
 {
-
     #region class PfxCompilerOptions
     public class PfxCompilerOptions
     {

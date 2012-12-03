@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text;
+using DataDynamics.PageFX.Common.IO;
+using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FLI.ABC;
 
 namespace DataDynamics.PageFX.FLI.SWF

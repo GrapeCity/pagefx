@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using DataDynamics;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace Mono.AssemblyCompare
 {

@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.PageFX.FLI
 {

@@ -6,6 +6,7 @@ using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWF;

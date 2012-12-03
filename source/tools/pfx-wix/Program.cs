@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.Tools
 {

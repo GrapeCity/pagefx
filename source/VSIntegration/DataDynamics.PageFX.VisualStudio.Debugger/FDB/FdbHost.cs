@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using DataDynamics.PageFX.Common.Extensions;
+using DataDynamics.PageFX.Common.Utilities;
 using Microsoft.VisualStudio.Debugger.Interop;
 
 namespace DataDynamics.PageFX.VisualStudio.Debugger

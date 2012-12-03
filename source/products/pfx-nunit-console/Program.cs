@@ -1,5 +1,6 @@
 ﻿using System;
 using DataDynamics;
+using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.NUnit;
 
 namespace pfx_nunit_console

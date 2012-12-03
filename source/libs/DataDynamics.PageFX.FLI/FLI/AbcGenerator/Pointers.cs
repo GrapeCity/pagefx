@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 
