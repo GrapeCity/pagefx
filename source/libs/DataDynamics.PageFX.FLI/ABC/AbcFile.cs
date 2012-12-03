@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.IL;
 using DataDynamics.PageFX.FLI.SWC;

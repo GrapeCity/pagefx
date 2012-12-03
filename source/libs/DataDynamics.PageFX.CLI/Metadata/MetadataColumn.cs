@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {

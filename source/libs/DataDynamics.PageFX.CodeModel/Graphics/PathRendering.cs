@@ -1,6 +1,8 @@
+using System;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace System.Drawing
+namespace DataDynamics.PageFX.Common.Graphics
 {
     #region enum PathRenderFeatures
     /// <summary>

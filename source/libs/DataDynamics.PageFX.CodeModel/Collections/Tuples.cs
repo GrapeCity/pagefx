@@ -1,4 +1,8 @@
-﻿namespace System.Collections.Generic
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace DataDynamics.PageFX.Common.Collections
 {
 	public interface ITuple<T> : IReadOnlyList<T>
 	{

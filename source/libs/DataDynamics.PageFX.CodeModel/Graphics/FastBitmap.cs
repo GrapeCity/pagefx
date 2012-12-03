@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace DataDynamics
+namespace DataDynamics.PageFX.Common.Graphics
 {
     public unsafe class FastBitmap : IDisposable
     {

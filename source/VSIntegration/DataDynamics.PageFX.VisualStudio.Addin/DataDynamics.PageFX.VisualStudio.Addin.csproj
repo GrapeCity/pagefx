@@ -91,58 +91,58 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Graphics\ColorExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Graphics\ColorExtensions.cs">
       <Link>Shared\ColorExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\GlobalSettings.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\GlobalSettings.cs">
       <Link>Shared\GlobalSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\PFCOptions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\PFCOptions.cs">
       <Link>Shared\PFCOptions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\PfxConfig.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\PfxConfig.cs">
       <Link>Shared\PfxConfig.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CliOption.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CliOption.cs">
       <Link>Shared\CliOption.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CommandLine.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CommandLine.cs">
       <Link>Shared\CommandLine.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CommandPromt.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CommandPromt.cs">
       <Link>Shared\CommandPromt.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CompilerConsole.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CompilerConsole.cs">
       <Link>Shared\CompilerConsole.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\EnumExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\EnumExtensions.cs">
       <Link>Shared\EnumExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Escaper.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\Escaper.cs">
       <Link>Shared\Escaper.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\FormatAttribute.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\FormatAttribute.cs">
       <Link>Shared\FormatAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\FrameworkInfo.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\FrameworkInfo.cs">
       <Link>Shared\FrameworkInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Hex.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\Hex.cs">
       <Link>Shared\Hex.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\ParseExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\ParseExtensions.cs">
       <Link>Shared\ParseExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\ReflectionExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\ReflectionExtensions.cs">
       <Link>Shared\ReflectionExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\SimpleConfig.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\SimpleConfig.cs">
       <Link>Shared\SimpleConfig.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\StringAttribute.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\StringAttribute.cs">
       <Link>Shared\StringAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\StringExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\StringExtensions.cs">
       <Link>Shared\StringExtensions.cs</Link>
     </Compile>
     <Compile Include="..\DataDynamics.PageFX.VisualStudio.Debugger\Utils\Const.cs">

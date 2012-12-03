@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics
+namespace DataDynamics.PageFX.Common.Graphics
 {
     #region enum PathPainting
     /// <summary>

@@ -44,6 +44,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,18 +56,63 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.8.4.28, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Graphics\ColorExtensions.cs" />
+    <Compile Include="Graphics\Enums.cs" />
+    <Compile Include="Graphics\FastBitmap.cs" />
+    <Compile Include="Graphics\GPBuilder.cs" />
+    <Compile Include="Graphics\ImageExtensions.cs" />
+    <Compile Include="Graphics\KnownPathes.cs" />
+    <Compile Include="Graphics\PathRendering.cs" />
+    <Compile Include="Graphics\SvgPathRender.cs" />
+    <Compile Include="PageFX\CompilerException.cs" />
+    <Compile Include="PageFX\CompilerReport.cs" />
+    <Compile Include="PageFX\Error.cs" />
+    <Compile Include="PageFX\Errors.cs" />
+    <Compile Include="PageFX\GlobalSettings.cs" />
+    <Compile Include="PageFX\PFCOptions.cs" />
+    <Compile Include="PageFX\PfxCompiler.cs" />
+    <Compile Include="PageFX\PfxConfig.cs" />
+    <Compile Include="PageFX\Warnings.cs" />
     <Compile Include="Services\ApiInfo.cs" />
+    <Compile Include="Collections\HashList.cs" />
+    <Compile Include="Collections\MemoizeEnumerable.cs" />
+    <Compile Include="Collections\ReadOnlyList.cs" />
+    <Compile Include="Collections\Tuples.cs" />
+    <Compile Include="System.IO\BitReader.cs" />
+    <Compile Include="System.IO\BitWriter.cs" />
+    <Compile Include="System.IO\BufferedBinaryReader.cs" />
+    <Compile Include="System.IO\PathResolver.cs" />
+    <Compile Include="System.IO\StreamExtensions.cs" />
+    <Compile Include="System.IO\TextWriterExtensions.cs" />
+    <Compile Include="System\EnumerableExtensions.cs" />
+    <Compile Include="System\Tricks.cs" />
+    <Compile Include="Tests\BitReaderTest.cs" />
+    <Compile Include="Tests\BitWriterTest.cs" />
+    <Compile Include="Tests\CommandLineTest.cs" />
+    <Compile Include="Tests\FormatExpressionTest.cs" />
+    <Compile Include="Tests\IEEEFloatTest.cs" />
+    <Compile Include="Tests\MemoizationTests.cs" />
+    <Compile Include="Tests\MiscTests.cs" />
+    <Compile Include="Tests\StrTest.cs" />
+    <Compile Include="Tests\ZipTests.cs" />
+    <Compile Include="Tools\Dot.cs" />
+    <Compile Include="Tools\FlashPlayer.cs" />
     <Compile Include="TypeSystem\Argument.cs" />
     <Compile Include="Services\Arithmetic.cs" />
     <Compile Include="TypeSystem\ArrayType.cs" />
@@ -217,12 +263,36 @@
     <Compile Include="TypeSystem\TypeMember.cs" />
     <Compile Include="TypeSystem\TypeMemberCollection.cs" />
     <Compile Include="CodeModel\Variable.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DataDynamics.PageFX.Shared\DataDynamics.PageFX.Shared.csproj">
-      <Project>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</Project>
-      <Name>DataDynamics.PageFX.Shared</Name>
-    </ProjectReference>
+    <Compile Include="Utils\ActionSelector.cs" />
+    <Compile Include="Utils\Angle.cs" />
+    <Compile Include="Utils\CliOption.cs" />
+    <Compile Include="Utils\CodeTextWriter.cs" />
+    <Compile Include="Utils\CommandLine.cs" />
+    <Compile Include="Utils\CommandPromt.cs" />
+    <Compile Include="Utils\CompilerConsole.cs" />
+    <Compile Include="Utils\EnumExtensions.cs" />
+    <Compile Include="Utils\Escaper.cs" />
+    <Compile Include="Utils\FdbProcessHost.cs" />
+    <Compile Include="Utils\FormatAttribute.cs" />
+    <Compile Include="Utils\FormatExpression.cs" />
+    <Compile Include="Utils\FrameworkInfo.cs" />
+    <Compile Include="Utils\Hex.cs" />
+    <Compile Include="Utils\IEEEFloat.cs" />
+    <Compile Include="Utils\Indent.cs" />
+    <Compile Include="Utils\LazyValue.cs" />
+    <Compile Include="Utils\NameAttribute.cs" />
+    <Compile Include="Utils\NameExtensions.cs" />
+    <Compile Include="Utils\ParseExtensions.cs" />
+    <Compile Include="Utils\PathExtensions.cs" />
+    <Compile Include="Utils\ReflectionExtensions.cs" />
+    <Compile Include="Utils\ResourceExtensions.cs" />
+    <Compile Include="Utils\SimpleConfig.cs" />
+    <Compile Include="Utils\StringAttribute.cs" />
+    <Compile Include="Utils\StringExtensions.cs" />
+    <Compile Include="Utils\TextTemplateEngine.cs" />
+    <Compile Include="Utils\TODOAttribute.cs" />
+    <Compile Include="Utils\XmlExtensions.cs" />
+    <Compile Include="Utils\Zip.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\implicit.txt" />
@@ -247,7 +317,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Tools\dot.zip" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

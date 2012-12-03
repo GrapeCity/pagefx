@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using DataDynamics.Imaging;
+using DataDynamics.PageFX.Common.Graphics;
 using DataDynamics.PageFX.FLI.SWF;
 using NUnit.Framework;
 

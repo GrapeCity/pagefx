@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CodeModel.Expressions;
 using DataDynamics.PageFX.Common.CodeModel.Statements;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 

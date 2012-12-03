@@ -71,10 +71,6 @@
       <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
       <Name>DataDynamics.PageFX.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.Shared\DataDynamics.PageFX.Shared.csproj">
-      <Project>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</Project>
-      <Name>DataDynamics.PageFX.Shared</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

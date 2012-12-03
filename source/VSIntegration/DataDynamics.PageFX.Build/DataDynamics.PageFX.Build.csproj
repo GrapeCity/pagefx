@@ -63,55 +63,55 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\CompilerException.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\CompilerException.cs">
       <Link>CompilerException.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\CompilerReport.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\CompilerReport.cs">
       <Link>CompilerReport.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\Error.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\Error.cs">
       <Link>Error.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\Errors.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\Errors.cs">
       <Link>Errors.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\GlobalSettings.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\GlobalSettings.cs">
       <Link>GlobalSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\PFCOptions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\PFCOptions.cs">
       <Link>PFCOptions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\PageFX\Warnings.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\PageFX\Warnings.cs">
       <Link>Warnings.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CliOption.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CliOption.cs">
       <Link>CliOption.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CommandLine.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CommandLine.cs">
       <Link>CommandLine.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CommandPromt.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CommandPromt.cs">
       <Link>CommandPromt.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\CompilerConsole.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\CompilerConsole.cs">
       <Link>CompilerConsole.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\EnumExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\EnumExtensions.cs">
       <Link>EnumExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\FormatAttribute.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\FormatAttribute.cs">
       <Link>FormatAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\FrameworkInfo.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\FrameworkInfo.cs">
       <Link>FrameworkInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\ReflectionExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\ReflectionExtensions.cs">
       <Link>ReflectionExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\StringAttribute.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\StringAttribute.cs">
       <Link>StringAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\StringExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\StringExtensions.cs">
       <Link>StringExtensions.cs</Link>
     </Compile>
     <Compile Include="Pfc.cs" />

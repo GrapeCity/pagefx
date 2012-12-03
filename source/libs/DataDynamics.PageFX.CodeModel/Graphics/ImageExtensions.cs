@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace DataDynamics.Imaging
+namespace DataDynamics.PageFX.Common.Graphics
 {
 	public static class ImageExtensions
 	{

@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace DataDynamics
+namespace DataDynamics.PageFX.Common.Graphics
 {
     public static class KnownPathes
     {

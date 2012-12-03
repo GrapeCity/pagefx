@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.CLI.Metadata
 {

@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common.Tools
 {
     /// <summary>
     /// Provides running of FlashPlayer

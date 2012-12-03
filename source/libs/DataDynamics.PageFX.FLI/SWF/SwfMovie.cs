@@ -9,7 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using DataDynamics.Imaging;
+using DataDynamics.PageFX.Common.Collections;
+using DataDynamics.PageFX.Common.Graphics;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 

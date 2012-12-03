@@ -98,10 +98,6 @@
       <Project>{A54D800D-621B-491A-BE70-59D46BA70523}</Project>
       <Name>DataDynamics.PageFX.FLI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\libs\DataDynamics.PageFX.Shared\DataDynamics.PageFX.Shared.csproj">
-      <Project>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</Project>
-      <Name>DataDynamics.PageFX.Shared</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DumpForm.resx">

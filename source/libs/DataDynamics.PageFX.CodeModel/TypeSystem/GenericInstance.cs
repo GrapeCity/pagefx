@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Syntax;
 

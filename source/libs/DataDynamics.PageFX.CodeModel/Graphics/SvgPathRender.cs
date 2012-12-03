@@ -4,7 +4,7 @@ using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Text;
 
-namespace DataDynamics
+namespace DataDynamics.PageFX.Common.Graphics
 {
     public sealed class SvgPathRender : IPathRender
     {

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Xml;
-using DataDynamics.Imaging;
+using DataDynamics.PageFX.Common.Graphics;
 
 namespace DataDynamics.PageFX.FLI.SWF
 {

@@ -63,12 +63,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.Shared\DataDynamics.PageFX.Shared.csproj">
-      <Project>{4647C4D2-0C86-4E61-8393-6FA64C88E86A}</Project>
-      <Name>DataDynamics.PageFX.Shared</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -84,6 +78,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.Common.csproj">
+      <Project>{3e823dff-8429-499f-a3f0-3cd3e7b27a37}</Project>
+      <Name>DataDynamics.PageFX.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

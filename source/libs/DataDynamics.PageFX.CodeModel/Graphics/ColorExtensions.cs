@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace DataDynamics
+namespace DataDynamics.PageFX.Common.Graphics
 {
     public static class ColorExtensions
     {

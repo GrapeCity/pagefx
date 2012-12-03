@@ -1,6 +1,9 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace System.Collections.Generic
+namespace DataDynamics.PageFX.Common.Collections
 {
     public interface IReadOnlyList<T> : IEnumerable<T>
     {

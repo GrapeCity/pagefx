@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.CLI.IL;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.Execution

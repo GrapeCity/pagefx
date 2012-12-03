@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using System.Xml;
+using DataDynamics.PageFX.Common.Graphics;
 
 namespace DataDynamics.PageFX
 {

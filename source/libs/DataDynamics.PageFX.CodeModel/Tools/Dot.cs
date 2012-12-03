@@ -1,7 +1,7 @@
 using System.IO;
 using Ionic.Zip;
 
-namespace DataDynamics
+namespace DataDynamics.PageFX.Common.Tools
 {
     public static class Dot
     {

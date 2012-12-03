@@ -54,23 +54,23 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.FLI\FLI\CodeProvider\DebugUtils.cs">
-      <Link>Utils\DebugUtils.cs</Link>
-    </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Escaper.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\Escaper.cs">
       <Link>Shared\Escaper.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\FormatExpression.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\FormatExpression.cs">
       <Link>Shared\FormatExpression.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\Hex.cs">
-      <Link>Utils\Hex.cs</Link>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\Hex.cs">
+      <Link>Shared\Hex.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\ParseExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\ParseExtensions.cs">
       <Link>Shared\ParseExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.Shared\Utils\StringExtensions.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.CodeModel\Utils\StringExtensions.cs">
       <Link>Shared\StringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\libs\DataDynamics.PageFX.FLI\FLI\CodeProvider\DebugUtils.cs">
+      <Link>Utils\DebugUtils.cs</Link>
     </Compile>
     <Compile Include="Engine\Const.cs" />
     <Compile Include="Engine\Guids.cs" />

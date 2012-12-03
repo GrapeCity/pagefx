@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using DataDynamics.Imaging;
+using DataDynamics.PageFX.Common.Graphics;
 using DataDynamics.PageFX.FLI.SWC;
 
 namespace DataDynamics.PageFX.FLI.SWF
