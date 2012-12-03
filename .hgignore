@@ -9,6 +9,8 @@ _ReSharper*
 *.suo
 *.user
 
+build-scripts/*.log
+
 mono/**/[Bb]in
 mono/**/[Oo]bj
 
