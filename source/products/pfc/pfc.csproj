@@ -8,7 +8,7 @@
     <ProjectGuid>{24A39436-A110-4C67-BF29-7A4FAA399CAA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>pfc</RootNamespace>
+    <RootNamespace>DataDynamics.PageFX</RootNamespace>
     <AssemblyName>pfc</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -62,9 +62,6 @@
   <ItemGroup>
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\tools\rv\RV.cs">
-      <Link>RV.cs</Link>
     </Compile>
     <Compile Include="DebugInput.cs" />
     <Compile Include="DebugSamples.cs" />

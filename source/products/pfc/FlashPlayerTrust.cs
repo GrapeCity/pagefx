@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace DataDynamics.PageFX.Flash
+namespace DataDynamics.PageFX
 {
     internal static class FlashPlayerTrust
     {

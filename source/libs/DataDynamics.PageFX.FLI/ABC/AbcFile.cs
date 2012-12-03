@@ -7,7 +7,8 @@ using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration;
+using DataDynamics.PageFX.FlashLand.Core.SwfCompiler;
 using DataDynamics.PageFX.FlashLand.IL;
 using DataDynamics.PageFX.FlashLand.Swc;
 using DataDynamics.PageFX.FlashLand.Swf;
@@ -331,7 +332,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        internal SwfCompiler SwfCompiler
+        internal SwfCompilerImpl SwfCompiler
         {
             get
             {
@@ -341,7 +342,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             set { _sfc = value; }
         }
-        private SwfCompiler _sfc;
+        private SwfCompilerImpl _sfc;
 
         internal bool IsSwf
         {

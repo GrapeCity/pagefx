@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.FlashLand;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.Tests
@@ -39,7 +40,7 @@ namespace DataDynamics.PageFX.Tests
             var asm = QA.LoadAssembly(asmpath, VM.AVM, dir, ref err);
 
             string swfpath = Path.Combine(dir, "out.swf");
-            FLI.FlashLanguageInfrastructure.Serialize(asm, swfpath, "/format:swf");
+            FlashLanguageInfrastructure.Serialize(asm, swfpath, "/format:swf");
         }
 
         private void Run(string resname, params string[] errorcodes)

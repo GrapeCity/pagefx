@@ -1,5 +1,4 @@
 ﻿#if NUNIT
-using DataDynamics.PageFX.FLI;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.FlashLand.Tests

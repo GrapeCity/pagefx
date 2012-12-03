@@ -1,7 +1,7 @@
 #if NUNIT
 using System;
-using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.FlashLand.Tests

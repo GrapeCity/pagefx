@@ -2,14 +2,13 @@ using System;
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Linq;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.Ecma335;
-using DataDynamics.PageFX.Flash;
-using DataDynamics.PageFX.FLI;
-using DataDynamics.Tools;
+using DataDynamics.PageFX.FlashLand;
+using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.FlashLand.Core.Tools;
 
 namespace DataDynamics.PageFX
 {
@@ -97,22 +96,11 @@ namespace DataDynamics.PageFX
                 return 0;
             }
 
-			if (cl.HasOption("-rv", "--rv"))
-			{
-				return RV.Run(cl);
-			}
-
         	if (cl.HasOption(PFCOptions.Wrap))
             {
                 WrapperGenerator.Wrap(cl);
                 return 0;
             }
-
-            //if (cl.HasOption(PFCOptions.NUnit))
-            //{
-            //    ConsoleTestRunner.Run(cl);
-            //    return 0;
-            //}
 
 #if PERF
             int start = Environment.TickCount;

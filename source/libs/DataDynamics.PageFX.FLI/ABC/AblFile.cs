@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Swc;
 using DataDynamics.PageFX.FlashLand.Swf;
 
@@ -303,7 +303,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             switch (e.NameString)
             {
-                case MDTags.ResourceBundle:
+                case MetadataTags.ResourceBundle:
                     {
                         string name = e.GetResourceBundleName();
                         if (string.IsNullOrEmpty(name))
@@ -312,25 +312,25 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     }
                     return;
 
-                case MDTags.Embed:
+                case MetadataTags.Embed:
                     {
                         Embed.Resolve(trait, e, abc.SWF);
                         var embed = trait.Embed;
                     }
                     return;
 
-                case MDTags.Mixin:
+                case MetadataTags.Mixin:
                     abc.AddDep(new DepMixin());
                     return;
 
-                case MDTags.RemoteClass:
+                case MetadataTags.RemoteClass:
                     {
                         string alias = e["alias"];
                         abc.AddDep(new DepRemoteClass(alias));
                     }
                     return;
 
-                case MDTags.Effect:
+                case MetadataTags.Effect:
                     {
                         string effectName = e["name"];
                         string effectEvent = e["event"];

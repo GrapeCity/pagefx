@@ -1,5 +1,6 @@
 ﻿#if NUNIT
 using System.Globalization;
+using DataDynamics.PageFX.FlashLand.Core;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.FlashLand.Tests

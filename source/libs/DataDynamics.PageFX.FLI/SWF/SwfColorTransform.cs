@@ -1,6 +1,5 @@
 using System;
 using System.Xml;
-using DataDynamics.PageFX.FLI;
 
 namespace DataDynamics.PageFX.FlashLand.Swf
 {

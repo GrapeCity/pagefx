@@ -4,8 +4,9 @@ using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration;
 
 namespace DataDynamics.PageFX.FlashLand.IL
 {

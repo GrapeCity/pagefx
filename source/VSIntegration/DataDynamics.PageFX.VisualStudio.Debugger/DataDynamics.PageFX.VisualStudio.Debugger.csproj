@@ -54,7 +54,7 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.FLI\FLI\CodeProvider\DebugUtils.cs">
+    <Compile Include="..\..\libs\DataDynamics.PageFX.FLI\Core\CodeProvider\DebugUtils.cs">
       <Link>Utils\DebugUtils.cs</Link>
     </Compile>
     <Compile Include="Engine\Const.cs" />

@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
-using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.Core.CodeProvider;
 using Microsoft.VisualStudio.Debugger.Interop;
 
 namespace DataDynamics.PageFX.VisualStudio.Debugger

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Abc

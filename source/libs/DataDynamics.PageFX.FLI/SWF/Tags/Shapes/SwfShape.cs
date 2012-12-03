@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml;
 using DataDynamics.PageFX.Common.Graphics;
-using DataDynamics.PageFX.FLI;
 
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 {

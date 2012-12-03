@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -865,7 +865,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return true;
 
             string name = e.NameString;
-            if (name == MDTags.Mixin)
+            if (name == MetadataTags.Mixin)
             {
                 var klass = trait.Class;
                 if (klass != null)
@@ -882,7 +882,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return true;
             }
 
-            if (name == MDTags.RemoteClass)
+            if (name == MetadataTags.RemoteClass)
             {
                 var sfc = SwfCompiler;
                 if (sfc != null)
@@ -897,7 +897,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return true;
             }
 
-            if (name == MDTags.Effect)
+            if (name == MetadataTags.Effect)
             {
                 var sfc = SwfCompiler;
                 if (sfc != null)
@@ -909,7 +909,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return true;
             }
 
-            if (name == MDTags.Style)
+            if (name == MetadataTags.Style)
             {
                 //TODO: Can be also used to collect inheriting styles
                 var klass = trait.Class;

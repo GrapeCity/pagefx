@@ -12,6 +12,7 @@ using DataDynamics.PageFX.Ecma335.Metadata;
 using DataDynamics.PageFX.Ecma335.PDB;
 using DataDynamics.PageFX.Ecma335.Tools;
 using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX

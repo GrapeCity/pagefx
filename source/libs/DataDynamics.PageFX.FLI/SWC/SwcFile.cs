@@ -9,8 +9,8 @@ using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Swf;
 using Ionic.Zip;
 
@@ -608,13 +608,13 @@ namespace DataDynamics.PageFX.FlashLand.Swc
     	private void ProcessMeta(SwfMovie lib, AbcTrait trait, AbcMetaEntry e)
         {
             string name = e.NameString;
-            if (name == MDTags.Embed)
+            if (name == MetadataTags.Embed)
             {
                 Embed.Resolve(trait, e, lib);
                 return;
             }
 
-            if (name == MDTags.Mixin)
+            if (name == MetadataTags.Mixin)
             {
                 var klass = trait.Class;
                 if (klass == null)

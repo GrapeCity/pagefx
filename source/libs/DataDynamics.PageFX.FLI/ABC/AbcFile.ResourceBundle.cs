@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using DataDynamics.PageFX.Common.Extensions;
-using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.FlashLand.Core.SwfCompiler;
 using DataDynamics.PageFX.FlashLand.IL;
 using DataDynamics.PageFX.FlashLand.Swc;
 
@@ -22,7 +23,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         bool ImportResourceBundle(AbcFile abc, AbcMetaEntry e)
         {
-            if (e.NameString != MDTags.ResourceBundle)
+            if (e.NameString != MetadataTags.ResourceBundle)
                 return false;
 
             string name = e.GetResourceBundleName();
