@@ -92,13 +92,13 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\mono\mcs\class\corlib\System\Int64.cs">
+    <Compile Include="..\..\..\mono\mcs\class\corlib\System\Int64.cs">
       <Link>UnitTests\Int64.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\mono\mcs\class\corlib\System\IntParser.cs">
+    <Compile Include="..\..\..\mono\mcs\class\corlib\System\IntParser.cs">
       <Link>UnitTests\IntParser.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\mono\mcs\class\corlib\System\UInt64.cs">
+    <Compile Include="..\..\..\mono\mcs\class\corlib\System\UInt64.cs">
       <Link>UnitTests\UInt64.cs</Link>
     </Compile>
     <Compile Include="Framework\ComplexTestCases.cs" />
