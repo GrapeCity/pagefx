@@ -4,4 +4,4 @@
 [assembly: AssemblyDescription("Common Language Infrastructure")]
 [assembly: AssemblyConfiguration("")]
 //[assembly: AssemblyDelaySign(true)]
-[assembly: AssemblyKeyFile("../../PageFX.snk")]
+[assembly: AssemblyKeyFile("../../pfx.snk")]

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 //[assembly: AssemblyDelaySign(true)]
-[assembly: AssemblyKeyFile("../../PageFX.snk")]
+[assembly: AssemblyKeyFile("../../pfx.snk")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

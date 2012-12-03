@@ -52,9 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\DataDynamics.PageFX.FLI\Core\CodeProvider\DebugUtils.cs">
+    <Compile Include="..\..\libs\FlashLand\Core\CodeProvider\DebugUtils.cs">
       <Link>Utils\DebugUtils.cs</Link>
     </Compile>
     <Compile Include="Engine\Const.cs" />
@@ -96,7 +96,7 @@
     <Content Include="SampleEngine.rgs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\Common.csproj">
+    <ProjectReference Include="..\..\libs\Common\Common.csproj">
       <Project>{3e823dff-8429-499f-a3f0-3cd3e7b27a37}</Project>
       <Name>Common</Name>
     </ProjectReference>
