@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace DataDynamics.PageFX.CLI.JavaScript
+namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
 	internal static class JsExtensions
 	{

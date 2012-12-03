@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-using DataDynamics.PageFX.CLI.Translation;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
+using DataDynamics.PageFX.Ecma335.Translation;
 
-namespace DataDynamics.PageFX.CLI.IL
+namespace DataDynamics.PageFX.Ecma335.IL
 {
 	internal interface IClrMethodBody : IMethodBody
 	{

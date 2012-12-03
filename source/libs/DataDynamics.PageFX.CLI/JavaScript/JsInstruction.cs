@@ -1,8 +1,8 @@
 using System;
 using System.Globalization;
-using DataDynamics.PageFX.CLI.IL;
+using DataDynamics.PageFX.Ecma335.IL;
 
-namespace DataDynamics.PageFX.CLI.JavaScript
+namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
 	internal sealed class JsInstruction : JsNode
 	{

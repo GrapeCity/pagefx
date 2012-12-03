@@ -1,8 +1,7 @@
 ﻿using System;
-using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.Execution
+namespace DataDynamics.PageFX.Ecma335.Execution
 {
 	internal sealed class ArrayInvoker : NativeInvoker
 	{

@@ -2,7 +2,7 @@
 using System.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.Execution
+namespace DataDynamics.PageFX.Ecma335.Execution
 {
 	internal sealed class ConsoleInvoker : NativeInvoker
 	{

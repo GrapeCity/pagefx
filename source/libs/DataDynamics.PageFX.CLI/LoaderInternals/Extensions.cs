@@ -1,9 +1,9 @@
 using System.IO;
-using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.Metadata;
 
-namespace DataDynamics.PageFX.CLI.LoaderInternals
+namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 {
     internal static class Extensions
     {

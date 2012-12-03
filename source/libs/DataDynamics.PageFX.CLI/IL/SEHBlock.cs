@@ -1,8 +1,7 @@
 using System;
-using System.IO;
 using DataDynamics.PageFX.Common.IO;
 
-namespace DataDynamics.PageFX.CLI.IL
+namespace DataDynamics.PageFX.Ecma335.IL
 {
 	[Flags]
     internal enum SEHFlags

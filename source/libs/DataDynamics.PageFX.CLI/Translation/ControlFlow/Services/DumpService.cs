@@ -1,10 +1,10 @@
 #if DEBUG
 using System.Collections.Generic;
 using System.IO;
-using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.Ecma335.IL;
 
-namespace DataDynamics.PageFX.CLI.Translation.ControlFlow.Services
+namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow.Services
 {
     internal class DumpService
     {

@@ -2,19 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
+namespace DataDynamics.PageFX.Ecma335.JavaScript.Inlining
 {
-	using Match = Func<IMethod, bool>;
-	using InlineFunc = Action<MethodContext, JsBlock>;
-
 	internal class InlineCodeProvider
 	{
-		private readonly Dictionary<string, IList<KeyValuePair<Match, InlineFunc>>> _impls =
-			new Dictionary<string, IList<KeyValuePair<Match, InlineFunc>>>();
+		private readonly Dictionary<string, IList<KeyValuePair<Func<IMethod, bool>, Action<MethodContext, JsBlock>>>> _impls =
+			new Dictionary<string, IList<KeyValuePair<Func<IMethod, bool>, Action<MethodContext, JsBlock>>>>();
 
 		public InlineCodeProvider()
 		{
@@ -31,14 +27,14 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 				if (info == null) continue;
 
 				var name = info.Name ?? methodInfo.Name;
-				IList<KeyValuePair<Match, InlineFunc>> list;
+				IList<KeyValuePair<Func<IMethod, bool>, Action<MethodContext, JsBlock>>> list;
 				if (!_impls.TryGetValue(name, out list))
 				{
-					list = new List<KeyValuePair<Match, InlineFunc>>();
+					list = new List<KeyValuePair<Func<IMethod, bool>, Action<MethodContext, JsBlock>>>();
 					_impls.Add(name, list);
 				}
 
-				Match match;
+				Func<IMethod, bool> match;
 				if (info.ArgTypes != null && info.ArgTypes.Length > 0)
 				{
 					match = x =>
@@ -58,7 +54,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 					match = x => CheckAttrs(x, info.Attrs);
 				}
 
-				InlineFunc f;
+				Action<MethodContext, JsBlock> f;
 				var parameters = methodInfo.GetParameters();
 				if (parameters.Length == 1)
 				{
@@ -103,7 +99,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 					throw new InvalidOperationException("Invalid signature of inline function.");
 				}
 
-				list.Add(new KeyValuePair<Match, InlineFunc>(match, f));
+				list.Add(new KeyValuePair<Func<IMethod, bool>, Action<MethodContext, JsBlock>>(match, f));
 			}
 		}
 
@@ -111,7 +107,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 		{
 			var method = context.Method;
 
-			IList<KeyValuePair<Match, InlineFunc>> list;
+			IList<KeyValuePair<Func<IMethod, bool>, Action<MethodContext, JsBlock>>> list;
 			if (_impls.TryGetValue(method.Name, out list))
 			{
 				var impl = GetImpl(context, list);
@@ -129,7 +125,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
 			return null;
 		}
 
-		private static JsFunction GetImpl(MethodContext context, IEnumerable<KeyValuePair<Match, InlineFunc>> list)
+		private static JsFunction GetImpl(MethodContext context, IEnumerable<KeyValuePair<Func<IMethod, bool>, Action<MethodContext, JsBlock>>> list)
 		{
 			var method = context.Method;
 			foreach (var pair in list)

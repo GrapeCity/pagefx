@@ -5,12 +5,12 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using DataDynamics.PageFX.CLI;
-using DataDynamics.PageFX.CLI.Metadata;
-using DataDynamics.PageFX.CLI.PDB;
-using DataDynamics.PageFX.CLI.Tools;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.Ecma335;
+using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Ecma335.PDB;
+using DataDynamics.PageFX.Ecma335.Tools;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.SWF;
 

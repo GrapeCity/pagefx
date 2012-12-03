@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DataDynamics.PageFX.CLI.JavaScript
+namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
 	internal sealed class JsGlobalPool : JsNode
 	{

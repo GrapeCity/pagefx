@@ -1,6 +1,6 @@
-﻿using DataDynamics.PageFX.CLI.IL;
+﻿using DataDynamics.PageFX.Ecma335.IL;
 
-namespace DataDynamics.PageFX.CLI.Translation
+namespace DataDynamics.PageFX.Ecma335.Translation
 {
 	internal static class InstructionExtensions
 	{

@@ -1,7 +1,7 @@
 using System.Text;
 using System.Linq;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.Ecma335.Metadata
 {
     /// <summary>
     /// Represents row in metadata table.

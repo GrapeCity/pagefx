@@ -1,9 +1,9 @@
 ﻿using System;
-using DataDynamics.PageFX.CLI.LoaderInternals.Collections;
-using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.LoaderInternals.Collections;
+using DataDynamics.PageFX.Ecma335.Metadata;
 
-namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
+namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 {
 	internal sealed class ModuleTable : MetadataTable<IModule>
 	{

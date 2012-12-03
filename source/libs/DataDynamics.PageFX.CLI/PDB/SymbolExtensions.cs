@@ -8,13 +8,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
-using DataDynamics.PageFX.CLI.PDB.Interop;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.PDB.Interop;
 
-namespace DataDynamics.PageFX.CLI.PDB
+namespace DataDynamics.PageFX.Ecma335.PDB
 {
     internal static class SymbolExtensions
     {

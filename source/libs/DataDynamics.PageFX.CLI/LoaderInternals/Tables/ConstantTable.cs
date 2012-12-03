@@ -1,9 +1,8 @@
-﻿using System.IO;
-using System.Text;
-using DataDynamics.PageFX.CLI.Metadata;
+﻿using System.Text;
 using DataDynamics.PageFX.Common.IO;
+using DataDynamics.PageFX.Ecma335.Metadata;
 
-namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
+namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 {
 	internal sealed class ConstantTable
 	{

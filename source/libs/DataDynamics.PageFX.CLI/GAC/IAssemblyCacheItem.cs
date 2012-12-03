@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace DataDynamics.PageFX.CLI.GAC
+namespace DataDynamics.PageFX.Ecma335.GAC
 {
     /// <summary>
     /// Undocumented. Probably only for internal use.

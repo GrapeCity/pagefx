@@ -1,14 +1,12 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.CLI.Translation.ControlFlow.Services;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.IL;
 
-namespace DataDynamics.PageFX.CLI.Translation
+namespace DataDynamics.PageFX.Ecma335.Translation
 {
 	/// <summary>
     /// Implements <see cref="ITranslator"/> from CIL.

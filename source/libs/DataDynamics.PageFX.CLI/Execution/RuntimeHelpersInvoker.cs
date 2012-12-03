@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.IL;
 
-namespace DataDynamics.PageFX.CLI.Execution
+namespace DataDynamics.PageFX.Ecma335.Execution
 {
 	internal sealed class RuntimeHelpersInvoker : NativeInvoker
 	{

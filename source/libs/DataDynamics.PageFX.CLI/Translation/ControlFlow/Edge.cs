@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.CLI.Translation.ControlFlow
+namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow
 {
     /// <summary>
     /// Represents edge in directed graph

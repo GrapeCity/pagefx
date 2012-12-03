@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.CLI.GAC
+namespace DataDynamics.PageFX.Ecma335.GAC
 {
     /// <summary>
     /// The ASM_CACHE_FLAGS enumeration contains the following values: 

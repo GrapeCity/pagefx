@@ -6,16 +6,15 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Linq;
-using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.Ecma335.IL;
 
-namespace DataDynamics.PageFX.CLI.Translation.ControlFlow.Services
+namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow.Services
 {
     internal static class MethodBodyExtensions
     {

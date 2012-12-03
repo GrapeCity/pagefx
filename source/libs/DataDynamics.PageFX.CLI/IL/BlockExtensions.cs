@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DataDynamics.PageFX.CLI.IL
+namespace DataDynamics.PageFX.Ecma335.IL
 {
 	internal static class BlockExtensions
 	{

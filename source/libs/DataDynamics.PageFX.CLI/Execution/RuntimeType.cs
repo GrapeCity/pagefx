@@ -3,9 +3,8 @@ using System.Globalization;
 using System.Reflection;
 using DataDynamics.PageFX.Common.TypeSystem;
 using Module = System.Reflection.Module;
-using TypeAttributes = System.Reflection.TypeAttributes;
 
-namespace DataDynamics.PageFX.CLI.Execution
+namespace DataDynamics.PageFX.Ecma335.Execution
 {
 	internal sealed class RuntimeType : Type
 	{

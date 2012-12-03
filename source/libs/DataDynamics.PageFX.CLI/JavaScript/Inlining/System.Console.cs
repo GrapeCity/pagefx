@@ -1,8 +1,7 @@
 ﻿using System.Linq;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
+namespace DataDynamics.PageFX.Ecma335.JavaScript.Inlining
 {
 	//TODO: remove this temp inlines, inline only internal methods used by Console impl
 

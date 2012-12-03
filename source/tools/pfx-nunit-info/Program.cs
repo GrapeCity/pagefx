@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.Ecma335;
 
 namespace DataDynamics.PageFX.Tools
 {

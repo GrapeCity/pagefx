@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CLI.PDB.Interop
+namespace DataDynamics.PageFX.Ecma335.PDB.Interop
 {
     internal static class Guids
     {

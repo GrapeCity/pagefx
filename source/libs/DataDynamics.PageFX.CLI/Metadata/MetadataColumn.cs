@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using DataDynamics.PageFX.Common.Collections;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.Ecma335.Metadata
 {
 	/// <summary>
     /// Represents metadata table Column.

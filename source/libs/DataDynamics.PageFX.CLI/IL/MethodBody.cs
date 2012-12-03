@@ -8,21 +8,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.SymbolStore;
-using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
-using DataDynamics.PageFX.CLI.Metadata;
-using DataDynamics.PageFX.CLI.PDB;
-using DataDynamics.PageFX.CLI.Translation;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CodeModel.Statements;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Ecma335.PDB;
+using DataDynamics.PageFX.Ecma335.Translation;
 
-namespace DataDynamics.PageFX.CLI.IL
+namespace DataDynamics.PageFX.Ecma335.IL
 {
 	/// <summary>
     /// Reads method body

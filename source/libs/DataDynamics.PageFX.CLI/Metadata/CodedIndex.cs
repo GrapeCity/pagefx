@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.Ecma335.Metadata
 {
     /// <summary>
     /// Contains info about coded index.

@@ -1,9 +1,8 @@
-﻿using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.Common;
-using DataDynamics.PageFX.Common.Services;
+﻿using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.IL;
 
-namespace DataDynamics.PageFX.CLI.Translation
+namespace DataDynamics.PageFX.Ecma335.Translation
 {
 	internal static class CastingOperations
 	{

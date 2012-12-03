@@ -1,8 +1,8 @@
 using System.IO;
 using System.Xml;
-using DataDynamics.PageFX.CLI.Metadata;
+using DataDynamics.PageFX.Ecma335.Metadata;
 
-namespace DataDynamics.PageFX.CLI.Tools
+namespace DataDynamics.PageFX.Ecma335.Tools
 {
     public static class MetadataHtmlExport
     {

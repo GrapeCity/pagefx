@@ -1,6 +1,6 @@
 ﻿using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
+namespace DataDynamics.PageFX.Ecma335.JavaScript.Inlining
 {
 	internal sealed class RuntimeHelpersInlines : InlineCodeProvider
 	{

@@ -8,8 +8,8 @@
     <ProjectGuid>{A54D800D-621B-491A-BE70-59D46BA70523}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataDynamics.PageFX.FLI</RootNamespace>
-    <AssemblyName>DataDynamics.PageFX.FLI</AssemblyName>
+    <RootNamespace>DataDynamics.PageFX.FlashLand</RootNamespace>
+    <AssemblyName>DataDynamics.PageFX.FlashLand</AssemblyName>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
@@ -386,9 +386,9 @@
     <EmbeddedResource Include="IL\opcodes.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.Common.csproj">
+    <ProjectReference Include="..\DataDynamics.PageFX.CodeModel\Common.csproj">
       <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
-      <Name>DataDynamics.PageFX.Common</Name>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

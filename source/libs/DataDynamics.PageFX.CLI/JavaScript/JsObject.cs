@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.JavaScript;
 
-namespace DataDynamics.PageFX.CLI.JavaScript
+namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
-	using Property = KeyValuePair<object, object>;
-
-	internal sealed class JsObject : JsNode, IEnumerable<Property>
+	internal sealed class JsObject : JsNode, IEnumerable<KeyValuePair<object, object>>
 	{
-		private readonly List<Property> _properties = new List<Property>();
+		private readonly List<KeyValuePair<object, object>> _properties = new List<KeyValuePair<object, object>>();
 
 		public JsObject()
 		{
@@ -23,7 +20,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 
 		public bool NewLine { get; set; }
 
-		public JsObject(IEnumerable<Property> properties)
+		public JsObject(IEnumerable<KeyValuePair<object, object>> properties)
 		{
 			if (properties == null)
 				throw new ArgumentNullException("properties");
@@ -31,7 +28,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			_properties.AddRange(properties);
 		}
 
-		public JsObject(params Property[] properties)
+		public JsObject(params KeyValuePair<object, object>[] properties)
 		{
 			_properties.AddRange(properties);
 		}
@@ -39,7 +36,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 		public void Add(object name, object value)
 		{
 			if (name == null) throw new ArgumentNullException("name");
-			_properties.Add(new Property(name, value));
+			_properties.Add(new KeyValuePair<object, object>(name, value));
 		}
 
 		public override void Write(JsWriter writer)
@@ -87,7 +84,7 @@ namespace DataDynamics.PageFX.CLI.JavaScript
 			writer.Write("}");
 		}
 
-		public IEnumerator<Property> GetEnumerator()
+		public IEnumerator<KeyValuePair<object, object>> GetEnumerator()
 		{
 			return _properties.GetEnumerator();
 		}

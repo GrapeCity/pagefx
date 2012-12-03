@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.CLI.JavaScript.Inlining;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Ecma335.JavaScript.Inlining;
 
-namespace DataDynamics.PageFX.CLI.JavaScript
+namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
 	internal sealed class InternalCallImpl
 	{

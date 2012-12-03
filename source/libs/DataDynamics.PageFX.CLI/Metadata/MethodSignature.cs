@@ -1,9 +1,8 @@
-using System.IO;
 using System.Reflection;
 using System.Text;
 using DataDynamics.PageFX.Common.IO;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.Ecma335.Metadata
 {
 	internal sealed class MethodSignature : MetadataSignature
 	{

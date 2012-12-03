@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.Metadata;
 
-namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
+namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 {
 	internal sealed class MemberRefTable
 	{

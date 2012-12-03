@@ -1,7 +1,7 @@
 using System.Text;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.Ecma335.Metadata
 {
 	public sealed class ArrayShape
 	{

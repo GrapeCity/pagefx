@@ -1,8 +1,7 @@
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.Translation.Values
+namespace DataDynamics.PageFX.Ecma335.Translation.Values
 {
     class VarPtr : IValue
     {

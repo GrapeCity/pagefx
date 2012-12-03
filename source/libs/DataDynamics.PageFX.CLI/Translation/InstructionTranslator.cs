@@ -1,15 +1,13 @@
 using System;
-using System.Diagnostics;
-using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.CLI.Translation.ControlFlow;
-using DataDynamics.PageFX.CLI.Translation.Values;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CodeModel.Expressions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Ecma335.Translation.ControlFlow;
+using DataDynamics.PageFX.Ecma335.Translation.Values;
 
-namespace DataDynamics.PageFX.CLI.Translation
+namespace DataDynamics.PageFX.Ecma335.Translation
 {
 	/// <summary>
 	/// Implements translation for every CIL instruction.

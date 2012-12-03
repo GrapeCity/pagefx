@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace DataDynamics.PageFX.CLI.GAC
+namespace DataDynamics.PageFX.Ecma335.GAC
 {
     public class AssemblyCache
     {

@@ -63,17 +63,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.Common.csproj">
+    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\Common.csproj">
       <Project>{3e823dff-8429-499f-a3f0-3cd3e7b27a37}</Project>
-      <Name>DataDynamics.PageFX.Common</Name>
+      <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.FLI\DataDynamics.PageFX.FLI.csproj">
+    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.FLI\FlashLand.csproj">
       <Project>{A54D800D-621B-491A-BE70-59D46BA70523}</Project>
-      <Name>DataDynamics.PageFX.FLI</Name>
+      <Name>FlashLand</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\tests\DataDynamics.PageFX.QA\DataDynamics.PageFX.QA.csproj">
+    <ProjectReference Include="..\..\tests\DataDynamics.PageFX.QA\TestRunner.csproj">
       <Project>{D5099CF9-A243-4364-B9C7-6397917E3EFB}</Project>
-      <Name>DataDynamics.PageFX.QA</Name>
+      <Name>TestRunner</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

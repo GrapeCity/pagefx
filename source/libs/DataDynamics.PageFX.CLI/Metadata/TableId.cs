@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.Ecma335.Metadata
 {
 	/// <summary>
 	/// Defines metadata table codes.

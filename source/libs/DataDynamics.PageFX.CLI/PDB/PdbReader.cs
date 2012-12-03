@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.SymbolStore;
 
-namespace DataDynamics.PageFX.CLI.PDB
+namespace DataDynamics.PageFX.Ecma335.PDB
 {
     internal sealed class PdbReader : IDisposable
     {

@@ -63,13 +63,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CLI\DataDynamics.PageFX.CLI.csproj">
+    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CLI\Ecma335.csproj">
       <Project>{3C215B55-8587-4A60-8CAA-91FE412B9013}</Project>
-      <Name>DataDynamics.PageFX.CLI</Name>
+      <Name>Ecma335</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.Common.csproj">
+    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\Common.csproj">
       <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
-      <Name>DataDynamics.PageFX.Common</Name>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

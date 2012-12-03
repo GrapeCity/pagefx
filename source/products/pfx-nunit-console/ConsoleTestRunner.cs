@@ -10,6 +10,7 @@ using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.Ecma335;
 using DataDynamics.PageFX.FLI;
 
 namespace DataDynamics.PageFX.NUnit
@@ -418,14 +419,14 @@ namespace DataDynamics.PageFX.NUnit
         #region Utils
         static IAssembly LoadAssembly(string path)
         {
-            CLI.CommonLanguageInfrastructure.ClearCache();
+            CommonLanguageInfrastructure.ClearCache();
 
             try
             {
                 if (!Path.IsPathRooted(path))
                     path = Path.Combine(Environment.CurrentDirectory, path);
 
-                var asm = CLI.CommonLanguageInfrastructure.Deserialize(path, null);
+                var asm = CommonLanguageInfrastructure.Deserialize(path, null);
                 if (asm == null)
                 {
                     Console.WriteLine("Unable to load assembly '{0}'", path);

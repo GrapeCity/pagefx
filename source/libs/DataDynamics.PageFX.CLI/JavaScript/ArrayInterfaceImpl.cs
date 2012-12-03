@@ -1,9 +1,8 @@
 ﻿using System;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.JavaScript
+namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
 	internal sealed class ArrayInterfaceImpl
 	{

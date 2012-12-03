@@ -6,13 +6,11 @@ using System.Reflection;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.Execution
+namespace DataDynamics.PageFX.Ecma335.Execution
 {
-	using Methods = IReadOnlyList<MethodBase>;
-
 	internal class NativeInvoker
 	{
-		private Dictionary<string, Dictionary<int, Methods>> _methods;
+		private Dictionary<string, Dictionary<int, IReadOnlyList<MethodBase>>> _methods;
 
 		public Type Type { get; private set; }
 
@@ -27,7 +25,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 		{
 			if (_methods != null) return;
 
-			_methods = new Dictionary<string, Dictionary<int, Methods>>();
+			_methods = new Dictionary<string, Dictionary<int, IReadOnlyList<MethodBase>>>();
 
 			AddGroup(".ctor", Type.GetConstructors());
 
@@ -39,7 +37,7 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 		private void AddGroup(string name, IEnumerable<MethodBase> group)
 		{
-			var methodGroup = new Dictionary<int, Methods>();
+			var methodGroup = new Dictionary<int, IReadOnlyList<MethodBase>>();
 
 			foreach (var subGroup in group.GroupBy(x => x.GetParameters().Length))
 			{
@@ -85,10 +83,10 @@ namespace DataDynamics.PageFX.CLI.Execution
 
 			//TODO: optional parameters
 
-			Dictionary<int, Methods> group;
+			Dictionary<int, IReadOnlyList<MethodBase>> group;
 			if (_methods.TryGetValue(name, out group))
 			{
-				Methods methods;
+				IReadOnlyList<MethodBase> methods;
 				if (group.TryGetValue(args.Length, out methods))
 				{
 					if (methods.Count == 1)

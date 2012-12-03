@@ -1,11 +1,10 @@
 ﻿using System;
-using DataDynamics.PageFX.CLI.Metadata;
-using DataDynamics.PageFX.CLI.Tools;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Metadata;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Ecma335.Tools;
 
-namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
+namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 {
 	internal sealed class AssemblyTable : MetadataTable<AssemblyReference>
 	{

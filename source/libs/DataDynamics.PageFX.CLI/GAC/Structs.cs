@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace DataDynamics.PageFX.CLI.GAC
+namespace DataDynamics.PageFX.Ecma335.GAC
 {
     /// <summary>
     /// The ASSEMBLY_INFO structure represents information about an assembly in the assembly cache. 

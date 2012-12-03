@@ -1,12 +1,11 @@
 using System;
 using System.IO;
-using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.CLI.Translation.ControlFlow;
-using DataDynamics.PageFX.CLI.Translation.ControlFlow.Services;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Services;
+using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Ecma335.Translation.ControlFlow;
+using DataDynamics.PageFX.Ecma335.Translation.ControlFlow.Services;
 
-namespace DataDynamics.PageFX.CLI.Translation
+namespace DataDynamics.PageFX.Ecma335.Translation
 {
 	internal static class ILMapDump
     {

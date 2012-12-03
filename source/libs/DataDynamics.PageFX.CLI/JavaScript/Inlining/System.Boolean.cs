@@ -1,4 +1,4 @@
-﻿namespace DataDynamics.PageFX.CLI.JavaScript.Inlining
+﻿namespace DataDynamics.PageFX.Ecma335.JavaScript.Inlining
 {
 	internal sealed class BooleanInlines : InlineCodeProvider
 	{

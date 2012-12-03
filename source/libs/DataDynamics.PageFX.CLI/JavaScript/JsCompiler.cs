@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.CLI.Translation;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.JavaScript;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using IAssembly = DataDynamics.PageFX.Common.TypeSystem.IAssembly;
-using IType = DataDynamics.PageFX.Common.TypeSystem.IType;
+using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Ecma335.Translation;
 
-namespace DataDynamics.PageFX.CLI.JavaScript
+namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
 	/// <summary>
 	/// Compiles assembly into javascript.

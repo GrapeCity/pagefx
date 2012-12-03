@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace DataDynamics.PageFX.CLI.GAC
+namespace DataDynamics.PageFX.Ecma335.GAC
 {
     /// <summary>
     /// The IAssemblyName interface represents an assembly name. An assembly name includes a predetermined set of name-value pairs. 

@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CLI.Translation.ControlFlow
+namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow
 {
     internal static class FlowGraphExtensions
     {

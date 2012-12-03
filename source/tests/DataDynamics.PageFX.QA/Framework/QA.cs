@@ -12,6 +12,7 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.Ecma335;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.SWF;
 using Microsoft.Win32;
@@ -895,16 +896,16 @@ namespace DataDynamics.PageFX
         {
             if (vm == VM.AVM)
             {
-                CLI.CommonLanguageInfrastructure.ResolveLabels = false;
-                CLI.CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = true;
-                CLI.CommonLanguageInfrastructure.EnableDecompiler = false;
-                CLI.CommonLanguageInfrastructure.ClearCache();
+                CommonLanguageInfrastructure.ResolveLabels = false;
+                CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = true;
+                CommonLanguageInfrastructure.EnableDecompiler = false;
+                CommonLanguageInfrastructure.ClearCache();
             }
             else
             {
-                CLI.CommonLanguageInfrastructure.ResolveLabels = true;
-                CLI.CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = false;
-                CLI.CommonLanguageInfrastructure.EnableDecompiler = true;
+                CommonLanguageInfrastructure.ResolveLabels = true;
+                CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = false;
+                CommonLanguageInfrastructure.EnableDecompiler = true;
             }
         }
 
@@ -915,14 +916,14 @@ namespace DataDynamics.PageFX
             SetupCLI(vm);
 
 #if DEBUG
-            CLI.CommonLanguageInfrastructure.Debug = true;
-            CLI.CommonLanguageInfrastructure.TestCaseDirectory = tcroot;
+            CommonLanguageInfrastructure.Debug = true;
+            CommonLanguageInfrastructure.TestCaseDirectory = tcroot;
 #endif
 
             IAssembly asm;
             try
             {
-                asm = CLI.CommonLanguageInfrastructure.Deserialize(path, null);
+                asm = CommonLanguageInfrastructure.Deserialize(path, null);
             }
             catch (Exception e)
             {

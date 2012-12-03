@@ -1,12 +1,10 @@
-using System.Collections.Generic;
-using DataDynamics.PageFX.CLI.Translation;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CodeModel.Statements;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.Translation;
 
-namespace DataDynamics.PageFX.CLI.IL
+namespace DataDynamics.PageFX.Ecma335.IL
 {
     internal sealed class LateMethodBody : IClrMethodBody
     {

@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection.Emit;
 using System.Text;
-using DataDynamics.PageFX.CLI.Translation.ControlFlow;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.Ecma335.Translation.ControlFlow;
 
-namespace DataDynamics.PageFX.CLI.IL
+namespace DataDynamics.PageFX.Ecma335.IL
 {
     internal sealed class Instruction : IInstruction
     {

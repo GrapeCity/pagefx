@@ -85,9 +85,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.Common.csproj">
+    <ProjectReference Include="..\..\libs\DataDynamics.PageFX.CodeModel\Common.csproj">
       <Project>{3e823dff-8429-499f-a3f0-3cd3e7b27a37}</Project>
-      <Name>DataDynamics.PageFX.Common</Name>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

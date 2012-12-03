@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.Ecma335.Metadata
 {
     /// <summary>
     /// Occured when metadata within PE file is corrupted

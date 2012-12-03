@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
-using DataDynamics.PageFX.CLI.GAC;
-using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.GAC;
+using DataDynamics.PageFX.Ecma335.Metadata;
 
-namespace DataDynamics.PageFX.CLI
+namespace DataDynamics.PageFX.Ecma335
 {
     internal static class AssemblyResolver
     {

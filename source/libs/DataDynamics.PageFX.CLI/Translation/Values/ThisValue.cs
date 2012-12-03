@@ -1,6 +1,6 @@
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.Translation.Values
+namespace DataDynamics.PageFX.Ecma335.Translation.Values
 {
     internal class ThisValue : IValue
     {

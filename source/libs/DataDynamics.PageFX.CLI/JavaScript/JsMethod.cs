@@ -1,6 +1,6 @@
 ﻿using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.JavaScript
+namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
 	internal abstract class JsMethodBase : JsClassMember
 	{

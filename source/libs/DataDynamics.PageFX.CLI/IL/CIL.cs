@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.IL
+namespace DataDynamics.PageFX.Ecma335.IL
 {
     public static class CIL
     {

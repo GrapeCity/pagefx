@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.JavaScript;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CLI.JavaScript
+namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
 	internal sealed class JsText : JsNode
 	{

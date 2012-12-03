@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using DataDynamics.PageFX.CLI.Execution;
-using DataDynamics.PageFX.CLI.JavaScript;
 using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.Ecma335;
+using DataDynamics.PageFX.Ecma335.Execution;
+using DataDynamics.PageFX.Ecma335.JavaScript;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.Tools;
 using NUnit.Framework;
@@ -47,7 +48,7 @@ namespace DataDynamics.PageFX.FLI
 #endif
 
             test.Reset();
-            CLI.CommonLanguageInfrastructure.ClearCache();
+            CommonLanguageInfrastructure.ClearCache();
 
             try
             {
@@ -55,7 +56,7 @@ namespace DataDynamics.PageFX.FLI
             }
             finally
             {
-                CLI.CommonLanguageInfrastructure.ClearCache();
+                CommonLanguageInfrastructure.ClearCache();
             }
 
 			if (settings.UpdateReport)

@@ -1,10 +1,10 @@
 #if DEBUG
 using System;
 using System.IO;
-using DataDynamics.PageFX.CLI;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.Ecma335;
 
 namespace DataDynamics.PageFX
 {

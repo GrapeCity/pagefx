@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.CLI.Metadata
+namespace DataDynamics.PageFX.Ecma335.Metadata
 {
     public struct SimpleIndex : IEquatable<SimpleIndex>
     {

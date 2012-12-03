@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using DataDynamics.PageFX.CLI.LoaderInternals;
-using DataDynamics.PageFX.CLI.LoaderInternals.Collections;
-using DataDynamics.PageFX.CLI.LoaderInternals.Tables;
-using DataDynamics.PageFX.CLI.PDB;
-using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.CLI.Metadata;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using MethodBody=DataDynamics.PageFX.CLI.IL.MethodBody;
+using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Ecma335.LoaderInternals;
+using DataDynamics.PageFX.Ecma335.LoaderInternals.Collections;
+using DataDynamics.PageFX.Ecma335.LoaderInternals.Tables;
+using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Ecma335.PDB;
+using MethodBody = DataDynamics.PageFX.Ecma335.IL.MethodBody;
 
-namespace DataDynamics.PageFX.CLI
+namespace DataDynamics.PageFX.Ecma335
 {
     /// <summary>
     /// Represents loader of CLI managed assemblies.

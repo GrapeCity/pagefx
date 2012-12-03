@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 
-namespace DataDynamics.PageFX.CLI.Translation
+namespace DataDynamics.PageFX.Ecma335.Translation
 {
 	internal sealed class TranslatorResult
 	{

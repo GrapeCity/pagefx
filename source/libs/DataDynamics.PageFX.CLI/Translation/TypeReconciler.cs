@@ -1,7 +1,7 @@
-﻿using DataDynamics.PageFX.CLI.Translation.ControlFlow;
-using DataDynamics.PageFX.Common.TypeSystem;
+﻿using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.Translation.ControlFlow;
 
-namespace DataDynamics.PageFX.CLI.Translation
+namespace DataDynamics.PageFX.Ecma335.Translation
 {
 	internal static class TypeReconciler
 	{
