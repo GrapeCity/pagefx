@@ -1,4 +1,4 @@
-using DataDynamics.PageFX.Common.Statements;
+using DataDynamics.PageFX.Common.CodeModel.Statements;
 
 namespace DataDynamics.PageFX.Common.Services
 {

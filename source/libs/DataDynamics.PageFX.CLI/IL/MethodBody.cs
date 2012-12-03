@@ -16,8 +16,8 @@ using DataDynamics.PageFX.CLI.PDB;
 using DataDynamics.PageFX.CLI.Translation;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.CodeModel.Statements;
 using DataDynamics.PageFX.Common.Services;
-using DataDynamics.PageFX.Common.Statements;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.IL

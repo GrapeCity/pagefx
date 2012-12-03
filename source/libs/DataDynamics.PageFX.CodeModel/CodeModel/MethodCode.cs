@@ -1,6 +1,6 @@
-using DataDynamics.PageFX.Common.Expressions;
+using DataDynamics.PageFX.Common.CodeModel.Expressions;
+using DataDynamics.PageFX.Common.CodeModel.Statements;
 using DataDynamics.PageFX.Common.Services;
-using DataDynamics.PageFX.Common.Statements;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.Common.CodeModel

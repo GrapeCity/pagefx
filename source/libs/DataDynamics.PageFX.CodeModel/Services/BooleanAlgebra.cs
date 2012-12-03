@@ -19,7 +19,7 @@
 //if c == 1 then e = !a || b
 
 using System;
-using DataDynamics.PageFX.Common.Expressions;
+using DataDynamics.PageFX.Common.CodeModel.Expressions;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.Common.Services
