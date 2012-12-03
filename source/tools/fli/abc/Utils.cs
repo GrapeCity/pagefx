@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Linq;
 
-namespace abc
+namespace DataDynamics.PageFX
 {
     static class Utils
     {

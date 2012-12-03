@@ -8,7 +8,7 @@
     <ProjectGuid>{19D836C7-4C04-406A-A820-155AB14A797D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>abc</RootNamespace>
+    <RootNamespace>DataDynamics.PageFX</RootNamespace>
     <AssemblyName>abc</AssemblyName>
     <StartupObject>
     </StartupObject>

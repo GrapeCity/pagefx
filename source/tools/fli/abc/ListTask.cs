@@ -1,11 +1,10 @@
 using System;
 using System.IO;
 using System.Linq;
-using DataDynamics;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
 
-namespace abc
+namespace DataDynamics.PageFX
 {
     internal partial class Program
     {

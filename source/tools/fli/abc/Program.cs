@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using DataDynamics;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.Ecma335;
 using DataDynamics.PageFX.FlashLand;
@@ -13,7 +12,7 @@ using DataDynamics.PageFX.FlashLand.Swc;
 using DataDynamics.PageFX.FlashLand.Swf;
 using DataDynamics.PageFX.FlashLand.Swf.Tags;
 
-namespace abc
+namespace DataDynamics.PageFX
 {
     internal partial class Program
     {

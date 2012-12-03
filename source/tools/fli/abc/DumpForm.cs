@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using DataDynamics.PageFX.FlashLand.Abc;
 
-namespace abc
+namespace DataDynamics.PageFX
 {
     public partial class DumpForm : Form
     {

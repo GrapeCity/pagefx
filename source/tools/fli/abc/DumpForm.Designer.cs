@@ -1,4 +1,4 @@
-namespace abc
+namespace DataDynamics.PageFX
 {
     partial class DumpForm
     {

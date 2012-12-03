@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Linq;
-using DataDynamics;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
@@ -14,7 +13,7 @@ using DataDynamics.PageFX.FlashLand.Swf;
 using DataDynamics.PageFX.FlashLand.Swf.Tags;
 using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
 
-namespace abc
+namespace DataDynamics.PageFX
 {
     partial class Program
     {
