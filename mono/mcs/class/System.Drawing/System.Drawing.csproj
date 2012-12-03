@@ -60,7 +60,7 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="..\..\..\..\DataDynamics.PageFX.Shared\Graphics\PathRendering.cs">
+    <Compile Include="..\..\..\..\source\libs\Common\Graphics\PathRendering.cs">
       <Link>System.Drawing\PathRendering.cs</Link>
     </Compile>
     <Compile Include="..\..\build\common\Consts.cs">

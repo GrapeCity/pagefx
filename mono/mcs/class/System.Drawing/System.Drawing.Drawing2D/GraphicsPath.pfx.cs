@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Flash;
+using DataDynamics.PageFX.Common.Graphics;
 
 namespace System.Drawing.Drawing2D
 {

@@ -9,6 +9,9 @@ _ReSharper*
 *.suo
 *.user
 
+mono/**/[Bb]in
+mono/**/[Oo]bj
+
 source/**/[Bb]in
 source/**/[Oo]bj
 source/**/.client
