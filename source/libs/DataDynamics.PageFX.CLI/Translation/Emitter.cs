@@ -2,6 +2,7 @@
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
+using DataDynamics.PageFX.Ecma335.IL;
 
 namespace DataDynamics.PageFX.Ecma335.Translation
 {
