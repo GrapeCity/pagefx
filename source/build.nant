@@ -35,11 +35,8 @@
 
   <fail unless="${directory::exists(project.dir)}" message="Project directory ${project.dir} does not exist"/>
 
-  <property name="dir.src" value="${project.dir}\Source"/>
-  <if test="${file::exists(project.dir + '\\build.sln')}">
-    <property name="dir.src" value="${project.dir}"/>
-  </if>
-
+  <property name="dir.src" value="${project.dir}"/>
+  
   <!-- Flex 3 SDK dirs in source-->
   <property name="flex.sdkdir" value="${dir.src}\sdks\flex.3.0"/>
   <property name="flex.dlldir" value="${flex.sdkdir}\dll"/>
@@ -229,27 +226,6 @@
     <property name="flag.makehome" value="false"/>
     <property name="flag.run.benchmarks" value="true"/>
     <call target="build.core"/>
-  </target>
-
-  <target name="continuous-trigger">
-
-    <delete dir="${deploy.dir}" failonerror="false"/>
-    
-    <nant buildfile="surround.nant" target="scc-ls">
-      <properties>
-        <property name="scc.rootvaultfolder" value="source" />
-        <property name="scc.rootlocalfolder" value="${dir.src}" />
-      </properties>
-    </nant>
-
-    <loadfile file="${dir.src}\changelist.txt" property="scc.changelist" />
-
-    <property name="str.nochanges" value="Total listed files: 0"/>
-    <!--<property name="str.nochanges" value="total-0"/>-->
-
-    <fail if="${string::contains(scc.changelist, str.nochanges) and scc.fail-when-non-changed}"
-      message="No repository changes found." />
-    
   </target>
 
   <!--
@@ -631,10 +607,10 @@
     <!-- projects compiled to pfx\bin -->
     <property name="outdir" value="${pfx.bindir}"/>
     
-    <property name="project" value="${dir.src}/products/pfc/pfc.csproj"/>
+    <property name="project" value="${dir.src}/pfc/pfc.csproj"/>
     <call target="msbuild"/>
 
-    <property name="project" value="${dir.src}/products/pfx-nunit-console/pfx-nunit-console.csproj"/>
+    <property name="project" value="${dir.src}/tools/pfx-nunit-console/pfx-nunit-console.csproj"/>
     <call target="msbuild"/>
 
     <property name="project" value="${dir.src}/VSIntegration/DataDynamics.PageFX.Build/DataDynamics.PageFX.Build.csproj"/>
@@ -659,7 +635,7 @@
   <target name="build.libs">
     <property name="outdir" value="${pfx.frameworkdir}"/>
     
-    <property name="dir" value="${dir.src}/libs/mono/mcs/class"/>
+    <property name="dir" value="${dir.src}/../mono/mcs/class"/>
     <foreach item="String" in="mscorlib;System;System.Core;System.Xml;System.Data;System.Drawing;Microsoft.VisualBasic" delim=";" property="proj">
       <do>
         <property name="projdir" value="${proj}"/>
@@ -779,7 +755,7 @@
       
       <property name="flag.compile.samples" value="false"/>
       
-      <property name="dir" value="${dir.src}\samples\simple"/>
+      <property name="dir" value="${dir.src}/../samples/simple"/>
 
       <foreach item="File" property="file">
         <in>

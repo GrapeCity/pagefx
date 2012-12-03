@@ -3,6 +3,7 @@
 
   <property name="dir.dotnet" value="${directory::get-parent-directory(framework::get-framework-directory(framework::get-target-framework()))}"/>
   <property name="dir.dotnet3.5" value="${dir.dotnet}/v3.5"/>
+  <property name="dir.dotnet4.0" value="${dir.dotnet}/v4.0.30319"/>
 
   <!-- 
   =================================================================================================================
@@ -49,6 +50,10 @@
 
     <!-- checking existence of MSBuild.exe v3.5 -->
     <property name="dir.msbuild" value="${dir.dotnet3.5}"/>
+	<if test="${directory::exists(dir.dotnet4.0)}">
+	  <property name="dir.msbuild" value="${dir.dotnet4.0}"/>
+	</if>
+	
     <property name="path" value="${dir.msbuild}\MSBuild.exe"/>
     <fail unless="${file::exists(path)}" message="MSBuild.exe does not exist in ${dir.msbuild}."/>
 

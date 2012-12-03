@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.VisualBasic", "Mi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Drawing", "System.Drawing\System.Drawing.csproj", "{1DD33CA2-3476-42E0-A49B-7B68D3720204}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnit.Framework", "..\..\..\source\libs\NUnit\src\NUnit.Framework\NUnit.Framework.csproj", "{133E655F-90EA-4144-A1B4-5E68F3002B41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,12 @@ Global
 		{1DD33CA2-3476-42E0-A49B-7B68D3720204}.Edit|Any CPU.Build.0 = Release|Any CPU
 		{1DD33CA2-3476-42E0-A49B-7B68D3720204}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DD33CA2-3476-42E0-A49B-7B68D3720204}.Release|Any CPU.Build.0 = Release|Any CPU
+		{133E655F-90EA-4144-A1B4-5E68F3002B41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{133E655F-90EA-4144-A1B4-5E68F3002B41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{133E655F-90EA-4144-A1B4-5E68F3002B41}.Edit|Any CPU.ActiveCfg = Release|Any CPU
+		{133E655F-90EA-4144-A1B4-5E68F3002B41}.Edit|Any CPU.Build.0 = Release|Any CPU
+		{133E655F-90EA-4144-A1B4-5E68F3002B41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{133E655F-90EA-4144-A1B4-5E68F3002B41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

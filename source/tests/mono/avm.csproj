@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -13,7 +14,7 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -142,33 +143,33 @@
     <Compile Include="System\VersionTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    <Reference Include="mscorlib">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(PFXHOME)\framework\mscorlib.dll</HintPath>
+      <HintPath>c:\pfx\framework\mscorlib.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="NUnit.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NUnit.Framework">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(PFXHOME)\framework\NUnit.Framework.dll</HintPath>
+      <HintPath>c:\pfx\framework\NUnit.Framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    <Reference Include="System">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(PFXHOME)\framework\System.dll</HintPath>
+      <HintPath>c:\pfx\framework\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    <Reference Include="System.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(PFXHOME)\framework\System.Core.dll</HintPath>
+      <HintPath>c:\pfx\framework\System.Core.dll</HintPath>
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Data, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    <Reference Include="System.Data">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(PFXHOME)\framework\System.Data.dll</HintPath>
+      <HintPath>c:\pfx\framework\System.Data.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    <Reference Include="System.Xml">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(PFXHOME)\framework\System.Xml.dll</HintPath>
+      <HintPath>c:\pfx\framework\System.Xml.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
