@@ -1,6 +1,6 @@
-using DataDynamics.PageFX.CodeModel.Expressions;
+using DataDynamics.PageFX.Common.Expressions;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     /// <summary>
     /// Represents type property.

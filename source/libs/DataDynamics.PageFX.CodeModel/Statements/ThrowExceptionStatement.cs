@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel.Expressions;
+using DataDynamics.PageFX.Common.Expressions;
 
-namespace DataDynamics.PageFX.CodeModel.Statements
+namespace DataDynamics.PageFX.Common.Statements
 {
     public sealed class ThrowExceptionStatement : Statement, IThrowExceptionStatement
     {

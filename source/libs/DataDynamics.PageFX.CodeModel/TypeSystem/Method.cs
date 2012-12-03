@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class Method : TypeMember, IMethod
     {

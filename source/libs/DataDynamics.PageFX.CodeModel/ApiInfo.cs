@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.Common
 {
     //Writes api-info in format of mono-api-info tool.
     public static class ApiInfo

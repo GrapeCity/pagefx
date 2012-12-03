@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public interface IParameterizedMember : ITypeMember
     {

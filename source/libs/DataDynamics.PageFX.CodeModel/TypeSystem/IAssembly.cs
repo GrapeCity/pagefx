@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     /// <summary>
     /// Contains info about assembly name.

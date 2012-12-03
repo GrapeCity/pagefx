@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel.Syntax;
+using DataDynamics.PageFX.Common.Syntax;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class GenericInstance : CustomAttributeProvider, IGenericInstance
     {

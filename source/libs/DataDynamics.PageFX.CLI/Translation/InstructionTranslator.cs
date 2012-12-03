@@ -3,9 +3,9 @@ using System.Diagnostics;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow;
 using DataDynamics.PageFX.CLI.Translation.Values;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.Expressions;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.Expressions;
+using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.Translation
 {

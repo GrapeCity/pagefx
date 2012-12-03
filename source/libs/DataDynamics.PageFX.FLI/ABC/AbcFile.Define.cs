@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI.ABC

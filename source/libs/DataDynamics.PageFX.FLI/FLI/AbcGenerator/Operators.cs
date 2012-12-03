@@ -1,9 +1,10 @@
 using System;
 using System.Diagnostics;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
+using IMethod = DataDynamics.PageFX.Common.TypeSystem.IMethod;
+using IType = DataDynamics.PageFX.Common.TypeSystem.IType;
 
 namespace DataDynamics.PageFX.FLI
 {

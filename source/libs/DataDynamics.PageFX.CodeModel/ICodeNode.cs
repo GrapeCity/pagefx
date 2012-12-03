@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.Common
 {
     /// <summary>
     /// Represents node in CodeModel

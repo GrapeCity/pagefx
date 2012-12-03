@@ -7,8 +7,8 @@ using DataDynamics.PageFX.CLI.LoaderInternals.Tables;
 using DataDynamics.PageFX.CLI.PDB;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Metadata;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.TypeSystem;
 using MethodBody=DataDynamics.PageFX.CLI.IL.MethodBody;
 
 namespace DataDynamics.PageFX.CLI

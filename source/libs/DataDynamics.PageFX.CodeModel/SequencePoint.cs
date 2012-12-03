@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common
 {
     public sealed class SequencePoint
     {

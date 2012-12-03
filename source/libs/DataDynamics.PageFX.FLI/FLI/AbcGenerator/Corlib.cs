@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 
 namespace DataDynamics.PageFX.FLI

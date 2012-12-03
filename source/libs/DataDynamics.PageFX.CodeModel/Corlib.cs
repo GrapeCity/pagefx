@@ -1,7 +1,7 @@
 using System;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.Common
 {
     #region class Corlib
     public static class Corlib

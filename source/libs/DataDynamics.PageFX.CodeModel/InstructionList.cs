@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.Common
 {
     public class InstructionList<T> : List<T>, IInstructionList
         where T : class, IInstruction

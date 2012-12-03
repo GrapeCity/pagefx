@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.CodeModel.Expressions
+namespace DataDynamics.PageFX.Common.Expressions
 {
     public abstract class EnclosingExpression : Expression, IEnclosingExpression
     {

@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CodeModel.Syntax
+namespace DataDynamics.PageFX.Common.Syntax
 {
     public enum FormatMode
     {

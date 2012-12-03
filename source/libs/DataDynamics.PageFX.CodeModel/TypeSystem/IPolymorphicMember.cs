@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public interface IPolymorphicMember : ITypeMember
     {

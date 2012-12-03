@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CodeModel.Statements
+namespace DataDynamics.PageFX.Common.Statements
 {
     public class DebuggerBreakStatement : Statement, IDebuggerBreakStatement
     {

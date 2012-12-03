@@ -1,8 +1,8 @@
-using DataDynamics.PageFX.CodeModel.Expressions;
-using DataDynamics.PageFX.CodeModel.Statements;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.Expressions;
+using DataDynamics.PageFX.Common.Statements;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.Common
 {
     public sealed class MethodCode
     {

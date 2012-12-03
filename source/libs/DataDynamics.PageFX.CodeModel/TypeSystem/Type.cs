@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using DataDynamics.PageFX.CodeModel.Syntax;
+using DataDynamics.PageFX.Common.Syntax;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     /// <summary>
     /// Represents base class for user-defined types.

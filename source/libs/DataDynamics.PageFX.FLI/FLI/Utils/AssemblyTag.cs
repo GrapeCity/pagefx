@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWC;
 using DataDynamics.PageFX.FLI.SWF;
@@ -90,7 +89,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static AssemblyTag Corlib
         {
-            get { return Instance(CodeModel.Corlib.Assembly); }
+            get { return Instance(Common.Corlib.Assembly); }
         }
 
         public static class AvmGlobalTypes

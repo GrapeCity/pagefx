@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.Common;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {

@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.CLI;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX
 {

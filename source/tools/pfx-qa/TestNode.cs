@@ -1,6 +1,5 @@
 ﻿using System.Xml;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX
 {

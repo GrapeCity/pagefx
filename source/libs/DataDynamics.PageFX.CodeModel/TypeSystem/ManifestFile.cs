@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public class ManifestFile : CustomAttributeProvider, IManifestFile
     {

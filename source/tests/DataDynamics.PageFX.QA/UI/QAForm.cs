@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.FLI;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.UI;

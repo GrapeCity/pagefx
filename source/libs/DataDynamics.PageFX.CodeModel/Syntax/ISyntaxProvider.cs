@@ -1,5 +1,5 @@
 
-namespace DataDynamics.PageFX.CodeModel.Syntax
+namespace DataDynamics.PageFX.Common.Syntax
 {
     /// <summary>
     /// Represents facility to customize syntax formatting of code model for given language.

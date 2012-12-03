@@ -1,6 +1,6 @@
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel.Expressions
+namespace DataDynamics.PageFX.Common.Expressions
 {
     public sealed class TypeOfExpression : Expression, ITypeOfExpression
     {

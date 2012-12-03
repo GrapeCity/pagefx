@@ -5,11 +5,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DataDynamics.PageFX.CodeModel.Expressions;
-using DataDynamics.PageFX.CodeModel.Statements;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.Expressions;
+using DataDynamics.PageFX.Common.Statements;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel.Syntax
+namespace DataDynamics.PageFX.Common.Syntax
 {
     internal class SyntaxWriter
     {

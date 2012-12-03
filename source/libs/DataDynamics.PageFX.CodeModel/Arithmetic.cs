@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.Common
 {
-	using BinFuncs = Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>;
-
-    public static class Arithmetic
+	public static class Arithmetic
     {
         private static IType Fix(IType type)
         {
@@ -316,7 +314,7 @@ namespace DataDynamics.PageFX.CodeModel
 			return Eval(BinaryOperator.RightShift, x, y);
 		}
 
-		private static BinFuncs GetFuncs(BinaryOperator op)
+		private static Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> GetFuncs(BinaryOperator op)
 		{
 			switch (op)
 			{
@@ -345,8 +343,8 @@ namespace DataDynamics.PageFX.CodeModel
 			}
 		}
 
-		private static readonly BinFuncs AddFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> AddFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) + ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) + (SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) + (Byte)y},
@@ -518,8 +516,8 @@ namespace DataDynamics.PageFX.CodeModel
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Char, TypeCode.Char), (x, y) => (Int32)(Char)x + (Int32)(Char)y},
 		};
 
-		private static readonly BinFuncs SubFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> SubFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) - ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) - (SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) - (Byte)y},
@@ -691,8 +689,8 @@ namespace DataDynamics.PageFX.CodeModel
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Char, TypeCode.Char), (x, y) => (Int32)(Char)x - (Int32)(Char)y},
 		};
 
-		private static readonly BinFuncs MulFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> MulFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) * ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) * (SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) * (Byte)y},
@@ -864,8 +862,8 @@ namespace DataDynamics.PageFX.CodeModel
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Char, TypeCode.Char), (x, y) => (Int32)(Char)x * (Int32)(Char)y},
 		};
 
-		private static readonly BinFuncs DivFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> DivFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) / ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) / (SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) / (Byte)y},
@@ -1037,8 +1035,8 @@ namespace DataDynamics.PageFX.CodeModel
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Char, TypeCode.Char), (x, y) => (Int32)(Char)x / (Int32)(Char)y},
 		};
 
-		private static readonly BinFuncs ModFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> ModFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) % ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) % (SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) % (Byte)y},
@@ -1210,8 +1208,8 @@ namespace DataDynamics.PageFX.CodeModel
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Char, TypeCode.Char), (x, y) => (Int32)(Char)x % (Int32)(Char)y},
 		};
 
-		private static readonly BinFuncs OrFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> OrFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) | ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) | (SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) | (Byte)y},
@@ -1383,8 +1381,8 @@ namespace DataDynamics.PageFX.CodeModel
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Char, TypeCode.Char), (x, y) => (Int32)(Char)x | (Int32)(Char)y},
 		};
 
-		private static readonly BinFuncs AndFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> AndFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) & ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) & (SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) & (Byte)y},
@@ -1556,8 +1554,8 @@ namespace DataDynamics.PageFX.CodeModel
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Char, TypeCode.Char), (x, y) => (Int32)(Char)x & (Int32)(Char)y},
 		};
 
-		private static readonly BinFuncs XorFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> XorFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) ^ ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) ^ (SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) ^ (Byte)y},
@@ -1729,8 +1727,8 @@ namespace DataDynamics.PageFX.CodeModel
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Char, TypeCode.Char), (x, y) => (Int32)(Char)x ^ (Int32)(Char)y},
 		};
 
-		private static readonly BinFuncs LeftShiftFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> LeftShiftFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) << ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) << (Int32)(SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) << (Int32)(Byte)y},
@@ -1902,8 +1900,8 @@ namespace DataDynamics.PageFX.CodeModel
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Char, TypeCode.Char), (x, y) => (Int32)(Char)x << (Int32)(Char)y},
 		};
 
-		private static readonly BinFuncs RightShiftFuncs = new BinFuncs
-		{
+		private static readonly Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>> RightShiftFuncs = new Dictionary<KeyValuePair<TypeCode, TypeCode>, Func<object, object, object>>
+			{
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Boolean), (x, y) => ((Boolean)x ? 1 : 0) >> ((Boolean)y ? 1 : 0)},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.SByte), (x, y) => ((Boolean)x ? 1 : 0) >> (Int32)(SByte)y},
 			{new KeyValuePair<TypeCode,TypeCode>(TypeCode.Boolean, TypeCode.Byte), (x, y) => ((Boolean)x ? 1 : 0) >> (Int32)(Byte)y},

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.CodeModel.Statements
+namespace DataDynamics.PageFX.Common.Statements
 {
     public sealed class LabeledStatement : Statement, ILabeledStatement
     {

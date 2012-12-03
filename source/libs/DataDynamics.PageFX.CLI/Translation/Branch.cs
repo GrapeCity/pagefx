@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow;
-using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.Common;
 
 namespace DataDynamics.PageFX.CLI.Translation
 {

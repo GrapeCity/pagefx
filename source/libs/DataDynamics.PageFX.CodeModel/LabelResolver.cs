@@ -1,6 +1,6 @@
-using DataDynamics.PageFX.CodeModel.Statements;
+using DataDynamics.PageFX.Common.Statements;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.Common
 {
     public class LabelResolver
     {

@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common
 {
 	/// <summary>
 	/// Predefined names used in the CLR

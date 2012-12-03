@@ -1,7 +1,7 @@
 using System;
-using DataDynamics.PageFX.CodeModel.Statements;
+using DataDynamics.PageFX.Common.Statements;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public class MethodBody : IMethodBody
     {

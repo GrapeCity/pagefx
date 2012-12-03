@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
 using DataDynamics.PageFX.CLI.PDB.Interop;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.PDB
 {

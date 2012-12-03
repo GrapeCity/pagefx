@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.PageFX.CodeModel.Syntax;
+using DataDynamics.PageFX.Common.Syntax;
 
-namespace DataDynamics.PageFX.CodeModel.Statements
+namespace DataDynamics.PageFX.Common.Statements
 {
     public sealed class StatementCollection : List<IStatement>, IStatementCollection
     {

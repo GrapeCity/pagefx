@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel.Statements;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.Statements;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel.Expressions
+namespace DataDynamics.PageFX.Common.Expressions
 {
     /// <summary>
     /// Base interface for expressions

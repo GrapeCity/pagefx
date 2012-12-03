@@ -90,9 +90,9 @@
       <Project>{3C215B55-8587-4A60-8CAA-91FE412B9013}</Project>
       <Name>DataDynamics.PageFX.CLI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.CodeModel.csproj">
+    <ProjectReference Include="..\..\..\libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.Common.csproj">
       <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
-      <Name>DataDynamics.PageFX.CodeModel</Name>
+      <Name>DataDynamics.PageFX.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\libs\DataDynamics.PageFX.FLI\DataDynamics.PageFX.FLI.csproj">
       <Project>{A54D800D-621B-491A-BE70-59D46BA70523}</Project>

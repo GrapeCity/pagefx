@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public abstract class CompoundType : ICompoundType
     {

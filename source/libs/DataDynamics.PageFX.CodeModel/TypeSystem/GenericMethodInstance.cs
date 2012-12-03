@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DataDynamics.PageFX.CodeModel.Syntax;
+using DataDynamics.PageFX.Common.Syntax;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
 	public sealed class GenericMethodInstance : IMethod
     {

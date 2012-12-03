@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI.ABC

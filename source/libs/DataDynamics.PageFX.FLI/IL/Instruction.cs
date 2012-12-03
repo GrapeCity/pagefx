@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.SWF;
 

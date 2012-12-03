@@ -1,7 +1,7 @@
 using System;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel.Syntax
+namespace DataDynamics.PageFX.Common.Syntax
 {
 	public static class SyntaxFormatter
     {

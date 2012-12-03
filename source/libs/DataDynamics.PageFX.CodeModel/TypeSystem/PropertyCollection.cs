@@ -1,7 +1,7 @@
 using System;
-using DataDynamics.PageFX.CodeModel.Syntax;
+using DataDynamics.PageFX.Common.Syntax;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class PropertyCollection : MultiMemberCollection<IProperty>, IPropertyCollection
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
 	public static class CollectionExtensions
 	{

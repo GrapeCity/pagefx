@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.CodeModel.TypeSystem
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     /// <summary>
     /// Item with constant value.

@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.ABC;
 
 namespace DataDynamics.PageFX.FLI

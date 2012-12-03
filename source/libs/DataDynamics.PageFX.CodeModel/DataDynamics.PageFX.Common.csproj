@@ -8,8 +8,8 @@
     <ProjectGuid>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataDynamics.PageFX.CodeModel</RootNamespace>
-    <AssemblyName>DataDynamics.PageFX.CodeModel</AssemblyName>
+    <RootNamespace>DataDynamics.PageFX.Common</RootNamespace>
+    <AssemblyName>DataDynamics.PageFX.Common</AssemblyName>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>

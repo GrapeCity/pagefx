@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.CodeModel.Syntax
+namespace DataDynamics.PageFX.Common.Syntax
 {
     /// <summary>
     /// Defines some format string for some language. The format string is used to format specified item from Code Model.

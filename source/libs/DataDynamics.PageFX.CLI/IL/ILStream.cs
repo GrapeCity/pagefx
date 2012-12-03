@@ -1,4 +1,4 @@
-using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.Common;
 
 namespace DataDynamics.PageFX.CLI.IL
 {

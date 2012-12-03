@@ -1,5 +1,4 @@
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.FLI.ABC
 {
@@ -105,19 +104,19 @@ namespace DataDynamics.PageFX.FLI.ABC
 			switch (value)
 			{
 				case AbcConstKind.PrivateNamespace:
-					return CodeModel.TypeSystem.Visibility.Private;
+					return Common.TypeSystem.Visibility.Private;
 				case AbcConstKind.PublicNamespace:
-					return CodeModel.TypeSystem.Visibility.Public;
+					return Common.TypeSystem.Visibility.Public;
 				case AbcConstKind.PackageNamespace:
-					return CodeModel.TypeSystem.Visibility.Public;
+					return Common.TypeSystem.Visibility.Public;
 				case AbcConstKind.InternalNamespace:
-					return CodeModel.TypeSystem.Visibility.Internal;
+					return Common.TypeSystem.Visibility.Internal;
 				case AbcConstKind.ProtectedNamespace:
-					return CodeModel.TypeSystem.Visibility.Protected;
+					return Common.TypeSystem.Visibility.Protected;
 				case AbcConstKind.StaticProtectedNamespace:
-					return CodeModel.TypeSystem.Visibility.Protected;
+					return Common.TypeSystem.Visibility.Protected;
 				default:
-					return CodeModel.TypeSystem.Visibility.Private;
+					return Common.TypeSystem.Visibility.Private;
 			}
 		}
 	}

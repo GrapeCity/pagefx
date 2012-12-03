@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel.Syntax;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.Syntax;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel.Expressions
+namespace DataDynamics.PageFX.Common.Expressions
 {
     public abstract class Expression : IExpression
     {

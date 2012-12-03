@@ -1,6 +1,6 @@
-﻿using DataDynamics.PageFX.CodeModel.Syntax;
+﻿using DataDynamics.PageFX.Common.Syntax;
 
-namespace DataDynamics.PageFX.CodeModel
+namespace DataDynamics.PageFX.Common
 {
 	public enum CastOperator
 	{

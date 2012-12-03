@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.Syntax;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.Syntax;
+using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FLI.IL;
 using DataDynamics.PageFX.FLI.SWF;
 

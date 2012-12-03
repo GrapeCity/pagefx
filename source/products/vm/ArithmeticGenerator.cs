@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using DataDynamics.PageFX.CodeModel;
+using DataDynamics.PageFX.Common;
 
 internal class ArithmeticGenerator
 {

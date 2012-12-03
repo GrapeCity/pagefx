@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel.Expressions;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.Expressions;
+using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.CodeModel.Statements
+namespace DataDynamics.PageFX.Common.Statements
 {
     /// <summary>
     /// Represents single statement within method body code

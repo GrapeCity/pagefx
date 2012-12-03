@@ -1,5 +1,5 @@
 ﻿using DataDynamics.PageFX.CLI.Translation.ControlFlow;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.Translation
 {

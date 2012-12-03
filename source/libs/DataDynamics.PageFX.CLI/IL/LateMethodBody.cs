@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using DataDynamics.PageFX.CLI.Translation;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.Statements;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.Statements;
+using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.IL
 {

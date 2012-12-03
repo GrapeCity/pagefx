@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.Shared"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.CLI", "libs\DataDynamics.PageFX.CLI\DataDynamics.PageFX.CLI.csproj", "{3C215B55-8587-4A60-8CAA-91FE412B9013}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.CodeModel", "libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.CodeModel.csproj", "{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.Common", "libs\DataDynamics.PageFX.CodeModel\DataDynamics.PageFX.Common.csproj", "{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.FLI", "libs\DataDynamics.PageFX.FLI\DataDynamics.PageFX.FLI.csproj", "{A54D800D-621B-491A-BE70-59D46BA70523}"
 EndProject

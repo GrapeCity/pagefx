@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using DataDynamics.PageFX.CodeModel.Syntax;
+using DataDynamics.PageFX.Common.Syntax;
 
-namespace DataDynamics.PageFX.CodeModel.Statements
+namespace DataDynamics.PageFX.Common.Statements
 {
     public abstract class Statement : IStatement
     {

@@ -7,8 +7,8 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
-using DataDynamics.PageFX.CodeModel;
-using DataDynamics.PageFX.CodeModel.TypeSystem;
+using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.Translation.ControlFlow.Services
 {
