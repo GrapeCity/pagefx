@@ -2,6 +2,8 @@
 using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.CLI.Translation
 {

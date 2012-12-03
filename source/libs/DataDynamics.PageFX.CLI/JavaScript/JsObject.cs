@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.JavaScript;
 
 namespace DataDynamics.PageFX.CLI.JavaScript
 {

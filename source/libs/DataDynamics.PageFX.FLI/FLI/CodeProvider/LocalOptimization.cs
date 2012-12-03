@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.FLI.ABC;
 using DataDynamics.PageFX.FLI.IL;
 

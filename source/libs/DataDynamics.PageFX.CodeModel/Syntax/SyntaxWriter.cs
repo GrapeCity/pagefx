@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Expressions;
+using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Statements;
 using DataDynamics.PageFX.Common.TypeSystem;
 

@@ -1,7 +1,7 @@
 namespace DataDynamics.PageFX.Common
 {
 	/// <summary>
-	/// Predefined names used in the CLR
+	/// Predefined names used in the CLR.
 	/// </summary>
 	public static class CLRNames
 	{

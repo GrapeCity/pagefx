@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.JavaScript;
+using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.JavaScript

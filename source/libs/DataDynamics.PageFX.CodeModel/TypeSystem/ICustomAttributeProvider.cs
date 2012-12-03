@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DataDynamics.PageFX.Common.CodeModel;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {

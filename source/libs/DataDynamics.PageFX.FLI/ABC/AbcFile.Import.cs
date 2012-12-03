@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.FLI.IL;
 
 namespace DataDynamics.PageFX.FLI.ABC

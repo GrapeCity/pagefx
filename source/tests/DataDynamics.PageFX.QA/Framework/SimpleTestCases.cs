@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.NUnit;
+using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX

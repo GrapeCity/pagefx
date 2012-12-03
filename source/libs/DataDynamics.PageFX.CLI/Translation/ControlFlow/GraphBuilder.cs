@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.Translation.ControlFlow

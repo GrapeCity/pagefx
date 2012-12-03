@@ -10,6 +10,7 @@ using System.Security.Permissions;
 using System.Text;
 using DataDynamics.PageFX.CLI.PDB.Interop;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.PDB

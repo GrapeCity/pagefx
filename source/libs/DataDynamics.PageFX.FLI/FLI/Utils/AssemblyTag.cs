@@ -89,7 +89,7 @@ namespace DataDynamics.PageFX.FLI
 
         public static AssemblyTag Corlib
         {
-            get { return Instance(Common.Corlib.Assembly); }
+            get { return Instance(Common.Services.Corlib.Assembly); }
         }
 
         public static class AvmGlobalTypes

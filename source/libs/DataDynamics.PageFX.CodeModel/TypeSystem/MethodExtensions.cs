@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using DataDynamics.PageFX.Common.JavaScript;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {

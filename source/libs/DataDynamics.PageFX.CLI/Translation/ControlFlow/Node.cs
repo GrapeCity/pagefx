@@ -5,6 +5,7 @@ using System.Linq;
 using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow.Services;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Statements;
 using DataDynamics.PageFX.Common.TypeSystem;
 

@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Text;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.IL

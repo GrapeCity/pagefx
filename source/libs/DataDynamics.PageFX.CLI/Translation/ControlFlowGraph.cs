@@ -2,6 +2,7 @@ using DataDynamics.PageFX.CLI.IL;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow;
 using DataDynamics.PageFX.CLI.Translation.ControlFlow.Services;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.CLI.Translation
 {

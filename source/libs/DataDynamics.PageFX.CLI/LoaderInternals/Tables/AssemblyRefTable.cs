@@ -1,6 +1,7 @@
 ﻿using System;
 using DataDynamics.PageFX.CLI.Metadata;
 using DataDynamics.PageFX.Common;
+using DataDynamics.PageFX.Common.Metadata;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.CLI.LoaderInternals.Tables
