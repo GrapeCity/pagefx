@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 {
     public interface IIDList : IEnumerable<int>
     {

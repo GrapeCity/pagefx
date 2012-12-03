@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 {
     /// <summary>
     /// The ImportAssets2 tag replaces the ImportAssets tag for SWF 8 and later.

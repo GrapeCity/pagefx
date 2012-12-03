@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Actions
 {
     public abstract class SwfAction : ISupportXmlDump
     {

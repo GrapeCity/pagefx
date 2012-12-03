@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     /// <summary>
     /// Represents method paramater.

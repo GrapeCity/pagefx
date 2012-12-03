@@ -7,9 +7,11 @@ using System.Linq;
 using System.Reflection;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FLI.ABC;
-using DataDynamics.PageFX.FLI.IL;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.FlashLand.Swf.Tags.Actions;
+using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
 
 #region SWF Structure
 //FileAttributes

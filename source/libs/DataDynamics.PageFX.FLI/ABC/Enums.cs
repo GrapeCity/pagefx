@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     #region enum AbcMethodFlags
     [Flags]

@@ -1,6 +1,7 @@
 using System.Drawing;
+using DataDynamics.PageFX.FlashLand.Swf.Tags;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf
 {
     public interface ISwfAtom
     {

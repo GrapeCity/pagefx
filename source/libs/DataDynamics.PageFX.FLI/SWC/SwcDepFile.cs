@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FLI.ABC;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.SWC
+namespace DataDynamics.PageFX.FlashLand.Swc
 {
     public class SwcDepFile
     {

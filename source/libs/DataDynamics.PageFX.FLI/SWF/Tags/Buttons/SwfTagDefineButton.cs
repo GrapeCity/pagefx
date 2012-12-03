@@ -1,4 +1,6 @@
-namespace DataDynamics.PageFX.FLI.SWF
+using DataDynamics.PageFX.FlashLand.Swf.Actions;
+
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
 {
     [SwfTag(SwfTagCode.DefineButton)]
     public class SwfTagDefineButton : SwfCharacter

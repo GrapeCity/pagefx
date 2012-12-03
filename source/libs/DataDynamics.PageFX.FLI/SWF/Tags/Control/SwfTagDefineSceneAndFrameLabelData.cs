@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 {
     /// <summary>
     /// The DefineSceneAndFrameLabelData tag contains scene and frame label data for a

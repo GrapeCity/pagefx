@@ -9,11 +9,12 @@ using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FLI.ABC;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Swf;
 using Ionic.Zip;
 
-namespace DataDynamics.PageFX.FLI.SWC
+namespace DataDynamics.PageFX.FlashLand.Swc
 {
     public class SwcFile
     {

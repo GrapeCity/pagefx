@@ -14,7 +14,7 @@ using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.Ecma335;
 using DataDynamics.PageFX.FLI;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Swf;
 using Microsoft.Win32;
 using NUnit.Framework;
 

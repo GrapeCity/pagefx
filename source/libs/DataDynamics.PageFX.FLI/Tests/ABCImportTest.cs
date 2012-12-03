@@ -1,7 +1,8 @@
-﻿using DataDynamics.PageFX.FLI.ABC;
+﻿#if NUNIT
+using DataDynamics.PageFX.FlashLand.Abc;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FLI.Tests
+namespace DataDynamics.PageFX.FlashLand.Tests
 {
     [TestFixture]
     public class ABCImportTest
@@ -34,3 +35,4 @@ namespace DataDynamics.PageFX.FLI.Tests
         }
     }
 }
+#endif

@@ -2,8 +2,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml;
 using DataDynamics.PageFX.Common.Extensions;
+using DataDynamics.PageFX.FlashLand.Swf.Tags;
+using DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf
 {
     public class SwfGradient
     {

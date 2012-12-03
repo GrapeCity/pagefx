@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using DataDynamics.PageFX.Common.Extensions;
-using DataDynamics.PageFX.FLI.IL;
-using DataDynamics.PageFX.FLI.SWC;
+using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.FlashLand.Swc;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     public partial class AbcFile
     {

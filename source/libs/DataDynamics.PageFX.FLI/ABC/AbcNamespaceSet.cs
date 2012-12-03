@@ -5,9 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.Common.Extensions;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     /// <summary>
     /// Represents namespace set

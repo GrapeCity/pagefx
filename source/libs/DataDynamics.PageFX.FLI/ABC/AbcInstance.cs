@@ -7,11 +7,12 @@ using System.Xml;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FLI.IL;
-using DataDynamics.PageFX.FLI.SWC;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.FlashLand.Swc;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     #region enum AbcClassFlags
     [Flags]

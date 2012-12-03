@@ -3,8 +3,8 @@ using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FLI.ABC;
-using DataDynamics.PageFX.FLI.IL;
+using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FLI
 {

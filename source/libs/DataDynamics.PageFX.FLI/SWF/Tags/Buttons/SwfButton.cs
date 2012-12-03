@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Xml;
+using DataDynamics.PageFX.FlashLand.Swf.Filters;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
 {
     public class SwfButton
     {

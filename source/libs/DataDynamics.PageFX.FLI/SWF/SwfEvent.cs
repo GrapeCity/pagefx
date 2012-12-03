@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using DataDynamics.PageFX.FlashLand.Swf.Actions;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf
 {
     public class SwfEvent
     {

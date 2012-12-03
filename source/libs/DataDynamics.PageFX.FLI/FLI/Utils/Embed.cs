@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
-using DataDynamics.PageFX.FLI.ABC;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
 
 namespace DataDynamics.PageFX.FLI
 {

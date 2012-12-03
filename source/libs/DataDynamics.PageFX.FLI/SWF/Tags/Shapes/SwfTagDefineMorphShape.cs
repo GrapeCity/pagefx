@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Xml;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 {
     /// <summary>
     /// The DefineMorphShape tag defines the start and end states of a morph sequence.

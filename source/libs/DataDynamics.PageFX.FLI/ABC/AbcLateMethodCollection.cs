@@ -1,7 +1,8 @@
 using System.Collections.Generic;
-using DataDynamics.PageFX.FLI.IL;
+using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     internal class AbcLateMethodCollection
     {

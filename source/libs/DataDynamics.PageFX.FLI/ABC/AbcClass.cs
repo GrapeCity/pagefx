@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     /// <summary>
     /// Contains traits for static members of user defined type

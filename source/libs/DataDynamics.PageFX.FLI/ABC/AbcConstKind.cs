@@ -1,6 +1,6 @@
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
 	/// <summary>
 	/// Enumerates constant types supported by AVM+

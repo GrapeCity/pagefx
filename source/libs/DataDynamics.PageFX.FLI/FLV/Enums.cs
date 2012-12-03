@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.FLI.FLV
+namespace DataDynamics.PageFX.FlashLand.Flv
 {
     [Flags]
     public enum FlvFileFlags

@@ -1,5 +1,5 @@
 ﻿using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FLI.IL;
+using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FLI.Inlining
 {

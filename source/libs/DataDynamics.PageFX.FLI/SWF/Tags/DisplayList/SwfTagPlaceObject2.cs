@@ -2,7 +2,7 @@ using System;
 using System.Drawing.Drawing2D;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList
 {
     [SwfTag(SwfTagCode.PlaceObject2)]
     public class SwfTagPlaceObject2 : SwfTag

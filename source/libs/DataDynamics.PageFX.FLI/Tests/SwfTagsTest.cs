@@ -1,10 +1,11 @@
-using System.IO;
+#if NUNIT
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.IO;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.FlashLand.Swf.Tags;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FLI.Tests
+namespace DataDynamics.PageFX.FlashLand.Tests
 {
     [TestFixture]
     public class SwfTagsTest
@@ -92,3 +93,4 @@ namespace DataDynamics.PageFX.FLI.Tests
         }
     } 
 }
+#endif

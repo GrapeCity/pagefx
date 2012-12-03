@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using DataDynamics.PageFX.FLI.SWC;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.Swc;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     public class AblFile
     {

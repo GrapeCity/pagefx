@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Filters
 {
     public class SwfDropShadowFilter : SwfFilter
     {

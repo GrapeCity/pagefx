@@ -1,6 +1,6 @@
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.FLV
+namespace DataDynamics.PageFX.FlashLand.Flv
 {
     public class FlvVideoTag : FlvTag
     {

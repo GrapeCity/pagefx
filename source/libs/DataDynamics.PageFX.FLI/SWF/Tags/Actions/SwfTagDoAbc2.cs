@@ -1,7 +1,7 @@
 using System.Xml;
-using DataDynamics.PageFX.FLI.ABC;
+using DataDynamics.PageFX.FlashLand.Abc;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Actions
 {
     [SwfTag(SwfTagCode.DoAbc2)]
     public class SwfTagDoAbc2 : SwfTagDoAbc

@@ -2,7 +2,7 @@
 using System.Globalization;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FLI.Tests
+namespace DataDynamics.PageFX.FlashLand.Tests
 {
     [TestFixture]
     public class FunctionTests

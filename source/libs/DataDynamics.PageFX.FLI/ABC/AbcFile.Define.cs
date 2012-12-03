@@ -2,16 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FLI.IL;
+using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    using AbcString = AbcConst<string>;
-
-    //contains Define API
+	//contains Define API
     public partial class AbcFile
     {
         #region IsDefined
@@ -204,22 +202,22 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         /// <param name="value">value of constant to define.</param>
         /// <returns></returns>
-        public AbcString DefineString(string value)
+        public AbcConst<string> DefineString(string value)
         {
             if (value == null)
                 throw new ArgumentNullException("value");
             return _stringPool.Define(value);
         }
 
-        public AbcString EmptyString
+        public AbcConst<string> EmptyString
         {
             get { return _emptyString ?? (_emptyString = DefineString("")); }
         }
-        private AbcString _emptyString;
+        private AbcConst<string> _emptyString;
 
-        AbcString DefineString2(string value)
+        AbcConst<string> DefineString2(string value)
         {
-            AbcString c = null;
+            AbcConst<string> c = null;
             if (!string.IsNullOrEmpty(value))
                 c = DefineString(value);
             return c;
@@ -329,7 +327,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// <param name="kind">kind of namespace to define.</param>
         /// <param name="name">name of namespace to define.</param>
         /// <returns></returns>
-        public AbcNamespace DefineNamespace(AbcConstKind kind, AbcString name)
+        public AbcNamespace DefineNamespace(AbcConstKind kind, AbcConst<string> name)
         {
             string key = name.MakeKey(kind);
             var ns = _nspool[key];
@@ -366,7 +364,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         /// <param name="name">name of namespace to define.</param>
         /// <returns></returns>
-        public AbcNamespace DefinePublicNamespace(AbcString name)
+        public AbcNamespace DefinePublicNamespace(AbcConst<string> name)
         {
             return DefineNamespace(AbcConstKind.PublicNamespace, name);
         }
@@ -386,7 +384,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         /// <param name="name">name of namespace to define.</param>
         /// <returns></returns>
-        public AbcNamespace DefineProtectedNamespace(AbcString name)
+        public AbcNamespace DefineProtectedNamespace(AbcConst<string> name)
         {
             return DefineNamespace(AbcConstKind.ProtectedNamespace, name);
         }
@@ -406,7 +404,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         /// <param name="name">name of namespace to define.</param>
         /// <returns></returns>
-        public AbcNamespace DefineInternalNamespace(AbcString name)
+        public AbcNamespace DefineInternalNamespace(AbcConst<string> name)
         {
             return DefineNamespace(AbcConstKind.InternalNamespace, name);
         }
@@ -442,7 +440,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         /// </summary>
         /// <param name="name">name of namespace to define.</param>
         /// <returns></returns>
-        public AbcNamespace DefinePackage(AbcString name)
+        public AbcNamespace DefinePackage(AbcConst<string> name)
         {
             return DefineNamespace(AbcConstKind.PackageNamespace, name);
         }
@@ -555,7 +553,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             return nss;
         }
 
-    	public AbcMultiname DefineMultiname(AbcConstKind kind, AbcNamespace ns, AbcString name)
+    	public AbcMultiname DefineMultiname(AbcConstKind kind, AbcNamespace ns, AbcConst<string> name)
         {
             string key = AbcMultiname.KeyOf(kind, ns, name);
             var mn = _multinames[key];
@@ -573,7 +571,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             return DefineMultiname(kind, ns, s);
         }
 
-        public AbcMultiname DefineMultiname(AbcConstKind kind, AbcNamespaceSet nss, AbcString name)
+        public AbcMultiname DefineMultiname(AbcConstKind kind, AbcNamespaceSet nss, AbcConst<string> name)
         {
             string key = AbcMultiname.KeyOf(kind, nss, name);
             var mn = _multinames[key];
@@ -890,7 +888,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region DefineEmptyVoidMethod
-        public AbcMethod DefineEmptyVoidMethod(AbcString name, bool pushScope)
+        public AbcMethod DefineEmptyVoidMethod(AbcConst<string> name, bool pushScope)
         {
             var method = new AbcMethod
                              {
@@ -912,7 +910,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcMethod DefineEmptyVoidMethod()
         {
-            return DefineEmptyVoidMethod((AbcString)null, false);
+            return DefineEmptyVoidMethod((AbcConst<string>)null, false);
         }
 
         public AbcMethod DefineEmptyVoidMethod(string name, bool pushScope)
@@ -920,7 +918,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             return DefineEmptyVoidMethod(DefineString2(name), pushScope);
         }
 
-        public AbcMethod DefineEmptyVoidMethod(AbcString name)
+        public AbcMethod DefineEmptyVoidMethod(AbcConst<string> name)
         {
             return DefineEmptyVoidMethod(name, false);
         }
@@ -932,7 +930,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region DefineEmptyConstructor
-        public AbcMethod DefineEmptyConstructor(AbcString name, bool pushScope)
+        public AbcMethod DefineEmptyConstructor(AbcConst<string> name, bool pushScope)
         {
             var method = new AbcMethod
                              {
@@ -959,7 +957,7 @@ namespace DataDynamics.PageFX.FLI.ABC
             return DefineEmptyConstructor(DefineString2(name), pushScope);
         }
 
-        public AbcMethod DefineEmptyConstructor(AbcString name)
+        public AbcMethod DefineEmptyConstructor(AbcConst<string> name)
         {
             return DefineEmptyConstructor(name, false);
         }
@@ -971,7 +969,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 
         public AbcMethod DefineEmptyConstructor()
         {
-            return DefineEmptyConstructor((AbcString)null, false);
+            return DefineEmptyConstructor((AbcConst<string>)null, false);
         }
         #endregion
 

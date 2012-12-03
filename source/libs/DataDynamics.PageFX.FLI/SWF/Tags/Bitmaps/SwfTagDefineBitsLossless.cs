@@ -6,7 +6,7 @@ using System.Xml;
 using DataDynamics.PageFX.Common.Graphics;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
 {
     [SwfTag(SwfTagCode.DefineBitsLossless)]
     public class SwfTagDefineBitsLossless : SwfCharacter, ISwfImageCharacter

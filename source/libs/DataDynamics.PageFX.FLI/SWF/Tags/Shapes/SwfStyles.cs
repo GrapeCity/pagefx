@@ -1,6 +1,7 @@
 using System.Xml;
+using DataDynamics.PageFX.FLI;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 {
     /// <summary>
     /// Fill and Line styles together.

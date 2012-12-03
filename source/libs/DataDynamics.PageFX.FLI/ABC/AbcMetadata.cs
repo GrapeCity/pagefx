@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    using AbcString = AbcConst<string>;
-    using Pair = KeyValuePair<AbcConst<string>, AbcConst<string>>;
-
-    public class AbcMetaEntry : ISupportXmlDump, ISwfIndexedAtom
+	public class AbcMetaEntry : ISupportXmlDump, ISwfIndexedAtom
     {
         #region Constructors
         public AbcMetaEntry()
@@ -35,7 +32,7 @@ namespace DataDynamics.PageFX.FLI.ABC
     	/// <summary>
     	/// Gets or sets entry name.
     	/// </summary>
-    	public AbcString Name { get; set; }
+    	public AbcConst<string> Name { get; set; }
 
     	public string NameString
         {
@@ -166,11 +163,11 @@ namespace DataDynamics.PageFX.FLI.ABC
     }
     #endregion
 
-    public class KeyValueList : ISwfAtom, IEnumerable<Pair>
+    public class KeyValueList : ISwfAtom, IEnumerable<KeyValuePair<AbcConst<string>, AbcConst<string>>>
     {
         #region Fields
-        readonly List<AbcString> _keys = new List<AbcString>();
-        readonly List<AbcString> _values = new List<AbcString>();
+        readonly List<AbcConst<string>> _keys = new List<AbcConst<string>>();
+        readonly List<AbcConst<string>> _values = new List<AbcConst<string>>();
         #endregion
 
         #region Public Members
@@ -179,25 +176,25 @@ namespace DataDynamics.PageFX.FLI.ABC
             get { return _keys.Count; }
         }
 
-        public Pair this[int index]
+        public KeyValuePair<AbcConst<string>, AbcConst<string>> this[int index]
         {
             get
             {
-                return new Pair(_keys[index], _values[index]);
+                return new KeyValuePair<AbcConst<string>, AbcConst<string>>(_keys[index], _values[index]);
             }
         }
 
-        public AbcString GetKey(int index)
+        public AbcConst<string> GetKey(int index)
         {
             return _keys[index];
         }
 
-        public AbcString GetValue(int index)
+        public AbcConst<string> GetValue(int index)
         {
             return _values[index];
         }
 
-        public void Add(AbcString key, AbcString value)
+        public void Add(AbcConst<string> key, AbcConst<string> value)
         {
             _keys.Add(key);
             _values.Add(value);
@@ -258,7 +255,7 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region IEnumerable<Pair> Members
-        public IEnumerator<Pair> GetEnumerator()
+        public IEnumerator<KeyValuePair<AbcConst<string>, AbcConst<string>>> GetEnumerator()
         {
             int n = _keys.Count;
             for (int i = 0; i < n; ++i)

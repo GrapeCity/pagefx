@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using System.Xml;
-using DataDynamics.PageFX.FLI.ABC;
-using DataDynamics.PageFX.FLI.SWC;
+using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Swc;
 
 namespace DataDynamics.PageFX.FLI
 {

@@ -1,11 +1,12 @@
+#if NUNIT
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using DataDynamics.PageFX.Common.Graphics;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Swf;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.Tests
+namespace DataDynamics.PageFX.FlashLand.Tests
 {
     [TestFixture]
     public class SwfMovieTest
@@ -47,3 +48,4 @@ namespace DataDynamics.PageFX.Tests
         }
     }
 }
+#endif

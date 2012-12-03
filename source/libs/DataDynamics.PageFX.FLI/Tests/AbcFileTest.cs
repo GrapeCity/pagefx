@@ -1,9 +1,10 @@
+#if NUNIT
 using System;
-using DataDynamics.PageFX.FLI.ABC;
+using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.Abc;
 using NUnit.Framework;
-using AbcString = DataDynamics.PageFX.FLI.ABC.AbcConst<string>;
 
-namespace DataDynamics.PageFX.FLI.Tests
+namespace DataDynamics.PageFX.FlashLand.Tests
 {
     [TestFixture]
     public class AbcFileTest
@@ -127,3 +128,4 @@ namespace DataDynamics.PageFX.FLI.Tests
         }
     }
 }
+#endif

@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FLI.ABC;
+using DataDynamics.PageFX.FlashLand.Abc;
 using Ionic.Zip;
 
-namespace DataDynamics.PageFX.FLI.SWC
+namespace DataDynamics.PageFX.FlashLand.Swc
 {
     public static class Extensions
     {

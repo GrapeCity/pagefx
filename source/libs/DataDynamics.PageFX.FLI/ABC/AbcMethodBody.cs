@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using DataDynamics.PageFX.FLI.IL;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     #region Short Description of Format
     // A MethodBody describes the method implementation.  
@@ -269,7 +269,7 @@ namespace DataDynamics.PageFX.FLI.ABC
 		        {
 			        UpdateSizeOfStacks(block);
 
-			        block = new Block {from = i};
+			        block = new Block {@from = i};
 			        if (instr.IsSEHTarget)
 				        block.stackDepth = 1;
 		        }

@@ -1,6 +1,7 @@
 using System.Xml;
+using DataDynamics.PageFX.FlashLand.Swf.Actions;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Actions
 {
     [SwfTag(SwfTagCode.DoInitAction)]
     public class SwfTagDoInitAction : SwfTag

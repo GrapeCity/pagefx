@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 {
     /// <summary>
     /// Enumerates SWF tag codes.

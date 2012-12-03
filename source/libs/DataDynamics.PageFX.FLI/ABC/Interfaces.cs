@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     /// <summary>
     /// Interfaces ABC constant.

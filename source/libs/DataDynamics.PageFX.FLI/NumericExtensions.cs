@@ -1,7 +1,7 @@
 ﻿using System;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FLI
+namespace DataDynamics.PageFX.FlashLand
 {
 	internal static class NumericExtensions
 	{

@@ -1,9 +1,9 @@
 ﻿#if NUNIT
 using System;
-using DataDynamics.PageFX.FLI.IL;
+using DataDynamics.PageFX.FlashLand.IL;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FLI.Tests
+namespace DataDynamics.PageFX.FlashLand.Tests
 {
 	[TestFixture]
 	public class InstructionsTest

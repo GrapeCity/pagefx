@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Actions
 {
     [SwfAction(SwfActionCode.GotoLabel)]
     public class SwfActionGotoLabel : SwfAction

@@ -5,7 +5,7 @@ using System.Text;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FLI.SWC;
+using DataDynamics.PageFX.FlashLand.Swc;
 
 namespace DataDynamics.PageFX.FLI
 {

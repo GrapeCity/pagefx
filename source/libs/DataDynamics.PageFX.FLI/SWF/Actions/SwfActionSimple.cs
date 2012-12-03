@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Actions
 {
     public class SwfActionSimple : SwfAction
     {

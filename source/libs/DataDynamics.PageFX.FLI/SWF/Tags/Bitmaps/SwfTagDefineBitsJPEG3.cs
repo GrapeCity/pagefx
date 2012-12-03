@@ -4,7 +4,7 @@ using System.IO;
 using System.Xml;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
 {
     /// <summary>
     /// Defines a bitmap character with JPEG compression. This tag extends DefineBitsJPEG2,

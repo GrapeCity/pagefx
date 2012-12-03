@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.FLI.IL;
+using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    using AbcString = AbcConst<string>;
-
-    //ABC Import API
+	//ABC Import API
     public partial class AbcFile
     {
         #region Import ABC file

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using DataDynamics.PageFX.FLI.IL;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     /// <summary>
     /// Represents info about exception handler in <see cref="AbcMethodBody"/>

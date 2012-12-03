@@ -1,7 +1,8 @@
 ﻿#if NUNIT
+using DataDynamics.PageFX.FLI;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FLI.Tests
+namespace DataDynamics.PageFX.FlashLand.Tests
 {
 	public class MiscTests
 	{

@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.IO;
+using DataDynamics.PageFX.FLI;
 using Ionic.Zip;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
 	internal static class ResourceBundleExtensions
     {

@@ -7,15 +7,14 @@ using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FLI.IL;
-using DataDynamics.PageFX.FLI.SWC;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.FlashLand.Swc;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    using AbcString = AbcConst<string>;
-
-    /// <summary>
+	/// <summary>
     /// Represents ABC file that can be played by AVM+
     /// </summary>
     public partial class AbcFile : ISupportXmlDump

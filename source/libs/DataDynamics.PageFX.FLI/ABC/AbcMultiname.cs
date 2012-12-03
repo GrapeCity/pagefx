@@ -5,13 +5,11 @@ using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    using AbcString = AbcConst<string>;
-
-    /// <summary>
+	/// <summary>
     /// Represents multiname - a combination of an unqualified name and one or more namespaces.
     /// </summary>
     public class AbcMultiname : IAbcConst
@@ -30,21 +28,21 @@ namespace DataDynamics.PageFX.FLI.ABC
             Kind = kind;
         }
 
-        public AbcMultiname(AbcConstKind kind, AbcNamespace ns, AbcString name)
+        public AbcMultiname(AbcConstKind kind, AbcNamespace ns, AbcConst<string> name)
         {
             Kind = kind;
             Namespace = ns;
             _name = name;
         }
 
-        public AbcMultiname(AbcConstKind kind, AbcNamespaceSet nss, AbcString name)
+        public AbcMultiname(AbcConstKind kind, AbcNamespaceSet nss, AbcConst<string> name)
         {
             Kind = kind;
             NamespaceSet = nss;
             _name = name;
         }
 
-        public AbcMultiname(AbcConstKind kind, AbcString name)
+        public AbcMultiname(AbcConstKind kind, AbcConst<string> name)
         {
             Kind = kind;
             _name = name;
@@ -167,12 +165,12 @@ namespace DataDynamics.PageFX.FLI.ABC
         }
 
         #region Name
-        public AbcString Name
+        public AbcConst<string> Name
         {
             get { return _name; }
             set { _name = value; }
         }
-        AbcString _name;
+        AbcConst<string> _name;
 
         public string NameString
         {
@@ -272,12 +270,12 @@ namespace DataDynamics.PageFX.FLI.ABC
         #endregion
 
         #region Key
-        public static string KeyOf(AbcConstKind kind, AbcNamespace ns, AbcString name)
+        public static string KeyOf(AbcConstKind kind, AbcNamespace ns, AbcConst<string> name)
         {
             return ns.Key + "." + name.Value + (int)kind;
         }
 
-        public static string KeyOf(AbcConstKind kind, AbcNamespaceSet nss, AbcString name)
+        public static string KeyOf(AbcConstKind kind, AbcNamespaceSet nss, AbcConst<string> name)
         {
             return "{" + nss.Key + "}." + name.Value + (int)kind;
         }

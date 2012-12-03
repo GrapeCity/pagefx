@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Xml;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.FLI.ABC;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Swf;
 
-namespace DataDynamics.PageFX.FLI.IL
+namespace DataDynamics.PageFX.FlashLand.IL
 {
     /// <summary>
     /// List of <see cref="Instruction"/>s.

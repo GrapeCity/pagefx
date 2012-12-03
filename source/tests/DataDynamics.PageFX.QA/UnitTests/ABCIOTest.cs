@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using DataDynamics.PageFX.FLI.ABC;
-using DataDynamics.PageFX.FLI.SWC;
-using DataDynamics.PageFX.FLI.SWF;
+using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Swc;
+using DataDynamics.PageFX.FlashLand.Swf;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.FLI.Tests

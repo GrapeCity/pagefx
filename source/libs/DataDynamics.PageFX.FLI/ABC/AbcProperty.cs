@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     public sealed class AbcProperty
     {

@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 {
     /// <summary>
     /// Defines a shape for later use by control tags such as PlaceObject.

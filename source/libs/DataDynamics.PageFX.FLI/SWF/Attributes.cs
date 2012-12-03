@@ -1,6 +1,8 @@
 using System;
+using DataDynamics.PageFX.FlashLand.Swf.Actions;
+using DataDynamics.PageFX.FlashLand.Swf.Tags;
 
-namespace DataDynamics.PageFX.FLI.SWF
+namespace DataDynamics.PageFX.FlashLand.Swf
 {
     public class SwfVersionAttribute : Attribute
     {

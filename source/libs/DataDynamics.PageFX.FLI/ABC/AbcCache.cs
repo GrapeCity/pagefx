@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.FLI.ABC
+namespace DataDynamics.PageFX.FlashLand.Abc
 {
     internal sealed class AbcCache
     {
