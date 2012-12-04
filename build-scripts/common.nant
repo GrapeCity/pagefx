@@ -50,10 +50,7 @@
 
     <!-- checking existence of MSBuild.exe v3.5 -->
     <property name="dir.msbuild" value="${dir.dotnet3.5}"/>
-	<if test="${directory::exists(dir.dotnet4.0)}">
-	  <property name="dir.msbuild" value="${dir.dotnet4.0}"/>
-	</if>
-	
+		
     <property name="path" value="${dir.msbuild}\MSBuild.exe"/>
     <fail unless="${file::exists(path)}" message="MSBuild.exe does not exist in ${dir.msbuild}."/>
 
@@ -62,6 +59,7 @@
       <arg value="/p:Configuration=${config}"/>
       <arg value="/p:OutputPath=${outdir}" if="${outdir != ''}"/>
       <arg value="/v:q"/>
+      <arg value="/tv:3.5"/>
       <arg value="${path::get-file-name(project)}"/>
     </exec>
   </target>
