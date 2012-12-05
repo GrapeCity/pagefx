@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D5099CF9-A243-4364-B9C7-6397917E3EFB}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataDynamics.PageFX.TestRunner</RootNamespace>
+    <AssemblyName>DataDynamics.PageFX.TestRunner</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <StartupObject>
+    </StartupObject>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>c:\pfx\qa\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;IMPL64;NET_2_0</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>c:\pfx\qa\bin\</OutputPath>
+    <DefineConstants>TRACE;IMPL64;NET_2_0</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Fireball.CodeEditor, Version=2.0.0.46, Culture=neutral, PublicKeyToken=f84d0e3f884fb1e4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\FireFX\Fireball.CodeEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Fireball.CodeEditor.SyntaxFiles, Version=2.0.0.46, Culture=neutral, PublicKeyToken=f84d0e3f884fb1e4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\FireFX\Fireball.CodeEditor.SyntaxFiles.dll</HintPath>
+    </Reference>
+    <Reference Include="Fireball.SyntaxDocument, Version=2.0.0.46, Culture=neutral, PublicKeyToken=f84d0e3f884fb1e4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\FireFX\Fireball.SyntaxDocument.dll</HintPath>
+    </Reference>
+    <Reference Include="Fireball.Windows.Forms, Version=2.0.0.46, Culture=neutral, PublicKeyToken=f84d0e3f884fb1e4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\FireFX\Fireball.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\..\libs\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\source\libs\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\source\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\mono\mcs\class\corlib\System\Int64.cs">
+      <Link>UnitTests\Int64.cs</Link>
+    </Compile>
+    <Compile Include="..\..\mono\mcs\class\corlib\System\IntParser.cs">
+      <Link>UnitTests\IntParser.cs</Link>
+    </Compile>
+    <Compile Include="..\..\mono\mcs\class\corlib\System\UInt64.cs">
+      <Link>UnitTests\UInt64.cs</Link>
+    </Compile>
+    <Compile Include="Framework\Enums.cs" />
+    <Compile Include="Tools\ILAsm.cs" />
+    <Compile Include="Framework\SimpleTestCases.cs" />
+    <Compile Include="Framework\SourceFile.cs" />
+    <Compile Include="Framework\TestResult.cs" />
+    <Compile Include="Framework\TestSuite.cs" />
+    <Compile Include="Framework\TextBoxWriter.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Tools\JsRunner.cs" />
+    <Compile Include="UnitTests\ABCALL.cs" />
+    <Compile Include="UnitTests\ABCIOTest.cs" />
+    <Compile Include="UnitTests\AILTest.cs" />
+    <Compile Include="UnitTests\ArithmeticTest.cs" />
+    <Compile Include="UnitTests\DebugTest.cs" />
+    <Compile Include="UnitTests\NegativeTests.cs" />
+    <Compile Include="Framework\TestEngine.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FlashShell.cs" />
+    <Compile Include="UI\GeneralOptionsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\GeneralOptionsPage.Designer.cs">
+      <DependentUpon>GeneralOptionsPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ImageBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ImageBrowser.Designer.cs">
+      <DependentUpon>ImageBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ImageDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ImageDialog.Designer.cs">
+      <DependentUpon>ImageDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ImageViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ImageViewer.Designer.cs">
+      <DependentUpon>ImageViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OptionsDialog.Designer.cs">
+      <DependentUpon>OptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\QAForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\QAForm.Designer.cs">
+      <DependentUpon>QAForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UnitTests\Int64TestDriver.cs" />
+    <Compile Include="Tools\asc.cs" />
+    <Compile Include="Tools\AvmShell.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Framework\QA.cs" />
+    <Compile Include="Framework\TestCase.cs" />
+    <Compile Include="Framework\TestReport.cs" />
+    <Compile Include="Framework\TestDriverSettings.cs" />
+    <Compile Include="UI\SyntaxRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\ImageLoader.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\ThumbnailFlowLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\ThumbnailViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ThumbnailViewer.Designer.cs">
+      <DependentUpon>ThumbnailViewer.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\source\libs\Ecma335\Ecma335.csproj">
+      <Project>{3C215B55-8587-4A60-8CAA-91FE412B9013}</Project>
+      <Name>Ecma335</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\source\libs\Common\Common.csproj">
+      <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\source\libs\FlashLand\FlashLand.csproj">
+      <Project>{A54D800D-621B-491A-BE70-59D46BA70523}</Project>
+      <Name>FlashLand</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tools\avmplus.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\xslt\html.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\QAForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>QAForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\abc\ShapeLib.abc" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\abc\ShapeLib.as" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\abc\core.abc" />
+    <EmbeddedResource Include="UI\GeneralOptionsPage.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GeneralOptionsPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ImageBrowser.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ImageBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ImageDialog.resx">
+      <DependentUpon>ImageDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ImageViewer.resx">
+      <DependentUpon>ImageViewer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\OptionsDialog.resx">
+      <DependentUpon>OptionsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ThumbnailViewer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThumbnailViewer.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\images\bg5.jpg" />
+    <EmbeddedResource Include="Resources\swf\mx.swf" />
+    <EmbeddedResource Include="Resources\swf\mixins.swf" />
+    <EmbeddedResource Include="Resources\swf\mx.assets.swf" />
+    <Content Include="Tools\avmplus.usage.txt" />
+    <EmbeddedResource Include="UnitTests\DebugTest\input2.txt" />
+    <EmbeddedResource Include="UnitTests\DebugTest\output2.txt" />
+    <EmbeddedResource Include="UnitTests\DebugTest\input1.txt">
+    </EmbeddedResource>
+    <EmbeddedResource Include="UnitTests\DebugTest\output1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

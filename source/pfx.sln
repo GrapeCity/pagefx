@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "libs\Common\Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashLand", "libs\FlashLand\FlashLand.csproj", "{A54D800D-621B-491A-BE70-59D46BA70523}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRunner", "..\tests\DataDynamics.PageFX.QA\TestRunner.csproj", "{D5099CF9-A243-4364-B9C7-6397917E3EFB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRunner", "..\tests\TestRunner\TestRunner.csproj", "{D5099CF9-A243-4364-B9C7-6397917E3EFB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pfc", "pfc\pfc.csproj", "{24A39436-A110-4C67-BF29-7A4FAA399CAA}"
 EndProject

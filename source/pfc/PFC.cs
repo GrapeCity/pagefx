@@ -60,11 +60,6 @@ namespace DataDynamics.PageFX
             if (args.Length <= 0)
             {
 #if DEBUG
-                if (RunTests())
-                {
-                    Wait();
-                    return 0;
-                }
                 if (RunSample())
                 {
                     Wait();

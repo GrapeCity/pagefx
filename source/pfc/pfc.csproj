@@ -68,7 +68,6 @@
     <Compile Include="PFC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FlashPlayerTrust.cs" />
-    <Compile Include="Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\libs\Ecma335\Ecma335.csproj">

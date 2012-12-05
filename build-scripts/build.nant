@@ -79,9 +79,9 @@
   <property name="dir.dotnet" value="${directory::get-parent-directory(framework::get-framework-directory(framework::get-target-framework()))}"/>
   <property name="dir.dotnet3.5" value="${dir.dotnet}/v3.5"/>
 
-  <property name="qa.asmname" value="DataDynamics.PageFX.QA"/>
-  <property name="qa.projdir" value="${dir.root}/tests/${qa.asmname}"/>
-  <property name="qa.csproj" value="${qa.projdir}/${qa.asmname}.csproj"/>
+  <property name="qa.asmname" value="DataDynamics.PageFX.TestRunner"/>
+  <property name="qa.projdir" value="${dir.root}/tests/TestRunner"/>
+  <property name="qa.csproj" value="${qa.projdir}/TestRunner.csproj"/>
 
   <property name="testset" value="all" unless="${property::exists('testset')}"/>
 

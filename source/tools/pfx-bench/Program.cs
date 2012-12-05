@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using DataDynamics;
-using DataDynamics.PageFX;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FLI;
+using DataDynamics.PageFX.TestRunner.Framework;
 
 namespace pfx_bench
 {
@@ -84,7 +82,7 @@ namespace pfx_bench
 
         private static IEnumerable<TestCase> LoadBenchmarks(string ext)
         {
-            return SimpleTestCases.Load("PageFX.Benchmark", ext);
+            return SimpleTestCases.Load("Benchmark", ext);
         }
 
         static int Main(string[] args)
