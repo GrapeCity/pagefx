@@ -72,7 +72,7 @@
   -->
 
   <target name="clean">
-    <property name="dir" value="${project::get-base-directory()}" unless="${property::exists('dir')}"/>
+    <property name="dir" value="${project::get-base-directory()}/../source" unless="${property::exists('dir')}"/>
     <if test="${directory::exists(dir)}">
       <echo message=""/>
       <echo message="=================================================="/>

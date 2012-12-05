@@ -58,26 +58,26 @@
   <ItemGroup>
     <Reference Include="Fireball.CodeEditor, Version=2.0.0.46, Culture=neutral, PublicKeyToken=f84d0e3f884fb1e4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\FireFX\Fireball.CodeEditor.dll</HintPath>
+      <HintPath>..\..\libs\FireFX\Fireball.CodeEditor.dll</HintPath>
     </Reference>
     <Reference Include="Fireball.CodeEditor.SyntaxFiles, Version=2.0.0.46, Culture=neutral, PublicKeyToken=f84d0e3f884fb1e4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\FireFX\Fireball.CodeEditor.SyntaxFiles.dll</HintPath>
+      <HintPath>..\..\libs\FireFX\Fireball.CodeEditor.SyntaxFiles.dll</HintPath>
     </Reference>
     <Reference Include="Fireball.SyntaxDocument, Version=2.0.0.46, Culture=neutral, PublicKeyToken=f84d0e3f884fb1e4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\FireFX\Fireball.SyntaxDocument.dll</HintPath>
+      <HintPath>..\..\libs\FireFX\Fireball.SyntaxDocument.dll</HintPath>
     </Reference>
     <Reference Include="Fireball.Windows.Forms, Version=2.0.0.46, Culture=neutral, PublicKeyToken=f84d0e3f884fb1e4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\FireFX\Fireball.Windows.Forms.dll</HintPath>
+      <HintPath>..\..\libs\FireFX\Fireball.Windows.Forms.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip.Reduced">
-      <HintPath>..\..\..\libs\Ionic.Zip.Reduced.dll</HintPath>
+      <HintPath>..\..\libs\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>..\..\source\libs\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -89,16 +89,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\CommonAssemblyInfo.cs">
+    <Compile Include="..\..\source\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\mono\mcs\class\corlib\System\Int64.cs">
+    <Compile Include="..\..\mono\mcs\class\corlib\System\Int64.cs">
       <Link>UnitTests\Int64.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\mono\mcs\class\corlib\System\IntParser.cs">
+    <Compile Include="..\..\mono\mcs\class\corlib\System\IntParser.cs">
       <Link>UnitTests\IntParser.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\mono\mcs\class\corlib\System\UInt64.cs">
+    <Compile Include="..\..\mono\mcs\class\corlib\System\UInt64.cs">
       <Link>UnitTests\UInt64.cs</Link>
     </Compile>
     <Compile Include="Framework\ComplexTestCases.cs" />
@@ -1595,15 +1595,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\Ecma335\Ecma335.csproj">
+    <ProjectReference Include="..\..\source\libs\Ecma335\Ecma335.csproj">
       <Project>{3C215B55-8587-4A60-8CAA-91FE412B9013}</Project>
       <Name>Ecma335</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\libs\Common\Common.csproj">
+    <ProjectReference Include="..\..\source\libs\Common\Common.csproj">
       <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\libs\FlashLand\FlashLand.csproj">
+    <ProjectReference Include="..\..\source\libs\FlashLand\FlashLand.csproj">
       <Project>{A54D800D-621B-491A-BE70-59D46BA70523}</Project>
       <Name>FlashLand</Name>
     </ProjectReference>

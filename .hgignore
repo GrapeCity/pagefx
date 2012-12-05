@@ -9,10 +9,13 @@ _ReSharper*
 *.suo
 *.user
 
+Artifacts/
 build-scripts/*.log
 
 mono/**/[Bb]in
 mono/**/[Oo]bj
+tests/**/[Bb]in
+tests/**/[Oo]bj
 
 source/**/[Bb]in
 source/**/[Oo]bj

@@ -38,6 +38,7 @@
   <property name="dir.root" value="${project.dir}/.."/>
   <property name="dir.src" value="${dir.root}/source"/>
   <property name="dir.mono" value="${dir.root}/mono"/>
+  <property name="dir.data" value="${dir.root}/data"/>
 
   <!-- Flex 3 SDK dirs in source-->
   <property name="flex.sdkdir" value="${dir.src}\sdks\flex.3.0"/>
@@ -79,7 +80,7 @@
   <property name="dir.dotnet3.5" value="${dir.dotnet}/v3.5"/>
 
   <property name="qa.asmname" value="DataDynamics.PageFX.QA"/>
-  <property name="qa.projdir" value="${dir.src}/tests/${qa.asmname}"/>
+  <property name="qa.projdir" value="${dir.root}/tests/${qa.asmname}"/>
   <property name="qa.csproj" value="${qa.projdir}/${qa.asmname}.csproj"/>
 
   <property name="testset" value="all" unless="${property::exists('testset')}"/>
@@ -492,7 +493,7 @@
 	</if>
 
 	<copy todir="${pfx.home}\HTML Templates">
-	  <fileset basedir="${dir.src}\HTML Templates">
+	  <fileset basedir="${dir.data}\HTML Templates">
 		<include name="**"/>
 		<exclude name="**/.svn"/>
 		<exclude name="**/.svn/**"/>
@@ -673,10 +674,10 @@
 
 	  <property name="outdir" value="${pfx.testdir}"/>
 
-	  <property name="project" value="${dir.src}\tests\mono\avm.csproj"/>
+	  <property name="project" value="${dir.root}\tests\mono\avm.csproj"/>
 	  <call target="msbuild"/>
 
-	  <property name="project" value="${dir.src}\tests\mono\clr.csproj"/>
+	  <property name="project" value="${dir.root}\tests\mono\clr.csproj"/>
 	  <call target="msbuild"/>
 	</if>
 
