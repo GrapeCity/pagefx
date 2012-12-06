@@ -302,12 +302,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region ICodeNode Members
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.GenericParameter; }
-        }
 
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return null; }
         }
@@ -366,12 +362,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         #region ICodeNode Members
 
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.GenericParameters; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return this.Cast<ICodeNode>(); }
         }

@@ -436,12 +436,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         #region ICodeNode Members
 
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Type; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return Type != null ? Type.ChildNodes : null; }
         }
@@ -532,8 +527,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     			return GetEnumerator();
     		}
 
-			public abstract CodeNodeType NodeType { get; }
-
 			public IEnumerable<ICodeNode> ChildNodes
 			{
 				get { return List.Cast<ICodeNode>(); }
@@ -558,11 +551,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			public FieldList(GenericInstance owner)
 			{
 				_owner = owner;
-			}
-
-			public override CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Fields; }
 			}
 
 			public IField this[string name]
@@ -625,11 +613,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 				}
 				List<IMethod> list;
 				return _lookup.TryGetValue(name, out list) ? list.AsReadOnly() : Enumerable.Empty<IMethod>();
-			}
-
-			public CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Methods; }
 			}
 
 			public IEnumerable<ICodeNode> ChildNodes
@@ -738,11 +721,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 				return _groups.TryGetValue(name, out group) ? group : Enumerable.Empty<IProperty>();
 			}
 
-			public override CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Properties; }
-			}
-
 			public void Add(IProperty item)
 			{
 				throw new NotSupportedException();
@@ -770,11 +748,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			public IEvent this[string name]
 			{
 				get { return this.FirstOrDefault(x => x.Name == name); }
-			}
-
-			public override CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Events; }
 			}
 
 			public void Add(IEvent item)
@@ -824,11 +797,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			{
 				return _types;
 			}
-
-			public override CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Types; }
-			}
 		}
 
 		#endregion
@@ -841,11 +809,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			public InterfaceList(GenericInstance owner)
 			{
 				_owner = owner;
-			}
-
-			public override CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Types; }
 			}
 
 			public IType this[string fullname]

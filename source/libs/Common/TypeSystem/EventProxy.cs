@@ -156,12 +156,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _event.CustomAttributes; }
         }
 
-	    public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Event; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return new ICodeNode[0]; }
         }

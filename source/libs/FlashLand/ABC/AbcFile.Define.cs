@@ -739,17 +739,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region Builtin Types
         public AbcMultiname this[AvmTypeCode type]
         {
-            get
-            {
-                return BuiltinTypes[type];
-            }
+            get { return BuiltinTypes[type]; }
         }
 
         public AvmBuiltinTypes BuiltinTypes
         {
             get { return _avmBuiltinTypes ?? (_avmBuiltinTypes = new AvmBuiltinTypes(this)); }
         }
-        AvmBuiltinTypes _avmBuiltinTypes;
+        private AvmBuiltinTypes _avmBuiltinTypes;
 
         public AbcMultiname GetTypeName(IType type, bool native)
         {

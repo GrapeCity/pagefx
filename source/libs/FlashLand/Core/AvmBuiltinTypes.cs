@@ -63,11 +63,10 @@ namespace DataDynamics.PageFX.FlashLand.Core
     }
     #endregion
 
-    public class AvmBuiltinTypes
+    public sealed class AvmBuiltinTypes
     {
-        readonly AbcFile _abc;
-
-        static readonly string[] Names;
+        private readonly AbcFile _abc;
+        private static readonly string[] Names;
 
         static AvmBuiltinTypes()
         {
@@ -84,7 +83,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
             }
         }
 
-        readonly AbcMultiname[] _types;
+        private readonly AbcMultiname[] _types;
 
         public AvmBuiltinTypes(AbcFile abc)
         {

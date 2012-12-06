@@ -59,11 +59,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return ToString(null, null);
 		}
 
-		public CodeNodeType NodeType
-		{
-			get { return CodeNodeType.Parameters; }
-		}
-
 		public IEnumerable<ICodeNode> ChildNodes
 		{
 			get { return this.Cast<ICodeNode>(); }

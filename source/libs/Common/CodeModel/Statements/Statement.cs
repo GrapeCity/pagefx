@@ -8,12 +8,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Statements
     {
     	public IStatement ParentStatement { get; set; }
 
-    	public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Statement; }
-        }
-
-        public virtual IEnumerable<ICodeNode> ChildNodes
+	    public virtual IEnumerable<ICodeNode> ChildNodes
         {
             get { return null; }
         }

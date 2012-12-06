@@ -12,12 +12,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
             get;
         }
 
-    	public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Expression; }
-        }
-
-        public virtual IEnumerable<ICodeNode> ChildNodes
+	    public virtual IEnumerable<ICodeNode> ChildNodes
         {
             get { return null; }
         }

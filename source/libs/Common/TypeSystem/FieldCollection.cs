@@ -51,12 +51,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return GetEnumerator();
         }
 
-    	public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Methods; }
-        }
-
-        public object Tag { get; set; }
+	    public object Tag { get; set; }
 
         public IEnumerable<ICodeNode> ChildNodes
         {
@@ -94,11 +89,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			public IField this[string name]
 			{
 				get { return null; }
-			}
-
-			public CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Fields; }
 			}
 
 			public IEnumerable<ICodeNode> ChildNodes

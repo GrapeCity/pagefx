@@ -281,12 +281,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region ICodeNode Members
-        public override CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Type; }
-        }
 
-        public override IEnumerable<ICodeNode> ChildNodes
+	    public override IEnumerable<ICodeNode> ChildNodes
         {
             get { return new ICodeNode[] { Types, Fields, Properties, Events, Methods }; }
         }

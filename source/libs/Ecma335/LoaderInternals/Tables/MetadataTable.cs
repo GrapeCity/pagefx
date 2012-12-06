@@ -30,12 +30,22 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 					throw new ArgumentOutOfRangeException("index");
 
 				var row = Loader.Metadata.GetRow(Id, index);
-				
+
 				if (row.Object == null)
-					row.Object = ParseRow(row, index);
-				
+				{
+					var item = ParseRow(row, index);
+
+					row.Object = item;
+
+					OnLoaded(item);
+				}
+
 				return (T)row.Object;
 			}
+		}
+
+		protected virtual void OnLoaded(T item)
+		{
 		}
 
 		public int Load()

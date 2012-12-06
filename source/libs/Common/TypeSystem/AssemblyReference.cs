@@ -220,12 +220,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region ICodeNode Members
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.AssemblyReference; }
-        }
 
-        public virtual IEnumerable<ICodeNode> ChildNodes
+	    public virtual IEnumerable<ICodeNode> ChildNodes
         {
             get { return null; }
         }

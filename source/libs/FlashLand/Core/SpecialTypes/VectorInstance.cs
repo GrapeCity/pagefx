@@ -4,12 +4,9 @@ using DataDynamics.PageFX.FlashLand.Abc;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
-    internal class VectorInstance : IVectorType
+    internal sealed class VectorInstance : IVectorType
     {
-        private readonly IGenericInstance _type;
-        private readonly IType _param;
-
-        public VectorInstance(IType type)
+	    public VectorInstance(IType type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -20,29 +17,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
             if (instance.GenericArguments.Count != 1)
                 throw new ArgumentException("Invalid vector instance");
 
-            _type = instance;
-            _param = instance.GenericArguments[0];
+            Type = instance;
+            Param = instance.GenericArguments[0];
             type.Tag = this;
         }
 
-        public IGenericInstance Type
-        {
-            get { return _type; }
-        }
+	    public IGenericInstance Type { get; private set; }
 
-        public IType Param
-        {
-            get { return _param; }
-        }
+	    public IType Param { get; private set; }
 
-        public AbcFile ABC
-        {
-            get { return _abc; }
-            set { _abc = value; }
-        }
-        AbcFile _abc;
+	    public AbcFile ByteCode { get; set; }
 
-        public AbcMultiname Name
+	    public AbcMultiname Name
         {
             get
             {
@@ -50,17 +36,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
                 //TODO: Process builtin vector types (Vector$double, Vector$int, Vector$uint)
 
-                var param = _abc.GetTypeName(_param, true);
-                _name = _abc.DefineVectorTypeName(param);
+                var param = ByteCode.GetTypeName(Param, true);
+                _name = ByteCode.DefineVectorTypeName(param);
 
                 return _name;
             }
         }
-        AbcMultiname _name;
+        private AbcMultiname _name;
 
         public override string ToString()
         {
-            return _type.ToString();
+            return Type.ToString();
         }
     }
 }

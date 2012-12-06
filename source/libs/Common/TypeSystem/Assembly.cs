@@ -7,14 +7,7 @@ using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-	public interface IAssemblyLoader : IMetadataTokenResolver
-	{
-		void ResolveAssemblyReferences();
-
-		IMethod ResolveEntryPoint();
-	}
-
-    /// <summary>
+	/// <summary>
     /// Implementation of <see cref="IAssembly"/>.
     /// </summary>
     public sealed class AssemblyImpl : AssemblyReference, IAssembly, ITypeCollection
@@ -46,15 +39,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public string Location { get; set; }
 
-        /// <summary>
-        /// Gets or sets auxiliary marker that can be used for some needs.
-        /// </summary>
-        public int Marker { get; set; }
-
-	    public IMethod EntryPoint
+        public IMethod EntryPoint
 	    {
 			get { return _entryPoint ?? (_entryPoint = ResolveEntryPoint()); }
-			set { _entryPoint = value; }
 	    }
 
 		public IAssemblyLoader Loader { get; set; }
@@ -103,7 +90,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         	return _modules.Select(module => module.Types[fullname]).FirstOrDefault(type => type != null);
         }
 
-    	#endregion
+	    #endregion
 
         #region ITypeContainer Members
         public ITypeCollection Types

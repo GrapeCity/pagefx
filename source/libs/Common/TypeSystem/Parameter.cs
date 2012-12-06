@@ -77,12 +77,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public IInstruction Instruction { get; set; }
 
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Parameter; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return null; }
         }

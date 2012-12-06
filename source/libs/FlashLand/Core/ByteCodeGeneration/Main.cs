@@ -12,7 +12,7 @@ using DataDynamics.PageFX.FlashLand.IL;
 namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 {
     //main part of generator - contains entry point to the generator.
-    partial class AbcGenerator : IDisposable
+    internal partial class AbcGenerator : IDisposable
     {
         #region Shared Members
         public static AbcFile ToAbcFile(IAssembly assembly)
@@ -143,7 +143,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             _assembly = assembly;
 
             AssemblyIndex.Setup(assembly);
-            Linker.Start(assembly);
 
             _abc = new AbcFile
                        {
@@ -154,7 +153,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                            Assembly = assembly
                        };
 
-            AssemblyTag.Instance(_assembly).AddAbc(_abc);
+            _assembly.CustomData().AddAbc(_abc);
 
             if (sfc != null)
             {
@@ -224,7 +223,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #endregion
 
         #region BuildApp
-        void BuildApp()
+        private void BuildApp()
         {
 #if PERF
             int start = Environment.TickCount;
@@ -245,7 +244,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 #endif
         }
 
-        void BuildAppDefault()
+        private void BuildAppDefault()
         {
             _entryPoint = _assembly.EntryPoint;
             if (_entryPoint != null)
@@ -258,7 +257,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #endregion
 
         #region BuildExposedAPI
-        void BuildExposedAPI()
+        private void BuildExposedAPI()
         {
             foreach (var type in _assembly.Types)
             {
@@ -271,7 +270,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #endregion
 
         #region BuildLibrary
-        void BuildLibrary()
+        private void BuildLibrary()
         {
             if (IsMxApplication)
             {
@@ -295,7 +294,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             BuildAssemblyTypes();
         }
 
-        void BuildAssemblyTypes()
+        private void BuildAssemblyTypes()
         {
             var list = new List<IType>(_assembly.Types);
             foreach (var type in list)

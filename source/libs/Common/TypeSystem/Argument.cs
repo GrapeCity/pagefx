@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Syntax;
 
@@ -63,12 +62,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region ICodeNode Members
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Argument; }
-        }
 
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return null; }
         }
@@ -90,59 +85,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public object Clone()
         {
         	return new Argument(Name, Value) {Kind = Kind, Type = Type};
-        }
-        #endregion
-
-        #region Object Override Methods
-        public override string ToString()
-        {
-            return ToString(null, null);
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// List of <see cref="Argument"/>s.
-    /// </summary>
-    public class ArgumentCollection : List<IArgument>, IArgumentCollection
-    {
-        public ArgumentCollection()
-        {
-        }
-
-        public ArgumentCollection(IEnumerable<IArgument> args)
-            : base(args)
-        {
-        }
-
-        #region IArgumentCollection Members
-        public IArgument this[string name]
-        {
-            get { return Find(a => a.Name == name); }
-        }
-        #endregion
-
-        #region ICodeNode Members
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Arguments; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return this.Cast<ICodeNode>(); }
-        }
-
-        /// <summary>
-        /// Gets or sets user defined data assotiated with this object.
-        /// </summary>
-        public object Tag { get; set; }
-        #endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return SyntaxFormatter.Format(this, format, formatProvider);
         }
         #endregion
 

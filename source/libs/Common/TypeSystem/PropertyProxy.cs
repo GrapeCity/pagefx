@@ -203,12 +203,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region ICodeNode Members
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Property; }
-        }
 
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return new ICodeNode[0]; }
         }

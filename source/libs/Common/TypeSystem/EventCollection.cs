@@ -56,11 +56,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return SyntaxFormatter.Format(this, format, formatProvider);
 	    }
 
-	    public CodeNodeType NodeType
-	    {
-		    get { return CodeNodeType.Events; }
-	    }
-
 	    public IEnumerable<ICodeNode> ChildNodes
 	    {
 			get { return this.Cast<ICodeNode>(); }

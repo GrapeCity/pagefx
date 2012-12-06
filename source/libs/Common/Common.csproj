@@ -101,6 +101,11 @@
     <Compile Include="IO\StreamExtensions.cs" />
     <Compile Include="IO\TextWriterExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="TypeSystem\ArgumentCollection.cs" />
+    <Compile Include="TypeSystem\CustomAttributeCollection.cs" />
+    <Compile Include="TypeSystem\CustomAttributeProvider.cs" />
+    <Compile Include="TypeSystem\IAssemblyLoader.cs" />
+    <Compile Include="TypeSystem\IAssemblyReference.cs" />
     <Compile Include="Utilities\Tricks.cs" />
     <Compile Include="Tests\BitReaderTest.cs" />
     <Compile Include="Tests\BitWriterTest.cs" />

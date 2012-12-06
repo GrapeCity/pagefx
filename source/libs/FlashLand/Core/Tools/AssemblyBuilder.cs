@@ -193,21 +193,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region ISwcLinker Members
+
         public IAssembly Assembly
         {
             get { return _assembly; }
         }
 
-        public void LinkType(AbcInstance instance)
-        {
-        }
-
-        public object ResolveExternalReference(string id)
+	    public object ResolveExternalReference(string id)
         {
         	return _refs.Select(assembly => AssemblyIndex.ResolveRef(assembly, id)).FirstOrDefault(r => r != null);
         }
 
-    	#endregion
+	    public event EventHandler<TypeEventArgs> TypeLinked;
+
+	    #endregion
 
         #region Naming Utils
         static readonly Hashtable namemap = new Hashtable();
@@ -379,7 +378,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         void LoadReference(string refPath)
         {
             var asm = LanguageInfrastructure.CLI.Deserialize(refPath, null);
-            if (!Linker.Start(asm))
+            if (!Linker.Run(asm))
                 throw new InvalidOperationException();
             _refs.Add(asm);
         }
@@ -609,7 +608,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             {
                 foreach (var asm in _refs)
                 {
-                    var abc = AssemblyTag.Instance(asm).ABC;
+                    var abc = asm.CustomData().ABC;
                     if (abc != null)
                     {
                         instance = FindInstance(abc, name);
@@ -650,7 +649,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             foreach (var asm in _refs)
             {
-                Linker.Start(asm);
+                Linker.Run(asm);
                 foreach (var type in asm.Types)
                 {
                     if (isObj && type.FullName == "Avm.Object")

@@ -41,11 +41,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 			return SyntaxFormatter.Format(this, format, formatProvider);
 		}
 
-		public CodeNodeType NodeType
-		{
-			get { return CodeNodeType.Fields; }
-		}
-
 		public IEnumerable<ICodeNode> ChildNodes
 		{
 			get { return this.Cast<ICodeNode>(); }

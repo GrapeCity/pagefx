@@ -1,5 +1,5 @@
+using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
 
 namespace DataDynamics.PageFX.FlashLand.Swc
 {
@@ -7,8 +7,8 @@ namespace DataDynamics.PageFX.FlashLand.Swc
     {
         IAssembly Assembly { get; }
 
-        void LinkType(AbcInstance instance);
+	    object ResolveExternalReference(string id);
 
-        object ResolveExternalReference(string id);
+	    event EventHandler<TypeEventArgs> TypeLinked;
     }
 }

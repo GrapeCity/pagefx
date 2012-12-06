@@ -208,6 +208,14 @@ namespace DataDynamics.PageFX.Ecma335
 		    return Methods[index];
 	    }
 
+	    public event EventHandler<TypeEventArgs> TypeLoaded;
+
+		internal void FireTypeLoaded(IType type)
+		{
+			if (TypeLoaded != null)
+				TypeLoaded(this, new TypeEventArgs(type));
+		}
+
 	    private void LoadCorlib()
         {
             int n = AssemblyRefs.Count;

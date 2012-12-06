@@ -154,11 +154,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				get { return List[index]; }
 			}
 
-			public CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Types; }
-			}
-
 			public IEnumerable<ICodeNode> ChildNodes
 			{
 				get { return this.Cast<ICodeNode>(); }

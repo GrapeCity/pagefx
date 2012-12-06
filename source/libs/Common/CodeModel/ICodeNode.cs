@@ -8,12 +8,7 @@ namespace DataDynamics.PageFX.Common.CodeModel
     /// </summary>
     public interface ICodeNode : IFormattable
     {
-        /// <summary>
-        /// Gets the type of this node.
-        /// </summary>
-        CodeNodeType NodeType { get; }
-
-        /// <summary>
+	    /// <summary>
         /// Gets the child nodes of this node.
         /// </summary>
         IEnumerable<ICodeNode> ChildNodes { get; }
@@ -23,41 +18,4 @@ namespace DataDynamics.PageFX.Common.CodeModel
         /// </summary>
         object Tag { get; set; }
     }
-
-	public enum CodeNodeType
-	{
-		Assembly,
-		AssemblyReference,
-		Modules,
-		Module,
-		Namespaces,
-		Namespace,
-		Attribute,
-		Attributes,
-		Type,
-		Types,
-		GenericParameter,
-		GenericParameters,
-		TypeMember,
-		TypeMembers,
-		Field,
-		Fields,
-		Property,
-		Properties,
-		Event,
-		Events,
-		Constructor,
-		Constructors,
-		Method,
-		Methods,
-		Parameter,
-		Parameters,
-		Argument,
-		Arguments,
-		Variable,
-		Variables,
-		Statement,
-		Statements,
-		Expression
-	}
 }
