@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
-using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 
@@ -12,12 +12,12 @@ namespace DataDynamics.PageFX.TestRunner.Framework
     /// <summary>
     /// Represents test case (data for unit test)
     /// </summary>
-    public class TestCase
+    public class TestCase : ITestItem
     {
         #region Constructors
         public TestCase(string fullname)
         {
-	        _fullname = fullname;
+	        FullName = fullname;
         }
 
 	    public TestCase(string fullname, string text) : this(fullname)
@@ -30,35 +30,24 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         #endregion
 
         #region Public Properties
-        public TestSuite Suite { get; set; }
+	    /// <summary>
+	    /// Gets the full name of this test case.
+	    /// </summary>
+	    public string FullName { get; private set; }
 
-        /// <summary>
-        /// Gets the full name of this test case.
-        /// </summary>
-        public string FullName
-        {
-            get { return _fullname; }
-        }
-        readonly string _fullname;
+	    public IEnumerable<ITestItem> GetChildren()
+	    {
+		    return Enumerable.Empty<ITestItem>();
+	    }
 
-        public bool UsePfc { set; get; }
+	    public bool UsePfc { set; get; }
 
-        public string FullDisplayName
-        {
-            get
-            {
-                if (Suite != null)
-                    return Suite.Name + "." + Name;
-                return FullName;
-            }
-        }
-
-        bool HasExt
+	    private bool HasExt
         {
             get
             {
-                int i = _fullname.LastIndexOf('.');
-                if (i >= 0 && i >= _fullname.Length - 4)
+                int i = FullName.LastIndexOf('.');
+                if (i >= 0 && i >= FullName.Length - 4)
                     return true;
                 return false;
             }
@@ -71,41 +60,22 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         {
             get
             {
-                int i = _fullname.LastIndexOf('.');
+                int i = FullName.LastIndexOf('.');
                 if (i >= 0)
                 {
                     if (HasExt)
                     {
-                        i = _fullname.LastIndexOf('.', i - 1);
+                        i = FullName.LastIndexOf('.', i - 1);
                         if (i >= 0)
-                            return _fullname.Substring(i + 1);
+                            return FullName.Substring(i + 1);
                     }
-                    return _fullname.Substring(i + 1);
+                    return FullName.Substring(i + 1);
                 }
-                return _fullname;
+                return FullName;
             }
         }
 
-        public string SuiteName
-        {
-            get
-            {
-                int i = _fullname.LastIndexOf('.');
-                if (i >= 0)
-                {
-                    if (HasExt)
-                    {
-                        i = _fullname.LastIndexOf('.', i - 1);
-                        if (i >= 0)
-                            return _fullname.Substring(0, i);
-                    }
-                    return _fullname.Substring(0, i);
-                }
-                return _fullname;
-            }
-        }
-
-        public string Root
+	    public string Root
         {
             get
             {
@@ -118,7 +88,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
                     _rootCount = _srcfiles.Count;
                     if (_rootCount > 0)
                     {
-                        string s = _fullname;
+                        string s = FullName;
                         if (_rootCount == 1)
                         {
                             int i = s.LastIndexOf('.');
@@ -135,8 +105,8 @@ namespace DataDynamics.PageFX.TestRunner.Framework
                 return _root;
             }
         }
-        int _rootCount = -1;
-        string _root;
+        private int _rootCount = -1;
+        private string _root;
 
         static CompilerLanguage FromExt(string ext)
         {
@@ -176,7 +146,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         {
             get
             {
-                if (_fullname.StartsWith("PageFX"))
+                if (FullName.StartsWith("PageFX"))
                     return true;
                 return false;
             }
@@ -193,7 +163,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         {
             get
             {
-                return _fullname.Contains("Unsafe");
+                return FullName.Contains("Unsafe");
             }
         }
         
@@ -204,7 +174,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         {
             get { return _srcfiles; }
         }
-        readonly SourceFileList _srcfiles = new SourceFileList();
+        private readonly SourceFileList _srcfiles = new SourceFileList();
 
         public bool IsSimple
         {
@@ -245,7 +215,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         {
             get { return _defines; }
         }
-        readonly List<string> _defines = new List<string>();
+        private readonly List<string> _defines = new List<string>();
 
         public void Define(string symbol)
         {
@@ -404,7 +374,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         #region Object Override Members
         public override string ToString()
         {
-            return _fullname;
+            return FullName;
         }
         #endregion
 
@@ -445,13 +415,5 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             return asm;
         }
         #endregion
-    }
-
-    public class TestCaseCollection : HashList<string, TestCase>
-    {
-        public TestCaseCollection()
-            : base(x => x.Name)
-        {
-        }
     }
 }

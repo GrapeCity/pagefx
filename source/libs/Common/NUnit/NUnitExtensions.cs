@@ -204,7 +204,7 @@ namespace DataDynamics.PageFX.Common.NUnit
 
 			const string monons = "MonoTests.";
 			if (suite.StartsWith(monons))
-				suite = "mono." + suite.Substring(monons.Length);
+				suite = suite.Substring(monons.Length);
 
 			suite = suite.Replace('+', '.');
 

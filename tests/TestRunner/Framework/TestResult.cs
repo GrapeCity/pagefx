@@ -8,14 +8,14 @@ namespace DataDynamics.PageFX.TestRunner.Framework
     public class TestResult
     {
         public List<TestCase> FailedTestCases = new List<TestCase>();
-        public List<TestSuite> Suites = new List<TestSuite>();
+		public List<ITestSuite> Suites = new List<ITestSuite>();
 
         public void Sort()
         {
             Suites.Sort((x, y) => string.Compare(x.FullName, y.FullName, StringComparison.CurrentCultureIgnoreCase));
         }
 
-        public bool HasSuite(TestSuite ts)
+		public bool HasSuite(ITestSuite ts)
         {
             return Suites.Contains(ts);
         }
@@ -41,11 +41,11 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
             writer.WriteLine("<body>");
 
+			writer.WriteLine("<h1>Test Results</h1>");
+			writer.WriteLine("<p>Creation Date: {0:yyyy-MM-dd}</p>", DateTime.Now);
+
             if (Suites != null && Suites.Count > 0)
             {
-                writer.WriteLine("<h1>Test Results</h1>");
-                writer.WriteLine("<p>Creation Date: {0:yyyy-MM-dd}</p>", DateTime.Now);
-
                 writer.WriteLine("<table cellspacing=\"0\">");
                 writer.WriteLine("<tr>");
                 writer.WriteLine("<th>Suite Name</th>");
@@ -59,10 +59,10 @@ namespace DataDynamics.PageFX.TestRunner.Framework
                 {
                     writer.WriteLine("<tr>");
                     writer.WriteLine("<td><b>{0}</b></td>", ts.FullName);
-                    writer.WriteLine("<td>{0}</td>", ts.Total);
+                    writer.WriteLine("<td>{0}</td>", ts.Total());
                     writer.WriteLine("<td>{0}</td>", ts.TotalPassed);
                     writer.WriteLine("<td>{0}</td>", ts.TotalFailed);
-                    writer.WriteLine("<td>{0:P}</td>", ts.Percentage);
+                    writer.WriteLine("<td>{0:P}</td>", ts.Percentage());
                     writer.WriteLine("</tr>");
                 }
 
@@ -83,7 +83,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
                 foreach (var tc in FailedTestCases)
                 {
                     writer.WriteLine("<tr>");
-                    writer.WriteLine("<td>{0}</td>", tc.FullDisplayName);
+                    writer.WriteLine("<td>{0}</td>", tc.FullName);
                     writer.WriteLine("<td><pre>\n{0}\n</pre></td>", tc.Output1.ToXmlString());
                     writer.WriteLine("<td><pre>\n{0}\n</pre></td>", tc.Output2.ToXmlString());
                     writer.WriteLine("</tr>");
@@ -116,7 +116,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
                 foreach (var ts in Suites)
                 {
                     writer.WriteLine("||*{0}*||{1}||{2}||{3}||{4:P}||",
-                                     ts.Name, ts.Total, ts.TotalPassed, ts.TotalFailed, ts.Percentage);
+                                     ts.Name, ts.Total(), ts.TotalPassed, ts.TotalFailed, ts.Percentage());
                 }
             }
 

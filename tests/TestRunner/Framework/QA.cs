@@ -78,7 +78,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
         public static bool LoadNUnitTests = true;
         public static bool TestDebugSupport;
-        public static bool SortTests = true;
         public static bool ProtectNUnitTest = true;
         public static bool RunSuiteAsOneTest = true;
 
@@ -967,7 +966,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
         public static void GenerateNUnitTestFixture(string path, string ns, string classname, string format)
         {
-            GenerateNUnitTestFixture(path, ns, classname, format, SimpleTestCases.All);
+            GenerateNUnitTestFixture(path, ns, classname, format, SimpleTestCases.GetAllTestCases());
         }
         #endregion
     }

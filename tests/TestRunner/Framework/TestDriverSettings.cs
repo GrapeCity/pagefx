@@ -5,8 +5,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
     public class TestDriverSettings
     {
         public bool ExportCSharpFile = true;
-    	public bool UpdateReport;
-    	public bool IsClrEmulation;
+	    public bool IsClrEmulation;
 
         //abc, swf, swc
         public string OutputFormat

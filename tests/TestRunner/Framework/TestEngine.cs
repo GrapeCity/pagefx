@@ -27,7 +27,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
         	var settings = new TestDriverSettings
         	          	{
-        	          		UpdateReport = false,
         	          		OutputFormat = format
         	          	};
             test.Optimize = true;
@@ -60,11 +59,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             {
                 CommonLanguageInfrastructure.ClearCache();
             }
-
-			if (settings.UpdateReport)
-			{
-				UpdateReport(test);
-			}
         }
         #endregion
 
@@ -358,35 +352,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         }
         #endregion
 
-        #region UpdateReport
-        static TestResult testResults;
-
-        static void UpdateReport(TestCase tc)
-        {
-            string path = QA.TestResultsReportPath;
-
-            if (testResults == null)
-            {
-                testResults = new TestResult();
-            }
-
-            var ts = tc.Suite;
-            while (ts != null && !ts.IsRoot)
-            {
-                if (!testResults.HasSuite(ts))
-                    testResults.Suites.Add(ts);
-                if (tc.IsFailed)
-                    ts.TotalFailed++;
-                else
-                    ts.TotalPassed++;
-                ts = ts.Parent;
-            }
-
-            testResults.Sort();
-            testResults.GenerateHtmlReport(path);
-        }
-        #endregion
-        
         #region Run
         public static void Run(IEnumerable<TestCase> list, TestDriverSettings tds)
         {

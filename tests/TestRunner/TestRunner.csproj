@@ -102,11 +102,17 @@
       <Link>UnitTests\UInt64.cs</Link>
     </Compile>
     <Compile Include="Framework\Enums.cs" />
+    <Compile Include="Framework\Extensions.cs" />
+    <Compile Include="Framework\Factory.cs" />
+    <Compile Include="Framework\ITestItem.cs" />
+    <Compile Include="Framework\NUnitSuite.cs" />
+    <Compile Include="Framework\SimpleSuite.cs" />
+    <Compile Include="Framework\SingleFileSuite.cs" />
+    <Compile Include="Framework\ITestSuite.cs" />
     <Compile Include="Tools\ILAsm.cs" />
     <Compile Include="Framework\SimpleTestCases.cs" />
     <Compile Include="Framework\SourceFile.cs" />
     <Compile Include="Framework\TestResult.cs" />
-    <Compile Include="Framework\TestSuite.cs" />
     <Compile Include="Framework\TextBoxWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Tools\JsRunner.cs" />

@@ -54,7 +54,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             miUseCommonDirectory.Tag = GlobalOptionName.UseCommonDirectory;
         }
 
-        void OnOptionMenuItemClick(object sender, EventArgs e)
+		private void OnOptionMenuItemClick(object sender, EventArgs e)
         {
             var mi = sender as ToolStripMenuItem;
             if (mi != null)
@@ -72,9 +72,9 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        readonly Func<bool> _cancelCallback;
+		private readonly Func<bool> _cancelCallback;
 
-        static void InitCodeEditor(CodeEditorControl edit)
+		private static void InitCodeEditor(CodeEditorControl edit)
         {
             edit.CopyAsRTF = true;
             edit.HighLightActiveLine = true;
@@ -83,9 +83,9 @@ namespace DataDynamics.PageFX.TestRunner.UI
             edit.ShowGutterMargin = false;
         }
 
-        readonly TextWriter _twLog;
+		private readonly TextWriter _twLog;
 
-        TestCase SelectedTestCase
+		private TestCase SelectedTestCase
         {
             get
             {
@@ -95,7 +95,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void QAForm_Load(object sender, EventArgs e)
+		private void QAForm_Load(object sender, EventArgs e)
         {
             miAbcSerialization.Tag = TestDriver.AbcSerialization;
             miSwfSerialization.Tag = TestDriver.SwfSerialization;
@@ -106,8 +106,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             //progressBar.Visible = false;
 
             AddTestCases();
-            UpdateNodeTitles(testCases.Nodes);
-
+            
             LoadState();
 
             //GenerateNUnitTestFixtures();
@@ -115,30 +114,14 @@ namespace DataDynamics.PageFX.TestRunner.UI
             Application.Idle += Application_Idle;
         }
 
-        static void UpdateNodeTitles(TreeNodeCollection nodes)
-        {
-            foreach (TreeNode node in nodes)
-            {
-                var ts = node.Tag as TestSuite;
-                if (ts != null)
-                {
-                    if (ts.TotalCount > 0)
-                    {
-                        node.Text = node.Text + string.Format(" [{0}]", ts.TotalCount);
-                    }
-                    UpdateNodeTitles(node.Nodes);
-                }
-            }
-        }
-
-        void QAForm_FormClosed(object sender, FormClosedEventArgs e)
+		private void QAForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             SaveState();
 
             Application.Idle -= Application_Idle;
         }
 
-        enum TestDriver
+		private enum TestDriver
         {
 			[String("ABC")]
             AbcSerialization,
@@ -151,9 +134,9 @@ namespace DataDynamics.PageFX.TestRunner.UI
 			[String("JS")]
 			JavaScript,
         }
-        TestDriver _testDriver;
+		private TestDriver _testDriver;
 
-        void Application_Idle(object sender, EventArgs e)
+		private void Application_Idle(object sender, EventArgs e)
         {
             bool isBusy = worker.IsBusy;
             btnRun.Enabled = miRun.Enabled = !isBusy;
@@ -167,73 +150,54 @@ namespace DataDynamics.PageFX.TestRunner.UI
             miJavaScript.Checked = _testDriver == TestDriver.JavaScript;
         }
 
-        static TreeNode FindByText(TreeNodeCollection list, string text)
+		private static TreeNode FindByText(TreeNodeCollection list, string text)
         {
         	return list.Cast<TreeNode>().FirstOrDefault(node => node.Text == text);
         }
 
-        static TreeNode FindByPath(TreeNodeCollection list, string path)
-        {
-            var names = path.Split('\\', '/');
-            TreeNode node = null;
-            var parent = list;
-            foreach (string name in names)
-            {
-            	node = FindByText(parent, name);
-            	if (node == null) return null;
-            	parent = node.Nodes;
-            }
-            return node;
-        }
+	    private readonly Hashtable _nodeCache = new Hashtable();
 
-    	readonly Hashtable _nodeCache = new Hashtable();
-
-        void AddTestCases(TestSuite ts, TreeNode tsnode)
+        private void LoadSuite(ITestItem suite, TreeNode node)
         {
-            foreach (var tc in ts.Cases)
+            foreach (var item in suite.GetChildren())
             {
-                var node = new TreeNode(tc.Name) {Tag = tc};
-                _nodeCache[tc.FullName] = node;
-                tsnode.Nodes.Add(node);
+	            AddItem(item, node);
             }
         }
 
-        void AddTestSuite(TestSuite ts, TreeNode parent)
+		private void AddItem(ITestItem item, TreeNode parent)
+		{
+			var node = new TreeNode(item.Name) { Tag = item };
+			_nodeCache[item.FullName] = node;
+
+			if (parent != null)
+			{
+				parent.Nodes.Add(node);
+
+				if (parent.Checked)
+					node.Checked = true;
+			}
+			else
+			{
+				testCases.Nodes.Add(node);
+			}
+
+			if (item is ITestSuite)
+			{
+				var temp = new TreeNode("~temp") {Tag = "~temp"};
+				node.Nodes.Add(temp);
+			}
+		}
+
+        private void AddTestCases()
         {
-            if (QA.SortTests)
-                ts.Sort();
-
-            if (!ts.IsRoot)
-            {
-                var node = new TreeNode(ts.Name) {Tag = ts};
-
-                if (parent != null)
-                    parent.Nodes.Add(node);
-                else
-                    testCases.Nodes.Add(node);
-
-                AddTestCases(ts, node);
-
-                parent = node;
-            }
-
-            foreach (var kid in ts.ChildSuites)
-                AddTestSuite(kid, parent);
-        }
-
-        void AddTestCases()
-        {
-            //Ensure test cases
-            var l = SimpleTestCases.All;
-            AddTestSuite(TestSuite.Root, null);
+			AddItem(SimpleTestCases.GetSuite(), null);
 
             var root = testCases.Nodes[0];
             root.Expand();
-            foreach (TreeNode node in root.Nodes)
-                node.Expand();
         }
 
-        static SyntaxLanguage GetSyntaxLanguage(TestCase tc)
+		private static SyntaxLanguage GetSyntaxLanguage(TestCase tc)
         {
             switch (tc.Language)
             {
@@ -250,7 +214,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void OnSelectionChanged()
+		private void OnSelectionChanged()
         {
             sourceFiles.TabPages.Clear();
             var tc = SelectedTestCase;
@@ -300,22 +264,21 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void testCases_AfterSelect(object sender, TreeViewEventArgs e)
+		private void testCases_AfterSelect(object sender, TreeViewEventArgs e)
         {
             OnSelectionChanged();
         }
 
-        void testCases_AfterCollapse(object sender, TreeViewEventArgs e)
+		private void testCases_AfterCollapse(object sender, TreeViewEventArgs e)
         {
-
         }
 
-        void testCases_AfterExpand(object sender, TreeViewEventArgs e)
-        {
+		private void testCases_AfterExpand(object sender, TreeViewEventArgs e)
+		{
+			EnsureLoaded(e.Node, false);
+		}
 
-        }
-
-        static IEnumerable<TreeNode> GetDescendants(TreeNode node)
+		private static IEnumerable<TreeNode> GetDescendants(TreeNode node)
         {
             foreach (TreeNode kid in node.Nodes)
             {
@@ -334,9 +297,9 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        bool _checkHandling;
+		private bool _checkHandling;
 
-        void testCases_AfterCheck(object sender, TreeViewEventArgs e)
+		private void testCases_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (_checkHandling) return;
 
@@ -376,8 +339,10 @@ namespace DataDynamics.PageFX.TestRunner.UI
             _checkHandling = false;
         }
 
-    	static IEnumerable<TreeNode> GetSelectedTestCases(TreeNode node)
-        {
+		private IEnumerable<TreeNode> GetSelectedTestCases(TreeNode node)
+		{
+			EnsureLoaded(node, true);
+
             var tc = node.Tag as TestCase;
             if (tc != null)
             {
@@ -396,21 +361,41 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        List<TreeNode> GetSelectedTestCases()
+	    private void EnsureLoaded(TreeNode node, bool all)
+	    {
+			var suite = node.Tag as ITestSuite;
+		    if (suite == null) return;
+
+		    if (node.Nodes.Count == 1 && Equals(node.Nodes[0].Tag, "~temp"))
+		    {
+			    node.Nodes.RemoveAt(0);
+			    LoadSuite(suite, node);
+		    }
+
+		    if (all)
+		    {
+			    foreach (var child in node.Nodes.OfType<TreeNode>())
+			    {
+				    EnsureLoaded(child, true);
+			    }
+		    }
+	    }
+
+	    private List<TreeNode> GetSelectedTestCases()
         {
         	return (from TreeNode node in testCases.Nodes
 					from tc in GetSelectedTestCases(node)
 					select tc).ToList();
         }
 
-    	List<TreeNode> GetAllTestCases()
+		private List<TreeNode> GetAllTestCases()
     	{
     		return (from TreeNode node in testCases.Nodes
 					from d in GetDescendants(node)
 					where d.Tag is TestCase select d).ToList();
     	}
 
-    	void Run()
+		private void Run()
         {
             if (!worker.IsBusy)
             {
@@ -427,15 +412,15 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void btnRun_Click(object sender, EventArgs e)
+		private void btnRun_Click(object sender, EventArgs e)
         {
             Run();
         }
 
         #region Process
-        delegate void Action();
+		private delegate void Action();
 
-        void safe(Action a)
+		private void safe(Action a)
         {
             if (InvokeRequired)
             {
@@ -450,11 +435,11 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        TreeNode _currentNode;
-        bool _blinkState;
-        readonly bool _blinkEnabled;
-        
-        void BlinkCurrentNode()
+		private TreeNode _currentNode;
+		private bool _blinkState;
+		private readonly bool _blinkEnabled;
+
+		private void BlinkCurrentNode()
         {
             while (true)
             {
@@ -484,7 +469,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void RunTestCase(TestCase tc)
+		private void RunTestCase(TestCase tc)
         {
             tc.Optimize = QA.OptimizeCode;
             tc.Debug = QA.EmitDebugInfo;
@@ -526,17 +511,17 @@ namespace DataDynamics.PageFX.TestRunner.UI
                 tc.IsFinished = true;
         }
 
-        bool _hasErrors;
-        bool _reportProgress;
+		private bool _hasErrors;
+		private bool _reportProgress;
 
-        void Process(object sender, DoWorkEventArgs e)
+		private void Process(object sender, DoWorkEventArgs e)
         {
             var testCases = e.Argument as List<TreeNode>;
             e.Result = testCases;
             Process(testCases);
         }
 
-        void Process(ICollection<TreeNode> testCases)
+		private void Process(ICollection<TreeNode> testCases)
         {
             if (testCases == null) return;
 
@@ -597,7 +582,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             safe(() => ShowReport(testCases));
         }
 
-        void ApplySettings()
+		private void ApplySettings()
         {
             //NOTE: Currently we are targetted on NET 2.0
             //CompilerConsole.FrameworkVersion = FrameworkVersion;
@@ -656,7 +641,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
 #endif
         }
 
-        void RunTestCase(TreeNode node, TestCase tc)
+		private void RunTestCase(TreeNode node, TestCase tc)
         {
             if (worker.CancellationPending) return;
 
@@ -695,7 +680,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void OnProgressChanged(object sender, ProgressChangedEventArgs e)
+		private void OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             //progressBar.Value = e.ProgressPercentage;
             //string str = e.UserState as string;
@@ -703,7 +688,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             //    status.Text = str;
         }
 
-        void OnProcessCompleted(object sender, RunWorkerCompletedEventArgs e)
+		private void OnProcessCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             var list = e.Result as List<TreeNode>;
             if (list == null) return;
@@ -721,7 +706,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             OnSelectionChanged();
         }
 
-        void UpdateState(TreeNode node, TestCase tc)
+		private void UpdateState(TreeNode node, TestCase tc)
         {
             if (tc.IsStarted)
                 node.BackColor = Color.Yellow;
@@ -734,19 +719,13 @@ namespace DataDynamics.PageFX.TestRunner.UI
         #endregion
 
         #region State/Settings
-        static string GetStatePath()
-        {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                                "DataDynamics.PageFX.QA\\state.xml");
-        }
 
-        void LoadState()
+	    private void LoadState()
         {
-            LoadState(GetStatePath());
             LoadSettings();
         }
 
-        static void LoadFlags(ToolStripItemCollection items)
+		private static void LoadFlags(ToolStripItemCollection items)
         {
             foreach (ToolStripItem item in items)
             {
@@ -867,26 +846,6 @@ namespace DataDynamics.PageFX.TestRunner.UI
             QA.SetValue(KeyAvmShellMode, mode);
         }
 
-        bool _firstTestCase = true;
-
-        void LoadState(string path)
-        {
-            var list = LoadTestCases(path);
-            if (list != null)
-            {
-                foreach (var node in list)
-                {
-                    node.Checked = true;
-                    if (_firstTestCase)
-                    {
-                        _firstTestCase = false;
-                        ExpandParent(node);
-                        node.EnsureVisible();
-                        testCases.SelectedNode = node;
-                    }
-                }
-            }
-        }
 
         void SaveState(string path)
         {
@@ -914,33 +873,11 @@ namespace DataDynamics.PageFX.TestRunner.UI
 
         void SaveState()
         {
-            SaveState(GetStatePath());
             SaveSettings();
         }
         #endregion
 
-        IEnumerable<TreeNode> LoadTestCases(string path)
-        {
-            if (File.Exists(path))
-            {
-                try
-                {
-                	var doc = new XmlDocument();
-                    doc.Load(path);
-					if (doc.DocumentElement == null) return null;
-                	return (from XmlElement e in doc.DocumentElement.GetElementsByTagName("tc")
-							select e.GetAttribute("name") into name
-							select _nodeCache[name]).OfType<TreeNode>().ToList();
-                }
-                catch (Exception exc)
-                {
-                    MessageBox.Show(exc.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            return null;
-        }
-
-        static void ExpandParent(TreeNode node)
+	    private static void ExpandParent(TreeNode node)
         {
             var parent = node.Parent;
             while (parent != null)
@@ -950,13 +887,13 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-    	void btnRunAll_Click(object sender, EventArgs e)
+		private void btnRunAll_Click(object sender, EventArgs e)
         {
             if (!worker.IsBusy)
                 worker.RunWorkerAsync(GetAllTestCases());
         }
 
-        void OnSelectTestDriver(object sender, EventArgs e)
+		private void OnSelectTestDriver(object sender, EventArgs e)
         {
             var mi = sender as ToolStripMenuItem;
             if (mi == null) return;
@@ -966,7 +903,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void btnStop_Click(object sender, EventArgs e)
+		private void btnStop_Click(object sender, EventArgs e)
         {
             if (worker.IsBusy)
             {
@@ -974,17 +911,17 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void miExit_Click(object sender, EventArgs e)
+		private void miExit_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        void btnSaveSettings_Click(object sender, EventArgs e)
+		private void btnSaveSettings_Click(object sender, EventArgs e)
         {
             SaveState();
         }
 
-        void OnResetDebugHooks(object sender, EventArgs e)
+		private void OnResetDebugHooks(object sender, EventArgs e)
         {
 #if DEBUG
             DebugHooks.Reset();
@@ -1008,14 +945,14 @@ namespace DataDynamics.PageFX.TestRunner.UI
             tbPhase.Text = "";
         }
 
-        void btnResetLastError_Click(object sender, EventArgs e)
+		private void btnResetLastError_Click(object sender, EventArgs e)
         {
 #if DEBUG
             DebugHooks.ResetLastError();
 #endif
         }
 
-        void btnCompile_Click(object sender, EventArgs e)
+		private void btnCompile_Click(object sender, EventArgs e)
         {
             var selnode = testCases.SelectedNode;
             if (selnode == null) return;
@@ -1032,7 +969,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void miCleanQADir_Click(object sender, EventArgs e)
+		private void miCleanQADir_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1045,9 +982,9 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        List<TestSuite> GetSelectedTestSuites(List<TestCase> failedTestCases)
+		private List<ITestSuite> GetSelectedTestSuites(List<TestCase> failedTestCases)
         {
-            var list = new List<TestSuite>();
+            var list = new List<ITestSuite>();
             foreach (TreeNode node in testCases.Nodes)
             {
                 GetSelectedTestSuites(list, node, failedTestCases);
@@ -1055,7 +992,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             return list;
         }
 
-        void UpdateTestSuiteStat(TestSuite ts, TreeNodeCollection nodes)
+		private void UpdateTestSuiteStat(ITestSuite ts, TreeNodeCollection nodes)
         {
             foreach (TreeNode node in nodes)
             {
@@ -1077,22 +1014,23 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        static bool IsSelected(TreeNode node)
+		private static bool IsSelected(TreeNode node)
         {
             if (node.Checked) return true;
         	return node.Nodes.Cast<TreeNode>().Any(kid => kid.Checked);
         }
 
-        void GetSelectedTestSuites(List<TestSuite> list, TreeNode node, List<TestCase> failedTestCases)
+		private void GetSelectedTestSuites(List<ITestSuite> list, TreeNode node, List<TestCase> failedTestCases)
         {
-            var ts = node.Tag as TestSuite;
+            var ts = node.Tag as ITestSuite;
             if (ts != null)
             {
                 if (IsSelected(node))
                 {
                     list.Add(ts);
-                    ts.Reset();
-                    UpdateTestSuiteStat(ts, node.Nodes);   
+	                ts.TotalFailed = 0;
+	                ts.TotalPassed = 0;
+	                UpdateTestSuiteStat(ts, node.Nodes);
                 }
                 foreach (TreeNode kid in node.Nodes)
                 {
@@ -1111,7 +1049,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
         }
 
         #region Reporting
-        void ShowReport(ICollection<TreeNode> list)
+		private void ShowReport(ICollection<TreeNode> list)
         {
             if (!miShowReport.Checked) return;
             if (list.Count <= 1) return;
@@ -1120,14 +1058,14 @@ namespace DataDynamics.PageFX.TestRunner.UI
             QA.ShowBrowser("Test Results", path, false);
         }
 
-        static string GetReportPath()
+		private static string GetReportPath()
         {
             string dir = QA.Root;
             Directory.CreateDirectory(dir);
             return Path.Combine(dir, "report.htm");
         }
 
-        TestResult GetTestResult()
+        private TestResult GetTestResult()
         {
             var failedTestCases = new List<TestCase>();
             var suites = GetSelectedTestSuites(failedTestCases);
@@ -1139,20 +1077,20 @@ namespace DataDynamics.PageFX.TestRunner.UI
         	       	};
         }
 
-        void GenerateHtmlReport(string path)
+		private void GenerateHtmlReport(string path)
         {
             using (var writer = new StreamWriter(path))
                 GenerateHtmlReport(writer);
         }
 
-        void GenerateHtmlReport(TextWriter writer)
+		private void GenerateHtmlReport(TextWriter writer)
         {
             var tr = GetTestResult();
             tr.GenerateHtmlReport(writer);
         }
         #endregion
 
-        void miOptions_Click(object sender, EventArgs e)
+		private void miOptions_Click(object sender, EventArgs e)
         {
             using (var dlg = new OptionsDialog())
             {
@@ -1162,7 +1100,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void miGenerateWikiReport_Click(object sender, EventArgs e)
+		private void miGenerateWikiReport_Click(object sender, EventArgs e)
         {
             using (var dlg = new SaveFileDialog())
             {
@@ -1173,19 +1111,19 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void GenerateWikiReport(string path)
+		private void GenerateWikiReport(string path)
         {
             using (var writer = new StreamWriter(path))
                 GenerateWikiReport(writer);
         }
 
-        void GenerateWikiReport(TextWriter writer)
+		private void GenerateWikiReport(TextWriter writer)
         {
             var tr = GetTestResult();
             tr.GenerateWikiReport(writer);
         }
 
-        void miGenerateHtmlReport_Click(object sender, EventArgs e)
+		private void miGenerateHtmlReport_Click(object sender, EventArgs e)
         {
             using (var dlg = new SaveFileDialog())
             {
@@ -1198,7 +1136,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
         }
 
         #region Compare Text Files
-        void miCompareTextFiles_Click(object sender, EventArgs e)
+		private void miCompareTextFiles_Click(object sender, EventArgs e)
         {
             using (var dlg = new OpenFileDialog())
             {
@@ -1226,7 +1164,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
         }
         #endregion
 
-        void btnSelectFailed_Click(object sender, EventArgs e)
+		private void btnSelectFailed_Click(object sender, EventArgs e)
         {
             var list = GetSelectedTestCases();
             foreach (var node in list)
@@ -1239,7 +1177,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             }
         }
 
-        void btnCopy_Click(object sender, EventArgs e)
+		private void btnCopy_Click(object sender, EventArgs e)
         {
             var sb = new StringBuilder();
             var list = GetSelectedTestCases();
@@ -1256,16 +1194,16 @@ namespace DataDynamics.PageFX.TestRunner.UI
                 Clipboard.SetText(sb.ToString());
         }
 
-        void miGenerateAllNUnitTests_Click(object sender, EventArgs e)
+		private void miGenerateAllNUnitTests_Click(object sender, EventArgs e)
         {
         }
 
-    	void cbAvmShellMode_SelectedIndexChanged(object sender, EventArgs e)
+		private void cbAvmShellMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             ApplySettings();
         }
 
-        void btnNUnitSession_Click(object sender, EventArgs e)
+		private void btnNUnitSession_Click(object sender, EventArgs e)
         {
             QA.IsNUnitSession = btnNUnitSession.Checked;
         }
