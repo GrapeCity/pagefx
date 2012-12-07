@@ -1,5 +1,5 @@
+using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Swc;
 
 namespace DataDynamics.PageFX.FlashLand.Core.Tools
@@ -8,24 +8,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
     {
         public SimpleSwcLinker(IAssembly assembly)
         {
-            _assembly = assembly;
+            Assembly = assembly;
         }
 
-        #region ISwcLinker Members
-        public IAssembly Assembly
-        {
-            get { return _assembly; }
-        }
-        private readonly IAssembly _assembly;
+	    public IAssembly Assembly { get; private set; }
 
-        public void LinkType(AbcInstance instance)
+	    public object ResolveExternalReference(string id)
         {
+            return AssemblyIndex.ResolveRef(Assembly, id);
         }
 
-        public object ResolveExternalReference(string id)
-        {
-            return AssemblyIndex.ResolveRef(_assembly, id);
-        }
-        #endregion
+	    public event EventHandler<TypeEventArgs> TypeLinked;
     }
 }

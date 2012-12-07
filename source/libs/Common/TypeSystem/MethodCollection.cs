@@ -31,12 +31,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public IMethod StaticConstructor { get; private set; }
 
-    	public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Methods; }
-        }
-
-        public object Tag { get; set; }
+		public object Tag { get; set; }
 
     	public string ToString(string format, IFormatProvider formatProvider)
         {
@@ -89,11 +84,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			IEnumerator IEnumerable.GetEnumerator()
 			{
 				return GetEnumerator();
-			}
-
-			public CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Methods; }
 			}
 
 			public IEnumerable<ICodeNode> ChildNodes

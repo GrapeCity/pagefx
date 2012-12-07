@@ -132,12 +132,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 yield return m;
         }
 
-	    public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.TypeMembers; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return this.Cast<ICodeNode>(); }
         }

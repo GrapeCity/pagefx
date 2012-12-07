@@ -13,33 +13,53 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
     /// </summary>
     internal sealed class Linker : ISwcLinker
     {
-	    private const int LinkFlag = 0x400;
-        private const int LinkedOk = 0x800;
-
 	    private readonly IAssembly _assembly;
 		private AbcCache _cache;
+		private AbcFile _abc;
+		private SwcFile _swc;
 
-        private Linker(IAssembly asm)
+        public Linker(IAssembly assembly)
         {
-            _assembly = asm;
+	        if (assembly == null)
+				throw new ArgumentNullException("assembly");
+
+			var data = assembly.CustomData();
+			if (data.Linker != null)
+				throw new InvalidOperationException();
+
+			data.Linker = this;
+
+	        _assembly = assembly;
         }
 
-	    #region Start - EntryPoint
-        public static bool Start(IAssembly asm)
+	    public IAssembly Assembly
+		{
+			get { return _assembly; }
+		}
+
+		public object ResolveExternalReference(string id)
+		{
+			return AssemblyIndex.ResolveRef(_assembly, id);
+		}
+
+	    public event EventHandler<TypeEventArgs> TypeLinked;
+
+	    public static bool Run(IAssembly assembly)
         {
-            var l = new Linker(asm);
-            return l.Start();
+            var linker = new Linker(assembly);
+            return linker.Run();
         }
 
-        public bool Start()
+        public bool Run()
         {
             //To avoid multiple calls of this routine
-            if ((_assembly.Marker & LinkFlag) != 0)
+	        var data = _assembly.CustomData();
+            if ((data.Flags & InternalAssembyFlags.PassedLinker) != 0)
             {
-                return (_assembly.Marker & LinkedOk) != 0;
+				return (data.Flags & InternalAssembyFlags.HasAbcImports) != 0;
             }
 
-            _assembly.Marker |= LinkFlag;
+			data.Flags |= InternalAssembyFlags.PassedLinker;
 
             bool result = false;
             foreach (var res in _assembly.MainModule.Resources)
@@ -47,15 +67,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 #if DEBUG
                 DebugService.DoCancel();
 #endif
-                string resName = res.Name;
-	            if (resName.EndsWith(".abc", StringComparison.InvariantCultureIgnoreCase))
+	            if (res.Name.EndsWith(".abc", StringComparison.InvariantCultureIgnoreCase))
                 {
                     LinkAbc(res.Data);
                     result = true;
                 }
-                else if (resName.EndsWith(".swc", StringComparison.InvariantCultureIgnoreCase))
+                else if (res.Name.EndsWith(".swc", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    string swcName = GetResFileName(resName);
+                    string swcName = GetResFileName(res.Name);
 
                     var deps = LoadSwcDep(swcName);
 
@@ -65,10 +84,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 }
             }
 
-            if (result)
-                _assembly.Marker |= LinkedOk;
+	        if (result)
+	        {
+				data.Flags |= InternalAssembyFlags.HasAbcImports;
+	        }
 
-            return result;
+	        return result;
         }
 
         private static string GetResFileName(string resName)
@@ -99,42 +120,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
             return null;
         }
-        #endregion
 
-        #region ISwcLinker Members
-        public IAssembly Assembly
-        {
-            get { return _assembly; }
-        }
-
-        public void LinkType(AbcInstance instance)
-        {
-        }
-
-        public object ResolveExternalReference(string id)
-        {
-            return AssemblyIndex.ResolveRef(_assembly, id);
-        }
-        #endregion
-
-	    private AbcFile _abc;
-
-        private void LinkAbc(byte[] data)
+	    private void LinkAbc(byte[] data)
         {
 #if PERF
             int start = Environment.TickCount;
 #endif
             _abc = new AbcFile(data) {Assembly = _assembly};
-            AssemblyTag.Instance(_assembly).ABC = _abc;
+            _assembly.CustomData().ABC = _abc;
             _cache = new AbcCache(true);
             _cache.Add(_abc);
+
             LinkTypes();
 #if PERF
             Console.WriteLine("LinkAbc: {0}", Environment.TickCount - start);
 #endif
         }
-
-	    private SwcFile _swc;
 
         private void LinkSwc(string name, byte[] data, SwcDepFile deps)
         {
@@ -147,8 +148,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                               Name = name
                           };
             _cache = _swc.AbcCache;
-            AssemblyTag.Instance(_assembly).SWC = _swc;
+            _assembly.CustomData().SWC = _swc;
             _swc.ResolveDependencies(this, deps);
+
             LinkTypes();
 #if PERF
             Console.WriteLine("LinkSwc: {0}", Environment.TickCount - start);
@@ -157,6 +159,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private void LinkTypes()
         {
+			if (_assembly.Loader != null)
+			{
+				_assembly.Loader.TypeLoaded += OnTypeLoaded;
+				return;
+			}
+
             foreach (var type in _assembly.Types)
             {
 #if DEBUG
@@ -166,7 +174,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        public IType FindType(string fullname)
+	    private void OnTypeLoaded(object sender, TypeEventArgs e)
+	    {
+		    LinkType(e.Type);
+	    }
+
+		private void FireTypeLinked(IType type)
+		{
+			if (TypeLinked != null)
+			{
+				TypeLinked(this, new TypeEventArgs(type));
+			}
+		}
+
+	    public IType FindType(string fullname)
         {
             return AssemblyIndex.FindType(_assembly, fullname);
         }
@@ -190,6 +211,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         private void LinkType(IType type)
         {
             if (LinkInternalType(type)) return;
+
             if (IsLinked(type)) return;
 
             foreach (var attr in type.CustomAttributes)
@@ -234,6 +256,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                         return;
                 }
             }
+
+			FireTypeLinked(type);
         }
 
         private void LinkType(IType type, AbcInstance instance)
@@ -248,11 +272,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                     switch (instance.NameString)
                     {
                         case Const.AvmGlobalTypes.Object:
-                            AssemblyTag.Instance(_assembly).InstanceObject = instance;
+                            _assembly.CustomData().ObjectInstance = instance;
                             break;
 
                         case Const.AvmGlobalTypes.Error:
-                            AssemblyTag.Instance(_assembly).InstanceError = instance;
+                            _assembly.CustomData().ErrorInstance = instance;
                             break;
                     }
                 }
@@ -318,7 +342,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             LinkMethod(method, abcMethod);
         }
 
-        private void LinkMethod(IMethod method, AbcMethod abcMethod)
+        private static void LinkMethod(IMethod method, AbcMethod abcMethod)
         {
             if (abcMethod == null)
                 throw new InvalidOperationException("Unable to find method " + method);
@@ -409,12 +433,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             field.Tag = trait;
         }
 
-	    private static bool LinkInternalType(IType type)
+	    private bool LinkInternalType(IType type)
         {
             if (type.IsInternalType())
             {
                 var tag = new InternalType(type);
-                Debug.Assert(type.Tag == tag);
+
+	            type.Tag = tag;
+
+				FireTypeLinked(type);
+
                 return true;
             }
             return false;
@@ -423,14 +451,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 	    private void LinkGlobalType(IType type)
         {
             var tag = new GlobalType(type);
-            Debug.Assert(type.Tag == tag);
+
+		    type.Tag = tag;
+
             LinkMethods(type, null, true);
         }
 
 	    private void LinkVector(IType type, ICustomAttribute attr)
         {
-            var v = type.Tag as VectorType;
-            if (v != null) return;
+            var vectorType = type.Tag as VectorType;
+            if (vectorType != null) return;
 
             string param = VectorType.GetVectorParam(attr);
             if (param == null) return;
@@ -439,8 +469,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             if (paramType == null)
                 throw new InvalidOperationException(string.Format("Unable to find Vector param type: {0}", param));
 
-            v = new VectorType(type, paramType);
-            Debug.Assert(type.Tag == v);
+            vectorType = new VectorType(type, paramType);
+
+		    type.Tag = vectorType;
         }
 
 	    private AbcTrait GetTrait(ICustomAttributeProvider cp, IAbcTraitProvider owner)

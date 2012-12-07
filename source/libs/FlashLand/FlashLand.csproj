@@ -113,7 +113,7 @@
     <Compile Include="Core\AbcFileExtensions.cs" />
     <Compile Include="Core\AbcGenConfig.cs" />
     <Compile Include="Core\AssemblyIndex.cs" />
-    <Compile Include="Core\AssemblyTag.cs" />
+    <Compile Include="Core\AssemblyCustomData.cs" />
     <Compile Include="Core\Attrs.cs" />
     <Compile Include="Core\AvmBuiltinTypes.cs" />
     <Compile Include="Core\AvmConfig.cs" />
@@ -177,6 +177,7 @@
     <Compile Include="Core\Inlining\System.Diagnostics.Debugger.cs" />
     <Compile Include="Core\Inlining\System.Object.cs" />
     <Compile Include="Core\Inlining\System.String.cs" />
+    <Compile Include="Core\InternalAssemblyExtensions.cs" />
     <Compile Include="Core\InternalMethodExtensions.cs" />
     <Compile Include="Core\InternalTypeExtensions.cs" />
     <Compile Include="Core\LocaleExtensions.cs" />

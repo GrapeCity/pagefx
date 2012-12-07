@@ -164,6 +164,7 @@
     <Compile Include="JavaScript\MethodContext.cs" />
     <Compile Include="JavaScript\ObjectMethods.cs" />
     <Compile Include="JavaScript\TypeInfoBuilder.cs" />
+    <Compile Include="LoaderInternals\Collections\ArgumentList.cs" />
     <Compile Include="LoaderInternals\Collections\CustomAttributes.cs" />
     <Compile Include="LoaderInternals\Collections\EventList.cs" />
     <Compile Include="LoaderInternals\Collections\FieldList.cs" />

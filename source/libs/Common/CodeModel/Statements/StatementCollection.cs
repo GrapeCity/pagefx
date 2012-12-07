@@ -37,12 +37,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Statements
             }
         }
 
-    	public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Statement; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return this.Cast<ICodeNode>(); }
         }
@@ -107,12 +102,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Statements
             }
         }
 
-    	public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Statement; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return this.Cast<ICodeNode>(); }
         }

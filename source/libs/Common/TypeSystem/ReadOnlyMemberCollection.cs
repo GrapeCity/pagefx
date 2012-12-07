@@ -42,12 +42,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return _members.GetEnumerator();
         }
 
-    	public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.TypeMembers; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return _members.Cast<ICodeNode>(); }
         }

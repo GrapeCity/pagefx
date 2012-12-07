@@ -4,7 +4,7 @@ using DataDynamics.PageFX.FlashLand.Abc;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
-    internal class VectorType : IVectorType
+    internal sealed class VectorType : IVectorType
     {
         public VectorType(IType type, IType param)
         {
@@ -13,49 +13,36 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
             if (param == null)
                 throw new ArgumentNullException("param");
 
-            _type = type;
-            _param = param;
+            Type = type;
+            Param = param;
 
             type.Tag = this;
         }
 
-        public AbcFile ABC
-        {
-            get { return _abc; }
-            set { _abc = value; }
-        }
-        AbcFile _abc;
+	    public AbcFile ByteCode { get; set; }
 
-        public IType Type
-        {
-            get { return _type; }
-        }
-        readonly IType _type;
+	    public IType Type { get; private set; }
 
-        public IType Param
-        {
-            get { return _param; }
-        }
-        readonly IType _param;
+	    public IType Param { get; private set; }
 
-        public AbcMultiname Name
+	    public AbcMultiname Name
         {
             get 
             {
                 if (_name == null)
                 {
-                    _abc.generator.DefineType(_param);
-                    var paramType = _param.GetMultiname();
-                    _name = _abc.DefineVectorTypeName(paramType);
+                    ByteCode.generator.DefineType(Param);
+                    var paramType = Param.GetMultiname();
+                    _name = ByteCode.DefineVectorTypeName(paramType);
                 }
                 return _name;
             }
         }
-        AbcMultiname _name;
+        private AbcMultiname _name;
 
         public override string ToString()
         {
-            return _type + ".<" + _param + ">";
+            return Type + ".<" + Param + ">";
         }
 
         public static string GetVectorParam(IType type)

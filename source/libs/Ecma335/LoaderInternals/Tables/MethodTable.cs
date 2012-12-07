@@ -56,7 +56,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			if (entryPoint.Table == TableId.MethodDef && entryPoint.Index - 1 == index)
 			{
 				method.IsEntryPoint = true;
-				Loader.Assembly.EntryPoint = method;
 			}
 
 			var sigBlob = row[Schema.MethodDef.Signature].Blob;

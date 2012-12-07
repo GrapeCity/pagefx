@@ -259,9 +259,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         #region InitPrerequisites
         void InitPrerequisites()
         {
-            var tag = AssemblyTag.Instance(_assembly);
-            tag.SWF = _swf;
+	        _assembly.CustomData().SWF = _swf;
+
             AssemblyIndex.Setup(_assembly);
+
             LinkRsls();
         }
 
@@ -295,13 +296,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
                 }
                 else
                 {
-                    var tag = AssemblyTag.Instance(asm);
-                    tag.RSL = rsl;
-                    if (tag.SWC == null)
+                    var data = asm.CustomData();
+
+                    data.RSL = rsl;
+
+                    if (data.SWC == null)
                         throw Errors.RSL.SwcIsNotResolved.CreateException(rsl.LocalPath);
 
-                    tag.SWC.RSL = rsl;
-                    rsl.Swc = tag.SWC;
+                    data.SWC.RSL = rsl;
+
+                    rsl.Swc = data.SWC;
                 }
             }
         }
@@ -389,7 +393,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
                     throw Errors.Internal.CreateException();
                 _frameMX = value;
                 AbcFrames.Add(value);
-                AssemblyTag.Instance(_assembly).AddAbc(value);
+                _assembly.CustomData().AddAbc(value);
             }
         }
         AbcFile _frameMX;

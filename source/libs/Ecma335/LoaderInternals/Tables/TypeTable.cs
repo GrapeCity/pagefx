@@ -117,6 +117,11 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 		#endregion
 
+		protected override void OnLoaded(IType item)
+		{
+			Loader.FireTypeLoaded(item);
+		}
+
 		protected override IType ParseRow(MetadataRow row, int index)
 		{
 			var flags = (TypeAttributes)row[Schema.TypeDef.Flags].Value;
@@ -356,11 +361,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
 			return SyntaxFormatter.Format(this, format, formatProvider);
-		}
-
-		public CodeNodeType NodeType
-		{
-			get { return CodeNodeType.Types; }
 		}
 
 		public IEnumerable<ICodeNode> ChildNodes

@@ -55,7 +55,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
     public interface IAbcFileSubject
     {
-        AbcFile ABC { get; set; }
+        AbcFile ByteCode { get; set; }
     }
 
     public interface IImportable

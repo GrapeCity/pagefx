@@ -67,8 +67,8 @@ namespace DataDynamics.PageFX.Common.Collections
 					while (count < _list.Count)
 						yield return _list[count++];
 
-					
-					if (_enumerator == null || !_enumerator.MoveNext()) break;
+					if (_enumerator == null || !_enumerator.MoveNext())
+						break;
 
 					lock (Sync)
 					{

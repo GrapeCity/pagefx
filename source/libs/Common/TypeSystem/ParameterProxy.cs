@@ -38,11 +38,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return SyntaxFormatter.Format(this, format, formatProvider);
 		}
 
-		public CodeNodeType NodeType
-		{
-			get { return CodeNodeType.Parameter; }
-		}
-
 		public IEnumerable<ICodeNode> ChildNodes
 		{
 			get { return null; }

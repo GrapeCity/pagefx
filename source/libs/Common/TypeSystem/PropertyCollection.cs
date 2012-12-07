@@ -1,5 +1,4 @@
 using System;
-using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -10,12 +9,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
         }
 
-    	public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Properties; }
-        }
-
-        public object Tag { get; set; }
+	    public object Tag { get; set; }
 
     	public string ToString(string format, IFormatProvider formatProvider)
         {

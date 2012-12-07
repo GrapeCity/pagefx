@@ -155,12 +155,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (_superType == null)
                 {
-                    if (IsError)
-                        return _superType = AssemblyTag.AvmGlobalTypes.Object;
-
-                    var type = Type;
+	                var type = Type;
                     if (type != null)
                     {
+						if (IsError)
+						{
+							return _superType = type.Assembly.Corlib().CustomData().ObjectInstance;
+						}
+
                         var super = type.BaseType;
                         if (super != null)
                         {

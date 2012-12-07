@@ -9,12 +9,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
 {
     public sealed class ExpressionCollection : List<IExpression>, IExpressionCollection
     {
-    	public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Expression; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return this.Cast<ICodeNode>(); }
         }

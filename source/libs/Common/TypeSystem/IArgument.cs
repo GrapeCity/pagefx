@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -42,8 +42,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         ITypeMember Member { get; set;  }
     }
 
-    public interface IArgumentCollection : IList<IArgument>, ICodeNode
+    public interface IArgumentCollection : IReadOnlyList<IArgument>, ICodeNode
     {
         IArgument this[string name] { get; }
+
+	    void Add(IArgument argument);
     }
 }

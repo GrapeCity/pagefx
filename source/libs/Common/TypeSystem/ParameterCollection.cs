@@ -17,11 +17,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			get { return Find(p => p.Name == name); }
 		}
 
-		public CodeNodeType NodeType
-		{
-			get { return CodeNodeType.Parameters; }
-		}
-
 		public IEnumerable<ICodeNode> ChildNodes
 		{
 			get { return this.Cast<ICodeNode>(); }
@@ -71,11 +66,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			public string ToString(string format, IFormatProvider formatProvider)
 			{
 				return "";
-			}
-
-			public CodeNodeType NodeType
-			{
-				get { return CodeNodeType.Parameters; }
 			}
 
 			public IEnumerable<ICodeNode> ChildNodes

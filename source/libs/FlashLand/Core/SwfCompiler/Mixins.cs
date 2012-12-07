@@ -56,9 +56,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
             _assembly.ProcessReferences(true, ImportMixins);
         }
 
-        private void ImportMixins(IAssembly ar)
+        private void ImportMixins(IAssembly assembly)
         {
-            var swc = AssemblyTag.Instance(ar).SWC;
+            var swc = assembly.CustomData().SWC;
             if (swc == null) return;
 
             foreach (var mixin in swc.AbcCache.Mixins)

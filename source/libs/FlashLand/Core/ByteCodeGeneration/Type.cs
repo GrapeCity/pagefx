@@ -32,7 +32,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var abcSubject = type.Tag as IAbcFileSubject;
             if (abcSubject != null)
             {
-                abcSubject.ABC = _abc;
+                abcSubject.ByteCode = _abc;
                 return abcSubject;
             }
 
@@ -64,7 +64,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             abcSubject = type.Tag as IAbcFileSubject;
             if (abcSubject != null)
-                abcSubject.ABC = _abc;
+                abcSubject.ByteCode = _abc;
 
             return type.Tag;
         }
@@ -307,7 +307,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             if (type.Is(SystemTypeCode.Exception))
             {
-                superType = AssemblyTag.AvmGlobalTypes.Error;
+                superType = type.Assembly.Corlib().CustomData().ErrorInstance;
                 superName = _abc.BuiltinTypes.Error;
                 return;
             }

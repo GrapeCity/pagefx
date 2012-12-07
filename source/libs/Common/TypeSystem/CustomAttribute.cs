@@ -11,8 +11,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public sealed class CustomAttribute : ICustomAttribute
     {
-        #region Constructors
-        public CustomAttribute()
+	    public CustomAttribute()
         {
         }
 
@@ -47,10 +46,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         	return type.Methods.FirstOrDefault(IsDeaultCtor);
         }
 
-    	#endregion
-
-        #region ICustomAttribute Members
-        /// <summary>
+	    /// <summary>
         /// Gets or sets type name.
         /// </summary>
         public string TypeName
@@ -80,9 +76,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public IArgumentCollection Arguments
         {
-            get { return _args; }
+            get { return _args ?? (_args = new ArgumentCollection()); }
+			set { _args = value; }
         }
-        private readonly ArgumentCollection _args = new ArgumentCollection();
+        private IArgumentCollection _args;
 
         public IArgumentCollection FixedArguments
         {
@@ -93,15 +90,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return new ArgumentCollection(_args.Where(a => a.IsNamed)); }
         }
-        #endregion
 
-        #region ICodeNode Members
-        public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Attribute; }
-        }
+	    #region ICodeNode Members
 
-        public IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return null; }
         }
@@ -121,17 +113,22 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region ICloneable Members
-        public object Clone()
-        {
-        	var attr = new CustomAttribute {Constructor = Constructor, Type = Type, _typeName = _typeName};
-        	foreach (var arg in _args)
-            {
-                var arg2 = (IArgument)arg.Clone();
-                attr._args.Add(arg2);
-            }
-            return attr;
-        }
-        #endregion
+
+	    public object Clone()
+	    {
+		    var attr = new CustomAttribute
+			    {
+				    Constructor = Constructor,
+				    Type = Type,
+				    _typeName = _typeName
+			    };
+		    var args = new ArgumentCollection();
+		    attr.Arguments = args;
+		    args.AddRange(_args.Select(arg => (IArgument)arg.Clone()));
+		    return attr;
+	    }
+
+	    #endregion
 
         #region Object Override Members
         public override string ToString()
@@ -140,70 +137,4 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
         #endregion
     }
-
-    public sealed class CustomAttributeCollection : List<ICustomAttribute>, ICustomAttributeCollection
-    {
-	    public ICustomAttribute[] this[IType type]
-        {
-            get { return this.Where(x => ReferenceEquals(x.Type, type)).ToArray(); }
-        }
-
-        public ICustomAttribute[] this[string typeFullName]
-        {
-            get { return this.Where(x => x.Type.FullName == typeFullName).ToArray(); }
-        }
-
-	    public CodeNodeType NodeType
-        {
-            get { return CodeNodeType.Attributes; }
-        }
-
-        public IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return this.Cast<ICodeNode>(); }
-        }
-
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Tag { get; set; }
-
-	    public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return SyntaxFormatter.Format(this, format, formatProvider);
-        }
-    }
-
-    public class CustomAttributeProvider : ICustomAttributeProvider
-    {
-        public ICustomAttributeCollection CustomAttributes
-        {
-            get { return _attributes ?? (_attributes = new CustomAttributeCollection()); }
-			set { _attributes = value; }
-        }
-        private ICustomAttributeCollection _attributes;
-
-		/// <summary>
-		/// Gets or sets value that identifies a metadata element. 
-		/// </summary>
-	    public int MetadataToken { get; set; }
-    }
-
-	public static class CustomAttributeProviderExtensions
-	{
-		public static ICustomAttribute FindAttribute(this ICustomAttributeProvider p, string fullname)
-		{
-			return p.CustomAttributes.FirstOrDefault(attr => attr.TypeName == fullname);
-		}
-
-		public static bool HasAttribute(this ICustomAttributeProvider p, string fullname)
-		{
-			return p.FindAttribute(fullname) != null;
-		}
-
-		public static bool HasAttribute(this ICustomAttributeProvider p, params string[] attrs)
-		{
-			return p.CustomAttributes.Any(attr => attrs.Contains(attr.TypeName));
-		}
-	}
 }
