@@ -125,7 +125,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var name = _abc.DefineGlobalQName(isTrue ? "__true__" : "__false__");
 
-            var retType = DefineReturnType(SysType(SystemTypeCode.Boolean));
+            var retType = DefineReturnType(SysTypes.Boolean);
 
             return instance.DefineStaticMethod(
                 name, retType,

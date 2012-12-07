@@ -112,8 +112,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			}
 		}
 
-		public IType Value { get; set; }
-
 		public override string ToString()
 		{
 			return Name;

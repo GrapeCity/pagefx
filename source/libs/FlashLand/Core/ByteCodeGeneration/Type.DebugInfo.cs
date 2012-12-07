@@ -2,6 +2,7 @@
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
 
 namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 {

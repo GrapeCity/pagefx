@@ -128,8 +128,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             {
                 if (_isMemberwiseCloneCompiled.HasValue)
                     return _isMemberwiseCloneCompiled.Value;
-	            var objectType = SysType(SystemTypeCode.Object);
-	            var m = objectType.Methods.Find("MemberwiseClone", 0);
+	            var m = SysTypes.Object.Methods.Find("MemberwiseClone", 0);
                 if (m == null)
                     throw new InvalidOperationException("Invalid corlib");
                 _isMemberwiseCloneCompiled = m.Tag is AbcMethod;
@@ -182,8 +181,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 		                const int arr = 1;
 		                const int varAttr = 2;
 
-		                var objectType = SysType(SystemTypeCode.Object);
-		                code.NewArray(arr, objectType, provider.CustomAttributes,
+		                code.NewArray(arr, SysTypes.Object, provider.CustomAttributes,
 		                              attr => NewAttribute(code, attr, varAttr));
 
 		                code.ReturnValue();

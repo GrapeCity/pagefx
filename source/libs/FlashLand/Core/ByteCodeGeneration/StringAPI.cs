@@ -146,8 +146,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var m = method.Tag as AbcMethod;
             if (m == null) return;
 
-	        var stringType = SysType(SystemTypeCode.String);
-	        var objectType = SysType(SystemTypeCode.Object);
+	        var stringType = SysTypes.String;
+	        var objectType = SysTypes.Object;
 	        var cmp = stringType.Methods.Find("CompareTo", objectType);
 
             if (cmp == null)

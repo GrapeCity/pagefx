@@ -7,14 +7,8 @@ namespace DataDynamics.PageFX.Common.Services
     #region class Corlib
     public static class Corlib
     {
-		//TODO: REMOVE THIS PROPERTY
-	    public static IAssembly Assembly
-	    {
-			get { return null; }
-	    }
-
 	    /// <summary>
-	    /// Finds corlib type
+	    /// Finds corlib type.
 	    /// </summary>
 	    /// <param name="assembly"></param>
 	    /// <param name="fullname"></param>

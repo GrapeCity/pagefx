@@ -13,6 +13,7 @@ using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
@@ -383,7 +384,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             string name = (item ? "get_item_"  : "get_elem_") + elemType.GetSigName();
             var elemTypeName = DefineReturnType(elemType);
-			var oppositeType = elemType.Is(SystemTypeCode.Int64) ? SysType(SystemTypeCode.UInt64) : SysType(SystemTypeCode.Int64);
+			var oppositeType = elemType.Is(SystemTypeCode.Int64) ? SysTypes.UInt64 : SysTypes.Int64;
             var oppositeTypeName = DefineReturnType(oppositeType);
 
             return instance.DefineInstanceMethod(
@@ -649,7 +650,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         public AbcMultiname GetObjectTypeName()
         {
-            return DefineAbcInstance(SysType(SystemTypeCode.Object)).Name;
+            return DefineAbcInstance(SysTypes.Object).Name;
         }
         #endregion
 

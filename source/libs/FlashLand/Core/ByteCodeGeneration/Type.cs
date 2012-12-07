@@ -318,7 +318,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 //NOTE: This fix explicit usage of Avm.Object as base class.
                 //In fact .NET developer will never use this class, or no need to use this class.
                 if (baseType.IsAvmObject())
-                    baseType = SysType(SystemTypeCode.Object);
+                    baseType = SysTypes.Object;
 
                 superName = DefineTypeName(baseType);
                 superType = baseType.Tag as AbcInstance;
@@ -478,7 +478,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region DefineArrayType
         private object DefineArrayType(IArrayType type)
         {
-            var arr = DefineType(SysType(SystemTypeCode.Array));
+            var arr = DefineType(SysTypes.Array);
             var elemType = type.ElementType;
             DefineType(elemType);
             return arr;

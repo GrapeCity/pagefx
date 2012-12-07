@@ -61,30 +61,31 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             var st = type.SystemType();
             if (st != null)
-                return DeclateSystemTypeVar(st, v);
+                return DeclateSystemTypeVar(type, st, v);
 
             switch (type.TypeKind)
             {
-                case TypeKind.Class:
-                case TypeKind.Interface:
-                case TypeKind.Delegate:
-                case TypeKind.Array:
-                    return SetNull(type, v);
+	            case TypeKind.Class:
+	            case TypeKind.Interface:
+	            case TypeKind.Delegate:
+	            case TypeKind.Array:
+		            return SetNull(type, v);
 
-                case TypeKind.Enum:
-                    {
-                        var vtype = type.ValueType;
-                        st = vtype.SystemType();
-                        return DeclateSystemTypeVar(st, v);
-                    }
+	            case TypeKind.Enum:
+		            return DeclateSystemTypeVar(type.ValueType, v);
 
-                case TypeKind.Struct:
-                    return SetValueType(type, v);
+	            case TypeKind.Struct:
+		            return SetValueType(type, v);
             }
-            return null;
+	        return null;
         }
 
-        private IInstruction[] DeclateSystemTypeVar(SystemType sysType, IVariable var)
+		private IInstruction[] DeclateSystemTypeVar(IType type, IVariable var)
+		{
+			return DeclateSystemTypeVar(type, type.SystemType(), var);
+		}
+
+        private IInstruction[] DeclateSystemTypeVar(IType type, SystemType sysType, IVariable var)
         {
             if (sysType == null)
                 throw new ArgumentNullException("sysType");
@@ -116,7 +117,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     {
                         throw new NotImplementedException();
                     }
-                    return SetValueType(sysType.Value, var);
+                    return SetValueType(type, var);
                 //return SetIntZero(var);
 
                 case SystemTypeCode.UInt64:
@@ -124,7 +125,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     {
                         throw new NotImplementedException();
                     }
-                    return SetValueType(sysType.Value, var);
+                    return SetValueType(type, var);
 
                 //return SetUIntZero(var);
 
@@ -133,13 +134,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     {
                         throw new NotImplementedException();
                     }
-                    return SetValueType(sysType.Value, var);
+                    return SetValueType(type, var);
 
                 case SystemTypeCode.DateTime:
-                    return SetValueType(sysType.Value, var);
+                    return SetValueType(type, var);
 
                 default:
-                    return SetNull(sysType.Value, var);
+                    return SetNull(type, var);
             }
         }
 

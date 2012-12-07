@@ -4,6 +4,7 @@ using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
@@ -71,9 +72,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 			get { return _generator.ApplicationAssembly; }
 	    }
 
-		private IType SysType(SystemTypeCode typeCode)
+	    private SystemTypesImpl SysTypes
 		{
-			return _generator.SysType(typeCode);
+			get { return _generator.SysTypes; }
 		}
         #endregion
 

@@ -119,12 +119,17 @@
     <Compile Include="Core\AvmConfig.cs" />
     <Compile Include="Core\AvmResolver.cs" />
     <Compile Include="Core\ByteCodeGeneration\Array.cs" />
+    <Compile Include="Core\ByteCodeGeneration\CorlibTypes\AssemblyTypeImpl.cs" />
+    <Compile Include="Core\ByteCodeGeneration\CorlibTypes\CompilerTypeImpl.cs" />
+    <Compile Include="Core\ByteCodeGeneration\CorlibTypes\ConsoleTypeImpl.cs" />
+    <Compile Include="Core\ByteCodeGeneration\CorlibTypes\ArrayTypeImpl.cs" />
     <Compile Include="Core\ByteCodeGeneration\Boxing.cs" />
     <Compile Include="Core\ByteCodeGeneration\CallResolving.cs" />
     <Compile Include="Core\ByteCodeGeneration\Casting.cs" />
     <Compile Include="Core\ByteCodeGeneration\Corlib.cs" />
     <Compile Include="Core\ByteCodeGeneration\Delegates.cs" />
     <Compile Include="Core\ByteCodeGeneration\EmbeddedAssets.cs" />
+    <Compile Include="Core\ByteCodeGeneration\CorlibTypes\EnvironmentTypeImpl.cs" />
     <Compile Include="Core\ByteCodeGeneration\Errors.cs" />
     <Compile Include="Core\ByteCodeGeneration\Field.cs" />
     <Compile Include="Core\ByteCodeGeneration\Initializers.cs" />
@@ -136,6 +141,7 @@
     <Compile Include="Core\ByteCodeGeneration\NUnit.cs" />
     <Compile Include="Core\ByteCodeGeneration\Object.GetHashCode.cs" />
     <Compile Include="Core\ByteCodeGeneration\ObjectAPI.cs" />
+    <Compile Include="Core\ByteCodeGeneration\CorlibTypes\ObjectTypeImpl.cs" />
     <Compile Include="Core\ByteCodeGeneration\Operators.cs" />
     <Compile Include="Core\ByteCodeGeneration\Pointers.cs" />
     <Compile Include="Core\ByteCodeGeneration\Reflection.cs" />
@@ -145,8 +151,10 @@
     <Compile Include="Core\ByteCodeGeneration\Scripts.cs" />
     <Compile Include="Core\ByteCodeGeneration\StaticCtors.cs" />
     <Compile Include="Core\ByteCodeGeneration\StringAPI.cs" />
+    <Compile Include="Core\ByteCodeGeneration\CorlibTypes\SystemTypesImpl.cs" />
     <Compile Include="Core\ByteCodeGeneration\Type.cs" />
     <Compile Include="Core\ByteCodeGeneration\Type.DebugInfo.cs" />
+    <Compile Include="Core\ByteCodeGeneration\CorlibTypes\TypeImpl.cs" />
     <Compile Include="Core\CodeProvider\Arrays.cs" />
     <Compile Include="Core\CodeProvider\Branching.cs" />
     <Compile Include="Core\CodeProvider\Calling.cs" />

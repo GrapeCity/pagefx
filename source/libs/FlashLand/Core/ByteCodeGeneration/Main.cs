@@ -6,6 +6,7 @@ using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
 using DataDynamics.PageFX.FlashLand.Core.SwfCompiler;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.FlashLand.IL;
@@ -132,31 +133,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			return ApplicationAssembly.FindSystemType(typeCode);
 		}
 
-	    private SysTypesImpl SysTypes
+	    internal SystemTypesImpl SysTypes
 	    {
-			get { return _systemTypes ?? (_systemTypes = new SysTypesImpl(this)); }
+			get { return _systemTypes ?? (_systemTypes = new SystemTypesImpl(ApplicationAssembly)); }
 	    }
-	    private SysTypesImpl _systemTypes;
-
-	    private class SysTypesImpl
-		{
-			private readonly AbcGenerator _generator;
-
-			public SysTypesImpl(AbcGenerator generator)
-			{
-				_generator = generator;
-			}
-
-			public IType Object
-			{
-				get { return _generator.SysType(SystemTypeCode.Object); }
-			}
-
-			public IType String
-			{
-				get { return _generator.SysType(SystemTypeCode.String); }
-			}
-		}
+	    private SystemTypesImpl _systemTypes;
 
 	    #region Generate - Entry Point
         public AbcFile Generate(IAssembly assembly)

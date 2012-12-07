@@ -3,9 +3,11 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
 
 namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 {
+	//TODO: make as independent part
 	internal partial class AbcGenerator
 	{
 		public IType GetType(CorlibTypeId id)
@@ -33,55 +35,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			return MakeInstance(GenericTypeId.IEnumerableT, arg);
 		}
 
-		#region Object Type
-
-		private sealed class ObjectTypeImpl
-		{
-			private readonly AbcGenerator _generator;
-
-			public ObjectTypeImpl(AbcGenerator generator)
-			{
-				_generator = generator;
-			}
-
-			public IType Type
-			{
-				get { return _generator.SysType(SystemTypeCode.Object); }
-			}
-
-			public AbcInstance Instance
-			{
-				get { return _generator.DefineAbcInstance(Type); }
-			}
-
-			public AbcMethod this[ObjectMethodId id]
-			{
-				get { return Methods[(int)id].Value; }
-			}
-
-			private LazyValue<AbcMethod>[] Methods
-			{
-				get
-				{
-					return _methods ?? (_methods
-					                    = new[]
-					                      	{
-					                      		_generator.LazyMethod(Type, "GetType"),
-					                      		_generator.LazyMethod(Type, "Equals", 1),
-					                      		_generator.LazyMethod(Type, "GetTypeId"),
-					                      		_generator.LazyMethod(Type, "NewHashCode")
-					                      	});
-				}
-			}
-
-			private LazyValue<AbcMethod>[] _methods;
-		}
-
 		private ObjectTypeImpl ObjectType
 		{
 			get { return _objectType ?? (_objectType = new ObjectTypeImpl(this)); }
 		}
-
 		private ObjectTypeImpl _objectType;
 
 		public AbcInstance GetObjectInstance()
@@ -94,54 +51,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			return ObjectType[id];
 		}
 
-		#endregion
-
-		#region System Type
-
-		private sealed class SystemTypeImpl
+		private TypeImpl SystemType
 		{
-			private readonly AbcGenerator _generator;
-			private LazyValue<AbcMethod>[] _methods;
-
-			public SystemTypeImpl(AbcGenerator generator)
-			{
-				_generator = generator;
-			}
-
-			private IType Type
-			{
-				get { return _generator.SysType(SystemTypeCode.Type); }
-			}
-
-			public AbcInstance Instance
-			{
-				get { return _generator.DefineAbcInstance(Type); }
-			}
-
-			public AbcMethod this[TypeMethodId id]
-			{
-				get { return Methods[(int)id].Value; }
-			}
-
-			private LazyValue<AbcMethod>[] Methods
-			{
-				get
-				{
-					return _methods ?? (_methods =
-					                    new[]
-					                    	{
-					                    		_generator.LazyMethod(Type, "get_ValueTypeKind")
-					                    	});
-				}
-			}
+			get { return _systemType ?? (_systemType = new TypeImpl(this)); }
 		}
-
-		private SystemTypeImpl SystemType
-		{
-			get { return _systemType ?? (_systemType = new SystemTypeImpl(this)); }
-		}
-
-		private SystemTypeImpl _systemType;
+		private TypeImpl _systemType;
 
 		public AbcInstance GetTypeInstance()
 		{
@@ -153,44 +67,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			return SystemType[id];
 		}
 
-		#endregion
-
-		#region Environment Type
-
-		private sealed class EnvironmentTypeImpl
-		{
-			private readonly AbcGenerator _generator;
-			private LazyValue<AbcMethod>[] _methods;
-
-			public EnvironmentTypeImpl(AbcGenerator generator)
-			{
-				_generator = generator;
-			}
-
-			public AbcMethod this[EnvironmentMethodId id]
-			{
-				get { return EnvironmentMethods[(int)id].Value; }
-			}
-
-			private LazyValue<AbcMethod>[] EnvironmentMethods
-			{
-				get
-				{
-					return _methods ?? (_methods =
-					                    new[]
-					                    	{
-					                    		_generator.LazyMethod(Type, "get_StackTrace")
-					                    	});
-				}
-			}
-
-			private IType Type
-			{
-				get { return _generator.CorlibTypes[CorlibTypeId.Environment]; }
-			}
-		}
-
-		private EnvironmentTypeImpl EnvironmentType
+		public EnvironmentTypeImpl EnvironmentType
 		{
 			get { return _environmentType ?? (_environmentType = new EnvironmentTypeImpl(this)); }
 		}
@@ -200,62 +77,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
 			return EnvironmentType[id];
         }
-        
-        #endregion
 
-        #region Array Type
-
-		private sealed class ArrayTypeImpl
-		{
-			private readonly AbcGenerator _generator;
-			private LazyValue<AbcMethod>[] _methods;
-
-			public ArrayTypeImpl(AbcGenerator generator)
-			{
-				_generator = generator;
-			}
-
-			private IType Type
-			{
-				get { return _generator.SysType(SystemTypeCode.Array); }
-			}
-
-			public AbcInstance Instance
-			{
-				get { return _generator.DefineAbcInstance(Type); }
-			}
-
-			public AbcMethod this[ArrayMethodId id]
-			{
-				get { return ArrayMethods[(int)id].Value; }
-			}
-
-			private LazyValue<AbcMethod>[] ArrayMethods
-			{
-				get
-				{
-					return _methods ?? (_methods =
-					                    new[]
-					                    	{
-					                    		_generator.LazyMethod(Type, "get_Length"),
-					                    		_generator.LazyMethod(Type, "GetElem", 1),
-					                    		_generator.LazyMethod(Type, "SetElem", 2),
-					                    		_generator.LazyMethod(Type, "GetItem", 1),
-					                    		_generator.LazyMethod(Type, "SetItem", 2),
-					                    		_generator.LazyMethod(Type, "ToFlatIndex", t => !t.IsArray),
-					                    		_generator.LazyMethod(Type, "IsCharArray"),
-					                    		_generator.LazyMethod(Type, "CastTo", 1),
-					                    		_generator.LazyMethod(Type, "HasElemType", 2),
-					                    		_generator.LazyMethod(Type, "Clear"),
-					                    		_generator.LazyMethod(Type, "IndexOf", 1),
-					                    		_generator.LazyMethod(Type, "Contains", 1),
-					                    		_generator.LazyMethod(Type, "CopyTo", 2)
-					                    	});
-				}
-			}
-		}
-
-		private ArrayTypeImpl ArrayType
+		public ArrayTypeImpl ArrayType
 		{
 			get { return _arrayType ?? (_arrayType = new ArrayTypeImpl(this)); }
 		}
@@ -271,49 +94,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             return ArrayType[id];
         }
 
-        #endregion
-
-        #region Assembly Type
-
-		private sealed class AssemblyTypeImpl
-		{
-			private readonly AbcGenerator _generator;
-			private LazyValue<AbcMethod>[] _methods;
-
-			public AssemblyTypeImpl(AbcGenerator generator)
-			{
-				_generator = generator;
-			}
-
-			public AbcInstance Instance
-			{
-				get { return _generator.GetInstance(CorlibTypeId.Assembly); }
-			}
-
-			public AbcMethod this[AssemblyMethodId id]
-			{
-				get { return AssemblyMethods[(int)id].Value; }
-			}
-
-			private LazyValue<AbcMethod>[] AssemblyMethods
-			{
-				get
-				{
-					return _methods ?? (_methods =
-					                    new[]
-					                    	{
-					                    		_generator.LazyMethod(Type, "GetType", 1)
-					                    	});
-				}
-			}
-
-			private IType Type
-			{
-				get { return _generator.CorlibTypes[CorlibTypeId.Assembly]; }
-			}
-		}
-
-		private AssemblyTypeImpl AssemblyType
+		internal AssemblyTypeImpl AssemblyType
 		{
 			get { return _assemblyType ?? (_assemblyType = new AssemblyTypeImpl(this)); }
 		}
@@ -329,51 +110,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             return AssemblyType[id];
         }
 
-        #endregion
-
-        #region Console Type
-
-		private sealed class ConsoleTypeImpl
-		{
-			private readonly AbcGenerator _generator;
-			private LazyValue<AbcMethod>[] _methods;
-
-			public ConsoleTypeImpl(AbcGenerator generator)
-			{
-				_generator = generator;
-			}
-
-			public AbcMethod this[ConsoleMethodId id]
-			{
-				get { return ConsoleMethods[(int)id].Value; }
-			}
-
-			private LazyValue<AbcMethod>[] ConsoleMethods
-			{
-				get
-				{
-					return _methods ?? (_methods =
-					                    new[]
-					                    	{
-					                    		_generator.LazyMethod(Type, "WriteLine", 0),
-					                    		_generator.LazyMethod(Type, "WriteLine", StringType),
-					                    		_generator.LazyMethod(Type, "OpenSW", 0),
-					                    		_generator.LazyMethod(Type, "CloseSW", 0)
-					                    	});
-				}
-			}
-
-			private IType Type
-			{
-				get { return _generator.GetType(CorlibTypeId.Console); }
-			}
-
-			private IType StringType
-			{
-				get { return _generator.SysType(SystemTypeCode.String); }
-			}
-		}
-
 		private ConsoleTypeImpl ConsoleType
 		{
 			get { return _consoleType ?? (_consoleType = new ConsoleTypeImpl(this)); }
@@ -384,10 +120,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             return ConsoleType[id];
         }
-    	
-        #endregion
 
-        #region Convert Methods
+		#region Convert Methods
 
         public AbcMethod GetMethod(ConvertMethodId id)
         {
@@ -425,61 +159,29 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         private void AddConvertMethods(ICollection<LazyValue<AbcMethod>> list, string name)
         {
             var type = GetType(CorlibTypeId.Convert);
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Boolean)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.UInt8)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Int8)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Char)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Int16)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.UInt16)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Int32)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.UInt32)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Int64)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.UInt64)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Single)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Double)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Decimal)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.String)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.Object)));
-            list.Add(LazyMethod(type, name, SysType(SystemTypeCode.DateTime)));
+            list.Add(LazyMethod(type, name, SysTypes.Boolean));
+            list.Add(LazyMethod(type, name, SysTypes.UInt8));
+            list.Add(LazyMethod(type, name, SysTypes.Int8));
+            list.Add(LazyMethod(type, name, SysTypes.Char));
+            list.Add(LazyMethod(type, name, SysTypes.Int16));
+            list.Add(LazyMethod(type, name, SysTypes.UInt16));
+            list.Add(LazyMethod(type, name, SysTypes.Int32));
+            list.Add(LazyMethod(type, name, SysTypes.UInt32));
+            list.Add(LazyMethod(type, name, SysTypes.Int64));
+            list.Add(LazyMethod(type, name, SysTypes.UInt64));
+            list.Add(LazyMethod(type, name, SysTypes.Single));
+            list.Add(LazyMethod(type, name, SysTypes.Double));
+            list.Add(LazyMethod(type, name, SysTypes.Decimal));
+            list.Add(LazyMethod(type, name, SysTypes.String));
+            list.Add(LazyMethod(type, name, SysTypes.Object));
+            list.Add(LazyMethod(type, name, SysTypes.DateTime));
         }
 
         #endregion
 
-        #region PageFX CompilerUtils Methods inside corlib
-
-		private sealed class CompilerTypeImpl
-		{
-			private readonly AbcGenerator _generator;
-			private LazyValue<AbcMethod>[] _methods;
-
-			public CompilerTypeImpl(AbcGenerator generator)
-			{
-				_generator = generator;
-			}
-
-			public AbcMethod this[CompilerMethodId id]
-			{
-				get { return CompilerMethods[(int)id].Value; }
-			}
-
-			private LazyValue<AbcMethod>[] CompilerMethods
-			{
-				get
-				{
-					return _methods ?? (_methods =
-					                    new[]
-					                    	{
-					                    		_generator.LazyMethod(Type, "ToArray", 1)
-					                    	});
-				}
-			}
-
-			private IType Type
-			{
-				get { return _generator.GetType(CorlibTypeId.CompilerUtils); }
-			}
-		}
-
+		/// <summary>
+		/// PageFX CompilerUtils Methods inside corlib
+		/// </summary>
 		private CompilerTypeImpl CompilerType
 		{
 			get { return _compilerType ?? (_compilerType = new CompilerTypeImpl(this)); }
@@ -490,10 +192,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             return CompilerType[id];
         }
-    	
-        #endregion
 
-        #region Fields
+		#region Fields
 
         public IField GetField(FieldId id)
         {
@@ -507,13 +207,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 if (_lazyFields != null)
                     return _lazyFields;
 
-	            var delegateType = SysType(SystemTypeCode.Delegate);
 	            _lazyFields = new[]
 		            {
 			            //Delegate Fields
-			            NewLazyField(delegateType, Const.Delegate.Target),
-			            NewLazyField(delegateType, Const.Delegate.Function),
-			            NewLazyField(SysType(SystemTypeCode.MulticastDelegate), Const.Delegate.Prev),
+			            NewLazyField(SysTypes.Delegate, Const.Delegate.Target),
+			            NewLazyField(SysTypes.Delegate, Const.Delegate.Function),
+			            NewLazyField(SysTypes.MulticastDelegate, Const.Delegate.Prev),
 
 			            NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.ClassImpl),
 			            NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.NameImpl),
@@ -545,69 +244,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #endregion
     }
 
-    #region Method IDs
-
-    #region ArrayMethodId
-    enum ArrayMethodId
-    {
-        GetLength,
-        GetElem,
-        SetElem,
-        GetItem,
-        SetItem,
-        ToFlatIndex,
-        IsCharArray,
-        CastTo,
-        HasElemType,
-        Clear,
-        IndexOf,
-        Contains,
-        CopyTo,
-    }
-    #endregion
-
-    #region ObjectMethodId
-    enum ObjectMethodId
-    {
-        GetType,
-        Equals,
-        GetTypeId,
-        NewHashCode
-    }
-    #endregion
-
-    #region TypeMethodId
-    enum TypeMethodId
-    {
-        ValueTypeKind,
-    }
-    #endregion
-
-    #region EnvironmentMethodId
-    enum EnvironmentMethodId
-    {
-        StackTrace,
-    }
-    #endregion
-
-    #region AssemblyMethodId
-    enum AssemblyMethodId
-    {
-        GetTypeById
-    }
-    #endregion
-
-    #region ConsoleMethodId
-    enum ConsoleMethodId
-    {
-        WriteLine,
-        WriteLine_String,
-        OpenSW,
-        CloseSW
-    }
-    #endregion
-
-    #region ConvertMethodId
+	#region ConvertMethodId
     enum ConvertMethodId
     {
         ToBool_bool,
@@ -835,16 +472,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
     }
     #endregion
 
-    #region CompilerMethodId
-    enum CompilerMethodId
-    {
-        ToArray,
-    }
-    #endregion
-
-    #endregion
-
-    #region enum FieldId
+	#region enum FieldId
     enum FieldId
     {
         Delegate_Target,

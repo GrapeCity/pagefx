@@ -31,15 +31,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	        Lookup = SysTypes.ToDictionary(x => x.Name, x => x);
         }
 
-        public static void Reset()
-        {
-            foreach (var type in Types)
-            {
-                type.Value = null;
-            }
-        }
-
-		public static SystemType Find(string name)
+        public static SystemType Find(string name)
 		{
 			SystemType type;
 			return Lookup.TryGetValue(name, out type) ? type : null;
@@ -98,14 +90,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             var tc = Type.GetTypeCode(type);
             if (tc == TypeCode.Object)
             {
-                //TODO:
-                foreach (var st in SysTypes)
-                {
-                    if (st.Value != null && st.Value.FullName == type.FullName)
-                    {
-                        return st.Value;
-                    }
-                }
+	            return assembly.GetReferences(false).Select(x => x.FindType(type.FullName)).FirstOrDefault(x => x != null);
             }
             return GetType(assembly, tc);
         }

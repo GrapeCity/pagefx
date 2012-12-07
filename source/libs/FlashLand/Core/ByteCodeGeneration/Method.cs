@@ -741,47 +741,47 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             return DefineAbcMethod(type, name, 0);
         }
 
-        private LazyValue<AbcMethod> LazyMethod(IType type, Func<IMethod,bool> p)
+        public LazyValue<AbcMethod> LazyMethod(IType type, Func<IMethod,bool> p)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, p));
         }
 
-		private LazyValue<AbcMethod> LazyMethod(IType type, string name, int argc)
+		public LazyValue<AbcMethod> LazyMethod(IType type, string name, int argc)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, argc));
         }
 
-		private LazyValue<AbcMethod> LazyMethod(IType type, string name)
+		public LazyValue<AbcMethod> LazyMethod(IType type, string name)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name));
         }
 
-		private LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1)
+		public LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1));
         }
 
-		private LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1, Func<IType, bool> arg2)
+		public LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1, Func<IType, bool> arg2)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2));
         }
 
-		private LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1, Func<IType, bool> arg2, Func<IType, bool> arg3)
+		public LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1, Func<IType, bool> arg2, Func<IType, bool> arg3)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2, arg3));
         }
 
-		private LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1)
+		public LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1));
         }
 
-		private LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2)
+		public LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2));
         }
 
-		private LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2, IType arg3)
+		public LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2, IType arg3)
         {
             return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2, arg3));
         }

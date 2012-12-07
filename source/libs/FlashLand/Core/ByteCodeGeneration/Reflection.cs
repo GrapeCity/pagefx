@@ -5,6 +5,7 @@ using System.Linq;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.FlashLand.IL;
 
@@ -281,7 +282,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var trait = AbcTrait.CreateMethod(method, name);
             instance.AddTrait(trait, false);
             method.ReturnType = _abc.BuiltinTypes.Void;
-            method.AddParam(CreateParam(SysType(SystemTypeCode.Type), "type"));
+            method.AddParam(CreateParam(SysTypes.Type, "type"));
 
             var body = new AbcMethodBody(method);
             AddMethod(method);

@@ -143,11 +143,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			SetTypeFlags(type, flags);
 			type.Module = Loader.MainModule;
 
-			if (sysType != null)
-			{
-				sysType.Value = type;
-			}
-
 			// to avoid problems with self refs in fields/methods,etc
 			row.Object = type;
 

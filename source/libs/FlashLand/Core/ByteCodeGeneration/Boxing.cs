@@ -1,5 +1,6 @@
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
@@ -169,8 +170,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         private void EnsureInt64Members()
         {
-            DefineAbcMethod(SysType(SystemTypeCode.Int64), "get_m_value", 0);
-            DefineAbcMethod(SysType(SystemTypeCode.UInt64), "get_m_value", 0);
+            DefineAbcMethod(SysTypes.Int64, "get_m_value", 0);
+            DefineAbcMethod(SysTypes.UInt64, "get_m_value", 0);
         }
 
         private static void TryUnboxNumber(AbcCode code, IType type)
