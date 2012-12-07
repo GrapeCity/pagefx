@@ -57,6 +57,5 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 				return assembly;
 			return assembly.GetReferences(true).FirstOrDefault(x => x.IsCorlib);
 		}
-		}
     }
 }
