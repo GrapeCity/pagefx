@@ -7,13 +7,15 @@ namespace DataDynamics.PageFX.Ecma335.Translation.Values
     {
         public IValue Obj;
         public IMethod Method;
+	    private readonly IType _type;
 
-        public Func(IMethod f)
+	    public Func(IMethod f, IType type)
         {
-            Method = f;
+	        Method = f;
+	        _type = type;
         }
 
-        public Func(IValue obj, IMethod f)
+	    public Func(IValue obj, IMethod f)
         {
             Obj = obj;
             Method = f;
@@ -21,7 +23,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation.Values
 
 	    public IType Type
         {
-            get { return SystemTypes.IntPtr; }
+			get { return _type; }
         }
 
         public ValueKind Kind

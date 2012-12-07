@@ -26,7 +26,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         public AbcInstance DefineRuntimeInstance()
         {
-            return DefineRuntimeInstance(Corlib.Assembly);
+            return DefineRuntimeInstance(ApplicationAssembly.Corlib());
         }
         #endregion
 

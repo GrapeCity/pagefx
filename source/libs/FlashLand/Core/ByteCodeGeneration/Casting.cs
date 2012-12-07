@@ -206,7 +206,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 return DefineCastMethod(type, AS, GetCastMethodName(type, me));
             }
 
-            var instance = DefineAbcInstance(SystemTypes.String);
+            var instance = DefineAbcInstance(SysType(SystemTypeCode.String));
             var name = GetAsMethodName(type, me);
 
             return instance.DefineStaticMethod(
@@ -428,7 +428,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region DefineCastToString
         public AbcMethod DefineCastToString()
         {
-            var instance = DefineAbcInstance(SystemTypes.String);
+            var instance = DefineAbcInstance(SysType(SystemTypeCode.String));
             return instance.DefineStaticMethod(
                 "cast_to_me", AvmTypeCode.String,
                 code =>

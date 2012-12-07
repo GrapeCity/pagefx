@@ -334,7 +334,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             //    instance.IsNative = true;
         }
 
-	    private static bool LinkEvent(IMethod method, AbcInstance instance)
+	    private bool LinkEvent(IMethod method, AbcInstance instance)
         {
             var e = method.Association as IEvent;
             if (e == null) return false;
@@ -370,12 +370,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             throw new NotImplementedException();
         }
 
-        private static string GetDelegateMethodName(bool add)
-        {
-            return SystemTypes.Delegate.GetMethodName(add
-                                          	? Const.Delegate.AddEventListeners
-                                          	: Const.Delegate.RemoveEventListeners, 2);
-        }
+	    private string GetDelegateMethodName(bool add)
+	    {
+		    var type = _assembly.FindSystemType(SystemTypeCode.Delegate);
+		    return type.GetMethodName(add
+			                              ? Const.Delegate.AddEventListeners
+			                              : Const.Delegate.RemoveEventListeners, 2);
+	    }
 
 	    private void LinkFields(IType type, AbcInstance instance)
         {

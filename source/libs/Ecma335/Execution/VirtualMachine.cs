@@ -25,6 +25,7 @@ namespace DataDynamics.PageFX.Ecma335.Execution
 		private readonly Dictionary<string, NativeInvoker> _nativeInvokers = new Dictionary<string, NativeInvoker>();
 
 		private readonly Stack<CallContext> _callStack = new Stack<CallContext>();
+		private IAssembly _assembly;
 
 		static VirtualMachine()
 		{
@@ -142,6 +143,8 @@ namespace DataDynamics.PageFX.Ecma335.Execution
 				throw new InvalidOperationException("The assembly is not executable. It is class library.");
 			}
 
+			_assembly = assembly;
+
 			object[] arguments = new object[] { args };
 
 			GetClass(method.DeclaringType);
@@ -156,6 +159,11 @@ namespace DataDynamics.PageFX.Ecma335.Execution
 			}
 
 			return 0;
+		}
+
+		internal IType ResolveSystemType(SystemTypeCode typeCode)
+		{
+			return _assembly.FindSystemType(typeCode);
 		}
 
 		private Class GetClass(IType type)
@@ -843,106 +851,106 @@ namespace DataDynamics.PageFX.Ecma335.Execution
 				#region conversion instructions
 				//TODO: IntPtr, UIntPtr is not supported
 				case InstructionCode.Conv_I1:
-					ConvertTo(context, SystemTypes.Int8, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int8), false, false);
 					break;
 				case InstructionCode.Conv_I2:
-					ConvertTo(context, SystemTypes.Int16, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int16), false, false);
 					break;
 				case InstructionCode.Conv_I4:
-					ConvertTo(context, SystemTypes.Int32, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int32), false, false);
 					break;
 				case InstructionCode.Conv_I8:
-					ConvertTo(context, SystemTypes.Int64, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int64), false, false);
 					break;
 				case InstructionCode.Conv_R4:
-					ConvertTo(context, SystemTypes.Float32, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Single), false, false);
 					break;
 				case InstructionCode.Conv_R8:
-					ConvertTo(context, SystemTypes.Float64, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Double), false, false);
 					break;
 
 				case InstructionCode.Conv_U1:
-					ConvertTo(context, SystemTypes.UInt8, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt8), false, false);
 					break;
 				case InstructionCode.Conv_U2:
-					ConvertTo(context, SystemTypes.UInt16, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt16), false, false);
 					break;
 				case InstructionCode.Conv_U4:
-					ConvertTo(context, SystemTypes.UInt32, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt32), false, false);
 					break;
 				case InstructionCode.Conv_U8:
-					ConvertTo(context, SystemTypes.UInt64, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt64), false, false);
 					break;
 
 				case InstructionCode.Conv_Ovf_I1_Un:
-					ConvertTo(context, SystemTypes.Int8, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int8), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_I2_Un:
-					ConvertTo(context, SystemTypes.Int16, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int16), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_I4_Un:
-					ConvertTo(context, SystemTypes.Int32, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int32), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_I8_Un:
-					ConvertTo(context, SystemTypes.Int64, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int64), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_U1_Un:
-					ConvertTo(context, SystemTypes.UInt8, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt8), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_U2_Un:
-					ConvertTo(context, SystemTypes.UInt16, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt16), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_U4_Un:
-					ConvertTo(context, SystemTypes.UInt32, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt32), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_U8_Un:
-					ConvertTo(context, SystemTypes.UInt64, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt64), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_I_Un:
-					ConvertTo(context, SystemTypes.NativeInt, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int32), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_U_Un:
-					ConvertTo(context, SystemTypes.NativeUInt, true, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt32), true, true);
 					break;
 				case InstructionCode.Conv_Ovf_I1:
-					ConvertTo(context, SystemTypes.Int8, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int8), true, false);
 					break;
 				case InstructionCode.Conv_Ovf_U1:
-					ConvertTo(context, SystemTypes.UInt8, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt8), true, false);
 					break;
 				case InstructionCode.Conv_Ovf_I2:
-					ConvertTo(context, SystemTypes.Int16, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int16), true, false);
 					break;
 				case InstructionCode.Conv_Ovf_U2:
-					ConvertTo(context, SystemTypes.UInt16, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt16), true, false);
 					break;
 				case InstructionCode.Conv_Ovf_I4:
-					ConvertTo(context, SystemTypes.Int32, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int32), true, false);
 					break;
 				case InstructionCode.Conv_Ovf_U4:
-					ConvertTo(context, SystemTypes.UInt32, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt32), true, false);
 					break;
 				case InstructionCode.Conv_Ovf_I8:
-					ConvertTo(context, SystemTypes.Int64, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int64), true, false);
 					break;
 				case InstructionCode.Conv_Ovf_U8:
-					ConvertTo(context, SystemTypes.UInt64, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt64), true, false);
 					break;
 
 				case InstructionCode.Conv_I:
-					ConvertTo(context, SystemTypes.NativeInt, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int32), false, false);
 					break;
 				case InstructionCode.Conv_Ovf_I:
-					ConvertTo(context, SystemTypes.NativeInt, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Int32), true, false);
 					break;
 				case InstructionCode.Conv_Ovf_U:
-					ConvertTo(context, SystemTypes.NativeUInt, true, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt32), true, false);
 					break;
 				case InstructionCode.Conv_U:
-					ConvertTo(context, SystemTypes.NativeUInt, false, false);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.UInt32), false, false);
 					break;
 				case InstructionCode.Conv_R_Un:
-					ConvertTo(context, SystemTypes.Float32, false, true);
+					ConvertTo(context, ResolveSystemType(SystemTypeCode.Single), false, true);
 					break;
 				#endregion
 

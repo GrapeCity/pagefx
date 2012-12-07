@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 code.GetLocal(i + 1);
                 code.PushInt(0);
                 var br = code.If(BranchOperator.GreaterThanOrEqual);
-                code.ThrowException(Corlib.Types.ArgumentOutOfRangeException);
+                code.ThrowException(Corlib.Types.ArgumentOutOfRangeException(ApplicationAssembly));
                 br.BranchTarget = code.Label();
             }
 
@@ -383,7 +383,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             string name = (item ? "get_item_"  : "get_elem_") + elemType.GetSigName();
             var elemTypeName = DefineReturnType(elemType);
-            var oppositeType = elemType.Is(SystemTypeCode.Int64) ? SystemTypes.UInt64 : SystemTypes.Int64;
+			var oppositeType = elemType.Is(SystemTypeCode.Int64) ? SysType(SystemTypeCode.UInt64) : SysType(SystemTypeCode.Int64);
             var oppositeTypeName = DefineReturnType(oppositeType);
 
             return instance.DefineInstanceMethod(
@@ -634,7 +634,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 return _nspfx;
             }
         }
-        AbcNamespace _nspfx;
+        private AbcNamespace _nspfx;
 
         public AbcMultiname DefinePfxName(string name, bool member)
         {
@@ -649,7 +649,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         public AbcMultiname GetObjectTypeName()
         {
-            return DefineAbcInstance(SystemTypes.Object).Name;
+            return DefineAbcInstance(SysType(SystemTypeCode.Object)).Name;
         }
         #endregion
 

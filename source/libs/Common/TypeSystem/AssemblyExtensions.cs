@@ -50,5 +50,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     		        where name.Contains(subname)
     		        select resource).FirstOrDefault();
     	}
+
+		public static IAssembly Corlib(this IAssembly assembly)
+		{
+			if (assembly.IsCorlib)
+				return assembly;
+			return assembly.GetReferences(true).FirstOrDefault(x => x.IsCorlib);
+		}
     }
 }

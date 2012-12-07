@@ -6,9 +6,12 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript.Inlining
 	{
 		private static void GetBytesImpl(MethodContext context, JsBlock code, string encodeFunc)
 		{
-			context.Host.CompileClass(SystemTypes.Array);
-			context.Host.CompileClass(SystemTypes.Byte);
-			context.Host.RegisterArrayType(SystemTypes.Byte);
+			var arrayType = context.ResolveSystemType(SystemTypeCode.Array);
+			var elementType = context.ResolveSystemType(SystemTypeCode.UInt8);
+
+			context.Host.CompileClass(arrayType);
+			context.Host.CompileClass(elementType);
+			context.Host.RegisterArrayType(elementType);
 
 			var arg = context.Method.JsArgs()[0];
 			code.Add("$toSystemByteArray".Id().Call(encodeFunc.Id().Call(arg)).Return());

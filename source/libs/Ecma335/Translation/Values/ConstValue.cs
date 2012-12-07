@@ -6,16 +6,13 @@ namespace DataDynamics.PageFX.Ecma335.Translation.Values
 {
     internal sealed class ConstValue : IValue
     {
-        readonly IType _type;
+        private readonly IType _type;
         public readonly object Value;
 
-        public ConstValue(object value)
+        public ConstValue(object value, IType type)
         {
             Value = value;
-
-			// TODO: pass type to ctor
-            if (value != null)
-                _type = SystemTypes.GetType(value);
+	        _type = type;
         }
 
         public IType Type

@@ -6,6 +6,11 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 {
 	internal static class CastingOperations
 	{
+		public static IType ResolveSystemType(this Code code, SystemTypeCode typeCode)
+		{
+			return code.Method.DeclaringType.FindSystemType(typeCode);
+		}
+
 		public static Code CastWithSwap(this Code code, IType source, IType target, bool swap)
 		{
 			if (ReferenceEquals(target, source))
@@ -158,8 +163,9 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 		public static Code CastToInt32(this Code code, ref IType type)
 		{
-			code.Cast(type, SystemTypes.Int32);
-			type = SystemTypes.Int32;
+			var target = code.ResolveSystemType(SystemTypeCode.Int32);
+			code.Cast(type, target);
+			type = target;
 			return code;
 		}
 	}

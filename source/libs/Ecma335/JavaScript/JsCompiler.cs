@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 		private JsProgram _program;
 		private readonly HashList<IType, IType> _constructedTypes = new HashList<IType, IType>(x => x);
 
-		internal readonly CorlibTypeCache CorlibTypes = new CorlibTypeCache();
+		internal readonly CorlibTypeCache CorlibTypes;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="JsCompiler"/> class.
@@ -38,6 +38,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				throw new NotSupportedException("Class library is not supported yet!");
 
 			_assembly = assembly;
+			CorlibTypes = new CorlibTypeCache(assembly);
 		}
 
 		/// <summary>
@@ -50,6 +51,16 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				throw new ArgumentNullException("assemblyFile");
 
 			_assembly = CommonLanguageInfrastructure.Deserialize(assemblyFile.FullName, null);
+		}
+
+		internal IType ResolveSystemType(SystemTypeCode typeCode)
+		{
+			return _assembly.FindSystemType(typeCode);
+		}
+
+		internal IType ObjectType
+		{
+			get { return ResolveSystemType(SystemTypeCode.Object); }
 		}
 
 		public void Compile(FileInfo output)
@@ -74,10 +85,10 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			CompileClass(CorlibTypes[CorlibTypeId.NullReferenceException]);
 			CompileClass(CorlibTypes[CorlibTypeId.InvalidCastException]);
 			CompileClass(CorlibTypes[CorlibTypeId.NotImplementedException]);
-			CompileClass(Corlib.FindType("System.IndexOutOfRangeException"));
+			CompileClass(Corlib.FindType(_assembly, "System.IndexOutOfRangeException"));
 
 			// build types
-			CompileClass(SystemTypes.Type);
+			CompileClass(ResolveSystemType(SystemTypeCode.Type));
 			
 
 			new TypeInfoBuilder(this, _program).Build();
@@ -399,16 +410,18 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 		{
 			var hi = (int)(value >> 32);
 			var lo = (uint)(value & 0xffffffff);
-			CompileClass(SystemTypes.Int64);
-			return SystemTypes.Int64.New(hi, lo);
+			var type = ResolveSystemType(SystemTypeCode.Int64);
+			CompileClass(type);
+			return type.New(hi, lo);
 		}
 
 		internal object CompileUInt64(ulong value)
 		{
 			var hi = (uint)(value >> 32);
 			var lo = (uint)(value & 0xffffffff);
-			CompileClass(SystemTypes.UInt64);
-			return SystemTypes.UInt64.New(hi, lo);
+			var type = ResolveSystemType(SystemTypeCode.UInt64);
+			CompileClass(type);
+			return type.New(hi, lo);
 		}
 
 		private object CompileInstruction(MethodContext context, Instruction i)
@@ -490,7 +503,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 				case InstructionCode.Ldstr:
 					// string should be compiled to be ready for Object method calls.
-					CompileClass(SystemTypes.String);
+					CompileClass(ResolveSystemType(SystemTypeCode.String));
 					return value;
 
 				case InstructionCode.Call:
@@ -887,7 +900,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 			var = context.Vars.Add(key, info);
 
-			CompileClass(SystemTypes.Array);
+			CompileClass(ResolveSystemType(SystemTypeCode.Array));
 			CompileType(elemType);
 
 			return var.Id();
@@ -1083,7 +1096,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			if (type.IsArray)
 			{
 				CompileType(type.GetElementType());
-				return CompileClass(SystemTypes.Array);
+				return CompileClass(ResolveSystemType(SystemTypeCode.Array));
 			}
 
 			return CompileClass(type);
@@ -1105,7 +1118,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			}
 
 			var baseType = type.BaseType;
-			var baseClass = CompileClass(baseType.Is(SystemTypeCode.ValueType) || type.IsEnum ? SystemTypes.Object : baseType);
+			var baseClass = CompileClass(baseType.Is(SystemTypeCode.ValueType) || type.IsEnum ? ObjectType : baseType);
 
 			if (string.IsNullOrEmpty(type.Namespace))
 				_program.DefineNamespace("$global");
@@ -1176,7 +1189,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 			if (isEnumOrStruct)
 			{
-				foreach (var id in objectMethods.Where(id => ObjectMethods.Find(id).Tag != null))
+				foreach (var id in objectMethods.Where(id => ObjectMethods.Find(ObjectType, id).Tag != null))
 				{
 					CompileMethod(klass, id);
 				}

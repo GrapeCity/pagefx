@@ -57,7 +57,8 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript.Inlining
 		[InlineImpl("WriteLine", ArgCount = 1, ArgTypes = new[] { "Object" })]
 		public static void WriteLine_Object(MethodContext context, JsBlock code)
 		{
-			var toString = SystemTypes.Object.Methods.Find("ToString").First();
+			var objectType = context.ResolveSystemType(SystemTypeCode.Object);
+			var toString = objectType.Methods.Find("ToString").First();
 			context.Host.CompileCallMethod(toString);
 
 			var arg = context.Method.JsArgs()[0];

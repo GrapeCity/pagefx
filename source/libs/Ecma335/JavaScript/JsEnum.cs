@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 					JsStruct.Compile(compiler, klass, id);
 					break;
 				case ObjectMethodId.GetHashCode:
-					CompileGetHashCode(klass);
+					CompileGetHashCode(compiler, klass);
 					break;
 				case ObjectMethodId.ToString:
 					CompileToString(compiler, klass);
@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			}
 		}
 
-		private static void CompileGetHashCode(JsClass klass)
+		private static void CompileGetHashCode(JsCompiler compiler, JsClass klass)
 		{
 			var type = klass.Type;
 			var func = new JsFunction(null);
@@ -45,7 +45,8 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			}
 			else if (!type.ValueType.Is(SystemTypeCode.Int32))
 			{
-				func.Body.Add("$conv".Id().Call(value, type.ValueType.JsTypeCode(), SystemTypes.Int32.JsTypeCode()).Return());
+				var int32Type = compiler.ResolveSystemType(SystemTypeCode.Int32);
+				func.Body.Add("$conv".Id().Call(value, type.ValueType.JsTypeCode(), int32Type.JsTypeCode()).Return());
 			}
 			else
 			{

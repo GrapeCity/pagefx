@@ -113,14 +113,15 @@ namespace DataDynamics.PageFX.Common.Services
             var castExp = e as ICastExpression;
             if (castExp != null && castExp.Operator == CastOperator.Cast)
             {
-                if (castExp.TargetType.Is(SystemTypeCode.UInt16))
+	            var targetType = castExp.TargetType;
+	            if (targetType.Is(SystemTypeCode.UInt16))
                 {
-                    castExp.TargetType = SystemTypes.Char;
+                    castExp.TargetType = targetType.FindSystemType(SystemTypeCode.Char);
                     return e;
                 }
             }
 
-            return e;
+		    return e;
         }
 
         public static IExpression FixConstant(IExpression e, IType type)

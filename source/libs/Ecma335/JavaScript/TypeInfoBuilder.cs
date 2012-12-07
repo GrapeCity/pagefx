@@ -62,7 +62,8 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			init.Body.Add(new JsText(string.Format("if (t != undefined) return t;")));
 
 			var t = "t".Id();
-			init.Body.Add(t.Set(SystemTypes.Type.New()));
+			var typeType = _host.ResolveSystemType(SystemTypeCode.Type);
+			init.Body.Add(t.Set(typeType.New()));
 			init.Body.Add(new JsText(string.Format("{0} = t;", prop)));
 
 			var description = Describe(type);

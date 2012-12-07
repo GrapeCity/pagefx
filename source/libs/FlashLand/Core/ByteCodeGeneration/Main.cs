@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.NUnit;
+using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.SwfCompiler;
@@ -71,6 +72,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         internal SwfCompilerImpl sfc;
 
         public AbcGenMode Mode;
+		public CorlibTypeCache CorlibTypes;
         #endregion
 
         #region Properties
@@ -125,7 +127,38 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         private AbcNamespace _nsroot;
         #endregion
 
-        #region Generate - Entry Point
+		internal IType SysType(SystemTypeCode typeCode)
+		{
+			return ApplicationAssembly.FindSystemType(typeCode);
+		}
+
+	    private SysTypesImpl SysTypes
+	    {
+			get { return _systemTypes ?? (_systemTypes = new SysTypesImpl(this)); }
+	    }
+	    private SysTypesImpl _systemTypes;
+
+	    private class SysTypesImpl
+		{
+			private readonly AbcGenerator _generator;
+
+			public SysTypesImpl(AbcGenerator generator)
+			{
+				_generator = generator;
+			}
+
+			public IType Object
+			{
+				get { return _generator.SysType(SystemTypeCode.Object); }
+			}
+
+			public IType String
+			{
+				get { return _generator.SysType(SystemTypeCode.String); }
+			}
+		}
+
+	    #region Generate - Entry Point
         public AbcFile Generate(IAssembly assembly)
         {
             if (assembly == null)
@@ -142,7 +175,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 #endif
             _assembly = assembly;
 
-            AssemblyIndex.Setup(assembly);
+			CorlibTypes = new CorlibTypeCache(assembly);
+
+			AssemblyIndex.Setup(assembly);
             Linker.Start(assembly);
 
             _abc = new AbcFile
@@ -224,7 +259,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #endregion
 
         #region BuildApp
-        void BuildApp()
+        private void BuildApp()
         {
 #if PERF
             int start = Environment.TickCount;

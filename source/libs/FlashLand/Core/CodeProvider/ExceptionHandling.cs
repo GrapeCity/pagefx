@@ -108,7 +108,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         static bool IsVesException(IType type)
         {
             if (type == null) return false;
-            if (type.Namespace == SystemTypes.Namespace)
+            if (type.Namespace == SystemType.Namespace)
             {
                 switch (type.Name)
                 {
@@ -203,7 +203,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 //var ifNotError = code.IfEquals();
 
                 code.GetLocal(var);
-                code.As(SystemTypes.Exception, true);
+                code.As(SysType(SystemTypeCode.Exception), true);
                 code.PushNull();
                 var ifExc = code.IfNotEquals();
 
@@ -260,7 +260,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         void CallToException(AbcCode code, int var)
         {
-            var avmErrors = Corlib.FindType("AvmErrors");
+            var avmErrors = Corlib.FindType(Assembly, "AvmErrors");
             EnsureType(avmErrors);
 
             var fromError = avmErrors.Methods.Find("ExceptionFromError", 1);
@@ -423,7 +423,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var code = new AbcCode(_abc);
             InsertExceptionBreak(code);
-            code.ThrowException(Corlib.Types.ExecutionEngineException, message);
+            code.ThrowException(Corlib.Types.ExecutionEngineException(Assembly), message);
             return code.ToArray();
         }
 
@@ -431,7 +431,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var code = new AbcCode(_abc);
             InsertExceptionBreak(code);
-            code.ThrowException(Corlib.Types.TypeLoadException, message);
+            code.ThrowException(Corlib.Types.TypeLoadException(Assembly), message);
             return code.ToArray();
         }
 

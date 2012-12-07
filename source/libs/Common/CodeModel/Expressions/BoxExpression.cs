@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
 
     	public override IType ResultType
         {
-            get { return SystemTypes.Object; }
+            get { return SourceType.FindSystemType(SystemTypeCode.Object); }
         }
 
     	public override string ToString()
@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
 
     	public IEnumerable<IType> GetTypeReferences()
         {
-            return new[] { SourceType, SystemTypes.Object };
+            return new[] { SourceType, ResultType };
         }
     }
 }

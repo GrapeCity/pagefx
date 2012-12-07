@@ -7,9 +7,9 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 {
 	internal static class ObjectMethods
 	{
-		public static IMethod Find(ObjectMethodId id)
+		public static IMethod Find(IType objectType, ObjectMethodId id)
 		{
-			return SystemTypes.Object.Methods.FirstOrDefault(x => x.Is(id));
+			return objectType.Methods.FirstOrDefault(x => x.Is(id));
 		}
 
 		public static bool IsGetType(this IMethod method)

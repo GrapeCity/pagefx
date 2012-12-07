@@ -1,76 +1,22 @@
-using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.Common.CodeModel.Expressions
 {
     public sealed class ConstExpression : Expression, IConstantExpression
     {
-    	public ConstExpression(object value)
-        {
-            Value = value;
-        }
+	    private readonly IType _resultType;
 
-    	public object Value { get; set; }
+	    public ConstExpression(object value, IType resultType)
+    	{
+    		_resultType = resultType;
+    		Value = value;
+    	}
+
+	    public object Value { get; set; }
 
     	public override IType ResultType
         {
-            get
-            {
-                if (Value == null)
-                    return SystemTypes.Object;
-
-                var code = Type.GetTypeCode(Value.GetType());
-                switch (code)
-                {
-                    case TypeCode.Object:
-                        return SystemTypes.Object;
-
-                    case TypeCode.Boolean:
-                        return SystemTypes.Boolean;
-
-                    case TypeCode.Char:
-                        return SystemTypes.Char;
-
-                    case TypeCode.SByte:
-                        return SystemTypes.SByte;
-
-                    case TypeCode.Byte:
-                        return SystemTypes.Byte;
-
-                    case TypeCode.Int16:
-                        return SystemTypes.Int16;
-
-                    case TypeCode.UInt16:
-                        return SystemTypes.UInt16;
-
-                    case TypeCode.Int32:
-                        return SystemTypes.Int32;
-
-                    case TypeCode.UInt32:
-                        return SystemTypes.UInt32;
-
-                    case TypeCode.Int64:
-                        return SystemTypes.Int64;
-
-                    case TypeCode.UInt64:
-                        return SystemTypes.UInt64;
-
-                    case TypeCode.Single:
-                        return SystemTypes.Single;
-
-                    case TypeCode.Double:
-                        return SystemTypes.Double;
-
-                    case TypeCode.Decimal:
-                        return SystemTypes.Decimal;
-
-                    case TypeCode.String:
-                        return SystemTypes.String;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
+            get { return _resultType; }
         }
 
     	public override bool Equals(object obj)

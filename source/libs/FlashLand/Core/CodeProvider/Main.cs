@@ -56,15 +56,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
         }
 
-        bool HasPseudoThis
+        private bool HasPseudoThis
         {
             get { return _asStatic && !_method.IsConstructor; }
         }
 
-        bool IsCtorAsStaticCall
+		private bool IsCtorAsStaticCall
         {
             get { return _method.IsConstructor && _asStatic; }
         }
+
+	    private IAssembly Assembly
+	    {
+			get { return _generator.ApplicationAssembly; }
+	    }
+
+		private IType SysType(SystemTypeCode typeCode)
+		{
+			return _generator.SysType(typeCode);
+		}
         #endregion
 
         #region Events

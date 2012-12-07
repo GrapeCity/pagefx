@@ -125,7 +125,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 code =>
                     {
 
-                        var m = DefineAbcMethod(SystemTypes.String, "CalcHashCode", 1);
+                        var m = DefineAbcMethod(SysType(SystemTypeCode.String), "CalcHashCode", 1);
 
                         code.Getlex(m);
                         code.LoadThis();
@@ -145,7 +145,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                             Const.Object.MethodGetTypeId,
                             DefineString_GetTypeId());
 
-                        code.ReturnTypeOf(SystemTypes.String);
+                        code.ReturnTypeOf(SysType(SystemTypeCode.String));
                     });
             #endregion
         }
@@ -163,7 +163,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 AvmTypeCode.Int32,
                 code =>
                 {
-                    code.PushTypeId(SystemTypes.String);
+                    code.PushTypeId(SysType(SystemTypeCode.String));
                     code.ReturnValue();
                 });
         }

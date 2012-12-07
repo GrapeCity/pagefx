@@ -13,7 +13,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
 
     	public override IType ResultType
         {
-            get { return SystemTypes.Int32; }
+            get { return Type.FindSystemType(SystemTypeCode.Int32); }
         }
 
     	public override bool Equals(object obj)

@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
             get
             {
                 if (Operator == CastOperator.Is)
-                    return SystemTypes.Boolean;
+                    return (SourceType ?? TargetType).FindSystemType(SystemTypeCode.Boolean);
                 return TargetType;
             }
         }

@@ -37,19 +37,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public override IType BaseType
         {
-            get
-            {
-                return SystemTypes.Array;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return ElementType.FindSystemType(SystemTypeCode.Array); }
+            set { throw new NotSupportedException(); }
         }
 
-        IType ImplType
+        private IType ImplType
         {
-            get { return SystemTypes.Array; }
+			get { return ElementType.FindSystemType(SystemTypeCode.Array); }
         }
 
         public override ITypeCollection Interfaces
@@ -177,6 +171,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region Utils
+
+		private static IType ResolveSystemType(IType arrayType, SystemTypeCode typeCode)
+		{
+			return arrayType.FindSystemType(typeCode);
+		}
+
         public static IMethod ResolveMethod(IType arrayType, IMethod method)
         {
             if (method.IsConstructor)
@@ -199,12 +199,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             var c2 = arrType.Constructors.FirstOrDefault(c => Signature.Equals(c.Parameters, method.Parameters));
             if (c2 != null) return c2;
 
-            var m = new Method
-            {
-                Name = CLRNames.Constructor,
-                Type = SystemTypes.Void,
-                DeclaringType = arrType
-            };
+	        var m = new Method
+		        {
+			        Name = CLRNames.Constructor,
+			        Type = ResolveSystemType(arrayType, SystemTypeCode.Void),
+			        DeclaringType = arrType
+		        };
 
             CopyParams(method, m);
 
@@ -301,7 +301,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                             Name = CLRNames.Array.Setter,
                             IsInternalCall = true,
                             DeclaringType = arrayType,
-                            Type = SystemTypes.Void,
+                            Type = ResolveSystemType(arrayType, SystemTypeCode.Void),
                         };
 
             int n = method.Parameters.Count;

@@ -93,10 +93,11 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
         public static bool IsStringInterface(this IType type)
         {
-            return SystemTypes.String.Implements(type);
+	        var stringType = type.FindSystemType(SystemTypeCode.String);
+	        return stringType.Implements(type);
         }
 
-        public static bool IsInternalType(this IType type)
+	    public static bool IsInternalType(this IType type)
         {
             if (String.IsNullOrEmpty(type.Namespace) && type.Name == "avm")
                 return true;

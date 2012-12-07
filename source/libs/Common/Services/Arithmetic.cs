@@ -14,6 +14,11 @@ namespace DataDynamics.PageFX.Common.Services
             return type;
         }
 
+		private static IType ResolveSystemType(IType left, IType right, SystemTypeCode typeCode)
+		{
+			return (left ?? right).FindSystemType(typeCode);
+		}
+
         public static IType GetResultType(IType left, IType right, BinaryOperator op)
         {
             left = GetValueType(left);
@@ -34,7 +39,7 @@ namespace DataDynamics.PageFX.Common.Services
                     {
                         var l = left.SystemType();
                         if (l.LessThenInt32)
-                            return SystemTypes.Int32;
+							return ResolveSystemType(left, right, SystemTypeCode.Int32);
                         return left;
                     }
             }
@@ -43,11 +48,11 @@ namespace DataDynamics.PageFX.Common.Services
                 var l = left.SystemType();
                 var r = right.SystemType();
                 if (l.IsDecimal || r.IsDecimal)
-                    return SystemTypes.Decimal;
+					return ResolveSystemType(left, right, SystemTypeCode.Decimal);
                 if (l.IsDouble || r.IsDouble)
-                    return SystemTypes.Double;
+					return ResolveSystemType(left, right, SystemTypeCode.Double);
                 if (l.IsSingle || r.IsSingle)
-                    return SystemTypes.Single;
+					return ResolveSystemType(left, right, SystemTypeCode.Single);
                 if (l.IsInt64 || l.IsUInt64)
                     return left;
                 if (r.IsInt64 || r.IsUInt64)
@@ -58,7 +63,7 @@ namespace DataDynamics.PageFX.Common.Services
                 //    return SystemTypes.Int32;
                 //if (l.IsUInt32 || r.IsUInt32)
                 //    return SystemTypes.UInt32;
-                return SystemTypes.Int32;
+				return ResolveSystemType(left, right, SystemTypeCode.Int32);
             }
         }
 
@@ -80,13 +85,13 @@ namespace DataDynamics.PageFX.Common.Services
                 if (st.IsUnsigned)
                 {
                     if (st.Size <= 4)
-                        return SystemTypes.Int32;
-                    return SystemTypes.Int64;
+                        return type.FindSystemType(SystemTypeCode.Int32);
+                    return type.FindSystemType(SystemTypeCode.Int64);
                 }
             }
 
             if (st.IsIntegral && st.Bits <= 32)
-                return SystemTypes.Int32;
+                return type.FindSystemType(SystemTypeCode.Int32);
 
             return type;
         }

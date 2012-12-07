@@ -19,4 +19,12 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			Method = method;
 		}
 	}
+
+	internal static class MethodContextExtensions
+	{
+		public static IType ResolveSystemType(this MethodContext context, SystemTypeCode typeCode)
+		{
+			return context.Method.DeclaringType.FindSystemType(typeCode);
+		}
+	}
 }

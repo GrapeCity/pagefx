@@ -92,7 +92,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 return;
             }
 
-            var convertType = Corlib.Types.Convert;
+            var convertType = Corlib.Types.Convert(ApplicationAssembly);
             var convertInstance = DefineAbcInstance(convertType);
 
             int paramCount = method.Parameters.Count;
@@ -146,7 +146,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var m = method.Tag as AbcMethod;
             if (m == null) return;
 
-            var cmp = SystemTypes.String.Methods.Find("CompareTo", SystemTypes.Object);
+	        var stringType = SysType(SystemTypeCode.String);
+	        var objectType = SysType(SystemTypeCode.Object);
+	        var cmp = stringType.Methods.Find("CompareTo", objectType);
 
             if (cmp == null)
                 throw new InvalidOperationException("String has no CompareTo(object) method");

@@ -52,6 +52,16 @@ namespace DataDynamics.PageFX.FlashLand.IL
             }
         }
 
+	    private IAssembly Assembly
+	    {
+			get { return Generator.ApplicationAssembly; }
+	    }
+
+		private IType SysType(SystemTypeCode typeCode)
+		{
+			return Assembly.FindSystemType(typeCode);
+		}
+
         /// <summary>
         /// Returns last instruction.
         /// </summary>
@@ -442,7 +452,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             //As(SystemTypes.Array);
             //return IfNotNullable();
-            var instance = DefineAbcInstance(SystemTypes.Array);
+            var instance = DefineAbcInstance(SysType(SystemTypeCode.Array));
             Is(instance);
             return IfTrue();
         }
@@ -451,7 +461,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             //As(SystemTypes.Array);
             //return IfNullable();
-            var instance = DefineAbcInstance(SystemTypes.Array);
+            var instance = DefineAbcInstance(SysType(SystemTypeCode.Array));
             Is(instance);
             return IfFalse();
         }
@@ -963,10 +973,10 @@ namespace DataDynamics.PageFX.FlashLand.IL
             code.LoadConstant(value);
         }
 
-    	private static IType GetArrayElementType(Array arr)
+    	private IType GetArrayElementType(Array arr)
         {
             var type = arr.GetType().GetElementType();
-            return SystemTypes.GetType(type);
+            return SystemTypes.GetType(Assembly, type);
         }
 
         /// <summary>
@@ -1024,7 +1034,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             }
             else
             {
-                CreateInstance(SystemTypes.Int64, true);
+                CreateInstance(SysType(SystemTypeCode.Int64), true);
                 Add(InstructionCode.Dup);
                 Add(InstructionCode.Dup);
                 ulong v = (ulong)value;
@@ -1044,7 +1054,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             }
             else
             {
-                CreateInstance(SystemTypes.UInt64, true);
+                CreateInstance(SysType(SystemTypeCode.UInt64), true);
                 Add(InstructionCode.Dup);
                 Add(InstructionCode.Dup);
                 PushUInt((uint)(value & 0xFFFFFFFF));
@@ -2715,22 +2725,22 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void ThrowNullReferenceException()
         {
-            ThrowIfNull(Corlib.Types.NullReferenceException);
+            ThrowIfNull(Corlib.Types.NullReferenceException(Assembly));
         }
         
         public void ThrowInvalidCastException()
         {
-            ThrowException(Corlib.Types.InvalidCastException);
+			ThrowException(Corlib.Types.InvalidCastException(Assembly));
         }
 
         public void ThrowNotSupportedException()
         {
-            ThrowException(Corlib.Types.NotSupportedException);
+			ThrowException(Corlib.Types.NotSupportedException(Assembly));
         }
 
         public void ThrowInvalidCastException(string message)
         {
-            ThrowException(Corlib.Types.InvalidCastException, message);
+			ThrowException(Corlib.Types.InvalidCastException(Assembly), message);
         }
 
         public void ThrowInvalidCastException(IType type)
@@ -2764,7 +2774,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="dup"></param>
         public void ThrowInvalidCastExcpetionIfType(IType type, bool native, bool dup)
         {
-            ThrowIfType(type, native, Corlib.Types.InvalidCastException, dup);
+			ThrowIfType(type, native, Corlib.Types.InvalidCastException(Assembly), dup);
         }
 
         /// <summary>
@@ -2793,7 +2803,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="dup"></param>
         public void ThrowInvalidCastExcpetionIfNotType(IType type, bool native, bool dup)
         {
-            ThrowIfNotType(type, native, Corlib.Types.InvalidCastException, dup);
+			ThrowIfNotType(type, native, Corlib.Types.InvalidCastException(Assembly), dup);
         }
 
         public void GetStaticFunction(AbcMethod method)

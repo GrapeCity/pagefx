@@ -39,7 +39,7 @@ namespace DataDynamics.PageFX
             if (type.TypeKind == TypeKind.Delegate) return false;
             if (type.IsInterface) return false;
             if (type.IsPfxSpecific()) return false;
-            if (type == SystemTypes.Void) return false;
+            if (type.Is(SystemTypeCode.Void)) return false;
             if (type.IsAttributeType()) return false;
             if (type.IsExceptionType()) return false;
 			if (ExcludedNamespaces.Contains(type.Namespace)) return false;

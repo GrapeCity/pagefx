@@ -101,6 +101,8 @@
     <Compile Include="IO\StreamExtensions.cs" />
     <Compile Include="IO\TextWriterExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="TypeSystem\SystemType.cs" />
+    <Compile Include="TypeSystem\SystemTypeCode.cs" />
     <Compile Include="Utilities\Tricks.cs" />
     <Compile Include="Tests\BitReaderTest.cs" />
     <Compile Include="Tests\BitWriterTest.cs" />
@@ -256,7 +258,6 @@
     <Compile Include="TypeSystem\SystemTypes.cs" />
     <Compile Include="Tools\TestRunnerGenerator.cs" />
     <Compile Include="TypeSystem\Type.cs" />
-    <Compile Include="Services\TypeBuilder.cs" />
     <Compile Include="TypeSystem\TypeCollection.cs" />
     <Compile Include="TypeSystem\TypeExtensions.cs" />
     <Compile Include="Services\TypeFactory.cs" />

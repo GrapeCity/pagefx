@@ -40,15 +40,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region Fields
-        List<string> _references = new List<string>();
-        readonly List<IAssembly> _refs = new List<IAssembly>();
-        List<AbcFile> _abcFiles = new List<AbcFile>();
-        readonly IAssembly _assembly;
-        XmlDocument _doc;
-        bool _xdoc;
-        CommandLine _cl;
-        bool _useFPAttrs;
-        float _fpVersion;
+        private List<string> _references = new List<string>();
+		private readonly List<IAssembly> _refs = new List<IAssembly>();
+		private List<AbcFile> _abcFiles = new List<AbcFile>();
+		private readonly IAssembly _assembly;
+		private XmlDocument _doc;
+		private bool _xdoc;
+		private CommandLine _cl;
+		private bool _useFPAttrs;
+		private float _fpVersion;
         #endregion
 
         #region ctor
@@ -111,6 +111,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
         #endregion
+
+		private IType SysType(SystemTypeCode typeCode)
+		{
+			return _assembly.FindSystemType(typeCode);
+		}
 
         #region LoadDocFile
         private bool LoadDocFile(string docpath)
@@ -585,10 +590,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         IType BuildTypeByName(AbcMultiname name)
         {
             if (IsAnyType(name))
-                return SystemTypes.Object;
+                return SysType(SystemTypeCode.Object);
 
             if (IsVoid(name))
-                return SystemTypes.Void;
+                return SysType(SystemTypeCode.Void);
 
             if (name.IsParameterizedType)
             {
@@ -667,7 +672,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         {
 			if (name.IsObject)
 			{
-				return SystemTypes.Object;
+				return SysType(SystemTypeCode.Object);
 			}
 
         	if (string.IsNullOrEmpty(name.NamespaceString))
@@ -676,13 +681,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         		switch (s)
         		{
         			case "Number":
-        				return SystemTypes.Double;
+        				return SysType(SystemTypeCode.Double);
         			case "int":
-        				return SystemTypes.Int32;
+        				return SysType(SystemTypeCode.Int32);
         			case "uint":
-        				return SystemTypes.UInt32;
+        				return SysType(SystemTypeCode.UInt32);
         			case "Boolean":
-        				return SystemTypes.Boolean;
+        				return SysType(SystemTypeCode.Boolean);
         		}
         	}
 
@@ -820,7 +825,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             {
                 if (instance.FullName == "Error")
                 {
-                    type.BaseType = SystemTypes.Exception;
+                    type.BaseType = SysType(SystemTypeCode.Exception);
                 }
                 else
                 {
@@ -1066,7 +1071,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                             Name = "Invoke",
                             IsStatic = false,
                             Visibility = Visibility.Public,
-                            Type = SystemTypes.Void
+                            Type = SysType(SystemTypeCode.Void)
                         };
             m.Parameters.Add(new Parameter(eventType, "e", 1));
             type.Members.Add(m);
@@ -1179,7 +1184,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
 
             method.IsStatic = isStatic;
-            method.Type = SystemTypes.Void;
+            method.Type = SysType(SystemTypeCode.Void);
 
             var docElem = FindCtorDocElem(abcMethod);
             method.Documentation = GetSummary(docElem);
@@ -1285,13 +1290,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             switch (name)
             {
                 case "int":
-                    return SystemTypes.Int32;
+                    return SysType(SystemTypeCode.Int32);
                 case "uint":
-                    return SystemTypes.UInt32;
+                    return SysType(SystemTypeCode.UInt32);
                 case "object":
-                    return SystemTypes.Object;
+                    return SysType(SystemTypeCode.Object);
                 case "double":
-                    return SystemTypes.Double;
+                    return SysType(SystemTypeCode.Double);
                 case "string":
                     return BuildTypeByName("String");
                 case "Function":
@@ -1309,13 +1314,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         //    return instance.FullName == name;
         //}
 
-        void BuildParams(AbcMethod method, IParameterCollection parameters, XmlNode methodElem)
+        private void BuildParams(AbcMethod method, IParameterCollection parameters, XmlNode methodElem)
         {
             if (method.IsSetter)
             {
                 if (IsDate(method.Instance))
                 {
-                    var p = new Parameter {Type = SystemTypes.Int32, Name = "value"};
+                    var p = new Parameter {Type = SysType(SystemTypeCode.Int32), Name = "value"};
                     parameters.Add(p);
                     return;
                 }
@@ -1382,7 +1387,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             if (i == 0 && HasThisObjectArgument(method))
             {
                 name = "thisObject";
-                type = SystemTypes.Object;
+                type = SysType(SystemTypeCode.Object);
             }
             else if (i == 0 && IsExternalInterfaceCall(method))
             {
@@ -1448,15 +1453,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             if (method.IsInitializer) //ctor
             {
                 if (i == 0)
-                    return CreateParam(SystemTypes.Int32, "length", pe);
+                    return CreateParam(SysType(SystemTypeCode.Int32), "length", pe);
                 if (i == 1)
-                    return CreateParam(SystemTypes.Boolean, "@fixed", pe);
+                    return CreateParam(SysType(SystemTypeCode.Boolean), "@fixed", pe);
                 throw new InvalidOperationException();
             }
 
             var t = method.Trait;
             if (t == null) return null;
-            switch (t.NameString)
+
+			var int32Type = SysType(SystemTypeCode.Int32);
+			switch (t.NameString)
             {
                 case "join":
                     {
@@ -1474,25 +1481,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                             return CreateParam(type, "searchElement", pe);
                         }
                         if (i == 1)
-                            return CreateParam(SystemTypes.Int32, "fromIndex", pe);
+                            return CreateParam(int32Type, "fromIndex", pe);
                         throw new InvalidOperationException();
                     }
 
                 case "slice":
                     {
                         if (i == 0)
-                            return CreateParam(SystemTypes.Int32, "startIndex", pe);
+                            return CreateParam(int32Type, "startIndex", pe);
                         if (i == 1)
-                            return CreateParam(SystemTypes.Int32, "endIndex", pe);
+                            return CreateParam(int32Type, "endIndex", pe);
                         throw new InvalidOperationException();
                     }
 
                 case "splice":
                     {
                         if (i == 0)
-                            return CreateParam(SystemTypes.Int32, "startIndex", pe);
+                            return CreateParam(int32Type, "startIndex", pe);
                         if (i == 1)
-                            return CreateParam(SystemTypes.UInt32, "deleteCount", pe);
+                            return CreateParam(SysType(SystemTypeCode.UInt32), "deleteCount", pe);
                         throw new InvalidOperationException();
                     }
 
@@ -1505,7 +1512,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                         if (i == 0)
                             return CreateParam(AvmFunction, "callback", pe);
                         if (i == 1)
-                            return CreateParam(SystemTypes.Object, "thisObject", pe);
+                            return CreateParam(SysType(SystemTypeCode.Object), "thisObject", pe);
                         throw new InvalidOperationException();
                     }
 
@@ -1544,14 +1551,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
                 case "push":
                 case "unshift":
-                    return SystemTypes.UInt32;
+                    return SysType(SystemTypeCode.UInt32);
 
                 case "indexOf":
                 case "lastIndexOf":
-                    return SystemTypes.Int32;
+                    return SysType(SystemTypeCode.Int32);
 
                 case "some":
-                    return SystemTypes.Boolean;
+                    return SysType(SystemTypeCode.Boolean);
             }
 
             return null;
@@ -1740,7 +1747,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
         #endregion
 
-        Parameter CreateRestParam(AbcMethod m, int paramNum, int i)
+        private Parameter CreateRestParam(AbcMethod m, int paramNum, int i)
         {
             string vparam = GetVectorTypeParam(m);
             if (vparam != null)
@@ -1752,7 +1759,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             else
             {
                 string name = GetRestPrefix(m) + i;
-                return new Parameter(SystemTypes.Object, name, paramNum + i + 1);
+                return new Parameter(SysType(SystemTypeCode.Object), name, paramNum + i + 1);
             }
         }
 
@@ -1816,14 +1823,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return m2;
         }
 
-        IType BuildReturnType(AbcMethod m)
+        private IType BuildReturnType(AbcMethod m)
         {
             LoadFixes();
 
             if (m.IsGetter && IsDate(m.Instance))
             {
                 //TODO: check number
-                return SystemTypes.Int32;
+                return SysType(SystemTypeCode.Int32);
             }
 
             var type = BuildVectorReturnType(m);

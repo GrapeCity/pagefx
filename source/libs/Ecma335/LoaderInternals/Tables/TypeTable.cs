@@ -128,7 +128,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 			bool isIface = IsInterface(flags);
 			var kind = isIface ? TypeKind.Interface : TypeKind.Class;
-			var sysType = !isIface && ns == SystemTypes.Namespace ? SystemTypes.Find(name) : null;
+			var sysType = !isIface && ns == SystemType.Namespace ? SystemTypes.Find(name) : null;
 			if (sysType != null) kind = sysType.Kind;
 
 			var type = CreateType(kind, genericParams);

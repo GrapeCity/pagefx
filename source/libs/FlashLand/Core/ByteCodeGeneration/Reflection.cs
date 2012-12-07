@@ -281,7 +281,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var trait = AbcTrait.CreateMethod(method, name);
             instance.AddTrait(trait, false);
             method.ReturnType = _abc.BuiltinTypes.Void;
-            method.AddParam(CreateParam(SystemTypes.Type, "type"));
+            method.AddParam(CreateParam(SysType(SystemTypeCode.Type), "type"));
 
             var body = new AbcMethodBody(method);
             AddMethod(method);

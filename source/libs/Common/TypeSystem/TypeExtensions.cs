@@ -61,7 +61,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 c = c.BaseType;
             }
 
-            return SystemTypes.Object;
+            return a.FindSystemType(SystemTypeCode.Object);
         }
 
         private static IType GetCommonInterface(this IType a, IType b)
@@ -87,7 +87,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                     return c;
             }
 
-            return SystemTypes.Object;
+            return a.FindSystemType(SystemTypeCode.Object);
         }
 
         public static IType GetCommonAncestor(this IType a, IType b)
@@ -152,7 +152,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    public static bool IsIEnumerableChar(this IType type)
         {
-            return type.IsIEnumerableInstance(SystemTypes.Char);
+            return type.IsIEnumerableInstance(type.FindSystemType(SystemTypeCode.Char));
         }
 
         public static bool IsIEnumeratorInstance(this IType type)
@@ -841,7 +841,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    {
 		    if (type == null) return null;
 		    if (type.IsArray)
-			    type = SystemTypes.Array;
+			    type = type.FindSystemType(SystemTypeCode.Array);
 		    return type.Methods.StaticConstructor;
 	    }
 

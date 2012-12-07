@@ -7,231 +7,240 @@ namespace DataDynamics.PageFX.Common.Services
     #region class Corlib
     public static class Corlib
     {
-        /// <summary>
-        /// Returns corlib assembly
-        /// </summary>
-        public static IAssembly Assembly
-        {
-            get { return SystemTypes.Object != null ? SystemTypes.Object.Assembly : null; }
-        }
+		//TODO: REMOVE THIS PROPERTY
+	    public static IAssembly Assembly
+	    {
+			get { return null; }
+	    }
 
-        /// <summary>
-        /// Finds corlib type
-        /// </summary>
-        /// <param name="fullname"></param>
-        /// <returns></returns>
-        public static IType FindType(string fullname)
-        {
-            var t = Assembly.FindType(fullname);
-            if (t == null)
-                throw new InvalidOperationException(
-                    string.Format("Unable to find {0}. Invalid corlib.", fullname));
-            return t;
-        }
+	    /// <summary>
+	    /// Finds corlib type
+	    /// </summary>
+	    /// <param name="assembly"></param>
+	    /// <param name="fullname"></param>
+	    /// <returns></returns>
+	    public static IType FindType(IAssembly assembly, string fullname)
+	    {
+		    var type = assembly.Corlib().FindType(fullname);
+		    if (type == null)
+			    throw new InvalidOperationException(
+				    string.Format("Unable to find {0}. Invalid corlib.", fullname));
+		    return type;
+	    }
 
-        public static IGenericType FindGenericType(string fullname)
-        {
-            foreach (var type in Assembly.Types)
-            {
-                var gt = type as IGenericType;
-                if (gt == null) continue;
-                if (gt.FullName == fullname)
-                    return gt;
-            }
-            throw new InvalidOperationException(
-                string.Format("Unable to find {0}. Invalid corlib.", fullname));
-        }
+	    public static IGenericType FindGenericType(IAssembly assembly, string fullname)
+	    {
+		    foreach (var type in assembly.Corlib().Types)
+		    {
+			    var gt = type as IGenericType;
+			    if (gt == null) continue;
+			    if (gt.FullName == fullname)
+				    return gt;
+		    }
 
-        /// <summary>
+		    throw new InvalidOperationException(
+			    string.Format("Unable to find {0}. Invalid corlib.", fullname));
+	    }
+
+	    /// <summary>
         /// Provides type properties for types from corlib
         /// </summary>
         public static class Types
         {
-            /// <summary>
-            /// Returns System.Reflection.Assembly type.
-            /// </summary>
-            public static IType Assembly
-            {
-                get { return FindType("System.Reflection.Assembly"); }
-            }
+		    /// <summary>
+		    /// Returns System.Reflection.Assembly type.
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType Assembly(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Reflection.Assembly");
+	        }
 
-            /// <summary>
-            /// Returns System.Console type.
-            /// </summary>
-            public static IType Console
-            {
-                get { return FindType("System.Console"); }
-            }
+		    /// <summary>
+		    /// Returns System.Console type.
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType Console(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Console");
+	        }
 
-            /// <summary>
-            /// Return System.NullReferenceException
-            /// </summary>
-            public static IType NullReferenceException
-            {
-                get { return FindType("System.NullReferenceException"); }
-            }
+		    /// <summary>
+		    /// Return System.NullReferenceException
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType NullReferenceException(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.NullReferenceException");
+	        }
 
-            /// <summary>
-            /// Returns System.InvalidCastException type
-            /// </summary>
-            public static IType InvalidCastException
-            {
-                get { return FindType("System.InvalidCastException"); }
-            }
+		    /// <summary>
+		    /// Returns System.InvalidCastException type
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType InvalidCastException(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.InvalidCastException");
+	        }
 
-            public static IType NotImplementedException
-            {
-                get { return FindType("System.NotImplementedException"); }
-            }
+	        public static IType NotImplementedException(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.NotImplementedException");
+	        }
 
-            public static IType NotSupportedException
-            {
-                get { return FindType("System.NotSupportedException"); }
-            }
+	        public static IType NotSupportedException(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.NotSupportedException");
+	        }
 
-            public static IType ArgumentOutOfRangeException
-            {
-                get { return FindType("System.ArgumentOutOfRangeException"); }
-            }
+	        public static IType ArgumentOutOfRangeException(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.ArgumentOutOfRangeException");
+	        }
 
-            public static IType ExecutionEngineException
-            {
-                get { return FindType("System.ExecutionEngineException"); }
-            }
+	        public static IType ExecutionEngineException(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.ExecutionEngineException");
+	        }
 
-            public static IType TypeLoadException
-            {
-                get { return FindType("System.TypeLoadException"); }
-            }
+	        public static IType TypeLoadException(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.TypeLoadException");
+	        }
 
-            /// <summary>
-            /// Returns System.EnumInfo type
-            /// </summary>
-            public static IType EnumInfo
-            {
-                get { return FindType("System.EnumInfo"); }
-            }
+		    /// <summary>
+		    /// Returns System.EnumInfo type
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType EnumInfo(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.EnumInfo");
+	        }
 
-            /// <summary>
-            /// Returns System.Reflection.FieldInfo type
-            /// </summary>
-            public static IType FieldInfo
-            {
-                get { return FindType("System.Reflection.FieldInfo"); }
-            }
+		    /// <summary>
+		    /// Returns System.Reflection.FieldInfo type
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType FieldInfo(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Reflection.FieldInfo");
+	        }
 
-            /// <summary>
-            /// Returns System.Reflection.MethoBase type
-            /// </summary>
-            public static IType MethodBase
-            {
-                get { return FindType("System.Reflection.MethodBase"); }
-            }
+		    /// <summary>
+		    /// Returns System.Reflection.MethoBase type
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType MethodBase(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Reflection.MethodBase");
+	        }
 
-            /// <summary>
-            /// Returns System.Reflection.MethoInfo type
-            /// </summary>
-            public static IType MethodInfo
-            {
-                get { return FindType("System.Reflection.MethodInfo"); }
-            }
+		    /// <summary>
+		    /// Returns System.Reflection.MethoInfo type
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType MethodInfo(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Reflection.MethodInfo");
+	        }
 
-            /// <summary>
-            /// Returns System.Reflection.ParametrInfo type
-            /// </summary>
-            public static IType ParameterInfo
-            {
-                get { return FindType("System.Reflection.ParameterInfo"); }
-            }
+		    /// <summary>
+		    /// Returns System.Reflection.ParametrInfo type
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType ParameterInfo(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Reflection.ParameterInfo");
+	        }
 
 
-            /// <summary>
-            /// Returns System.Reflection.PropertyInfo type
-            /// </summary>
-            public static IType PropertyInfo
-            {
-                get { return FindType("System.Reflection.PropertyInfo"); }
-            }
+		    /// <summary>
+		    /// Returns System.Reflection.PropertyInfo type
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType PropertyInfo(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Reflection.PropertyInfo");
+	        }
 
-            /// <summary>
-            /// Returns System.Reflection.ConstructorInfo type
-            /// </summary>
-            public static IType ConstructorInfo
-            {
-                get { return FindType("System.Reflection.ConstructorInfo"); }
-            }
+		    /// <summary>
+		    /// Returns System.Reflection.ConstructorInfo type
+		    /// </summary>
+		    /// <param name="assembly"></param>
+		    public static IType ConstructorInfo(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Reflection.ConstructorInfo");
+	        }
 
-            public static IType Convert
-            {
-                get { return FindType("System.Convert"); }
-            }
+	        public static IType Convert(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Convert");
+	        }
 
-            public static IType CharEnumerator
-            {
-                get { return FindType("System.CharEnumerator"); }
-            }
+	        public static IType CharEnumerator(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.CharEnumerator");
+	        }
 
-            public static IType Environment
-            {
-                get { return FindType("System.Environment"); }
-            }
+	        public static IType Environment(IAssembly assembly)
+	        {
+		        return FindType(assembly, "System.Environment");
+	        }
 
-            public static IType IEnumerable
-            {
-                get { return FindType(CLRNames.Types.IEnumerable); }
-            }
+	        public static IType IEnumerable(IAssembly assembly)
+	        {
+		        return FindType(assembly, CLRNames.Types.IEnumerable);
+	        }
 
-            public static IGenericType IEnumerableT
-            {
-                get { return FindGenericType(CLRNames.Types.IEnumerableT); }
-            }
+	        public static IGenericType IEnumerableT(IAssembly assembly)
+	        {
+		        return FindGenericType(assembly, CLRNames.Types.IEnumerableT);
+	        }
 
-            public static IType IEnumerator
-            {
-                get { return FindType(CLRNames.Types.IEnumerator); }
-            }
+	        public static IType IEnumerator(IAssembly assembly)
+	        {
+		        return FindType(assembly, CLRNames.Types.IEnumerator);
+	        }
 
-            public static IType IDictionary
-            {
-                get { return FindType(CLRNames.Types.IDictionary); }
-            }
+	        public static IType IDictionary(IAssembly assembly)
+	        {
+		        return FindType(assembly, CLRNames.Types.IDictionary);
+	        }
 
-            public static IGenericType IEnumeratorT
-            {
-                get { return FindGenericType(CLRNames.Types.IEnumeratorT); }
-            }
+	        public static IGenericType IEnumeratorT(IAssembly assembly)
+	        {
+		        return FindGenericType(assembly, CLRNames.Types.IEnumeratorT);
+	        }
 
-            public static IGenericType ICollectionT
-            {
-                get { return FindGenericType(CLRNames.Types.ICollectionT); }
-            }
+	        public static IGenericType ICollectionT(IAssembly assembly)
+	        {
+		        return FindGenericType(assembly, CLRNames.Types.ICollectionT);
+	        }
 
-            public static IGenericType IListT
-            {
-                get { return FindGenericType(CLRNames.Types.IListT); }
-            }
+	        public static IGenericType IListT(IAssembly assembly)
+	        {
+		        return FindGenericType(assembly, CLRNames.Types.IListT);
+	        }
 
-            public static IGenericType NullableT
-            {
-                get { return FindGenericType(CLRNames.Types.NullableT); }
-            }
+	        public static IGenericType NullableT(IAssembly assembly)
+	        {
+		        return FindGenericType(assembly, CLRNames.Types.NullableT);
+	        }
 
-            public static IGenericType ArrayEnumeratorT
-            {
-                get
-                {
-                    var arr = SystemTypes.Array;
-                    foreach (var type in arr.Types)
-                    {
-                        var gt = type as IGenericType;
-                        if (gt == null) continue;
-                        if (gt.Name.StartsWith("Enumerator"))
-                            return gt;
-                    }
-                    throw new InvalidOperationException(
-                        "Unable to find Array.Enumerator<T>. Invalid corlib.");
-                }
-            }
+	        public static IGenericType ArrayEnumeratorT(IAssembly assembly)
+	        {
+		        var arr = assembly.FindSystemType(SystemTypeCode.Array);
+		        foreach (var type in arr.Types)
+		        {
+			        var gt = type as IGenericType;
+			        if (gt == null) continue;
+			        if (gt.Name.StartsWith("Enumerator"))
+				        return gt;
+		        }
+
+		        throw new InvalidOperationException(
+			        "Unable to find Array.Enumerator<T>. Invalid corlib.");
+	        }
         }
     }
     #endregion
@@ -274,62 +283,77 @@ namespace DataDynamics.PageFX.Common.Services
         ArrayEnumeratorT
     }
 
-    public class CorlibTypeCache
-    {
-        private readonly LazyValue<IType>[] _types = new[]
-            {
-                new LazyValue<IType>(()=>Corlib.Types.NullReferenceException),
-                new LazyValue<IType>(()=>Corlib.Types.InvalidCastException),
-                new LazyValue<IType>(()=>Corlib.Types.NotImplementedException),
-                new LazyValue<IType>(()=>Corlib.Types.NotSupportedException),
-                new LazyValue<IType>(()=>Corlib.Types.ArgumentOutOfRangeException),
-                new LazyValue<IType>(()=>Corlib.Types.ExecutionEngineException),
-                new LazyValue<IType>(()=>Corlib.Types.TypeLoadException),
-                new LazyValue<IType>(()=>Corlib.Types.EnumInfo),
-                new LazyValue<IType>(()=>Corlib.Types.Environment),
-                new LazyValue<IType>(()=>Corlib.Types.Assembly),
-                new LazyValue<IType>(()=>Corlib.Types.CharEnumerator),
-                new LazyValue<IType>(()=>Corlib.Types.Convert),
-                new LazyValue<IType>(()=>Corlib.Types.FieldInfo),
-                new LazyValue<IType>(()=>Corlib.Types.IEnumerable),
-                new LazyValue<IType>(()=>Corlib.Types.IEnumerator),
-                new LazyValue<IType>(()=>Corlib.Types.IDictionary),
-                new LazyValue<IType>(()=>Corlib.Types.MethodBase),
-                new LazyValue<IType>(()=>Corlib.Types.MethodInfo),
-                new LazyValue<IType>(()=>Corlib.Types.ConstructorInfo),
-                new LazyValue<IType>(()=>Corlib.Types.ParameterInfo),
-                new LazyValue<IType>(()=>Corlib.Types.PropertyInfo),
-                new LazyValue<IType>(()=>Corlib.Types.Console),
-                new LazyValue<IType>(()=>Corlib.FindType("PageFX.CompilerUtils"))
-            };
+	public sealed class CorlibTypeCache
+	{
+		private readonly IAssembly _assembly;
+		private readonly LazyValue<IType>[] _types;
+		private readonly LazyValue<IType>[] _generics;
 
-        private readonly LazyValue<IType>[] _generics = new[]
-            {
-                new LazyValue<IType>(()=>Corlib.Types.ICollectionT),
-                new LazyValue<IType>(()=>Corlib.Types.IEnumerableT),
-                new LazyValue<IType>(()=>Corlib.Types.IEnumeratorT),
-                new LazyValue<IType>(()=>Corlib.Types.IListT),
-                new LazyValue<IType>(()=>Corlib.Types.NullableT),
-                new LazyValue<IType>(()=>Corlib.Types.ArrayEnumeratorT)
-            };
+		public CorlibTypeCache(IAssembly assembly)
+		{
+			if (assembly == null)
+				throw new ArgumentNullException("assembly");
 
-        public IType this[CorlibTypeId c]
-        {
-            get
-            {
-                var i = (int)c;
-                return _types[i].Value;
-            }
-        }
+			assembly = assembly.Corlib();
 
-        public IGenericType this[GenericTypeId c]
-        {
-            get
-            {
-                var i = (int)c;
-                return (IGenericType)_generics[i].Value;
-            }
-        }
-    }
-    #endregion
+			_assembly = assembly;
+
+			_types = new[]
+				{
+					new LazyValue<IType>(() => Corlib.Types.NullReferenceException(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.InvalidCastException(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.NotImplementedException(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.NotSupportedException(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.ArgumentOutOfRangeException(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.ExecutionEngineException(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.TypeLoadException(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.EnumInfo(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.Environment(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.Assembly(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.CharEnumerator(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.Convert(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.FieldInfo(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.IEnumerable(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.IEnumerator(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.IDictionary(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.MethodBase(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.MethodInfo(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.ConstructorInfo(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.ParameterInfo(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.PropertyInfo(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.Console(assembly)),
+					new LazyValue<IType>(() => Corlib.FindType(assembly, "PageFX.CompilerUtils"))
+				};
+
+			_generics = new[]
+				{
+					new LazyValue<IType>(() => Corlib.Types.ICollectionT(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.IEnumerableT(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.IEnumeratorT(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.IListT(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.NullableT(assembly)),
+					new LazyValue<IType>(() => Corlib.Types.ArrayEnumeratorT(assembly))
+				};
+		}
+
+		public IType this[CorlibTypeId c]
+		{
+			get
+			{
+				var i = (int)c;
+				return _types[i].Value;
+			}
+		}
+
+		public IGenericType this[GenericTypeId c]
+		{
+			get
+			{
+				var i = (int)c;
+				return (IGenericType)_generics[i].Value;
+			}
+		}
+	}
+
+	#endregion
 }

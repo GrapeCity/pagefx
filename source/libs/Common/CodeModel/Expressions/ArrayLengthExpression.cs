@@ -4,16 +4,19 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
 {
     public sealed class ArrayLengthExpression : Expression, IArrayLengthExpression
     {
-    	public ArrayLengthExpression(IExpression array)
-        {
-            Array = array;
-        }
+	    private readonly IType _resultType;
 
-    	public IExpression Array { get; set; }
+	    public ArrayLengthExpression(IExpression array, IType resultType)
+    	{
+    		_resultType = resultType;
+    		Array = array;
+    	}
+
+	    public IExpression Array { get; set; }
 
     	public override IType ResultType
         {
-            get { return SystemTypes.Int32; }
+            get { return _resultType; }
         }
 
     	public override bool Equals(object obj)
