@@ -229,7 +229,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
             instr.Parameter = p;
             instr.ParameterFor = method;
 
-            if (p.IsByRef)
+            if (p.IsByRef())
                 AnalyseAddrInstruction(instr, context);
         }
 

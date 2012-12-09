@@ -798,7 +798,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
             if (ptr)
             {
-                if (p.IsByRef)
+                if (p.IsByRef())
                 {
                     code.LoadArgument(p);
 	                _context.Push(currentInstruction, new ArgPtr(p));
@@ -813,7 +813,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 	                _context.Push(currentInstruction, new MockArgPtr(p));
                 }
             }
-            else if (p.IsByRef)
+            else if (p.IsByRef())
             {
                 code.LoadArgument(p);
 	            _context.Push(currentInstruction, new ArgPtr(p));

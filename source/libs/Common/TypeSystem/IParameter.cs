@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 
@@ -25,16 +24,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         IType Type { get; set; }
 
-		//TODO: remove, make it computable
-        /// <summary>
-        /// Gets the flag indicating whether parameter is passed by reference.
-        /// </summary>
-        bool IsByRef { get; }
-
-        bool IsIn { get; }
+		bool IsIn { get; }
 
         bool IsOut { get; }
 
+		//TODO: remove make it computable by CustomAttributes
         /// <summary>
         /// Gets or sets flags indicating whether the method parameter that takes an argument where the number of arguments is variable.
         /// </summary>

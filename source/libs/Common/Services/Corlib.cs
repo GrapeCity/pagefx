@@ -22,24 +22,20 @@ namespace DataDynamics.PageFX.Common.Services
         /// <returns></returns>
         public static IType FindType(string fullname)
         {
-            var t = Assembly.FindType(fullname);
-            if (t == null)
+            var type = Assembly.FindType(fullname);
+            if (type == null)
                 throw new InvalidOperationException(
                     string.Format("Unable to find {0}. Invalid corlib.", fullname));
-            return t;
+            return type;
         }
 
         public static IGenericType FindGenericType(string fullname)
         {
-            foreach (var type in Assembly.Types)
-            {
-                var gt = type as IGenericType;
-                if (gt == null) continue;
-                if (gt.FullName == fullname)
-                    return gt;
-            }
-            throw new InvalidOperationException(
-                string.Format("Unable to find {0}. Invalid corlib.", fullname));
+	        var type = FindType(fullname) as IGenericType;
+			if (type == null)
+				throw new InvalidOperationException(
+					string.Format("Unable to find {0}. Invalid corlib.", fullname));
+			return type;
         }
 
         /// <summary>
@@ -218,19 +214,7 @@ namespace DataDynamics.PageFX.Common.Services
 
             public static IGenericType ArrayEnumeratorT
             {
-                get
-                {
-                    var arr = SystemTypes.Array;
-                    foreach (var type in arr.Types)
-                    {
-                        var gt = type as IGenericType;
-                        if (gt == null) continue;
-                        if (gt.Name.StartsWith("Enumerator"))
-                            return gt;
-                    }
-                    throw new InvalidOperationException(
-                        "Unable to find Array.Enumerator<T>. Invalid corlib.");
-                }
+                get { return FindGenericType("System.Array+Enumerator`1"); }
             }
         }
     }

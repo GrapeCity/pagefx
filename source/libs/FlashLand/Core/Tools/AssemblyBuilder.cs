@@ -375,7 +375,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        void LoadReference(string refPath)
+        private void LoadReference(string refPath)
         {
             var asm = LanguageInfrastructure.CLI.Deserialize(refPath, null);
             if (!Linker.Run(asm))
@@ -625,7 +625,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             throw new InvalidOperationException(string.Format("Unable to find type {0}", name.FullName));
         }
 
-        IType BuildTypeByName(string fullname)
+        private IType BuildTypeByName(string fullname)
         {
             if (_swc != null)
             {

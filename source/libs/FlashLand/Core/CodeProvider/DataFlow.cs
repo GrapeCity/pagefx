@@ -277,7 +277,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (p == null)
                 throw new ArgumentNullException("p");
 
-            if (p.IsByRef)
+            if (p.IsByRef())
             {
                 throw new InvalidOperationException();
             }

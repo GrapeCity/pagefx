@@ -2278,7 +2278,7 @@ namespace DataDynamics.PageFX.Common.Syntax
                 if (i > 0) Write(", ");
                 var arg = args[i];
                 var p = parameters[i];
-                if (p.IsByRef)
+                if (p.IsByRef())
                     Write("ref ");
                 WriteExpression(arg);
             }

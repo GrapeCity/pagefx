@@ -28,65 +28,51 @@ namespace DataDynamics.PageFX.Common.Collections
 		private sealed class Memoizable<T> : IReadOnlyList<T>
 		{
 			private readonly List<T> _list = new List<T>();
-			private readonly IEnumerable<T> _source;
+			private readonly IEnumerator<T> _enumerator;
 			private bool _cached;
-			private IEnumerator<T> _enumerator;
 			private static readonly object Sync = new object();
 
 			public Memoizable(IEnumerable<T> source)
 			{
-				if (source == null) throw new ArgumentNullException("source");
+				if (source == null)
+					throw new ArgumentNullException("source");
 
-				_source = source;
+				_enumerator = source.GetEnumerator();
 			}
 
 			public IEnumerator<T> GetEnumerator()
 			{
-				foreach (var item in _list)
-				{
-					yield return item;
-				}
-
-				int count = _list.Count;
-
 				if (_cached)
 				{
+					foreach (var item in _list)
+					{
+						yield return item;
+					}
 					yield break;
 				}
 
-				lock (Sync)
-				{
-					if (_enumerator == null)
-					{
-						_enumerator = _source.GetEnumerator();
-					}	
-				}
+				var index = 0;
 
 				while (true)
 				{
-					while (count < _list.Count)
-						yield return _list[count++];
-
-					if (_enumerator == null || !_enumerator.MoveNext())
-						break;
-
 					lock (Sync)
 					{
-						_list.Add(_enumerator.Current);
-						count++;
-					}
-
-					yield return _enumerator.Current;
-				}
-
-				lock (Sync)
-				{
-					_cached = true;
-
-					if (_enumerator != null)
-					{
-						_enumerator.Dispose();
-						_enumerator = null;	
+						if (index < _list.Count)
+						{
+							yield return _list[index++];
+						}
+						else if (_enumerator.MoveNext())
+						{
+							var item = _enumerator.Current;
+							_list.Add(item);
+							index++;
+							yield return item;
+						}
+						else
+						{
+							_cached = true;
+							yield break;
+						}
 					}
 				}
 			}

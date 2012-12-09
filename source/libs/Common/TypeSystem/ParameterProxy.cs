@@ -74,11 +74,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			set { throw new NotSupportedException(); }
 		}
 
-		public bool IsByRef
-		{
-			get { return _parameter.IsByRef; }
-		}
-
 		public bool IsIn
 		{
 			get { return _parameter.IsIn; }

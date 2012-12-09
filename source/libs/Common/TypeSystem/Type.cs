@@ -128,7 +128,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
             set { _namespace = value; }
         }
-        string _namespace;
+        private string _namespace;
 
         /// <summary>
         /// Gets the full name of this type.
@@ -394,37 +394,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return Format(types, getName, null, null, sep);
         }
 
-        internal static string GetNestedPrefix(IType type, bool withNamespace)
-        {
-            var dt = type.DeclaringType;
-            if (dt == null) return "";
-
-            var list = new List<IType>();
-            while (dt != null)
-            {
-                list.Insert(0, dt);
-                dt = dt.DeclaringType;
-            }
-
-            var sb = new StringBuilder();
-
-            if (withNamespace)
-            {
-                var top = list[0];
-                string ns = top.Namespace;
-                if (!string.IsNullOrEmpty(ns))
-                {
-                    sb.Append(ns);
-                    sb.Append('.');
-                }
-            }
-
-            Format(sb, list, t => t.Name, null, null, "+");
-            
-            return sb.ToString();
-        }
-
-        public static string GetName(IType type, bool withNamespace)
+	    public static string GetName(IType type, bool withNamespace)
         {
             var dt = type.DeclaringType;
             if (dt == null)
@@ -437,7 +407,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 }
                 return type.Name;
             }
-            return GetNestedPrefix(type, withNamespace) + "+" + type.Name;
+            return GetName(dt, withNamespace) + "+" + type.Name;
         }
 
         public static string GetKeyword(string lang, IType type)
