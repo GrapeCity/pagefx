@@ -103,12 +103,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return GetType(assembly, tc);
         }
 
-        public static IType GetType(IAssembly assembly, object obj)
-        {
-            if (obj == null) return assembly.FindSystemType(SystemTypeCode.Object);
-            return GetType(assembly, obj.GetType());
-        }
-
 		public static string GetFullName(SystemTypeCode typeCode)
 		{
 			var sysType = Types[(int)typeCode];

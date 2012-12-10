@@ -17,25 +17,28 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			_types = new IType[SysTypes.Length];
 		}
 
-		private IType Get(SystemTypeCode typeCode)
+		private IType this[SystemTypeCode typeCode]
 		{
-			int index = (int)typeCode;
-			return _types[index] ?? (_types[index] = _assembly.FindSystemType(typeCode));
+			get
+			{
+				int index = (int)typeCode;
+				return _types[index] ?? (_types[index] = _assembly.FindSystemType(typeCode));
+			}
 		}
 
 		public IType Boolean
 		{
-			get { return Get(SystemTypeCode.Boolean); }
+			get { return this[SystemTypeCode.Boolean]; }
 		}
 
 		public IType Int8
 		{
-			get { return Get(SystemTypeCode.Int8); }
+			get { return this[SystemTypeCode.Int8]; }
 		}
 
 		public IType UInt8
 		{
-			get { return Get(SystemTypeCode.UInt8); }
+			get { return this[SystemTypeCode.UInt8]; }
 		}
 
 		public IType Byte
@@ -50,97 +53,112 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		public IType Char
 		{
-			get { return Get(SystemTypeCode.Char); }
+			get { return this[SystemTypeCode.Char]; }
 		}
 
 		public IType Int16
 		{
-			get { return Get(SystemTypeCode.Int16); }
+			get { return this[SystemTypeCode.Int16]; }
 		}
 
 		public IType UInt16
 		{
-			get { return Get(SystemTypeCode.UInt16); }
+			get { return this[SystemTypeCode.UInt16]; }
 		}
 
 		public IType Int32
 		{
-			get { return Get(SystemTypeCode.Int32); }
+			get { return this[SystemTypeCode.Int32]; }
 		}
 
 		public IType UInt32
 		{
-			get { return Get(SystemTypeCode.UInt32); }
+			get { return this[SystemTypeCode.UInt32]; }
 		}
 
 		public IType Int64
 		{
-			get { return Get(SystemTypeCode.Int64); }
+			get { return this[SystemTypeCode.Int64]; }
 		}
 
 		public IType UInt64
 		{
-			get { return Get(SystemTypeCode.UInt64); }
+			get { return this[SystemTypeCode.UInt64]; }
 		}
 
 		public IType Single
 		{
-			get { return Get(SystemTypeCode.Single); }
+			get { return this[SystemTypeCode.Single]; }
 		}
 
 		public IType Double
 		{
-			get { return Get(SystemTypeCode.Double); }
+			get { return this[SystemTypeCode.Double]; }
 		}
 
 		public IType Decimal
 		{
-			get { return Get(SystemTypeCode.Decimal); }
+			get { return this[SystemTypeCode.Decimal]; }
 		}
 
 		public IType String
 		{
-			get { return Get(SystemTypeCode.String); }
+			get { return this[SystemTypeCode.String]; }
 		}
 
 		public IType Object
 		{
-			get { return Get(SystemTypeCode.Object); }
+			get { return this[SystemTypeCode.Object]; }
 		}
 
 		public IType Array
 		{
-			get { return Get(SystemTypeCode.Array); }
+			get { return this[SystemTypeCode.Array]; }
 		}
 
 		public IType DateTime
 		{
-			get { return Get(SystemTypeCode.DateTime); }
+			get { return this[SystemTypeCode.DateTime]; }
 		}
 
 		public IType Type
 		{
-			get { return Get(SystemTypeCode.Type); }
+			get { return this[SystemTypeCode.Type]; }
 		}
 
 		public IType Delegate
 		{
-			get { return Get(SystemTypeCode.Delegate); }
+			get { return this[SystemTypeCode.Delegate]; }
 		}
 
 		public IType MulticastDelegate
 		{
-			get { return Get(SystemTypeCode.MulticastDelegate); }
+			get { return this[SystemTypeCode.MulticastDelegate]; }
 		}
 
 		public IType Exception
 		{
-			get { return Get(SystemTypeCode.Exception); }
+			get { return this[SystemTypeCode.Exception]; }
 		}
 
 		public IType IntPtr
 		{
-			get { return Get(SystemTypeCode.IntPtr); }
+			get { return this[SystemTypeCode.IntPtr]; }
+		}
+
+		public IType this[TypeCode code]
+		{
+			get
+			{
+				if (code == TypeCode.Empty || code == TypeCode.DBNull)
+					return null;
+				return this[code.ToSystemTypeCode()];
+			}
+		}
+
+		public IType ResolveType(object value)
+		{
+			return value == null ? null : this[System.Type.GetTypeCode(value.GetType())];
 		}
 	}
 }

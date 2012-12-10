@@ -52,7 +52,7 @@ class StringFormatTest
         {
             x1 = value1;
             x2 = x1 + value1;
-            x3 = x2 + value1;
+            x3 = (ulong)(x2 + value1);
         }
     }
 

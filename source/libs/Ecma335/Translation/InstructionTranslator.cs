@@ -760,7 +760,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 		private void OpLdc(Code code, Instruction currentInstruction, object value)
         {
-			var v = new ConstValue(value, SystemTypes.GetType(Assembly, value));
+			var v = new ConstValue(value, SystemTypes.ResolveType(value));
 			_context.Push(currentInstruction, v);
 
 			code.LoadConstant(value);
