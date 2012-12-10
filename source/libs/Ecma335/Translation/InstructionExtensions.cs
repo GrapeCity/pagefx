@@ -1,4 +1,5 @@
-﻿using DataDynamics.PageFX.Ecma335.IL;
+﻿using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Ecma335.IL;
 
 namespace DataDynamics.PageFX.Ecma335.Translation
 {
@@ -7,7 +8,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 		public static bool IsByRef(this Instruction instruction)
 		{
 			var p = instruction.Parameter;
-			return p != null && p.IsByRef;
+			return p != null && p.IsByRef();
 		}
 	}
 }

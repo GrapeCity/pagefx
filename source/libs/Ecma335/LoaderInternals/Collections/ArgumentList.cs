@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -17,7 +16,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 		private readonly ICustomAttribute _owner;
 		private readonly BufferedBinaryReader _reader;
 		private readonly AssemblyLoader _loader;
-		private IReadOnlyList<IArgument> _list;
+		private IList<IArgument> _list;
 
 		public ArgumentList(ICustomAttribute owner, BufferedBinaryReader reader, AssemblyLoader loader)
 		{
@@ -26,9 +25,9 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 			_loader = loader;
 		}
 
-		private IReadOnlyList<IArgument> List
+		private IList<IArgument> List
 		{
-			get { return _list ?? (_list = ReadArguments().AsReadOnlyList()); }
+			get { return _list ?? (_list = ReadArguments()); }
 		}
 
 		public IEnumerator<IArgument> GetEnumerator()
@@ -88,19 +87,15 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 			if (prolog != 0x01)
 				throw new BadSignatureException("Invalid prolog in custom attribute value");
 
-			var list = new List<IArgument>();
 			var ctor = _owner.Constructor;
-			foreach (var p in ctor.Parameters)
-			{
-				var arg = new Argument
+			var list = ctor.Parameters.Select(
+				p => (IArgument)new Argument
 					{
 						Type = p.Type,
 						Kind = ArgumentKind.Fixed,
 						Name = p.Name,
 						Value = ReadValue(reader, p.Type)
-					};
-				list.Add(arg);
-			}
+					}).ToList();
 
 			int numNamed = reader.ReadUInt16();
 			for (int i = 0; i < numNamed; ++i)
@@ -108,7 +103,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 				list.Add(ReadNamedArgument(reader));
 			}
 
-			return list;
+			return list.AsReadOnly();
 		}
 
 		private IArgument ReadNamedArgument(BufferedBinaryReader reader)

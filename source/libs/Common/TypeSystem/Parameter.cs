@@ -47,15 +47,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    /// </summary>
 	    public object Value { get; set; }
 
-	    /// <summary>
-        /// Gets the flag indicating whether parameter is passed by reference.
-        /// </summary>
-        public bool IsByRef
-        {
-            get { return Type != null && Type.TypeKind == TypeKind.Reference; }
-        }
-
-        public bool IsIn
+	    public bool IsIn
         {
             get { return (Flags & ParamAttributes.In) != 0; }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Metadata;
 using DataDynamics.PageFX.Common.Syntax;
@@ -12,7 +13,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 {
 	internal sealed class TypeTable : MetadataTable<IType>, ITypeCollection
 	{
-		private readonly Dictionary<string, IType> _cache = new Dictionary<string, IType>();
+		private readonly Dictionary<string, object> _cache = new Dictionary<string, object>();
 		private readonly Dictionary<int, int> _methodDeclTypeLookup = new Dictionary<int, int>();
 		private readonly Dictionary<int, int> _fieldDeclTypeLookup = new Dictionary<int, int>();
 		private int _lastIndex;
@@ -27,6 +28,13 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 		}
 
 		#region ResolveDeclType
+
+		private sealed class TypeInfo
+		{
+			public int[] MethodRange;
+			public int[] FieldRange;
+			public string FullName;
+		}
 
 		internal IType ResolveDeclType(ITypeMember member)
 		{
@@ -43,31 +51,16 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				return this[typeIndex];
 			}
 
-			var mdb = Metadata;
-			int typeCount = mdb.GetRowCount(TableId.TypeDef);
+			int typeCount = Metadata.GetRowCount(TableId.TypeDef);
 			for (; _lastIndex < typeCount; _lastIndex++)
 			{
-				var row = mdb.GetRow(TableId.TypeDef, _lastIndex);
-				var nextRow = _lastIndex + 1 < typeCount ? mdb.GetRow(TableId.TypeDef, _lastIndex + 1) : null;
+				var info = CacheTypeInfo(_lastIndex);
 
-				var methodRange = GetMethodRange(row, nextRow);
-				var fieldRange = GetFieldRange(row, nextRow);
-
-				if (methodRange != null)
-				{
-					PutMethodRange(methodRange, _lastIndex);
-				}
-
-				if (fieldRange != null)
-				{
-					PutFieldRange(fieldRange, _lastIndex);
-				}
-
-				if (isMethod && methodRange != null && index >= methodRange[0] && index < methodRange[1])
+				if (isMethod && info.MethodRange != null && index >= info.MethodRange[0] && index < info.MethodRange[1])
 				{
 					return this[_lastIndex++];
 				}
-				if (fieldRange != null && index >= fieldRange[0] && index < fieldRange[1])
+				if (info.FieldRange != null && index >= info.FieldRange[0] && index < info.FieldRange[1])
 				{
 					return this[_lastIndex++];
 				}
@@ -76,10 +69,44 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			return null;
 		}
 
+		private TypeInfo CacheTypeInfo(int index)
+		{
+			int typeCount = Metadata.GetRowCount(TableId.TypeDef);
+			var row = Metadata.GetRow(TableId.TypeDef, index);
+			var nextRow = index + 1 < typeCount ? Metadata.GetRow(TableId.TypeDef, index + 1) : null;
+
+			var methodRange = GetMethodRange(row, nextRow);
+			var fieldRange = GetFieldRange(row, nextRow);
+
+			if (methodRange != null)
+			{
+				PutMethodRange(methodRange, index);
+			}
+
+			if (fieldRange != null)
+			{
+				PutFieldRange(fieldRange, index);
+			}
+
+			var fullName = GetTypeFullName(index);
+
+			if (!_cache.ContainsKey(fullName))
+			{
+				_cache.Add(fullName, index);
+			}
+
+			return new TypeInfo
+				{
+					MethodRange = methodRange,
+					FieldRange = fieldRange,
+					FullName = fullName
+				};
+		}
+		
 		private void PutMethodRange(int[] range, int typeIndex)
 		{
 			bool first = true;
-			foreach (var methodIndex in GetRange(range, TableId.MethodDef))
+			foreach (var methodIndex in GetRange(TableId.MethodDef, range))
 			{
 				if (first && _methodDeclTypeLookup.ContainsKey(methodIndex))
 				{
@@ -94,7 +121,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 		private void PutFieldRange(int[] range, int typeIndex)
 		{
 			bool first = true;
-			foreach (var fieldIndex in GetRange(range, TableId.Field))
+			foreach (var fieldIndex in GetRange(TableId.Field, range))
 			{
 				if (first && _fieldDeclTypeLookup.ContainsKey(fieldIndex))
 				{
@@ -106,7 +133,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			}
 		}
 
-		private IEnumerable<int> GetRange(int[] range, TableId tableId)
+		private IEnumerable<int> GetRange(TableId tableId, int[] range)
 		{
 			var n = Metadata.GetRowCount(tableId);
 			for (int i = range[0]; i < n && i < range[1]; i++)
@@ -161,7 +188,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			}
 			else
 			{
-				_cache.Add(type.FullName, type);
+				_cache[type.FullName] = type;
 			}
 
 			var nextRow = index + 1 < Count ? Metadata.GetRow(TableId.TypeDef, index + 1) : null;
@@ -225,6 +252,40 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			return this[enclosingIndex];
 		}
 
+		private string GetTypeFullName(int index)
+		{
+			var sb = new StringBuilder();
+			GetTypeFullName(sb, index);
+			return sb.ToString();
+		}
+
+		private void GetTypeFullName(StringBuilder sb, int index)
+		{
+			bool isNested = false;
+			var row = Metadata.LookupRow(TableId.NestedClass, Schema.NestedClass.Class, index, true);
+			if (row != null)
+			{
+				isNested = true;
+				int enclosingIndex = row[Schema.NestedClass.EnclosingClass].Index - 1;
+				GetTypeFullName(sb, enclosingIndex);
+				sb.Append("+");
+			}
+
+			row = Metadata.GetRow(TableId.TypeDef, index);
+			if (!isNested)
+			{
+				string ns = row[Schema.TypeDef.TypeNamespace].String;
+				if (!string.IsNullOrEmpty(ns))
+				{
+					sb.Append(ns);
+					sb.Append(".");
+				}
+			}
+			
+			string name = row[Schema.TypeDef.TypeName].String;
+			sb.Append(name);
+		}
+		
 		private void SetMembers(MetadataRow row, MetadataRow nextRow, IType type)
 		{
 			var fields = GetFields(row, nextRow, type);
@@ -369,17 +430,61 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 		{
 			get
 			{
-				IType type;
-				if (_cache.TryGetValue(fullname, out type))
+				if (string.IsNullOrEmpty(fullname))
+					return null;
+
+				var type = FindInCache(fullname);
+				if (type != null)
 					return type;
 
-				if (this.Any(item => _cache.TryGetValue(fullname, out type)))
+				//TODO: remove linking with system type when merge
+				int typeCount = Metadata.GetRowCount(TableId.TypeDef);
+				for (; _lastIndex < typeCount; _lastIndex++)
+				{
+					var info = CacheTypeInfo(_lastIndex);
+
+					if (Loader.IsCorlib)
+					{
+						if (SystemTypes.FindByFullName(info.FullName) != null)
+						{
+							type = this[_lastIndex];
+						}
+						continue;
+					}
+
+					if (info.FullName == fullname)
+					{
+						return this[_lastIndex++];
+					}
+				}
+
+				type = FindInCache(fullname);
+				if (type != null)
+					return type;
+				
+				return null;
+			}
+		}
+
+		private IType FindInCache(string fullname)
+		{
+			object value;
+			if (_cache.TryGetValue(fullname, out value))
+			{
+				var type = value as IType;
+				if (type != null)
 				{
 					return type;
 				}
 
-				return null;
+				var index = (int)value;
+				type = this[index];
+				_cache[fullname] = type;
+
+				return type;
 			}
+
+			return null;
 		}
 
 		public void Add(IType type)

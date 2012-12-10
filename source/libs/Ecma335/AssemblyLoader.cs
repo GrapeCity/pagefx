@@ -131,6 +131,11 @@ namespace DataDynamics.PageFX.Ecma335
 			Types = new TypeTable(this);
 		}
 
+		public bool IsCorlib
+		{
+			get { return Assembly.IsCorlib; }
+		}
+
         private void LoadTables()
         {
             //To avoid circular references assembly is added to cache
@@ -404,7 +409,7 @@ namespace DataDynamics.PageFX.Ecma335
             }
         }
 
-		private PdbReader CreatePdbReader()
+	    private PdbReader CreatePdbReader()
         {
             if (!GlobalSettings.EmitDebugInfo) return null;
 

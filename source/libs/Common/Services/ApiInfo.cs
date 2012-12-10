@@ -597,12 +597,12 @@ namespace DataDynamics.PageFX.Common.Services
 
 		private static string Modifier(this IParameter p)
 		{
-			return p.IsByRef ? (p.IsOut ? "out " : "ref ") : (p.IsIn ? "in " : "");
+			return p.IsByRef() ? (p.IsOut ? "out " : "ref ") : (p.IsIn ? "in " : "");
 		}
 
 		internal static string Direction(this IParameter p)
 		{
-			return p.IsByRef ? (p.IsOut ? "out" : "ref") : "in";
+			return p.IsByRef() ? (p.IsOut ? "out" : "ref") : "in";
 		}
 
 		private static IType UnwrapRef(this IType type)

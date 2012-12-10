@@ -7,10 +7,16 @@ using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
+
+	    public string FullName
+	    {
+			get { return SystemTypes.Namespace + "." + Name; }
+	    }
 	public static class SystemTypes
     {
 		private static readonly SystemType[] SysTypes;
 		private static readonly Dictionary<string, SystemType> Lookup;
+		private static readonly Dictionary<string, SystemType> LookupByFullName;
 
         static SystemTypes()
         {
@@ -29,12 +35,19 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 SysTypes[i] = st;
             }
 	        Lookup = SysTypes.ToDictionary(x => x.Name, x => x);
+	        LookupByFullName = SysTypes.ToDictionary(x => x.FullName, x => x);
         }
 
         public static SystemType Find(string name)
 		{
 			SystemType type;
 			return Lookup.TryGetValue(name, out type) ? type : null;
+		}
+
+		public static SystemType FindByFullName(string fullname)
+		{
+			SystemType type;
+			return LookupByFullName.TryGetValue(fullname, out type) ? type : null;
 		}
 
 	    public static SystemType[] Types

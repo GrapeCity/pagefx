@@ -174,9 +174,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
+	    private int _counter;
+
 	    private void OnTypeLoaded(object sender, TypeEventArgs e)
 	    {
 		    LinkType(e.Type);
+			Debug.WriteLine((++_counter) + ":" + e.Type.FullName);
 	    }
 
 		private void FireTypeLinked(IType type)
@@ -218,25 +221,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             {
                 switch (attr.TypeName)
                 {
-                    case Attrs.AbcInstance:
-                        {
-                            int index = GetIndex(attr);
-                            var abc = GetAbcFile(type);
-                            if (abc != null)
-                            {
-                                LinkType(type, abc.Instances[index]);
-                                return;
-                            }
-                        }
-                        break;
+	                case Attrs.AbcInstance:
+		                int index = GetIndex(attr);
+		                var abc = GetAbcFile(type);
+		                if (abc != null)
+		                {
+			                LinkType(type, abc.Instances[index]);
+			                return;
+		                }
+		                break;
 
-                    case Attrs.GlobalFunctions:
-                        LinkGlobalType(type);
-                        return;
+	                case Attrs.GlobalFunctions:
+		                LinkGlobalType(type);
+		                return;
 
-                    case Attrs.Vector:
-                        LinkVector(type, attr);
-                        return;
+	                case Attrs.Vector:
+		                LinkVector(type, attr);
+		                return;
                 }
             }
 

@@ -85,27 +85,27 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 			        let ctorIndex = row[Schema.CustomAttribute.Type].Value
 			        let ctor = GetCustomAttributeConstructor(ctorIndex, context)
 			        where ctor != null
-			        select CreateAttribute(row, ctor) into attr
+					select CreateAttribute(row, ctor, ctor.DeclaringType) into attr
 			        where ReviewAttribute(attr)
 			        select attr).Cast<ICustomAttribute>();
 		}
 
-		private CustomAttribute CreateAttribute(MetadataRow row, IMethod ctor)
+		private CustomAttribute CreateAttribute(MetadataRow row, IMethod ctor, IType type)
 		{
-			var attr = new CustomAttribute
+			var attribute = new CustomAttribute
 				{
 					Constructor = ctor,
-					Type = ctor.DeclaringType,
+					Type = type,
 					Owner = _owner
 				};
 
 			var args = row[Schema.CustomAttribute.Value].Blob;
 			if (args != null && args.Length > 0) //non null
 			{
-				attr.Arguments = new ArgumentList(attr, args, _loader);
+				attribute.Arguments = new ArgumentList(attribute, args, _loader);
 			}
 
-			return attr;
+			return attribute;
 		}
 
 		private static Context ResolveAttributeContext(ICustomAttributeProvider provider)
