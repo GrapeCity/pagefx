@@ -190,7 +190,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
 		                code.GetLocal(ns);
 		                code.GetLocal(name);
-		                code.FindPropertyStrict(code.abc.RuntimeQName);
+		                code.FindPropertyStrict(code.Abc.RuntimeQName);
 
 		                code.GetLocal(ns);
 		                code.GetLocal(name);

@@ -76,13 +76,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		[InlineImpl]
 		public static void Findpropstrict(AbcCode code)
 		{
-			code.FindPropertyStrict(code.abc.RuntimeQName);
+			code.FindPropertyStrict(code.Abc.RuntimeQName);
 		}
 
 		[InlineImpl]
 		public static void Construct(AbcCode code)
 		{
-			code.ConstructProperty(code.abc.RuntimeQName, 0);
+			code.ConstructProperty(code.Abc.RuntimeQName, 0);
 		}
 
 		[InlineImpl]
@@ -138,7 +138,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		[InlineImpl]
 		public static void CopyArray(AbcCode code)
 		{
-			var prop = code.abc.DefineGlobalQName("concat");
+			var prop = code.Abc.DefineGlobalQName("concat");
 			code.Call(prop, 0);
 			code.Coerce(AvmTypeCode.Array);
 		}

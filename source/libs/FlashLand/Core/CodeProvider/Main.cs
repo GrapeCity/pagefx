@@ -98,6 +98,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             EmitLocalsDebugInfo(code);
 
+	        DeclareTempVars(code);
+
             code.InitFields(_method);
 
             InitPointers(code);

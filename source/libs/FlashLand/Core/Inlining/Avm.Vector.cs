@@ -59,7 +59,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 			{
 				if (IsTypedVector(method))
 				{
-					code.GetProperty(code.abc.NameArrayIndexer);
+					code.GetProperty(code.Abc.NameArrayIndexer);
 					code.Coerce(method.Type, true);
 				}
 				else

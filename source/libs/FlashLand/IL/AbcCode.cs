@@ -14,13 +14,13 @@ namespace DataDynamics.PageFX.FlashLand.IL
     /// <summary>
     /// This the main apparatus (API) to generate ABC code.
     /// </summary>
-    class AbcCode : List<IInstruction>
+    internal sealed class AbcCode : List<IInstruction>
     {
-	    public AbcFile abc;
+	    public readonly AbcFile Abc;
 
         public AbcCode(AbcFile abc)
         {
-            this.abc = abc;
+            Abc = abc;
         }
 
 	    #region Add
@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             get 
             { 
-                var g = abc.generator;
+                var g = Abc.generator;
                 if (g == null)
                     throw new InvalidOperationException("invalid context");
                 return g;
@@ -83,13 +83,13 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <returns></returns>
         public AbcMultiname this[AvmTypeCode type]
         {
-            get { return abc.BuiltinTypes[type]; }
+            get { return Abc.BuiltinTypes[type]; }
         }
 
         #region QNames
         public AbcMultiname DefineGlobalQName(string name)
         {
-            return abc.DefineGlobalQName(name);
+            return Abc.DefineGlobalQName(name);
         }
 
         public void PushQName(AbcMultiname name)
@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         //stack transition: name -> QName(*, name)
         public void CreateQNameAny()
         {
-            var qname = abc.BuiltinTypes[AvmTypeCode.QName];
+            var qname = Abc.BuiltinTypes[AvmTypeCode.QName];
             FindPropertyStrict(qname); //stack [name, global]
             Swap(); //stack [global, name]
 
@@ -244,7 +244,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction FindProperty(string name)
         {
-            var mn = abc.DefineGlobalQName(name);
+            var mn = Abc.DefineGlobalQName(name);
             return FindProperty(mn);
         }
 
@@ -262,7 +262,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction FindPropertyStrict(string name)
         {
-            var mn = abc.DefineGlobalQName(name);
+            var mn = Abc.DefineGlobalQName(name);
             return FindPropertyStrict(mn);
         }
         #endregion
@@ -274,7 +274,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 throw new ArgumentException("Debug file name cannot be null or empty", "file");
 
             //NOTE: Operand of debugfile instruction is string
-            var str = abc.DefineString(file);
+            var str = Abc.DefineString(file);
             return Add(InstructionCode.Debugfile, str);
         }
 
@@ -291,7 +291,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 throw new ArgumentException("name is null or empty");
             if (line < 0)
                 throw new ArgumentOutOfRangeException("line");
-            var c = abc.DefineString(name);
+            var c = Abc.DefineString(name);
             return Add(InstructionCode.Debug, 1, c, slot, line);
         }
 
@@ -618,7 +618,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("Name cannot be null or empty", "name");
-            var mn = abc.DefineGlobalQName(name);
+            var mn = Abc.DefineGlobalQName(name);
             return GetProperty(mn);
         }
 
@@ -657,7 +657,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction GetSuper(string name)
         {
-            var mn = abc.DefineGlobalQName(name);
+            var mn = Abc.DefineGlobalQName(name);
             return GetSuper(mn);
         }
 
@@ -669,7 +669,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
 		public Instruction SetSuper(string name)
 		{
-			var mn = abc.DefineGlobalQName(name);
+			var mn = Abc.DefineGlobalQName(name);
 			return SetSuper(mn);
 		}
 
@@ -681,7 +681,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction SetPublicProperty(string ns, string name)
         {
-            var mn = abc.DefinePublicQName(ns, name);
+            var mn = Abc.DefinePublicQName(ns, name);
             return SetProperty(mn);
         }
 
@@ -701,7 +701,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction SetMxInternalProperty(string name)
         {
-            var mn = abc.DefineMxInternalName(name);
+            var mn = Abc.DefineMxInternalName(name);
             return SetProperty(mn);
         }
 
@@ -714,18 +714,18 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction InitProperty(string name)
         {
-            var mn = abc.DefineGlobalQName(name);
+            var mn = Abc.DefineGlobalQName(name);
             return InitProperty(mn);
         }
 
         public Instruction GetRuntimeProperty()
         {
-            return GetProperty(abc.RuntimeQName);
+            return GetProperty(Abc.RuntimeQName);
         }
 
         public Instruction SetRuntimeProperty()
         {
-            return SetProperty(abc.RuntimeQName);
+            return SetProperty(Abc.RuntimeQName);
         }
 
         public AbcMultiname GetFieldName(IField field)
@@ -842,19 +842,19 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction Getlex(string ns, string name)
         {
-            var mn = abc.DefinePackageQName(ns, name);
+            var mn = Abc.DefinePackageQName(ns, name);
             return Getlex(mn);
         }
 
         public Instruction Getlex(string name)
         {
-            var mn = abc.DefineGlobalQName(name);
+            var mn = Abc.DefineGlobalQName(name);
             return Getlex(mn);
         }
 
         public Instruction Getlex(IType type)
         {
-            var name = abc.GetTypeName(type, false);
+            var name = Abc.GetTypeName(type, false);
             return Getlex(name);
         }
 
@@ -999,7 +999,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 return;
             }
 
-            var c = abc.IntPool.Define(value);
+            var c = Abc.IntPool.Define(value);
             Add(InstructionCode.Pushint, c);
         }
 
@@ -1023,7 +1023,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 return;
             }
 
-            var c = abc.UIntPool.Define(value);
+            var c = Abc.UIntPool.Define(value);
             Add(InstructionCode.Pushuint, c);
         }
 
@@ -1077,7 +1077,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (value == null)
                 throw new ArgumentNullException("value");
-            var c = abc.DefineString(value);
+            var c = Abc.DefineString(value);
             Add(InstructionCode.Pushstring, c);
         }
 
@@ -1110,21 +1110,9 @@ namespace DataDynamics.PageFX.FlashLand.IL
             }
         }
 
-        public void PushTrue()
+	    public Instruction PushNativeBool(bool value)
         {
-            PushBool(true);
-        }
-
-        public void PushFalse()
-        {
-            PushBool(false);
-        }
-
-        public Instruction PushNativeBool(bool value)
-        {
-            if (value)
-                return Add(InstructionCode.Pushtrue);
-            return Add(InstructionCode.Pushfalse);
+            return Add(value ? InstructionCode.Pushtrue : InstructionCode.Pushfalse);
         }
 
         public Instruction PushNull()
@@ -1150,7 +1138,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             }
             else
             {
-                var c = abc.DoublePool.Define(value);
+                var c = Abc.DoublePool.Define(value);
                 Add(InstructionCode.Pushdouble, c);
             }
         }
@@ -1168,12 +1156,12 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void PushAnyNamespace()
         {
-            PushNamespace(abc.Namespaces[0]);
+            PushNamespace(Abc.Namespaces[0]);
         }
 
         public void PushGlobalPackage()
         {
-            PushNamespace(abc.GlobalPackage);
+            PushNamespace(Abc.GlobalPackage);
         }
 
         public void LoadConstant(object value)
@@ -1289,7 +1277,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             var tag = Generator.DefineType(type);
             if (mustBeInstance && !(tag is AbcInstance))
                 throw new InvalidOperationException("Type has invalid tag. Tag must be AbcInstance.");
-            var mn = abc.GetTypeName(type, false);
+            var mn = Abc.GetTypeName(type, false);
             CreateInstance(mn, pushArgs);
         }
 
@@ -1353,7 +1341,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             if (type == null)
                 throw new ArgumentNullException("type");
             EnsureType(type);
-            var name = abc.GetTypeName(type, native);
+            var name = Abc.GetTypeName(type, native);
             return Coerce(name);
         }
 
@@ -1361,7 +1349,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            var c = abc.BuiltinTypes.GetCoercionInstructionCode(type);
+            var c = Abc.BuiltinTypes.GetCoercionInstructionCode(type);
             if (c == InstructionCode.Coerce)
                 return Add(c, type);
             return Add(c);
@@ -1381,17 +1369,17 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction CoerceArray()
         {
-            return Coerce(abc.BuiltinTypes.Array);
+            return Coerce(Abc.BuiltinTypes.Array);
         }
 
         public Instruction CoerceFunction()
         {
-            return Coerce(abc.BuiltinTypes.Function);
+            return Coerce(Abc.BuiltinTypes.Function);
         }
 
         public Instruction CoerceClass()
         {
-            return Coerce(abc.BuiltinTypes.Class);
+            return Coerce(Abc.BuiltinTypes.Class);
         }
 
         public Instruction CoerceBool()
@@ -1438,12 +1426,12 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction CoerceXML()
         {
-            return Coerce(abc.BuiltinTypes.XML);
+            return Coerce(Abc.BuiltinTypes.XML);
         }
 
         public Instruction CoerceXMLList()
         {
-            return Coerce(abc.BuiltinTypes.XMLList);
+            return Coerce(Abc.BuiltinTypes.XMLList);
         }
 
         public void FixBool()
@@ -1503,7 +1491,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 return;
             }
 
-            As(abc.GetTypeName(type, native));
+            As(Abc.GetTypeName(type, native));
         }
 
         public Instruction As(AbcMultiname type)
@@ -1731,7 +1719,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         private void CallCastToMethod(IType target)
         {
-            var typeName = abc.GetTypeName(target, true);
+            var typeName = Abc.GetTypeName(target, true);
             var m = Generator.DefineCastToMethod(target, true);
             GetlexSwapCall(m);
             Coerce(typeName);
@@ -1945,7 +1933,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="args">code that pushes arguments onto the stack</param>
         public void CallGlobalFunction(string ns, string name, int argc, Action args)
         {
-            var mn = abc.DefineQName(ns, name);
+            var mn = Abc.DefineQName(ns, name);
             FindPropertyStrict(mn);
             if (args != null)
                 args();
@@ -1971,7 +1959,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="args">code that pushes arguments onto the stack</param>
         public void CallGlobalFunctionVoid(string ns, string name, int argc, Action args)
         {
-            var mn = abc.DefineQName(ns, name);
+            var mn = Abc.DefineQName(ns, name);
             FindPropertyStrict(mn);
             if (args != null)
                 args();
@@ -2009,7 +1997,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name is null or empty", "name");
-            var mn = abc.DefineAS3Name(name);
+            var mn = Abc.DefineAS3Name(name);
             Call(mn, argc);
         }
 
@@ -2165,7 +2153,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="n">integer constant that specifies array size</param>
         public void CreateArray(int n)
         {
-            var type = abc.BuiltinTypes.Array;
+            var type = Abc.BuiltinTypes.Array;
             Getlex(type);
             PushInt(n);
             Construct(1);
@@ -2174,7 +2162,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void CreateArrayVarSize(int varSize)
         {
-            var type = abc.BuiltinTypes.Array;
+            var type = Abc.BuiltinTypes.Array;
             Getlex(type);
             GetLocal(varSize);
             Construct(1);
@@ -2203,7 +2191,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void GetNativeArrayItem()
         {
-            GetProperty(abc.NameArrayIndexer);
+            GetProperty(Abc.NameArrayIndexer);
             CoerceObject();
         }
 
@@ -2219,7 +2207,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void SetNativeArrayItem()
         {
-            SetProperty(abc.NameArrayIndexer);
+            SetProperty(Abc.NameArrayIndexer);
         }
 
         /// <summary>
@@ -2636,9 +2624,9 @@ namespace DataDynamics.PageFX.FlashLand.IL
         public void BeginCatch(object exceptionType, bool useSkipHandlers)
         {
             if (exceptionType == null)
-                exceptionType = abc[AvmTypeCode.Object];
+                exceptionType = Abc[AvmTypeCode.Object];
 
-            var type = abc.DefineTypeName(exceptionType);
+            var type = Abc.DefineTypeName(exceptionType);
 
             var tb = _tryStack.Peek();
 
@@ -3005,7 +2993,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
             //TODO: check type hierarchy
 
-            list.Insert(0, abc.BuiltinTypes.Object);
+            list.Insert(0, Abc.BuiltinTypes.Object);
 
             return list.ToArray();
         }
@@ -3046,7 +3034,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void GetEnumValue()
         {
-            var name = abc.DefineGlobalQName(Const.Enum.GetValue);
+            var name = Abc.DefineGlobalQName(Const.Enum.GetValue);
             Call(name, 0);
         }
 
@@ -3429,7 +3417,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         AbcTrait DefineTempValue(IType type)
         {
             var instance = DefineAbcInstance(type);
-            var typeName = abc.GetTypeName(type, true);
+            var typeName = Abc.GetTypeName(type, true);
             return instance.DefineStaticSlot("~temp", typeName);
         }
 
@@ -3459,7 +3447,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         AbcMethod DefineLeftOpTempOvf(IType type, string methodName)
         {
             var instance = DefineAbcInstance(type);
-            var retType = abc.GetTypeName(type, true);
+            var retType = Abc.GetTypeName(type, true);
 
             var ovf2 = DefineAbcMethod(type, methodName, 2);
 
@@ -3588,8 +3576,8 @@ namespace DataDynamics.PageFX.FlashLand.IL
             if (value == null)
                 throw new ArgumentNullException("value");
 
-            var typeName = abc.DefineTypeNameStrict(type);
-            var mn = abc.DefineName(name);
+            var typeName = Abc.DefineTypeNameStrict(type);
+            var mn = Abc.DefineName(name);
 
             Getlex(typeName);
             GetPrototype();
@@ -3620,7 +3608,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void SetProtoFunction(object type, AbcMethod sig, AbcCoder coder)
         {
-            var f = abc.DefineMethod(sig, coder);
+            var f = Abc.DefineMethod(sig, coder);
             SetProtoFunction(type, sig.TraitName, f, true); 
         }
         #endregion
@@ -3643,7 +3631,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void LoadCapabilities()
         {
-            var mn = abc.DefinePackageQName("flash.system", "Capabilities");
+            var mn = Abc.DefinePackageQName("flash.system", "Capabilities");
             Getlex(mn);
         }
 
@@ -3651,7 +3639,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             LoadCapabilities();
 
-            var mn = abc.DefineGlobalQName(name);
+            var mn = Abc.DefineGlobalQName(name);
             return GetProperty(mn);
         }
 
@@ -3670,7 +3658,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void AvmplusSystemWrite()
         {
-            var mn = abc.DefinePackageQName("avmplus", "System");
+            var mn = Abc.DefinePackageQName("avmplus", "System");
             Getlex(mn);
             mn = DefineGlobalQName("write");
             Swap(); //string
@@ -3726,7 +3714,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void ReadPtr()
         {
-            GetProperty(abc.PtrValueName);
+            GetProperty(Abc.PtrValueName);
         }
 
         public void ReadPtr(IType type)
@@ -3738,7 +3726,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void WritePtr()
         {
-            SetProperty(abc.PtrValueName);
+            SetProperty(Abc.PtrValueName);
         }
 
         public void CreateFuncPtr(AbcTrait trait)

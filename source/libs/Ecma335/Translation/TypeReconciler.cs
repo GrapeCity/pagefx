@@ -1,4 +1,5 @@
-﻿using DataDynamics.PageFX.Common.TypeSystem;
+﻿using System.Diagnostics;
+using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.Translation.ControlFlow;
 
 namespace DataDynamics.PageFX.Ecma335.Translation
@@ -24,24 +25,24 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 			if (trueNode.PartOfTernaryParam != null && falseNode.PartOfTernaryParam != null)
 				return false;
 
-			var topT = trueNode.Stack.Peek();
-			var topF = falseNode.Stack.Peek();
-			var typeT = topT.Type;
-			var typeF = topF.Type;
-			if (ReferenceEquals(typeT, typeF) && ReferenceEquals(typeT, type))
+			var trueTop = trueNode.Stack.Peek();
+			var falseTop = falseNode.Stack.Peek();
+			var trueType = trueTop.Type;
+			var falseType = falseTop.Type;
+			if (ReferenceEquals(trueType, falseType) && ReferenceEquals(trueType, type))
 				return false;
 
-			if (Checks.IsInvalidCast(typeT, type))
+			if (Checks.IsInvalidCast(trueType, type))
 				return false;
 
-			if (Checks.IsInvalidCast(typeF, type))
+			if (Checks.IsInvalidCast(falseType, type))
 				return false;
 
-			if (!ReferenceEquals(typeT, type))
-				context.New(trueNode).AppendCast(typeT, type);
+			if (!ReferenceEquals(trueType, type))
+				context.New(trueNode).AppendCast(trueType, type);
 
-			if (!ReferenceEquals(typeF, type))
-				context.New(falseNode).AppendCast(typeF, type);
+			if (!ReferenceEquals(falseType, type))
+				context.New(falseNode).AppendCast(falseType, type);
 
 			return true;
 		}

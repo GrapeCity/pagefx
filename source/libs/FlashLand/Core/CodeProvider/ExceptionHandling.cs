@@ -292,7 +292,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             {
                 //Reset rethrow flag
                 fi.RethrowFlagVariable = NewTempVar(true);
-                code.Add(InstructionCode.Pushfalse);
+				_initializableTempVars.Add(new TempVar(fi.RethrowFlagVariable, new Instruction(InstructionCode.Pushfalse)));
+                code.PushNativeBool(false);
+				// Trying to fix IVDiffGramTest. Coercing to any type does not help. The test failed with error:
+				// The Dark Side clouds everything. Impossible to see, the future is. (c) Yoda
+	            // code.CoerceAnyType();
                 code.SetLocal(fi.RethrowFlagVariable);
             }
 
@@ -310,7 +314,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (!fault)
             {
                 //Set rethrow flag to true to rethrow exception
-                code.Add(InstructionCode.Pushtrue);
+                code.PushNativeBool(true);
+				// Trying to fix IVDiffGramTest. Coercing to any type does not help. The test failed with error:
+				// The Dark Side clouds everything. Impossible to see, the future is. (c) Yoda
+	            // code.CoerceAnyType();
                 end = code.SetLocal(fi.RethrowFlagVariable);
             }
 
@@ -343,9 +350,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
             else
             {
-				// check if should rethrow exception
+				// check if we should rethrow exception
                 code.GetLocal(fi.RethrowFlagVariable);
-                KillTempVar(code, fi.RethrowFlagVariable);
+				// trying to fix IVDiffGramTest
+                // KillTempVar(code, fi.RethrowFlagVariable);
                 var br = code.IfFalse();
 
                 code.GetLocal(ci.ExceptionVar);

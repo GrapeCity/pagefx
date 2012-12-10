@@ -329,7 +329,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #endregion
 
         #region LoadVariable, StoreVariable
-        int VarOrigin
+		private int VarOrigin
         {
             get
             {
@@ -375,12 +375,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #endregion
 
         #region LoadField, StoreField
-        void EnsureField(IField field)
+        private void EnsureField(IField field)
         {
             _generator.DefineField(field);
         }
 
-        AbcMultiname GetFieldName(IField field)
+		private AbcMultiname GetFieldName(IField field)
         {
             EnsureField(field);
             var t = field.Tag as AbcTrait;
@@ -456,7 +456,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return code.ToArray();
         }
 
-        int SetTempVar(AbcCode code, bool keepStackState)
+        private int SetTempVar(AbcCode code, bool keepStackState)
         {
             //NOTE: we duplicate value onto the stack to keep stack unchanged after this operation
             if (keepStackState)
@@ -498,7 +498,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return null;
         }
 
-        void KillTempVar(AbcCode code, int var)
+        private void KillTempVar(AbcCode code, int var)
         {
             var instr = KillTempVarCore(var);
             if (instr != null)
@@ -506,14 +506,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         }
 
         //true - var is free, false - var is busy
-        readonly List<bool> _tempVars = new List<bool>();
+		private readonly List<bool> _tempVars = new List<bool>();
 
-        int TempVarsOrigin
+		private int TempVarsOrigin
         {
             get { return _body.LocalCount - _tempVars.Count; }
         }
 
-        int NewTempVar(bool newreg)
+        private int NewTempVar(bool newreg)
         {
             int n = _tempVars.Count;
             if (!newreg && n > 0)
@@ -529,13 +529,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     }
                 }
             }
+
             n = _body.LocalCount;
             ++_body.LocalCount;
             _tempVars.Add(false);
+
             return n;
         }
 
-        IInstruction KillTempVarCore(int index)
+        private IInstruction KillTempVarCore(int index)
         {
             int i = index - TempVarsOrigin;
             if (i >= 0)
@@ -545,6 +547,28 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
             return null;
         }
+
+		private class TempVar
+		{
+			public readonly int Index;
+			public readonly Instruction[] Init;
+
+			public TempVar(int index, Instruction instruction)
+			{
+				Index = index;
+				Init = new[] {instruction};
+			}
+		}
+		private readonly List<TempVar> _initializableTempVars = new List<TempVar>();
+
+		private void DeclareTempVars(AbcCode code)
+		{
+			foreach (var var in _initializableTempVars)
+			{
+				code.AddRange(var.Init);
+				code.SetLocal(var.Index);
+			}
+		}
         #endregion
     }
 }

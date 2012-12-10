@@ -346,7 +346,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 throw new ArgumentNullException("code");
             CreateSEHs(code);
             IL.Add(code);
-            Finish(code.abc);
+            Finish(code.Abc);
         }
 
         void CreateSEHs(AbcCode code)
