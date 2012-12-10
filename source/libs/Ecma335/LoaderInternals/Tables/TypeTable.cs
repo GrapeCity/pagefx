@@ -56,11 +56,8 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			{
 				var info = CacheTypeInfo(_lastIndex);
 
-				if (isMethod && info.MethodRange != null && index >= info.MethodRange[0] && index < info.MethodRange[1])
-				{
-					return this[_lastIndex++];
-				}
-				if (info.FieldRange != null && index >= info.FieldRange[0] && index < info.FieldRange[1])
+				var range = isMethod ? info.MethodRange : info.FieldRange;
+				if (range != null && index >= range[0] && index < range[1])
 				{
 					return this[_lastIndex++];
 				}
@@ -329,7 +326,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				to = nextRow[Schema.TypeDef.MethodList].Index - 1;
 			}
 
-			return from == to ? null : new[] { @from, to };
+			return from == to ? null : new[] { from, to };
 		}
 
 		private int[] GetFieldRange(MetadataRow row, MetadataRow nextRow)
@@ -343,7 +340,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				to = nextRow[Schema.TypeDef.FieldList].Index - 1;
 			}
 
-			return from == to ? null : new[] { @from, to };
+			return from == to ? null : new[] { from, to };
 		}
 
 		private void LoadMethodImpl(IType type, int typeIndex)
