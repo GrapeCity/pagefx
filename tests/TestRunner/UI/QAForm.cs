@@ -341,9 +341,12 @@ namespace DataDynamics.PageFX.TestRunner.UI
 
 		private IEnumerable<TreeNode> GetSelectedTestCases(TreeNode node)
 		{
-			EnsureLoaded(node, true);
+			if (node.Checked && node.Tag is ITestSuite)
+			{
+				EnsureLoaded(node, true);
+			}
 
-            var tc = node.Tag as TestCase;
+			var tc = node.Tag as TestCase;
             if (tc != null)
             {
                 if (node.Checked)
