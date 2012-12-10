@@ -3,7 +3,7 @@ using DataDynamics.PageFX.Ecma335.IL;
 
 namespace DataDynamics.PageFX.Ecma335.Translation
 {
-	internal class CallInstructionInfo
+	internal sealed class CallInstructionInfo
 	{
 		public readonly IMethod Method;
 		public readonly Instruction Instruction;

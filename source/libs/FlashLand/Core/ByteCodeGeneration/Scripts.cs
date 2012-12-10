@@ -10,13 +10,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
     partial class AbcGenerator
     {
         #region BuildMainScript
-        void BuildMainScript()
+        private void BuildMainScript()
         {
             var instance = MainInstance;
             if (instance == null) return;
+
             instance.IsApp = true;
+
             var script = new AbcScript {IsMain = true};
             _abc.Scripts.Add(script);
+
             script.DefineClassTraits(instance);
             script.Initializer = DefineMainScriptInit(script, instance);
         }
@@ -79,11 +82,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             return method;
         }
 
-        AbcCode _mainScriptCode;
-        AbcMethodBody _mainScriptBody;
-        int _insertIndexOfNewAPI;
+        private AbcCode _mainScriptCode;
+		private AbcMethodBody _mainScriptBody;
+		private int _insertIndexOfNewAPI;
 
-        void FinishMainScript()
+		private void FinishMainScript()
         {
             var body = _mainScriptBody;
             if (body != null)

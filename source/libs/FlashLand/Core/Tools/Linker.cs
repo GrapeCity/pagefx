@@ -174,12 +174,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-	    private int _counter;
+	    //private int _counter;
 
 	    private void OnTypeLoaded(object sender, TypeEventArgs e)
 	    {
 		    LinkType(e.Type);
-			Debug.WriteLine((++_counter) + ":" + e.Type.FullName);
+			//Debug.WriteLine((++_counter) + ":" + e.Type.FullName);
 	    }
 
 		private void FireTypeLinked(IType type)

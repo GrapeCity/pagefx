@@ -275,6 +275,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region BuildExposedAPI
         private void BuildExposedAPI()
         {
+			//TODO: load only exposed types
             foreach (var type in _assembly.Types)
             {
                 if (type.IsTestFixture())
