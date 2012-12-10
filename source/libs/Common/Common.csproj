@@ -106,8 +106,11 @@
     <Compile Include="TypeSystem\CustomAttributeProvider.cs" />
     <Compile Include="TypeSystem\IAssemblyLoader.cs" />
     <Compile Include="TypeSystem\IAssemblyReference.cs" />
+    <Compile Include="TypeSystem\ParameterExtensions.cs" />
     <Compile Include="TypeSystem\SystemType.cs" />
     <Compile Include="TypeSystem\SystemTypeCode.cs" />
+    <Compile Include="TypeSystem\SystemTypeExtensions.cs" />
+    <Compile Include="TypeSystem\SystemTypes.Cache.cs" />
     <Compile Include="Utilities\Tricks.cs" />
     <Compile Include="Tests\BitReaderTest.cs" />
     <Compile Include="Tests\BitWriterTest.cs" />

@@ -159,22 +159,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         private void AddConvertMethods(ICollection<LazyValue<AbcMethod>> list, string name)
         {
             var type = GetType(CorlibTypeId.Convert);
-            list.Add(LazyMethod(type, name, SysTypes.Boolean));
-            list.Add(LazyMethod(type, name, SysTypes.UInt8));
-            list.Add(LazyMethod(type, name, SysTypes.Int8));
-            list.Add(LazyMethod(type, name, SysTypes.Char));
-            list.Add(LazyMethod(type, name, SysTypes.Int16));
-            list.Add(LazyMethod(type, name, SysTypes.UInt16));
-            list.Add(LazyMethod(type, name, SysTypes.Int32));
-            list.Add(LazyMethod(type, name, SysTypes.UInt32));
-            list.Add(LazyMethod(type, name, SysTypes.Int64));
-            list.Add(LazyMethod(type, name, SysTypes.UInt64));
-            list.Add(LazyMethod(type, name, SysTypes.Single));
-            list.Add(LazyMethod(type, name, SysTypes.Double));
-            list.Add(LazyMethod(type, name, SysTypes.Decimal));
-            list.Add(LazyMethod(type, name, SysTypes.String));
-            list.Add(LazyMethod(type, name, SysTypes.Object));
-            list.Add(LazyMethod(type, name, SysTypes.DateTime));
+            list.Add(LazyMethod(type, name, SystemTypes.Boolean));
+            list.Add(LazyMethod(type, name, SystemTypes.UInt8));
+            list.Add(LazyMethod(type, name, SystemTypes.Int8));
+            list.Add(LazyMethod(type, name, SystemTypes.Char));
+            list.Add(LazyMethod(type, name, SystemTypes.Int16));
+            list.Add(LazyMethod(type, name, SystemTypes.UInt16));
+            list.Add(LazyMethod(type, name, SystemTypes.Int32));
+            list.Add(LazyMethod(type, name, SystemTypes.UInt32));
+            list.Add(LazyMethod(type, name, SystemTypes.Int64));
+            list.Add(LazyMethod(type, name, SystemTypes.UInt64));
+            list.Add(LazyMethod(type, name, SystemTypes.Single));
+            list.Add(LazyMethod(type, name, SystemTypes.Double));
+            list.Add(LazyMethod(type, name, SystemTypes.Decimal));
+            list.Add(LazyMethod(type, name, SystemTypes.String));
+            list.Add(LazyMethod(type, name, SystemTypes.Object));
+            list.Add(LazyMethod(type, name, SystemTypes.DateTime));
         }
 
         #endregion
@@ -210,9 +210,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 	            _lazyFields = new[]
 		            {
 			            //Delegate Fields
-			            NewLazyField(SysTypes.Delegate, Const.Delegate.Target),
-			            NewLazyField(SysTypes.Delegate, Const.Delegate.Function),
-			            NewLazyField(SysTypes.MulticastDelegate, Const.Delegate.Prev),
+			            NewLazyField(SystemTypes.Delegate, Const.Delegate.Target),
+			            NewLazyField(SystemTypes.Delegate, Const.Delegate.Function),
+			            NewLazyField(SystemTypes.MulticastDelegate, Const.Delegate.Prev),
 
 			            NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.ClassImpl),
 			            NewLazyField(GetType(CorlibTypeId.ParameterInfo), Const.ParameterInfo.NameImpl),

@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes
 
 		private IType StringType
 		{
-			get { return _generator.SysTypes.String; }
+			get { return _generator.SystemTypes.String; }
 		}
 	}
 

@@ -170,8 +170,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         private void EnsureInt64Members()
         {
-            DefineAbcMethod(SysTypes.Int64, "get_m_value", 0);
-            DefineAbcMethod(SysTypes.UInt64, "get_m_value", 0);
+            DefineAbcMethod(SystemTypes.Int64, "get_m_value", 0);
+            DefineAbcMethod(SystemTypes.UInt64, "get_m_value", 0);
         }
 
         private static void TryUnboxNumber(AbcCode code, IType type)

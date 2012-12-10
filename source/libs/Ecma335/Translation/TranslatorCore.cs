@@ -14,15 +14,17 @@ namespace DataDynamics.PageFX.Ecma335.Translation
     internal sealed class TranslatorCore
     {
 		private readonly DebugInfo _debugInfo;
-	    private int _bbIndex;
+		private readonly SystemTypes _systemTypes;
+		private int _bbIndex;
 		private bool _popScope;
 
-		public TranslatorCore(DebugInfo debugInfo)
+		public TranslatorCore(DebugInfo debugInfo, SystemTypes systemTypes)
 		{
 			_debugInfo = debugInfo;
+			_systemTypes = systemTypes;
 		}
-		
-	    /// <summary>
+
+		/// <summary>
         /// Translates all basic blocks in flow graph.
         /// </summary>
 		public void Translate(TranslationContext context)
@@ -343,7 +345,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
             context.CastToParamType = true;
 
-			var core = new InstructionTranslator(context);
+			var core = new InstructionTranslator(context, _systemTypes);
 			core.Translate(instruction);
 
 			var castToParamType = context.CastToParamType;

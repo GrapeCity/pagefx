@@ -128,7 +128,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             {
                 if (_isMemberwiseCloneCompiled.HasValue)
                     return _isMemberwiseCloneCompiled.Value;
-	            var m = SysTypes.Object.Methods.Find("MemberwiseClone", 0);
+	            var m = SystemTypes.Object.Methods.Find("MemberwiseClone", 0);
                 if (m == null)
                     throw new InvalidOperationException("Invalid corlib");
                 _isMemberwiseCloneCompiled = m.Tag is AbcMethod;
@@ -181,7 +181,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 		                const int arr = 1;
 		                const int varAttr = 2;
 
-		                code.NewArray(arr, SysTypes.Object, provider.CustomAttributes,
+		                code.NewArray(arr, SystemTypes.Object, provider.CustomAttributes,
 		                              attr => NewAttribute(code, attr, varAttr));
 
 		                code.ReturnValue();
@@ -632,7 +632,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
 		                code.GetLocal(varEnumInfo);
 
-		                code.NewArray(varArr, SysTypes.Object, fields,
+		                code.NewArray(varArr, SystemTypes.Object, fields,
 		                              f =>
 			                              {
 				                              var val = f.Value;
@@ -645,7 +645,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 		                code.SetProperty(Const.EnumInfo.Values);
 
 		                code.GetLocal(varEnumInfo);
-						code.NewArray(varArr, SysTypes.String, fields,
+						code.NewArray(varArr, SystemTypes.String, fields,
 		                              field => { code.PushString(field.Name); });
 		                code.SetProperty(Const.EnumInfo.Names);
 

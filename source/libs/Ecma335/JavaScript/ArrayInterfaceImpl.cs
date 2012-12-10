@@ -57,7 +57,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 		private void AddImpl(IMethod method, JsFunction func)
 		{
-			var type = _host.ResolveSystemType(SystemTypeCode.Array);
+			var type = _host.SystemTypes.Array;
 			var klass = _host.CompileClass(type);
 			klass.Add(new JsGeneratedMethod(method.JsFullName(type), func));
 		}

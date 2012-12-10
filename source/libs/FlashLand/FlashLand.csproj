@@ -151,7 +151,6 @@
     <Compile Include="Core\ByteCodeGeneration\Scripts.cs" />
     <Compile Include="Core\ByteCodeGeneration\StaticCtors.cs" />
     <Compile Include="Core\ByteCodeGeneration\StringAPI.cs" />
-    <Compile Include="Core\ByteCodeGeneration\CorlibTypes\SystemTypesImpl.cs" />
     <Compile Include="Core\ByteCodeGeneration\Type.cs" />
     <Compile Include="Core\ByteCodeGeneration\Type.DebugInfo.cs" />
     <Compile Include="Core\ByteCodeGeneration\CorlibTypes\TypeImpl.cs" />

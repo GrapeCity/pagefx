@@ -72,9 +72,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 			get { return _generator.ApplicationAssembly; }
 	    }
 
-	    private SystemTypesImpl SysTypes
+	    private SystemTypes SystemTypes
 		{
-			get { return _generator.SysTypes; }
+			get { return _generator.SystemTypes; }
 		}
         #endregion
 

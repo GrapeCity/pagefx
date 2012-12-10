@@ -24,16 +24,11 @@ namespace DataDynamics.PageFX.Common.Services
 
 	    public static IGenericType FindGenericType(IAssembly assembly, string fullname)
 	    {
-		    foreach (var type in assembly.Corlib().Types)
-		    {
-			    var gt = type as IGenericType;
-			    if (gt == null) continue;
-			    if (gt.FullName == fullname)
-				    return gt;
-		    }
-
-		    throw new InvalidOperationException(
-			    string.Format("Unable to find {0}. Invalid corlib.", fullname));
+		    var type = FindType(assembly, fullname) as IGenericType;
+		    if (type == null)
+			    throw new InvalidOperationException(
+				    string.Format("Unable to find {0}. Invalid corlib.", fullname));
+		    return type;
 	    }
 
 	    /// <summary>
@@ -223,17 +218,7 @@ namespace DataDynamics.PageFX.Common.Services
 
 	        public static IGenericType ArrayEnumeratorT(IAssembly assembly)
 	        {
-		        var arr = assembly.FindSystemType(SystemTypeCode.Array);
-		        foreach (var type in arr.Types)
-		        {
-			        var gt = type as IGenericType;
-			        if (gt == null) continue;
-			        if (gt.Name.StartsWith("Enumerator"))
-				        return gt;
-		        }
-
-		        throw new InvalidOperationException(
-			        "Unable to find Array.Enumerator<T>. Invalid corlib.");
+		        return FindGenericType(assembly, "System.Array+Enumerator`1");
 	        }
         }
     }
@@ -279,7 +264,6 @@ namespace DataDynamics.PageFX.Common.Services
 
 	public sealed class CorlibTypeCache
 	{
-		private readonly IAssembly _assembly;
 		private readonly LazyValue<IType>[] _types;
 		private readonly LazyValue<IType>[] _generics;
 
@@ -289,8 +273,6 @@ namespace DataDynamics.PageFX.Common.Services
 				throw new ArgumentNullException("assembly");
 
 			assembly = assembly.Corlib();
-
-			_assembly = assembly;
 
 			_types = new[]
 				{

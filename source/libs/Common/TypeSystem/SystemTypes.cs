@@ -7,12 +7,7 @@ using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-
-	    public string FullName
-	    {
-			get { return SystemTypes.Namespace + "." + Name; }
-	    }
-	public static class SystemTypes
+	public sealed partial class SystemTypes
     {
 		private static readonly SystemType[] SysTypes;
 		private static readonly Dictionary<string, SystemType> Lookup;
@@ -26,13 +21,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             foreach (var field in fields)
             {
                 var code = (SystemTypeCode)field.GetValue(null);
-                int i = (int)code;
+                int index = (int)code;
                 var attr = field.GetAttribute<SystemTypeNameAttribute>(false);
-                var st = new SystemType(code, attr != null ? attr.Name : code.ToString());
+                var systemType = new SystemType(code, attr != null ? attr.Name : code.ToString());
                 var cs_attr = field.GetAttribute<CSharpAttribute>(false);
                 if (cs_attr != null)
-                    st.CSharpKeyword = cs_attr.Value;
-                SysTypes[i] = st;
+                    systemType.CSharpKeyword = cs_attr.Value;
+                SysTypes[index] = systemType;
             }
 	        Lookup = SysTypes.ToDictionary(x => x.Name, x => x);
 	        LookupByFullName = SysTypes.ToDictionary(x => x.FullName, x => x);
@@ -44,13 +39,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return Lookup.TryGetValue(name, out type) ? type : null;
 		}
 
-		public static SystemType FindByFullName(string fullname)
+		public static SystemType FindByFullName(string fullName)
 		{
 			SystemType type;
-			return LookupByFullName.TryGetValue(fullname, out type) ? type : null;
+			return LookupByFullName.TryGetValue(fullName, out type) ? type : null;
 		}
 
-	    public static SystemType[] Types
+		public static SystemType[] Types
         {
             get { return SysTypes; }
         }
@@ -60,37 +55,37 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             switch (code)
             {
                 case TypeCode.Object:
-                    return FindSystemType(assembly, SystemTypeCode.Object);
+                    return assembly.FindSystemType(SystemTypeCode.Object);
                 case TypeCode.Boolean:
-                    return FindSystemType(assembly, SystemTypeCode.Boolean);
+                    return assembly.FindSystemType(SystemTypeCode.Boolean);
                 case TypeCode.Char:
-                    return FindSystemType(assembly, SystemTypeCode.Char);
+                    return assembly.FindSystemType(SystemTypeCode.Char);
                 case TypeCode.SByte:
-                    return FindSystemType(assembly, SystemTypeCode.Int8);
+                    return assembly.FindSystemType(SystemTypeCode.Int8);
                 case TypeCode.Byte:
-                    return FindSystemType(assembly, SystemTypeCode.UInt8);
+                    return assembly.FindSystemType(SystemTypeCode.UInt8);
                 case TypeCode.Int16:
-                    return FindSystemType(assembly, SystemTypeCode.Int16);
+                    return assembly.FindSystemType(SystemTypeCode.Int16);
                 case TypeCode.UInt16:
-                    return FindSystemType(assembly, SystemTypeCode.UInt16);
+                    return assembly.FindSystemType(SystemTypeCode.UInt16);
                 case TypeCode.Int32:
-                    return FindSystemType(assembly, SystemTypeCode.Int32);
+                    return assembly.FindSystemType(SystemTypeCode.Int32);
                 case TypeCode.UInt32:
-                    return FindSystemType(assembly, SystemTypeCode.UInt32);
+                    return assembly.FindSystemType(SystemTypeCode.UInt32);
                 case TypeCode.Int64:
-                    return FindSystemType(assembly, SystemTypeCode.Int64);
+                    return assembly.FindSystemType(SystemTypeCode.Int64);
                 case TypeCode.UInt64:
-                    return FindSystemType(assembly, SystemTypeCode.UInt64);
+                    return assembly.FindSystemType(SystemTypeCode.UInt64);
                 case TypeCode.Single:
-                    return FindSystemType(assembly, SystemTypeCode.Single);
+                    return assembly.FindSystemType(SystemTypeCode.Single);
                 case TypeCode.Double:
-                    return FindSystemType(assembly, SystemTypeCode.Double);
+                    return assembly.FindSystemType(SystemTypeCode.Double);
                 case TypeCode.Decimal:
-                    return FindSystemType(assembly, SystemTypeCode.Decimal);
+                    return assembly.FindSystemType(SystemTypeCode.Decimal);
                 case TypeCode.DateTime:
-                    return FindSystemType(assembly, SystemTypeCode.DateTime);
+                    return assembly.FindSystemType(SystemTypeCode.DateTime);
                 case TypeCode.String:
-                    return FindSystemType(assembly, SystemTypeCode.String);
+                    return assembly.FindSystemType(SystemTypeCode.String);
                 default:
                     return null;
             }
@@ -100,7 +95,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            var tc = Type.GetTypeCode(type);
+            var tc = System.Type.GetTypeCode(type);
             if (tc == TypeCode.Object)
             {
 	            return assembly.GetReferences(false).Select(x => x.FindType(type.FullName)).FirstOrDefault(x => x != null);
@@ -110,118 +105,15 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public static IType GetType(IAssembly assembly, object obj)
         {
-            if (obj == null) return FindSystemType(assembly, SystemTypeCode.Object);
+            if (obj == null) return assembly.FindSystemType(SystemTypeCode.Object);
             return GetType(assembly, obj.GetType());
         }
 
-		public static TypeCode GetTypeCode(this IType type)
-        {
-	        if (type == null) return TypeCode.Empty;
-			var st = type.SystemType();
-			return st != null ? st.TypeCode : TypeCode.Empty;
-        }
-
-	    public static bool IsSystemType(this IType type)
-		{
-			return type.SystemType() != null;
-		}
-
-		public static SystemType SystemType(this IType type)
-		{
-			if (type == null) return null;
-			return type.Namespace == TypeSystem.SystemType.Namespace ? Find(type.Name) : null;
-		}
-
-		public static IType FindSystemType(this IAssembly assembly, SystemTypeCode typeCode)
-		{
-			return assembly.Corlib().FindType(GetFullName(typeCode));
-		}
-
-		private static string GetFullName(SystemTypeCode typeCode)
+		public static string GetFullName(SystemTypeCode typeCode)
 		{
 			var sysType = Types[(int)typeCode];
 			return sysType.FullName;
 		}
-
-		public static IType FindSystemType(this IType type, SystemTypeCode typeCode)
-		{
-			return type.Assembly.FindSystemType(typeCode);
-		}
-
-		public static bool Is(this IType type, SystemTypeCode typeCode)
-		{
-			var st = type.SystemType();
-			return st != null && st.Code == typeCode;
-		}
-
-		public static bool IsNumeric(this IType type)
-        {
-            if (type == null) return false;
-            var st = type.SystemType();
-            if (st == null) return false;
-            return st.IsNumeric;
-        }
-
-        public static bool IsIntegral(this IType type)
-        {
-            if (type == null) return false;
-            var st = type.SystemType();
-            return st != null && st.IsIntegral;
-        }
-
-        public static bool IsSigned(this IType type)
-        {
-            if (type == null) return false;
-            var st = type.SystemType();
-            return st != null && st.IsSigned;
-        }
-
-        public static bool IsUnsigned(this IType type)
-        {
-            if (type == null) return false;
-            var st = type.SystemType();
-            return st != null && st.IsUnsigned;
-        }
-
-        public static IType ToSigned(IType type)
-        {
-            if (type == null) return null;
-            var st = type.SystemType();
-	        if (st == null) return type;
-			switch (st.Code)
-			{
-				case SystemTypeCode.UInt8:
-					return type.FindSystemType(SystemTypeCode.Int8);
-				case SystemTypeCode.UInt16:
-					return type.FindSystemType(SystemTypeCode.Int16);
-				case SystemTypeCode.UInt32:
-					return type.FindSystemType(SystemTypeCode.Int32);
-				case SystemTypeCode.UInt64:
-					return type.FindSystemType(SystemTypeCode.Int64);
-				default:
-					return type;
-			}
-        }
-
-        public static IType ToUnsigned(IType type)
-        {
-            if (type == null) return null;
-            var st = type.SystemType();
-	        if (st == null) return type;
-			switch (st.Code)
-			{
-				case SystemTypeCode.Int8:
-					return type.FindSystemType(SystemTypeCode.UInt8);
-				case SystemTypeCode.Int16:
-					return type.FindSystemType(SystemTypeCode.UInt16);
-				case SystemTypeCode.Int32:
-					return type.FindSystemType(SystemTypeCode.UInt32);
-				case SystemTypeCode.Int64:
-					return type.FindSystemType(SystemTypeCode.UInt64);
-				default:
-					return type;
-			}
-        }
 
 		private static IEnumerable<IType> GetDescendingOrder(IType type)
         {

@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes
 
 		public IType Type
 		{
-			get { return _generator.SysTypes.Object; }
+			get { return _generator.SystemTypes.Object; }
 		}
 
 		public AbcInstance Instance

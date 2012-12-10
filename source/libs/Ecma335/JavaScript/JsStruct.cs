@@ -79,7 +79,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				}
 				else // value types, int64 based
 				{
-					var objectType = compiler.ResolveSystemType(SystemTypeCode.Object);
+					var objectType = compiler.SystemTypes.Object;
 					var eq = objectType.Methods.Find("Equals", objectType, objectType);
 					compiler.CompileMethod(eq);
 					e = eq.JsFullName().Id().Call(left, right);
@@ -90,7 +90,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 			func.Body.Add(result == null ? "false".Id().Return() : result.Return());
 
-			var methodName = ObjectMethods.Find(compiler.ObjectType, ObjectMethodId.Equals).JsName();
+			var methodName = ObjectMethods.Find(compiler.SystemTypes.Object, ObjectMethodId.Equals).JsName();
 
 			klass.ExtendPrototype(func, methodName);
 		}

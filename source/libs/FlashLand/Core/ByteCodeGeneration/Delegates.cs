@@ -24,8 +24,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             if (_enshureDelegateMethods) return;
             _enshureDelegateMethods = true;
-            EnshureDelegateMethods(SysTypes.Delegate);
-            EnshureDelegateMethods(SysTypes.MulticastDelegate);
+            EnshureDelegateMethods(SystemTypes.Delegate);
+            EnshureDelegateMethods(SystemTypes.MulticastDelegate);
         }
 
 		private bool _enshureDelegateMethods;
@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 instance.Initializer = m;
 
             m.ReturnType = DefineReturnType(method.Type);
-            m.AddParam(CreateParam(SysTypes.Object, method.Parameters[0].Name));
+            m.AddParam(CreateParam(SystemTypes.Object, method.Parameters[0].Name));
             m.AddParam(CreateParam(_abc.BuiltinTypes.Function, method.Parameters[1].Name));
 
             if (!isInitializer)

@@ -1,21 +1,26 @@
-using DataDynamics.PageFX.Common.TypeSystem;
+using System;
 
-namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
-	//TODO: move to common assembly
-	internal sealed class SystemTypesImpl
+	//TODO: introduce IAssembly.SystemTypes property to have a single instance
+	public partial class SystemTypes
 	{
 		private readonly IAssembly _assembly;
+		private readonly IType[] _types;
 
-		public SystemTypesImpl(IAssembly assembly)
+		public SystemTypes(IAssembly assembly)
 		{
+			if (assembly == null)
+				throw new ArgumentNullException("assembly");
+
 			_assembly = assembly.Corlib();
+			_types = new IType[SysTypes.Length];
 		}
 
-		//TODO: cache types
 		private IType Get(SystemTypeCode typeCode)
 		{
-			return _assembly.FindSystemType(typeCode);
+			int index = (int)typeCode;
+			return _types[index] ?? (_types[index] = _assembly.FindSystemType(typeCode));
 		}
 
 		public IType Boolean
@@ -131,6 +136,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes
 		public IType Exception
 		{
 			get { return Get(SystemTypeCode.Exception); }
+		}
+
+		public IType IntPtr
+		{
+			get { return Get(SystemTypeCode.IntPtr); }
 		}
 	}
 }

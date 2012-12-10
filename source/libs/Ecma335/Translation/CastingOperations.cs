@@ -136,7 +136,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 		public static Code ToUnsigned(this Code code, ref IType type, bool swap)
 		{
-			var ut = SystemTypes.ToUnsigned(type);
+			var ut = type.ToUnsigned();
 			if (ut == null || ReferenceEquals(type, ut))
 				return code;
 

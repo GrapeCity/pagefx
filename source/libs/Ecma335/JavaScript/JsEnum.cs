@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			}
 			else if (!type.ValueType.Is(SystemTypeCode.Int32))
 			{
-				var int32Type = compiler.ResolveSystemType(SystemTypeCode.Int32);
+				var int32Type = compiler.SystemTypes.Int32;
 				func.Body.Add("$conv".Id().Call(value, type.ValueType.JsTypeCode(), int32Type.JsTypeCode()).Return());
 			}
 			else

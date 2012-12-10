@@ -20,6 +20,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 	public sealed class JsCompiler
 	{
 		private readonly IAssembly _assembly;
+		private SystemTypes _systemTypes;
 		private JsProgram _program;
 		private readonly HashList<IType, IType> _constructedTypes = new HashList<IType, IType>(x => x);
 
@@ -53,16 +54,11 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			_assembly = CommonLanguageInfrastructure.Deserialize(assemblyFile.FullName, null);
 		}
 
-		internal IType ResolveSystemType(SystemTypeCode typeCode)
+		internal SystemTypes SystemTypes
 		{
-			return _assembly.FindSystemType(typeCode);
+			get { return _systemTypes ?? (_systemTypes = new SystemTypes(_assembly)); }
 		}
-
-		internal IType ObjectType
-		{
-			get { return ResolveSystemType(SystemTypeCode.Object); }
-		}
-
+		
 		public void Compile(FileInfo output)
 		{
 			var program = Compile();
@@ -88,7 +84,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			CompileClass(Corlib.FindType(_assembly, "System.IndexOutOfRangeException"));
 
 			// build types
-			CompileClass(ResolveSystemType(SystemTypeCode.Type));
+			CompileClass(SystemTypes.Type);
 			
 
 			new TypeInfoBuilder(this, _program).Build();
@@ -410,7 +406,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 		{
 			var hi = (int)(value >> 32);
 			var lo = (uint)(value & 0xffffffff);
-			var type = ResolveSystemType(SystemTypeCode.Int64);
+			var type = SystemTypes.Int64;
 			CompileClass(type);
 			return type.New(hi, lo);
 		}
@@ -419,7 +415,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 		{
 			var hi = (uint)(value >> 32);
 			var lo = (uint)(value & 0xffffffff);
-			var type = ResolveSystemType(SystemTypeCode.UInt64);
+			var type = SystemTypes.UInt64;
 			CompileClass(type);
 			return type.New(hi, lo);
 		}
@@ -503,7 +499,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 				case InstructionCode.Ldstr:
 					// string should be compiled to be ready for Object method calls.
-					CompileClass(ResolveSystemType(SystemTypeCode.String));
+					CompileClass(SystemTypes.String);
 					return value;
 
 				case InstructionCode.Call:
@@ -900,7 +896,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 			var = context.Vars.Add(key, info);
 
-			CompileClass(ResolveSystemType(SystemTypeCode.Array));
+			CompileClass(SystemTypes.Array);
 			CompileType(elemType);
 
 			return var.Id();
@@ -1096,7 +1092,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			if (type.IsArray)
 			{
 				CompileType(type.GetElementType());
-				return CompileClass(ResolveSystemType(SystemTypeCode.Array));
+				return CompileClass(SystemTypes.Array);
 			}
 
 			return CompileClass(type);
@@ -1118,7 +1114,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			}
 
 			var baseType = type.BaseType;
-			var baseClass = CompileClass(baseType.Is(SystemTypeCode.ValueType) || type.IsEnum ? ObjectType : baseType);
+			var baseClass = CompileClass(baseType.Is(SystemTypeCode.ValueType) || type.IsEnum ? SystemTypes.Object : baseType);
 
 			if (string.IsNullOrEmpty(type.Namespace))
 				_program.DefineNamespace("$global");
@@ -1189,7 +1185,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 			if (isEnumOrStruct)
 			{
-				foreach (var id in objectMethods.Where(id => ObjectMethods.Find(ObjectType, id).Tag != null))
+				foreach (var id in objectMethods.Where(id => ObjectMethods.Find(SystemTypes.Object, id).Tag != null))
 				{
 					CompileMethod(klass, id);
 				}

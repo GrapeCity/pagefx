@@ -437,31 +437,16 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				if (type != null)
 					return type;
 
-				//TODO: remove linking with system type when merge
 				int typeCount = Metadata.GetRowCount(TableId.TypeDef);
 				for (; _lastIndex < typeCount; _lastIndex++)
 				{
 					var info = CacheTypeInfo(_lastIndex);
-
-					if (Loader.IsCorlib)
-					{
-						if (SystemTypes.FindByFullName(info.FullName) != null)
-						{
-							type = this[_lastIndex];
-						}
-						continue;
-					}
-
 					if (info.FullName == fullname)
 					{
 						return this[_lastIndex++];
 					}
 				}
 
-				type = FindInCache(fullname);
-				if (type != null)
-					return type;
-				
 				return null;
 			}
 		}

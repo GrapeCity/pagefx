@@ -203,7 +203,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 //var ifNotError = code.IfEquals();
 
                 code.GetLocal(var);
-                code.As(SysTypes.Exception, true);
+                code.As(SystemTypes.Exception, true);
                 code.PushNull();
                 var ifExc = code.IfNotEquals();
 

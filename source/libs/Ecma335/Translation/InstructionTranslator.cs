@@ -16,9 +16,10 @@ namespace DataDynamics.PageFX.Ecma335.Translation
     {
 	    private readonly TranslationContext _context;
 
-		public InstructionTranslator(TranslationContext context)
+		public InstructionTranslator(TranslationContext context, SystemTypes systemTypes)
 		{
 			_context = context;
+			SystemTypes = systemTypes;
 		}
 
 		private Node Block
@@ -31,12 +32,9 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 			get { return _context.Method.DeclaringType.Assembly; }
 		}
 
-		private IType SysType(SystemTypeCode typeCode)
-		{
-			return Assembly.FindSystemType(typeCode);
-		}
+		private SystemTypes SystemTypes { get; set; }
 
-	    /// <summary>
+		/// <summary>
         /// Translates current instruction to array of instructions for target IL.
         /// This is a big switch by instruction code.
         /// </summary>
@@ -444,108 +442,108 @@ namespace DataDynamics.PageFX.Ecma335.Translation
                 #region conversion instructions
                 //TODO: IntPtr, UIntPtr is not supported
                 case InstructionCode.Conv_I1:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int8), false, false);
+					OpConv(code, currentInstruction, SystemTypes.Int8, false, false);
 					break;
                 case InstructionCode.Conv_I2:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int16), false, false);
+					OpConv(code, currentInstruction, SystemTypes.Int16, false, false);
 					break;
                 case InstructionCode.Conv_I4:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int32), false, false);
+					OpConv(code, currentInstruction, SystemTypes.Int32, false, false);
 					break;
                 case InstructionCode.Conv_I8:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int64), false, false);
+					OpConv(code, currentInstruction, SystemTypes.Int64, false, false);
 					break;
                 case InstructionCode.Conv_R4:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Single), false, false);
+					OpConv(code, currentInstruction, SystemTypes.Single, false, false);
 					break;
                 case InstructionCode.Conv_R8:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Double), false, false);
+					OpConv(code, currentInstruction, SystemTypes.Double, false, false);
 					break;
 
                 case InstructionCode.Conv_U1:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt8), false, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt8, false, false);
 					break;
                 case InstructionCode.Conv_U2:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt16), false, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt16, false, false);
 					break;
                 case InstructionCode.Conv_U4:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt32), false, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt32, false, false);
 					break;
                 case InstructionCode.Conv_U8:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt64), false, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt64, false, false);
 					break;
 
                 case InstructionCode.Conv_Ovf_I1_Un:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int8), true, true);
+					OpConv(code, currentInstruction, SystemTypes.Int8, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_I2_Un:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int16), true, true);
+					OpConv(code, currentInstruction, SystemTypes.Int16, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_I4_Un:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int32), true, true);
+					OpConv(code, currentInstruction, SystemTypes.Int32, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_I8_Un:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int64), true, true);
+					OpConv(code, currentInstruction, SystemTypes.Int64, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_U1_Un:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt8), true, true);
+					OpConv(code, currentInstruction, SystemTypes.UInt8, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_U2_Un:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt16), true, true);
+					OpConv(code, currentInstruction, SystemTypes.UInt16, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_U4_Un:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt32), true, true);
+					OpConv(code, currentInstruction, SystemTypes.UInt32, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_U8_Un:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt64), true, true);
+					OpConv(code, currentInstruction, SystemTypes.UInt64, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_I_Un:
 					//TODO: native int
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int32), true, true);
+					OpConv(code, currentInstruction, SystemTypes.Int32, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_U_Un:
 					// TODO: native uint
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt32), true, true);
+					OpConv(code, currentInstruction, SystemTypes.UInt32, true, true);
 					break;
                 case InstructionCode.Conv_Ovf_I1:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int8), true, false);
+					OpConv(code, currentInstruction, SystemTypes.Int8, true, false);
 					break;
                 case InstructionCode.Conv_Ovf_U1:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt8), true, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt8, true, false);
 					break;
                 case InstructionCode.Conv_Ovf_I2:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int16), true, false);
+					OpConv(code, currentInstruction, SystemTypes.Int16, true, false);
 					break;
                 case InstructionCode.Conv_Ovf_U2:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt16), true, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt16, true, false);
 					break;
                 case InstructionCode.Conv_Ovf_I4:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int32), true, false);
+					OpConv(code, currentInstruction, SystemTypes.Int32, true, false);
 					break;
                 case InstructionCode.Conv_Ovf_U4:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt32), true, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt32, true, false);
 					break;
                 case InstructionCode.Conv_Ovf_I8:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int64), true, false);
+					OpConv(code, currentInstruction, SystemTypes.Int64, true, false);
 					break;
                 case InstructionCode.Conv_Ovf_U8:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt64), true, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt64, true, false);
 					break;
 
                 case InstructionCode.Conv_I:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int32), false, false);
+					OpConv(code, currentInstruction, SystemTypes.Int32, false, false);
 					break;
                 case InstructionCode.Conv_Ovf_I:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Int32), true, false);
+					OpConv(code, currentInstruction, SystemTypes.Int32, true, false);
 					break;
                 case InstructionCode.Conv_Ovf_U:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt32), true, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt32, true, false);
 					break;
                 case InstructionCode.Conv_U:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.UInt32), false, false);
+					OpConv(code, currentInstruction, SystemTypes.UInt32, false, false);
 					break;
                 case InstructionCode.Conv_R_Un:
-					OpConv(code, currentInstruction, SysType(SystemTypeCode.Single), false, true);
+					OpConv(code, currentInstruction, SystemTypes.Single, false, true);
 					break;
                 #endregion
 
@@ -942,7 +940,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
                 code.Dup();
             }
             code.LoadFunction(method);
-			_context.Push(currentInstruction, new Func(method, SysType(SystemTypeCode.IntPtr)));
+			_context.Push(currentInstruction, new Func(method, SystemTypes.IntPtr));
         }
 
 		private void OpLdvirtftn(Code code, Instruction currentInstruction)
@@ -1316,7 +1314,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
             index.ItShouldBeNonPointer();
 
             //NOTE: AVM requires int value for switch instruction
-			code.Cast(index.Type, SysType(SystemTypeCode.Int32));
+			code.Cast(index.Type, SystemTypes.Int32);
 
 			var targets = (int[])currentInstruction.Value;
 			code.Switch(targets.Length);
@@ -1648,7 +1646,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
         {
             var token = _context.Pop(currentInstruction);
             var type = token.Instruction.Type;
-			_context.PushResult(currentInstruction, SysType(SystemTypeCode.Type));
+			_context.PushResult(currentInstruction, SystemTypes.Type);
 			code.TypeOf(type);
         }
 
@@ -1699,7 +1697,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
             var n = _context.Pop(currentInstruction);
             n.ItShouldBeNonPointer();
 
-            var nType = SysType(SystemTypeCode.Int32);
+			var nType = SystemTypes.Int32;
             if (!TypeReconciler.ReconcileTernaryAssignment(_context, nType))
             {
 	            code.Cast(n.Type, nType);
@@ -1716,7 +1714,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
         {
             var arr = _context.Pop(currentInstruction);
             arr.ItShouldBeArray();
-			_context.PushResult(currentInstruction, SysType(SystemTypeCode.Int32));
+			_context.PushResult(currentInstruction, SystemTypes.Int32);
 			code.GetArrayLength();
         }
 
@@ -1754,7 +1752,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
             var elemType = GetElemType(arr.Type);
 
             //cast index to int
-			code.Cast(index.Type, SysType(SystemTypeCode.Int32));
+			code.Cast(index.Type, SystemTypes.Int32);
 
 			if (currentInstruction.IsByRef())
             {
