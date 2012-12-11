@@ -1,10 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace DataDynamics.PageFX.Ecma335.PDB.Interop
+namespace DataDynamics.PageFX.Ecma335.Pdb.Interop
 {
-    [ComImport]
-    [Guid(Guids.IID_IMetaDataDispenserEx)]
+	[ComImport]
+    [Guid("31BCFCE2-DAFB-11D2-9F81-00C04F79A0A3")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [CoClass(typeof(CorMetaDataDispenser))]
     public interface IMetaDataDispenserEx
@@ -54,7 +54,7 @@ namespace DataDynamics.PageFX.Ecma335.PDB.Interop
 
     // Coclass for IMetaDataDispenserEx interface.  
     [ComImport]
-    [Guid(Guids.CLSID_CorMetaDataDispenser)]
+    [Guid("E5CB7A31-7512-11d2-89CE-0080C792E5D8")]
     public class CorMetaDataDispenser
     {
         //constructor of this class is runtime controlled, not CIL controlled 

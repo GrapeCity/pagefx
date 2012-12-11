@@ -72,6 +72,8 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CodeModel\IVariableCollection.cs" />
+    <Compile Include="CodeModel\VariableExtensions.cs" />
     <Compile Include="Graphics\ColorExtensions.cs" />
     <Compile Include="Graphics\Enums.cs" />
     <Compile Include="Graphics\FastBitmap.cs" />
@@ -329,6 +331,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Tools\dot.zip" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Ecma335.Translation;
@@ -20,5 +21,7 @@ namespace DataDynamics.PageFX.Ecma335.IL
 		int InstanceCount { get; set; }
 
 		ControlFlowGraph ControlFlowGraph { get; set; }
+
+		void SetSequencePoints(IEnumerable<SequencePoint> points);
 	}
 }

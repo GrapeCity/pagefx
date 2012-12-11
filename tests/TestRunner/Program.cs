@@ -9,7 +9,6 @@ using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.Ecma335;
 using DataDynamics.PageFX.Ecma335.Metadata;
-using DataDynamics.PageFX.Ecma335.PDB;
 using DataDynamics.PageFX.Ecma335.Tools;
 using DataDynamics.PageFX.FlashLand;
 using DataDynamics.PageFX.FlashLand.Swf;
@@ -220,21 +219,6 @@ namespace DataDynamics.PageFX.TestRunner
                 {
                     MessageBox.Show(exc.ToString());
                 }
-            }
-        }
-        #endregion
-
-        #region PDB_Test
-        private static void PDB_Test()
-        {
-            try
-            {
-                //PdbDump.Write(typeof(string).Assembly, "c:\\mscorlib.xml");
-                //PdbDump.Write(@"c:\pfx\libs\corlib.dll");
-                PdbDump.Write(@"c:\pfx\temp\HelloWorld.exe");
-            }
-            catch
-            {
             }
         }
         #endregion

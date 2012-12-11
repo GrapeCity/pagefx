@@ -12,7 +12,7 @@ using DataDynamics.PageFX.FlashLand.Core.Tools;
 
 namespace DataDynamics.PageFX
 {
-    partial class PFC
+    internal class PFC
     {
         #region Shared Fields
         const string DefaultOutputFormat = "swf";

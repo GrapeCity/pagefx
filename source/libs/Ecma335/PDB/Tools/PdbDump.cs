@@ -7,8 +7,9 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml;
+using DataDynamics.PageFX.Ecma335.Pdb.Interop;
 
-namespace DataDynamics.PageFX.Ecma335.PDB
+namespace DataDynamics.PageFX.Ecma335.Pdb.Tools
 {
     //http://blogs.msdn.com/jmstall/articles/sample_pdb2xml.aspx
 
@@ -41,14 +42,14 @@ namespace DataDynamics.PageFX.Ecma335.PDB
 
         public static void Write(Assembly assembly, XmlWriter writer)
         {
-            var reader = assembly.GetPdbReader();
+            var reader = (PdbReader)PdbReader.Create(assembly.Location);
             if (reader == null)
             {
                 return;
             }
 
             var impl = new Impl { m_assembly = assembly, m_writer = writer };
-            impl.Dump(reader.SymReader);
+            impl.Dump(reader.SymbolReader);
         }
 
         private class Impl

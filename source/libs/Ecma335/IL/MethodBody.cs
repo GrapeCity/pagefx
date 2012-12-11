@@ -17,7 +17,7 @@ using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.Metadata;
-using DataDynamics.PageFX.Ecma335.PDB;
+using DataDynamics.PageFX.Ecma335.Pdb;
 using DataDynamics.PageFX.Ecma335.Translation;
 
 namespace DataDynamics.PageFX.Ecma335.IL
@@ -204,8 +204,7 @@ namespace DataDynamics.PageFX.Ecma335.IL
 
         #endregion
 
-        #region DebuInfo
-        public void LinkSequencePoints(IEnumerable<SequencePoint> points)
+		public void SetSequencePoints(IEnumerable<SequencePoint> points)
         {
             if (points == null) return;
             var code = Code;
@@ -218,15 +217,7 @@ namespace DataDynamics.PageFX.Ecma335.IL
             }
         }
 
-        public void LinkSequencePoints(ISymbolMethod symMethod)
-        {
-            if (symMethod == null) return;
-            var points = symMethod.ReadSequencePoints();
-            LinkSequencePoints(points);
-        }
-        #endregion
-
-        #region Private Members
+		#region Private Members
         #region ReadCode
         private ILStream ReadCode(IMethod method, IMethodContext context, byte[] code)
         {

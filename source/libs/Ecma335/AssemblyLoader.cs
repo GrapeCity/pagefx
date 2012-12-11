@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.IO;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
@@ -9,7 +10,7 @@ using DataDynamics.PageFX.Ecma335.LoaderInternals;
 using DataDynamics.PageFX.Ecma335.LoaderInternals.Collections;
 using DataDynamics.PageFX.Ecma335.LoaderInternals.Tables;
 using DataDynamics.PageFX.Ecma335.Metadata;
-using DataDynamics.PageFX.Ecma335.PDB;
+using DataDynamics.PageFX.Ecma335.Pdb;
 using MethodBody = DataDynamics.PageFX.Ecma335.IL.MethodBody;
 
 namespace DataDynamics.PageFX.Ecma335
@@ -397,7 +398,7 @@ namespace DataDynamics.PageFX.Ecma335
 
         #region DebugInfo
 		private bool _initDebugInfo = true;
-		private PdbReader _pdbReader;
+		private ISymbolLoader _pdbReader;
 
         private bool IsFrameworkLib
         {
@@ -409,7 +410,7 @@ namespace DataDynamics.PageFX.Ecma335
             }
         }
 
-	    private PdbReader CreatePdbReader()
+	    private ISymbolLoader CreatePdbReader()
         {
             if (!GlobalSettings.EmitDebugInfo) return null;
 
@@ -419,13 +420,13 @@ namespace DataDynamics.PageFX.Ecma335
             string path = Assembly.Location;
             if (string.IsNullOrEmpty(path)) return null; //from stream?
             
-            return path.GetPdbReader();
+            return SymbolFactory.CreateSymbolLoader(path);
         }
 
         public void LinkDebugInfo(IMethodBody body)
         {
-            var cilBody = body as MethodBody;
-            if (cilBody == null) return;
+            var clrBody = body as IClrMethodBody;
+            if (clrBody == null) return;
 
             if (_initDebugInfo)
             {
@@ -435,12 +436,10 @@ namespace DataDynamics.PageFX.Ecma335
 
             if (_pdbReader == null) return;
 
-            var symMethod = _pdbReader.SymReader.GetSymbolMethod(body.Method);
-            if (symMethod == null) return;
-
-            cilBody.LinkSequencePoints(symMethod);
-            cilBody.LocalVariables.SetNames(symMethod.RootScope);
-            cilBody.LocalVariables.SetGoodNames();
+			if (_pdbReader.LoadSymbols(clrBody))
+			{
+				clrBody.LocalVariables.UnifyAndNormalizeNames();
+			}
         }
         #endregion
 
