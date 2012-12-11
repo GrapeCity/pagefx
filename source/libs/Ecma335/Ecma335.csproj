@@ -55,7 +55,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ISymWrapper" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -218,9 +217,7 @@
     </Compile>
     <Compile Include="CommonLanguageInfrastructure.cs" />
     <Compile Include="AssemblyResolver.cs" />
-    <Compile Include="Pdb\Interop\IMetaDataDispenserEx.cs" />
     <Compile Include="Pdb\ISymbolLoader.cs" />
-    <Compile Include="Pdb\Interop\PdbReader.cs" />
     <Compile Include="Pdb\Microsoft.Cci.Pdb\BitAccess.cs" />
     <Compile Include="Pdb\Microsoft.Cci.Pdb\BitSet.cs" />
     <Compile Include="Pdb\Microsoft.Cci.Pdb\CvInfo.cs" />
@@ -247,9 +244,7 @@
     <Compile Include="Pdb\Microsoft.Cci.Pdb\PdbTokenLine.cs" />
     <Compile Include="Pdb\Microsoft.Cci.Pdb\SourceLocationProvider.cs" />
     <Compile Include="Pdb\SymbolLoader.cs" />
-    <Compile Include="Pdb\Tools\PdbDump.cs" />
     <Compile Include="Metadata\Image.cs" />
-    <Compile Include="Pdb\SymbolFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\MetadataHtmlExport.cs" />
     <Compile Include="Tools\MetadataXmlExport.cs" />

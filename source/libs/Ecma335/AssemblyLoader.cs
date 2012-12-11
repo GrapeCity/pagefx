@@ -420,7 +420,7 @@ namespace DataDynamics.PageFX.Ecma335
             string path = Assembly.Location;
             if (string.IsNullOrEmpty(path)) return null; //from stream?
             
-            return SymbolFactory.CreateSymbolLoader(path);
+            return SymbolLoader.Create(path);
         }
 
         public void LinkDebugInfo(IMethodBody body)
