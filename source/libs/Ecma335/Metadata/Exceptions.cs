@@ -20,11 +20,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
     [Serializable]
     public class BadSignatureException : Exception
     {
-        public BadSignatureException()
-        {
-        }
-
-        public BadSignatureException(string message) : base(message)
+	    public BadSignatureException(string message) : base(message)
         {
         }
     }

@@ -13,7 +13,7 @@ using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.Corlib;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
@@ -54,7 +54,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 code.GetLocal(i + 1);
                 code.PushInt(0);
                 var br = code.If(BranchOperator.GreaterThanOrEqual);
-                code.ThrowException(Corlib.Types.ArgumentOutOfRangeException(ApplicationAssembly));
+	            var exceptionType = GetType(CorlibTypeId.ArgumentOutOfRangeException);
+                code.ThrowException(exceptionType);
                 br.BranchTarget = code.Label();
             }
 
@@ -730,8 +731,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             AbcMultiname name;
             if (instance.IsNative)
             {
-                instance = GetObjectInstance();
-                name = DefinePfxName("initobj_" + type.GetSigName());
+	            instance = ObjectType.Instance;
+	            name = DefinePfxName("initobj_" + type.GetSigName());
             }
             else
             {

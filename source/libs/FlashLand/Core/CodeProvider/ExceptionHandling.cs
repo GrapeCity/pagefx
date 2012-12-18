@@ -260,7 +260,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         void CallToException(AbcCode code, int var)
         {
-            var avmErrors = Corlib.FindType(Assembly, "AvmErrors");
+            var avmErrors = Assembly.Corlib().FindType("AvmErrors");
+			if (avmErrors == null)
+				throw new InvalidOperationException(string.Format("Unable to find AvmErrors. Invalid corlib."));
+
             EnsureType(avmErrors);
 
             var fromError = avmErrors.Methods.Find("ExceptionFromError", 1);
@@ -427,19 +430,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return code.ToArray();
         }
 
-        public IInstruction[] ThrowRuntimeError(string message)
+	    public IInstruction[] ThrowTypeLoadException(string message)
         {
             var code = new AbcCode(_abc);
             InsertExceptionBreak(code);
-            code.ThrowException(Corlib.Types.ExecutionEngineException(Assembly), message);
-            return code.ToArray();
-        }
-
-        public IInstruction[] ThrowTypeLoadException(string message)
-        {
-            var code = new AbcCode(_abc);
-            InsertExceptionBreak(code);
-            code.ThrowException(Corlib.Types.TypeLoadException(Assembly), message);
+		    var exceptionType = _generator.GetType(CorlibTypeId.TypeLoadException);
+            code.ThrowException(exceptionType, message);
             return code.ToArray();
         }
 

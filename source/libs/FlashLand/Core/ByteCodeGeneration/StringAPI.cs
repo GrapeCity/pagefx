@@ -92,8 +92,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 return;
             }
 
-            var convertType = Corlib.Types.Convert(ApplicationAssembly);
-            var convertInstance = DefineAbcInstance(convertType);
+	        var convertType = ConvertType.Type;
+            var convertInstance = ConvertType.Instance;
 
             int paramCount = method.Parameters.Count;
             IMethod convertMethod;

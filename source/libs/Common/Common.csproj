@@ -137,7 +137,7 @@
     <Compile Include="CLRNames.cs" />
     <Compile Include="TypeSystem\CollectionExtensions.cs" />
     <Compile Include="TypeSystem\CompoundType.cs" />
-    <Compile Include="Services\Corlib.cs" />
+    <Compile Include="Services\CorlibTypes.cs" />
     <Compile Include="TypeSystem\CustomAttribute.cs" />
     <Compile Include="Services\DebugHooks.cs" />
     <Compile Include="TypeSystem\Event.cs" />

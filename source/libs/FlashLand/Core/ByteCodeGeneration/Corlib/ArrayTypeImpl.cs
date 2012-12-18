@@ -2,7 +2,7 @@
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes
+namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.Corlib
 {
 	internal sealed class ArrayTypeImpl
 	{

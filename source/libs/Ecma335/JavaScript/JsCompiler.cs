@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 		private JsProgram _program;
 		private readonly HashList<IType, IType> _constructedTypes = new HashList<IType, IType>(x => x);
 
-		internal readonly CorlibTypeCache CorlibTypes;
+		internal readonly CorlibTypes CorlibTypes;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="JsCompiler"/> class.
@@ -39,7 +39,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				throw new NotSupportedException("Class library is not supported yet!");
 
 			_assembly = assembly;
-			CorlibTypes = new CorlibTypeCache(assembly);
+			CorlibTypes = new CorlibTypes(assembly);
 		}
 
 		/// <summary>
@@ -81,7 +81,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			CompileClass(CorlibTypes[CorlibTypeId.NullReferenceException]);
 			CompileClass(CorlibTypes[CorlibTypeId.InvalidCastException]);
 			CompileClass(CorlibTypes[CorlibTypeId.NotImplementedException]);
-			CompileClass(Corlib.FindType(_assembly, "System.IndexOutOfRangeException"));
+			CompileClass(CorlibTypes[CorlibTypeId.IndexOutOfRangeException]);
 
 			// build types
 			CompileClass(SystemTypes.Type);

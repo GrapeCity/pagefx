@@ -7,7 +7,7 @@ using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration;
-using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.Corlib;
 
 namespace DataDynamics.PageFX.FlashLand.IL
 {
@@ -2714,22 +2714,26 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void ThrowNullReferenceException()
         {
-            ThrowIfNull(Corlib.Types.NullReferenceException(Assembly));
+	        var type = Generator.GetType(CorlibTypeId.NullReferenceException);
+            ThrowIfNull(type);
         }
         
         public void ThrowInvalidCastException()
         {
-			ThrowException(Corlib.Types.InvalidCastException(Assembly));
+	        var type = Generator.GetType(CorlibTypeId.InvalidCastException);
+			ThrowException(type);
         }
 
         public void ThrowNotSupportedException()
         {
-			ThrowException(Corlib.Types.NotSupportedException(Assembly));
+	        var type = Generator.GetType(CorlibTypeId.NotSupportedException);
+			ThrowException(type);
         }
 
         public void ThrowInvalidCastException(string message)
         {
-			ThrowException(Corlib.Types.InvalidCastException(Assembly), message);
+	        var type = Generator.GetType(CorlibTypeId.InvalidCastException);
+			ThrowException(type, message);
         }
 
         public void ThrowInvalidCastException(IType type)
@@ -2763,7 +2767,8 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="dup"></param>
         public void ThrowInvalidCastExcpetionIfType(IType type, bool native, bool dup)
         {
-			ThrowIfType(type, native, Corlib.Types.InvalidCastException(Assembly), dup);
+	        var exceptionType = Generator.GetType(CorlibTypeId.InvalidCastException);
+			ThrowIfType(type, native, exceptionType, dup);
         }
 
         /// <summary>
@@ -2792,7 +2797,8 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="dup"></param>
         public void ThrowInvalidCastExcpetionIfNotType(IType type, bool native, bool dup)
         {
-			ThrowIfNotType(type, native, Corlib.Types.InvalidCastException(Assembly), dup);
+	        var exceptionType = Generator.GetType(CorlibTypeId.InvalidCastException);
+			ThrowIfNotType(type, native, exceptionType, dup);
         }
 
         public void GetStaticFunction(AbcMethod method)

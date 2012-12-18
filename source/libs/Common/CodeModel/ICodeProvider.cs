@@ -350,9 +350,7 @@ namespace DataDynamics.PageFX.Common.CodeModel
         /// <returns>code to perform given operation</returns>
 		IInstruction[] Rethrow(ISehBlock block);
 
-        IInstruction[] ThrowRuntimeError(string message);
-
-        IInstruction[] ThrowTypeLoadException(string message);
+	    IInstruction[] ThrowTypeLoadException(string message);
         #endregion
 
         #region Computing

@@ -179,7 +179,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (_methodFindClass != null)
                 return _methodFindClass;
 
-            var instance = GetTypeInstance();
+            var instance = SystemType.Instance;
             _methodFindClass = instance.DefineStaticMethod(
                 new PfxQName("FindClass"),
                 AvmTypeCode.Class,
@@ -212,7 +212,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         //returns true if passed object is null
         public AbcMethod DefineIsNullMethod()
         {
-            var instance = GetTypeInstance();
+            var instance = SystemType.Instance;
 
             return instance.DefineStaticMethod(
                 "IsNull",
@@ -245,7 +245,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         public AbcMethod DefineIsNullableMethod()
         {
-            var instance = GetTypeInstance();
+            var instance = SystemType.Instance;
 
             return instance.DefineStaticMethod(
                 "IsNullable",

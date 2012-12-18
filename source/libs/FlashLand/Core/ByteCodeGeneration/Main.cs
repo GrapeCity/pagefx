@@ -6,7 +6,6 @@ using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
 using DataDynamics.PageFX.FlashLand.Core.SwfCompiler;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.FlashLand.IL;
@@ -73,7 +72,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         internal SwfCompilerImpl sfc;
 
         public AbcGenMode Mode;
-		public CorlibTypeCache CorlibTypes;
+		public CorlibTypes CorlibTypes;
         #endregion
 
         #region Properties
@@ -155,7 +154,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 #endif
             _assembly = assembly;
 
-			CorlibTypes = new CorlibTypeCache(assembly);
+			CorlibTypes = new CorlibTypes(assembly);
 
 			AssemblyIndex.Setup(assembly);
 

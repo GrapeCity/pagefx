@@ -1,6 +1,6 @@
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes;
+using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.Corlib;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration

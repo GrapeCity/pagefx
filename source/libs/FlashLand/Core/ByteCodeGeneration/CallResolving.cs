@@ -185,7 +185,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var code = new AbcCode(_abc);
 
-            code.ThrowException(Corlib.Types.NotImplementedException(ApplicationAssembly));
+	        var exceptionType = GetType(CorlibTypeId.NotImplementedException);
+            code.ThrowException(exceptionType);
 
             //TODO: Is it needed???
             if (method.IsVoid())

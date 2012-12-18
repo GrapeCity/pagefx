@@ -3,43 +3,43 @@ using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.CorlibTypes
+namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.Corlib
 {
-	internal sealed class CompilerTypeImpl
+	internal sealed class EnvironmentTypeImpl
 	{
 		private readonly AbcGenerator _generator;
 		private LazyValue<AbcMethod>[] _methods;
 
-		public CompilerTypeImpl(AbcGenerator generator)
+		public EnvironmentTypeImpl(AbcGenerator generator)
 		{
 			_generator = generator;
 		}
 
-		public AbcMethod this[CompilerMethodId id]
+		public AbcMethod this[EnvironmentMethodId id]
 		{
-			get { return CompilerMethods[(int)id].Value; }
+			get { return EnvironmentMethods[(int)id].Value; }
 		}
 
-		private LazyValue<AbcMethod>[] CompilerMethods
+		private LazyValue<AbcMethod>[] EnvironmentMethods
 		{
 			get
 			{
 				return _methods ?? (_methods =
 				                    new[]
 					                    {
-						                    _generator.LazyMethod(Type, "ToArray", 1)
+						                    _generator.LazyMethod(Type, "get_StackTrace")
 					                    });
 			}
 		}
 
 		private IType Type
 		{
-			get { return _generator.GetType(CorlibTypeId.CompilerUtils); }
+			get { return _generator.CorlibTypes[CorlibTypeId.Environment]; }
 		}
 	}
 
-	internal enum CompilerMethodId
+	internal enum EnvironmentMethodId
 	{
-		ToArray,
+		StackTrace,
 	}
 }

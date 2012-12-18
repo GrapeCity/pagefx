@@ -287,11 +287,6 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			return NopArray;
 		}
 
-		public IInstruction[] ThrowRuntimeError(string message)
-		{
-			return NopArray;
-		}
-
 		public IInstruction[] ThrowTypeLoadException(string message)
 		{
 			return NopArray;
