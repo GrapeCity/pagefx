@@ -50,7 +50,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
                 case BinaryOperator.LessThanOrEqual:
                 case BinaryOperator.GreaterThan:
                 case BinaryOperator.GreaterThanOrEqual:
-                    return (left ?? right).FindSystemType(SystemTypeCode.Boolean);
+                    return (left ?? right).SystemType(SystemTypeCode.Boolean);
 
                 case BinaryOperator.Assign:
                     return left;

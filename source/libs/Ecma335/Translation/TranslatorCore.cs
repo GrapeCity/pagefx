@@ -14,14 +14,12 @@ namespace DataDynamics.PageFX.Ecma335.Translation
     internal sealed class TranslatorCore
     {
 		private readonly DebugInfo _debugInfo;
-		private readonly SystemTypes _systemTypes;
 		private int _bbIndex;
 		private bool _popScope;
 
-		public TranslatorCore(DebugInfo debugInfo, SystemTypes systemTypes)
+		public TranslatorCore(DebugInfo debugInfo)
 		{
 			_debugInfo = debugInfo;
-			_systemTypes = systemTypes;
 		}
 
 		/// <summary>
@@ -345,7 +343,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
             context.CastToParamType = true;
 
-			var core = new InstructionTranslator(context, _systemTypes);
+			var core = new InstructionTranslator(context);
 			core.Translate(instruction);
 
 			var castToParamType = context.CastToParamType;

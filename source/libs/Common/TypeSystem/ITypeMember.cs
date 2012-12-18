@@ -1,5 +1,6 @@
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
+using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -73,4 +74,62 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// <param name="m">member to add</param>
         void Add(ITypeMember m);
     }
+
+	public enum MemberType
+	{
+		Field,
+		Method,
+		Constructor,
+		Property,
+		Event,
+		Type,
+	}
+
+	public enum Visibility : byte
+	{
+		[CSharp("private")]
+		[ActionScript("private")]
+		PrivateScope,
+
+		[CSharp("private")]
+		[VB("Private")]
+		[ActionScript("private")]
+		NestedPrivate,
+
+		[CSharp("protected")]
+		[ActionScript("protected")]
+		NestedProtected,
+
+		[CSharp("protected internal")]
+		[ActionScript("protected")]
+		NestedProtectedInternal,
+
+		[CSharp("internal")]
+		[ActionScript("internal")]
+		NestedInternal,
+
+		[CSharp("public")]
+		[ActionScript("public")]
+		NestedPublic,
+
+		[CSharp("private")]
+		[ActionScript("private")]
+		Private,
+
+		[CSharp("protected")]
+		[ActionScript("protected")]
+		Protected,
+
+		[CSharp("protected internal")]
+		[ActionScript("protected")]
+		ProtectedInternal,
+
+		[CSharp("internal")]
+		[ActionScript("internal")]
+		Internal,
+
+		[CSharp("public")]
+		[ActionScript("public")]
+		Public,
+	}
 }

@@ -397,10 +397,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private string GetDelegateMethodName(bool add)
 	    {
-		    var type = _assembly.FindSystemType(SystemTypeCode.Delegate);
-		    return type.GetMethodName(add
-			                              ? Const.Delegate.AddEventListeners
-			                              : Const.Delegate.RemoveEventListeners, 2);
+		    var type = _assembly.SystemTypes.Delegate;
+		    return type.GetMethodName(add ? Const.Delegate.AddEventListeners : Const.Delegate.RemoveEventListeners, 2);
 	    }
 
 	    private void LinkFields(IType type, AbcInstance instance)

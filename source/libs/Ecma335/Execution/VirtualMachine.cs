@@ -163,7 +163,7 @@ namespace DataDynamics.PageFX.Ecma335.Execution
 
 		internal IType ResolveSystemType(SystemTypeCode typeCode)
 		{
-			return _assembly.FindSystemType(typeCode);
+			return _assembly.SystemTypes[typeCode];
 		}
 
 		private Class GetClass(IType type)

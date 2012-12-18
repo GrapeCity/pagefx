@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 
@@ -19,4 +19,20 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     {
         IGenericParameter this[string name] { get; }
     }
+
+	public enum GenericParameterVariance : byte
+	{
+		NonVariant,
+		Covariant,
+		Contravariant
+	}
+
+	[Flags]
+	public enum GenericParameterSpecialConstraints : byte
+	{
+		None = 0,
+		DefaultConstructor = 1,
+		ReferenceType = 2,
+		ValueType = 4,
+	}
 }

@@ -16,10 +16,9 @@ namespace DataDynamics.PageFX.Ecma335.Translation
     {
 	    private readonly TranslationContext _context;
 
-		public InstructionTranslator(TranslationContext context, SystemTypes systemTypes)
+		public InstructionTranslator(TranslationContext context)
 		{
 			_context = context;
-			SystemTypes = systemTypes;
 		}
 
 		private Node Block
@@ -32,7 +31,10 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 			get { return _context.Method.DeclaringType.Assembly; }
 		}
 
-		private SystemTypes SystemTypes { get; set; }
+		private SystemTypes SystemTypes
+		{
+			get { return Assembly.SystemTypes; }
+		}
 
 		/// <summary>
         /// Translates current instruction to array of instructions for target IL.

@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.Common.Services
 
 		private static IType ResolveSystemType(IType left, IType right, SystemTypeCode typeCode)
 		{
-			return (left ?? right).FindSystemType(typeCode);
+			return (left ?? right).SystemType(typeCode);
 		}
 
         public static IType GetResultType(IType left, IType right, BinaryOperator op)
@@ -85,13 +85,13 @@ namespace DataDynamics.PageFX.Common.Services
                 if (st.IsUnsigned)
                 {
                     if (st.Size <= 4)
-                        return type.FindSystemType(SystemTypeCode.Int32);
-                    return type.FindSystemType(SystemTypeCode.Int64);
+                        return type.SystemType(SystemTypeCode.Int32);
+                    return type.SystemType(SystemTypeCode.Int64);
                 }
             }
 
             if (st.IsIntegral && st.Bits <= 32)
-                return type.FindSystemType(SystemTypeCode.Int32);
+                return type.SystemType(SystemTypeCode.Int32);
 
             return type;
         }

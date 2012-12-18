@@ -130,14 +130,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
 		internal IType SysType(SystemTypeCode typeCode)
 		{
-			return ApplicationAssembly.FindSystemType(typeCode);
+			return SystemTypes[typeCode];
 		}
 
 	    internal SystemTypes SystemTypes
 	    {
-			get { return _systemTypes ?? (_systemTypes = new SystemTypes(ApplicationAssembly)); }
+			get { return ApplicationAssembly.SystemTypes; }
 	    }
-	    private SystemTypes _systemTypes;
 
 	    #region Generate - Entry Point
         public AbcFile Generate(IAssembly assembly)

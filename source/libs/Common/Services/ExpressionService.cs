@@ -116,7 +116,7 @@ namespace DataDynamics.PageFX.Common.Services
 	            var targetType = castExp.TargetType;
 	            if (targetType.Is(SystemTypeCode.UInt16))
                 {
-                    castExp.TargetType = targetType.FindSystemType(SystemTypeCode.Char);
+                    castExp.TargetType = targetType.SystemType(SystemTypeCode.Char);
                     return e;
                 }
             }

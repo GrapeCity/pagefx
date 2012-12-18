@@ -55,4 +55,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// </summary>
 		string FullName { get; }
 	}
+
+	public enum HashAlgorithmId
+	{
+		MD5 = 0x8003,
+		None = 0,
+		SHA1 = 0x8004
+	}
 }

@@ -93,7 +93,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
         public static bool IsStringInterface(this IType type)
         {
-	        var stringType = type.FindSystemType(SystemTypeCode.String);
+	        var stringType = type.SystemType(SystemTypeCode.String);
 	        return stringType.Implements(type);
         }
 

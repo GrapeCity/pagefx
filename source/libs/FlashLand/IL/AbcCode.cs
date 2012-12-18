@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
 		private IType SysType(SystemTypeCode typeCode)
 		{
-			return Assembly.FindSystemType(typeCode);
+			return Assembly.SystemTypes[typeCode];
 		}
 
         /// <summary>
@@ -977,7 +977,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
     	private IType GetArrayElementType(Array arr)
         {
             var type = arr.GetType().GetElementType();
-            return SystemTypes.GetType(Assembly, type);
+            return Assembly.ResolveType(type);
         }
 
         /// <summary>

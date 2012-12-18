@@ -21,18 +21,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return type != null ? SystemTypes.FindByFullName(type.FullName) : null;
 		}
 
-		public static IType FindSystemType(this IAssembly assembly, SystemTypeCode typeCode)
+		public static IType SystemType(this IType type, SystemTypeCode typeCode)
 		{
-			var fullName = SystemTypes.GetFullName(typeCode);
-			var type = assembly.Corlib().FindType(fullName);
-			if (type == null)
-				throw new InvalidOperationException(string.Format("Cannot find system type {0}.", fullName));
-			return type;
-		}
-
-		public static IType FindSystemType(this IType type, SystemTypeCode typeCode)
-		{
-			return type != null ? type.Assembly.FindSystemType(typeCode) : null;
+			return type != null ? type.Assembly.SystemTypes[typeCode] : null;
 		}
 
 		public static bool Is(this IType type, SystemTypeCode typeCode)
@@ -78,13 +69,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			switch (st.Code)
 			{
 				case SystemTypeCode.Int8:
-					return type.FindSystemType(SystemTypeCode.UInt8);
+					return type.SystemType(SystemTypeCode.UInt8);
 				case SystemTypeCode.Int16:
-					return type.FindSystemType(SystemTypeCode.UInt16);
+					return type.SystemType(SystemTypeCode.UInt16);
 				case SystemTypeCode.Int32:
-					return type.FindSystemType(SystemTypeCode.UInt32);
+					return type.SystemType(SystemTypeCode.UInt32);
 				case SystemTypeCode.Int64:
-					return type.FindSystemType(SystemTypeCode.UInt64);
+					return type.SystemType(SystemTypeCode.UInt64);
 				default:
 					return type;
 			}

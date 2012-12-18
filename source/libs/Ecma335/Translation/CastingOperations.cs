@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 	{
 		public static IType ResolveSystemType(this Code code, SystemTypeCode typeCode)
 		{
-			return code.Method.DeclaringType.FindSystemType(typeCode);
+			return code.Method.DeclaringType.SystemType(typeCode);
 		}
 
 		public static Code CastWithSwap(this Code code, IType source, IType target, bool swap)
@@ -110,7 +110,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 		public static Code CastOperands(this Code code, ref IType left, ref IType right)
 		{
-			var d = SystemTypes.GetCommonDenominator(left, right);
+			var d = NumericType.GetCommonType(left, right);
 			if (d == null)
 				return code;
 
@@ -149,7 +149,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 		public static Code ToUnsigned(this Code code, ref IType left, ref IType right)
 		{
-			var u = SystemTypes.UInt32OR64(left, right);
+			var u = NumericType.UInt32OR64(left, right);
 			if (u != null)
 			{
 				code.CastWithSwap(right, u, false);

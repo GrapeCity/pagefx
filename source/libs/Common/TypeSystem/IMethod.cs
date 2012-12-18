@@ -47,8 +47,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         bool PInvoke { get; set; }
 
-        MethodCallingConvention CallingConvention { get; set; }
-        #endregion
+	    #endregion
 
         #region Impl Flags
         /// <summary>

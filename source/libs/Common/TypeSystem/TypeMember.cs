@@ -5,7 +5,7 @@ using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public abstract class TypeMember : CustomAttributeProvider, ITypeMember
+	public abstract class TypeMember : CustomAttributeProvider, ITypeMember
     {
 		private IType _type;
 	    private IType _declType;
@@ -194,4 +194,31 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
         #endregion
     }
+
+	[Flags]
+	public enum Modifiers
+	{
+		None = 0,
+		Const = 0x01,
+		ReadOnly = 0x02,
+		Volatile = 0x04,
+		Static = 0x08,
+		Extern = 0x10,
+		Virtual = 0x20,
+		Abstract = 0x40,
+		Sealed = 0x80,
+		HideBySig = 0x100,
+		New = 0x200,
+		Unsafe = 0x400,
+		HasThis = 0x800,
+		ExplicitThis = 0x1000,
+		HasDefault = 0x2000,
+		BeforeFieldInit = 0x4000,
+		SpecialName = 0x8000,
+		RuntimeSpecialName = 0x10000,
+		EntryPoint = 0x20000,
+		CompilerGenerated = 0x40000,
+		ExplicitImplementation = 0x80000,
+		PInvoke = 0x100000,
+	}
 }

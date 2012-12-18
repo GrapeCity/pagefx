@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 	{
 		public static IType ResolveSystemType(this MethodContext context, SystemTypeCode typeCode)
 		{
-			return context.Method.DeclaringType.FindSystemType(typeCode);
+			return context.Method.DeclaringType.SystemType(typeCode);
 		}
 	}
 }

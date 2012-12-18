@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -18,12 +17,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         string Location { get; set; }
 
-        /// <summary>
-        /// Gets or sets type of this assembly
-        /// </summary>
-        AssemblyType Type { get; set; }
-
-        /// <summary>
+		/// <summary>
         /// Gets the entry point in this assembly.
         /// </summary>
         IMethod EntryPoint { get; }
@@ -38,17 +32,32 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// </summary>
         IModule MainModule { get; }
 
+		/// <summary>
+		/// Finds type by fullname.
+		/// </summary>
+		/// <param name="fullname"></param>
+		/// <returns></returns>
         IType FindType(string fullname);
 
+		/// <summary>
+		/// Gets assembly loader.
+		/// </summary>
 		IAssemblyLoader Loader { get; }
+
+		/// <summary>
+		/// Gets system types.
+		/// </summary>
+		SystemTypes SystemTypes { get; }
     }
 
     /// <summary>
     /// Represents collection of <see cref="IAssembly"/>s.
     /// </summary>
-    public interface IAssemblyCollection : IList<IAssembly>
+    public interface IAssemblyCollection : IReadOnlyList<IAssembly>
     {
-        IAssembly this[IAssemblyReference r] { get; }
+	    IAssembly ResolveAssembly(IAssemblyReference reference);
+
+	    void Add(IAssembly assembly);
     }
 }
 

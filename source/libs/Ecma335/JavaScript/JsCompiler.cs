@@ -56,7 +56,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 		internal SystemTypes SystemTypes
 		{
-			get { return _systemTypes ?? (_systemTypes = new SystemTypes(_assembly)); }
+			get { return _assembly.SystemTypes; }
 		}
 		
 		public void Compile(FileInfo output)

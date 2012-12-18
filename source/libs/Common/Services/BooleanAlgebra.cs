@@ -334,14 +334,14 @@ namespace DataDynamics.PageFX.Common.Services
 			        case SystemTypeCode.Single:
 			        case SystemTypeCode.Double:
 			        case SystemTypeCode.Decimal:
-				        return new BinaryExpression(e, new ConstExpression(0, type.FindSystemType(SystemTypeCode.Int32)), op);
+				        return new BinaryExpression(e, new ConstExpression(0, type.SystemType(SystemTypeCode.Int32)), op);
 
 			        case SystemTypeCode.Char:
-						return new BinaryExpression(e, new ConstExpression('\0', type.FindSystemType(SystemTypeCode.Char)), op);
+						return new BinaryExpression(e, new ConstExpression('\0', type.SystemType(SystemTypeCode.Char)), op);
 		        }
 	        }
 			
-	        return new BinaryExpression(e, new ConstExpression(null, type.FindSystemType(SystemTypeCode.Object)), op);
+	        return new BinaryExpression(e, new ConstExpression(null, type.SystemType(SystemTypeCode.Object)), op);
         }
 
         public static IExpression ToBool(IExpression e)

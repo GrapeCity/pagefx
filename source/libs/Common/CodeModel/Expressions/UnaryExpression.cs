@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
                     return Arithmetic.GetResultType(type, op);
 
                 case UnaryOperator.BooleanNot:
-                    return type.FindSystemType(SystemTypeCode.Boolean);
+                    return type.SystemType(SystemTypeCode.Boolean);
 
                 case UnaryOperator.PreIncrement:
                 case UnaryOperator.PostIncrement:

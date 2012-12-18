@@ -37,13 +37,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public override IType BaseType
         {
-            get { return ElementType.FindSystemType(SystemTypeCode.Array); }
+            get { return ElementType.SystemType(SystemTypeCode.Array); }
             set { throw new NotSupportedException(); }
         }
 
         private IType ImplType
         {
-			get { return ElementType.FindSystemType(SystemTypeCode.Array); }
+			get { return ElementType.SystemType(SystemTypeCode.Array); }
         }
 
         public override ITypeCollection Interfaces
@@ -174,7 +174,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private static IType ResolveSystemType(IType arrayType, SystemTypeCode typeCode)
 		{
-			return arrayType.FindSystemType(typeCode);
+			return arrayType.SystemType(typeCode);
 		}
 
         public static IMethod ResolveMethod(IType arrayType, IMethod method)

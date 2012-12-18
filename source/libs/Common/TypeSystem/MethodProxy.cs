@@ -50,13 +50,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { throw new NotSupportedException(); }
         }
 
-        public MethodCallingConvention CallingConvention
-        {
-            get { return _method.CallingConvention; }
-            set { throw new NotSupportedException(); }
-        }
-
-        public MethodCodeType CodeType
+	    public MethodCodeType CodeType
         {
             get { return _method.CodeType; }
             set { throw new NotSupportedException(); }

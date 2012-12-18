@@ -17,7 +17,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 		private readonly DebugInfo _debugInfo = new DebugInfo();
 		private TranslationContext _context;
 		private TranslatorResult _result;
-		private SystemTypes _systemTypes;
 
 #if PERF
         public static int CallCount;
@@ -39,7 +38,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
             }
 
 			_context = new TranslationContext(new Code(method, clrBody, provider), null);
-			_systemTypes = new SystemTypes(method.DeclaringType.Assembly);
 
 #if PERF
             ++CallCount;
@@ -107,7 +105,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 			Analyzer.Analyze(context.Body, context.Provider);
 
-			var core = new TranslatorCore(_debugInfo, _systemTypes);
+			var core = new TranslatorCore(_debugInfo);
 			core.Translate(context);
 
 			var result = Emitter.Emit(context, _debugInfo.DebugFile);

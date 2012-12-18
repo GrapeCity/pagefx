@@ -48,4 +48,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    void Add(IArgument argument);
     }
+
+	public enum ArgumentKind : byte
+	{
+		Fixed = 0,
+		Field = 0x53,
+		Property = 0x54,
+	}
 }

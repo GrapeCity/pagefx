@@ -104,15 +104,16 @@
     <Compile Include="IO\TextWriterExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="TypeSystem\ArgumentCollection.cs" />
+    <Compile Include="TypeSystem\ClassSemantics.cs" />
     <Compile Include="TypeSystem\CustomAttributeCollection.cs" />
     <Compile Include="TypeSystem\CustomAttributeProvider.cs" />
     <Compile Include="TypeSystem\IAssemblyLoader.cs" />
     <Compile Include="TypeSystem\IAssemblyReference.cs" />
+    <Compile Include="TypeSystem\NumericType.cs" />
     <Compile Include="TypeSystem\ParameterExtensions.cs" />
     <Compile Include="TypeSystem\SystemType.cs" />
     <Compile Include="TypeSystem\SystemTypeCode.cs" />
     <Compile Include="TypeSystem\SystemTypeExtensions.cs" />
-    <Compile Include="TypeSystem\SystemTypes.Cache.cs" />
     <Compile Include="Utilities\Tricks.cs" />
     <Compile Include="Tests\BitReaderTest.cs" />
     <Compile Include="Tests\BitWriterTest.cs" />
@@ -139,7 +140,6 @@
     <Compile Include="Services\Corlib.cs" />
     <Compile Include="TypeSystem\CustomAttribute.cs" />
     <Compile Include="Services\DebugHooks.cs" />
-    <Compile Include="TypeSystem\Enums.cs" />
     <Compile Include="TypeSystem\Event.cs" />
     <Compile Include="TypeSystem\EventCollection.cs" />
     <Compile Include="TypeSystem\EventProxy.cs" />

@@ -88,9 +88,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { SetModifier(value, Modifiers.PInvoke); }
         }
 
-        public MethodCallingConvention CallingConvention { get; set; }
-
-        #region Impl Flags
+	    #region Impl Flags
 
 	    public MethodImplAttributes ImplFlags { get; set; }
 

@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
 
     	public override IType ResultType
         {
-            get { return SourceType.FindSystemType(SystemTypeCode.Object); }
+            get { return SourceType.SystemType(SystemTypeCode.Object); }
         }
 
     	public override string ToString()

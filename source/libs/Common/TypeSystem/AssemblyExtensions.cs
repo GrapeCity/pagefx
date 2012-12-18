@@ -57,5 +57,22 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 				return assembly;
 			return assembly.GetReferences(true).FirstOrDefault(x => x.IsCorlib);
 		}
+
+	    public static IType ResolveType(this IAssembly assembly, Type type)
+	    {
+		    if (type == null)
+			    throw new ArgumentNullException("type");
+		    var typeCode = Type.GetTypeCode(type);
+		    switch (typeCode)
+		    {
+			    case TypeCode.Empty:
+			    case TypeCode.DBNull:
+				    return null;
+			    case TypeCode.Object:
+				    return assembly.GetReferences(false).Select(x => x.FindType(type.FullName)).FirstOrDefault(x => x != null);
+			    default:
+				    return assembly.SystemTypes[typeCode];
+		    }
+	    }
     }
 }

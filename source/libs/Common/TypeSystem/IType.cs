@@ -1,10 +1,11 @@
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Services;
+using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    /// <summary>
+	/// <summary>
     /// Represents type.
     /// </summary>
     public interface IType : ITypeMember, ITypeContainer
@@ -126,7 +127,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
     }
 
-    public interface ITypeCollection : IReadOnlyList<IType>, ICodeNode
+	public interface ITypeCollection : IReadOnlyList<IType>, ICodeNode
     {
         IType this[string fullname] { get; }
 
@@ -135,7 +136,43 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         bool Contains(IType type);
     }
 
-    public enum TypeNameKind
+	public enum TypeKind : byte
+	{
+		[CSharp("class")]
+		[VB("Class")]
+		[ActionScript("class")]
+		Class,
+
+		[CSharp("interface")]
+		[VB("Interface")]
+		[ActionScript("interface")]
+		Interface,
+
+		[CSharp("struct")]
+		[VB("Struct")]
+		[ActionScript("class")]
+		Struct,
+
+		[CSharp("enum")]
+		[VB("Enumeration")]
+		[ActionScript("class")]
+		Enum,
+
+		[CSharp("delegate")]
+		Delegate,
+
+		GenericParameter,
+
+		Array,
+		Reference,
+		Pointer,
+
+		[CSharp("struct")]
+		[VB("Struct")]
+		Primitive,
+	}
+
+	public enum TypeNameKind
     {
         FullName,
         Name,

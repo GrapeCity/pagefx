@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.Common.CodeModel
@@ -17,8 +17,15 @@ namespace DataDynamics.PageFX.Common.CodeModel
         int TryOffset { get; set; }
     }
 
-    public interface IExceptionHandlerCollection : IList<IExceptionHandler>
+    public interface IExceptionHandlerCollection : IReadOnlyList<IExceptionHandler>
     {
     }
-}
 
+	public enum ExceptionHandlerType
+	{
+		Finally,
+		Catch,
+		Filter,
+		Fault
+	}
+}

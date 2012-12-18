@@ -14,6 +14,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     {
 		private readonly ModuleCollection _modules;
 	    private IMethod _entryPoint;
+		private SystemTypes _systemTypes;
 
         public AssemblyImpl()
         {
@@ -29,12 +30,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public bool IsCorlib { get; set;  }
 
-        /// <summary>
-        /// Gets or sets type of this assembly
-        /// </summary>
-        public AssemblyType Type { get; set; }
-
-        /// <summary>
+		/// <summary>
         /// Gets or sets path to this assembly
         /// </summary>
         public string Location { get; set; }
@@ -46,7 +42,18 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		public IAssemblyLoader Loader { get; set; }
 
-	    private IMethod ResolveEntryPoint()
+		public SystemTypes SystemTypes
+		{
+			get { return _systemTypes ?? (_systemTypes = ResolveSystemTypes()); }
+			set { _systemTypes = value; }
+		}
+
+		private SystemTypes ResolveSystemTypes()
+		{
+			return IsCorlib ? new SystemTypes(this) : this.Corlib().SystemTypes;
+		}
+
+		private IMethod ResolveEntryPoint()
 	    {
 		    return Loader != null ? Loader.ResolveEntryPoint() : null;
 	    }
@@ -65,18 +72,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             {
                 if (_mainModule == null)
                 {
-                    foreach (Module module in _modules)
-                    {
-                        if (module.IsMain)
-                        {
-                            _mainModule = module;
-                            break;
-                        }
-                    }
+	                _mainModule = _modules.Cast<Module>().FirstOrDefault(x => x.IsMain);
                 }
                 if (_mainModule == null)
                 {
-                    var mod = new Module {Name = "Main", IsMain = true};
+	                var mod = new Module {Name = "Main", IsMain = true};
                     _mainModule = mod;
                     Modules.Add(mod);
                 }
@@ -174,11 +174,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     {
         #region IAssemblyCollection Members
 
-        public IAssembly this[IAssemblyReference r]
-        {
-            get { return Find(r.Equals); }
-        }
+	    public IAssembly ResolveAssembly(IAssemblyReference reference)
+	    {
+		    return Find(reference.Equals);
+	    }
 
-        #endregion
+	    #endregion
     }
 }

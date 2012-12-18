@@ -115,13 +115,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { throw new NotSupportedException(); }
         }
 
-        public MethodCallingConvention CallingConvention
-        {
-            get { return _method.CallingConvention; }
-            set { throw new NotSupportedException(); }
-        }
-
-        #region Impl Flags
+		#region Impl Flags
         /// <summary>
         /// Gets or sets value indicating what kind of implementation is provided for this method.
         /// </summary>
