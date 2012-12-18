@@ -114,6 +114,7 @@
     <Compile Include="TypeSystem\SystemType.cs" />
     <Compile Include="TypeSystem\SystemTypeCode.cs" />
     <Compile Include="TypeSystem\SystemTypeExtensions.cs" />
+    <Compile Include="TypeSystem\TypeFactory.cs" />
     <Compile Include="Utilities\Tricks.cs" />
     <Compile Include="Tests\BitReaderTest.cs" />
     <Compile Include="Tests\BitWriterTest.cs" />
@@ -269,7 +270,6 @@
     <Compile Include="TypeSystem\Type.cs" />
     <Compile Include="TypeSystem\TypeCollection.cs" />
     <Compile Include="TypeSystem\TypeExtensions.cs" />
-    <Compile Include="Services\TypeFactory.cs" />
     <Compile Include="TypeSystem\TypeMember.cs" />
     <Compile Include="TypeSystem\TypeMemberCollection.cs" />
     <Compile Include="CodeModel\Variable.cs" />

@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Common.Services
+namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class TypeFactory
     {

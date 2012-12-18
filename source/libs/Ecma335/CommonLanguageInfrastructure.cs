@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using DataDynamics.PageFX.Common;
-using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.Ecma335
@@ -90,7 +89,6 @@ namespace DataDynamics.PageFX.Ecma335
         public static void ClearCache()
         {
             AssemblyResolver.ClearCache();
-            AssemblyLoader.Clean();
 #if PERF
             ILTranslator.CallCount = 0;
 #endif

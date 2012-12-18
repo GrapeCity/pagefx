@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
@@ -22,7 +20,6 @@ namespace DataDynamics.PageFX.Ecma335
     /// </summary>
     internal sealed class AssemblyLoader : IAssemblyLoader, IMethodContext, IDisposable
     {
-		private AssemblyLoader _corlib;
 	    private readonly TypeSpecTable _typeSpec;
 		private readonly MemberRefTable _memberRef;
 		private readonly MethodSpecTable _methodSpec;
@@ -47,9 +44,11 @@ namespace DataDynamics.PageFX.Ecma335
 	    internal TypeTable Types { get; private set; }
 	    internal TypeRefTable TypeRefs { get; private set; }
 
+	    internal AssemblyLoader Corlib { get; private set; }
+
 	    internal IAssembly CorlibAssembly
 	    {
-			get { return _corlib.Assembly; }
+			get { return Corlib.Assembly; }
 	    }
 
 		public static IAssembly Load(string path)
@@ -148,8 +147,6 @@ namespace DataDynamics.PageFX.Ecma335
             //To avoid circular references assembly is added to cache
             AssemblyResolver.AddToCache(Assembly);
 
-            Loaders.Add(this);
-
 			// load modules
 			foreach (var mod in Modules)
 	        {
@@ -234,14 +231,14 @@ namespace DataDynamics.PageFX.Ecma335
             if (n == 0)
             {
                 Assembly.IsCorlib = true;
-	            _corlib = this;
+	            Corlib = this;
             }
             else
             {
 	            var corasm = AssemblyRefs.FirstOrDefault(x => x.IsCorlib);
 				if (corasm == null)
 					throw new InvalidOperationException();
-				_corlib = (AssemblyLoader)((AssemblyImpl)corasm).Loader;
+				Corlib = (AssemblyLoader)((AssemblyImpl)corasm).Loader;
             }
         }
         #endregion
@@ -445,49 +442,24 @@ namespace DataDynamics.PageFX.Ecma335
         }
         #endregion
 
-        #region IDisposable
-        public static List<AssemblyLoader> Loaders = new List<AssemblyLoader>();
-
-	    public static void Clean()
-	    {
-		    GenericParamTable.ResetId();
-            while (Loaders.Count > 0)
-            {
-                var al = Loaders[0];
-                Loaders.RemoveAt(0);
-                al.Dispose();
-            }
-        }
-
-        public void Dispose()
+	    public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+			if (_pdbReader != null)
+			{
+				_pdbReader.Dispose();
+				_pdbReader = null;
+			}
 
-        void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // Free other state (managed objects).
-                if (_pdbReader != null)
-                {
-                    _pdbReader.Dispose();
-                    _pdbReader = null;
-                }
-            }
-            // Free your own state (unmanaged objects).
+			if (Metadata != null)
+			{
+				Metadata.Dispose();
+				Metadata = null;
+			}
         }
-
-        ~AssemblyLoader()
-        {
-            Dispose(false);
-        }
-        #endregion
 
 	    public IType FindSystemType(string fullName)
 	    {
-		    return _corlib.Types[fullName];
+		    return Corlib.Types[fullName];
 	    }
     }
 }

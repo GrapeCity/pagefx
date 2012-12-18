@@ -37,33 +37,11 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 			Load();
         }
 
-	    #region IDisposable Members
-        //Implement IDisposable.
-        public void Dispose()
+		public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // Free other state (managed objects).
-            }
-            // Free your own state (unmanaged objects).
-            // Set large fields to null.
-        }
-
-        // Use C# destructor syntax for finalization code.
-        ~MetadataReader()
-        {
-            // Simply call Dispose(false).
-            Dispose(false);
-        }
-        #endregion
-
-        #region Public Members
+		#region Public Members
         private int _resourceOrigin = -1;
 
         public BufferedBinaryReader SeekResourceOffset(int offset)

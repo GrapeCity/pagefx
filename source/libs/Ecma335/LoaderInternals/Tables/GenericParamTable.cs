@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 	internal sealed class GenericParamTable
 	{
 		private readonly AssemblyLoader _loader;
-		private static long _id;
+		private long _id;
 		private IGenericParameter[] _array;
 
 		public GenericParamTable(AssemblyLoader loader)
@@ -57,7 +57,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 					SpecialConstraints = ToSpecConstraints(flags),
 					Name = row[Schema.GenericParam.Name].String,
 					MetadataToken = token,
-					ID = ++_id
+					ID = NextId()
 				};
 
 			param.Constraints = new Constraints(_loader, param);
@@ -93,9 +93,10 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			return v;
 		}
 
-		public static void ResetId()
+		private long NextId()
 		{
-			_id = 0;
+			var corlib = _loader.Corlib;
+			return ++corlib.GenericParameters._id;
 		}
 
 		private sealed class Constraints : IGenericParameterConstraints
