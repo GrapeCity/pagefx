@@ -48,10 +48,14 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 		private IType CompileArrayEnumerator(IType elemType)
 		{
-			var enumerator = TypeFactory.MakeGenericType(_host.CorlibTypes[GenericTypeId.ArrayEnumeratorT], elemType);
+			var genericType = _host.CorlibTypes[GenericTypeId.ArrayEnumeratorT];
+			var enumerator = _host.TypeFactory.MakeGenericType(genericType, elemType);
+
 			_host.CompileClass(enumerator);
+
 			foreach (var method in enumerator.Methods)
 				_host.CompileMethod(method);
+
 			return enumerator;
 		}
 

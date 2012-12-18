@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
 using System.IO;
+using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -45,6 +46,11 @@ namespace DataDynamics.PageFX.Ecma335
 	    internal EventTable Events { get; private set; }
 	    internal TypeTable Types { get; private set; }
 	    internal TypeRefTable TypeRefs { get; private set; }
+
+	    internal IAssembly CorlibAssembly
+	    {
+			get { return _corlib.Assembly; }
+	    }
 
 		public static IAssembly Load(string path)
 		{
@@ -232,14 +238,10 @@ namespace DataDynamics.PageFX.Ecma335
             }
             else
             {
-				foreach (var asm in AssemblyRefs)
-				{
-					if (asm.IsCorlib)
-					{
-						_corlib = (AssemblyLoader)((AssemblyImpl)asm).Loader;
-						break;
-					}						
-				}
+	            var corasm = AssemblyRefs.FirstOrDefault(x => x.IsCorlib);
+				if (corasm == null)
+					throw new InvalidOperationException();
+				_corlib = (AssemblyLoader)((AssemblyImpl)corasm).Loader;
             }
         }
         #endregion

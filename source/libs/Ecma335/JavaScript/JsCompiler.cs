@@ -20,7 +20,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 	public sealed class JsCompiler
 	{
 		private readonly IAssembly _assembly;
-		private SystemTypes _systemTypes;
+		private readonly IAssembly _corlib;
 		private JsProgram _program;
 		private readonly HashList<IType, IType> _constructedTypes = new HashList<IType, IType>(x => x);
 
@@ -39,6 +39,8 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				throw new NotSupportedException("Class library is not supported yet!");
 
 			_assembly = assembly;
+			_corlib = assembly.Corlib();
+
 			CorlibTypes = new CorlibTypes(assembly);
 		}
 
@@ -47,16 +49,18 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 		/// </summary>
 		/// <param name="assemblyFile">The file of the assembly to be compiled.</param>
 		public JsCompiler(FileInfo assemblyFile)
+			: this(CommonLanguageInfrastructure.Deserialize(assemblyFile.FullName, null))
 		{
-			if (assemblyFile == null)
-				throw new ArgumentNullException("assemblyFile");
-
-			_assembly = CommonLanguageInfrastructure.Deserialize(assemblyFile.FullName, null);
 		}
 
 		internal SystemTypes SystemTypes
 		{
-			get { return _assembly.SystemTypes; }
+			get { return _corlib.SystemTypes; }
+		}
+
+		internal TypeFactory TypeFactory
+		{
+			get { return _corlib.TypeFactory; }
 		}
 		
 		public void Compile(FileInfo output)

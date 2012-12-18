@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
+using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -12,9 +13,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public sealed class AssemblyImpl : AssemblyReference, IAssembly, ITypeCollection
     {
+		private IModule _mainModule;
 		private readonly ModuleCollection _modules;
 	    private IMethod _entryPoint;
 		private SystemTypes _systemTypes;
+		private TypeFactory _typeFactory;
 
         public AssemblyImpl()
         {
@@ -45,12 +48,21 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		public SystemTypes SystemTypes
 		{
 			get { return _systemTypes ?? (_systemTypes = ResolveSystemTypes()); }
-			set { _systemTypes = value; }
+		}
+
+		public TypeFactory TypeFactory
+		{
+			get { return _typeFactory ?? (_typeFactory = ResolveTypeFactory()); }
 		}
 
 		private SystemTypes ResolveSystemTypes()
 		{
 			return IsCorlib ? new SystemTypes(this) : this.Corlib().SystemTypes;
+		}
+
+		private TypeFactory ResolveTypeFactory()
+		{
+			return IsCorlib ? new TypeFactory() : this.Corlib().TypeFactory;
 		}
 
 		private IMethod ResolveEntryPoint()
@@ -83,9 +95,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 return _mainModule;
             }
         }
-        private IModule _mainModule;
-
-        public IType FindType(string fullname)
+        
+		public IType FindType(string fullname)
         {
         	return _modules.Select(module => module.Types[fullname]).FirstOrDefault(type => type != null);
         }

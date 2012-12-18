@@ -137,6 +137,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			get { return ApplicationAssembly.SystemTypes; }
 	    }
 
+	    internal TypeFactory TypeFactory
+	    {
+			get { return ApplicationAssembly.TypeFactory; }
+	    }
+
 	    #region Generate - Entry Point
         public AbcFile Generate(IAssembly assembly)
         {

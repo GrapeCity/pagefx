@@ -89,7 +89,6 @@ namespace DataDynamics.PageFX.Ecma335
 
         public static void ClearCache()
         {
-            TypeFactory.ClearCache();
             AssemblyResolver.ClearCache();
             AssemblyLoader.Clean();
 #if PERF

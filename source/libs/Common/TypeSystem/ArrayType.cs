@@ -269,7 +269,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return m;
         }
 
-        static IMethod ResolveAddress(IType arrayType, IMethod method)
+        private static IMethod ResolveAddress(IType arrayType, IMethod method)
         {
             var arrType = (ArrayType)arrayType;
             if (arrType.Address != null)
@@ -280,7 +280,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                             Name = CLRNames.Array.Address,
                             IsInternalCall = true,
                             DeclaringType = arrayType,
-                            Type = TypeFactory.MakeReferenceType(arrType.ElementType),
+                            Type = arrayType.Assembly.TypeFactory.MakeReferenceType(arrType.ElementType),
                         };
 
             CopyParams(method, m);
@@ -290,7 +290,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return m;
         }
 
-        static IMethod ResolveSetter(IType arrayType, IMethod method)
+        private static IMethod ResolveSetter(IType arrayType, IMethod method)
         {
             var arrType = (ArrayType)arrayType;
             if (arrType.Setter != null)

@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
 
     	public override IType ResultType
         {
-            get { return TypeFactory.MakeArray(ElementType, new ArrayDimensionCollection()); }
+            get { return ElementType.GetArrayType(); }
         }
 
     	public override bool Equals(object obj)

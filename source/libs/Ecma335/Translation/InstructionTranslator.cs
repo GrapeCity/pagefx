@@ -1707,7 +1707,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 			var elemType = currentInstruction.Type;
 
-			_context.PushResult(currentInstruction, TypeFactory.MakeArray(elemType));
+			_context.PushResult(currentInstruction, elemType.GetArrayType());
 
 			code.NewArray(elemType);
         }

@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
     /// <summary>
     /// Builds assembly from abc or swc file.
     /// </summary>
-    internal class AssemblyBuilder : IDisposable, ISwcLinker, ITypeResolver
+    internal sealed class AssemblyBuilder : IDisposable, ISwcLinker, ITypeResolver
     {
         #region Shared Members
         public static IAssembly Build(string path, CommandLine cl)
@@ -39,8 +39,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
         #endregion
 
-        #region Fields
-        private List<string> _references = new List<string>();
+	    private List<string> _references = new List<string>();
 		private readonly List<IAssembly> _refs = new List<IAssembly>();
 		private List<AbcFile> _abcFiles = new List<AbcFile>();
 		private readonly IAssembly _assembly;
@@ -49,10 +48,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 		private CommandLine _cl;
 		private bool _useFPAttrs;
 		private float _fpVersion;
-        #endregion
+		private SwcFile _swc;
+		private TypeFactory _typeFactory;
 
-        #region ctor
-        public AssemblyBuilder(CommandLine cl)
+	    public AssemblyBuilder(CommandLine cl)
         {
             if (cl != null)
                 Setup(cl);
@@ -63,7 +62,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                             };
         }
 
-        private static Stream Unzip(string path)
+		private TypeFactory TypeFactory
+		{
+			get { return _typeFactory ?? (_typeFactory = ResolveTypeFactory()); }
+		}
+
+	    private TypeFactory ResolveTypeFactory()
+	    {
+		    if (_refs.Count > 0)
+			    return _refs[0].TypeFactory;
+			return new TypeFactory();
+	    }
+
+	    private static Stream Unzip(string path)
         {
             var zip = new ZipFile(path);
             return zip.First().OpenReader().ToMemoryStream();
@@ -75,7 +86,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return zip.First().OpenReader().ToMemoryStream();
         }
 
-        void Setup(CommandLine cl)
+        private void Setup(CommandLine cl)
         {
             _cl = cl;
             _references = GlobalSettings.GetRefs(cl);
@@ -84,7 +95,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             SetPlayerVersion(cl);
         }
 
-        void SetupDoc(CommandLine cl)
+        private void SetupDoc(CommandLine cl)
         {
             string docpath = cl.GetPath(null, "xdoc");
             if (LoadDocFile(docpath))
@@ -99,7 +110,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        void SetPlayerVersion(CommandLine cl)
+        private void SetPlayerVersion(CommandLine cl)
         {
             string fp = cl.GetOption(null, "FP");
             if (!string.IsNullOrEmpty(fp))
@@ -110,7 +121,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 LoadFP9();
             }
         }
-        #endregion
 
 	    private SystemTypes SystemTypes
 	    {
@@ -338,7 +348,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region ResolveRefs
-        static string ResolveRef(string path, string name)
+        private static string ResolveRef(string path, string name)
         {
             if (Path.IsPathRooted(name))
                 return name;
@@ -349,15 +359,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return Path.Combine(Path.GetDirectoryName(path), name);
         }
 
-        bool HasCorlibRef
+        private bool HasCorlibRef
         {
-            get 
-            {
-                return GlobalSettings.HasCorlibRef(_references);
-            }
+            get { return GlobalSettings.HasCorlibRef(_references); }
         }
 
-        void ResolveRefs(string path)
+        private void ResolveRefs(string path)
         {
             if (_references != null && _references.Count > 0)
             {
@@ -410,8 +417,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return _assembly;
         }
 
-        SwcFile _swc;
-
         public IAssembly FromSwc(string path)
         {
             _assembly.Location = path;
@@ -436,7 +441,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return _assembly;
         }
 
-        void BuildCore()
+        private void BuildCore()
         {
             foreach (var abc in _abcFiles)
             {
@@ -695,7 +700,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region BuildVector
-        IType BuildVector(AbcMultiname vname)
+        private IType BuildVector(AbcMultiname vname)
         {
             Debug.Assert(vname.IsParameterizedType);
             var param = vname.TypeParameter;
@@ -707,7 +712,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return TypeFactory.MakeGenericType(vector, paramType);
         }
 
-        IGenericType GetGenericVector()
+        private IGenericType GetGenericVector()
         {
             if (_genericVector != null) return _genericVector;
 

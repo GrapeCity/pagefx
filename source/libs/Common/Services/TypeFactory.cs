@@ -1,97 +1,86 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.Common.Services
 {
-    public static class TypeFactory
+    public sealed class TypeFactory
     {
-        static readonly Hashtable TypeCache = new Hashtable();
+        private readonly IDictionary<string, IType> _types = new Dictionary<string, IType>();
 
-        public static void ClearCache()
-        {
-            TypeCache.Clear();
-        }
+		private IType Make(string key, Func<IType> create)
+		{
+			IType result;
+			if (_types.TryGetValue(key, out result))
+				return result;
 
-        #region GetKey
-        public static string GetKey(IType type, string suffix)
-        {
-            return type.Key + suffix;
-        }
+			result = create();
 
-        public static string GetKey(IGenericType type, IEnumerable<IType> args)
-        {
-            var sb = new StringBuilder();
-            sb.Append(type.FullName);
-            sb.Append('<');
-            foreach (var arg in args)
-            {
-                sb.Append(arg.Key);
-                sb.Append(',');
-            }
-            sb.Length -= 1;
-            sb.Append('>');
-            return sb.ToString();
-        }
-        #endregion
+			_types.Add(key, result);
 
-        public static IType MakeArray(IType type, IArrayDimensionCollection dim)
+			return result;
+		}
+
+        public IType MakeArray(IType type, IArrayDimensionCollection dim)
         {
             if (dim == null)
-                dim = new ArrayDimensionCollection();
+                dim = ArrayDimensionCollection.Single;
+
         	var dimensionString = dim.ToString();
-        	string key = GetKey(type, dimensionString);
-            var res = (IType)TypeCache[key];
-            if (res != null) return res;
-            res = new ArrayType(type, dim);
-            TypeCache[key] = res;
-            return res;
+        	string key = BuildKey(type, dimensionString);
+
+	        return Make(key, () => new ArrayType(type, dim));
         }
 
-        public static IType MakeArray(IType type)
+        public IType MakeArray(IType type)
         {
             return MakeArray(type, null);
         }
 
-        public static IType MakePointerType(IType type)
+        public IType MakePointerType(IType type)
         {
-            string key = GetKey(type, CLRNames.Ptr);
-            var res = (IType)TypeCache[key];
-            if (res != null) return res;
-            res = new PointerType(type);
-            TypeCache[key] = res;
-            return res;
+            string key = BuildKey(type, CLRNames.Ptr);
+	        return Make(key, () => new PointerType(type));
         }
 
-        public static IType MakeReferenceType(IType type)
+        public IType MakeReferenceType(IType type)
         {
-            string key = GetKey(type, CLRNames.Ref);
-            var res = (IType)TypeCache[key];
-            if (res != null) return res;
-            res = new ReferenceType(type);
-            TypeCache[key] = res;
-            return res;
+            string key = BuildKey(type, CLRNames.Ref);
+	        return Make(key, () => new ReferenceType(type));
         }
 
-        public static IType MakeGenericType(IGenericType type, IEnumerable<IType> args)
+        public IType MakeGenericType(IGenericType type, IEnumerable<IType> args)
         {
-            string key = GetKey(type, args);
-            var res = (IType)TypeCache[key];
-            if (res != null) return res;
-            var gi = new GenericInstance(type, args) {Key = key};
-            TypeCache[key] = gi;
-            return gi;
+	        var list = args.ToList();
+            string key = BuildKey(type, list);
+	        return Make(key, () => new GenericInstance(type, list) {Key = key});
         }
 
-        static IEnumerable<T> One<T>(T item)
+	    public IType MakeGenericType(IGenericType type, IType arg)
         {
-            yield return item;
+	        return MakeGenericType(type, new[] {arg});
         }
 
-        public static IType MakeGenericType(IGenericType type, IType arg)
-        {
-            return MakeGenericType(type, One(arg));
-        }
+		private static string BuildKey(IType type, string suffix)
+		{
+			return type.Key + suffix;
+		}
+
+		private static string BuildKey(IGenericType type, IEnumerable<IType> args)
+		{
+			var sb = new StringBuilder();
+			sb.Append(type.FullName);
+			sb.Append('<');
+			foreach (var arg in args)
+			{
+				sb.Append(arg.Key);
+				sb.Append(',');
+			}
+			sb.Length -= 1;
+			sb.Append('>');
+			return sb.ToString();
+		}
     }
 }

@@ -27,14 +27,18 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public static IType Resolve(IType contextType, IMethod contextMethod, IType type)
         {
-            switch (type.TypeKind)
+	        if (type == null)
+				throw new ArgumentNullException("type");
+
+	        var typeFactory = type.Assembly.TypeFactory;
+			switch (type.TypeKind)
             {
                 case TypeKind.Array:
                     {
                         var arrayType = (IArrayType)type;
                         var elemType = Resolve(contextType, contextMethod, arrayType.ElementType);
                         if (!ReferenceEquals(elemType, arrayType.ElementType))
-                            return TypeFactory.MakeArray(elemType, arrayType.Dimensions);
+                            return typeFactory.MakeArray(elemType, arrayType.Dimensions);
                         return type;
                     }
 
@@ -43,7 +47,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                         var ct = (ICompoundType)type;
                         var elemType = Resolve(contextType, contextMethod, ct.ElementType);
                         if (!ReferenceEquals(elemType, ct.ElementType))
-                            return TypeFactory.MakePointerType(elemType);
+                            return typeFactory.MakePointerType(elemType);
                         return type;
                     }
 
@@ -52,7 +56,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                         var ct = (ICompoundType)type;
                         var elemType = Resolve(contextType, contextMethod, ct.ElementType);
                         if (!ReferenceEquals(elemType, ct.ElementType))
-                            return TypeFactory.MakeReferenceType(elemType);
+                            return typeFactory.MakeReferenceType(elemType);
                         return type;
                     }
             }
@@ -73,7 +77,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             if (gt != null)
             {
                 var args = gt.GenericArguments.Select(p => Resolve(contextType, contextMethod, p)).ToList();
-            	return TypeFactory.MakeGenericType(gt.Type, args);
+            	return typeFactory.MakeGenericType(gt.Type, args);
             }
             return type;
         }

@@ -15,6 +15,11 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			_loader = loader;
 		}
 
+		private TypeFactory TypeFactory
+		{
+			get { return _loader.CorlibAssembly.TypeFactory; }
+		}
+
 		public IType ResolveType(TypeSignature sig, Context context)
 		{
 			switch (sig.Element)

@@ -1,4 +1,5 @@
 using DataDynamics.PageFX.Common.Collections;
+using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -48,6 +49,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// Gets system types.
 		/// </summary>
 		SystemTypes SystemTypes { get; }
+
+		/// <summary>
+		/// Gets type factory.
+		/// </summary>
+		TypeFactory TypeFactory { get; }
     }
 
     /// <summary>

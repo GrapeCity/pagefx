@@ -7,8 +7,18 @@ using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public static partial class TypeExtensions
+    public static class TypeExtensions
     {
+		public static IType GetArrayType(this IType elementType)
+		{
+			return elementType != null ? elementType.Assembly.TypeFactory.MakeArray(elementType) : null;
+		}
+
+		public static IType GetPointerType(this IType type)
+		{
+			return type != null ? type.Assembly.TypeFactory.MakePointerType(type) : null;
+		}
+
         public static T FindMember<T>(this IType type, bool inherit, Converter<IType, T> finder)
             where T : class 
         {
