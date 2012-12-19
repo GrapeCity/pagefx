@@ -481,7 +481,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         	           		Name = name,
         	           		Visibility = Visibility.Public
         	           	};
-        	type.Tag = new GlobalType(type);
+        	type.Data = new GlobalType(type);
             RegisterType(type);
 
             DefineSwcAbcFileAttribute(type, script.ABC);
@@ -818,7 +818,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             name = Rename(name, false);
 
             type.Name = name;
-            type.Tag = instance;
+            type.Data = instance;
             instance.Type = type;
 
             type.Documentation = FindTypeSummary(instance);
@@ -2014,7 +2014,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             var type = owner as IType;
             if (type != null)
             {
-                instance = type.Tag as AbcInstance;
+                instance = type.Data as AbcInstance;
                 if (instance != null)
                 {
                     float version = GetTypeFPVersion(name);
@@ -2024,7 +2024,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 return;
             }
 
-            instance = declType.Tag as AbcInstance;
+            instance = declType.Data as AbcInstance;
             if (instance != null)
             {
                 if (instance.FlashVersion == 9)
@@ -2037,7 +2037,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                     DefineFPAttribute(owner, instance.FlashVersion);
                 }
             }
-            else if (declType.Tag is GlobalType)
+            else if (declType.Data is GlobalType)
             {
                 float version = GetGlobalTraitFPVersion(name);
                 DefineFPAttribute(owner, version);
@@ -2064,7 +2064,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             var type = owner as IType;
             if (type != null)
             {
-                var instance = type.Tag as AbcInstance;
+                var instance = type.Data as AbcInstance;
                 if (instance != null)
                 {
                     DefineSwcAbcFileAttribute(owner, instance.Abc);

@@ -39,7 +39,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         /// <returns>Array of instructions (code) to perform the operation.</returns>
         public IInstruction[] GetVarPtr(IVariable v)
         {
-            var ptr = v.Tag as VarPtr;
+            var ptr = v.Data as VarPtr;
             if (ptr == null)
                 throw new InvalidOperationException();
             return GetSlot(ptr.Ptr);
@@ -52,7 +52,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         /// <returns>Array of instructions (code) to perform the operation.</returns>
         public IInstruction[] GetArgPtr(IParameter p)
         {
-            var ptr = p.Tag as VarPtr;
+            var ptr = p.Data as VarPtr;
             if (ptr == null)
                 throw new InvalidOperationException();
             return GetSlot(ptr.Ptr);
@@ -303,11 +303,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         void DefineVarPtr(ICodeNode node, IType type, string name)
         {
-            var ptr = node.Tag as VarPtr;
+            var ptr = node.Data as VarPtr;
             if (ptr != null && ptr.Creator == this) return;
             ptr = CreateVarPtr(type, name);
             ptr.Creator = this;
-            node.Tag = ptr;
+            node.Data = ptr;
         }
 
         VarPtr CreateVarPtr(IType type, string name)
@@ -358,7 +358,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             for (int i = 0; i < n; ++i)
             {
                 var p = _method.Parameters[i];
-                var ptr = p.Tag as VarPtr;
+                var ptr = p.Data as VarPtr;
                 if (ptr == null) continue;
 
                 GetActivation(code);
@@ -374,7 +374,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 for (int i = 0; i < n; ++i)
                 {
                     var v = GetVar(i);
-                    var ptr = v.Tag as VarPtr;
+                    var ptr = v.Data as VarPtr;
                     if (ptr == null) continue;
                     InitSlotPtr(code, ptr);
                 }

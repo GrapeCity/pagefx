@@ -56,7 +56,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 			get { return this.Cast<ICodeNode>(); }
 		}
 
-		public object Tag { get; set; }
+		public object Data { get; set; }
 
 		public IParameter this[string name]
 		{
@@ -151,10 +151,10 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 				get { return null; }
 			}
 
-			public object Tag
+			public object Data
 			{
-				get { return _parameter.Tag; }
-				set { _parameter.Tag = value; }
+				get { return _parameter.Data; }
+				set { _parameter.Data = value; }
 			}
 
 			public string Documentation

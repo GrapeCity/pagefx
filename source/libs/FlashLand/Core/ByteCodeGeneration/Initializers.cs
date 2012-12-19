@@ -133,7 +133,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             foreach (var f in info.Assets)
             {
                 DefineField(f);
-                var t = f.Tag as AbcTrait;
+                var t = f.Data as AbcTrait;
                 if (t == null)
                     throw new InvalidOperationException();
                 Debug.Assert(t.AssetInstance != null);

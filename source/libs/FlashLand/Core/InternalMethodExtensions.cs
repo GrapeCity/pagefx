@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 		{
 			if (method == null) return false;
 			if (!method.IsConstructor) return false;
-			var m = method.Tag as AbcMethod;
+			var m = method.Data as AbcMethod;
 			if (m == null) return false;
 			return m.IsInitializer;
 		}
@@ -749,7 +749,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			if (m == null) return -1;
 
 			var type = m.DeclaringType;
-			if (type.Tag is IVectorType)
+			if (type.Data is IVectorType)
 				return 10;
 
 			foreach (var attr in m.CustomAttributes)

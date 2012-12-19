@@ -118,7 +118,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				new ArrayInterfaceImpl(this).Compile(method);
 			}
 
-			var iface = declaringType.Tag as JsInterface;
+			var iface = declaringType.Data as JsInterface;
 			if (iface != null)
 			{
 				// ToList is required since during compilation new implementations could be added
@@ -144,7 +144,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				return;
 			}
 
-			var klass = declaringType.Tag as JsClass;
+			var klass = declaringType.Data as JsClass;
 			if (klass != null)
 			{
 				CompileOverrides(klass, method);
@@ -196,14 +196,14 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 			if (Exclude(method)) return null;
 
-			var jsMethod = method.Tag as JsMethod;
+			var jsMethod = method.Data as JsMethod;
 			if (jsMethod != null) return jsMethod;
 
 			var klass = CompileClass(method.DeclaringType);
 
 			jsMethod = new JsMethod(method);
 
-			method.Tag = jsMethod;
+			method.Data = jsMethod;
 
 			jsMethod.Function = CompileFunction(klass, method);
 
@@ -795,7 +795,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				return;
 			}
 
-			if (method.Tag != null) return;
+			if (method.Data != null) return;
 
 			var jsMethod = CompileMethod(method);
 
@@ -816,7 +816,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				return;
 			}
 
-			if (method.Tag != null) return;
+			if (method.Data != null) return;
 
 			var jsMethod = CompileMethod(method);
 
@@ -1060,7 +1060,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 		internal void CompileCallMethod(IMethod method)
 		{
-			if (method.Tag != null) return;
+			if (method.Data != null) return;
 
 			if (method.Body is IClrMethodBody)
 			{
@@ -1072,10 +1072,10 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				new InternalCallImpl(this).Compile(method);
 			}
 
-			if (method.Tag == null)
+			if (method.Data == null)
 			{
 				// mark abstract methods to detect that it is called in the program
-				method.Tag = this;
+				method.Data = this;
 			}
 
 			if (method.IsAbstract || method.IsVirtual)
@@ -1109,7 +1109,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				return null;
 			}
 
-			var klass = type.Tag as JsClass;
+			var klass = type.Data as JsClass;
 			if (klass != null) return klass;
 
 			if (type.IsEnum && type.ValueType.IsInt64())
@@ -1127,7 +1127,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 			klass = new JsClass(type, baseType.Is(SystemTypeCode.ValueType) || type.IsString() ? null : baseClass);
 
-			type.Tag = klass;
+			type.Data = klass;
 
 			if (baseClass != null)
 			{
@@ -1189,7 +1189,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 			if (isEnumOrStruct)
 			{
-				foreach (var id in objectMethods.Where(id => ObjectMethods.Find(SystemTypes.Object, id).Tag != null))
+				foreach (var id in objectMethods.Where(id => ObjectMethods.Find(SystemTypes.Object, id).Data != null))
 				{
 					CompileMethod(klass, id);
 				}
@@ -1202,7 +1202,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 				return false;
 
 			if (method.ImplementedMethods != null
-				&& method.ImplementedMethods.Any(x => x.Tag != null))
+				&& method.ImplementedMethods.Any(x => x.Data != null))
 			{
 				return true;
 			}
@@ -1210,7 +1210,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			if (method.IsOverride)
 			{
 				var baseMethod = method.BaseMethod;
-				if (baseMethod != null && baseMethod.Tag != null)
+				if (baseMethod != null && baseMethod.Data != null)
 					return true;
 			}
 
@@ -1288,7 +1288,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 		private void CompileField(JsClass klass, IField field)
 		{
-			if (field.Tag != null) return;
+			if (field.Data != null) return;
 
 			//TODO: do not compile primitive types
 			klass.Add(JsField.Make(field));

@@ -155,7 +155,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var type = FindTypeDefOrRef(superName.FullName);
             if (type == null)
                 throw new InvalidOperationException();
-            var instance = type.Tag as AbcInstance;
+            var instance = type.Data as AbcInstance;
             if (instance == null)
                 throw new InvalidOperationException();
             instance = Abc.ImportInstance(instance);

@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
             {
                 //NOTE: We should reset parameter tag since it can be used for pointer emulation
                 foreach (var p in currentMethod.Parameters)
-                    p.Tag = null;
+                    p.Data = null;
             }
 
 			if (body.HasGenericExceptions)
@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
             foreach (var var in body.LocalVariables)
             {
                 //NOTE: We should reset var tag since it can be used for pointer emulation
-                var.Tag = null;
+                var.Data = null;
 
                 if (var.GenericType != null)
                 {

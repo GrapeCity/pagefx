@@ -168,14 +168,14 @@ namespace DataDynamics.PageFX.Ecma335.Execution
 
 		private Class GetClass(IType type)
 		{
-			var klass = type.Tag as Class;
+			var klass = type.Data as Class;
 			if (klass != null)
 			{
 				return klass;
 			}
 
 			klass = new Class(type);
-			type.Tag = klass;
+			type.Data = klass;
 
 			InitFields(klass);
 

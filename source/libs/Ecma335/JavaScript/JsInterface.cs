@@ -22,11 +22,11 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 		public static JsInterface Make(IType type)
 		{
-			var iface = type.Tag as JsInterface;
+			var iface = type.Data as JsInterface;
 			if (iface == null)
 			{
 				iface = new JsInterface(type);
-				type.Tag = iface;
+				type.Data = iface;
 			}
 			return iface;
 		}

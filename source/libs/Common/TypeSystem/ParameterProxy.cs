@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			get { return null; }
 		}
 
-		public object Tag { get; set; }
+		public object Data { get; set; }
 
 		public string Documentation
 		{

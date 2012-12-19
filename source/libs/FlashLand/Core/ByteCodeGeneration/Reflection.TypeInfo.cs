@@ -56,7 +56,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region FieldInfo
         private void NewFieldInfo(AbcCode code, AbcInstance instance, IField field, int varField)
         {
-            var trait = field.Tag as AbcTrait;
+            var trait = field.Data as AbcTrait;
             if (trait == null)
             {
                 code.PushNull();
@@ -131,7 +131,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 	            var m = SystemTypes.Object.Methods.Find("MemberwiseClone", 0);
                 if (m == null)
                     throw new InvalidOperationException("Invalid corlib");
-                _isMemberwiseCloneCompiled = m.Tag is AbcMethod;
+                _isMemberwiseCloneCompiled = m.Data is AbcMethod;
                 return _isMemberwiseCloneCompiled.Value;
             }
         }
@@ -236,7 +236,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         private static bool ShouldWrap(IMethod m)
         {
-            var am = m.Tag as AbcMethod;
+            var am = m.Data as AbcMethod;
             if (am == null) return false;
             if (am.IsAccessor) return true;
             if (!m.IsStatic) return true;
@@ -245,7 +245,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         private AbcMethod DefineMetodWrapper(IMethod m, bool init)
         {
-            var am = m.Tag as AbcMethod;
+            var am = m.Data as AbcMethod;
             if (am == null) return null;
             if (!ShouldWrap(m)) return am;
 
@@ -417,7 +417,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (ctor == null)
                 throw new InvalidOperationException(".ctor not found");
 
-            var abcMethod = method.Tag as AbcMethod;
+            var abcMethod = method.Data as AbcMethod;
             if (abcMethod == null)
                 throw new InvalidOperationException();
             abcMethod.MethodInfoIndex = index;
@@ -461,7 +461,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         // Pointer and Reference type parameters currently not supported
         private static bool IsUnsupportedMethod(IMethod m)
         {
-            var am = m.Tag as AbcMethod;
+            var am = m.Data as AbcMethod;
             if (am == null)
                 return true;
             if (am.IsInitializer) return true;
@@ -555,7 +555,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         private static void SetAccessor(AbcCode code, IMethod accessor, FieldId fieldId, int varProp)
         {
             if (accessor == null) return;
-            var am = accessor.Tag as AbcMethod;
+            var am = accessor.Data as AbcMethod;
             if (am == null) return;
             int index = am.MethodInfoIndex;
             code.GetLocal(varProp);
@@ -604,7 +604,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region EnumInfo
         private AbcMethod DefineEnumInfoInitializer(IType type)
         {
-            var enumInstance = type.Tag as AbcInstance;
+            var enumInstance = type.Data as AbcInstance;
             if (enumInstance == null)
                 throw new InvalidOperationException();
 

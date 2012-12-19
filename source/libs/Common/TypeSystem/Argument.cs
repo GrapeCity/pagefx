@@ -71,7 +71,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// <summary>
         /// Gets or sets user defined data assotiated with this object.
         /// </summary>
-        public object Tag { get; set; }
+        public object Data { get; set; }
         #endregion
 
         #region IFormattable Members

@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             if (type == null) return null;
 
-            var abcSubject = type.Tag as IAbcFileSubject;
+            var abcSubject = type.Data as IAbcFileSubject;
             if (abcSubject != null)
             {
                 abcSubject.ByteCode = Abc;
@@ -37,14 +37,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             }
 
             if (Abc.IsDefined(type))
-                return type.Tag;
+                return type.Data;
 
             var tag = ImportType(type);
 
             bool isImported = false;
             if (tag == null)
             {
-                if (type.Tag != null)
+                if (type.Data != null)
                     throw new InvalidOperationException();
                 tag = DefineTypeCore(type);
             }
@@ -55,18 +55,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             if (tag != null)
             {
-                type.Tag = tag;
+                type.Data = tag;
                 RegisterType(type);
 
                 if (!isImported)
                     DefineMembers(type);
             }
 
-            abcSubject = type.Tag as IAbcFileSubject;
+            abcSubject = type.Data as IAbcFileSubject;
             if (abcSubject != null)
                 abcSubject.ByteCode = Abc;
 
-            return type.Tag;
+            return type.Data;
         }
         #endregion
 
@@ -124,7 +124,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region ImportType
         object ImportType(IType type)
         {
-            var tag = type.Tag;
+            var tag = type.Data;
             if (tag != null)
             {
                 var instance = tag as AbcInstance;
@@ -186,7 +186,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         object DefineUserType(IType type)
         {
             if (LinkVectorInstance(type))
-                return type.Tag;
+                return type.Data;
 
             //NOTE: can be used only in typeof operations
             if (type is IGenericType)
@@ -201,7 +201,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             //NOTE: Fix for enums.
             if (Abc.IsDefined(type))
-                return type.Tag;
+                return type.Data;
 
 #if DEBUG
             DebugService.DoCancel();
@@ -210,7 +210,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var ifaceNames = DefineInterfaces(type);
 
             if (Abc.IsDefined(type))
-                return type.Tag as AbcInstance;
+                return type.Data as AbcInstance;
 
             var name = DefineInstanceName(type);
 
@@ -222,7 +222,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                                    SuperType = superType
                                };
 
-            type.Tag = instance;
+            type.Data = instance;
             SetFlags(instance, type);
             AddInterfaces(instance, type, ifaceNames);
 
@@ -321,7 +321,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                     baseType = SystemTypes.Object;
 
                 superName = DefineTypeName(baseType);
-                superType = baseType.Tag as AbcInstance;
+                superType = baseType.Data as AbcInstance;
 				return;
             }
 
@@ -464,7 +464,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 var iface = type.Interfaces[i];
                 var ifaceName = ifaceNames[i];
 
-                var ifaceInstance = iface.Tag as AbcInstance;
+                var ifaceInstance = iface.Data as AbcInstance;
                 if (ifaceInstance != null)
                 {
                     ifaceInstance.Implementations.Add(instance);
@@ -516,7 +516,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region DefineMembers
         private void DefineMembers(IType type)
         {
-            var instance = type.Tag as AbcInstance;
+            var instance = type.Data as AbcInstance;
             if (instance == null) return;
             if (instance.IsForeign) return;
             if (type.IsArray) return;
@@ -590,7 +590,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         void DefineCompiledMethods(IType type)
         {
-            var instance = type.Tag as AbcInstance;
+            var instance = type.Data as AbcInstance;
             if (instance == null) return;
 
             ImplementArrayInterface(type);
@@ -707,7 +707,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var v = new VectorInstance(type);
 #if DEBUG
-            Debug.Assert(type.Tag == v);
+            Debug.Assert(type.Data == v);
 #endif
 
             return true;

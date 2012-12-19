@@ -69,7 +69,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 	    public static bool IsNativeType(this IType type, string fullname)
         {
             if (type == null) return false;
-            var instance = type.Tag as AbcInstance;
+            var instance = type.Data as AbcInstance;
             if (instance == null) return false;
             if (!instance.IsNative) return false;
             return instance.FullName == fullname;
@@ -88,7 +88,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
         public static AbcMultiname GetMultiname(this IType type)
         {
             if (type == null) throw new ArgumentNullException("type");
-            return type.Tag.ToMultiname();
+            return type.Data.ToMultiname();
         }
 
         public static bool IsStringInterface(this IType type)
@@ -340,7 +340,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
         public static bool IsAvmObject(this IType type)
         {
             if (type == null) return false;
-            var instance = type.Tag as AbcInstance;
+            var instance = type.Data as AbcInstance;
             if (instance != null)
                 return instance.IsObject;
             return false;

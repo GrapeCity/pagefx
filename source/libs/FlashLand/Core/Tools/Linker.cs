@@ -202,7 +202,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private static bool IsLinked(IType type)
         {
-            var instance = type.Tag as AbcInstance;
+            var instance = type.Data as AbcInstance;
             return instance != null;
         }
 
@@ -263,7 +263,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private void LinkType(IType type, AbcInstance instance)
         {
-            type.Tag = instance;
+            type.Data = instance;
             instance.Type = type;
 
             if (IsCorLib)
@@ -318,7 +318,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             if (instance != null && method.IsConstructor && !isGlobal)
             {
-                method.Tag = instance.Initializer;
+                method.Data = instance.Initializer;
                 instance.Initializer.SourceMethod = method;
                 return;
             }
@@ -348,7 +348,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             if (abcMethod == null)
                 throw new InvalidOperationException("Unable to find method " + method);
 
-            method.Tag = abcMethod;
+            method.Data = abcMethod;
 
             //Prevent to link overload methods
             if (method.Parameters.Count == abcMethod.ActualParamCount)
@@ -378,7 +378,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 code.Swap();
                 code.PushString(eventName);
                 code.CallVoid(GetDelegateMethodName(true), 2);
-                method.Tag = code;
+                method.Data = code;
                 return true;
             }
 
@@ -389,7 +389,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 code.Swap();
                 code.PushString(eventName);
                 code.CallVoid(GetDelegateMethodName(false), 2);
-                method.Tag = code;
+                method.Data = code;
                 return true;
             }
             throw new NotImplementedException();
@@ -429,7 +429,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         {
             if (trait == null)
                 throw new InvalidOperationException("Unable to link field " + field);
-            field.Tag = trait;
+            field.Data = trait;
         }
 
 	    private bool LinkInternalType(IType type)
@@ -438,7 +438,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             {
                 var tag = new InternalType(type);
 
-	            type.Tag = tag;
+	            type.Data = tag;
 
 				FireTypeLinked(type);
 
@@ -451,14 +451,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         {
             var tag = new GlobalType(type);
 
-		    type.Tag = tag;
+		    type.Data = tag;
 
             LinkMethods(type, null, true);
         }
 
 	    private void LinkVector(IType type, ICustomAttribute attr)
         {
-            var vectorType = type.Tag as VectorType;
+            var vectorType = type.Data as VectorType;
             if (vectorType != null) return;
 
             string param = VectorType.GetVectorParam(attr);
@@ -470,7 +470,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             vectorType = new VectorType(type, paramType);
 
-		    type.Tag = vectorType;
+		    type.Data = vectorType;
         }
 
 	    private AbcTrait GetTrait(ICustomAttributeProvider cp, IAbcTraitProvider owner)

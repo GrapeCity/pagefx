@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             }
 
             var type = method.DeclaringType;
-            if (type.Tag is IVectorType)
+            if (type.Data is IVectorType)
                 return AvmVectorInlines.Get(Abc, method);
 
             return GetInlineCode(type, method);

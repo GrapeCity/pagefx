@@ -439,7 +439,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             foreach (var im in iface.Methods)
             {
-                var am = im.Tag as AbcMethod;
+                var am = im.Data as AbcMethod;
                 if (am != null)
                     methodImpl(im, am);
             }

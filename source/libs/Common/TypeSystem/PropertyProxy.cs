@@ -209,7 +209,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return new ICodeNode[0]; }
         }
 
-        public object Tag { get; set; }
+        public object Data { get; set; }
         #endregion
 
         #region IFormattable Members

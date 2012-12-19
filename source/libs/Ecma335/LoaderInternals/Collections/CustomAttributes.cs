@@ -52,7 +52,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 			get { return this.Cast<ICodeNode>(); }
 		}
 
-		public object Tag { get; set; }
+		public object Data { get; set; }
 
 		public ICustomAttribute[] this[IType type]
 		{

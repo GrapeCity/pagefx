@@ -99,7 +99,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public bool IsDefined(IType type)
         {
-            var tag = type.Tag;
+            var tag = type.Data;
             if (tag == null) return false;
             if (tag is ISpecialType) return true;
             var instance = tag as AbcInstance;
@@ -118,7 +118,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public bool IsDefined(IMethod method)
         {
-            var tag = method.Tag;
+            var tag = method.Data;
             if (tag == null) return false;
 
             var code = tag as AbcCode;
@@ -139,7 +139,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (!IsDefined(mn.Type) || !IsDefined(mn.Name))
                 {
-                    method.Tag = new AbcMemberName(ImportConst(mn.Type), ImportConst(mn.Name));
+                    method.Data = new AbcMemberName(ImportConst(mn.Type), ImportConst(mn.Name));
                 }
                 return true;
             }
@@ -149,7 +149,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public bool IsDefined(IField field)
         {
-            var tag = field.Tag;
+            var tag = field.Data;
             if (tag == null) return false;
             var trait = tag as AbcTrait;
             if (trait != null)

@@ -13,7 +13,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
             if (type == null)
                 throw new ArgumentNullException("type");
             Type = type;
-            type.Tag = this;
+            type.Data = this;
         }
 
     	public IType Type { get; private set; }

@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
         public InternalType(IType type)
         {
             _type = type;
-            type.Tag = this;
+            type.Data = this;
         }
 
         public IType Type

@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     throw new NotSupportedException();
             }
 
-            var slot = v.Tag as AbcTrait;
+            var slot = v.Data as AbcTrait;
             if (slot != null)
             {
                 if (IsValueType(type))
@@ -225,7 +225,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         private void LoadStaticInstance(AbcCode code, IType type)
         {
             EnsureType(type);
-            var instance = type.Tag as AbcInstance;
+            var instance = type.Data as AbcInstance;
             if (instance != null)
             {
                 if (instance.IsNative)
@@ -267,7 +267,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             if (p == null)
                 throw new ArgumentNullException("p");
-            var ptr = p.Tag as VarPtr;
+            var ptr = p.Data as VarPtr;
             if (ptr != null)
                 return GetSlot(ptr.Slot);
             return LoadLocal(GetArgIndex(p));
@@ -283,7 +283,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 throw new InvalidOperationException();
             }
 
-            var ptr = p.Tag as VarPtr;
+            var ptr = p.Data as VarPtr;
             if (ptr != null)
                 return SetSlot(ptr.Slot);
 
@@ -351,7 +351,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         public IInstruction[] LoadVariable(IVariable v)
         {
-            var ptr = v.Tag as VarPtr;
+            var ptr = v.Data as VarPtr;
             if (ptr != null)
                 return GetSlot(ptr.Slot);
 
@@ -363,7 +363,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (v == null)
                 throw new ArgumentNullException("v");
 
-            var ptr = v.Tag as VarPtr;
+            var ptr = v.Data as VarPtr;
             if (ptr != null)
                 return SetSlot(ptr.Slot);
 
@@ -383,7 +383,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 		private AbcMultiname GetFieldName(IField field)
         {
             EnsureField(field);
-            var t = field.Tag as AbcTrait;
+            var t = field.Data as AbcTrait;
             AbcMultiname name;
             if (t != null)
             {
@@ -391,7 +391,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
             else
             {
-                name = field.Tag as AbcMultiname;
+                name = field.Data as AbcMultiname;
                 if (name == null)
                     throw new ArgumentException("Invalid field tag");
             }

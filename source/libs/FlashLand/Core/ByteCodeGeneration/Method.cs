@@ -149,7 +149,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         private object ImportMethod(IMethod method)
         {
-            var tag = method.Tag;
+            var tag = method.Data;
             if (tag == null) return null;
             var m = tag as AbcMethod;
             if (m != null)
@@ -167,10 +167,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             if (Abc.IsDefined(method))
             {
-                return method.Tag;
+                return method.Data;
             }
 
-            var m = method.Tag as AbcMethod;
+            var m = method.Data as AbcMethod;
             if (m != null)
             {
                 if (m.ImportedMethod != null)
@@ -246,7 +246,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         private AbcMethod DefineMethodCore(IMethod method)
         {
             var declType = method.DeclaringType;
-            var instance = declType.Tag as AbcInstance;
+            var instance = declType.Data as AbcInstance;
             if (instance == null)
                 throw new InvalidOperationException();
 
@@ -444,7 +444,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var bm = m.BaseMethod;
             if (am.IsOverride && bm != null)
-                return bm.Tag as AbcMethod;
+                return bm.Data as AbcMethod;
 
             return null;
         }
@@ -521,7 +521,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 DebugService.DoCancel();
 #endif
                 var type = method.DeclaringType;
-                var instance = type.Tag as AbcInstance;
+                var instance = type.Data as AbcInstance;
                 if (instance == null)
                     throw new InvalidOperationException();
                 if (instance.IsInterface)

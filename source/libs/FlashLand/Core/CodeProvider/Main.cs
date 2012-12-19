@@ -149,15 +149,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #region Delegates
         AbcMultiname GetMethodName(IMethod method)
         {
-            var name = method.Tag as AbcMultiname;
+            var name = method.Data as AbcMultiname;
             if (name != null)
                 return _abc.ImportConst(name);
 
-            var mn = method.Tag as AbcMemberName;
+            var mn = method.Data as AbcMemberName;
             if (mn != null)
                 return _abc.ImportConst(mn.Name);
 
-            var abcMethod = method.Tag as AbcMethod;
+            var abcMethod = method.Data as AbcMethod;
             if (abcMethod != null)
                 return _abc.ImportConst(abcMethod.TraitName);
 

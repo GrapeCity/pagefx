@@ -16,6 +16,6 @@ namespace DataDynamics.PageFX.Common.CodeModel
         /// <summary>
         /// Gets or sets user defined data assotiated with this object.
         /// </summary>
-        object Tag { get; set; }
+        object Data { get; set; }
     }
 }

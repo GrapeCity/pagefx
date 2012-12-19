@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         object ResolveCall(IMethod method)
         {
             var type = method.DeclaringType;
-            var tag = type.Tag;
+            var tag = type.Data;
             var avmType = tag as InternalType;
             if (avmType != null)
             {
@@ -26,24 +26,24 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 tag = ResolveCall(method, null);
                 if (tag == null)
                     throw new InvalidOperationException();
-                method.Tag = tag;
+                method.Data = tag;
                 return tag;
             }
 
             tag = DefineInlineCode(method, (AbcInstance)null);
             if (tag != null)
             {
-                method.Tag = tag;
+                method.Data = tag;
                 return tag;
             }
 
-            var instance = type.Tag as AbcInstance;
+            var instance = type.Data as AbcInstance;
             if (instance != null)
             {
                 tag = ResolveCall(method, instance);
                 if (tag != null)
                 {
-                    method.Tag = tag;
+                    method.Data = tag;
                     return tag;
                 }
             }

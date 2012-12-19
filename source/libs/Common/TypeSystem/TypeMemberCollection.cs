@@ -137,7 +137,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return this.Cast<ICodeNode>(); }
         }
 
-        public object Tag { get; set; }
+        public object Data { get; set; }
 
 	    public string ToString(string format, IFormatProvider formatProvider)
         {

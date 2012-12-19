@@ -18,13 +18,13 @@ namespace DataDynamics.PageFX.FlashLand.Core
         public static AssemblyCustomData GetInstance(IAssembly asm)
         {
 			if (asm == null) return null;
-            return asm.Tag as AssemblyCustomData ?? new AssemblyCustomData(asm);
+            return asm.Data as AssemblyCustomData ?? new AssemblyCustomData(asm);
         }
 
         private AssemblyCustomData(IAssembly asm)
         {
             Assembly = asm;
-            asm.Tag = this;
+            asm.Data = this;
         }
 
 	    public IAssembly Assembly { get; private set; }
@@ -141,7 +141,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			var type = Assembly.FindType(fullname);
 			if (type == null) return null;
 			// type should be linked on type load
-			return type.Tag as AbcInstance;
+			return type.Data as AbcInstance;
 		}
     }
 

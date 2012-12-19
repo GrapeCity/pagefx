@@ -1549,7 +1549,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
             while (type != null)
             {
-                var instance = type.Tag as AbcInstance;
+                var instance = type.Data as AbcInstance;
                 if (instance != null)
                 {
                     var name = instance.Name;
@@ -2103,7 +2103,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
             if (InternalTypeExtensions.HasCopy(type))
             {
-                var instance = type.Tag as AbcInstance;
+                var instance = type.Data as AbcInstance;
                 if (instance != null)
                 {
                     var method = Generator.DefineCopyMethod(instance);
@@ -2131,7 +2131,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
             if (InternalTypeExtensions.HasCopy(type))
             {
-                var instance = type.Tag as AbcInstance;
+                var instance = type.Data as AbcInstance;
                 if (instance != null)
                 {
                     var method = Generator.DefineCopyFromMethod(instance);

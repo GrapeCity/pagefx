@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
             Type = type;
             Param = param;
 
-            type.Tag = this;
+            type.Data = this;
         }
 
 	    public AbcFile ByteCode { get; set; }

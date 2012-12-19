@@ -62,11 +62,11 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 		public static JsField Make(IField field)
 		{
-			var jsField = field.Tag as JsField;
+			var jsField = field.Data as JsField;
 			if (jsField == null)
 			{
 				jsField = new JsField(field);
-				field.Tag = jsField;
+				field.Data = jsField;
 			}
 			return jsField;
 		}

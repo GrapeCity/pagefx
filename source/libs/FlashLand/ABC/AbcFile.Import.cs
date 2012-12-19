@@ -351,7 +351,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             method.IsImported = true;
 
             if (m.SourceMethod != null)
-                m.SourceMethod.Tag = m;
+                m.SourceMethod.Data = m;
 
             ImportParams(method, m);
 
@@ -620,7 +620,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             instance.ProtectedNamespace = ImportConst(from.ProtectedNamespace);
             instance.Type = from.Type;
             if (instance.Type != null)
-                instance.Type.Tag = instance;
+                instance.Type.Data = instance;
 
             foreach (var iname in from.Interfaces)
             {

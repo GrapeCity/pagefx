@@ -66,7 +66,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             AbcTrait trait = null;
 
             //Try to find trait, may be it has already been defined
-            if (field.Tag != null)
+            if (field.Data != null)
             {
             	var kind = field.IsConstant ? AbcTraitKind.Const : AbcTraitKind.Slot;
             	trait = isStatic ? instance.Class.Traits.Find(name, kind) : instance.Traits.Find(name, kind);
@@ -79,7 +79,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (trait == null)
             {
                 trait = AbcTrait.CreateSlot(type, name);
-                field.Tag = trait;
+                field.Data = trait;
                 instance.AddTrait(trait, isStatic);
 
                 if (IsImportableConstantField(field))
@@ -93,7 +93,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             }
             else
             {
-                field.Tag = trait;
+                field.Data = trait;
             }
             trait.Type = field.Type;
             trait.Field = field;
@@ -109,7 +109,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         public AbcMultiname GetFieldName(IField field)
         {
             DefineField(field);
-            var trait = field.Tag as AbcTrait;
+            var trait = field.Data as AbcTrait;
             if (trait == null)
                 throw new InvalidOperationException();
             return trait.Name;
@@ -152,7 +152,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         public AbcMultiname DefineMemberType(IType type)
         {
             DefineType(type);
-            if (type.Tag == null)
+            if (type.Data == null)
                 throw new InvalidOperationException(string.Format("Type {0} is not defined", type.FullName));
             return Abc.GetTypeName(type, true);
         }

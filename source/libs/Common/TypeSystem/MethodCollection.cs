@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public IMethod StaticConstructor { get; private set; }
 
-		public object Tag { get; set; }
+		public object Data { get; set; }
 
     	public string ToString(string format, IFormatProvider formatProvider)
         {
@@ -91,7 +91,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 				get { return this.Cast<ICodeNode>(); }
 			}
 
-			public object Tag { get; set; }
+			public object Data { get; set; }
 
 			public string ToString(string format, IFormatProvider formatProvider)
 			{

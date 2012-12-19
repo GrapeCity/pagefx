@@ -112,7 +112,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 		private void Inline(InlineCodeProvider provider, IMethod method)
 		{
-			var jsMethod = method.Tag as JsGeneratedMethod;
+			var jsMethod = method.Data as JsGeneratedMethod;
 			if (jsMethod != null) return;
 			
 			var impl = CompileInlineFunction(method, provider);
@@ -129,7 +129,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			}
 
 			jsMethod = new JsGeneratedMethod(method.JsFullName(), impl);
-			method.Tag = jsMethod;
+			method.Data = jsMethod;
 
 			var klass = CompileClass(method.DeclaringType);
 			klass.Add(jsMethod);
@@ -144,14 +144,14 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 
 		private void CompileInlineMethod(IMethod method, InlineMethodInfo info)
 		{
-			var jsMethod = method.Tag as JsGeneratedMethod;
+			var jsMethod = method.Data as JsGeneratedMethod;
 			if (jsMethod != null) return;
 
 			var func = CompileInlineFunction(method, info);
 			var klass = CompileClass(method.DeclaringType);
 
 			jsMethod = new JsGeneratedMethod(method.JsFullName(), func);
-			method.Tag = jsMethod;
+			method.Data = jsMethod;
 
 			klass.Add(jsMethod);
 		}

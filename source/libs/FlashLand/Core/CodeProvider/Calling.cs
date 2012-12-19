@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
 			//TODO: simplify using custom attributes
             var type = method.DeclaringType;
-            if (type.Tag is GlobalType)
+            if (type.Data is GlobalType)
                 return true;
             if (type.IsInternalType())
             {
@@ -39,7 +39,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var type = method.DeclaringType;
 
-            if (type.Tag is GlobalType)
+            if (type.Data is GlobalType)
             {
                 var mn = GetMethodName(method);
                 code.FindPropertyStrict(mn);
@@ -76,7 +76,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             if (newobj) return true;
             
-            var tag = method.Tag;
+            var tag = method.Data;
             if (tag == null) return false;
 
             //NOTE: Inline code!!!
@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (LoadSpecReceiver(method, code))
                 return code.ToArray();
 
-            var tag = method.Tag;
+            var tag = method.Data;
             
             var mname = tag as AbcMultiname;
             if (mname != null)
@@ -147,7 +147,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
 
             var type = method.DeclaringType;
-            var typeTag = type.Tag;
+            var typeTag = type.Data;
 
             var vec = typeTag as IVectorType;
             if (vec != null)
@@ -170,14 +170,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             var declType = method.DeclaringType;
 
-            var vec = declType.Tag as IVectorType;
+            var vec = declType.Data as IVectorType;
             if (vec != null)
             {
                 code.LoadGenericClass(vec.Name);
                 return;
             }
 
-            var abcMethod = method.Tag as AbcMethod;
+            var abcMethod = method.Data as AbcMethod;
             if (abcMethod == null)
                 throw new ArgumentException("Invalid method tag");
 
@@ -220,7 +220,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             EnsureMethod(method);
 
-            var tag = method.Tag;
+            var tag = method.Data;
             if (tag == null)
             {
                 //if (method.IsConstructor && paramCount == 0)
@@ -265,7 +265,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private static string GetBaseCallPrefix(IMethod method)
         {
-            var m = method.Tag as AbcMethod;
+            var m = method.Data as AbcMethod;
             if (m != null)
             {
                 if (m.IsGetter) return "$get_super$";
@@ -278,7 +278,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var instance = DefineAbcInstance(receiverType);
 
-            var mname = GetCallName(method.Tag);
+            var mname = GetCallName(method.Data);
             string prefix = "$C" + instance.Index;
             prefix += GetBaseCallPrefix(method);
             var rname = _abc.DefineQName(mname.Namespace, prefix + mname.NameString);
@@ -328,7 +328,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private void CallCore(AbcCode code, IMethod method, AbcMultiname prop, bool super)
         {
-            var m = method.Tag as AbcMethod;
+            var m = method.Data as AbcMethod;
             if (m != null)
             {
                 if (m.IsGetter)
@@ -426,7 +426,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (MustCoerceReturnType(declType))
                 return true;
             
-            var abcMethod = method.Tag as AbcMethod;
+            var abcMethod = method.Data as AbcMethod;
             if (abcMethod != null)
             {
                 if (abcMethod.IsNative) return true;
@@ -497,7 +497,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var type = method.DeclaringType;
 
-            var abcMethod = method.Tag as AbcMethod;
+            var abcMethod = method.Data as AbcMethod;
             if (abcMethod != null)
             {
                 if (abcMethod.IsInitializer) //default ctor!

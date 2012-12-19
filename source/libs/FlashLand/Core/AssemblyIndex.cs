@@ -139,7 +139,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			if (!_typeCache.ContainsKey(name))
 				_typeCache.Add(name, type);
 
-		    var instance = type.Tag as AbcInstance;
+		    var instance = type.Data as AbcInstance;
 		    if (instance != null)
 		    {
 			    string name2 = instance.FullName;
@@ -171,7 +171,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
         {
             var type = FindTypeCore(name);
             if (type != null)
-                return type.Tag as AbcInstance;
+                return type.Data as AbcInstance;
             return null;
         }
     }

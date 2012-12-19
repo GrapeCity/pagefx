@@ -166,7 +166,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                         var super = type.BaseType;
                         if (super != null)
                         {
-                            var instance = super.Tag as AbcInstance;
+                            var instance = super.Data as AbcInstance;
                             if (instance != null)
                                 return instance;
                         }

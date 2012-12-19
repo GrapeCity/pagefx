@@ -19,7 +19,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
             Type = instance;
             Param = instance.GenericArguments[0];
-            type.Tag = this;
+            type.Data = this;
         }
 
 	    public IGenericInstance Type { get; private set; }

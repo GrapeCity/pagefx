@@ -78,7 +78,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			var type = instance.Type;
 			var field = type.Fields["Value"];
 			DefineField(field);
-			return field.Tag as AbcTrait;
+			return field.Data as AbcTrait;
 		}
 	}
 }

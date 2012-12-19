@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (method == null)
                 throw new ArgumentNullException();
             SourceMethod = method;
-            method.Tag = this;
+            method.Data = this;
         }
         #endregion
 

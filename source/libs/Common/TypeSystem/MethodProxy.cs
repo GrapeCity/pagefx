@@ -407,7 +407,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return Enumerable.Empty<ICodeNode>(); }
         }
 
-    	public object Tag { get; set; }
+    	public object Data { get; set; }
 
     	#endregion
 

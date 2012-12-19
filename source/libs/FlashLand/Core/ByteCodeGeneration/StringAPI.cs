@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         //NOTE: Also used to implement IEnumerable<char>.GetEnumerator
         void ImplementStringGetEnumerator(IMethod method)
         {
-            var m = method.Tag as AbcMethod;
+            var m = method.Data as AbcMethod;
             if (m == null) return;
 
             var CharEnumerator = CorlibTypes[CorlibTypeId.CharEnumerator];
@@ -68,7 +68,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region DefineStringIConvertibleMethod
         private void DefineStringIConvertibleMethod(IMethod method)
         {
-            var m = method.Tag as AbcMethod;
+            var m = method.Data as AbcMethod;
             if (m == null) return;
 
             string name = method.Name;
@@ -126,7 +126,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region DefineStringICloneableMethod
         void DefineStringICloneableMethod(IMethod method)
         {
-            var m = method.Tag as AbcMethod;
+            var m = method.Data as AbcMethod;
             if (m == null) return;
 
             _newAPI.SetProtoFunction(
@@ -143,7 +143,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         //NOTE: Also used to implement IComparable<String>
         void DefineStringIComparableMethod(IMethod method)
         {
-            var m = method.Tag as AbcMethod;
+            var m = method.Data as AbcMethod;
             if (m == null) return;
 
 	        var stringType = SystemTypes.String;
@@ -171,7 +171,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region DefineStringIEquatableMethod
         void DefineStringIEquatableMethod(IMethod method)
         {
-            var m = method.Tag as AbcMethod;
+            var m = method.Data as AbcMethod;
             if (m == null) return;
 
             _newAPI.SetProtoFunction(

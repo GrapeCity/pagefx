@@ -355,7 +355,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
                     if (string.IsNullOrEmpty(fullName)) continue;
                     var type = resolver.Resolve(fullName);
                     if (type == null) continue;
-                    var instance = type.Tag as AbcInstance;
+                    var instance = type.Data as AbcInstance;
                     if (instance != null)
                     {
                         if (instance.Swc == lib.SWC)

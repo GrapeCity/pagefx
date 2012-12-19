@@ -26,7 +26,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		[InlineImpl(Name = ".ctor", Attrs = MethodAttrs.Constructor)]
 		public static void Ctor(IMethod method, AbcCode code)
 		{
-			var vec = method.DeclaringType.Tag as IVectorType;
+			var vec = method.DeclaringType.Data as IVectorType;
 			if (vec == null)
 				throw new InvalidOperationException();
 			code.Construct(method.Parameters.Count);
@@ -36,9 +36,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		private static bool IsTypedVector(IMethod method)
 		{
 			var type = method.DeclaringType;
-			if (type.Tag is IVectorType) return true;
+			if (type.Data is IVectorType) return true;
 
-			var instance = type.Tag as AbcInstance;
+			var instance = type.Data as AbcInstance;
 			if (instance != null && instance.IsNative)
 			{
 				var mn = instance.Name;
