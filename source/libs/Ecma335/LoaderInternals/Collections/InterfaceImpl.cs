@@ -49,9 +49,9 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 
 		public object Tag { get; set; }
 
-		public IType this[string fullname]
+		public IType FindType(string fullname)
 		{
-			get { return this.FirstOrDefault(t => t.FullName == fullname); }
+			return this.FirstOrDefault(t => t.FullName == fullname);
 		}
 
 		public void Add(IType type)

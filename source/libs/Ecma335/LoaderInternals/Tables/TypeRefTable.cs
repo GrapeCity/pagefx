@@ -52,7 +52,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 		{
 			var c = GetTypeContainer(scope);
 			if (c != null)
-				return c.Types[fullname];
+				return c.Types.FindType(fullname);
 			return null;
 		}
 

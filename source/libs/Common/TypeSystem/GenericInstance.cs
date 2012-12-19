@@ -774,13 +774,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 				_types = types;
 			}
 
-			public IType this[string fullname]
+			public IType FindType(string fullname)
 			{
-				get
-				{
-					//TODO PERF: add dictionary for quick search types by fullname
-					return this.FirstOrDefault(t => t.FullName == fullname);
-				}
+				//TODO PERF: add dictionary for quick search types by fullname
+				return this.FirstOrDefault(t => t.FullName == fullname);
 			}
 
 			public void Add(IType type)
@@ -811,21 +808,18 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 				_owner = owner;
 			}
 
-			public IType this[string fullname]
+			public IType FindType(string fullname)
 			{
-				get
+				if (string.IsNullOrEmpty(fullname))
+					return null;
+
+				if (_lookup == null)
 				{
-					if (string.IsNullOrEmpty(fullname))
-						return null;
-
-					if (_lookup == null)
-					{
-						_lookup = this.ToDictionary(x => x.FullName, x => x);
-					}
-
-					IType type;
-					return _lookup.TryGetValue(fullname, out type) ? type : null;
+					_lookup = this.ToDictionary(x => x.FullName, x => x);
 				}
+
+				IType type;
+				return _lookup.TryGetValue(fullname, out type) ? type : null;
 			}
 
 			public void Add(IType type)

@@ -35,32 +35,32 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _list[index]; }
         }
 
-        public IType this[string fullname]
-        {
-            get
-            {
-                IType res;
-                if (_cache.TryGetValue(fullname, out res))
-                    return res;
-                return null;
-            }
-        }
+	    public IType FindType(string fullname)
+	    {
+		    IType res;
+		    if (_cache.TryGetValue(fullname, out res))
+			    return res;
+		    return null;
+	    }
 
 	    public bool Contains(IType type)
         {
-            return this[type.FullName] != null;
+            return type != null && FindType(type.FullName) != null;
         }
 
         public void Add(IType type)
         {
-            if (!Contains(type))
+	        if (type == null)
+				throw new ArgumentNullException("type");
+
+	        if (!Contains(type))
             {
                 _list.Add(type);
                 AddToCache(type);
             }
         }
 
-        public IEnumerator<IType> GetEnumerator()
+	    public IEnumerator<IType> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
@@ -130,9 +130,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 				get { return null; }
 			}
 
-			public IType this[string fullname]
+			public IType FindType(string fullname)
 			{
-				get { return null; }
+				return null;
 			}
 
 			public void Add(IType type)
@@ -188,9 +188,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public object Tag { get; set; }
 
-        public IType this[string fullname]
-        {
-            get { return this.FirstOrDefault(t => t.FullName == fullname); }
-        }
+	    public IType FindType(string fullname)
+	    {
+		    return this.FirstOrDefault(t => t.FullName == fullname);
+	    }
     }
 }

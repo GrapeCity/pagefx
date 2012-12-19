@@ -423,29 +423,26 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 		public object Tag { get; set; }
 
-		public IType this[string fullname]
+		public IType FindType(string fullname)
 		{
-			get
-			{
-				if (string.IsNullOrEmpty(fullname))
-					return null;
-
-				var type = FindInCache(fullname);
-				if (type != null)
-					return type;
-
-				int typeCount = Metadata.GetRowCount(TableId.TypeDef);
-				for (; _lastIndex < typeCount; _lastIndex++)
-				{
-					var info = CacheTypeInfo(_lastIndex);
-					if (info.FullName == fullname)
-					{
-						return this[_lastIndex++];
-					}
-				}
-
+			if (string.IsNullOrEmpty(fullname))
 				return null;
+
+			var type = FindInCache(fullname);
+			if (type != null)
+				return type;
+
+			int typeCount = Metadata.GetRowCount(TableId.TypeDef);
+			for (; _lastIndex < typeCount; _lastIndex++)
+			{
+				var info = CacheTypeInfo(_lastIndex);
+				if (info.FullName == fullname)
+				{
+					return this[_lastIndex++];
+				}
 			}
+
+			return null;
 		}
 
 		private IType FindInCache(string fullname)

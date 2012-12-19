@@ -459,7 +459,7 @@ namespace DataDynamics.PageFX.Ecma335
 
 	    public IType FindSystemType(string fullName)
 	    {
-		    return Corlib.Types[fullName];
+		    return Corlib.Types.FindType(fullName);
 	    }
     }
 }

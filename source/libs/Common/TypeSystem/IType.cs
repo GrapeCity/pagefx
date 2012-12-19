@@ -129,9 +129,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	public interface ITypeCollection : IReadOnlyList<IType>, ICodeNode
     {
-        IType this[string fullname] { get; }
+		IType FindType(string fullname);
 
-        void Add(IType type);
+		void Add(IType type);
 
         bool Contains(IType type);
     }

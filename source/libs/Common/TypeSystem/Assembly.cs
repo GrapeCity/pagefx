@@ -98,7 +98,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         
 		public IType FindType(string fullname)
         {
-        	return _modules.Select(module => module.Types[fullname]).FirstOrDefault(type => type != null);
+        	return _modules.Select(module => module.Types.FindType(fullname)).FirstOrDefault(type => type != null);
         }
 
 	    #endregion
@@ -133,12 +133,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
         }
 
-        IType ITypeCollection.this[string fullname]
-        {
-            get { return FindType(fullname); }
-        }
-
-        bool ITypeCollection.Contains(IType type)
+		bool ITypeCollection.Contains(IType type)
         {
             return type != null && FindType(type.FullName) != null;
         }
