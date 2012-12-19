@@ -126,7 +126,7 @@ namespace DataDynamics.PageFX.Common.NUnit
 			return method.HasAttribute(Attrs.SetUp, Attrs.TestFixtureSetUp);
 		}
 
-		public static bool IsNUnitMethod(IMethod method)
+		public static bool IsNUnitMethod(this IMethod method)
 		{
 			if (method == null) return false;
 			return method.CustomAttributes.Any(attr => attr.TypeName.StartsWith(NsPrefix));

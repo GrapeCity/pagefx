@@ -1,4 +1,5 @@
 using System;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -7,6 +8,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		void ResolveAssemblyReferences();
 
 		IMethod ResolveEntryPoint();
+
+		IReadOnlyList<IType> GetExposedTypes();
 
 		event EventHandler<TypeEventArgs> TypeLoaded;
 	}

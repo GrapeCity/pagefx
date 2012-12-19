@@ -397,7 +397,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             get 
             {
                 if (!IsSwf) return false;
-                var opts = _generator.sfc.Options;
+                var opts = _generator.SwfCompiler.Options;
                 if (opts.IgnoreExceptionBreaks) return false;
                 if (opts.ExceptionBreak) return true;
                 return PfxConfig.Compiler.ExceptionBreak;

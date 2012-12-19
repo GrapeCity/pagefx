@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             string name = "as_";
             if (me) name += "me";
             else name += type.GetSigName();
-            return _abc.DefinePfxName(name);
+            return Abc.DefinePfxName(name);
         }
 
         AbcMultiname GetCastMethodName(IType type, bool me)
@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             string name = "cast_to_";
             if (me) name += "me";
             else name += type.GetSigName();
-            return _abc.DefinePfxName(name);
+            return Abc.DefinePfxName(name);
         }
 
         public AbcMethod DefineCastToMethod(IType type, bool cast)
@@ -257,7 +257,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 					                }
 
 					                code.GetLocal(value);
-					                code.As(_abc.GetTypeName(type, false));
+					                code.As(Abc.GetTypeName(type, false));
 					                code.ReturnValue();
 				                }
 			                );

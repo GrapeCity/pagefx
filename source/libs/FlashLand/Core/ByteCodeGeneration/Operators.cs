@@ -42,9 +42,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var instance = DefineAbcInstance(method.DeclaringType);
 
-            Debug.Assert(instance.Abc == _abc);
+            Debug.Assert(instance.Abc == Abc);
 
-            var thisName = _abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
+            var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
             var retType = DefineReturnType(method.Type);
 
             return instance.DefineInstanceMethod(
@@ -85,7 +85,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var instance = DefineAbcInstance(op.DeclaringType);
 
-            var thisName = _abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
+            var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
             var retType = DefineReturnType(op.Type);
 
             return instance.DefineInstanceMethod(
@@ -123,7 +123,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var instance = DefineAbcInstance(type);
 
-            var name = _abc.DefineGlobalQName(isTrue ? "__true__" : "__false__");
+            var name = Abc.DefineGlobalQName(isTrue ? "__true__" : "__false__");
 
             var retType = DefineReturnType(SystemTypes.Boolean);
 

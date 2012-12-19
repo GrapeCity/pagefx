@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             {
                 var tostr = DefineAbcMethod(toString);
 
-                var name = _abc.DefineGlobalQName(DebugPropertyPrefix + "display");
+                var name = Abc.DefineGlobalQName(DebugPropertyPrefix + "display");
 
 				var m = instance.DefineInstanceGetter(
                     name, AvmTypeCode.String,
@@ -74,7 +74,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 return false;
             }
 
-            var name = _abc.DefineGlobalQName(DebugPropertyPrefix + "display$exp");
+            var name = Abc.DefineGlobalQName(DebugPropertyPrefix + "display$exp");
 
             //TODO: Parse display string to build string
             var m = instance.DefineInstanceGetter(
@@ -96,7 +96,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region DefineDebugCollectionView
         void DefineDebugCollectionView(AbcInstance instance)
         {
-            var name = _abc.DefineGlobalQName(DebugPropertyPrefix + "collection$view");
+            var name = Abc.DefineGlobalQName(DebugPropertyPrefix + "collection$view");
 
             if (instance.FindSuperTrait(name, AbcTraitKind.Getter) != null)
                 return;

@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             if (instance.IsInterface)
             {
-                instance.Initializer = _abc.DefineEmptyAbstractMethod();
+                instance.Initializer = Abc.DefineEmptyAbstractMethod();
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         AbcMethod DefineDefaultInitializer(IType type)
         {
-            return _abc.DefineInitializer(
+            return Abc.DefineInitializer(
 	            code =>
 		            {
 			            code.PushThisScope();
@@ -87,14 +87,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 if (AbcGenConfig.InitEnumFields && !AbcGenConfig.ExludeEnumConstants)
                     klass.Initializer = DefineEnumCinit(type);
                 else
-                    klass.Initializer = _abc.DefineEmptyMethod();
+                    klass.Initializer = Abc.DefineEmptyMethod();
                 return;
             }
 
             var instance = klass.Instance;
             if (instance.IsInterface)
             {
-                klass.Initializer = _abc.DefineEmptyMethod();
+                klass.Initializer = Abc.DefineEmptyMethod();
             }
             else
             {
@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 }
                 else
                 {
-                    klass.Initializer = _abc.DefineEmptyMethod();
+                    klass.Initializer = Abc.DefineEmptyMethod();
                 }
             }
 
@@ -142,7 +142,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var type = klass.Type;
 
-            return _abc.DefineInitializer(
+            return Abc.DefineInitializer(
 	            code =>
 		            {
 			            code.PushThisScope();
@@ -180,12 +180,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (type == null) return null;
             if (!type.IsEnum) return null;
 
-        	var method = new AbcMethod {ReturnType = _abc.BuiltinTypes.Void};
+        	var method = new AbcMethod {ReturnType = Abc.BuiltinTypes.Void};
         	var body = new AbcMethodBody(method);
 
             AddMethod(method);
 
-            var code = new AbcCode(_abc);
+            var code = new AbcCode(Abc);
 
             foreach (var field in type.Fields.Where(field => field.IsConstant))
             {

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.IL;
@@ -49,6 +50,11 @@ namespace DataDynamics.PageFX.Ecma335
 	    internal IAssembly CorlibAssembly
 	    {
 			get { return Corlib.Assembly; }
+	    }
+
+	    internal SystemTypes SystemTypes
+	    {
+			get { return CorlibAssembly.SystemTypes; }
 	    }
 
 		public static IAssembly Load(string path)
@@ -293,7 +299,7 @@ namespace DataDynamics.PageFX.Ecma335
             switch (i.Table)
             {
                 case TableId.TypeDef:
-                    if (index < 0) return FindSystemType("System.Object");
+                    if (index < 0) return CorlibAssembly.SystemTypes.Object;
                     return Types[index];
 
                 case TableId.TypeRef:
@@ -457,9 +463,9 @@ namespace DataDynamics.PageFX.Ecma335
 			}
         }
 
-	    public IType FindSystemType(string fullName)
-	    {
-		    return Corlib.Types.FindType(fullName);
-	    }
+	    public IReadOnlyList<IType> GetExposedTypes()
+		{
+			throw new NotImplementedException();
+		}
     }
 }

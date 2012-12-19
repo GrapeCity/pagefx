@@ -54,7 +54,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             var instance = DefineRuntimeInstance();
 
-            var dicType = _abc.DefineQName("flash.utils", "Dictionary");
+            var dicType = Abc.DefineQName("flash.utils", "Dictionary");
             var dic = instance.DefineStaticSlot("hcdic$", dicType);
 
             return instance.DefineStaticMethod(

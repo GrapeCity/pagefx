@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             m.ReturnType = DefineReturnType(method.Type);
             m.AddParam(CreateParam(SystemTypes.Object, method.Parameters[0].Name));
-            m.AddParam(CreateParam(_abc.BuiltinTypes.Function, method.Parameters[1].Name));
+            m.AddParam(CreateParam(Abc.BuiltinTypes.Function, method.Parameters[1].Name));
 
             if (!isInitializer)
             {
@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var body = new AbcMethodBody(m);
             AddMethod(m);
 
-            var code = new AbcCode(_abc);
+            var code = new AbcCode(Abc);
 
             code.PushThisScope();
             
@@ -97,7 +97,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             int paramNum = method.Parameters.Count;
             var type = method.DeclaringType;
 
-            var code = new AbcCode(_abc);
+            var code = new AbcCode(Abc);
 
             int prev = paramNum + 1;
             code.LoadThis();

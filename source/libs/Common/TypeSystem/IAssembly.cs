@@ -1,5 +1,4 @@
 using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -54,6 +53,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// Gets type factory.
 		/// </summary>
 		TypeFactory TypeFactory { get; }
+
+		/// <summary>
+		/// Gets exposed types.
+		/// </summary>
+		IReadOnlyList<IType> GetExposedTypes();
     }
 
     /// <summary>

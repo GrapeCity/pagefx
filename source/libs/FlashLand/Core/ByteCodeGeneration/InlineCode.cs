@@ -39,18 +39,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 				InlineCodeProvider provider;
 				if (NativeInlines.TryGetValue(name, out provider))
 				{
-					return provider.GetImplementation(_abc, method);
+					return provider.GetImplementation(Abc, method);
 				}
 
 				if (name.StartsWith(AS3.Vector.FullName))
                 {
-                    return AvmVectorInlines.Get(_abc, method);
+                    return AvmVectorInlines.Get(Abc, method);
                 }
             }
 
             var type = method.DeclaringType;
             if (type.Tag is IVectorType)
-                return AvmVectorInlines.Get(_abc, method);
+                return AvmVectorInlines.Get(Abc, method);
 
             return GetInlineCode(type, method);
         }
@@ -66,7 +66,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 		    InlineCodeProvider provider;
 	        if (Inlines.TryGetValue(type.FullName, out provider))
 	        {
-		        return provider.GetImplementation(_abc, method);
+		        return provider.GetImplementation(Abc, method);
 	        }
 
 		    return null;
@@ -74,8 +74,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
 	    private AbcCode DefineInlineCode(IMethod method, InlineMethodInfo info)
 	    {
-		    var code = new AbcCode(_abc);
-		    var name = info.Name.Define(_abc);
+		    var code = new AbcCode(Abc);
+		    var name = info.Name.Define(Abc);
 
 		    switch (info.Kind)
 		    {

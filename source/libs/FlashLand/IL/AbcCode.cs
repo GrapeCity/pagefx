@@ -55,7 +55,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
 	    private IAssembly Assembly
 	    {
-			get { return Generator.ApplicationAssembly; }
+			get { return Generator.AppAssembly; }
 	    }
 
 		private IType SysType(SystemTypeCode typeCode)

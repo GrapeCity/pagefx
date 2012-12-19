@@ -13,8 +13,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
     	private void DefineFlexAppMembers(AbcInstance instance)
         {
-            if (!IsMxApplication) return;
-            if (!ReferenceEquals(instance.Type, sfc.TypeFlexApp)) return;
+            if (!IsFlexApplication) return;
+            if (!ReferenceEquals(instance.Type, SwfCompiler.TypeFlexApp)) return;
 
             if (AbcGenConfig.FlexAppCtorAsHandler)
                 DefineFlexAppInitializer(instance);
@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             Debug.Assert(instance.Initializer == null);
 
-        	instance.Initializer = _abc.DefineInitializer(
+        	instance.Initializer = Abc.DefineInitializer(
         		code =>
         			{
         				code.PushThisScope();
@@ -61,7 +61,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 		/// <param name="code"></param>
         public void FlexAppCtorAfterSuperCall(AbcCode code)
         {
-            Debug.Assert(IsMxApplication);
+            Debug.Assert(IsFlexApplication);
 
             var instance = MainInstance;
             Debug.Assert(instance != null);
@@ -138,7 +138,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
     	private void OverrideFlexAppInitialize(AbcInstance instance)
         {
-            var name = _abc.DefineGlobalQName("initialize");
+            var name = Abc.DefineGlobalQName("initialize");
     		instance.DefineVirtualOverrideMethod(
     			name, AvmTypeCode.Void,
     			code =>
@@ -161,7 +161,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			var moduleFactoryInitialized = instance.DefineSlot("__moduleFactoryInitialized", AvmTypeCode.Boolean);
     		var flexModuleFactoryInterface = ImportType(MX.IFlexModuleFactory);
 
-			var propertyName = _abc.DefineGlobalQName("moduleFactory");
+			var propertyName = Abc.DefineGlobalQName("moduleFactory");
     		instance.DefineSetter(
 				propertyName, flexModuleFactoryInterface,
 				AbcMethodSemantics.Virtual | AbcMethodSemantics.Override, 
@@ -238,7 +238,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 						{
 							var styleMgr = ImportType("mx.styles.StyleManager");
 							code.Getlex(styleMgr);
-							code.CallVoid(_abc.DefineMxInternalName("initProtoChainRoots"), 0);
+							code.CallVoid(Abc.DefineMxInternalName("initProtoChainRoots"), 0);
 						}
 
 						code.ReturnVoid();

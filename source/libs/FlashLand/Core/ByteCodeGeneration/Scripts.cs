@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             instance.IsApp = true;
 
             var script = new AbcScript {IsMain = true};
-            _abc.Scripts.Add(script);
+            Abc.Scripts.Add(script);
 
             script.DefineClassTraits(instance);
             script.Initializer = DefineMainScriptInit(script, instance);
@@ -51,7 +51,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             _mainScriptBody = body;
 
-            var code = new AbcCode(_abc);
+            var code = new AbcCode(Abc);
 
             _mainScriptCode = code;
             code.PushThisScope();
@@ -114,9 +114,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             int start = Environment.TickCount;
 #endif
 
-            for (int i = 0; i < _abc.Instances.Count; ++i)
+            for (int i = 0; i < Abc.Instances.Count; ++i)
             {
-                var instance = _abc.Instances[i];
+                var instance = Abc.Instances[i];
                 if (instance.Script != null) continue;
                 DefineScript(instance);
             }
@@ -136,11 +136,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         void DefineScript(AbcInstance instance)
         {
             var script = new AbcScript();
-            _abc.Scripts.Add(script);
+            Abc.Scripts.Add(script);
 
             script.DefineClassTraits(instance);
 
-            script.Initializer = _abc.DefineMethod(
+            script.Initializer = Abc.DefineMethod(
                 AvmTypeCode.Void,
                 code =>
                     {
@@ -244,8 +244,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                     return _entryPoint.DeclaringType;
                 if (IsSwf)
                 {
-                    if (IsMxApplication)
-                        return sfc.TypeFlexApp;
+                    if (IsFlexApplication)
+                        return SwfCompiler.TypeFlexApp;
                     var root = RootSprite;
                     if (root != null)
                         return root.Type;

@@ -203,7 +203,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			var m = new Method
 				{
 					Name = CLRNames.Constructor,
-					Type = _loader.FindSystemType("System.Void"),
+					Type = _loader.SystemTypes.Void,
 					DeclaringType = type
 				};
 
@@ -277,7 +277,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			var m = new Method
 				{
 					Name = CLRNames.Array.Setter,
-					Type = _loader.FindSystemType("System.Void"),
+					Type = _loader.SystemTypes.Void,
 					IsInternalCall = true,
 					DeclaringType = type
 				};

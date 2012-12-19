@@ -20,8 +20,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             get 
             {
-                if (sfc != null)
-                    return sfc.PlayerVersion;
+                if (SwfCompiler != null)
+                    return SwfCompiler.PlayerVersion;
                 return -1;
             }
         }

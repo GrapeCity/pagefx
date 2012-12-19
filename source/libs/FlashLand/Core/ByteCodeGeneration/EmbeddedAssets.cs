@@ -54,14 +54,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (MimeTypes.IsBitmap(type))
             {
                 var instance = DefineBitmapAsset(trait);
-                sfc.DefineBitmapAsset(embed.Source, instance);
+                SwfCompiler.DefineBitmapAsset(embed.Source, instance);
                 return;
             }
 
             if (MimeTypes.IsJpeg(type))
             {
                 var instance = DefineBitmapAsset(trait);
-                sfc.DefineJpegAsset(embed.Source, instance);
+                SwfCompiler.DefineJpegAsset(embed.Source, instance);
                 return;
             }
 
@@ -75,27 +75,27 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             var owner = trait.Instance;
             string name = owner.NameString + "_" + trait.Name.NameString;
-            return _abc.DefineQName(owner.Name.Namespace, name);
+            return Abc.DefineQName(owner.Name.Namespace, name);
         }
         #endregion
 
         #region DefineAssetInstance
         public AbcInstance DefineAssetInstance(AbcTrait trait, string superNS, string superName)
         {
-            var super = _abc.DefinePackageQName(superNS, superName);
+            var super = Abc.DefinePackageQName(superNS, superName);
             return DefineAssetInstance(trait, super);
         }
 
         public AbcInstance DefineAssetInstance(AbcMultiname name, string superNS, string superName)
         {
-            var super = _abc.DefinePackageQName(superNS, superName);
+            var super = Abc.DefinePackageQName(superNS, superName);
             return DefineAssetInstance(name, super);
         }
 
         AbcMultiname GetBitmapAssetSuperName()
         {
             //TODO: For flash application it can flash.display.Bitmap
-            return _abc.DefineQName("mx.core", "BitmapAsset");
+            return Abc.DefineQName("mx.core", "BitmapAsset");
         }
 
         public AbcInstance DefineBitmapAsset(AbcMultiname name)
@@ -106,7 +106,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         public AbcInstance DefineBitmapAsset(AbcMultiname name, Image image, bool jpeg)
         {
             var instance = DefineAssetInstance(name, GetBitmapAssetSuperName());
-            sfc.DefineBitmapAsset(image, instance, jpeg);
+            SwfCompiler.DefineBitmapAsset(image, instance, jpeg);
             return instance;
         }
 
@@ -140,11 +140,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 Name = name,
                 SuperName = superName,
                 Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
-                ProtectedNamespace = _abc.DefineProtectedNamespace(name.NameString),
-                Initializer = _abc.DefineEmptyConstructor((string)null, true),
+                ProtectedNamespace = Abc.DefineProtectedNamespace(name.NameString),
+                Initializer = Abc.DefineEmptyConstructor((string)null, true),
                 SuperType = superType
             };
-            instance.Class.Initializer = _abc.DefineEmptyMethod(true);
+            instance.Class.Initializer = Abc.DefineEmptyMethod(true);
             AddInstance(instance);
 
             return instance;
@@ -158,7 +158,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var instance = type.Tag as AbcInstance;
             if (instance == null)
                 throw new InvalidOperationException();
-            instance = _abc.ImportInstance(instance);
+            instance = Abc.ImportInstance(instance);
             return instance;
         }
         #endregion

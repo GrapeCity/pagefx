@@ -12,10 +12,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         public AbcInstance DefineRuntimeInstance(IAssembly assembly)
         {
             var name = DefinePfxName(assembly.Name + "$runtime", false);
-            var instance = _abc.Instances[name];
+            var instance = Abc.Instances[name];
             if (instance != null) return instance;
-            instance = _abc.DefineEmptyInstance(name, true);
-            _abc.DefineScript(instance);
+            instance = Abc.DefineEmptyInstance(name, true);
+            Abc.DefineScript(instance);
             return instance;
         }
 
@@ -26,7 +26,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         public AbcInstance DefineRuntimeInstance()
         {
-            return DefineRuntimeInstance(ApplicationAssembly.Corlib());
+            return DefineRuntimeInstance(AppAssembly.Corlib());
         }
         #endregion
 
@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             return instance.DefineStaticGetter(
                 "isFlashInternal",
-                _abc.BuiltinTypes.Boolean,
+                Abc.BuiltinTypes.Boolean,
                 code =>
 	                {
 		                code.GetPlayerType();
@@ -57,7 +57,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             return instance.DefineStaticGetter(
                 "isFlash",
-                _abc.BuiltinTypes.RealBoolean,
+                Abc.BuiltinTypes.RealBoolean,
                 code =>
 	                {
 		                var isFlash = instance.DefineStaticSlot("__isFlash", AvmTypeCode.Boolean);
@@ -99,20 +99,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 		                code.Call(isFlash);
 		                var ifNotFlash = code.IfFalse();
 
-		                var ns = _abc.DefinePackage("avmplus");
-		                var mn = _abc.DefineQName(ns, "System");
+		                var ns = Abc.DefinePackage("avmplus");
+		                var mn = Abc.DefineQName(ns, "System");
 		                code.Getlex(mn);
-		                mn = _abc.DefineQName(ns, "exit");
+		                mn = Abc.DefineQName(ns, "exit");
 		                code.GetLocal(1); //exitCode
 		                code.Call(mn, 1);
 		                code.ReturnVoid();
 
 		                ifNotFlash.BranchTarget = code.Label();
 
-		                ns = _abc.DefinePackage("flash.System");
-		                mn = _abc.DefineQName(ns, "System");
+		                ns = Abc.DefinePackage("flash.System");
+		                mn = Abc.DefineQName(ns, "System");
 		                code.Getlex(mn);
-		                mn = _abc.DefineQName(ns, "exit");
+		                mn = Abc.DefineQName(ns, "exit");
 		                code.GetLocal(1); //exitCode
 		                code.Add(InstructionCode.Coerce_u); //???
 		                code.Call(mn, 1);
@@ -125,9 +125,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region DefineRecord
         public AbcInstance DefineRecord(object name, params object[] args)
         {
-            var mn = _abc.DefineName(name);
+            var mn = Abc.DefineName(name);
 
-            var instance = _abc.DefineEmptyInstance(mn, true);
+            var instance = Abc.DefineEmptyInstance(mn, true);
 
             int slotID = 1;
             for (int i = 0; i < args.Length; i += 2)

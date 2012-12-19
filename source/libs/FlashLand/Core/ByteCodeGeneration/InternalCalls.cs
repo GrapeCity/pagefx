@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var copy = DefineCopyMethod(instance);
             if (copy == null) return null;
 
-            var name = _abc.DefinePfxName("__static_copy__");
+            var name = Abc.DefinePfxName("__static_copy__");
 
             return instance.DefineStaticMethod(
                 name, instance.Name,
@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (type == null) return null;
             if (!InternalTypeExtensions.HasCopy(type)) return null;
 
-            var name = _abc.DefinePfxName("__copy__");
+            var name = Abc.DefinePfxName("__copy__");
 
             return instance.DefineInstanceMethod(
                 name, instance.Name,
@@ -82,7 +82,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var type = instance.Type;
             if (!InternalTypeExtensions.HasCopy(type)) return null;
 
-            var name = _abc.DefinePfxName("__copy_from__");
+            var name = Abc.DefinePfxName("__copy_from__");
 
             return instance.DefineInstanceMethod(
                 name, AvmTypeCode.Void,
@@ -99,7 +99,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         AbcMethod BeginMethod(IMethod method, AbcInstance instance)
         {
             var m = new AbcMethod(method);
-            _abc.Methods.Add(m);
+            Abc.Methods.Add(m);
 
             var trait = DefineMethodTrait(m, method);
             instance.AddTrait(trait, method.IsStatic);
@@ -108,7 +108,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             DefineParameters(m, method);
 
             var body = new AbcMethodBody(m);
-            _abc.MethodBodies.Add(body);
+            Abc.MethodBodies.Add(body);
             
             return m;
         }

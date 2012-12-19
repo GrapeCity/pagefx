@@ -115,6 +115,7 @@
     <Compile Include="TypeSystem\SystemTypeCode.cs" />
     <Compile Include="TypeSystem\SystemTypeExtensions.cs" />
     <Compile Include="TypeSystem\TypeFactory.cs" />
+    <Compile Include="TypeSystem\TypeMemberExtensions.cs" />
     <Compile Include="Utilities\Tricks.cs" />
     <Compile Include="Tests\BitReaderTest.cs" />
     <Compile Include="Tests\BitWriterTest.cs" />

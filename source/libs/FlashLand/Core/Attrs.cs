@@ -1,4 +1,3 @@
-using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.FlashLand.Core
@@ -40,7 +39,6 @@ namespace DataDynamics.PageFX.FlashLand.Core
         public const string Embed = "EmbedAttribute";
         private const string NoRootNamespace = "NoRootNamespaceAttribute";
 		private const string NoRootNamespace2 = "IgnoreRootNamespaceAttribute";
-        private const string Expose = "ExposeAttribute";
 
         public const string DebuggerDisplay = "System.Diagnostics.DebuggerDisplayAttribute";
 
@@ -62,39 +60,6 @@ namespace DataDynamics.PageFX.FlashLand.Core
             }
 
             return !(type.HasAttribute(NoRootNamespace) || type.HasAttribute(NoRootNamespace2));
-        }
-
-        public static bool IsExposed(this ITypeMember member)
-        {
-            if (member == null) return false;
-
-            var type = member as IType;
-            if (type != null)
-            {
-                if (GenericType.HasGenericParams(type))
-                    return false;
-
-                if (type.IsTestFixture())
-                    return true;
-            }
-
-            var method = member as IMethod;
-            if (method != null)
-            {
-                if (method.DeclaringType.IsTestFixture())
-                {
-                    if (method.IsConstructor)
-                        return true;
-                    if (NUnitExtensions.IsNUnitMethod(method))
-                        return true;
-                }
-
-                if (method.Association != null
-                    && method.Association.IsExposed())
-                    return true;
-            }
-
-            return member.HasAttribute(Expose);
         }
     }
 }

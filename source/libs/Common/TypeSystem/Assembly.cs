@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -53,6 +52,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		public TypeFactory TypeFactory
 		{
 			get { return _typeFactory ?? (_typeFactory = ResolveTypeFactory()); }
+		}
+
+		public IReadOnlyList<IType> GetExposedTypes()
+		{
+			if (Loader != null)
+			{
+				return Loader.GetExposedTypes();
+			}
+
+			return Types.Where(x => x.IsExposed()).AsReadOnlyList();
 		}
 
 		private SystemTypes ResolveSystemTypes()

@@ -325,7 +325,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             get
             {
                 if (generator != null)
-                    return generator.ApplicationAssembly;
+                    return generator.AppAssembly;
                 if (_sfc != null)
                     return _sfc.ApplicationAssembly;
                 return null;
@@ -337,7 +337,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             get
             {
                 if (generator != null)
-                    return generator.sfc;
+                    return generator.SwfCompiler;
                 return _sfc;
             }
             set { _sfc = value; }

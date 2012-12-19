@@ -63,30 +63,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         }
         #endregion
 
-        #region Fields
-        IAssembly _assembly;
-        IMethod _entryPoint;
-        internal AbcFile _abc;
+	    private IMethod _entryPoint;
+		internal AbcFile Abc { get; private set; }
         
         //If not null indicates that we genearate swiff file.
-        internal SwfCompilerImpl sfc;
+        internal SwfCompilerImpl SwfCompiler;
 
         public AbcGenMode Mode;
 		public CorlibTypes CorlibTypes;
-        #endregion
 
-        #region Properties
-        public IAssembly ApplicationAssembly
-        {
-            get { return _assembly; }
-        }
+	    #region Properties
 
-        /// <summary>
+	    public IAssembly AppAssembly { get; private set; }
+
+	    /// <summary>
         /// Indicates whether we are compiling swf file.
         /// </summary>
         public bool IsSwf
         {
-            get { return sfc != null; }
+            get { return SwfCompiler != null; }
         }
 
         /// <summary>
@@ -94,26 +89,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         /// </summary>
         public bool IsSwc
         {
-            get { return sfc != null && sfc.IsSwc; }
+            get { return SwfCompiler != null && SwfCompiler.IsSwc; }
         }
 
-        public bool IsMxApplication
+        public bool IsFlexApplication
         {
-            get
-            {
-                if (sfc != null)
-                    return sfc.IsFlexApplication;
-                return false;
-            }
+            get { return SwfCompiler != null && SwfCompiler.IsFlexApplication; }
         }
 
         public string RootNamespace
         {
             get 
             {
-                if (sfc != null)
+                if (SwfCompiler != null)
                 {
-                    string ns = sfc.RootNamespace;
+                    string ns = SwfCompiler.RootNamespace;
                     if (ns != null) return ns;
                 }
                 return "";
@@ -122,7 +112,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         public AbcNamespace RootAbcNamespace
         {
-            get { return _nsroot ?? (_nsroot = _abc.DefinePackage(RootNamespace)); }
+            get { return _nsroot ?? (_nsroot = Abc.DefinePackage(RootNamespace)); }
         }
         private AbcNamespace _nsroot;
         #endregion
@@ -134,12 +124,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
 	    internal SystemTypes SystemTypes
 	    {
-			get { return ApplicationAssembly.SystemTypes; }
+			get { return AppAssembly.SystemTypes; }
 	    }
 
 	    internal TypeFactory TypeFactory
 	    {
-			get { return ApplicationAssembly.TypeFactory; }
+			get { return AppAssembly.TypeFactory; }
 	    }
 
 	    #region Generate - Entry Point
@@ -157,31 +147,31 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             DebugService.LogSeparator();
             DebugService.DoCancel();
 #endif
-            _assembly = assembly;
+            AppAssembly = assembly;
 
 			CorlibTypes = new CorlibTypes(assembly);
 
 			AssemblyIndex.Setup(assembly);
 
-            _abc = new AbcFile
+            Abc = new AbcFile
                        {
                            AutoComplete = true,
                            ReduceSize = true,
                            generator = this,
-                           SwfCompiler = sfc,
+                           SwfCompiler = SwfCompiler,
                            Assembly = assembly
                        };
 
-            _assembly.CustomData().AddAbc(_abc);
+            AppAssembly.CustomData().AddAbc(Abc);
 
-            if (sfc != null)
+            if (SwfCompiler != null)
             {
-                sfc.FrameApp = _abc;
-                if (sfc.IsSwc)
+                SwfCompiler.FrameApp = Abc;
+                if (SwfCompiler.IsSwc)
                     Mode = AbcGenMode.Full;
             }
 
-            _newAPI = new AbcCode(_abc);
+            _newAPI = new AbcCode(Abc);
             RegisterObjectFunctions();
 
             BuildApp();
@@ -190,9 +180,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 #if DEBUG
             DebugService.DoCancel();
 #endif
-			if (sfc != null)
+			if (SwfCompiler != null)
 			{
-				sfc.FinishApplication();
+				SwfCompiler.FinishApplication();
 			}
 
         	#endregion
@@ -229,7 +219,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             DebugService.DoCancel();
 #endif
 
-            _abc.Finish();
+            Abc.Finish();
             #endregion
 
 #if PERF
@@ -237,7 +227,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             Console.WriteLine("AbcGenerator Elapsed Time: {0}", Environment.TickCount - start);
 #endif
 
-            return _abc;
+            return Abc;
         }
         #endregion
 
@@ -265,7 +255,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         private void BuildAppDefault()
         {
-            _entryPoint = _assembly.EntryPoint;
+            _entryPoint = AppAssembly.EntryPoint;
             if (_entryPoint != null)
                 DefineMethod(_entryPoint);
             else
@@ -279,7 +269,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         private void BuildExposedAPI()
         {
 			//TODO: load only exposed types
-            foreach (var type in _assembly.Types)
+            foreach (var type in AppAssembly.Types)
             {
                 if (type.IsTestFixture())
                     _testFixtures.Add(type);
@@ -292,9 +282,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region BuildLibrary
         private void BuildLibrary()
         {
-            if (IsMxApplication)
+            if (IsFlexApplication)
             {
-                var type = sfc.TypeFlexApp;
+                var type = SwfCompiler.TypeFlexApp;
                 if (type == null)
                     throw new InvalidOperationException();
                 DefineType(type);
@@ -303,7 +293,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             if (IsSwf)
             {
-				var type = _assembly.Types.FirstOrDefault(IsRootSprite);
+				var type = AppAssembly.Types.FirstOrDefault(IsRootSprite);
                 if (type != null)
                 {
                     DefineType(type);
@@ -316,7 +306,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         private void BuildAssemblyTypes()
         {
-            var list = new List<IType>(_assembly.Types);
+            var list = new List<IType>(AppAssembly.Types);
             foreach (var type in list)
             {
                 if (GenericType.HasGenericParams(type)) continue;
@@ -340,7 +330,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         IType FindTypeDefOrRef(string fullname)
         {
-            return AssemblyIndex.FindType(_assembly, fullname);
+            return AssemblyIndex.FindType(AppAssembly, fullname);
         }
 
         AbcInstance FindInstanceDefOrRef(string fullname)
@@ -352,7 +342,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         public AbcInstance FindInstanceRef(AbcMultiname name)
         {
-            return AssemblyIndex.FindInstance(_assembly, name);
+            return AssemblyIndex.FindInstance(AppAssembly, name);
         }
 
 		public AbcInstance ImportType(string fullname)
@@ -364,7 +354,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
         	try
         	{
-				return _abc.ImportType(_assembly, fullname);
+				return Abc.ImportType(AppAssembly, fullname);
         	}
         	catch (Exception)
         	{
@@ -389,12 +379,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
     	void AddMethod(AbcMethod method)
         {
-            _abc.AddMethod(method);
+            Abc.AddMethod(method);
         }
 
         public AbcParameter CreateParam(AbcMultiname type, string name)
         {
-            return _abc.DefineParam(type, name);
+            return Abc.DefineParam(type, name);
         }
 
         public AbcParameter CreateParam(AbcInstance type, string name)
@@ -412,7 +402,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         public AbcParameter CreateParam(AvmTypeCode type, string name)
         {
-            return _abc.DefineParam(type, name);
+            return Abc.DefineParam(type, name);
         }
 
     	#endregion

@@ -92,12 +92,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var abc = instance.Abc;
             if (IsSwf)
             {
-                if (!((IEnumerable<AbcFile>)sfc.AbcFrames).Contains(abc))
+                if (!((IEnumerable<AbcFile>)SwfCompiler.AbcFrames).Contains(abc))
                     return null;
             }
             else
             {
-                if (abc != _abc)
+                if (abc != Abc)
                     return null;
             }
 
@@ -167,11 +167,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var list = new List<AbcFile>();
             if (IsSwf)
             {
-                list.AddRange(sfc.AbcFrames);
+                list.AddRange(SwfCompiler.AbcFrames);
             }
             else
             {
-                list.Add(_abc);
+                list.Add(Abc);
             }
             foreach (var abc in list)
             {
@@ -277,17 +277,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var instance = DefineAbcInstance(CorlibTypes[CorlibTypeId.Assembly]);
 
-            var name = _abc.DefineGlobalQName(Const.InitTypePrefix + typeId);
+            var name = Abc.DefineGlobalQName(Const.InitTypePrefix + typeId);
             var method = new AbcMethod();
             var trait = AbcTrait.CreateMethod(method, name);
             instance.AddTrait(trait, false);
-            method.ReturnType = _abc.BuiltinTypes.Void;
+            method.ReturnType = Abc.BuiltinTypes.Void;
             method.AddParam(CreateParam(SystemTypes.Type, "type"));
 
             var body = new AbcMethodBody(method);
             AddMethod(method);
 
-            var code = new AbcCode(_abc);
+            var code = new AbcCode(Abc);
             InitTypeInfo(code, type, typeId);
             code.ReturnVoid();
 

@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (m != null) return;
 
             var coder = val[0] as AbcCoder;
-            m = _abc.DefineMethod(sig, coder);
+            m = Abc.DefineMethod(sig, coder);
 
             _newAPI.SetProtoFunction(type, sig.TraitName, m);
 
@@ -153,14 +153,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         AbcMethod DefineString_ToString()
         {
-            return _abc.DefineMethod(
+            return Abc.DefineMethod(
                 AvmTypeCode.String,
                 code => code.ReturnThis());
         }
 
         AbcMethod DefineString_GetTypeId()
         {
-            return _abc.DefineMethod(
+            return Abc.DefineMethod(
                 AvmTypeCode.Int32,
                 code =>
                 {

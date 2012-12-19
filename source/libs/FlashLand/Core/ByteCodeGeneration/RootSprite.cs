@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			if (!IsSwf) return;
 			if (IsSwc) return;
 			//NOTE: In Flex Root sprite is MX SystemManager.
-			if (IsMxApplication) return;
+			if (IsFlexApplication) return;
 			if (_rootSprite != null) return;
 
 			var rootStageField = DefineRootStageHolder();
@@ -32,9 +32,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			const string rootName = "$ROOTSPRITE$";
 			_rootSprite = new AbcInstance(true)
 			              	{
-			              		Name = _abc.DefineQName(RootAbcNamespace, rootName),
+			              		Name = Abc.DefineQName(RootAbcNamespace, rootName),
 			              		Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
-			              		ProtectedNamespace = _abc.DefineProtectedNamespace(rootName)
+			              		ProtectedNamespace = Abc.DefineProtectedNamespace(rootName)
 			              	};
 
 			const string superTypeName = "flash.display.Sprite";
@@ -42,14 +42,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 			if (superType == null)
 				throw Errors.Type.UnableToFind.CreateException(superTypeName);
 
-			_rootSprite.SuperName = _abc.ImportConst(superType.Name);
+			_rootSprite.SuperName = Abc.ImportConst(superType.Name);
 			_rootSprite.SuperType = superType;
 
-			_rootSprite.Class.Initializer = _abc.DefineEmptyMethod();
+			_rootSprite.Class.Initializer = Abc.DefineEmptyMethod();
 
-			_abc.AddInstance(_rootSprite);
+			Abc.AddInstance(_rootSprite);
 
-			_rootSprite.Initializer = _abc.DefineInitializer(
+			_rootSprite.Initializer = Abc.DefineInitializer(
 				code =>
 					{
 						code.PushThisScope();

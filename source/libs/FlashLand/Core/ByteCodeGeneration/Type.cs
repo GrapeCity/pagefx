@@ -32,11 +32,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var abcSubject = type.Tag as IAbcFileSubject;
             if (abcSubject != null)
             {
-                abcSubject.ByteCode = _abc;
+                abcSubject.ByteCode = Abc;
                 return abcSubject;
             }
 
-            if (_abc.IsDefined(type))
+            if (Abc.IsDefined(type))
                 return type.Tag;
 
             var tag = ImportType(type);
@@ -64,7 +64,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             abcSubject = type.Tag as IAbcFileSubject;
             if (abcSubject != null)
-                abcSubject.ByteCode = _abc;
+                abcSubject.ByteCode = Abc;
 
             return type.Tag;
         }
@@ -131,12 +131,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 if (instance != null)
                 {
                     DefineBaseTypes(type);
-                    return _abc.ImportInstance(instance);
+                    return Abc.ImportInstance(instance);
                 }
 
                 var name = tag as AbcMultiname;
                 if (name != null)
-                    return _abc.ImportConst(name);
+                    return Abc.ImportConst(name);
             }
             return null;
         }
@@ -174,7 +174,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                     {
                         var ctype = (ICompoundType)type;
                         DefineType(ctype.ElementType);
-                        return _abc.BuiltinTypes.Object;
+                        return Abc.BuiltinTypes.Object;
                     }
             }
 
@@ -200,7 +200,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             DefineSuperType(type, out superName, out superType);
 
             //NOTE: Fix for enums.
-            if (_abc.IsDefined(type))
+            if (Abc.IsDefined(type))
                 return type.Tag;
 
 #if DEBUG
@@ -209,7 +209,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 #endif
             var ifaceNames = DefineInterfaces(type);
 
-            if (_abc.IsDefined(type))
+            if (Abc.IsDefined(type))
                 return type.Tag as AbcInstance;
 
             var name = DefineInstanceName(type);
@@ -243,13 +243,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         void AddInstance(AbcInstance instance)
         {
-            _abc.AddInstance(instance);
+            Abc.AddInstance(instance);
         }
 
         bool IsRootSprite(IType type)
         {
-            if (sfc != null && !string.IsNullOrEmpty(sfc.RootSprite))
-                return type.FullName == sfc.RootSprite;
+            if (SwfCompiler != null && !string.IsNullOrEmpty(SwfCompiler.RootSprite))
+                return type.FullName == SwfCompiler.RootSprite;
             return type.IsRootSprite();
         }
 
@@ -269,7 +269,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 if (type.HasProtectedNamespace())
                 {
                     instance.Flags |= AbcClassFlags.ProtectedNamespace;
-                    instance.ProtectedNamespace = _abc.DefineProtectedNamespace(instance.NameString);
+                    instance.ProtectedNamespace = Abc.DefineProtectedNamespace(instance.NameString);
                 }
             }
         }
@@ -279,13 +279,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             var ns = DefineTypeNamespace(type);
             string name = InternalTypeExtensions.GetPartialTypeName(type);
-            return _abc.DefineQName(ns, name);
+            return Abc.DefineQName(ns, name);
         }
 
         AbcNamespace DefineTypeNamespace(IType type)
         {
             string ns = type.GetTypeNamespace(RootNamespace);
-            return _abc.DefineNamespace(AbcConstKind.PackageNamespace, ns);
+            return Abc.DefineNamespace(AbcConstKind.PackageNamespace, ns);
         }
         #endregion
 
@@ -308,7 +308,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (type.Is(SystemTypeCode.Exception))
             {
                 superType = type.Assembly.Corlib().CustomData().ErrorInstance;
-                superName = _abc.BuiltinTypes.Error;
+                superName = Abc.BuiltinTypes.Error;
                 return;
             }
 
@@ -327,7 +327,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
 	        if (type.Is(SystemTypeCode.Object))
 	        {
-		        superName = _abc.BuiltinTypes.Object;
+		        superName = Abc.BuiltinTypes.Object;
 	        }
         }
 
@@ -402,11 +402,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                            };
             AddInstance(instance);
 
-            instance.Class.Initializer = _abc.DefineEmptyMethod();
+            instance.Class.Initializer = Abc.DefineEmptyMethod();
 
             _enumSuperTypes[index] = instance;
 
-            instance.CreateSlot(_abc.DefineGlobalQName(Const.Boxing.Value), DefineMemberType(vtype));
+            instance.CreateSlot(Abc.DefineGlobalQName(Const.Boxing.Value), DefineMemberType(vtype));
 
             //SetFlags(instance, type);
 
@@ -499,12 +499,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 #if PERF
             int start = Environment.TickCount;
 #endif
-            for (int i = 0; i < _abc.Instances.Count; ++i)
+            for (int i = 0; i < Abc.Instances.Count; ++i)
             {
 #if DEBUG
                 DebugService.DoCancel();
 #endif
-                var instance = _abc.Instances[i];
+                var instance = Abc.Instances[i];
                 FinishType(instance);
             }
 #if PERF
@@ -540,7 +540,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             DefineExposedMethods(type);
         }
 
-        bool MustDefine(IField field)
+        private bool MustDefine(IField field)
         {
             //Note: constants and static fields will be defined by demand
             var declType = field.DeclaringType;
@@ -554,8 +554,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             return true;
         }
 
-        void DefineFields(IType type)
+        private void DefineFields(IType type)
         {
+			//TODO: PERF do this only once
             foreach (var field in type.Fields)
             {
 #if DEBUG
@@ -566,7 +567,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             }
         }
 
-        void DefineExposedMethods(IType type)
+        private void DefineExposedMethods(IType type)
         {
             foreach (var method in new List<IMethod>(type.Methods))
             {
@@ -577,28 +578,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             }
         }
 
-        void DefineMember(ITypeMember member)
-        {
-            if (member == null)
-                throw new ArgumentNullException("member");
-
-            switch (member.MemberType)
-            {
-                case MemberType.Constructor:
-                case MemberType.Method:
-                    DefineMethod((IMethod)member);
-                    break;
-
-                case MemberType.Field:
-                    DefineField((IField)member);
-                    break;
-
-                case MemberType.Type:
-                    DefineType((IType)member);
-                    break;
-            }
-        }
-        #endregion
+	    #endregion
 
         #region DefineCompiledMethods
         void DefineCompiledMethods(AbcInstance instance)

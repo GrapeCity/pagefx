@@ -27,8 +27,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             if (_instanceReflection != null) return _instanceReflection;
             var name = DefinePfxName("PlayerReflectionData", false);
-            _instanceReflection = _abc.DefineEmptyInstance(name, true);
-            _abc.DefineScript(_instanceReflection);
+            _instanceReflection = Abc.DefineEmptyInstance(name, true);
+            Abc.DefineScript(_instanceReflection);
             return _instanceReflection;
         }
         AbcInstance _instanceReflection;
@@ -325,7 +325,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             if (addParam)
             {
-                wrapper.AddParam(_abc.DefineParam(AvmTypeCode.Object, "obj"));
+                wrapper.AddParam(Abc.DefineParam(AvmTypeCode.Object, "obj"));
             }
             CopyParams(wrapper, am);
 

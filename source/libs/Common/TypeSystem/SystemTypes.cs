@@ -208,9 +208,19 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			get { return this[SystemTypeCode.IntPtr]; }
 		}
 
+		public IType UIntPtr
+		{
+			get { return this[SystemTypeCode.UIntPtr]; }
+		}
+
 		public IType Void
 		{
 			get { return this[SystemTypeCode.Void]; }
+		}
+
+		public IType TypedReference
+		{
+			get { return this[SystemTypeCode.TypedReference]; }
 		}
 
 		public IType ResolveType(object value)

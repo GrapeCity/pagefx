@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.Metadata;
 
@@ -20,46 +19,51 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			get { return _loader.CorlibAssembly.TypeFactory; }
 		}
 
+		private SystemTypes SystemTypes
+		{
+			get { return _loader.CorlibAssembly.SystemTypes; }
+		}
+
 		public IType ResolveType(TypeSignature sig, Context context)
 		{
 			switch (sig.Element)
 			{
 				case ElementType.Void:
-					return ResolveSystemType("System.Void");
+					return SystemTypes.Void;
 				case ElementType.Boolean:
-					return ResolveSystemType("System.Boolean");
+					return SystemTypes.Boolean;
 				case ElementType.Char:
-					return ResolveSystemType("System.Char");
+					return SystemTypes.Char;
 				case ElementType.Int8:
-					return ResolveSystemType("System.SByte");
+					return SystemTypes.SByte;
 				case ElementType.UInt8:
-					return ResolveSystemType("System.Byte");
+					return SystemTypes.Byte;
 				case ElementType.Int16:
-					return ResolveSystemType("System.Int16");
+					return SystemTypes.Int16;
 				case ElementType.UInt16:
-					return ResolveSystemType("System.UInt16");
+					return SystemTypes.UInt16;
 				case ElementType.Int32:
-					return ResolveSystemType("System.Int32");
+					return SystemTypes.Int32;
 				case ElementType.UInt32:
-					return ResolveSystemType("System.UInt32");
+					return SystemTypes.UInt32;
 				case ElementType.Int64:
-					return ResolveSystemType("System.Int64");
+					return SystemTypes.Int64;
 				case ElementType.UInt64:
-					return ResolveSystemType("System.UInt64");
+					return SystemTypes.UInt64;
 				case ElementType.Single:
-					return ResolveSystemType("System.Single");
+					return SystemTypes.Single;
 				case ElementType.Double:
-					return ResolveSystemType("System.Double");
+					return SystemTypes.Double;
 				case ElementType.String:
-					return ResolveSystemType("System.String");
+					return SystemTypes.String;
 				case ElementType.TypedReference:
-					return ResolveSystemType("System.TypedReference");
+					return SystemTypes.TypedReference;
 				case ElementType.IntPtr:
-					return ResolveSystemType("System.IntPtr");
+					return SystemTypes.IntPtr;
 				case ElementType.UIntPtr:
-					return ResolveSystemType("System.UIntPtr");
+					return SystemTypes.UIntPtr;
 				case ElementType.Object:
-					return ResolveSystemType("System.Object");
+					return SystemTypes.Object;
 
 				case ElementType.Ptr:
 					{
@@ -137,10 +141,10 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 					break;
 
 				case ElementType.CustomArgsType:
-					return ResolveSystemType("System.Type");
+					return SystemTypes.Type;
 
 				case ElementType.CustomArgsBoxedObject:
-					return ResolveSystemType("System.Object");
+					return SystemTypes.Object;
 
 				case ElementType.CustomArgsField:
 					break;
@@ -149,11 +153,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 					break;
 			}
 			return null;
-		}
-
-		private IType ResolveSystemType(string fullName)
-		{
-			return _loader.FindSystemType(fullName);
 		}
 
 		private static Exception BadTypeSig(TypeSignature sig)

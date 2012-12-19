@@ -30,11 +30,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         	var ctor = new AbcMethod
         	           	{
-        	           		ReturnType = _abc[AvmTypeCode.Void]
+        	           		ReturnType = Abc[AvmTypeCode.Void]
         	           	};
         	DefineParameters(ctor, method);
 
-            var name = _abc.DefineGlobalQName("arrctor_" + type.GetSigName());
+            var name = Abc.DefineGlobalQName("arrctor_" + type.GetSigName());
             var trait = AbcTrait.CreateMethod(ctor, name);
             instance.Traits.Add(trait);
 
@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             AddMethod(ctor);
 
-            var code = new AbcCode(_abc);
+            var code = new AbcCode(Abc);
 
             code.PushThisScope();
             code.ConstructSuper();
@@ -180,7 +180,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var instance = GetArrayInstance();
 
-            var name = _abc.DefineGlobalQName("newarr_" + elemType.GetSigName());
+            var name = Abc.DefineGlobalQName("newarr_" + elemType.GetSigName());
 
             return instance.DefineStaticMethod(
                 name, instance.Name,
@@ -631,7 +631,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 if (_nspfx == null)
                 {
                     string ns = RootNamespace.MakeFullName(Const.Namespaces.PFX);
-                    _nspfx = _abc.DefinePackage(ns);
+                    _nspfx = Abc.DefinePackage(ns);
                 }
                 return _nspfx;
             }
@@ -640,8 +640,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         public AbcMultiname DefinePfxName(string name, bool member)
         {
-            if (member) return _abc.DefinePfxName(name);
-            return _abc.DefineQName(PfxNamespace, name);
+            if (member) return Abc.DefinePfxName(name);
+            return Abc.DefineQName(PfxNamespace, name);
         }
 
         public AbcMultiname DefinePfxName(string name)

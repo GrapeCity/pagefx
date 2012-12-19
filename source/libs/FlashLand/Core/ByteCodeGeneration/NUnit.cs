@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             {
                 if (IsSwf)
                 {
-                    if (IsMxApplication) return false;
+                    if (IsFlexApplication) return false;
                     if (!_rootSpriteGenerated)
                         return false;
                 }
@@ -260,7 +260,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
 		private IAssembly FindNUnitFramework()
         {
-			return _assembly.GetReferences(true).FirstOrDefault(IsNUnitFramework);
+			return AppAssembly.GetReferences(true).FirstOrDefault(IsNUnitFramework);
         }
         
         #region NUnitTypes & Methods

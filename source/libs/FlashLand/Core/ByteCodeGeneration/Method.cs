@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         private AbcMultiname GetMethodName(IMethod method)
         {
             string name = method.GetSigName(Runtime.Avm);
-            return _abc.DefineQName(method, name);
+            return Abc.DefineQName(method, name);
         }
 
 		//fixes due to flex compiler bugs
@@ -61,7 +61,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             }
 
             string name = GetFixedName(method) ?? method.GetSigName(Runtime.Avm);
-        	return _abc.DefineQName(method, name);
+        	return Abc.DefineQName(method, name);
         }
 
         private AbcMultiname GetDefinedMethodName(IMethod method)
@@ -128,7 +128,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (instance != null)
             {
 
-                var i2 = _abc.ImportInstance(instance, ref method);
+                var i2 = Abc.ImportInstance(instance, ref method);
                 if (i2 == null)
                     throw new InvalidOperationException();
             }
@@ -137,7 +137,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 if (!(method.Owner is AbcScript))
                     throw new InvalidOperationException();
 
-                _abc.Import(abc);
+                Abc.Import(abc);
 
                 //NOTE: ABC can be linked externally
                 if (method.ImportedMethod != null)
@@ -165,7 +165,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #region DefineMethod
         private object IsDefined(IMethod method)
         {
-            if (_abc.IsDefined(method))
+            if (Abc.IsDefined(method))
             {
                 return method.Tag;
             }
@@ -251,7 +251,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 throw new InvalidOperationException();
 
             var abcMethod = new AbcMethod(method);
-            _abc.Methods.Add(abcMethod);
+            Abc.Methods.Add(abcMethod);
 
             bool isMxAppCtor = false;
             if (AbcGenConfig.FlexAppCtorAsHandler)
@@ -290,7 +290,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (isMxAppCtor)
             {
                 var typeFlexEvent = ImportFlexEventType();
-                abcMethod.AddParam(typeFlexEvent.Name, _abc.DefineString("e"));
+                abcMethod.AddParam(typeFlexEvent.Name, Abc.DefineString("e"));
             }
             else
             {
@@ -334,7 +334,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 if (t == null) return null;
                 name += t.NameString;
             }
-            return _abc.DefineString(name);
+            return Abc.DefineString(name);
         }
         #endregion
 
@@ -388,7 +388,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         public AbcMultiname DefineReturnType(IType type)
         {
             if (type == null)
-                return _abc.BuiltinTypes.Void;
+                return Abc.BuiltinTypes.Void;
             var name = DefineMemberType(type);
             if (name == null)
                 throw new InvalidOperationException("Unable to define return type for method");
@@ -460,13 +460,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 var bp = from.Parameters[i];
                 var ap = new AbcParameter
                              {
-                                 Type = _abc.ImportConst(bp.Type),
-                                 Name = _abc.ImportConst(bp.Name)
+                                 Type = Abc.ImportConst(bp.Type),
+                                 Name = Abc.ImportConst(bp.Name)
                              };
                 if (bp.IsOptional)
                 {
                     ap.IsOptional = true;
-                    ap.Value = _abc.ImportValue(bp.Value);
+                    ap.Value = Abc.ImportValue(bp.Value);
                     to.HasOptionalParams = true;
                 }
                 to.AddParam(ap);
@@ -648,7 +648,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 	    private void BuildBodyCore(AbcMethod target, IMethod source)
         {
             var targetBody = new AbcMethodBody(target);
-            _abc.MethodBodies.Add(targetBody);
+            Abc.MethodBodies.Add(targetBody);
 
 #if DEBUG
             DebugService.DoCancel();
@@ -667,7 +667,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 #endif
 
             targetBody.IL.Add(il);
-            targetBody.Finish(_abc);
+            targetBody.Finish(Abc);
         }
         #endregion
 
@@ -794,7 +794,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (!IsSwf) return false;
             if (!method.IsConstructor) return false;
             if (method.Parameters.Count != 0) return false;
-            return ReferenceEquals(method.DeclaringType, sfc.TypeFlexApp);
+            return ReferenceEquals(method.DeclaringType, SwfCompiler.TypeFlexApp);
         }
     }
 }

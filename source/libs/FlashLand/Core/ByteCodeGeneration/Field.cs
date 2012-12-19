@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (MustExcludeField(field))
                 return;    
 
-            if (_abc.IsDefined(field))
+            if (Abc.IsDefined(field))
                 return;
 
             var declType = field.DeclaringType;
@@ -51,10 +51,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             DebugService.DoCancel();
 #endif
 
-            if (_abc.IsDefined(field)) return;
+            if (Abc.IsDefined(field)) return;
 
             var type = DefineMemberType(field.Type);
-            if (_abc.IsDefined(field)) return;
+            if (Abc.IsDefined(field)) return;
 
 #if DEBUG
             DebugService.DoCancel();
@@ -86,7 +86,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 {
                     trait.Kind = AbcTraitKind.Const;
                     trait.HasValue = true;
-                    trait.SlotValue = _abc.ImportValue(field.Value);
+                    trait.SlotValue = Abc.ImportValue(field.Value);
                 }
 
                 DefineEmbeddedAsset(field, trait);
@@ -134,9 +134,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             var declType = field.DeclaringType;
             if (UseGlobalPackage(declType))
-                return _abc.GlobalPackage;
+                return Abc.GlobalPackage;
 
-            return _abc.DefineNamespace(declType, field.Visibility, field.IsStatic);
+            return Abc.DefineNamespace(declType, field.Visibility, field.IsStatic);
         }
 
         AbcMultiname DefineFieldName(IField field)
@@ -144,7 +144,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             //NOTE: For enums we will use m_value name for internal value.
             field.Rename();
             var ns = DefineFieldNamespace(field);
-            return _abc.DefineQName(ns, field.Name);
+            return Abc.DefineQName(ns, field.Name);
         }
         #endregion
 
@@ -154,7 +154,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             DefineType(type);
             if (type.Tag == null)
                 throw new InvalidOperationException(string.Format("Type {0} is not defined", type.FullName));
-            return _abc.GetTypeName(type, true);
+            return Abc.GetTypeName(type, true);
         }
 
         static bool IsImportableConstantField(IField field)

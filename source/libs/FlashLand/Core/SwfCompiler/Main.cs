@@ -429,7 +429,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         {
             _swf.FrameCount++;
 
-            var g = new AbcGenerator {sfc = this};
+            var g = new AbcGenerator {SwfCompiler = this};
             var abc = g.Generate(_assembly);
 
             if (IsSwc)

@@ -14,13 +14,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             if (_ptrFunc != null) return _ptrFunc;
 
-            var instance = _abc.DefineEmptyInstance(DefinePfxName("func_ptr", false), false);
+            var instance = Abc.DefineEmptyInstance(DefinePfxName("func_ptr", false), false);
             _ptrFunc = instance;
             
             var getter = instance.CreatePrivateSlot("_getter", AvmTypeCode.Function);
             var setter = instance.CreatePrivateSlot("_setter", AvmTypeCode.Function);
 
-            instance.Initializer = _abc.DefineTraitsInitializer(getter, setter);
+            instance.Initializer = Abc.DefineTraitsInitializer(getter, setter);
 
             instance.DefinePtrGetter(
                 code =>
@@ -60,15 +60,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             var type = field.DeclaringType;
             string typeName = type.FullName.MakeFullName(field.Name);
-            var name = _abc.DefinePfxName("sfld_ptr$" + typeName);
+            var name = Abc.DefinePfxName("sfld_ptr$" + typeName);
 
-            var instance = _abc.Instances[name];
+            var instance = Abc.Instances[name];
             if (instance != null)
                 return instance;
 
             var fieldInstance = DefineAbcInstance(type);
 
-            instance = _abc.DefineEmptyInstance(name, true);
+            instance = Abc.DefineEmptyInstance(name, true);
             
             instance.DefinePtrGetter(
                 code =>
@@ -119,14 +119,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             if (_ptrProperty != null) return _ptrProperty;
 
-            var instance = _abc.DefineEmptyInstance(DefinePfxName("prop_ptr", false), false);
+            var instance = Abc.DefineEmptyInstance(DefinePfxName("prop_ptr", false), false);
             _ptrProperty = instance;
 
             var obj = instance.CreatePrivateSlot("_obj", AvmTypeCode.Object);
             var ns = instance.CreatePrivateSlot("_ns", AvmTypeCode.Namespace);
             var name = instance.CreatePrivateSlot("_name", AvmTypeCode.String);
 
-            instance.Initializer = _abc.DefineTraitsInitializer(obj, ns, name);
+            instance.Initializer = Abc.DefineTraitsInitializer(obj, ns, name);
 
             instance.DefinePtrGetter(
                 code =>
@@ -166,13 +166,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             if (_ptrGlobalProperty != null) return _ptrGlobalProperty;
 
-            var instance  = _abc.DefineEmptyInstance(DefinePfxName("gprop_ptr", false), false);
+            var instance  = Abc.DefineEmptyInstance(DefinePfxName("gprop_ptr", false), false);
             _ptrGlobalProperty = instance;
 
             var obj = instance.CreatePrivateSlot("_obj", AvmTypeCode.Object);
             var name = instance.CreatePrivateSlot("_name", AvmTypeCode.String);
 
-            instance.Initializer = _abc.DefineTraitsInitializer(obj, name);
+            instance.Initializer = Abc.DefineTraitsInitializer(obj, name);
 
             instance.DefinePtrGetter(
                 code =>
@@ -227,14 +227,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         {
             if (_ptrElem != null) return _ptrElem;
 
-            var instance = _abc.DefineEmptyInstance(DefinePfxName("elem_ptr", false), false);
+            var instance = Abc.DefineEmptyInstance(DefinePfxName("elem_ptr", false), false);
             _ptrElem = instance;
             
             var arrType = GetArrayInstance();
             var arr = instance.CreatePrivateSlot("_arr", arrType);
             var index = instance.CreatePrivateSlot("_index", AvmTypeCode.Int32);
 
-            instance.Initializer = _abc.DefineTraitsInitializer(arr, index);
+            instance.Initializer = Abc.DefineTraitsInitializer(arr, index);
 
             instance.DefinePtrGetter(
                 code =>
@@ -299,12 +299,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var instance = _slotPtrs[name] as AbcInstance;
             if (instance != null) return instance;
 
-            instance = _abc.DefineEmptyInstance(DefinePfxName(name, false), false);
+            instance = Abc.DefineEmptyInstance(DefinePfxName(name, false), false);
             _slotPtrs[name] = instance;
             
             var obj = instance.CreatePrivateSlot("_obj", AvmTypeCode.Object);
             
-            instance.Initializer = _abc.DefineTraitsInitializer(obj);
+            instance.Initializer = Abc.DefineTraitsInitializer(obj);
 
             instance.DefinePtrGetter(
                 code =>
@@ -341,7 +341,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             //var m = _cacheGPFuncs[prop] as AbcMethod;
             //if (m != null) return m;
 
-            var m = _abc.DefineMethod(
+            var m = Abc.DefineMethod(
                 AvmTypeCode.Object,
                 code =>
                     {
@@ -350,7 +350,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                     });
 
 #if DEBUG
-            m.Name = _abc.DefineString("get_" + prop.NameString);
+            m.Name = Abc.DefineString("get_" + prop.NameString);
 #endif
 
             //_cacheGPFuncs[prop] = m;
@@ -366,7 +366,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             //var m = _cacheSPFuncs[prop] as AbcMethod;
             //if (m != null) return m;
 
-            var m = _abc.DefineMethod(
+            var m = Abc.DefineMethod(
                 AvmTypeCode.Void,
                 code =>
                     {
@@ -378,7 +378,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 AvmTypeCode.Object, "value");
 
 #if DEBUG
-            m.Name = _abc.DefineString("set_" + prop.NameString);
+            m.Name = Abc.DefineString("set_" + prop.NameString);
 #endif
 
             //_cacheSPFuncs[prop] = m;

@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         public CodeProviderImpl(AbcGenerator gen, AbcMethod abcMethod)
         {
             _generator = gen;
-            _abc = gen._abc;
+            _abc = gen.Abc;
             _method = abcMethod.SourceMethod;
             _body = abcMethod.Body;
             _declType = _method.DeclaringType;
@@ -68,7 +68,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
 	    private IAssembly Assembly
 	    {
-			get { return _generator.ApplicationAssembly; }
+			get { return _generator.AppAssembly; }
 	    }
 
 	    private SystemTypes SystemTypes

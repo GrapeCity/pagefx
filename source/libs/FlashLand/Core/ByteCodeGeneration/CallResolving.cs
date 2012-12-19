@@ -183,7 +183,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             var body = new AbcMethodBody(abcMethod);
             AddMethod(abcMethod);
 
-            var code = new AbcCode(_abc);
+            var code = new AbcCode(Abc);
 
 	        var exceptionType = GetType(CorlibTypeId.NotImplementedException);
             code.ThrowException(exceptionType);

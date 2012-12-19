@@ -559,7 +559,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private bool IsMxApp
         {
-            get { return _generator.IsMxApplication; }
+            get { return _generator.IsFlexApplication; }
         }
 
         private bool IsMxAppCtor
@@ -569,7 +569,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 if (!_method.IsConstructor) return false;
                 if (_method.Parameters.Count > 0) return false;
                 if (!IsMxApp) return false;
-                return ReferenceEquals(_declType, _generator.sfc.TypeFlexApp);
+                return ReferenceEquals(_declType, _generator.SwfCompiler.TypeFlexApp);
             }
         }
 
