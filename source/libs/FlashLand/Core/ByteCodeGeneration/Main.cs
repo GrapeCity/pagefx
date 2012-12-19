@@ -72,8 +72,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         public AbcGenMode Mode;
 		public CorlibTypes CorlibTypes;
 
-	    #region Properties
-
 	    public IAssembly AppAssembly { get; private set; }
 
 	    /// <summary>
@@ -115,9 +113,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             get { return _nsroot ?? (_nsroot = Abc.DefinePackage(RootNamespace)); }
         }
         private AbcNamespace _nsroot;
-        #endregion
 
-		internal IType SysType(SystemTypeCode typeCode)
+	    internal IType SysType(SystemTypeCode typeCode)
 		{
 			return SystemTypes[typeCode];
 		}
@@ -261,25 +258,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             else
                 BuildLibrary();
 
-            BuildExposedAPI();
+            BuildExposedTypes();
         }
         #endregion
 
-        #region BuildExposedAPI
-        private void BuildExposedAPI()
+	    private void BuildExposedTypes()
         {
-			//TODO: load only exposed types
-            foreach (var type in AppAssembly.Types)
+			// TODO: add command like option (/expose) to build exposed types
+			// load only exposed types
+			foreach (var type in AppAssembly.GetReferences(false).SelectMany(asm => asm.GetExposedTypes()))
             {
                 if (type.IsTestFixture())
                     _testFixtures.Add(type);
-                if (type.IsExposed())
-                    DefineType(type);
+                DefineType(type);
             }
         }
-        #endregion
 
-        #region BuildLibrary
+	    #region BuildLibrary
         private void BuildLibrary()
         {
             if (IsFlexApplication)
@@ -319,7 +314,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
         private readonly AbcLateMethodCollection _lateMethods = new AbcLateMethodCollection();
 
-    	void AddLateMethod(AbcMethod method, AbcCoder coder)
+    	private void AddLateMethod(AbcMethod method, AbcCoder coder)
         {
             _lateMethods.Add(method, coder);
         }

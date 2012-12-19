@@ -223,5 +223,18 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				}
 			}
 		}
+
+		public string GetFullName(int index)
+		{
+			var row = Metadata.GetRow(TableId.MethodDef, index);
+
+			var name = row[Schema.MethodDef.Name].String;
+
+			var typeIndex = Loader.Types.ResolveDeclTypeIndex(index, true);
+			if (typeIndex < 0)
+				throw new InvalidOperationException();
+
+			return Loader.Types.GetFullName(typeIndex) + "." + name;
+		}
 	}
 }

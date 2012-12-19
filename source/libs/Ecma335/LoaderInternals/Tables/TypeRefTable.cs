@@ -77,5 +77,13 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 					throw new BadMetadataException();
 			}
 		}
+
+		public string GetFullName(int index)
+		{
+			var row = Metadata.GetRow(TableId.TypeRef, index);
+			var name = row[Schema.TypeRef.TypeName].String;
+			var ns = row[Schema.TypeRef.TypeNamespace].String;
+			return QName(ns, name);
+		}
 	}
 }

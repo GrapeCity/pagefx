@@ -22,8 +22,7 @@ namespace DataDynamics.PageFX.Ecma335
     internal sealed class AssemblyLoader : IAssemblyLoader, IMethodContext, IDisposable
     {
 	    private readonly TypeSpecTable _typeSpec;
-		private readonly MemberRefTable _memberRef;
-		private readonly MethodSpecTable _methodSpec;
+	    private readonly MethodSpecTable _methodSpec;
 		private readonly SignatureResolver _signatureResolver;
 
 	    internal IAssembly Assembly { get; private set; }
@@ -44,6 +43,7 @@ namespace DataDynamics.PageFX.Ecma335
 	    internal EventTable Events { get; private set; }
 	    internal TypeTable Types { get; private set; }
 	    internal TypeRefTable TypeRefs { get; private set; }
+	    internal MemberRefTable MemberRefs { get; private set; }
 
 	    internal AssemblyLoader Corlib { get; private set; }
 
@@ -129,7 +129,7 @@ namespace DataDynamics.PageFX.Ecma335
 			AssemblyRefs = new AssemblyRefTable(this);
 
 			TypeRefs = new TypeRefTable(this);
-			_memberRef = new MemberRefTable(this);
+			MemberRefs = new MemberRefTable(this);
 			_typeSpec = new TypeSpecTable(this);
 			_methodSpec = new MethodSpecTable(this);
 
@@ -262,11 +262,6 @@ namespace DataDynamics.PageFX.Ecma335
             return body;
         }
 
-	    internal ITypeMember GetMemberRef(int index, Context context)
-        {
-            return _memberRef.Get(index, context);
-        }
-
 	    internal IMethod GetMethodDefOrRef(SimpleIndex i, Context context)
         {
             int index = i.Index - 1;
@@ -276,7 +271,7 @@ namespace DataDynamics.PageFX.Ecma335
                     return Methods[index];
 
                 case TableId.MemberRef:
-                    return GetMemberRef(index, context) as IMethod;
+                    return MemberRefs.Get(index, context) as IMethod;
 
                 default:
                     throw new ArgumentOutOfRangeException("i");
@@ -389,7 +384,7 @@ namespace DataDynamics.PageFX.Ecma335
                     return Methods[index - 1];
 
                 case TableId.MemberRef:
-					return GetMemberRef(index - 1, context);
+					return MemberRefs.Get(index - 1, context);
 
                 case TableId.MethodSpec:
 					return GetMethodSpec(index - 1, context);
@@ -464,8 +459,8 @@ namespace DataDynamics.PageFX.Ecma335
         }
 
 	    public IReadOnlyList<IType> GetExposedTypes()
-		{
-			throw new NotImplementedException();
-		}
+	    {
+		    return Types.GetExposedTypes();
+	    }
     }
 }

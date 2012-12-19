@@ -30,6 +30,25 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			return _members[index] ?? (_members[index] = Resolve(index, context));
 		}
 
+		public string GetFullName(int index)
+		{
+			if (_members != null && _members[index] != null)
+				return _members[index].FullName;
+			return BuildFullName(index);
+		}
+
+		private string BuildFullName(int index)
+		{
+			var row = _loader.Metadata.GetRow(TableId.MemberRef, index);
+
+			string name = row[Schema.MemberRef.Name].String;
+			SimpleIndex ownerIndex = row[Schema.MemberRef.Class].Value;
+
+			string owner = GetOwnerName(ownerIndex);
+
+			return owner + "." + name;
+		}
+
 		private ITypeMember Resolve(int index, Context context)
 		{
 			var row = _loader.Metadata.GetRow(TableId.MemberRef, index);
@@ -39,7 +58,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			var sig = MetadataSignature.DecodeMember(sigBlob);
 
 			SimpleIndex ownerIndex = row[Schema.MemberRef.Class].Value;
-			var owner = GetMemberOwner(ownerIndex, context);
+			var owner = ResolveOwner(ownerIndex, context);
 
 			var member = FindMember(owner, name, sig, context);
 
@@ -59,7 +78,23 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			return member;
 		}
 
-		private IType GetMemberOwner(SimpleIndex owner, Context context)
+		private string GetOwnerName(SimpleIndex owner)
+		{
+			int index = owner.Index - 1;
+			switch (owner.Table)
+			{
+				case TableId.TypeDef:
+					return _loader.Types.GetFullName(index);
+
+				case TableId.TypeRef:
+					return _loader.TypeRefs.GetFullName(index);
+
+				default:
+					throw new NotSupportedException();
+			}
+		}
+
+		private IType ResolveOwner(SimpleIndex owner, Context context)
 		{
 			int index = owner.Index - 1;
 			switch (owner.Table)

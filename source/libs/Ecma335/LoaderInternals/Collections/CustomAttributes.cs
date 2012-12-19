@@ -131,20 +131,38 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 			return null;
 		}
 
-		private IMethod GetCustomAttributeConstructor(SimpleIndex i, Context context)
+		public static string GetFullName(AssemblyLoader loader, MetadataRow row)
+		{
+			SimpleIndex ctorIndex = row[Schema.CustomAttribute.Type].Value;
+			var index = ctorIndex.Index - 1;
+			switch (ctorIndex.Table)
+			{
+				case TableId.MethodDef:
+					return loader.Methods.GetFullName(index);
+
+				case TableId.MemberRef:
+					return loader.MemberRefs.GetFullName(index);
+
+				default:
+					throw new BadMetadataException(string.Format("Invalid custom attribute type index {0}", ctorIndex));
+			}
+		}
+
+		private IMethod GetCustomAttributeConstructor(SimpleIndex ctorIndex, Context context)
 		{
 			try
 			{
-				switch (i.Table)
+				var index = ctorIndex.Index - 1;
+				switch (ctorIndex.Table)
 				{
 					case TableId.MethodDef:
-						return _loader.Methods[i.Index - 1];
+						return _loader.Methods[index];
 
 					case TableId.MemberRef:
-						return _loader.GetMemberRef(i.Index - 1, context) as IMethod;
+						return _loader.MemberRefs.Get(index, context) as IMethod;
 
 					default:
-						throw new BadMetadataException(string.Format("Invalid custom attribute type index {0}", i));
+						throw new BadMetadataException(string.Format("Invalid custom attribute type index {0}", ctorIndex));
 				}
 			}
 			catch (Exception)
