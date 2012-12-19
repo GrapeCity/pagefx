@@ -954,7 +954,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var sfc = SwfCompiler;
             var asset = sfc.ImportAsset(embed);
 
-        	return new Embed(embed) {Asset = asset, Movie = sfc._swf};
+        	return new Embed(embed) {Asset = asset, Movie = sfc.Swf};
         }
         #endregion
 

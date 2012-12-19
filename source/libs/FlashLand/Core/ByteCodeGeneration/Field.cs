@@ -6,10 +6,10 @@ using DataDynamics.PageFX.FlashLand.Core.Tools;
 namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 {
     //contains code to define IField in output ABC file
-    partial class AbcGenerator
+    internal partial class AbcGenerator
     {
         #region DefineField
-        static bool MustExcludeField(IField field)
+        private static bool MustExcludeField(IField field)
         {
             var declType = field.DeclaringType;
             if (declType.IsEnum)
@@ -79,7 +79,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (trait == null)
             {
                 trait = AbcTrait.CreateSlot(type, name);
-                field.Data = trait;
+                SetData(field, trait);
                 instance.AddTrait(trait, isStatic);
 
                 if (IsImportableConstantField(field))
@@ -93,8 +93,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             }
             else
             {
-                field.Data = trait;
+                SetData(field, trait);
             }
+
             trait.Type = field.Type;
             trait.Field = field;
 

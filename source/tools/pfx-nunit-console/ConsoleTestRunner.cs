@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Tools;
@@ -15,7 +14,7 @@ using DataDynamics.PageFX.FlashLand;
 
 namespace DataDynamics.PageFX.NUnit
 {
-    class ConsoleTestRunner
+    internal class ConsoleTestRunner
     {
         #region Logo
 #if !INSIDE_PFC
@@ -417,10 +416,8 @@ namespace DataDynamics.PageFX.NUnit
         #endregion
 
         #region Utils
-        static IAssembly LoadAssembly(string path)
+        private static IAssembly LoadAssembly(string path)
         {
-            CommonLanguageInfrastructure.ClearCache();
-
             try
             {
                 if (!Path.IsPathRooted(path))

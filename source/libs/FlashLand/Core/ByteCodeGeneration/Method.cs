@@ -251,6 +251,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 throw new InvalidOperationException();
 
             var abcMethod = new AbcMethod(method);
+
+	        SetData(method, abcMethod);
+
             Abc.Methods.Add(abcMethod);
 
             bool isMxAppCtor = false;

@@ -73,12 +73,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
 		private AbcTrait DefineRootStageHolder()
 		{
-			var instance = ImportType("System.RootStage", true);
-			if (instance == null) return null;
-			var type = instance.Type;
-			var field = type.Fields["Value"];
-			DefineField(field);
-			return field.Data as AbcTrait;
+			// TODO: Stage holder should be generated and exposed via some internal call like flash.getStage();
+//			var instance = ImportType("System.RootStage", true);
+//			if (instance == null) return null;
+//			var type = instance.Type;
+//			var field = type.Fields["Value"];
+//			DefineField(field);
+//			return field.Data as AbcTrait;
+			return null;
 		}
 	}
 }

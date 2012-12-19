@@ -318,16 +318,16 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region Internal Properties
         internal AbcInstance Def;
 
-        internal AbcGenerator generator;
+        internal AbcGenerator Generator;
 
         public IAssembly ApplicationAssembly
         {
             get
             {
-                if (generator != null)
-                    return generator.AppAssembly;
+                if (Generator != null)
+                    return Generator.AppAssembly;
                 if (_sfc != null)
-                    return _sfc.ApplicationAssembly;
+                    return _sfc.AppAssembly;
                 return null;
             }
         }
@@ -336,8 +336,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                if (generator != null)
-                    return generator.SwfCompiler;
+                if (Generator != null)
+                    return Generator.SwfCompiler;
                 return _sfc;
             }
             set { _sfc = value; }
@@ -355,8 +355,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                if (generator != null)
-                    return generator.MainInstance;
+                if (Generator != null)
+                    return Generator.MainInstance;
                 return null;
             }
         }
@@ -856,9 +856,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             _order = new List<AbcInstance>();
 
-            if (IsMxApp && generator != null)
+            if (IsMxApp && Generator != null)
             {
-                var app = generator.MainInstance;
+                var app = Generator.MainInstance;
                 OrderByInheritance(app);
             }
 

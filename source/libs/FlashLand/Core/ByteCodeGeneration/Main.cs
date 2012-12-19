@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -64,6 +65,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #endregion
 
 	    private IMethod _entryPoint;
+		private AbcCode _newAPI;
+
 		internal AbcFile Abc { get; private set; }
         
         //If not null indicates that we genearate swiff file.
@@ -154,7 +157,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                        {
                            AutoComplete = true,
                            ReduceSize = true,
-                           generator = this,
+                           Generator = this,
                            SwfCompiler = SwfCompiler,
                            Assembly = assembly
                        };
@@ -163,7 +166,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             if (SwfCompiler != null)
             {
-                SwfCompiler.FrameApp = Abc;
+                SwfCompiler.AppFrame = Abc;
                 if (SwfCompiler.IsSwc)
                     Mode = AbcGenMode.Full;
             }
@@ -211,18 +214,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             FinishMainScript();
 
-            #region Finish ABC
+            // Finish ABC
 #if DEBUG
             DebugService.DoCancel();
 #endif
 
             Abc.Finish();
-            #endregion
 
 #if PERF
             Console.WriteLine("ABC.MultinameCount: {0}", _abc.Multinames.Count);
             Console.WriteLine("AbcGenerator Elapsed Time: {0}", Environment.TickCount - start);
 #endif
+
+			// reset tags to allow recompilation
+			if (!IsSwf && !IsSwc)
+				ResetMembersData();
 
             return Abc;
         }
@@ -402,8 +408,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
     	#endregion
 
-        #region NativeAPI Extensions
-        AbcCode _newAPI;
-        #endregion
+	    private object SetData(ITypeMember member, object data)
+	    {
+		    if (ReferenceEquals(member.Data, data)) return data;
+
+		    member.Data = data;
+
+			_taggedMembers.Add(member);
+
+		    return data;
+	    }
+
+		internal void ResetMembersData()
+		{
+			foreach (var member in _taggedMembers)
+			{
+				member.Data = null;
+			}
+		}
+
+	    private readonly List<ITypeMember> _taggedMembers = new List<ITypeMember>();
     }
 }

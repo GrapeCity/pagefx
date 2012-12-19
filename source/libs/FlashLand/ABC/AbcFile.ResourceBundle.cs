@@ -222,7 +222,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             string name = func.Arguments[0].Value as string;
             if (string.IsNullOrEmpty(name))
                 throw Errors.RBC.BadDirective.CreateException(value);
-            var instance = generator.ImportType(name);
+            var instance = Generator.ImportType(name);
             if (instance == null)
                 throw Errors.RBC.UnableToResolveClassReference.CreateException(value);
             return instance;
@@ -252,7 +252,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 var instance = _embedAssetInstances[name] as AbcInstance;
                 if (instance != null) return instance;
                 var mn = DefinePfxName(name);
-                instance = generator.DefineBitmapAsset(mn, image, jpeg);
+                instance = Generator.DefineBitmapAsset(mn, image, jpeg);
                 _embedAssetInstances[name] = instance;
                 return instance;
             }

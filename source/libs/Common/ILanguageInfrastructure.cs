@@ -44,7 +44,5 @@ namespace DataDynamics.PageFX.Common
         /// <param name="output">stream to which you want to serialize given assembly.</param>
         /// <param name="format">format to which you want to serialize.</param>
         void Serialize(IAssembly assembly, Stream output, string format);
-
-        void Init();
     }
 }

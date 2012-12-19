@@ -11,8 +11,8 @@ namespace DataDynamics.PageFX.Common.Tools
     /// </summary>
     public class FlashPlayer
     {
-        const string Prefix = "<%";
-        const string Suffix = "%>";
+        private const string Prefix = "<%";
+		private const string Suffix = "%>";
 
         public const string MarkerEnd = Prefix + "END" + Suffix;
         public const string MarkerSuccess = Prefix + "SUCCESS" + Suffix;
@@ -47,7 +47,7 @@ namespace DataDynamics.PageFX.Common.Tools
                 _path = value;
             }
         }
-        static string _path;
+        private static string _path;
 
         static string FindFP()
         {
@@ -56,7 +56,6 @@ namespace DataDynamics.PageFX.Common.Tools
 
         public static Results Run(string path)
         {
-            //Install();
             BackupMMCfg();
             var results = new Results();
             RunCore(path, results);
@@ -97,12 +96,11 @@ namespace DataDynamics.PageFX.Common.Tools
             }
         }
 
-        static string flashlog; //path to flash log file
-        static StreamReader reader;
-        static bool read;
+        private static string flashlog; //path to flash log file
+		private static StreamReader reader;
+		private static bool read;
 
-
-        static void CreateReader()
+		private static void CreateReader()
         {
             if (reader != null) return;
             if (!File.Exists(flashlog)) return;
@@ -110,7 +108,7 @@ namespace DataDynamics.PageFX.Common.Tools
             reader = new StreamReader(fs);
         }
 
-        static string Wait(Results results)
+		private static string Wait(Results results)
         {
             Thread.Sleep(500);
 
@@ -147,7 +145,7 @@ namespace DataDynamics.PageFX.Common.Tools
             }
         }
 
-        static string Read(Results results)
+		private static string Read(Results results)
         {
             read = true;
             bool timeout = false;
@@ -209,48 +207,25 @@ namespace DataDynamics.PageFX.Common.Tools
             return output.ToString();
         }
 
-        static void watcher_Created(object sender, FileSystemEventArgs e)
+		private static void watcher_Created(object sender, FileSystemEventArgs e)
         {
             CreateReader();
         }
 
-        static void watcher_Changed(object sender, FileSystemEventArgs e)
+		private static void watcher_Changed(object sender, FileSystemEventArgs e)
         {
             read = true;
         }
 
-        static void watcher_Deleted(object sender, FileSystemEventArgs e)
+		private static void watcher_Deleted(object sender, FileSystemEventArgs e)
         {
             //This should not happen
         }
 
-        static void watcher_Renamed(object sender, RenamedEventArgs e)
+		private static void watcher_Renamed(object sender, RenamedEventArgs e)
         {
             //This should not happen
         }
-
-        #region Self Installation
-        //static bool _installed;
-        //const string FP10_EXE = "FP10.exe";
-
-        //static string GetExePath()
-        //{
-        //    return System.IO.Path.Combine(GlobalSettings.ToolsDirectory, FP10_EXE);
-        //}
-        
-        //static void Install()
-        //{
-        //    if (_installed) return;
-        //    var rs = ResourceHelper.GetStream(typeof(FlashPlayer), FP10_EXE);
-        //    if (rs == null)
-        //        throw new InvalidOperationException();
-        //    string path = GetExePath();
-        //    if (File.Exists(path)) return;
-        //    Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
-        //    Stream2.SaveStream(rs, path);
-        //    _installed = true;
-        //}
-        #endregion
 
         #region MM.CFG
         static string old_mm_cfg;

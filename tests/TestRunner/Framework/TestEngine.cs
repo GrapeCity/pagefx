@@ -49,16 +49,8 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 #endif
 
             test.Reset();
-            CommonLanguageInfrastructure.ClearCache();
 
-            try
-            {
-                RunCore(test, settings);
-            }
-            finally
-            {
-                CommonLanguageInfrastructure.ClearCache();
-            }
+	        RunCore(test, settings);
         }
         #endregion
 
@@ -212,7 +204,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         #endregion
 
         #region Execute
-        static void Execute(TestCase test, TestDriverSettings settings)
+        private static void Execute(TestCase test, TestDriverSettings settings)
         {
             if (test.IsBenchmark)
             {

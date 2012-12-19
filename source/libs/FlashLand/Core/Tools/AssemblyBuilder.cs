@@ -475,13 +475,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             string fullname = ns.MakeFullName(name);
             var res = _assembly.FindType(fullname);
             if (res != null) return res;
+
         	var type = new UserDefinedType
         	           	{
         	           		Namespace = ns,
         	           		Name = name,
         	           		Visibility = Visibility.Public
         	           	};
+
         	type.Data = new GlobalType(type);
+
             RegisterType(type);
 
             DefineSwcAbcFileAttribute(type, script.ABC);

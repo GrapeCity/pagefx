@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         #region BuildCatalog
         void BuildCatalog()
         {
-            _modAppAssembly = GetMod(ApplicationAssembly.Location);
+            _modAppAssembly = GetMod(AppAssembly.Location);
 
             _catalog = new XmlDocument();
             var root = CreateXmlElement("swc");
@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 
             CreateScriptElements(lib);
 
-            _libraryBytes = ToByteArray(ms => _swf.Save(ms));
+            _libraryBytes = ToByteArray(ms => Swf.Save(ms));
 
             var digests = CreateXmlElement(SwcCatalog.Elements.Digests);
             string digest = _libraryBytes.GetHashString(HashExtensions.TypeSHA256);
@@ -94,7 +94,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         void CreateDeps(XmlElement scriptElem, AbcInstance def, string defID)
         {
             var builder = new SwcDepBuilder();
-            var list = builder.Build(FrameApp, def, defID);
+            var list = builder.Build(AppFrame, def, defID);
             foreach (var dep in list)
             {
                 var depElem = CreateDepElement(dep[0], dep[1]);

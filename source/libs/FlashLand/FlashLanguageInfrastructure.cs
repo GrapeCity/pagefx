@@ -23,11 +23,8 @@ namespace DataDynamics.PageFX.FlashLand
             }
 
             #region ILanguageInfrastructure Members
-            public void Init()
-            {    
-            }
 
-            public string Name
+	        public string Name
             {
                 get { return "FLI"; }
             }
@@ -85,7 +82,7 @@ namespace DataDynamics.PageFX.FlashLand
                     case OutputFormat.SWC:
                         {
                             var options = new SwfCompilerOptions(cl) {OutputFormat = f};
-                            SwfCompilerImpl.Save(assembly, path, options);
+                            SwfCompilerImpl.Compile(assembly, path, options);
                         }
                         break;
                 }
@@ -106,7 +103,7 @@ namespace DataDynamics.PageFX.FlashLand
                     case OutputFormat.SWC:
                         {
                             var options = new SwfCompilerOptions(cl) {OutputFormat = f};
-                            SwfCompilerImpl.Save(assembly, output, options);
+                            SwfCompilerImpl.Compile(assembly, output, options);
                         }
                         break;
                 }

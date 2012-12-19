@@ -98,8 +98,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 
         private void BuildSwcZip(ZipFile zipFile)
         {
-	        zipFile.AddEntry(SwcFile.CATALOG_XML, _catalogBytes);
-	        zipFile.AddEntry(SwcFile.LIBRARY_SWF, _libraryBytes);
+	        zipFile.AddEntry(SwcFile.CATALOG_XML, "", _catalogBytes);
+	        zipFile.AddEntry(SwcFile.LIBRARY_SWF, "", _libraryBytes);
 
 	        //For testing purposes.
             //string outpath = OutputPath;
@@ -116,7 +116,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
             {
                 foreach (var f in _swcFiles)
                 {
-	                zipFile.AddEntry(f.Path, f.Data);
+	                zipFile.AddEntry(f.Path, "", f.Data);
                 }
             }
         }

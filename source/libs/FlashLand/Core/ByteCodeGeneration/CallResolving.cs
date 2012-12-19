@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
     {
         #region ResolveCall
         //Entry point to resolve spec runtime calls
-        object ResolveCall(IMethod method)
+        private object ResolveCall(IMethod method)
         {
             var type = method.DeclaringType;
             var tag = type.Data;
@@ -26,15 +26,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 tag = ResolveCall(method, null);
                 if (tag == null)
                     throw new InvalidOperationException();
-                method.Data = tag;
-                return tag;
+                return SetData(method, tag);
             }
 
             tag = DefineInlineCode(method, (AbcInstance)null);
             if (tag != null)
             {
-                method.Data = tag;
-                return tag;
+                return SetData(method, tag);
             }
 
             var instance = type.Data as AbcInstance;
@@ -43,8 +41,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 tag = ResolveCall(method, instance);
                 if (tag != null)
                 {
-                    method.Data = tag;
-                    return tag;
+                    return SetData(method, tag);
                 }
             }
 
@@ -56,7 +53,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             return null;
         }
 
-        object ResolveCall(IMethod method, AbcInstance instance)
+        private object ResolveCall(IMethod method, AbcInstance instance)
         {
             object tag = DefineInlineCode(method, instance);
             if (tag != null) return tag;
@@ -73,7 +70,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             return null;
         }
 
-        object ResolveRuntimeCode(IMethod method, AbcInstance instance)
+        private object ResolveRuntimeCode(IMethod method, AbcInstance instance)
         {
             var type = method.DeclaringType;
             if (type.TypeKind == TypeKind.Delegate)
@@ -87,7 +84,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             return ThrowOrDefineNotImplCall(method, instance);
         }
 
-        object ResolveInternalCall(IMethod method, AbcInstance instance)
+        private object ResolveInternalCall(IMethod method, AbcInstance instance)
         {
             var code = DefineInlineCode(method, instance);
             if (code != null) return code;
@@ -102,14 +99,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             return ThrowOrDefineNotImplCall(method, instance);
         }
 
-        object ThrowOrDefineNotImplCall(IMethod method, AbcInstance instance)
+        private object ThrowOrDefineNotImplCall(IMethod method, AbcInstance instance)
         {
             if (AbcGenConfig.ThrowOnUnexpectedCall)
                 throw UnexpectedCall(method);
             return DefineNotImplementedMethod(method, instance);
         }
 
-        static Exception UnexpectedCall(IMethod method)
+        private static Exception UnexpectedCall(IMethod method)
         {
 #if DEBUG
             if (DebugService.BreakInternalCall)
@@ -121,7 +118,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #endregion
 
         #region ResolveSpecCall
-        AbcMethod ResolveSpecCall(IMethod method, AbcInstance instance)
+        private AbcMethod ResolveSpecCall(IMethod method, AbcInstance instance)
         {
             int paramNum = method.Parameters.Count;
             if (paramNum == 0)
@@ -130,29 +127,26 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                 if (name == Const.GetTypeId)
                     return DefineGetTypeIdMethod(method.DeclaringType, instance);
             }
-            var m = DefineArrayCtor(method, instance);
-            if (m != null) return m;
-            m = DefineArrayGetter(method, instance);
-            if (m != null) return m;
-            m = DefineArraySetter(method, instance);
-            if (m != null) return m;
-            m = DefineArrayAddress(method, instance);
-            return m;
+
+	        return DefineArrayCtor(method, instance)
+	               ?? DefineArrayGetter(method, instance)
+	               ?? DefineArraySetter(method, instance)
+	               ?? DefineArrayAddress(method, instance);
         }
         #endregion
 
         #region Method Definers
-        delegate AbcMethod MethodDefiner(IMethod method, AbcInstance instance);
+        private delegate AbcMethod MethodDefiner(IMethod method, AbcInstance instance);
 
-        Hashtable _definers;
+        private Hashtable _definers;
 
-        void RegisterDefiner(MethodDefiner definer, string key)
+        private void RegisterDefiner(MethodDefiner definer, string key)
         {
             Debug.Assert(!_definers.Contains(key));
             _definers[key] = definer;
         }
 
-        void InitMethodDefiners()
+        private void InitMethodDefiners()
         {
             if (_definers != null) return;
             _definers = new Hashtable();
@@ -160,7 +154,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             RegisterDefiner(Define_Assembly_InitType, "System.Reflection.Assembly.InitType");
         }
 
-        MethodDefiner FindMethodDefiner(IMethod method)
+        private MethodDefiner FindMethodDefiner(IMethod method)
         {
             InitMethodDefiners();
             string key = method.DeclaringType.FullName + "." + method.Name;
@@ -169,9 +163,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #endregion
 
         #region DefineNotImplementedMethod
-        AbcMethod DefineNotImplementedMethod(IMethod method, AbcInstance instance)
+        private AbcMethod DefineNotImplementedMethod(IMethod method, AbcInstance instance)
         {
             var abcMethod = new AbcMethod(method);
+
+	        SetData(method, abcMethod);
 
             var trait = DefineMethodTrait(abcMethod, method);
             instance.AddTrait(trait, method.IsStatic);

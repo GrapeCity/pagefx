@@ -727,27 +727,4 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
     	#endregion
     }
-
-    #region class AbcMemberName
-    public class AbcMemberName
-    {
-        public AbcMemberName(AbcMultiname type, AbcMultiname name)
-        {
-            _type = type;
-            _name = name;
-        }
-
-        public AbcMultiname Type
-        {
-            get { return _type; }
-        }
-        readonly AbcMultiname _type;
-
-        public AbcMultiname Name
-        {
-            get { return _name; }
-        }
-        readonly AbcMultiname _name;
-    }
-    #endregion
 }

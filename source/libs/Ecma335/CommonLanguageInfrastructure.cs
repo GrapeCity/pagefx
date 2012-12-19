@@ -20,12 +20,7 @@ namespace DataDynamics.PageFX.Ecma335
                 get { return "CLI"; }
             }
 
-            public void Init()
-            {
-                ClearCache();
-            }
-
-            public IAssembly Deserialize(string path, string format)
+	        public IAssembly Deserialize(string path, string format)
             {
                 return AssemblyLoader.Load(path);
             }
@@ -84,11 +79,9 @@ namespace DataDynamics.PageFX.Ecma335
 
         public static bool SubstituteFrameworkAssemblies = true;
         public static bool ResolveLabels;
-        public static bool EnableDecompiler;
 
-        public static void ClearCache()
+	    public static void ClearCaches()
         {
-            AssemblyResolver.ClearCache();
 #if PERF
             ILTranslator.CallCount = 0;
 #endif

@@ -14,12 +14,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
             var instance = type as IGenericInstance;
             if (instance == null)
                 throw new ArgumentException(string.Format("Type {0} is not generic instance", type));
+
             if (instance.GenericArguments.Count != 1)
                 throw new ArgumentException("Invalid vector instance");
 
             Type = instance;
             Param = instance.GenericArguments[0];
-            type.Data = this;
         }
 
 	    public IGenericInstance Type { get; private set; }

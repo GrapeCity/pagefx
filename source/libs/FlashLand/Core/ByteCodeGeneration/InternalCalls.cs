@@ -96,21 +96,24 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
         #endregion
 
         #region BeginMethod
-        AbcMethod BeginMethod(IMethod method, AbcInstance instance)
+        private AbcMethod BeginMethod(IMethod method, AbcInstance instance)
         {
-            var m = new AbcMethod(method);
-            Abc.Methods.Add(m);
+            var abcMethod = new AbcMethod(method);
 
-            var trait = DefineMethodTrait(m, method);
+	        SetData(method, abcMethod);
+
+            Abc.Methods.Add(abcMethod);
+
+            var trait = DefineMethodTrait(abcMethod, method);
             instance.AddTrait(trait, method.IsStatic);
 
-            m.ReturnType = DefineReturnType(method.Type);
-            DefineParameters(m, method);
+            abcMethod.ReturnType = DefineReturnType(method.Type);
+            DefineParameters(abcMethod, method);
 
-            var body = new AbcMethodBody(m);
+            var body = new AbcMethodBody(abcMethod);
             Abc.MethodBodies.Add(body);
             
-            return m;
+            return abcMethod;
         }
         #endregion
     }

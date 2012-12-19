@@ -9,8 +9,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
     //contains implementation of pointer operations
     partial class CodeProviderImpl
     {
-        #region ICodeProvider Members
-        public bool IsThisAddressed
+	    public bool IsThisAddressed
         {
             get { return _isThisAddressed; }
             set 
@@ -20,7 +19,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     throw new InvalidOperationException("Static method cannot have this pointer");
             }
         }
-        bool _isThisAddressed;
+		private bool _isThisAddressed;
 
         /// <summary>
         /// Provides code to load address of this argument.
@@ -112,23 +111,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             code.WritePtr();
             return code.ToArray();
         }
-        #endregion
 
-        #region InitActivation
-        AbcInstance _activation;
-        int _activationVar = -1;
+	    #region InitActivation
+		private AbcInstance _activation;
+		private int _activationVar = -1;
 
-        bool HasActivationVar
+		private bool HasActivationVar
         {
             get { return _activationVar >= 0; }
         }
 
-        int MethodIndex
+		private int MethodIndex
         {
             get { return _body.Method.Index; }
         }
 
-        void InitActivation()
+		private void InitActivation()
         {
             if (IsThisAddressed)
             {
@@ -162,7 +160,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
         }
 
-        void InitActivationVar()
+		private void InitActivationVar()
         {
             if (_activationVar >= 0) return;
 
@@ -180,18 +178,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             ++_body.LocalCount;
         }
 
-        void GetActivation(AbcCode code)
+		private void GetActivation(AbcCode code)
         {
             code.GetLocal(_activationVar);
         }
 
-        void GetSlot(AbcCode code, AbcTrait t)
+		private void GetSlot(AbcCode code, AbcTrait t)
         {
             GetActivation(code);
             code.GetSlot(t);
         }
 
-        IInstruction[] GetSlot(AbcTrait t)
+		private IInstruction[] GetSlot(AbcTrait t)
         {
             var code = new AbcCode(_abc);
             GetSlot(code, t);
@@ -199,7 +197,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return code.ToArray();
         }
 
-        IInstruction[] SetSlot(AbcTrait t)
+		private IInstruction[] SetSlot(AbcTrait t)
         {
             var code = new AbcCode(_abc);
             GetActivation(code);
@@ -208,25 +206,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return code.ToArray();
         }
 
-        void DefineArgPtr(IParameter p)
+        private void DefineArgPtr(IParameter p)
         {
             DefineVarPtr(p, p.Type, p.Name);
         }
 
-        void DefineVarPtr(IVariable v)
+		private void DefineVarPtr(IVariable v)
         {
             DefineVarPtr(v, v.Type, v.Name);
         }
 
-        VarPtr DefineThisPtr()
+		private VarPtr DefineThisPtr()
         {
             if (_thisPtr != null) return _thisPtr;
             _thisPtr = CreateVarPtr(_body.Method.Instance.Name, "$this");
             return _thisPtr;
         }
-        VarPtr _thisPtr;
+		private VarPtr _thisPtr;
 
-        AbcTrait CreateSlot(AbcMultiname type, string name)
+		private AbcTrait CreateSlot(AbcMultiname type, string name)
         {
             var traitName = DefineSlotName(name);
             AbcTrait t;
@@ -243,7 +241,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return t;
         }
 
-        AbcTrait CreateSlotPtr(AbcTrait slot)
+		private AbcTrait CreateSlotPtr(AbcTrait slot)
         {
             PointerKind kind;
             var instance = DefineSlotPtrClass(slot, out kind);
@@ -253,7 +251,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return t;
         }
 
-        AbcInstance DefineSlotPtrClass(AbcTrait slot, out PointerKind kind)
+		private AbcInstance DefineSlotPtrClass(AbcTrait slot, out PointerKind kind)
         {
             if (AbcGenConfig.UseActivationTraits && AbcGenConfig.UseFuncPointers)
             {
@@ -266,7 +264,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return _generator.DefinePropertyPtr(slot.Name);
         }
 
-        string ThisTraitName
+		private string ThisTraitName
         {
             get 
             {
@@ -277,7 +275,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
         }
 
-        AbcMultiname DefineSlotName(string name)
+		private AbcMultiname DefineSlotName(string name)
         {
             if (AbcGenConfig.UseActivationTraits)
             {
@@ -286,13 +284,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return _abc.DefineGlobalQName(name);
         }
 
-        AbcMultiname DefineMemberType(IType type)
+		private AbcMultiname DefineMemberType(IType type)
         {
             type = type.UnwrapRef();
-            return _abc.generator.DefineMemberType(type);
+            return _abc.Generator.DefineMemberType(type);
         }
 
-        class VarPtr
+		private class VarPtr
         {
             public AbcTrait Slot;
             public AbcTrait Ptr;
@@ -301,7 +299,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             public object Creator;
         }
 
-        void DefineVarPtr(ICodeNode node, IType type, string name)
+		private void DefineVarPtr(ICodeNode node, IType type, string name)
         {
             var ptr = node.Data as VarPtr;
             if (ptr != null && ptr.Creator == this) return;
@@ -310,12 +308,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             node.Data = ptr;
         }
 
-        VarPtr CreateVarPtr(IType type, string name)
+		private VarPtr CreateVarPtr(IType type, string name)
         {
             return CreateVarPtr(DefineMemberType(type), name);
         }
 
-        VarPtr CreateVarPtr(AbcMultiname type, string name)
+		private VarPtr CreateVarPtr(AbcMultiname type, string name)
         {
             var ptr = new VarPtr {Slot = CreateSlot(type, name)};
             ptr.Ptr = CreateSlotPtr(ptr.Slot);
@@ -324,7 +322,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #endregion
 
         #region InitPointers
-        void InitPointers(AbcCode code)
+		private void InitPointers(AbcCode code)
         {
             if (!HasActivationVar) return;
 
@@ -388,7 +386,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
         }
 
-        void InitSlotPtr(AbcCode code, VarPtr ptr)
+		private void InitSlotPtr(AbcCode code, VarPtr ptr)
         {
             GetActivation(code);
             if (AbcGenConfig.UseActivationTraits)

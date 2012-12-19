@@ -126,7 +126,7 @@ namespace DataDynamics.PageFX.Ecma335.Execution
 
 		public int Run(string path, string options, string[] args)
 		{
-			CommonLanguageInfrastructure.ClearCache();
+			CommonLanguageInfrastructure.ClearCaches();
 
 			var assembly = CommonLanguageInfrastructure.Deserialize(path, null);
 

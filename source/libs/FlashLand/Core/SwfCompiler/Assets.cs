@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         #region Image Assets
         public Image GetImageResoucre(string source)
         {
-            var res = _assembly.FindResource(source);
+            var res = AppAssembly.FindResource(source);
             if (res == null)
                 throw Errors.SWF.UnableToFindImageResource.CreateException(source);
 
@@ -52,25 +52,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 
         public void DefineBitmapAsset(string source, AbcInstance instance)
         {
-            var c = DefineImageAsset(source, _swf.CreateBitmapTag);
+            var c = DefineImageAsset(source, Swf.CreateBitmapTag);
             AddSymbol(c, instance);
         }
 
         public void DefineBitmapAsset(Image image, AbcInstance instance)
         {
-            var c = _swf.CreateBitmapTag(image);
+            var c = Swf.CreateBitmapTag(image);
             AddSymbol(c, instance);
         }
 
         public void DefineJpegAsset(string source, AbcInstance instance)
         {
-            var c = DefineImageAsset(source, _swf.CreateJpegTag);
+            var c = DefineImageAsset(source, Swf.CreateJpegTag);
             AddSymbol(c, instance);
         }
 
         public void DefineJpegAsset(Image image, AbcInstance instance)
         {
-            var c = _swf.CreateJpegTag(image);
+            var c = Swf.CreateJpegTag(image);
             AddSymbol(c, instance);
         }
 
@@ -125,7 +125,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
             var tag = asset.Character as SwfTag;
             CheckCharacter(tag);
 
-            var mytag = _swf.Import(from, tag);
+            var mytag = Swf.Import(from, tag);
             CheckCharacter(mytag);
             c = (ISwfCharacter)mytag;
 
@@ -212,8 +212,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
             var tag = obj as SwfTag;
             if (tag == null)
                 throw new ArgumentException("Character is not swf tag");
-            if (!_swf.Tags.Contains(tag))
-                _swf.Tags.Add(tag);
+            if (!Swf.Tags.Contains(tag))
+                Swf.Tags.Add(tag);
             string name = instance.FullName;
             var asset = new SwfAsset(obj, name)
                             {
@@ -230,7 +230,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
             {
                 var export = new SwfTagExportAssets();
                 export.Assets.AddRange(_exports);
-                _swf.Tags.Add(export);
+                Swf.Tags.Add(export);
                 _exports.Clear();
             }
 

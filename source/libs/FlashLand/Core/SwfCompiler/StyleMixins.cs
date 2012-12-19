@@ -36,7 +36,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 				&& File.Exists(styleMixins))
 			{
 				var swc = new SwcFile(styleMixins);
-				swc.ResolveDependencies(new SimpleSwcLinker(_assembly), null);
+				swc.ResolveDependencies(new SimpleSwcLinker(AppAssembly), null);
 				ImportStyleMixins(app, swc, true);
 				return;
 			}
@@ -59,7 +59,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 
 			var swc = new SwcFile(swcResource);
 
-			swc.ResolveDependencies(new SimpleSwcLinker(_assembly), deps);
+			swc.ResolveDependencies(new SimpleSwcLinker(AppAssembly), deps);
 
 			ImportStyleMixins(app, swc, false);
 		}

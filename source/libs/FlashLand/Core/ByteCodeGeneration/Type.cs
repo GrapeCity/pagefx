@@ -55,7 +55,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             if (tag != null)
             {
-                type.Data = tag;
+                SetData(type, tag);
+
                 RegisterType(type);
 
                 if (!isImported)
@@ -222,8 +223,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
                                    SuperType = superType
                                };
 
-            type.Data = instance;
-            SetFlags(instance, type);
+            SetData(type, instance);
+			SetFlags(instance, type);
             AddInterfaces(instance, type, ifaceNames);
 
             AddInstance(instance);
@@ -695,7 +696,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             }
         }
 
-        bool LinkVectorInstance(IType type)
+        private bool LinkVectorInstance(IType type)
         {
             var instance = type as IGenericInstance;
             if (instance == null) return false;
@@ -705,10 +706,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             DefineTypes(instance.GenericArguments);
 
-            var v = new VectorInstance(type);
-#if DEBUG
-            Debug.Assert(type.Data == v);
-#endif
+            SetData(type, new VectorInstance(type));
 
             return true;
         }

@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="Abc\AbcFile.ResourceBundle.cs" />
     <Compile Include="Abc\AbcFile.Test.cs" />
+    <Compile Include="Abc\AbcMemberName.cs" />
     <Compile Include="Abc\AbcMultinamePool.cs" />
     <Compile Include="Abc\AbcTraitCache.cs" />
     <Compile Include="Abc\AbcTraitCollection.cs" />

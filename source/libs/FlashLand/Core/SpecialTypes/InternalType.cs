@@ -6,19 +6,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
     {
         public InternalType(IType type)
         {
-            _type = type;
-            type.Data = this;
+            Type = type;
         }
 
-        public IType Type
-        {
-            get { return _type; }
-        }
-        private readonly IType _type;
+	    public IType Type { get; private set; }
 
-        public override string ToString()
+	    public override string ToString()
         {
-            return _type.ToString();
+            return Type.ToString();
         }
     }
 }

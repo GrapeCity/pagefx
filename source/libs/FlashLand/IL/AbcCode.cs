@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             get 
             { 
-                var g = Abc.generator;
+                var g = Abc.Generator;
                 if (g == null)
                     throw new InvalidOperationException("invalid context");
                 return g;

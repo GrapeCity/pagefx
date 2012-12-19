@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
             if (_mixinsImported) return;
             _mixinsImported = true;
 
-            var app = FrameApp;
+            var app = AppFrame;
             if (app == null)
                 throw new InvalidOperationException("invalid context");
 
@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 
         private void ImportAppMixins()
         {
-            _assembly.ProcessReferences(true, ImportMixins);
+            AppAssembly.ProcessReferences(true, ImportMixins);
         }
 
         private void ImportMixins(IAssembly assembly)
@@ -62,7 +62,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
             if (swc == null) return;
 
             foreach (var mixin in swc.AbcCache.Mixins)
-                FrameApp.ImportInstance(mixin);
+                AppFrame.ImportInstance(mixin);
         }
 
         public void RegisterMixin(AbcInstance instance)

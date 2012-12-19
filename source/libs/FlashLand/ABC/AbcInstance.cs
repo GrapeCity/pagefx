@@ -576,7 +576,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 if (args.Length == 1 && args[0] is IMethod)
                 {
                     var m = (IMethod)args[0];
-                    Abc.generator.DefineParameters(method, m);
+                    Abc.Generator.DefineParameters(method, m);
                 }
                 else
                 {

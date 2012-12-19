@@ -42,23 +42,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             if (method.Parameters.Count != 2)
                 throw new InvalidOperationException();
 
-            var m = new AbcMethod(method);
+            var abcMethod = new AbcMethod(method);
+
+			SetData(method, abcMethod);
 
             if (isInitializer)
-                instance.Initializer = m;
+                instance.Initializer = abcMethod;
 
-            m.ReturnType = DefineReturnType(method.Type);
-            m.AddParam(CreateParam(SystemTypes.Object, method.Parameters[0].Name));
-            m.AddParam(CreateParam(Abc.BuiltinTypes.Function, method.Parameters[1].Name));
+            abcMethod.ReturnType = DefineReturnType(method.Type);
+            abcMethod.AddParam(CreateParam(SystemTypes.Object, method.Parameters[0].Name));
+            abcMethod.AddParam(CreateParam(Abc.BuiltinTypes.Function, method.Parameters[1].Name));
 
             if (!isInitializer)
             {
-                var trait = DefineMethodTrait(m, method);
+                var trait = DefineMethodTrait(abcMethod, method);
                 instance.AddTrait(trait, false);
             }
 
-            var body = new AbcMethodBody(m);
-            AddMethod(m);
+            var body = new AbcMethodBody(abcMethod);
+            AddMethod(abcMethod);
 
             var code = new AbcCode(Abc);
 
@@ -81,7 +83,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
 
             body.Finish(code);
 
-            return m;
+            return abcMethod;
         }
         #endregion
 

@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         {
         	try
         	{
-				return abc.ImportType(_assembly, fullname);
+				return abc.ImportType(AppAssembly, fullname);
         	}
         	catch (Exception)
         	{
@@ -468,15 +468,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 
             AbcFile.AllowExternalLinking = false;
 
-            FrameMX = new AbcFile
+            FrameWithFlexSystemManager = new AbcFile
                           {
                               Name = "MX Frame",
                               SwfCompiler = this
                           };
 
-            BuildMxSystemManager(FrameMX);
+            BuildMxSystemManager(FrameWithFlexSystemManager);
 
-            FrameMX.Finish();
+            FrameWithFlexSystemManager.Finish();
 
             AbcFile.AllowExternalLinking = true;
 

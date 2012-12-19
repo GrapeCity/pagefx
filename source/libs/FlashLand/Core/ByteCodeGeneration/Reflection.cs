@@ -175,7 +175,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration
             }
             foreach (var abc in list)
             {
-                abc.generator = this;
+                abc.Generator = this;
                 for (int i = 0; i < abc.Instances.Count; ++i)
                 {
 #if DEBUG

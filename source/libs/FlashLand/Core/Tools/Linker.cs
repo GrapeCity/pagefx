@@ -436,9 +436,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         {
             if (type.IsInternalType())
             {
-                var tag = new InternalType(type);
-
-	            type.Data = tag;
+	            type.Data = new InternalType(type);
 
 				FireTypeLinked(type);
 
@@ -449,9 +447,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private void LinkGlobalType(IType type)
         {
-            var tag = new GlobalType(type);
-
-		    type.Data = tag;
+		    type.Data = new GlobalType(type);
 
             LinkMethods(type, null, true);
         }

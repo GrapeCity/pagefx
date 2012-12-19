@@ -49,7 +49,7 @@ using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 {
-    partial class SwfCompilerImpl : IDisposable
+    internal partial class SwfCompilerImpl : IDisposable
     {
         #region ctors
         public SwfCompilerImpl(SwfCompilerOptions options)
@@ -132,7 +132,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         #endregion
 
         #region Shared Members
-        public static void Save(IAssembly assembly, string path, SwfCompilerOptions options)
+        public static void Compile(IAssembly assembly, string path, SwfCompilerOptions options)
         {
             if (options == null)
                 options = new SwfCompilerOptions();
@@ -144,7 +144,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
             }
         }
 
-        public static void Save(IAssembly assembly, Stream output, SwfCompilerOptions options)
+        public static void Compile(IAssembly assembly, Stream output, SwfCompilerOptions options)
         {
             if (options == null)
                 options = new SwfCompilerOptions();
@@ -183,22 +183,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         #endregion
 
         #region Entry Points
-        internal SwfMovie _swf;
 
-        public IAssembly ApplicationAssembly
-        {
-            get { return _assembly; }
-        }
-        IAssembly _assembly;
+		/// <summary>
+		/// Output swf file.
+		/// </summary>
+        internal SwfMovie Swf;
 
-        bool GenerateHtmlWrapper = true;
+	    public IAssembly AppAssembly { get; private set; }
+
+	    bool GenerateHtmlWrapper = true;
 
         #region Build
-        public void Build(IAssembly assembly)
+        private void Build(IAssembly assembly)
         {
-            _assembly = assembly;
+            AppAssembly = assembly;
 
-            _swf = new SwfMovie
+            Swf = new SwfMovie
                        {
                            Name = "PageFX Application"
                        };
@@ -224,34 +224,39 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
                 if (GenerateHtmlWrapper && !_options.NoHtmlWrapper)
                     HtmlTemplate.Deploy(this);
             }
+
+	        foreach (var abc in AbcFrames)
+	        {
+		        abc.Generator.ResetMembersData();
+	        }
         }
         #endregion
 
         #region Save
-        void CheckSwf()
+        private void CheckSwf()
         {
-            if (_swf == null)
+            if (Swf == null)
                 throw new InvalidOperationException("SWF movie is not generated yet");
         }
 
-        public void Save(string path)
+        private void Save(string path)
         {
             CheckSwf();
 
             if (IsSwc)
                 SaveSwc(path);
             else
-                _swf.Save(path);
+                Swf.Save(path);
         }
 
-        public void Save(Stream output)
+		private void Save(Stream output)
         {
             CheckSwf();
 
             if (IsSwc)
                 SaveSwc(output);
             else
-                _swf.Save(output);
+                Swf.Save(output);
         }
         #endregion
         #endregion
@@ -259,16 +264,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         #region InitPrerequisites
         void InitPrerequisites()
         {
-	        _assembly.CustomData().SWF = _swf;
+	        AppAssembly.CustomData().SWF = Swf;
 
-            AssemblyIndex.Setup(_assembly);
+            AssemblyIndex.Setup(AppAssembly);
 
             LinkRsls();
         }
 
         IEnumerable<IAssembly> GetRefs()
         {
-            return _assembly.GetReferences(true);
+            return AppAssembly.GetReferences(true);
         }
 
         void LinkRsls()
@@ -314,11 +319,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         #region Header
         void SetupHeader()
         {
-            _swf.Version = _options.FlashVersion;
-            _swf.FrameSize = _options.FrameSize;
-            _swf.FrameRate = _options.FrameRate;
-            _swf.AllowCompression = _options.Compressed;
-            _swf.AutoFrameCount = false;
+            Swf.Version = _options.FlashVersion;
+            Swf.FrameSize = _options.FrameSize;
+            Swf.FrameRate = _options.FrameRate;
+            Swf.AllowCompression = _options.Compressed;
+            Swf.AutoFrameCount = false;
         }
         #endregion
 
@@ -326,7 +331,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         void SetFileAttributes()
         {
             //TODO: Customize
-            _swf.SetDefaultFileAttributes();
+            Swf.SetDefaultFileAttributes();
         }
         #endregion
 
@@ -334,7 +339,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         void SetupMetadata()
         {
             string rdf = typeof(SwfCompilerImpl).GetTextResource("pfc.rdf");
-            _swf.Tags.Add(new SwfTagMetadata(rdf));
+            Swf.Tags.Add(new SwfTagMetadata(rdf));
         }
         #endregion
 
@@ -343,8 +348,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         {
             if (_options.Debug)
             {
-                _swf.EnableDebugger(6517, _options.DebugPassword);
-                _swf.Tags.Add(new SwfTagDebugID("7ae6b0e5-298b-42a8-01d9-a2a555be7ef8"));
+                Swf.EnableDebugger(6517, _options.DebugPassword);
+                Swf.Tags.Add(new SwfTagDebugID("7ae6b0e5-298b-42a8-01d9-a2a555be7ef8"));
             }
         }
         #endregion
@@ -352,21 +357,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         #region ScriptLimits
         void SetupScriptLimits()
         {
-            _swf.SetDefaultScriptLimits();
+            Swf.SetDefaultScriptLimits();
         }
         #endregion
 
         #region BackgroundColor
         void SetBackgroundColor()
         {
-            _swf.SetBackgroundColor(_options.BackgroundColor);
+            Swf.SetBackgroundColor(_options.BackgroundColor);
         }
         #endregion
 
         #region ProductInfo
         private void SetupProductInfo()
         {
-        	_swf.Tags.Add(new SwfTagProductInfo
+        	Swf.Tags.Add(new SwfTagProductInfo
         	              	{
         	              		ProductID = 1,
         	              		Edition = 0,
@@ -384,39 +389,39 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 		/// <summary>
 		/// Frame with Flex SystemManager.
 		/// </summary>
-        internal AbcFile FrameMX
+        internal AbcFile FrameWithFlexSystemManager
         {
-            get { return _frameMX; }
+            get { return _frameWithFlexSystemManager; }
             set
             {
-                if (_frameMX != null)
+                if (_frameWithFlexSystemManager != null)
                     throw Errors.Internal.CreateException();
-                _frameMX = value;
+                _frameWithFlexSystemManager = value;
                 AbcFrames.Add(value);
-                _assembly.CustomData().AddAbc(value);
+                AppAssembly.CustomData().AddAbc(value);
             }
         }
-        AbcFile _frameMX;
+        private AbcFile _frameWithFlexSystemManager;
 
 		/// <summary>
 		/// Application frame.
 		/// </summary>
-        internal AbcFile FrameApp
+        internal AbcFile AppFrame
         {
-            get { return _frameApp; }
+            get { return _appFrame; }
             set
             {
-                if (value != _frameApp)
+                if (value != _appFrame)
                 {
-                    _frameApp = value;
-                    value.PrevFrame = FrameMX;
+                    _appFrame = value;
+                    value.PrevFrame = FrameWithFlexSystemManager;
                     AbcFrames.Add(value);
                 }
             }
         }
-        AbcFile _frameApp;
+        private AbcFile _appFrame;
 
-        void GenearateFrames()
+        private void GenearateFrames()
         {
             GenerateMxSystemManagerFrame();
             GenerateApplicationFrame();
@@ -427,10 +432,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
         #region Application Frame
         void GenerateApplicationFrame()
         {
-            _swf.FrameCount++;
+            Swf.FrameCount++;
 
             var g = new AbcGenerator {SwfCompiler = this};
-            var abc = g.Generate(_assembly);
+            var abc = g.Generate(AppAssembly);
 
             if (IsSwc)
             {
@@ -439,14 +444,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
                 CreateScripts(abc, symTable);
 
                 if (symTable.Symbols.Count > 0)
-                    _swf.Tags.Add(symTable);
+                    Swf.Tags.Add(symTable);
             }
             else
             {
                 var rootName = IsFlexApplication ? _typeFlexApp.FullName : g.RootSprite.FullName;
 
                 //label should be the same as root name
-                _swf.SetFrameLabel(rootName);
+                Swf.SetFrameLabel(rootName);
 
                 if (g.IsNUnit)
                     GenerateHtmlWrapper = false;
@@ -465,18 +470,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
                 }
 
                 if (symTable.Symbols.Count > 0)
-                    _swf.Tags.Add(symTable);
+                    Swf.Tags.Add(symTable);
             }
 
-            _swf.ShowFrame();
+            Swf.ShowFrame();
         }
 
         void AddAbcTag(AbcFile abc)
         {
             string frameName = abc.Name;
             if (string.IsNullOrEmpty(frameName))
-                frameName = "frame" + _swf.FrameCount;
-            _swf.Tags.Add(new SwfTagDoAbc2(frameName, 1, abc));
+                frameName = "frame" + Swf.FrameCount;
+            Swf.Tags.Add(new SwfTagDoAbc2(frameName, 1, abc));
         }
         #endregion
 
@@ -500,7 +505,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
                 {
                     //TODO: Resolve the situation: assembly can have more than one subclasses of mx.core.Application
                     _searchFlexAppType = false;
-                    var apps = _assembly.Types.Where(type => InternalTypeExtensions.IsFrom(type, "mx.core.Application")).ToList();
+                    var apps = AppAssembly.Types.Where(type => InternalTypeExtensions.IsFrom(type, "mx.core.Application")).ToList();
                     int n = apps.Count;
                     if (n > 0)
                     {
@@ -545,20 +550,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfCompiler
 
         	if (BuildMxFrame())
             {
-                Debug.Assert(FrameMX != null);
-                _swf.FrameCount++;
+                Debug.Assert(FrameWithFlexSystemManager != null);
+                Swf.FrameCount++;
 
-                _swf.SetFrameLabel("System Manager");
+                Swf.SetFrameLabel("System Manager");
 
                 var symTable = new SwfTagSymbolClass();
                 //FlushAssets(symTable);
-                AddAbcTag(FrameMX);
+                AddAbcTag(FrameWithFlexSystemManager);
                 ImportLateAssets();
                 FlushAssets(symTable);
 
                 symTable.AddSymbol(0, _mxSystemManager.FullName);
-                _swf.Tags.Add(symTable);
-                _swf.ShowFrame();
+                Swf.Tags.Add(symTable);
+                Swf.ShowFrame();
             }
         }
         #endregion

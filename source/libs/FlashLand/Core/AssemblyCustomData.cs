@@ -15,16 +15,16 @@ namespace DataDynamics.PageFX.FlashLand.Core
 		private AbcInstance _objectInstance;
 		private AbcInstance _errorInstance;
 
-        public static AssemblyCustomData GetInstance(IAssembly asm)
+        public static AssemblyCustomData GetInstance(IAssembly assembly)
         {
-			if (asm == null) return null;
-            return asm.Data as AssemblyCustomData ?? new AssemblyCustomData(asm);
+			if (assembly == null) return null;
+            return assembly.Data as AssemblyCustomData ?? new AssemblyCustomData(assembly);
         }
 
-        private AssemblyCustomData(IAssembly asm)
+        private AssemblyCustomData(IAssembly assembly)
         {
-            Assembly = asm;
-            asm.Data = this;
+            Assembly = assembly;
+            assembly.Data = this;
         }
 
 	    public IAssembly Assembly { get; private set; }

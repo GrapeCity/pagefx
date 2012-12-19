@@ -693,6 +693,10 @@ namespace DataDynamics.PageFX.TestRunner.Framework
                     return "Outputs are different. Second output is not empty, but first is empty.";
                 }
             }
+			if (string.IsNullOrEmpty(text2))
+			{
+				return "Outputs are different. Second output is empty, but first is not empty.";
+			}
 
             bool notFast = !IsNUnitSession;
 
@@ -787,14 +791,11 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             {
                 CommonLanguageInfrastructure.ResolveLabels = false;
                 CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = true;
-                CommonLanguageInfrastructure.EnableDecompiler = false;
-                CommonLanguageInfrastructure.ClearCache();
             }
             else
             {
                 CommonLanguageInfrastructure.ResolveLabels = true;
                 CommonLanguageInfrastructure.SubstituteFrameworkAssemblies = false;
-                CommonLanguageInfrastructure.EnableDecompiler = true;
             }
         }
 
