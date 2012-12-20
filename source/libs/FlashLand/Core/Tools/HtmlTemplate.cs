@@ -2,13 +2,13 @@ using System;
 using System.Globalization;
 using System.IO;
 using DataDynamics.PageFX.Common.Extensions;
-using DataDynamics.PageFX.FlashLand.Core.SwfCompiler;
+using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 
 namespace DataDynamics.PageFX.FlashLand.Core.Tools
 {
     class HtmlTemplate
     {
-        public static void Deploy(SwfCompilerImpl sfc)
+        public static void Deploy(SwfCompiler sfc)
         {
             //Console.WriteLine("Deploy HTML teplate");
 
@@ -30,7 +30,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        static void BuildCore(SwfCompilerImpl sfc, string outdir)
+        static void BuildCore(SwfCompiler sfc, string outdir)
         {
             string src = GlobalSettings.Dirs.HtmlTemplates;
             if (!Directory.Exists(src))
@@ -70,7 +70,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         const string PlayerProductInstallSwf = "playerProductInstall.swf";
 
-        static string ReplaceVars(string template, SwfCompilerImpl sfc, bool hasInstallator)
+        static string ReplaceVars(string template, SwfCompiler sfc, bool hasInstallator)
         {
             return template.ReplaceVars(RVScheme.Ant,
                               "title", sfc.Title,

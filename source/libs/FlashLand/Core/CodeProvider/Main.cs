@@ -3,7 +3,7 @@ using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider

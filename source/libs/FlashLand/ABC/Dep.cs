@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using DataDynamics.PageFX.FlashLand.Core.SwfCompiler;
+using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcFile TargetABC { get; set; }
 
-        internal SwfCompilerImpl SwfCompiler
+        internal SwfCompiler SwfCompiler
         {
             get { return TargetABC.SwfCompiler; }
         }

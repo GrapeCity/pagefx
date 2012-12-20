@@ -6,8 +6,8 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration;
-using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration.Corlib;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 
 namespace DataDynamics.PageFX.FlashLand.IL
 {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Core.SwfCompiler;
+using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 using DataDynamics.PageFX.FlashLand.IL;
 using DataDynamics.PageFX.FlashLand.Swc;
 

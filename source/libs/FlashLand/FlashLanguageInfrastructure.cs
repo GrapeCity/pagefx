@@ -4,8 +4,8 @@ using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Core.ByteCodeGeneration;
-using DataDynamics.PageFX.FlashLand.Core.SwfCompiler;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
+using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 
 namespace DataDynamics.PageFX.FlashLand
@@ -82,7 +82,7 @@ namespace DataDynamics.PageFX.FlashLand
                     case OutputFormat.SWC:
                         {
                             var options = new SwfCompilerOptions(cl) {OutputFormat = f};
-                            SwfCompilerImpl.Compile(assembly, path, options);
+                            SwfCompiler.Compile(assembly, path, options);
                         }
                         break;
                 }
@@ -103,7 +103,7 @@ namespace DataDynamics.PageFX.FlashLand
                     case OutputFormat.SWC:
                         {
                             var options = new SwfCompilerOptions(cl) {OutputFormat = f};
-                            SwfCompilerImpl.Compile(assembly, output, options);
+                            SwfCompiler.Compile(assembly, output, options);
                         }
                         break;
                 }
