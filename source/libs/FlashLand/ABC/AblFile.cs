@@ -314,7 +314,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
                 case MetadataTags.Embed:
                     {
-                        Embed.Resolve(trait, e, abc.SWF);
+                        Embed.Resolve(trait, e, abc.Swf);
                         var embed = trait.Embed;
                     }
                     return;

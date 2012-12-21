@@ -30,7 +30,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (string.IsNullOrEmpty(name))
                 throw Errors.RBC.BadMetaEntry.CreateException();
 
-            var swc = abc.SWC;
+            var swc = abc.Swc;
             if (swc != null)
                 swc.LoadResourceBundles();
 

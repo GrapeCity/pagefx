@@ -26,12 +26,20 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// </summary>
         public AbcFile()
         {
-            _nspool = new AbcNamespacePool(this);
-            _nssets = new AbcNssetPool(this);
-            _multinames = new AbcMultinamePool(this);
-            _instances = new AbcInstanceCollection(this);
-            _scripts = new AbcScriptCollection(this);
-            _methods = new AbcMethodCollection(this);
+			IntPool = new AbcConstPool<int>();
+			UIntPool = new AbcConstPool<uint>();
+			DoublePool = new AbcConstPool<double>();
+	        StringPool = new AbcConstPool<string>();
+			Namespaces = new AbcNamespacePool(this);
+			NamespaceSets = new AbcNssetPool(this);
+			Multinames = new AbcMultinamePool(this);
+
+			Methods = new AbcMethodCollection(this);
+			Metadata = new AbcMetadata();
+			Classes = new AbcClassCollection();
+			Instances = new AbcInstanceCollection(this);
+			Scripts = new AbcScriptCollection(this);
+	        MethodBodies = new AbcMethodBodyCollection();
         }
 
         /// <summary>
@@ -84,133 +92,80 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// </summary>
         public Version Version
         {
-            get
-            {
-                if (_version == null)
-                    return new Version(CurrentMajor, CurrentMinor);
-                return _version;
-            }
-            set { _version = value; }
+            get { return _version ?? new Version(CurrentMajor, CurrentMinor); }
+	        set { _version = value; }
         }
-        Version _version;
+        private Version _version;
 
         internal const int CurrentMajor = 46;
         internal const int CurrentMinor = 16;
 
         #region ConstPools
-        /// <summary>
-        /// Gets the pool of signed integer constants.
-        /// </summary>
-        public AbcConstPool<int> IntPool
-        {
-            get { return _intPool; }
-        }
-        private readonly AbcConstPool<int> _intPool = new AbcConstPool<int>();
 
-        /// <summary>
-        /// Gets the pool of unsigned integer constants.
-        /// </summary>
-        public AbcConstPool<uint> UIntPool
-        {
-            get { return _uintPool; }
-        }
-        private readonly AbcConstPool<uint> _uintPool = new AbcConstPool<uint>();
+		/// <summary>
+		/// Gets the pool of signed integer constants.
+		/// </summary>
+		public AbcConstPool<int> IntPool { get; private set; }
 
-        /// <summary>
-        /// Gets the pool of double constants.
-        /// </summary>
-        public AbcConstPool<double> DoublePool
-        {
-            get { return _doublePool; }
-        }
-        private readonly AbcConstPool<double> _doublePool = new AbcConstPool<double>();
+		/// <summary>
+		/// Gets the pool of unsigned integer constants.
+		/// </summary>
+		public AbcConstPool<uint> UIntPool { get; private set; }
 
-        /// <summary>
-        /// Gets the pool string constants.
-        /// </summary>
-        public AbcConstPool<string> StringPool
-        {
-            get { return _stringPool; }
-        }
-        readonly AbcConstPool<string> _stringPool = new AbcConstPool<string>();
+		/// <summary>
+		/// Gets the pool of double constants.
+		/// </summary>
+		public AbcConstPool<double> DoublePool { get; private set; }
 
-        /// <summary>
-        /// Gets the pool of namespaces used in the ABC file.
-        /// </summary>
-        public AbcNamespacePool Namespaces
-        {
-            get { return _nspool; }
-        }
-        readonly AbcNamespacePool _nspool;
+		/// <summary>
+		/// Gets the pool string constants.
+		/// </summary>
+		public AbcConstPool<string> StringPool { get; private set; }
 
-        public AbcNssetPool NamespaceSets
-        {
-            get { return _nssets; }
-        }
-        private readonly AbcNssetPool _nssets;
+		/// <summary>
+		/// Gets the pool of namespaces used in the ABC file.
+		/// </summary>
+		public AbcNamespacePool Namespaces { get; private set; }
 
-        public AbcMultinamePool Multinames
-        {
-            get { return _multinames; }
-        }
-        private readonly AbcMultinamePool _multinames;
-        #endregion
+		public AbcNssetPool NamespaceSets { get; private set; }
+
+		public AbcMultinamePool Multinames { get; private set; }
+
+		#endregion
 
         #region ABC Elements
-        /// <summary>
-        /// Gets the methods defined in this abc file.
-        /// </summary>
-        public AbcMethodCollection Methods
-        {
-            get { return _methods; }
-        }
-        readonly AbcMethodCollection _methods;
 
-        /// <summary>
-        /// Gets the metadata entries.
-        /// </summary>
-        public AbcMetadata Metadata
-        {
-            get { return _metadata; }
-        }
-        readonly AbcMetadata _metadata = new AbcMetadata();
+		/// <summary>
+		/// Gets the methods defined in this abc file.
+		/// </summary>
+		public AbcMethodCollection Methods { get; private set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public AbcInstanceCollection Instances
-        {
-            get { return _instances; }
-        }
-        readonly AbcInstanceCollection _instances;
+		/// <summary>
+		/// Gets the metadata entries.
+		/// </summary>
+		public AbcMetadata Metadata { get; private set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public AbcClassCollection Classes
-        {
-            get { return _classes; }
-        }
-        readonly AbcClassCollection _classes = new AbcClassCollection();
+		/// <summary>
+		/// 
+		/// </summary>
+		public AbcInstanceCollection Instances { get; private set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public AbcScriptCollection Scripts
-        {
-            get { return _scripts; }
-        }
-        readonly AbcScriptCollection _scripts;
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public AbcMethodBodyCollection MethodBodies
-        {
-            get { return _methodBodies; }
-        }
-        readonly AbcMethodBodyCollection _methodBodies = new AbcMethodBodyCollection();
-        #endregion
+		/// <summary>
+		/// 
+		/// </summary>
+		public AbcClassCollection Classes { get; private set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public AbcScriptCollection Scripts { get; private set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public AbcMethodBodyCollection MethodBodies { get; private set; }
+
+		#endregion
 
         #region ABL Deps
         public DepList Deps { get; set; }
@@ -232,8 +187,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get 
             {
-                if (_instances.Count > 0)
-                    return _instances[0];
+                if (Instances.Count > 0)
+                    return Instances[0];
                 return null;
             }
         }
@@ -245,8 +200,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                int i = _scripts.Count - 1;
-                if (i >= 0) return _scripts[i];
+                int i = Scripts.Count - 1;
+                if (i >= 0) return Scripts[i];
                 return null;
             }
         }
@@ -261,18 +216,18 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 throw new ArgumentNullException("instance");
             if (instance.Class == null)
                 throw new ArgumentException("instance has no class");
-            _instances.Add(instance);
-            _classes.Add(instance.Class);
+            Instances.Add(instance);
+            Classes.Add(instance.Class);
         }
 
         public void AddMethod(AbcMethod method)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
-            _methods.Add(method);
+            Methods.Add(method);
             var body = method.Body;
             if (body != null)
-                _methodBodies.Add(body);
+                MethodBodies.Add(body);
         }
 
         /// <summary>
@@ -288,9 +243,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <summary>
         /// Gets or sets swf movie where this ABC was defined.
         /// </summary>
-        internal SwfMovie SWF { get; set; }
+        internal SwfMovie Swf { get; set; }
 
-        internal SwcFile SWC { get; set; }
+        internal SwcFile Swc { get; set; }
 
         internal XmlElement SwcElement { get; set; }
 
@@ -299,15 +254,15 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// </summary>
         internal bool InSwc
         {
-            get { return SWC != null; }
+            get { return Swc != null; }
         }
 
         internal bool UseExternalLinking
         {
             get
             {
-                if (SWC != null)
-                    return SWC.RSL != null;
+                if (Swc != null)
+                    return Swc.RSL != null;
                 return false;
             }
         }
@@ -483,32 +438,32 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 //NOTE: The "0" entry of each constant pool is not used.  If the count for a given pool says there are
                 //NOTE: "n" entries in the pool, there are "n-1" entries in the file, corresponding to indices 1..(n-1).
-                _intPool.Read(reader);
-                _uintPool.Read(reader);
+                IntPool.Read(reader);
+                UIntPool.Read(reader);
 
                 SwfReader.CheckU30 = true;
-                _doublePool.Read(reader);
-                _stringPool.Read(reader);
-                _nspool.Read(reader);
-                _nssets.Read(reader);
-                _multinames.Read(reader);
-                _methods.Read(reader);
-                _metadata.Read(reader);
+                DoublePool.Read(reader);
+                StringPool.Read(reader);
+                Namespaces.Read(reader);
+                NamespaceSets.Read(reader);
+                Multinames.Read(reader);
+                Methods.Read(reader);
+                Metadata.Read(reader);
 
                 int n = (int)reader.ReadUIntEncoded();
-                _instances.Read(n, reader);
-                _classes.Read(n, reader);
+                Instances.Read(n, reader);
+                Classes.Read(n, reader);
                 for (int i = 0; i < n; ++i)
                 {
-                    var klass = _classes[i];
-                    var instance = _instances[i];
+                    var klass = Classes[i];
+                    var instance = Instances[i];
                     instance.Class = klass;
                     klass.Instance = instance;
                     klass.Initializer.Instance = instance;
                 }
 
-                _scripts.Read(reader);
-                _methodBodies.Read(reader);
+                Scripts.Read(reader);
+                MethodBodies.Read(reader);
                 SwfReader.CheckU30 = false;
             }
             else
@@ -532,24 +487,24 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             writer.WriteUInt16((ushort)ver.Major);
             if (ver.Major == CurrentMajor && ver.Minor == CurrentMinor)
             {
-                _intPool.Write(writer);
-                _uintPool.Write(writer);
-                _doublePool.Write(writer);
-                _stringPool.Write(writer);
-                _nspool.Write(writer);
-                _nssets.Write(writer);
-                _multinames.Write(writer);
+                IntPool.Write(writer);
+                UIntPool.Write(writer);
+                DoublePool.Write(writer);
+                StringPool.Write(writer);
+                Namespaces.Write(writer);
+                NamespaceSets.Write(writer);
+                Multinames.Write(writer);
 
-                _methods.Write(writer);
-                _metadata.Write(writer);
+                Methods.Write(writer);
+                Metadata.Write(writer);
 
-                int n = _instances.Count;
+                int n = Instances.Count;
                 writer.WriteUIntEncoded((uint)n);
-                _instances.Write(writer);
-                _classes.Write(writer);
+                Instances.Write(writer);
+                Classes.Write(writer);
 
-                _scripts.Write(writer);
-                _methodBodies.Write(writer);
+                Scripts.Write(writer);
+                MethodBodies.Write(writer);
             }
             else
             {
@@ -600,23 +555,23 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (AbcDumpService.DumpConstPool)
             {
                 writer.WriteStartElement("constants");
-                _intPool.DumpXml(writer);
-                _uintPool.DumpXml(writer);
-                _doublePool.DumpXml(writer);
-                _stringPool.DumpXml(writer);
-                _nspool.DumpXml(writer);
-                _nssets.DumpXml(writer);
-                _multinames.DumpXml(writer);
+                IntPool.DumpXml(writer);
+                UIntPool.DumpXml(writer);
+                DoublePool.DumpXml(writer);
+                StringPool.DumpXml(writer);
+                Namespaces.DumpXml(writer);
+                NamespaceSets.DumpXml(writer);
+                Multinames.DumpXml(writer);
                 writer.WriteEndElement();
             }
 
-            _methods.DumpXml(writer);
+            Methods.DumpXml(writer);
             //NOTE: metadata will be dumped with traits.
             //_metadata.DumpXml(writer);
-            _instances.DumpXml(writer);
+            Instances.DumpXml(writer);
             //NOTE: classes are dumped with instances
             //_classes.DumpXml(writer);
-            _scripts.DumpXml(writer);
+            Scripts.DumpXml(writer);
             //NOTE: bodies are dumped with methods
             //_methodBodies.Dump(writer);
             writer.WriteEndElement();
@@ -633,19 +588,19 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public void DumpDirectory(string dir)
         {
-            _instances.DumpDirectory(dir);
+            Instances.DumpDirectory(dir);
         }
 
         public void DumpFile(string path)
         {
             using (var writer = new StreamWriter(path))
             {
-                _instances.GroupByNamespace().Dump(writer);
+                Instances.GroupByNamespace().Dump(writer);
 
-                if (_instances.Count > 0)
+                if (Instances.Count > 0)
                     writer.WriteLine();
 
-                _scripts.Dump(writer);
+                Scripts.Dump(writer);
             }
         }
         #endregion
@@ -660,7 +615,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region EnsureImport
         private void EnsureImport()
         {
-            foreach (var instance in _instances)
+            foreach (var instance in Instances)
             {
                 if (instance.Initializer == null)
                     throw new BadImageFormatException();
@@ -678,21 +633,21 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 //CheckInheritance(instance);
             }
 
-            foreach (var klass in _classes)
+            foreach (var klass in Classes)
             {
                 if (klass.Initializer == null)
                     throw new BadImageFormatException();
                 EnsureTraits(klass);
             }
 
-            foreach (var script in _scripts)
+            foreach (var script in Scripts)
             {
                 if (script.Initializer == null)
                     throw new BadImageFormatException();
                 EnsureTraits(script);
             }
 
-            foreach (var method in _methods)
+            foreach (var method in Methods)
             {
                 method.ReturnType = ImportConst(method.ReturnType);
                 foreach (var p in method.Parameters)
@@ -702,7 +657,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
 
-            foreach (var body in _methodBodies)
+            foreach (var body in MethodBodies)
             {
                 EnsureTraits(body);
                 //CheckIL(body);
@@ -862,15 +817,15 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 OrderByInheritance(app);
             }
 
-            foreach (var instance in _instances)
+            foreach (var instance in Instances)
             {
                 OrderByInheritance(instance);
             }
 
-            Debug.Assert(_order.Count == _instances.Count);
+            Debug.Assert(_order.Count == Instances.Count);
 
-            _instances.Clear();
-            _classes.Clear();
+            Instances.Clear();
+            Classes.Clear();
 
             int n = _order.Count;
             for (int i = 0; i < n; ++i)
@@ -879,11 +834,11 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 var klass = instance.Class;
                 instance.Index = i;
                 klass.Index = i;
-                _instances.AddInternal(instance);
-                _classes.AddInternal(klass);
+                Instances.AddInternal(instance);
+                Classes.AddInternal(klass);
             }
 
-            _scripts.Sort(CreateScriptComparer());
+            Scripts.Sort(CreateScriptComparer());
         }
 
         List<AbcInstance> _order;
@@ -893,7 +848,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (instance == null) return;
             if (instance.Ordered) return;
 
-            foreach (var other in _instances)
+            foreach (var other in Instances)
             {
                 if (other == instance) continue;
                 if (other.Ordered) continue;
@@ -914,49 +869,40 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return Instances[fn] != null;
         }
 
-        public bool IsCoreAPI
+        public bool IsCore
         {
             get
             {
-                if (!_isCoreAPI.HasValue)
-                    _isCoreAPI = ContainsType("", "Object");
-                return (bool)_isCoreAPI;
+                if (!_isCore.HasValue)
+                    _isCore = ContainsType("", "Object");
+                return (bool)_isCore;
             }
             set 
             {
-                _isCoreAPI = value;
+                _isCore = value;
             }
         }
-        private bool? _isCoreAPI;
+        private bool? _isCore;
 
         public IEnumerable<AbcTrait> GetTraits(AbcTraitOwner owners)
         {
+	        var allTraits = Enumerable.Empty<AbcTrait>();
             if ((owners & AbcTraitOwner.Instance) != 0)
             {
-                foreach (var instance in _instances)
-                {
-                    foreach (var trait in instance.Traits)
-                        yield return trait;
-                    foreach (var trait in instance.Class.Traits)
-                        yield return trait;
-                }
+	            var traits = Instances.SelectMany(x => x.Traits.Concat(x.Class.Traits));
+	            allTraits = allTraits.Concat(traits);
             }
             if ((owners & AbcTraitOwner.Script) != 0)
             {
-                foreach (var script in _scripts)
-                {
-                    foreach (var trait in script.Traits)
-                        yield return trait;
-                }
+	            var traits = Scripts.SelectMany(x => x.Traits);
+				allTraits = allTraits.Concat(traits);
             }
             if ((owners & AbcTraitOwner.MethodBody) != 0)
             {
-                foreach (var body in _methodBodies)
-                {
-                    foreach (var trait in body.Traits)
-                        yield return trait;
-                }
+	            var traits = MethodBodies.SelectMany(x => x.Traits);
+				allTraits = allTraits.Concat(traits);
             }
+	        return allTraits;
         }
 
         public AbcInstance FindInstance(Func<AbcInstance, bool> predicate)
@@ -981,16 +927,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
     	#endregion
 
-        #region Object Overrides
-        public override string ToString()
+		public override string ToString()
         {
             if (!string.IsNullOrEmpty(Name))
                 return Name;
             return base.ToString();
         }
-        #endregion
 
-        #region Refs
+		#region Refs
         internal ImportStrategy ImportStrategy;
 
         internal List<AbcFile> FileRefs

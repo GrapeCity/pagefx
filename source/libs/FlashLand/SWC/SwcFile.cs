@@ -296,9 +296,9 @@ namespace DataDynamics.PageFX.FlashLand.Swc
         //e - external
         //s - members or code??
 
-        ISwcLinker _linker;
-        readonly Hashtable _defCache = new Hashtable();
-        readonly Hashtable _externalRefs = new Hashtable();
+        private ISwcLinker _linker;
+        private readonly Hashtable _defCache = new Hashtable();
+        private readonly Hashtable _externalRefs = new Hashtable();
         internal readonly AbcCache AbcCache = new AbcCache(false);
         SwcDepFile _deps;
 
@@ -505,7 +505,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
             var depAbc = AbcCache.FindNamespace(ns);
             if (depAbc != null)
             {
-                if (!depAbc.IsCoreAPI)
+                if (!depAbc.IsCore)
                 {
                     defInstance.ImportAbcFiles.Add(depAbc);
                     if (AddNsRefs)
@@ -549,7 +549,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
                     depAbc = r as AbcFile;
                     if (depAbc != null)
                     {
-                        if (!depAbc.IsCoreAPI)
+                        if (!depAbc.IsCore)
                             defInstance.ImportAbcFiles.Add(depAbc);
                         return;
                     }

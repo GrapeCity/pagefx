@@ -118,7 +118,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return method;
 
             var abc = method.ABC;
-            if (abc.IsCoreAPI)
+            if (abc.IsCore)
                 return method;
 
             if (method.ImportedMethod != null)

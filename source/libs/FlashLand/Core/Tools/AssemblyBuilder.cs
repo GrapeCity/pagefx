@@ -221,6 +221,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    public event EventHandler<TypeEventArgs> TypeLinked;
 
+	    public bool Run()
+	    {
+		    return false;
+	    }
+
 	    #endregion
 
         #region Naming Utils
@@ -2113,8 +2118,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         void DefineSwcAbcFileAttribute(ICustomAttributeProvider owner, AbcFile abc)
         {
             if (_swc == null) return;
-            if (abc.SWF == null) return;
-            int lib = abc.SWF.Index;
+            if (abc.Swf == null) return;
+            int lib = abc.Swf.Index;
             if (lib == 0)
                 DefineAttribute(owner, Attrs.SwcAbcFile, "file", abc.Index);
             else
@@ -2337,7 +2342,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private bool IsCoreAPI
         {
-            get { return _abcFiles.Any(abc => abc.IsCoreAPI); }
+            get { return _abcFiles.Any(abc => abc.IsCore); }
         }
 
         private string NsPrefix

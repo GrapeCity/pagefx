@@ -638,8 +638,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf
                     var t = tag as SwfTagDoAbc;
                     if (t == null) continue;
                     var abc = t.ByteCode;
-                    abc.SWF = this;
-                    abc.SWC = SWC;
+                    abc.Swf = this;
+                    abc.Swc = SWC;
                     if (string.IsNullOrEmpty(abc.Name))
                         abc.Name = "frame" + (_abclist.Count + 1);
                     abc.Index = _abclist.Count;

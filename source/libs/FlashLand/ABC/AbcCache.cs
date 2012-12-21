@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 string fn = instance.FullName;
                 _instanceCache[fn] = instance;
                 if (_checkCoreAPI && !IsCoreAPI && fn == "Object")
-                    abc.IsCoreAPI = IsCoreAPI = true;
+                    abc.IsCore = IsCoreAPI = true;
             }
 
             foreach (var script in abc.Scripts)

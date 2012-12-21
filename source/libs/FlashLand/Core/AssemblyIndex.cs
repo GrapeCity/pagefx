@@ -103,7 +103,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			var data = assembly.CustomData();
 			data.Index = this;
 
-			if ((data.Flags & InternalAssembyFlags.PassedLinker) == 0)
+			if (data.Linker == null)
 			{
 				var linker = new Linker(assembly);
 				linker.TypeLinked += OnTypeLinked;

@@ -16,16 +16,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             stack.Push(root);
             while (stack.Count > 0)
             {
-                var asm = stack.Pop();
-                if (!(excludeRoot && ReferenceEquals(asm, root)))
-                    yield return asm;
-                foreach (var ar in asm.MainModule.References)
+                var assembly = stack.Pop();
+                if (!(excludeRoot && ReferenceEquals(assembly, root)))
+                    yield return assembly;
+                foreach (var item in assembly.MainModule.References.Where(x => !marked.Contains(x)))
                 {
-                    if (!marked.Contains(ar))
-                    {
-                        marked[ar] = ar;
-                        stack.Push(ar);
-                    }
+	                marked[item] = item;
+	                stack.Push(item);
                 }
             }
         }

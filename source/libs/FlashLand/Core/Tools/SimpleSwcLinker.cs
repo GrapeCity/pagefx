@@ -4,7 +4,7 @@ using DataDynamics.PageFX.FlashLand.Swc;
 
 namespace DataDynamics.PageFX.FlashLand.Core.Tools
 {
-    internal class SimpleSwcLinker : ISwcLinker
+    internal sealed class SimpleSwcLinker : ISwcLinker
     {
         public SimpleSwcLinker(IAssembly assembly)
         {
@@ -19,5 +19,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
 
 	    public event EventHandler<TypeEventArgs> TypeLinked;
+
+	    public bool Run()
+	    {
+		    return false;
+	    }
     }
 }

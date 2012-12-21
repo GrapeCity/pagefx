@@ -358,7 +358,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         internal SwcFile Swc
         {
-            get { return Abc != null ? Abc.SWC : null; }
+            get { return Abc != null ? Abc.Swc : null; }
         }
 
         internal bool UseExternalLinking

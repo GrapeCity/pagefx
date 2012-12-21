@@ -32,8 +32,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public bool IsDefined(AbcMultiname name)
         {
             int index = name.Index;
-            if (index < 0 || index >= _multinames.Count) return false;
-            return ReferenceEquals(_multinames[index], name);
+            if (index < 0 || index >= Multinames.Count) return false;
+            return ReferenceEquals(Multinames[index], name);
         }
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public bool IsDefined(AbcMethod method)
         {
             int index = method.Index;
-            if (index < 0 || index >= _methods.Count) return false;
-            return ReferenceEquals(_methods[index], method);
+            if (index < 0 || index >= Methods.Count) return false;
+            return ReferenceEquals(Methods[index], method);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public bool IsDefined(AbcClass klass)
         {
-            return _classes.IsDefined(klass);
+            return Classes.IsDefined(klass);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public bool IsDefined(AbcScript script)
         {
-            return _scripts.IsDefined(script);
+            return Scripts.IsDefined(script);
         }
 
         public bool IsDefined(AbcTrait trait)
@@ -169,7 +169,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public AbcConst<int> DefineInt(int value)
         {
-            return _intPool.Define(value);
+            return IntPool.Define(value);
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public AbcConst<uint> DefineUInt(uint value)
         {
-            return _uintPool.Define(value);
+            return UIntPool.Define(value);
         }
 
         /// <summary>
@@ -189,13 +189,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public AbcConst<double > DefineDouble(double value)
         {
-            return _doublePool.Define(value);
+            return DoublePool.Define(value);
         }
 
         public AbcConst<double> DefineSingle(float value)
         {
             double v = value.ToDoublePrecisely();
-            return _doublePool.Define(v);
+            return DoublePool.Define(v);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             if (value == null)
                 throw new ArgumentNullException("value");
-            return _stringPool.Define(value);
+            return StringPool.Define(value);
         }
 
         public AbcConst<string> EmptyString
@@ -331,10 +331,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public AbcNamespace DefineNamespace(AbcConstKind kind, AbcConst<string> name)
         {
             string key = name.MakeKey(kind);
-            var ns = _nspool[key];
+            var ns = Namespaces[key];
             if (ns != null) return ns;
             ns = new AbcNamespace(name, kind, key);
-            _nspool.Add(ns);
+            Namespaces.Add(ns);
             return ns;
         }
 
@@ -346,7 +346,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public AbcNamespace DefineNamespace(AbcConstKind kind, string name)
         {
-            var c = _stringPool.Define(name);
+            var c = StringPool.Define(name);
             return DefineNamespace(kind, c);
         }
 
@@ -547,20 +547,20 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public AbcNamespaceSet DefineNamespaceSet(params AbcNamespace[] list)
         {
             string key = AbcNamespaceSet.KeyOf(list);
-            var nss = _nssets[key];
+            var nss = NamespaceSets[key];
             if (nss != null) return nss;
             nss = new AbcNamespaceSet(list, key);
-            _nssets.Add(nss);
+            NamespaceSets.Add(nss);
             return nss;
         }
 
     	public AbcMultiname DefineMultiname(AbcConstKind kind, AbcNamespace ns, AbcConst<string> name)
         {
             string key = AbcMultiname.KeyOf(kind, ns, name);
-            var mn = _multinames[key];
+            var mn = Multinames[key];
             if (mn != null) return mn;
             mn = new AbcMultiname(kind, ns, name) {key = key};
-            _multinames.Add(mn);
+            Multinames.Add(mn);
             return mn;
         }
         #endregion
@@ -575,10 +575,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public AbcMultiname DefineMultiname(AbcConstKind kind, AbcNamespaceSet nss, AbcConst<string> name)
         {
             string key = AbcMultiname.KeyOf(kind, nss, name);
-            var mn = _multinames[key];
+            var mn = Multinames[key];
             if (mn != null) return mn;
             mn = new AbcMultiname(kind, nss, name) {key = key};
-            _multinames.Add(mn);
+            Multinames.Add(mn);
             return mn;
         }
 
@@ -591,16 +591,16 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public AbcMultiname DefineMultiname(AbcConstKind kind, AbcNamespaceSet nss)
         {
             string key = AbcMultiname.KeyOf(kind, nss);
-            var mn = _multinames[key];
+            var mn = Multinames[key];
             if (mn != null) return mn;
             mn = new AbcMultiname(kind, nss) {key = key};
-            _multinames.Add(mn);
+            Multinames.Add(mn);
             return mn;
         }
 
         public AbcMultiname DefineMultiname(AbcConstKind kind)
         {
-            return _multinames.Define(kind);
+            return Multinames.Define(kind);
         }
         #endregion
 
@@ -976,7 +976,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public AbcMethod DefineEmptyAbstractMethod()
         {
             var method = new AbcMethod();
-            _methods.Add(method);
+            Methods.Add(method);
             return method;
         }
         #endregion      
@@ -1111,7 +1111,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public void DefineScript(IEnumerable<AbcInstance> instances, Predicate<AbcInstance> filter)
         {
             var script = new AbcScript();
-            _scripts.Add(script);
+            Scripts.Add(script);
             script.DefineClassTraits(instances, filter);
             DefineScriptInit(script);
         }
@@ -1124,7 +1124,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public void DefineEmptyScript()
         {
             var script = new AbcScript {Initializer = DefineEmptyMethod()};
-            _scripts.Add(script);
+            Scripts.Add(script);
         }
 
         public void DefineScripts(IEnumerable<AbcInstance> instances)

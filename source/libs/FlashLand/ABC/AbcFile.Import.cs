@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 throw new ArgumentNullException("from");
             if (from == this)
                 throw new ArgumentException("from == this");
-            if (from.IsCoreAPI)
+            if (from.IsCore)
                 return;
 
             if (from.UseExternalLinking)
@@ -133,13 +133,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             switch (k)
             {
                 case AbcConstKind.String:
-                    return _stringPool;
+                    return StringPool;
                 case AbcConstKind.Int:
-                    return _intPool;
+                    return IntPool;
                 case AbcConstKind.UInt:
-                    return _uintPool;
+                    return UIntPool;
                 case AbcConstKind.Double:
-                    return _doublePool;
+                    return DoublePool;
 
                 case AbcConstKind.QName:
                 case AbcConstKind.Multiname:
@@ -152,7 +152,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.MultinameL:
                 case AbcConstKind.MultinameLA:
                 case AbcConstKind.TypeName:
-                    return _multinames;
+                    return Multinames;
 
                 case AbcConstKind.PrivateNamespace:
                 case AbcConstKind.PublicNamespace:
@@ -161,10 +161,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.ProtectedNamespace:
                 case AbcConstKind.ExplicitNamespace:
                 case AbcConstKind.StaticProtectedNamespace:
-                    return _nspool;
+                    return Namespaces;
 
                 case AbcConstKind.NamespaceSet:
-                    return _nssets;
+                    return NamespaceSets;
 
                 default:
                     return null;
@@ -209,7 +209,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public AbcNamespace ImportConst(AbcNamespace ns)
         {
-            return _nspool.Import(ns);
+            return Namespaces.Import(ns);
         }
 
         /// <summary>
@@ -219,12 +219,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public AbcNamespaceSet ImportConst(AbcNamespaceSet set)
         {
-            return _nssets.Import(set);
+            return NamespaceSets.Import(set);
         }
 
         public AbcMultiname ImportConst(AbcMultiname name)
         {
-            return _multinames.Import(name);
+            return Multinames.Import(name);
         }
 
         public IAbcConst ImportConst(IAbcConst c)
@@ -287,25 +287,25 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     return value;
 
                 case TypeCode.SByte:
-                    return _intPool.Define((sbyte)value);
+                    return IntPool.Define((sbyte)value);
 
                 case TypeCode.Int16:
-                    return _intPool.Define((short)value);
+                    return IntPool.Define((short)value);
 
                 case TypeCode.Int32:
-                    return _intPool.Define((int)value);
+                    return IntPool.Define((int)value);
 
                 case TypeCode.Byte:
-                    return _uintPool.Define((byte)value);
+                    return UIntPool.Define((byte)value);
 
                 case TypeCode.Char:
-                    return _uintPool.Define((char)value);
+                    return UIntPool.Define((char)value);
 
                 case TypeCode.UInt16:
-                    return _uintPool.Define((ushort)value);
+                    return UIntPool.Define((ushort)value);
 
                 case TypeCode.UInt32:
-                    return _uintPool.Define((uint)value);
+                    return UIntPool.Define((uint)value);
 
                 case TypeCode.Int64:
                     throw new NotImplementedException();
@@ -317,7 +317,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     return DefineSingle((float)value);
 
                 case TypeCode.Double:
-                    return _doublePool.Define((double)value);
+                    return DoublePool.Define((double)value);
 
                 case TypeCode.String:
                     return DefineString((string)value);
@@ -355,7 +355,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             ImportParams(method, m);
 
-            _methods.Add(m);
+            Methods.Add(m);
 
             var body = method.Body;
             if (body != null)
@@ -394,7 +394,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             body.LocalCount = from.LocalCount;
             body.MinScopeDepth = from.MinScopeDepth;
             body.MaxScopeDepth = from.MaxScopeDepth;
-            _methodBodies.Add(body);
+            MethodBodies.Add(body);
 
             ImportTraits(from, body);
             ImportExceptions(body, from);
@@ -785,7 +785,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
 
-            instance = _instances[name];
+            instance = Instances[name];
             if (instance != null)
                 return instance;
 
@@ -1000,7 +1000,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (from == null)
                 return null;
 
-            if (_metadata.IsDefined(from))
+            if (Metadata.IsDefined(from))
                 return from;
 
             //NOTE: Ignore some unecessary metadata
@@ -1019,7 +1019,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 e.Items.Add(key, val);
             }
 
-            _metadata.Add(e);
+            Metadata.Add(e);
 
             return e;
         }
@@ -1029,7 +1029,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public void ImportScript(AbcScript from)
         {
             var script = new AbcScript();
-            _scripts.Add(script);
+            Scripts.Add(script);
             script.Initializer = ImportMethod(from.Initializer);
             ImportTraits(from, script);
         }

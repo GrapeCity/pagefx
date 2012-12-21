@@ -10,5 +10,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
 	    object ResolveExternalReference(string id);
 
 	    event EventHandler<TypeEventArgs> TypeLinked;
+
+	    bool Run();
     }
 }

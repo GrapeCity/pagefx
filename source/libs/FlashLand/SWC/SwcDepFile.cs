@@ -360,12 +360,12 @@ namespace DataDynamics.PageFX.FlashLand.Swc
                     {
                         if (instance.Swc == lib.SWC)
                         {
-                            int libIndex = instance.Abc.SWF.Index;
+                            int libIndex = instance.Abc.Swf.Index;
                             int abcIndex = instance.Abc.Index;
                             if (libIndex != lib.Index || abcIndex != abc.Index)
                                 f.AddFileRef(libIndex, abcIndex);
                         }
-                        else if (!instance.Abc.IsCoreAPI)
+                        else if (!instance.Abc.IsCore)
                         {
                             f.AddTypeRef(fullName);
                         }
