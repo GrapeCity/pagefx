@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -14,7 +15,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         private readonly IMethod _method;
         private IType _type;
         private readonly IParameterCollection _parameters;
-		private IMethod[] _implMethods;
+		private IReadOnlyList<IMethod> _impls;
 		private IMethod _baseMethod;
 		private bool _resolveBaseMethod = true;
 	    private ITypeMember _association;
@@ -203,39 +204,30 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return method;
         }
 
-        public IMethod[] ImplementedMethods
+        public IReadOnlyList<IMethod> Implementations
         {
             get
             {
                 if (_method.IsGeneric)
-                    return _method.ImplementedMethods;
+                    return _method.Implementations;
 
-                if (_implMethods == null)
-                {
-                    var impl = _method.ImplementedMethods;
-                    int n;
-                    if (impl != null && (n = impl.Length) > 0)
-                    {
-                        _implMethods = new IMethod[n];
-                        for (int i = 0; i < n; ++i)
-                        {
-                            _implMethods[i] = ResolveMethod(impl[i]);
-                        }
-                    }
-                    else
-                    {
-                        _implMethods = new IMethod[0];
-                    }
-                }
-                return _implMethods;
+	            return _impls ?? (_impls = PopulateImpls().Memoize());
             }
             set 
             { 
                 if (value == null)
                     throw new ArgumentNullException("value");
-                _implMethods = value;
+                _impls = value;
             }
         }
+
+		private IEnumerable<IMethod> PopulateImpls()
+		{
+			var methods = _method.Implementations;
+			return methods == null
+				       ? Enumerable.Empty<IMethod>()
+				       : methods.Select(x => ResolveMethod(x));
+		}
         
         public IMethodBody Body
         {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
@@ -89,60 +88,8 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 					var iface = _loader.GetTypeDefOrRef(ifaceIndex, new Context(_owner));
 					if (iface == null)
 						throw new BadMetadataException();
-					foreach (var ifaceMethod in iface.Methods)
-					{
-						AddImplementedMethod(_owner, ifaceMethod);
-					}
 					return iface;
 				});
-		}
-
-		private static void AddImplementedMethod(IType type, IMethod ifaceMethod)
-		{
-			if (HasExplicitImplementation(type, ifaceMethod))
-				return;
-
-			var method = FindImpl(type, ifaceMethod);
-			if (method == null) return;
-
-			if (method.ImplementedMethods == null)
-			{
-				method.ImplementedMethods = new[] { ifaceMethod };
-				return;
-			}
-
-			if (method.ImplementedMethods.Contains(ifaceMethod))
-				return;
-
-			int n = method.ImplementedMethods.Length;
-			var newArr = new IMethod[n + 1];
-			Array.Copy(method.ImplementedMethods, newArr, n);
-			newArr[n] = ifaceMethod;
-			method.ImplementedMethods = newArr;
-		}
-
-		private static IMethod FindImpl(IType type, IMethod ifaceMethod)
-		{
-			string mname = ifaceMethod.Name;
-			while (type != null)
-			{
-				var candidates = type.Methods.Find(mname);
-				foreach (var method in candidates)
-				{
-					if (method.IsExplicitImplementation) continue;
-					if (Signature.Equals(method, ifaceMethod, true))
-						return method;
-				}
-				type = type.BaseType;
-			}
-			return null;
-		}
-
-		private static bool HasExplicitImplementation(IType type, IMethod ifaceMethod)
-		{
-			return (from method in type.Methods
-			        where method.IsExplicitImplementation
-			        select method.ImplementedMethods).Any(impl => impl != null && impl.Length == 1 && impl[0] == ifaceMethod);
 		}
 	}
 }

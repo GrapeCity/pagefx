@@ -115,10 +115,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         bool IsExplicitImplementation { get; set; }
 
-        /// <summary>
-        /// Gets or sets methods implemented by this method
+		/// <summary>
+        /// Gets or sets methods implemented by this method.
         /// </summary>
-        IMethod[] ImplementedMethods { get; set; }
+        IReadOnlyList<IMethod> Implementations { get; set; }
 
         /// <summary>
         /// Gets or sets method body.

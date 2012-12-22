@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Metadata;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.IL;
@@ -116,6 +119,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			private IType _declType;
 			private ITypeMember _association;
 			private bool _associationResolved;
+			private IReadOnlyList<IMethod> _impls;
 
 			public MetaMethod(AssemblyLoader loader, Method method, MethodSignature signature)
 			{
@@ -142,6 +146,11 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 					_associationResolved = true;
 					return (_association = ResolveAssociation());
 				}
+			}
+
+			public IReadOnlyList<IMethod> Implementations
+			{
+				get { return _impls ?? (_impls = PopulateImpls().Memoize()); }
 			}
 
 			private IType ResolveDeclType()
@@ -221,6 +230,39 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 					default:
 						throw new ArgumentOutOfRangeException();
 				}
+			}
+
+			private IEnumerable<IMethod> PopulateImpls()
+			{
+				var explicitImpl = FindExplicitImpl();
+				if (explicitImpl != null)
+				{
+					return new[] {explicitImpl};
+				}
+
+				var methods = DeclaringType.Interfaces.SelectMany(x => x.Methods);
+				return methods.Where(x => Signature.Equals(_method, x, true));
+			}
+
+			private IMethod FindExplicitImpl()
+			{
+				var declType = DeclaringType;
+				var typeIndex = declType.RowIndex();
+				var rows = _loader.Metadata.LookupRows(TableId.MethodImpl, Schema.MethodImpl.Class, typeIndex, true);
+				foreach (var row in rows)
+				{
+					SimpleIndex bodyIdx = row[Schema.MethodImpl.MethodBody].Value;
+					var body = _loader.GetMethodDefOrRef(bodyIdx, new Context(declType));
+					if (body == _method)
+					{
+						SimpleIndex declIdx = row[Schema.MethodImpl.MethodDeclaration].Value;
+						var decl = _loader.GetMethodDefOrRef(declIdx, new Context(declType, body));
+						body.IsExplicitImplementation = true;
+						return decl;
+					}
+				}
+
+				return null;
 			}
 		}
 

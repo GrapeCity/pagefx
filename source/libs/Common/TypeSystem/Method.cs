@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Metadata;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -15,6 +17,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		private IParameterCollection _parameters;
 		private readonly CustomAttributeCollection _returnAttrs = new CustomAttributeCollection();
 		private ITypeMember _association;
+	    private IReadOnlyList<IMethod> _impls;
 
         /// <summary>
         /// Gets the kind of this member.
@@ -279,16 +282,27 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public bool IsExplicitImplementation
         {
-            get { return GetModifier(Modifiers.ExplicitImplementation); }
+            get { return Implementations.Count == 1 && GetModifier(Modifiers.ExplicitImplementation); }
             set { SetModifier(value, Modifiers.ExplicitImplementation); }
         }
 
-        /// <summary>
-        /// Gets or sets abstract methods implemented by this method
-        /// </summary>
-        public IMethod[] ImplementedMethods { get; set; }
+	    /// <summary>
+	    /// Gets or sets abstract methods implemented by this method
+	    /// </summary>
+	    public IReadOnlyList<IMethod> Implementations
+	    {
+			get { return _impls ?? (_impls = ResolveImpls()); }
+		    set { _impls = value; }
+	    }
 
-        public IMethodBody Body { get; set; }
+	    private IReadOnlyList<IMethod> ResolveImpls()
+	    {
+		    return Meta != null
+			           ? Meta.Implementations
+			           : Enumerable.Empty<IMethod>().AsReadOnlyList();
+	    }
+
+	    public IMethodBody Body { get; set; }
 
         /// <summary>
         /// Gets or sets documentation for return value.
@@ -373,5 +387,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		IType DeclaringType { get; }
 
 		ITypeMember Association { get; }
+
+		IReadOnlyList<IMethod> Implementations { get; }
 	}
 }

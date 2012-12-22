@@ -52,8 +52,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 if (mn != null) return mn;
             }
 
-            var impls = method.ImplementedMethods;
-            if (impls != null && impls.Length == 1)
+            var impls = method.Implementations;
+            if (impls != null && impls.Count == 1)
             {
                 var impl = impls[0];
                 if (impl != null)
@@ -245,12 +245,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         /// <returns></returns>
         private AbcMethod DefineMethodCore(IMethod method)
         {
+	        var abcMethod = method.Data as AbcMethod;
+			if (abcMethod != null)
+			{
+				throw new InvalidOperationException();
+			}
+
             var declType = method.DeclaringType;
             var instance = declType.Data as AbcInstance;
             if (instance == null)
                 throw new InvalidOperationException();
 
-            var abcMethod = new AbcMethod(method);
+            abcMethod = new AbcMethod(method);
 
 	        SetData(method, abcMethod);
 
@@ -350,9 +356,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #region DefineImplementedMethods
         private void DefineImplementedMethods(IMethod method, AbcInstance instance, AbcMethod abcMethod)
         {
-            var impls = method.ImplementedMethods;
+            var impls = method.Implementations;
             if (impls == null) return;
-            int n = impls.Length;
+            int n = impls.Count;
             if (n <= 0) return;
 
             //NOTE: To avoid conflict with name of explicit implementation method has the same name as iface method
@@ -441,8 +447,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private AbcMethod GetBaseMethod(AbcMethod am, IMethod m)
         {
-            var impls = m.ImplementedMethods;
-            if (impls != null && impls.Length == 1)
+            var impls = m.Implementations;
+            if (impls != null && impls.Count == 1)
                 return DefineAbcMethod(impls[0]);
 
             var bm = m.BaseMethod;
@@ -506,7 +512,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 bm = bm.BaseMethod;
             }
 
-            var impls = method.ImplementedMethods;
+            var impls = method.Implementations;
             if (impls != null)
             {
                 foreach (var impl in impls)

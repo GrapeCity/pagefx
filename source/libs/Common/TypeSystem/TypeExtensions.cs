@@ -828,8 +828,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		    while (type != null)
 		    {
 				var impl = (from candidate in type.Methods
-			                where candidate.ImplementedMethods != null &&
-			                      candidate.ImplementedMethods.Any(x => x == method || x.ProxyOf == method)
+			                where candidate.Implementations != null &&
+			                      candidate.Implementations.Any(x => x == method || x.ProxyOf == method)
 			                select candidate).FirstOrDefault();
 			    if (impl != null)
 			    {

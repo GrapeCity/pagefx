@@ -218,9 +218,9 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 		{
 			if (method.IsExplicitImplementation) return;
 
-			var impls = method.ImplementedMethods;
+			var impls = method.Implementations;
 			if (impls == null) return;
-			if (impls.Length <= 0) return;
+			if (impls.Count <= 0) return;
 
 			var type = method.DeclaringType.JsFullName(method);
 			var name = method.JsName();
@@ -1201,8 +1201,8 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			if (method.IsStatic || method.IsAbstract || method.IsConstructor)
 				return false;
 
-			if (method.ImplementedMethods != null
-				&& method.ImplementedMethods.Any(x => x.Data != null))
+			if (method.Implementations != null
+				&& method.Implementations.Any(x => x.Data != null))
 			{
 				return true;
 			}

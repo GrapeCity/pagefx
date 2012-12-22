@@ -203,8 +203,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 			type.Interfaces = new InterfaceImpl(Loader, type);
 
-			LoadMethodImpl(type, index);
-
 			return type;
 		}
 
@@ -348,24 +346,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			}
 
 			return from == to ? null : new[] { from, to };
-		}
-
-		private void LoadMethodImpl(IType type, int typeIndex)
-		{
-			//TODO: try to do lazy loading
-			var rows = Metadata.LookupRows(TableId.MethodImpl, Schema.MethodImpl.Class, typeIndex, true);
-			foreach (var row in rows)
-			{
-				SimpleIndex bodyIdx = row[Schema.MethodImpl.MethodBody].Value;
-				SimpleIndex declIdx = row[Schema.MethodImpl.MethodDeclaration].Value;
-
-				var body = Loader.GetMethodDefOrRef(bodyIdx, new Context(type));
-
-				var decl = Loader.GetMethodDefOrRef(declIdx, new Context(type, body));
-
-				body.ImplementedMethods = new[] { decl };
-				body.IsExplicitImplementation = true;
-			}
 		}
 
 		private static UserDefinedType CreateType(TypeKind kind, IList<IGenericParameter> genericParameters)
