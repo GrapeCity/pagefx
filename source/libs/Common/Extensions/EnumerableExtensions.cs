@@ -192,6 +192,11 @@ namespace DataDynamics.PageFX.Common.Extensions
 
 		public static bool EqualsTo<T>(this IEnumerable<T> x, IEnumerable<T> y)
 		{
+			return EqualsTo(x, y, null);
+		}
+
+		public static bool EqualsTo<T>(this IEnumerable<T> x, IEnumerable<T> y, Func<T,T,bool> equals)
+		{
 			if (x == null)
 				return y.IsEmpty();
 			if (y == null)
@@ -207,6 +212,9 @@ namespace DataDynamics.PageFX.Common.Extensions
 			if (l1 != null && l2 != null && l1.Count != l2.Count)
 				return false;
 
+			if (equals == null)
+				equals = (a, b) => Equals(a, b);
+
 			var it1 = x.GetEnumerator();
 			var it2 = y.GetEnumerator();
 			while (true)
@@ -215,7 +223,7 @@ namespace DataDynamics.PageFX.Common.Extensions
 				var f2 = it2.MoveNext();
 				if (f1 && f2)
 				{
-					if (!Equals(it1.Current, it2.Current))
+					if (!equals(it1.Current, it2.Current))
 						return false;
 				}
 				else

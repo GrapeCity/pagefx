@@ -9,6 +9,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 		private readonly AssemblyLoader _loader;
 		private readonly TypeSignature _signature;
 		private readonly Context _context;
+		private IType _type;
 
 		public LazyType(AssemblyLoader loader, TypeSignature signature, Context context)
 		{
@@ -17,7 +18,12 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			_context = context;
 		}
 
-		public IType ResolveType()
+		public IType Value
+		{
+			get { return _type ?? (_type = ResolveType()); }
+		}
+
+		private IType ResolveType()
 		{
 			var type = _loader.ResolveType(_signature, _context);
 			if (type == null)

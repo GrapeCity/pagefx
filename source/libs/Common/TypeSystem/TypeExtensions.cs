@@ -781,7 +781,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			    {
 				    if (m.IsGeneric) continue;
 			    }
-			    if (Signature.Equals(m, method, compareReturnTypes, false))
+			    if (Signature.Equals(m, method, compareReturnTypes))
 				    yield return m;
 		    }
 	    }
@@ -827,7 +827,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		    while (type != null)
 		    {
-			    var impl = (from candidate in type.Methods
+				var impl = (from candidate in type.Methods
 			                where candidate.ImplementedMethods != null &&
 			                      candidate.ImplementedMethods.Any(x => x == method || x.ProxyOf == method)
 			                select candidate).FirstOrDefault();

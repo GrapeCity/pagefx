@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
@@ -89,7 +90,9 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 					if (iface == null)
 						throw new BadMetadataException();
 					foreach (var ifaceMethod in iface.Methods)
+					{
 						AddImplementedMethod(_owner, ifaceMethod);
+					}
 					return iface;
 				});
 		}
@@ -127,7 +130,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 				foreach (var method in candidates)
 				{
 					if (method.IsExplicitImplementation) continue;
-					if (Signature.Equals(method, ifaceMethod, true, false))
+					if (Signature.Equals(method, ifaceMethod, true))
 						return method;
 				}
 				type = type.BaseType;

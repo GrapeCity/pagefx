@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using DataDynamics.PageFX.Common.Collections;
+using System.Linq;
+using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -46,34 +47,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                     return false;
             }
 
-            return true;
-        }
-
-        public static bool Equals(IType[] sig1, IType[] sig2)
-        {
-            int n = sig1.Length;
-            if (n != sig2.Length) return false;
-            for (int i = 0; i < n; ++i)
-            {
-                var t1 = sig1[i];
-                var t2 = sig2[i];
-                if (!TypeEquals(t1, t2))
-                    return false;
-            }
-            return true;
-        }
-
-        public static bool Equals(IReadOnlyList<IType> sig1, IReadOnlyList<IType> sig2)
-        {
-            int n = sig1.Count;
-            if (n != sig2.Count) return false;
-            for (int i = 0; i < n; ++i)
-            {
-                var t1 = sig1[i];
-                var t2 = sig2[i];
-                if (!TypeEquals(t1, t2))
-                    return false;
-            }
             return true;
         }
 
@@ -144,31 +117,22 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return ReferenceEquals(type1, type2);
         }
 
-        public static bool Equals(IMethod m1, IMethod m2, bool checkReturnTypes, bool checkNames)
+        public static bool Equals(IMethod m1, IMethod m2, bool checkReturnTypes)
         {
             if (m1.Parameters.Count != m2.Parameters.Count) return false;
-            if (checkNames && m1.Name != m2.Name) return false;
+            if (m1.Name != m2.Name) return false;
             if (checkReturnTypes && !TypeEquals(m1.Type, m2.Type)) return false;
             return Equals(m1.Parameters, m2.Parameters);
         }
 
-        public static bool Equals(IMethod m1, IMethod m2, bool checkReturnTypes)
-        {
-            return Equals(m1, m2, checkReturnTypes, true);
-        }
+		public static bool Equals(IEnumerable<IType> sig1, IEnumerable<IType> sig2)
+		{
+			return sig1.EqualsTo(sig2, (x, y) => TypeEquals(x, y));
+		}
 
         public static bool Equals(IParameterCollection list1, IParameterCollection list2)
         {
-            int n = list1.Count;
-            if (list2.Count != n) return false;
-            for (int i = 0; i < n; ++i)
-            {
-                var t1 = list1[i].Type;
-                var t2 = list2[i].Type;
-                if (!TypeEquals(t1, t2))
-                    return false;
-            }
-            return true;
+	        return list1.EqualsTo(list2, (x, y) => TypeEquals(x.Type, y.Type));
         }
 
         public static bool Equals(IParameterCollection list, params IType[] types)
@@ -180,15 +144,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             if (n != types.Length)
                 return false;
 
-            for (int i = 0; i < n; ++i)
-            {
-                var t1 = list[i].Type;
-                var t2 = types[i];
-                if (!TypeEquals(t1, t2))
-                    return false;
-            }
-
-            return true;
+	        return list.Select(x => x.Type).EqualsTo(types, (x, y) => TypeEquals(x, y));
         }
 
         public static bool Equals(IMethod method, params IType[] types)

@@ -121,7 +121,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 		private sealed class TypedParameter : IParameter
 		{
 			private readonly IParameter _parameter;
-			private LazyType _type;
+			private readonly LazyType _type;
 
 			public TypedParameter(IParameter parameter, LazyType type)
 			{
@@ -182,15 +182,8 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
 
 			public IType Type
 			{
-				get { return _parameter.Type ?? (_parameter.Type = ResolveType()); }
-				set { _parameter.Type = value; }
-			}
-
-			private IType ResolveType()
-			{
-				var type = _type.ResolveType();
-				_type = null;
-				return type;
+				get { return _type.Value; }
+				set { throw new NotSupportedException(); }
 			}
 
 			public bool IsIn
