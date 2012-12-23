@@ -486,7 +486,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             var res = _assembly.FindType(fullname);
             if (res != null) return res;
 
-        	var type = new UserDefinedType
+        	var type = new TypeImpl
         	           	{
         	           		Namespace = ns,
         	           		Name = name,
@@ -816,7 +816,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 return null;
             }
 
-            var type = new UserDefinedType();
+            var type = new TypeImpl();
             bool isInterface = instance.IsInterface;
             type.TypeKind = isInterface ? TypeKind.Interface : TypeKind.Class;
 
@@ -1075,7 +1075,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             if (handlerType != null)
                 return handlerType;
 
-            var type = new UserDefinedType
+            var type = new TypeImpl
                            {
                                TypeKind = TypeKind.Delegate,
                                Visibility = Visibility.Public,

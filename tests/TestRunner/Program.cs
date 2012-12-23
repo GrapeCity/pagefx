@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.Ecma335;
-using DataDynamics.PageFX.Ecma335.Metadata;
 using DataDynamics.PageFX.Ecma335.Tools;
 using DataDynamics.PageFX.FlashLand;
 using DataDynamics.PageFX.FlashLand.Swf;
@@ -223,21 +222,6 @@ namespace DataDynamics.PageFX.TestRunner
         }
         #endregion
 
-        #region DumpMdbTableIds
-        static void DumpMdbTableIds()
-        {
-			var vals = (TableId[])Enum.GetValues(typeof(TableId));
-            using (var writer = new StreamWriter("c:\\pfx.mdbtables"))
-            {
-                foreach (var o in vals)
-                {
-					int v = ((IConvertible)o).ToInt32(null);
-                    writer.WriteLine("{0} - {1} (0x{1:X2})", o, v);
-                }
-            }
-        }
-        #endregion
-
         #region Main
         static void Tests()
         {
@@ -265,7 +249,6 @@ namespace DataDynamics.PageFX.TestRunner
             }
 
             Tests();
-            //DumpMdbTableIds();
 
             //NOTE: This flag is used to optimize loading of QAForm.
             //QA.LoadNUnitTests = false;

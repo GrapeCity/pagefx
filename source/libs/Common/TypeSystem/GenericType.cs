@@ -6,7 +6,7 @@ using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public class GenericType : UserDefinedType, IGenericType
+    public class GenericType : TypeImpl, IGenericType
     {
     	IGenericParameterCollection IGenericType.GenericParameters
     	{

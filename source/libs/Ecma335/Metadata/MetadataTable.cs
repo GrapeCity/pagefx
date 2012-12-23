@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
     /// <summary>
     /// Represents metadata table.
     /// </summary>
-    public sealed class MetadataTable
+    internal sealed class MetadataTable
     {
 	    /// <summary>
     	/// Gets the table id.
@@ -58,11 +58,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
         /// </summary>
         internal MetadataRow[] Rows { get; set; }
 
-		// Lookup by reference key
-		internal Dictionary<int, IList<int>> Lookup = new Dictionary<int, IList<int>>();
-	    internal int LastLookupRowIndex;
-
-    	internal MetadataTable(TableId id, params MetadataColumn[] columns)
+		internal MetadataTable(TableId id, params MetadataColumn[] columns)
         {
     		Columns = new MetadataColumnCollection();
     		Id = id;
@@ -79,5 +75,34 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
             return string.Format("Table({0}, Rows = {1}, Size = {2}, RowSize = {3})",
                                  Name, RowCount, Size, RowSize);
         }
+
+		private readonly Dictionary<int, Lookup> _lookups = new Dictionary<int, Lookup>();
+
+		public Lookup GetLookup(MetadataColumn column)
+		{
+			Lookup lookup;
+			if (!_lookups.TryGetValue(column.Index, out lookup))
+			{
+				lookup = new Lookup();
+				_lookups.Add(column.Index, lookup);
+			}
+			return lookup;
+		}
     }
+
+	internal sealed class Lookup
+	{
+		private readonly Dictionary<int, IList<int>> _lookup = new Dictionary<int, IList<int>>();
+		internal int LastIndex;
+
+		public bool TryGetValue(int key, out IList<int> list)
+		{
+			return _lookup.TryGetValue(key, out list);
+		}
+
+		public void Add(int key, IList<int> list)
+		{
+			_lookup.Add(key, list);
+		}
+	}
 }

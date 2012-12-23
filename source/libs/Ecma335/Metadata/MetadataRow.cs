@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
     /// <summary>
     /// Represents row in metadata table.
     /// </summary>
-    public sealed class MetadataRow
+    internal sealed class MetadataRow
     {
 	    /// <summary>
 	    /// Gets the index of this row.

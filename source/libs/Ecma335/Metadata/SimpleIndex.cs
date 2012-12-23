@@ -2,7 +2,7 @@ using System;
 
 namespace DataDynamics.PageFX.Ecma335.Metadata
 {
-    public struct SimpleIndex : IEquatable<SimpleIndex>
+    internal struct SimpleIndex : IEquatable<SimpleIndex>
     {
         private uint _value;
         

@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 	/// <summary>
     /// Metadata reader.
     /// </summary>
-    public sealed class MetadataReader : IDisposable
+    internal sealed class MetadataReader : IDisposable
     {
 	    private readonly BufferedBinaryReader _reader;
 		private readonly Image _image = new Image();
@@ -603,35 +603,33 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 			if (table == null)
 				return Enumerable.Empty<MetadataRow>();
 
+			var lookup = table.GetLookup(column);
+
 			IList<int> list;
-			if (table.Lookup.TryGetValue(target, out list))
+			var rowCount = GetRowCount(tableId);
+			while (lookup.LastIndex < rowCount)
 			{
-				return GetRows(tableId, list);
+				var row = GetRow(tableId, lookup.LastIndex);
+				int key = simple ? row[column].Index - 1 : (int)((SimpleIndex)row[column].Value);
+
+				if (!lookup.TryGetValue(key, out list))
+				{
+					list = new List<int> {lookup.LastIndex};
+					lookup.Add(key, list);
+				}
+
+				for (lookup.LastIndex++; lookup.LastIndex < rowCount; lookup.LastIndex++)
+				{
+					row = GetRow(tableId, lookup.LastIndex);
+					int key2 = simple ? row[column].Index - 1 : (int)((SimpleIndex)row[column].Value);
+					if (key != key2) break;
+					list.Add(lookup.LastIndex);
+				}
 			}
 
-			var rowCount = GetRowCount(tableId);
-			while (table.LastLookupRowIndex < rowCount)
+			if (lookup.TryGetValue(target, out list))
 			{
-				var row = GetRow(tableId, table.LastLookupRowIndex);
-				int index = simple ? row[column].Index - 1 : (int)((SimpleIndex)row[column].Value);
-
-				list = new List<int> {table.LastLookupRowIndex};
-
-				for (table.LastLookupRowIndex++; table.LastLookupRowIndex < rowCount; table.LastLookupRowIndex++)
-				{
-					row = GetRow(tableId, table.LastLookupRowIndex);
-					int nextIndex = simple ? row[column].Index - 1 : (int)((SimpleIndex)row[column].Value);
-					if (index != nextIndex) break;
-
-					list.Add(table.LastLookupRowIndex);
-				}
-
-				table.Lookup.Add(index, list);
-
-				if (index == target)
-				{
-					return GetRows(tableId, list);
-				}
+				return GetRows(tableId, list);
 			}
 
 			return Enumerable.Empty<MetadataRow>();
@@ -648,32 +646,34 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 			if (table == null)
 				return null;
 
+			var lookup = table.GetLookup(column);
+
 			IList<int> list;
-			if (table.Lookup.TryGetValue(target, out list))
+			if (lookup.TryGetValue(target, out list))
 			{
 				return GetRow(tableId, list[0]);
 			}
 
 			var rowCount = GetRowCount(tableId);
-			for (; table.LastLookupRowIndex < rowCount; table.LastLookupRowIndex++)
+			for (; lookup.LastIndex < rowCount; lookup.LastIndex++)
 			{
-				var row = GetRow(tableId, table.LastLookupRowIndex);
+				var row = GetRow(tableId, lookup.LastIndex);
 				int index = simple ? row[column].Index - 1 : (int)((SimpleIndex)row[column].Value);
 
 				if (index == target)
 				{
-					table.Lookup.Add(target, new List<int> { table.LastLookupRowIndex });
-					table.LastLookupRowIndex++;
+					lookup.Add(target, new List<int> { lookup.LastIndex });
+					lookup.LastIndex++;
 					return row;
 				}
 
-				if (!table.Lookup.TryGetValue(index, out list))
+				if (!lookup.TryGetValue(index, out list))
 				{
 					list = new List<int>();
-					table.Lookup.Add(index, list);
+					lookup.Add(index, list);
 				}
 
-				list.Add(table.LastLookupRowIndex);
+				list.Add(lookup.LastIndex);
 			}
 
 			return null;

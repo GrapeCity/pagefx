@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 	/// <summary>
     /// Represents metadata table Column.
     /// </summary>
-    public sealed class MetadataColumn : ICloneable
+    internal sealed class MetadataColumn : ICloneable
     {
 		/// <summary>
 		/// Gets the table id of this column.
@@ -139,7 +139,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 	/// <summary>
     /// List of <see cref="MetadataColumn"/>s.
     /// </summary>
-    public sealed class MetadataColumnCollection : IReadOnlyList<MetadataColumn>
+    internal sealed class MetadataColumnCollection : IReadOnlyList<MetadataColumn>
     {
         private readonly Hashtable _hash = new Hashtable();
         private readonly List<MetadataColumn> _list = new List<MetadataColumn>();

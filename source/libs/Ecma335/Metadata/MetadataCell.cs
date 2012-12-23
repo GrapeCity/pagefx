@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
     /// <summary>
     /// Represents cell in metadata table.
     /// </summary>
-    public struct MetadataCell
+    internal struct MetadataCell
     {
 	    internal MetadataCell(MetadataColumn column, uint value) : this()
         {

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -10,14 +9,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// <summary>
     /// Represents base class for user-defined types.
     /// </summary>
-    public class UserDefinedType : TypeMember, IType
+    public class TypeImpl : TypeMember, IType
     {
-	    public UserDefinedType()
+	    public TypeImpl()
         {
             _members = new TypeMemberCollection(this);
         }
 
-        public UserDefinedType(TypeKind kind) : this()
+        public TypeImpl(TypeKind kind) : this()
         {
             TypeKind = kind;
         }
@@ -161,7 +160,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
 
         /// <summary>
-        /// Gets a <see cref="IMethod"/> that represents the declaring method, if the current <see cref="UserDefinedType"/> represents a type parameter of a generic method.
+        /// Gets a <see cref="IMethod"/> that represents the declaring method, if the current <see cref="TypeImpl"/> represents a type parameter of a generic method.
         /// </summary>
         public IMethod DeclaringMethod { get; set; }
 
@@ -242,18 +241,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public string SourceCode { get; set; }
         #endregion
 
-        #region ITypeContainer Members
-        /// <summary>
+	    /// <summary>
         /// Get all nested types.
         /// </summary>
         public ITypeCollection Types
         {
             get { return _types ?? (_types = new TypeCollection(this)); }
+			set { _types = value; }
         }
-        private TypeCollection _types;
-        #endregion
+        private ITypeCollection _types;
 
-        #region IFormattable Members
+	    #region IFormattable Members
         public override string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);

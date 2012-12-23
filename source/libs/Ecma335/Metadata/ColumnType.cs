@@ -3,7 +3,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 	/// <summary>
 	/// Enumerates MDB column types.
 	/// </summary>
-	public enum ColumnType
+	internal enum ColumnType
 	{
 		/// <summary>
 		/// 4 byte constant.

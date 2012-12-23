@@ -19,12 +19,16 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 		protected override IType ParseRow(MetadataRow row, int index)
 		{
-			SimpleIndex scope = row[Schema.TypeRef.ResolutionScope].Value;
+			SimpleIndex scopeIdx = row[Schema.TypeRef.ResolutionScope].Value;
 			var name = row[Schema.TypeRef.TypeName].String;
 			var ns = row[Schema.TypeRef.TypeNamespace].String;
 			var fullname = QName(ns, name);
 
-			var type = FindType(scope, fullname);
+			var scope = GetTypeContainer(scopeIdx);
+			if (scope == null)
+				throw new BadMetadataException();
+
+			var type = scope.Types.FindType(fullname);
 
 			if (type == null)
 			{
@@ -33,7 +37,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				if (DebugHooks.BreakInvalidTypeReference)
 				{
 					Debugger.Break();
-					FindType(scope, fullname);
+					scope.Types.FindType(fullname);
 				}
 #endif
 				throw new BadMetadataException(string.Format("Unable to resolve type reference {0}", fullname));
@@ -46,14 +50,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 		{
 			if (string.IsNullOrEmpty(ns)) return name;
 			return ns + "." + name;
-		}
-
-		private IType FindType(SimpleIndex scope, string fullname)
-		{
-			var c = GetTypeContainer(scope);
-			if (c != null)
-				return c.Types.FindType(fullname);
-			return null;
 		}
 
 		private ITypeContainer GetTypeContainer(SimpleIndex idx)

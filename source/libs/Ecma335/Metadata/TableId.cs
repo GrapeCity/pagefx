@@ -3,7 +3,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 	/// <summary>
 	/// Defines metadata table codes.
 	/// </summary>
-	public enum TableId
+	internal enum TableId
 	{
 		/// <summary>
 		/// Identifies Assembly MDB Table (0, 0x00)

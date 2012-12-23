@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 	/// <summary>
 	/// Contains MDB Table Schemas
 	/// </summary>
-	public static class Schema
+	internal static class Schema
 	{
 		#region CreateTable
 		internal static MetadataTable CreateTable(TableId id)

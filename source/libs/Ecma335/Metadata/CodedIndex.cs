@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
     /// <summary>
     /// Contains info about coded index.
     /// </summary>
-    public class CodedIndex
+    internal sealed class CodedIndex
     {
         public static readonly CodedIndex CustomAttributeType =
             new CodedIndex("CustomAttributeType", 3,

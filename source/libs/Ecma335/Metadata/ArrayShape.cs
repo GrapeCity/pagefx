@@ -3,7 +3,7 @@ using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.Ecma335.Metadata
 {
-	public sealed class ArrayShape
+	internal sealed class ArrayShape
 	{
 		public int Rank;
 		public int[] Sizes;

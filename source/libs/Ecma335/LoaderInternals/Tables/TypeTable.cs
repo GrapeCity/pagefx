@@ -188,7 +188,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			if (declType != null)
 			{
 				type.DeclaringType = declType;
-				declType.Types.Add(type);
 			}
 			else
 			{
@@ -202,6 +201,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			SetBaseType(row, type);
 
 			type.Interfaces = new InterfaceImpl(Loader, type);
+			type.Types = new NestedTypeList(Loader, type);
 
 			return type;
 		}
@@ -215,7 +215,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			var baseType = Loader.GetTypeDefOrRef(baseIndex, new Context(type));
 			type.BaseType = baseType;
 
-			var thisType = type as UserDefinedType;
+			var thisType = type as TypeImpl;
 			if (thisType == null || thisType.TypeKind == TypeKind.Primitive) return;
 
 			TypeKind kind;
@@ -348,7 +348,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			return from == to ? null : new[] { from, to };
 		}
 
-		private static UserDefinedType CreateType(TypeKind kind, IList<IGenericParameter> genericParameters)
+		private static TypeImpl CreateType(TypeKind kind, IList<IGenericParameter> genericParameters)
 		{
 			if (genericParameters != null && genericParameters.Any())
 			{
@@ -360,7 +360,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				}
 				return type;
 			}
-			return new UserDefinedType(kind);
+			return new TypeImpl(kind);
 		}
 
 		private static void SetTypeFlags(IType type, TypeAttributes flags)
