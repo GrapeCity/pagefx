@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Metadata;
@@ -234,14 +235,33 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 			private IEnumerable<IMethod> PopulateImpls()
 			{
+				var declType = DeclaringType;
+				if (declType.IsInterface)
+					return Enumerable.Empty<IMethod>();
+				
 				var explicitImpl = FindExplicitImpl();
 				if (explicitImpl != null)
 				{
 					return new[] {explicitImpl};
 				}
 
-				var methods = DeclaringType.Interfaces.SelectMany(x => x.Methods);
-				return methods.Where(x => Signature.Equals(_method, x, true));
+				var methods = declType.Interfaces.SelectMany(x => x.Methods);
+				return methods
+					.Where(x => Signature.Equals(_method, x, true))
+					.Where(x => !HasExplicitImpl(x));
+			}
+
+			private bool HasExplicitImpl(IMethod ifaceMethod)
+			{
+				if (ifaceMethod.Name == "get_ApplicationParameters")
+				{
+					Debugger.Break();
+				}
+
+				var declType = DeclaringType;
+				var methods = declType.Methods.Find(ifaceMethod.Name);
+				return methods.Where(x => x != _method)
+				              .Any(x => x.IsExplicitImplementation && x.Implementations[0] == ifaceMethod);
 			}
 
 			private IMethod FindExplicitImpl()
@@ -249,6 +269,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				var declType = DeclaringType;
 				var typeIndex = declType.RowIndex();
 				var rows = _loader.Metadata.LookupRows(TableId.MethodImpl, Schema.MethodImpl.Class, typeIndex, true);
+
 				foreach (var row in rows)
 				{
 					SimpleIndex bodyIdx = row[Schema.MethodImpl.MethodBody].Value;

@@ -102,8 +102,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 	        SetData(method, abcMethod);
 
-            Abc.Methods.Add(abcMethod);
-
             var trait = DefineMethodTrait(abcMethod, method);
             instance.AddTrait(trait, method.IsStatic);
 
@@ -111,7 +109,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             DefineParameters(abcMethod, method);
 
             var body = new AbcMethodBody(abcMethod);
-            Abc.MethodBodies.Add(body);
+	        abcMethod.Body = body;
+
+            AddMethod(abcMethod);
             
             return abcMethod;
         }

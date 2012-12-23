@@ -270,6 +270,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private void EnsureMethod(IMethod method)
         {
+			if (method == _method) return;
+
             _generator.DefineMethod(method);
         }
 

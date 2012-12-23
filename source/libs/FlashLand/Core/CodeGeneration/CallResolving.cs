@@ -171,8 +171,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var trait = DefineMethodTrait(abcMethod, method);
             instance.AddTrait(trait, method.IsStatic);
-            abcMethod.Trait = trait;
-            abcMethod.Name = trait.Name.Name;
             abcMethod.ReturnType = DefineReturnType(method.Type);
             DefineParameters(abcMethod, method);
 

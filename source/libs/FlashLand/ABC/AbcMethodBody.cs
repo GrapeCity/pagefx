@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Represents body of ABC method.
     /// </summary>
-    public class AbcMethodBody : ISwfAtom, ISupportXmlDump, IAbcTraitProvider
+    public sealed class AbcMethodBody : ISwfAtom, ISupportXmlDump, IAbcTraitProvider
     {
         #region Constructors
         public AbcMethodBody()
@@ -68,43 +68,23 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
         }
-        AbcMethod _method;
+        private AbcMethod _method;
 
-        /// <summary>
-        /// Max capacity of evaluation stack.
-        /// </summary>
-        public int MaxStackDepth
-        {
-            get { return _maxStackDepth; }
-            set { _maxStackDepth = value; }
-        }
-        int _maxStackDepth;
+	    /// <summary>
+	    /// Max capacity of evaluation stack.
+	    /// </summary>
+	    public int MaxStackDepth { get; set; }
 
-        /// <summary>
-        /// Number of local registers (this + arguments + local vars)
-        /// </summary>
-        public int LocalCount
-        {
-            get { return _localCount; }
-            set { _localCount = value; }
-        }
-        int _localCount;
+	    /// <summary>
+	    /// Number of local registers (this + arguments + local vars)
+	    /// </summary>
+	    public int LocalCount { get; set; }
 
-        public int MinScopeDepth
-        {
-            get { return _minScopeDepth; }
-            set { _minScopeDepth = value; }
-        }
-        int _minScopeDepth;
+	    public int MinScopeDepth { get; set; }
 
-        public int MaxScopeDepth
-        {
-            get { return _maxScopeDepth; }
-            set { _maxScopeDepth = value; }
-        }
-        int _maxScopeDepth;
+	    public int MaxScopeDepth { get; set; }
 
-        /// <summary>
+	    /// <summary>
         /// IL code
         /// </summary>
         public ILStream IL
@@ -117,7 +97,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get { return _exceptions; }
         }
-        readonly AbcExceptionHandlerCollection _exceptions = new AbcExceptionHandlerCollection();
+        private readonly AbcExceptionHandlerCollection _exceptions = new AbcExceptionHandlerCollection();
 
         /// <summary>
         /// Activation traits.
@@ -143,10 +123,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             _method = reader.ReadAbcMethod();
             _method.Body = this;
 
-            _maxStackDepth = (int)reader.ReadUIntEncoded();
-            _localCount = (int)reader.ReadUIntEncoded();
-            _minScopeDepth = (int)reader.ReadUIntEncoded();
-            _maxScopeDepth = (int)reader.ReadUIntEncoded();
+            MaxStackDepth = (int)reader.ReadUIntEncoded();
+            LocalCount = (int)reader.ReadUIntEncoded();
+            MinScopeDepth = (int)reader.ReadUIntEncoded();
+            MaxScopeDepth = (int)reader.ReadUIntEncoded();
 
             int len = (int)reader.ReadUIntEncoded();
             _beginCode = (int)reader.Position;
@@ -169,10 +149,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public void Write(SwfWriter writer)
         {
             writer.WriteUIntEncoded((uint)_method.Index);
-            writer.WriteUIntEncoded((uint)_maxStackDepth);
-            writer.WriteUIntEncoded((uint)_localCount);
-            writer.WriteUIntEncoded((uint)_minScopeDepth);
-            writer.WriteUIntEncoded((uint)_maxScopeDepth);
+            writer.WriteUIntEncoded((uint)MaxStackDepth);
+            writer.WriteUIntEncoded((uint)LocalCount);
+            writer.WriteUIntEncoded((uint)MinScopeDepth);
+            writer.WriteUIntEncoded((uint)MaxScopeDepth);
 
             if (_il != null)
             {
@@ -216,10 +196,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("method-body");
-            writer.WriteElementString("max-stack", _maxStackDepth.ToString());
-            writer.WriteElementString("local-count", _localCount.ToString());
-            writer.WriteElementString("min-scope-depth", _minScopeDepth.ToString());
-            writer.WriteElementString("max-scope-depth", _maxScopeDepth.ToString());
+            writer.WriteElementString("max-stack", MaxStackDepth.ToString());
+            writer.WriteElementString("local-count", LocalCount.ToString());
+            writer.WriteElementString("min-scope-depth", MinScopeDepth.ToString());
+            writer.WriteElementString("max-scope-depth", MaxScopeDepth.ToString());
 
             _exceptions.DumpXml(writer);
             _traits.DumpXml(writer);
@@ -484,7 +464,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     }
 
 	[Flags]
-    enum AbcBodyFlags
+    internal enum AbcBodyFlags
     {
         None = 0x00,
         HasExceptions = 0x01,

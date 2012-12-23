@@ -328,12 +328,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         #region Utils
 
-        IType FindTypeDefOrRef(string fullname)
+        private IType FindTypeDefOrRef(string fullname)
         {
             return AssemblyIndex.FindType(AppAssembly, fullname);
         }
 
-        AbcInstance FindInstanceDefOrRef(string fullname)
+        private AbcInstance FindInstanceDefOrRef(string fullname)
         {
             var type = FindTypeDefOrRef(fullname);
             if (type == null) return null;
@@ -377,7 +377,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			return field ?? (field = ImportType(fullname));
 		}
 
-    	void AddMethod(AbcMethod method)
+    	private void AddMethod(AbcMethod method)
         {
             Abc.AddMethod(method);
         }

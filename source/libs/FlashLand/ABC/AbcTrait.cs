@@ -720,12 +720,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (value == null)
                     throw new ArgumentNullException();
-                var ml = _data as IMethodLink;
-                if (ml == null)
+                var link = _data as IMethodLink;
+                if (link == null)
                     throw new InvalidOperationException();
-                if (value != ml.Method)
+                if (value != link.Method)
                 {
-                    ml.Method = value;
+                    link.Method = value;
                     value.Trait = this;
                 }
             }

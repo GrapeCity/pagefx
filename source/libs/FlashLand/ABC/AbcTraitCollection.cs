@@ -88,8 +88,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var t = _cache[trait.Key] as AbcTrait;
             if (t != null)
             {
-                throw new InvalidOperationException(
-                    string.Format("Trait with name {0} is already in collection", trait.Name));
+                throw new InvalidOperationException(string.Format("Trait with name {0} is already in collection", trait.Name));
             }
             trait.Verify();
 #endif

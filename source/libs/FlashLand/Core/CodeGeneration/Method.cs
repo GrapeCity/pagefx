@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
@@ -86,6 +87,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
             DebugService.DoCancel();
 #endif
+//			if (method.Name == "get_ApplicationParameters")
+//			{
+//				Debugger.Break();
+//			}
+
             bool isOverride;
             var name = GetMethodName(method, out isOverride);
 
@@ -193,13 +199,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             if (method == null) return null;
 
-            if (method.IsGeneric)
+			if (method.IsGeneric)
                 throw new InvalidOperationException();
 
             var tag = IsDefined(method);
             if (tag != null) return tag;
 
-            var type = method.DeclaringType;
+			var type = method.DeclaringType;
             DefineType(type);
 
             tag = IsDefined(method);
@@ -306,7 +312,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 DefineParameters(abcMethod, method);
             }
 
-            DefineMethodBody(abcMethod);
+			DefineMethodBody(abcMethod);
             DefineImplementedMethods(method, instance, abcMethod);
             DefineOverrideMethods(method);
 
@@ -524,32 +530,33 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #region DefineOverrideMethods
         private void DefineOverrideMethods(IMethod method)
         {
-            if (method.IsAbstract || method.IsVirtual)
-            {
+	        if (!method.IsAbstract && !method.IsVirtual) return;
+
 #if DEBUG
-                DebugService.DoCancel();
+	        DebugService.DoCancel();
 #endif
-                var type = method.DeclaringType;
-                var instance = type.Data as AbcInstance;
-                if (instance == null)
-                    throw new InvalidOperationException();
-                if (instance.IsInterface)
-                {
-					//warning: do not use for each since instance.Implementations is modifiable.
-                    for (int i = 0; i < instance.Implementations.Count; ++i)
-                    {
+
+	        var type = method.DeclaringType;
+	        var instance = type.Data as AbcInstance;
+	        if (instance == null)
+		        throw new InvalidOperationException();
+	        if (instance.IsInterface)
+	        {
+				//TODO: fix this problem
+		        //warning: do not use for each since instance.Implementations is modifiable.
+		        for (int i = 0; i < instance.Implementations.Count; ++i)
+		        {
 #if DEBUG
-                        DebugService.DoCancel();
+			        DebugService.DoCancel();
 #endif
-                        var impl = instance.Implementations[i];
-                        DefineImplementation(impl.Type, method);
-                    }
-                }
-                else
-                {
-                    DefineSubclassOverrideMethods(instance, method);
-                }
-            }
+			        var impl = instance.Implementations[i];
+			        DefineImplementation(impl.Type, method);
+		        }
+	        }
+	        else
+	        {
+		        DefineSubclassOverrideMethods(instance, method);
+	        }
         }
         #endregion
 

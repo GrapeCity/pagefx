@@ -259,7 +259,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
         }
-        AbcTrait _trait;
+        private AbcTrait _trait;
 
         public AbcMultiname TraitName
         {
@@ -348,7 +348,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 _instance = value;
             }
         }
-        AbcInstance _instance;
+        private AbcInstance _instance;
 
         public AbcClass Class
         {
@@ -373,7 +373,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
         }
-        AbcMethodBody _body;
+        private AbcMethodBody _body;
 
         public Visibility Visibility
         {
