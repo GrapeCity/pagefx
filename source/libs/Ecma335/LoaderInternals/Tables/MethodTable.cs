@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Metadata;
@@ -151,7 +150,16 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 			public IReadOnlyList<IMethod> Implementations
 			{
-				get { return _impls ?? (_impls = PopulateImpls().Memoize()); }
+				get
+				{
+					if (_impls == null)
+					{
+						var list = new List<IMethod>();
+						_impls = list.AsReadOnlyList();
+						PopulateImpls(list);
+					}
+					return _impls;
+				}
 			}
 
 			private IType ResolveDeclType()
@@ -233,35 +241,33 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				}
 			}
 
-			private IEnumerable<IMethod> PopulateImpls()
+			private void PopulateImpls(List<IMethod> list)
 			{
 				var declType = DeclaringType;
-				if (declType.IsInterface)
-					return Enumerable.Empty<IMethod>();
-				
+				if (declType.IsInterface) return;
+
 				var explicitImpl = FindExplicitImpl();
 				if (explicitImpl != null)
 				{
-					return new[] {explicitImpl};
+					list.Add(explicitImpl);
+					return;
 				}
 
-				var methods = declType.Interfaces.SelectMany(x => x.Methods);
-				return methods
-					.Where(x => Signature.Equals(_method, x, true))
-					.Where(x => !HasExplicitImpl(x));
+				var typeMethods =
+					declType.Methods
+					        .Where(x => x != _method && x != _method.ProxyOf && x != _method.InstanceOf)
+					        .ToList();
+
+				var ifaces = declType.Interfaces.SelectMany(x => x.Methods);
+				var impls = ifaces
+					.Where(x => Signature.Equals(_method, x, true) && !HasExplicitImpl(typeMethods, x));
+
+				list.AddRange(impls);
 			}
 
-			private bool HasExplicitImpl(IMethod ifaceMethod)
+			private static bool HasExplicitImpl(IEnumerable<IMethod> typeMethods, IMethod ifaceMethod)
 			{
-				if (ifaceMethod.Name == "get_ApplicationParameters")
-				{
-					Debugger.Break();
-				}
-
-				var declType = DeclaringType;
-				var methods = declType.Methods.Find(ifaceMethod.Name);
-				return methods.Where(x => x != _method)
-				              .Any(x => x.IsExplicitImplementation && x.Implementations[0] == ifaceMethod);
+				return typeMethods.Any(x => x.IsExplicitImplementation && x.Implementations[0] == ifaceMethod);
 			}
 
 			private IMethod FindExplicitImpl()

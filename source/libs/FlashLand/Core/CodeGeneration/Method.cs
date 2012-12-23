@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
@@ -87,11 +86,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
             DebugService.DoCancel();
 #endif
-//			if (method.Name == "get_ApplicationParameters")
-//			{
-//				Debugger.Break();
-//			}
-
             bool isOverride;
             var name = GetMethodName(method, out isOverride);
 
