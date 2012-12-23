@@ -43,6 +43,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 		private readonly List<IAssembly> _refs = new List<IAssembly>();
 		private List<AbcFile> _abcFiles = new List<AbcFile>();
 		private readonly IAssembly _assembly;
+		private IAssembly _corlib;
 		private XmlDocument _doc;
 		private bool _xdoc;
 		private CommandLine _cl;
@@ -124,7 +125,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private SystemTypes SystemTypes
 	    {
-			get { return _assembly.SystemTypes; }
+			get { return _corlib != null ? _corlib.SystemTypes : _assembly.SystemTypes; }
 	    }
 
 	    #region LoadDocFile
@@ -394,10 +395,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private void LoadReference(string refPath)
         {
-            var asm = LanguageInfrastructure.CLI.Deserialize(refPath, null);
-            if (!Linker.Run(asm))
+            var assembly = LanguageInfrastructure.CLI.Deserialize(refPath, null);
+            if (!Linker.Run(assembly))
                 throw new InvalidOperationException();
-            _refs.Add(asm);
+            _refs.Add(assembly);
+			if (assembly.IsCorlib)
+			{
+				_corlib = assembly;
+			}
         }
         #endregion
 
@@ -2128,16 +2133,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region API Compatibility Checking
-        AbcFile _fp9;
-
-        void LoadFP9()
+        private AbcFile _fp9;
+	    
+	    private void LoadFP9()
         {
             if (_fp9 != null) return;
             var rs = GetType().GetResourceStream("fp9.abc");
             _fp9 = new AbcFile(rs);
         }
 
-        bool IsFP9Type(AbcMultiname name)
+        private bool IsFP9Type(AbcMultiname name)
         {
             if (_fpVersion == 9) return true;
             LoadFP9();
