@@ -81,17 +81,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
         private IArgumentCollection _args;
 
-        public IArgumentCollection FixedArguments
-        {
-            get { return new ArgumentCollection(_args.Where(a => a.IsFixed)); }
-        }
-
-        public IArgumentCollection NamedArguments
-        {
-            get { return new ArgumentCollection(_args.Where(a => a.IsNamed)); }
-        }
-
-	    #region ICodeNode Members
+        #region ICodeNode Members
 
 	    public IEnumerable<ICodeNode> ChildNodes
         {
@@ -124,7 +114,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			    };
 		    var args = new ArgumentCollection();
 		    attr.Arguments = args;
-		    args.AddRange(_args.Select(arg => (IArgument)arg.Clone()));
+		    args.AddRange(Arguments.Select(arg => (IArgument)arg.Clone()));
 		    return attr;
 	    }
 
@@ -137,4 +127,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
         #endregion
     }
+
+	public static class CustomAttributeExtensions
+	{
+		public static IEnumerable<IArgument> FixedArguments(this ICustomAttribute attribute)
+		{
+			return attribute.Arguments.Where(x => x.IsFixed);
+		}
+
+		public static IEnumerable<IArgument> NamedArguments(this ICustomAttribute attribute)
+		{
+			return attribute.Arguments.Where(x => x.IsNamed);
+		}
+	}
 }

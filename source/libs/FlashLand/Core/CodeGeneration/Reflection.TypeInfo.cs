@@ -193,12 +193,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             code.NewObject(attr.Constructor,
                            () =>
                                {
-                                   foreach (var arg in attr.FixedArguments)
+                                   foreach (var arg in attr.FixedArguments())
                                        code.PushValue(code, arg.Value);
                                });
             code.SetLocal(varAttr);
             //TODO: Set fields and properties
-            foreach (var arg in attr.NamedArguments)
+            foreach (var arg in attr.NamedArguments())
             {
                 code.GetLocal(varAttr);
                 code.PushValue(code, arg.Value);

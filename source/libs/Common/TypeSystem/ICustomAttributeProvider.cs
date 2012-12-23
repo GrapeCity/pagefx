@@ -45,10 +45,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// Gets the collection of arguments passed to constructor.
         /// </summary>
         IArgumentCollection Arguments { get; }
-
-        IArgumentCollection FixedArguments { get; }
-
-        IArgumentCollection NamedArguments { get; }
     }
 
     /// <summary>
