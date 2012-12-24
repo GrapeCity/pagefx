@@ -827,10 +827,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		    while (type != null)
 		    {
-				var impl = (from candidate in type.Methods
-			                where candidate.Implementations != null &&
-			                      candidate.Implementations.Any(x => x == method || x.ProxyOf == method)
-			                select candidate).FirstOrDefault();
+			    var impl = FindImpl(type, method);
 			    if (impl != null)
 			    {
 				    return impl;
@@ -841,6 +838,15 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		    return null;
 	    }
+
+		private static IMethod FindImpl(this IType type, IMethod method)
+		{
+			return (from candidate in type.Methods
+			            where (candidate.Implementations != null &&
+			                  candidate.Implementations.Any(x => x == method || x.ProxyOf == method))
+							  || Signature.Equals(candidate, method, true)
+			            select candidate).FirstOrDefault();
+		}
 
 	    public static IMethod FindImplementation(this IType type, IMethod method)
 	    {
