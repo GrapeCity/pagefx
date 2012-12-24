@@ -112,7 +112,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region ImportMethod
-        private object ImportAbcMethod(AbcMethod method)
+        private object ImportMethod(AbcMethod method)
         {
             if (method.IsNative)
                 return method;
@@ -154,7 +154,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var m = tag as AbcMethod;
             if (m != null)
             {
-                tag = ImportAbcMethod(m);
+                tag = ImportMethod(m);
                 DefineOverrideMethods(method);
                 return tag;
             }
