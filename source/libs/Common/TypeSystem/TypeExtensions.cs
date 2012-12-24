@@ -820,14 +820,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		    return type.FindSameMethod(method, false);
 	    }
 
-	    public static IMethod FindImplementation(this IType type, IMethod method, bool inherited)
+	    public static IMethod FindImplementation(this IType type, IMethod ifaceMethod, bool inherited)
 	    {
-		    if (method.IsGenericInstance)
-			    method = method.InstanceOf;
+		    if (ifaceMethod.IsGenericInstance)
+			    ifaceMethod = ifaceMethod.InstanceOf;
 
 		    while (type != null)
 		    {
-			    var impl = FindImpl(type, method);
+			    var impl = FindImpl(type, ifaceMethod);
 			    if (impl != null)
 			    {
 				    return impl;
@@ -839,18 +839,26 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		    return null;
 	    }
 
-		private static IMethod FindImpl(this IType type, IMethod method)
+		private static IMethod FindImpl(this IType type, IMethod ifaceMethod)
 		{
-			return (from candidate in type.Methods
-			            where (candidate.Implementations != null &&
-			                  candidate.Implementations.Any(x => x == method || x.ProxyOf == method))
-							  || Signature.Equals(candidate, method, true)
-			            select candidate).FirstOrDefault();
+			var impl = (from candidate in type.Methods
+			                    where candidate.Implementations != null &&
+			                          candidate.Implementations.Any(x => x == ifaceMethod || x.ProxyOf == ifaceMethod)
+			                    select candidate).FirstOrDefault();
+			if (impl != null)
+			{
+				return impl;
+			}
+
+			var methods = type.Methods.Find(ifaceMethod.Name);
+			return (from candidate in methods
+			        where Signature.Equals(candidate, ifaceMethod, true)
+			        select candidate).FirstOrDefault();
 		}
 
-	    public static IMethod FindImplementation(this IType type, IMethod method)
+	    public static IMethod FindImplementation(this IType type, IMethod ifaceMethod)
 	    {
-		    return type.FindImplementation(method, true);
+		    return type.FindImplementation(ifaceMethod, true);
 	    }
 
 	    public static IMethod GetStaticCtor(this IType type)
