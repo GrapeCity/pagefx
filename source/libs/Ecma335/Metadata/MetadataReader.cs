@@ -614,9 +614,11 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 
 				if (!lookup.TryGetValue(key, out list))
 				{
-					list = new List<int> {lookup.LastIndex};
+					list = new List<int>();
 					lookup.Add(key, list);
 				}
+
+				list.Add(lookup.LastIndex);
 
 				for (lookup.LastIndex++; lookup.LastIndex < rowCount; lookup.LastIndex++)
 				{
