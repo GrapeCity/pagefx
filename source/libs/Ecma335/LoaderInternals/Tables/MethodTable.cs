@@ -152,12 +152,16 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			{
 				get
 				{
+					if (NoImpls(_method))
+						return EmptyReadOnlyList.Create<IMethod>();
+
 					if (_impls == null)
 					{
 						var list = new List<IMethod>();
 						_impls = list.AsReadOnlyList();
 						PopulateImpls(list);
 					}
+
 					return _impls;
 				}
 			}
@@ -241,11 +245,29 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				}
 			}
 
+			private static bool NoImpls(IMethod method)
+			{
+				if (method.IsStatic || method.IsConstructor)
+					return true;
+
+				switch (method.Visibility)
+				{
+					case Visibility.NestedProtected:
+					case Visibility.NestedProtectedInternal:
+					case Visibility.NestedInternal:
+					case Visibility.Protected:
+					case Visibility.ProtectedInternal:
+					case Visibility.Internal:
+						return true;
+				}
+
+				return method.DeclaringType.IsInterface;
+			}
+
 			private void PopulateImpls(List<IMethod> list)
 			{
 				var declType = DeclaringType;
-				if (declType.IsInterface) return;
-
+				
 				var explicitImpl = FindExplicitImpl();
 				if (explicitImpl != null)
 				{
@@ -253,9 +275,11 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 					return;
 				}
 
+				//TODO: Add impls of base method
+
 				var typeMethods =
 					declType.Methods
-					        .Where(x => x != _method && x != _method.ProxyOf && x != _method.InstanceOf)
+					        .Where(x => x != _method && x != _method.ProxyOf && x != _method.InstanceOf && !NoImpls(x))
 					        .ToList();
 
 				var ifaces = declType.Interfaces.SelectMany(x => x.Methods);

@@ -74,6 +74,8 @@
     </Compile>
     <Compile Include="CodeModel\IVariableCollection.cs" />
     <Compile Include="CodeModel\VariableExtensions.cs" />
+    <Compile Include="Collections\EmptyReadOnlyList.cs" />
+    <Compile Include="Collections\ReadOnlyListExtensions.cs" />
     <Compile Include="Graphics\ColorExtensions.cs" />
     <Compile Include="Graphics\Enums.cs" />
     <Compile Include="Graphics\FastBitmap.cs" />
