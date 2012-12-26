@@ -277,7 +277,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// <summary>
         /// Gets or sets methods implemented by this method
         /// </summary>
-        public IReadOnlyList<IMethod> Implementations
+        public IReadOnlyList<IMethod> Implements
         {
             get { return _impls ?? (_impls = PopulateImpls().Memoize()); }
             set { throw new NotSupportedException(); }
@@ -285,7 +285,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private IEnumerable<IMethod> PopulateImpls()
 		{
-			var methods = _method.Implementations;
+			var methods = _method.Implements;
 			return methods == null
 				       ? Enumerable.Empty<IMethod>()
 				       : methods.Select(x => ResolveInstance(x));

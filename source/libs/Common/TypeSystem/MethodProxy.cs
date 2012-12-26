@@ -204,12 +204,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return method;
         }
 
-        public IReadOnlyList<IMethod> Implementations
+        public IReadOnlyList<IMethod> Implements
         {
             get
             {
                 if (_method.IsGeneric)
-                    return _method.Implementations;
+                    return _method.Implements;
 
 	            return _impls ?? (_impls = PopulateImpls().Memoize());
             }
@@ -223,7 +223,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private IEnumerable<IMethod> PopulateImpls()
 		{
-			var methods = _method.Implementations;
+			var methods = _method.Implements;
 			return methods == null
 				       ? Enumerable.Empty<IMethod>()
 				       : methods.Select(x => ResolveMethod(x));

@@ -282,14 +282,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public bool IsExplicitImplementation
         {
-            get { return Implementations.Count == 1 && GetModifier(Modifiers.ExplicitImplementation); }
+            get { return Implements.Count == 1 && GetModifier(Modifiers.ExplicitImplementation); }
             set { SetModifier(value, Modifiers.ExplicitImplementation); }
         }
 
 	    /// <summary>
 	    /// Gets or sets abstract methods implemented by this method
 	    /// </summary>
-	    public IReadOnlyList<IMethod> Implementations
+	    public IReadOnlyList<IMethod> Implements
 	    {
 			get { return _impls ?? (_impls = ResolveImpls()); }
 		    set { _impls = value; }
@@ -298,7 +298,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    private IReadOnlyList<IMethod> ResolveImpls()
 	    {
 		    return Meta != null
-			           ? Meta.Implementations
+			           ? Meta.Implements
 			           : Enumerable.Empty<IMethod>().AsReadOnlyList();
 	    }
 
@@ -388,6 +388,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		ITypeMember Association { get; }
 
-		IReadOnlyList<IMethod> Implementations { get; }
+		IReadOnlyList<IMethod> Implements { get; }
 	}
 }

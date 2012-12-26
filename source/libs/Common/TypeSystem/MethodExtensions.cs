@@ -102,7 +102,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		{
 			if (method == null) return null;
 			if (!method.IsExplicitImplementation) return null;
-			var impl = method.Implementations;
+			var impl = method.Implements;
 			if (impl == null || impl.Count != 1)
 				throw new InvalidOperationException("bad explicit implementation");
 			return impl[0];

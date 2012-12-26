@@ -52,7 +52,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 if (mn != null) return mn;
             }
 
-            var impls = method.Implementations;
+            var impls = method.Implements;
             if (impls != null && impls.Count == 1)
             {
                 var impl = impls[0];
@@ -356,7 +356,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #region DefineImplementedMethods
         private void DefineImplementedMethods(IMethod method, AbcInstance instance, AbcMethod abcMethod)
         {
-            var impls = method.Implementations;
+            var impls = method.Implements;
             if (impls == null) return;
             int n = impls.Count;
             if (n <= 0) return;
@@ -447,7 +447,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private AbcMethod GetBaseMethod(AbcMethod am, IMethod m)
         {
-            var impls = m.Implementations;
+            var impls = m.Implements;
             if (impls != null && impls.Count == 1)
                 return DefineAbcMethod(impls[0]);
 
@@ -512,7 +512,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 bm = bm.BaseMethod;
             }
 
-            var impls = method.Implementations;
+            var impls = method.Implements;
             if (impls != null)
             {
                 foreach (var impl in impls)

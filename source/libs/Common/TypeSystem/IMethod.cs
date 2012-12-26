@@ -118,7 +118,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// <summary>
         /// Gets or sets methods implemented by this method.
         /// </summary>
-        IReadOnlyList<IMethod> Implementations { get; set; }
+        IReadOnlyList<IMethod> Implements { get; set; }
 
         /// <summary>
         /// Gets or sets method body.

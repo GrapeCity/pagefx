@@ -842,8 +842,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		private static IMethod FindImpl(this IType type, IMethod ifaceMethod)
 		{
 			var impl = (from candidate in type.Methods
-			                    where candidate.Implementations != null &&
-			                          candidate.Implementations.Any(x => x == ifaceMethod || x.ProxyOf == ifaceMethod)
+			                    where candidate.Implements != null &&
+			                          candidate.Implements.Any(x => x == ifaceMethod || x.ProxyOf == ifaceMethod)
 			                    select candidate).FirstOrDefault();
 			if (impl != null)
 			{

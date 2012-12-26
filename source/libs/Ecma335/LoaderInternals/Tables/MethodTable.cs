@@ -148,7 +148,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				}
 			}
 
-			public IReadOnlyList<IMethod> Implementations
+			public IReadOnlyList<IMethod> Implements
 			{
 				get
 				{
@@ -267,7 +267,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 			private static bool HasExplicitImpl(IEnumerable<IMethod> typeMethods, IMethod ifaceMethod)
 			{
-				return typeMethods.Any(x => x.IsExplicitImplementation && x.Implementations[0] == ifaceMethod);
+				return typeMethods.Any(x => x.IsExplicitImplementation && x.Implements[0] == ifaceMethod);
 			}
 
 			private IMethod FindExplicitImpl()

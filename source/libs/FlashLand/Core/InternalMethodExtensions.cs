@@ -689,7 +689,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
 		public static IMethod FindImplementedMethod(this IMethod method)
 		{
-			var impl = method.Implementations;
+			var impl = method.Implements;
 			if (impl != null && impl.Count == 1)
 				return impl[0];
 
@@ -702,7 +702,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 				var bm = bt.FindSameMethod(method, false);
 				if (bm != null)
 				{
-					impl = bm.Implementations;
+					impl = bm.Implements;
 					if (impl != null && impl.Count == 1)
 						return impl[0];
 				}
