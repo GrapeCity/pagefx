@@ -8,7 +8,7 @@ using DataDynamics.PageFX.Common.Metadata;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public sealed class Method : TypeMember, IMethod
+    public class Method : TypeMember, IMethod
     {
 		private readonly string[] _sigNames = new string[2];
 	    private bool _resolveBaseMethod = true;
@@ -272,11 +272,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			set { _association = value; }
 	    }
 
-	    private ITypeMember ResolveAssociation()
-	    {
-		    return Meta != null ? Meta.Association : null;
-	    }
-
 	    /// <summary>
         /// Gets or sets boolean flag indicating whether the method is explicit implementation of some interface method.
         /// </summary>
@@ -293,13 +288,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    {
 			get { return _impls ?? (_impls = ResolveImpls()); }
 		    set { _impls = value; }
-	    }
-
-	    private IReadOnlyList<IMethod> ResolveImpls()
-	    {
-		    return Meta != null
-			           ? Meta.Implements
-			           : Enumerable.Empty<IMethod>().AsReadOnlyList();
 	    }
 
 	    public IMethodBody Body { get; set; }
@@ -367,27 +355,19 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return null;
         }
 
-	    public IMetaMethod Meta { get; set; }
-
 		protected override IType ResolveType()
 		{
-			return Meta != null ? Meta.Type : null;
+			return null;
 		}
 
-		protected override IType ResolveDeclaringType()
+		protected virtual ITypeMember ResolveAssociation()
 		{
-			return Meta != null ? Meta.DeclaringType : null;
+			return null;
+		}
+
+		protected virtual IReadOnlyList<IMethod> ResolveImpls()
+		{
+			return EmptyReadOnlyList.Create<IMethod>();
 		}
     }
-
-	public interface IMetaMethod
-	{
-		IType Type { get; }
-
-		IType DeclaringType { get; }
-
-		ITypeMember Association { get; }
-
-		IReadOnlyList<IMethod> Implements { get; }
-	}
 }

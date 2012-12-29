@@ -181,6 +181,7 @@
     <Compile Include="LoaderInternals\Tables\AssemblyTable.cs" />
     <Compile Include="LoaderInternals\Tables\ConstantTable.cs" />
     <Compile Include="LoaderInternals\Tables\EventTable.cs" />
+    <Compile Include="LoaderInternals\FieldImpl.cs" />
     <Compile Include="LoaderInternals\Tables\FieldTable.cs" />
     <Compile Include="LoaderInternals\Tables\FileTable.cs" />
     <Compile Include="LoaderInternals\Tables\GenericParamTable.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="LoaderInternals\Tables\ManifestResourceTable.cs" />
     <Compile Include="LoaderInternals\Tables\MemberRefTable.cs" />
     <Compile Include="LoaderInternals\Tables\MetadataTable.cs" />
+    <Compile Include="LoaderInternals\MethodImpl.cs" />
     <Compile Include="LoaderInternals\Tables\MethodSpecTable.cs" />
     <Compile Include="LoaderInternals\Tables\MethodTable.cs" />
     <Compile Include="LoaderInternals\Tables\ModuleRefTable.cs" />

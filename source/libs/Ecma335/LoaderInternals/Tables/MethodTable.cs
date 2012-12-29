@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Metadata;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.IL;
@@ -29,8 +26,10 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 			bool isStatic = (flags & MethodAttributes.Static) != 0;
 			var token = SimpleIndex.MakeToken(TableId.MethodDef, index + 1);
+			var sigBlob = row[Schema.MethodDef.Signature].Blob;
+			var signature = MethodSignature.Decode(sigBlob);
 
-			var method = new Method
+			var method = new MethodImpl(Loader, signature)
 				{
 					MetadataToken = token,
 					Name = row[Schema.MethodDef.Name].String,
@@ -60,11 +59,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			{
 				method.IsEntryPoint = true;
 			}
-
-			var sigBlob = row[Schema.MethodDef.Signature].Blob;
-			var signature = MethodSignature.Decode(sigBlob);
-
-			method.Meta = new MetaMethod(Loader, method, signature);
 
 			method.Parameters = GetParams(method, row, signature);
 
@@ -108,213 +102,6 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 					return Visibility.Protected;
 			}
 			return Visibility.Public;
-		}
-
-		private sealed class MetaMethod : IMetaMethod
-		{
-			private readonly AssemblyLoader _loader;
-			private readonly Method _method;
-			private readonly MethodSignature _signature;
-			private IType _type;
-			private IType _declType;
-			private ITypeMember _association;
-			private bool _associationResolved;
-			private IReadOnlyList<IMethod> _impls;
-
-			public MetaMethod(AssemblyLoader loader, Method method, MethodSignature signature)
-			{
-				_loader = loader;
-				_method = method;
-				_signature = signature;
-			}
-
-			public IType Type
-			{
-				get { return _type ?? (_type = ResolveType()); }
-			}
-
-			public IType DeclaringType
-			{
-				get { return _declType ?? (_declType = ResolveDeclType()); }
-			}
-
-			public ITypeMember Association
-			{
-				get
-				{
-					if (_associationResolved) return _association;
-					_associationResolved = true;
-					return (_association = ResolveAssociation());
-				}
-			}
-
-			public IReadOnlyList<IMethod> Implements
-			{
-				get
-				{
-					if (NoImpls(_method))
-						return EmptyReadOnlyList.Create<IMethod>();
-
-					if (_impls == null)
-					{
-						var list = new List<IMethod>();
-						_impls = list.AsReadOnlyList();
-						PopulateImpls(list);
-					}
-
-					return _impls;
-				}
-			}
-
-			private IType ResolveDeclType()
-			{
-				var type = _loader.ResolveDeclType(_method);
-				if (type == null)
-					throw new InvalidOperationException();
-				return type;
-			}
-
-			private IType ResolveType()
-			{
-				var context = new Context(DeclaringType, _method);
-
-				var type = _loader.ResolveType(_signature.Type, context);
-				if (type == null)
-					throw new InvalidOperationException();
-
-				return type;
-			}
-
-			private ITypeMember ResolveAssociation()
-			{
-				SimpleIndex token = _method.MetadataToken;
-
-				var row = _loader.Metadata.LookupRow(TableId.MethodSemantics, Schema.MethodSemantics.Method, token.Index - 1, true);
-				if (row == null) return null;
-				
-				var sem = (MethodSemanticsAttributes)row[Schema.MethodSemantics.Semantics].Value;
-
-				SimpleIndex assoc = row[Schema.MethodSemantics.Association].Value;
-				switch (assoc.Table)
-				{
-					case TableId.Property:
-						var property = _loader.Properties[assoc.Index - 1];
-
-						_method.Association = property;
-						switch (sem)
-						{
-							case MethodSemanticsAttributes.Getter:
-								property.Getter = _method;
-								break;
-							case MethodSemanticsAttributes.Setter:
-								property.Setter = _method;
-								break;
-							default:
-								throw new ArgumentOutOfRangeException();
-						}
-
-						property.ResolveTypeAndParameters();
-						
-						return property;
-
-					case TableId.Event:
-						var e = _loader.Events[assoc.Index - 1];
-
-						_method.Association = e;
-						switch (sem)
-						{
-							case MethodSemanticsAttributes.AddOn:
-								e.Adder = _method;
-								break;
-							case MethodSemanticsAttributes.RemoveOn:
-								e.Remover = _method;
-								break;
-							case MethodSemanticsAttributes.Fire:
-								e.Raiser = _method;
-								break;
-							default:
-								throw new ArgumentOutOfRangeException();
-						}
-
-						e.ResolveType();
-
-						return e;
-
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-			}
-
-			private static bool NoImpls(IMethod method)
-			{
-				if (method.IsStatic || method.IsConstructor)
-					return true;
-
-				switch (method.Visibility)
-				{
-					case Visibility.NestedProtected:
-					case Visibility.NestedProtectedInternal:
-					case Visibility.NestedInternal:
-					case Visibility.Protected:
-					case Visibility.ProtectedInternal:
-					case Visibility.Internal:
-						return true;
-				}
-
-				return method.DeclaringType.IsInterface;
-			}
-
-			private void PopulateImpls(List<IMethod> list)
-			{
-				var declType = DeclaringType;
-				
-				var explicitImpl = FindExplicitImpl();
-				if (explicitImpl != null)
-				{
-					list.Add(explicitImpl);
-					return;
-				}
-
-				//TODO: Add impls of base method
-
-				var typeMethods =
-					declType.Methods
-					        .Where(x => x != _method && x != _method.ProxyOf && x != _method.InstanceOf && !NoImpls(x))
-					        .ToList();
-
-				var ifaces = declType.Interfaces.SelectMany(x => x.Methods);
-				var impls = ifaces
-					.Where(x => Signature.Equals(_method, x, true) && !HasExplicitImpl(typeMethods, x));
-
-				list.AddRange(impls);
-			}
-
-			private static bool HasExplicitImpl(IEnumerable<IMethod> typeMethods, IMethod ifaceMethod)
-			{
-				return typeMethods.Any(x => x.IsExplicitImplementation && x.Implements[0] == ifaceMethod);
-			}
-
-			private IMethod FindExplicitImpl()
-			{
-				var declType = DeclaringType;
-				var typeIndex = declType.RowIndex();
-				var rows = _loader.Metadata.LookupRows(TableId.MethodImpl, Schema.MethodImpl.Class, typeIndex, true);
-
-				foreach (var row in rows)
-				{
-					SimpleIndex bodyIdx = row[Schema.MethodImpl.MethodBody].Value;
-					var body = _loader.GetMethodDefOrRef(bodyIdx, new Context(declType));
-					if (body == _method)
-					{
-						SimpleIndex declIdx = row[Schema.MethodImpl.MethodDeclaration].Value;
-						var decl = _loader.GetMethodDefOrRef(declIdx, new Context(declType, body));
-						body.IsExplicitImplementation = true;
-						return decl;
-					}
-				}
-
-				return null;
-			}
 		}
 
 		public string GetFullName(int index)

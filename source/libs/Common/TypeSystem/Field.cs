@@ -3,7 +3,7 @@ using DataDynamics.PageFX.Common.CodeModel.Expressions;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public sealed class Field : TypeMember, IField
+    public class Field : TypeMember, IField
     {
 	    private int _offset = -1;
 	    private object _value;
@@ -16,14 +16,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return MemberType.Field; }
         }
 
-		public IMetaField Meta { get; set; }
-
 	    public int Offset
 	    {
 		    get
 		    {
-			    if (_offset == -1 && Meta != null)
-				    return Meta.Offset;
+			    if (_offset == -1)
+				    _offset = ResolveOffset();
 			    return -1;
 		    }
 		    set { _offset = value; }
@@ -33,13 +31,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    public object Value
 	    {
-		    get
-		    {
-			    if (_value == null && Meta != null)
-				    return Meta.Value;
-			    return null;
-		    }
-			set { _value = value; }
+		    get { return _value ?? (_value = ResolveValue()); }
+		    set { _value = value; }
 	    }
 
     	public IExpression Initializer { get; set; }
@@ -61,25 +54,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { throw new NotSupportedException(); }
         }
 
-		protected override IType ResolveType()
+		protected virtual object ResolveValue()
 		{
-			return Meta != null ? Meta.Type : null;
+			return null;
 		}
 
-		protected override IType ResolveDeclaringType()
+		protected virtual int ResolveOffset()
 		{
-			return Meta != null ? Meta.DeclaringType : null;
+			return -1;
 		}
     }
-
-	public interface IMetaField
-	{
-		IType Type { get; }
-
-		IType DeclaringType { get; }
-
-		object Value { get; }
-
-		int Offset { get; }
-	}
 }

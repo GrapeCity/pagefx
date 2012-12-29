@@ -264,7 +264,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             bool isMxAppCtor = false;
             if (AbcGenConfig.FlexAppCtorAsHandler)
-                isMxAppCtor = IsMxAppCtor(method);
+                isMxAppCtor = IsFlexAppCtor(method);
 
             //NOTE:
             //1. ctor can be used as class or instance initializer
@@ -797,7 +797,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-	    private bool IsMxAppCtor(IMethod method)
+	    private bool IsFlexAppCtor(IMethod method)
         {
             if (method == null) return false;
             if (method.IsStatic) return false;
