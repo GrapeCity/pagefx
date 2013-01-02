@@ -52,11 +52,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -70,10 +68,6 @@
     <ProjectReference Include="..\..\libs\Common\Common.csproj">
       <Project>{3e823dff-8429-499f-a3f0-3cd3e7b27a37}</Project>
       <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\libs\FlashLand\FlashLand.csproj">
-      <Project>{A54D800D-621B-491A-BE70-59D46BA70523}</Project>
-      <Name>FlashLand</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
