@@ -167,23 +167,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
 		#endregion
 
-        #region ABL Deps
-        public DepList Deps { get; set; }
-
-        internal void AddDep(Dep dep)
-        {
-            if (Deps == null)
-                Deps = new DepList();
-            Deps.Add(dep);
-        }
-
-        public bool HasDeps
-        {
-            get { return Deps != null && Deps.Count > 0; }
-        }
-        #endregion
-
-        public AbcInstance FirstInstance
+		public AbcInstance FirstInstance
         {
             get 
             {

@@ -12,12 +12,12 @@ using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 {
-    partial class SwfCompiler
+    internal partial class SwfCompiler
     {
-        readonly Hashtable _charCache = new Hashtable();
-        readonly Hashtable _imageCache = new Hashtable();
-        readonly SwfAssetCollection _symbols = new SwfAssetCollection();
-        readonly SwfAssetCollection _exports = new SwfAssetCollection();
+        private readonly Hashtable _charCache = new Hashtable();
+		private readonly Hashtable _imageCache = new Hashtable();
+		private readonly SwfAssetCollection _symbols = new SwfAssetCollection();
+		private readonly SwfAssetCollection _exports = new SwfAssetCollection();
 
         #region Image Assets
         public Image GetImageResoucre(string source)
@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             }
         }
 
-        ISwfCharacter DefineImageAsset(string source, Converter<Image,SwfCharacter> creator)
+        private ISwfCharacter DefineImageAsset(string source, Converter<Image,SwfCharacter> creator)
         {
             var c = _imageCache[source] as ISwfCharacter;
             if (c == null)
@@ -111,13 +111,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             return ImportAssetCore(embed);
         }
 
-        SwfAsset ImportAssetCore(Embed embed)
+        private SwfAsset ImportAssetCore(Embed embed)
         {
             var c = ImportCharacter(embed.Movie, embed.Asset);
             return AddSymbol(c, embed.Instance);
         }
 
-        ISwfCharacter ImportCharacter(SwfMovie from, SwfAsset asset)
+        private ISwfCharacter ImportCharacter(SwfMovie from, SwfAsset asset)
         {
             var c = _charCache[asset.Name] as ISwfCharacter;
             if (c != null) return c;
@@ -137,7 +137,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             return c;
         }
 
-        static readonly string[] LateAssetNames =
+        private static readonly string[] LateAssetNames =
             {
                 //"mx.controls.RichTextEditor__embed_mxml_assets_icon_align_left_png_1838390231",
                 //"mx.controls.RichTextEditor__embed_mxml_assets_icon_align_right_png_1943059559",
@@ -149,10 +149,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
                 //"mx.controls.RichTextEditor__embed_mxml_assets_icon_style_bold_png_1670544607",
             };
 
-        readonly List<Embed> _lateAssets = new List<Embed>();
-        static readonly bool DeferredAssetImport = true;
+        private readonly List<Embed> _lateAssets = new List<Embed>();
+        private static readonly bool DeferredAssetImport = true;
 
-        void ImportLateAssets()
+        private void ImportLateAssets()
         {
             if (_lateAssets.Count > 0)
             {
@@ -179,7 +179,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             }
         }
 
-        static void CheckCharacter(SwfTag tag)
+        private static void CheckCharacter(SwfTag tag)
         {
             if (tag == null)
                 throw new ArgumentNullException("tag");
@@ -189,21 +189,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         }
         #endregion
 
-		public void ImportAsset(AblAsset asset, AbcInstance instance)
-		{
-			if (asset == null)
-				throw new ArgumentNullException("asset");
-			ImportAsset(asset);
-			AddSymbol(asset.ImportedCharacter, instance);
-		}
-
-		void ImportAsset(AblAsset asset)
-		{
-			if (asset.ImportedCharacter != null) return;
-			throw new NotImplementedException();
-		}
-
-        SwfAsset AddSymbol(ISwfCharacter obj, AbcInstance instance)
+		private SwfAsset AddSymbol(ISwfCharacter obj, AbcInstance instance)
         {
             if (obj == null)
                 throw new ArgumentNullException("obj");
@@ -224,7 +210,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         }
 
         //NOTE: assets should be defined before ABC file.
-        void FlushAssets(SwfTagSymbolClass table)
+        private void FlushAssets(SwfTagSymbolClass table)
         {
             if (_exports.Count > 0)
             {

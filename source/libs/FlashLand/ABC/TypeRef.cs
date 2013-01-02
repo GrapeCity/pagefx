@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get { return _fullname; }
         }
-        readonly string _fullname;
+        private readonly string _fullname;
 
         public TypeRefTarget Target
         {
@@ -31,20 +31,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
         readonly TypeRefTarget _target;
 
-        public DepKind DepKind
-        {
-            get 
-            {
-                switch (_target)
-                {
-                        case TypeRefTarget.Inheritance:
-                            return DepKind.Pre;
-                }
-                return DepKind.Post;
-            }
-        }
-
-        public static List<TypeRef> GetRefs(AbcFile abc)
+	    public static List<TypeRef> GetRefs(AbcFile abc)
         {
             var list = new List<TypeRef>();
             var cache = new Hashtable();

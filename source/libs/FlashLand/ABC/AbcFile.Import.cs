@@ -11,8 +11,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     public partial class AbcFile
     {
         #region Import ABC file
-        bool Importing;
-        bool Imported;
+        private bool _importing;
+        private bool _imported;
 
         /// <summary>
         /// Imports contents of given ABC file
@@ -40,17 +40,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
 
-            if (from.Imported) return;
+            if (from._imported) return;
 
             //ImportDeps(from, DepKind.Pre);
             ImportCore(from);
             //ImportDeps(from, DepKind.Post);
         }
 
-        void ImportCore(AbcFile from)
+        private void ImportCore(AbcFile from)
         {
-            from.Imported = true;
-            from.Importing = true;
+            from._imported = true;
+            from._importing = true;
 
             ImportConstPools(from);
 
@@ -60,28 +60,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             //NOTE: Classes are imported with instances
             //NOTE: Methods are imported with instances, classes or scripts
             
-            from.Importing = false;
+            from._importing = false;
 
             ImportTypes(from);
         }
 
-        void ImportDeps(AbcFile from, DepKind kind)
+	    private void ImportTypes(AbcFile from)
         {
-            var deps = from.Deps;
-            if (deps == null) return;
-            if (deps.Count <= 0) return;
-            var ctx = new ImportContext
-                          {
-                              CurrentABC = from,
-                              TargetABC = this
-                          };
-            deps.Import(ctx, kind);
-        }
-
-        void ImportTypes(AbcFile from)
-        {
-            if (from.HasDeps) return;
-
             switch (from.ImportStrategy)
             {
                     case ImportStrategy.Multinames:
@@ -94,7 +79,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        void ImportRefs(AbcFile from)
+        private void ImportRefs(AbcFile from)
         {
             foreach (var f in from.FileRefs)
                 Import(f);
@@ -102,7 +87,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 ImportInstance(instance);
         }
 
-        void ImportTypesUsingMultinames(AbcFile from)
+        private void ImportTypesUsingMultinames(AbcFile from)
         {
             int n = from.Multinames.Count;
             for (int i = 1; i < n; ++i)
@@ -115,7 +100,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        static bool ExcludeTypeName(AbcMultiname name)
+        private static bool ExcludeTypeName(AbcMultiname name)
         {
             if (name.IsRuntime) return true;
             return false;
@@ -242,7 +227,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 ImportConst(pool[i]);
         }
 
-        void ImportConstPools(AbcFile from)
+        private void ImportConstPools(AbcFile from)
         {
             ImportConstPool(from.IntPool);
             ImportConstPool(from.UIntPool);
@@ -329,7 +314,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region ImportMethod
-        AbcMethod ImportMethod(AbcMethod method)
+        private AbcMethod ImportMethod(AbcMethod method)
         {
             if (IsDefined(method))
                 return method;
@@ -366,7 +351,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return m;
         }
 
-        void ImportParams(AbcMethod from, AbcMethod to)
+        private void ImportParams(AbcMethod from, AbcMethod to)
         {
             foreach (var p in from.Parameters)
             {
@@ -383,7 +368,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region ImportMethodBody
-        AbcMethodBody ImportMethodBody(AbcMethodBody from, AbcMethod method)
+        private AbcMethodBody ImportMethodBody(AbcMethodBody from, AbcMethod method)
         {
             if (from.ImportedBody != null)
                 return from.ImportedBody;
@@ -405,7 +390,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return body;
         }
 
-        static int GetOffsetIndex(IInstructionList code, int offset)
+        private static int GetOffsetIndex(IInstructionList code, int offset)
         {
             int i = code.GetOffsetIndex(offset);
             if (i < 0)
@@ -413,7 +398,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return i;
         }
 
-        void ImportExceptions(AbcMethodBody body, AbcMethodBody from)
+        private void ImportExceptions(AbcMethodBody body, AbcMethodBody from)
         {
             var code = from.IL;
             foreach (var h in from.Exceptions)
@@ -431,7 +416,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        void ImportIL(AbcMethodBody body, AbcMethodBody from)
+        private void ImportIL(AbcMethodBody body, AbcMethodBody from)
         {
             var code = from.IL;
             //NOTE: Size of instructions can be changed and therefore we should retranslate branch offsets.
@@ -449,7 +434,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             //    body.IL.Optimize();
         }
 
-        Instruction ImportInstruction(AbcMethodBody body, Instruction i)
+        private Instruction ImportInstruction(AbcMethodBody body, Instruction i)
         {
             var i2 = i.Clone();
             if (!i2.HasOperands) return i2;
@@ -533,7 +518,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     if (instance.InSwc)
                     {
                         var abc = instance.Abc;
-                        if (!abc.Importing)
+                        if (!abc._importing)
                         {
                             Debug.Assert(abc != this);
                             Import(abc);
@@ -556,7 +541,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (instance.InSwc)
             {
                 var abc = instance.Abc;
-                if (!abc.Importing)
+                if (!abc._importing)
                 {
                     Debug.Assert(abc != this);
                     Import(abc);
@@ -588,7 +573,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return result;
         }
 
-        void ImportAbcFiles(AbcInstance instance)
+        private void ImportAbcFiles(AbcInstance instance)
         {
             if (instance.ImportAbcFiles.Count > 0)
             {
@@ -599,7 +584,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         internal bool IsSwcScript;
 
-        AbcInstance ImportInstanceCore(AbcInstance from, ref AbcMethod importMethod)
+        private AbcInstance ImportInstanceCore(AbcInstance from, ref AbcMethod importMethod)
         {
             var instance = new AbcInstance
                                {
@@ -656,7 +641,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return instance;
         }
 
-        AbcMultiname ToMultiname(AbcMultiname name)
+        private AbcMultiname ToMultiname(AbcMultiname name)
         {
             if (name.IsMultiname) return name;
             if (!name.IsQName)
@@ -669,7 +654,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region ImportTraits
-        void ImportTraits(IAbcTraitProvider from, IAbcTraitProvider to, ref AbcMethod importMethod)
+        private void ImportTraits(IAbcTraitProvider from, IAbcTraitProvider to, ref AbcMethod importMethod)
         {
             foreach (var trait in from.Traits)
             {
@@ -680,7 +665,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        void ImportTraits(IAbcTraitProvider from, IAbcTraitProvider to)
+        private void ImportTraits(IAbcTraitProvider from, IAbcTraitProvider to)
         {
             foreach (var trait in from.Traits)
             {
@@ -691,7 +676,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region ImportTrait
-        AbcTrait ImportTrait(AbcTrait from)
+        private AbcTrait ImportTrait(AbcTrait from)
         {
             var trait = new AbcTrait
                             {
@@ -827,12 +812,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public ImportTypeStrategy ImportTypeStrategy { get; set; }
 
-        bool IsImportTypeExternally
+        private bool IsImportTypeExternally
         {
             get { return ImportTypeStrategy == ImportTypeStrategy.External; }
         }
 
-        AbcMultiname ImportType(AbcMultiname name, out AbcInstance type)
+        private AbcMultiname ImportType(AbcMultiname name, out AbcInstance type)
         {
             type = null;
             if (name == null) return null;
@@ -850,7 +835,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return ImportConst(name);
         }
 
-        AbcMultiname ImportType(AbcMultiname name)
+        private AbcMultiname ImportType(AbcMultiname name)
         {
             AbcInstance type;
             name = ImportType(name, out type);
@@ -859,7 +844,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region ProcessMetaEntry
-        bool ProcessMetaEntry(AbcFile abc, AbcTrait trait, AbcMetaEntry e)
+        private bool ProcessMetaEntry(AbcFile abc, AbcTrait trait, AbcMetaEntry e)
         {
             if (ImportResourceBundle(abc, e))
                 return true;
@@ -930,7 +915,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region ImportEmbedAsset
-        void ImportEmbedAsset(AbcTrait trait, AbcTrait from)
+        private void ImportEmbedAsset(AbcTrait trait, AbcTrait from)
         {
             var newEmbed = ImportEmbedAsset(from);
             if (newEmbed == null) return;
@@ -941,7 +926,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             instance.Embed = newEmbed;
         }
 
-        Embed ImportEmbedAsset(AbcTrait from)
+        private Embed ImportEmbedAsset(AbcTrait from)
         {
             if (from == null) return null;
             var embed = from.Embed;
@@ -959,8 +944,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region ImportMetaEntry
-        static bool FilterMetaEntry(string name)
+        private static bool FilterMetaEntry(string name)
         {
+			//TODO: use hashset
             switch (name)
             {
                 case "__go_to_definition_help":
@@ -992,7 +978,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         internal static bool IgnoreMetadata;
         internal static bool FilterMetadata = true;
 
-        AbcMetaEntry ImportMetaEntry(AbcFile abc, AbcMetaEntry from)
+        private AbcMetaEntry ImportMetaEntry(AbcFile abc, AbcMetaEntry from)
         {
             if (IgnoreMetadata)
                 return null;
@@ -1036,23 +1022,23 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region ImportAssets
-        void ImportAssets(AbcFile abc)
+        private void ImportAssets(AbcFile abc)
         {
             ImportAssets(abc.GetTraits(AbcTraitOwner.All));
         }
 
-        void ImportAssets(AbcInstance instance)
+        private void ImportAssets(AbcInstance instance)
         {
             ImportAssets(instance.GetAllTraits());
         }
 
-        void ImportAssets(IEnumerable<AbcTrait> traits)
+        private void ImportAssets(IEnumerable<AbcTrait> traits)
         {
             foreach (var trait in traits)
                 ImportAssets(trait);
         }
 
-        void ImportAssets(AbcTrait trait)
+        private void ImportAssets(AbcTrait trait)
         {
             ImportEmbedAsset(trait);
 

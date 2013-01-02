@@ -99,15 +99,6 @@
     <Compile Include="Abc\AbcParameter.cs" />
     <Compile Include="Abc\AbcDumpService.cs" />
     <Compile Include="Abc\AbcExceptionHandler.cs" />
-    <Compile Include="Abc\AblAsset.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Abc\AblFile.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Abc\Dep.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Abc\Interfaces.cs" />
     <Compile Include="Abc\AbcNamespaceSet.cs" />
     <Compile Include="Abc\AbcProperty.cs" />
