@@ -156,7 +156,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			list.AddRange(impls);
 
 			// get impls of base method
-			if (BaseMethod != null && Signature.TypeEquals(BaseMethod.Type, Type))
+			if (IsOverride && BaseMethod != null && Signature.TypeEquals(BaseMethod.Type, Type))
 			{
 				list.AddRange(BaseMethod.Implements);
 			}

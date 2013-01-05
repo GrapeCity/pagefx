@@ -15,7 +15,7 @@ class A
 
 class B : A
 {
-    protected override string GetName()
+    protected internal override string GetName()
     {
         return "B";
     }
@@ -25,13 +25,12 @@ class X
 {
     static void Test1()
     {
-        B b = new B();
-        Console.WriteLine(doc.Name);
+        var o = new B();
+        Console.WriteLine(o.Name);
     }
 
     static void Main()
     {
-        Console.WriteLine("Hello!");
         Test1();
         Console.WriteLine("<%END%>");
     }
