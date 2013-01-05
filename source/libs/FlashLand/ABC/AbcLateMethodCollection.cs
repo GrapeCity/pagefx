@@ -56,7 +56,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
                 else
                 {
-                    var code = new AbcCode(method.ABC);
+                    var code = new AbcCode(method.ByteCode);
                     item.coder(code);
                     method.Finish(code);
                 }

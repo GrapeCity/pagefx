@@ -282,9 +282,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var trait = AbcTrait.CreateMethod(method, name);
             instance.AddTrait(trait, false);
             method.ReturnType = Abc.BuiltinTypes.Void;
-            method.AddParam(CreateParam(SystemTypes.Type, "type"));
+	        method.Parameters.Add(CreateParam(SystemTypes.Type, "type"));
 
-            var body = new AbcMethodBody(method);
+	        var body = new AbcMethodBody(method);
             AddMethod(method);
 
             var code = new AbcCode(Abc);

@@ -63,18 +63,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region IAbcAtom Members
-        int _begin;
-        int _end;
-
+        
         public void Read(SwfReader reader)
         {
-            _begin = (int)reader.Position;
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 1; i < n; ++i)
             {
                 Add(reader.ReadAbcConst<T>(AbcConst<T>.SharedKind));
             }
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -95,28 +91,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        public string FormatOffset(int offset)
-        {
-            if (offset >= _begin && offset < _end)
-            {
-                int n = Count;
-                if (n > 1)
-                {
-                    int off = _begin + SwfWriter.SizeOfUIntEncoded((uint)n);
-                    for (int i = 1; i < n; ++i)
-                    {
-                        int size = this[i].Size;
-                        if (offset >= off && offset < off + size)
-                        {
-                            return string.Format("{0} pool entry {1}", TypeName, i);
-                        }
-                        off += size;
-                    }
-                }
-            }
-            return null;
-        }
-        #endregion
+	    #endregion
 
         #region Dump
         static string TypeName

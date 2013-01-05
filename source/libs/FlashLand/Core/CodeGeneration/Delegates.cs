@@ -50,10 +50,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 instance.Initializer = abcMethod;
 
             abcMethod.ReturnType = DefineReturnType(method.Type);
-            abcMethod.AddParam(CreateParam(SystemTypes.Object, method.Parameters[0].Name));
-            abcMethod.AddParam(CreateParam(Abc.BuiltinTypes.Function, method.Parameters[1].Name));
+			abcMethod.Parameters.Add(CreateParam(SystemTypes.Object, method.Parameters[0].Name));
+			abcMethod.Parameters.Add(CreateParam(Abc.BuiltinTypes.Function, method.Parameters[1].Name));
 
-            if (!isInitializer)
+			if (!isInitializer)
             {
                 var trait = DefineMethodTrait(abcMethod, method);
                 instance.AddTrait(trait, false);

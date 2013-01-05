@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Describes method signature.
     /// </summary>
-    public class AbcMethod : ISupportXmlDump, ISwfIndexedAtom
+    public sealed class AbcMethod : ISupportXmlDump, ISwfIndexedAtom
     {
         #region Constructors
         public AbcMethod()
@@ -47,7 +47,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
         int _index = -1;
 
-        public AbcFile ABC { get; set; }
+        public AbcFile ByteCode { get; set; }
         
         /// <summary>
         /// Gets or sets method name.
@@ -62,7 +62,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             set { _name = value; }
         }
-        AbcConst<string> _name;
+        private AbcConst<string> _name;
 
         public string NameString
         {
@@ -115,17 +115,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        /// <summary>
-        /// Gets or sets method return type.
-        /// </summary>
-        public AbcMultiname ReturnType
-        {
-            get { return _returnType; }
-            set { _returnType = value; }
-        }
-        AbcMultiname _returnType;
+	    /// <summary>
+	    /// Gets or sets method return type.
+	    /// </summary>
+	    public AbcMultiname ReturnType { get; set; }
 
-        public bool IsVoid
+	    public bool IsVoid
         {
             get
             {
@@ -133,9 +128,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 {
                     return SourceMethod.ReturnsVoid();
                 }
-                if (_returnType == null) //any
+                if (ReturnType == null) //any
                     return false;
-                return _returnType.FullName == "void";
+                return ReturnType.FullName == "void";
             }
         }
 
@@ -146,35 +141,25 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get { return _params; }
         }
-        readonly AbcParameterList _params = new AbcParameterList();
+        private readonly AbcParameterList _params = new AbcParameterList();
 
-        public int ParamCount
-        {
-            get { return _params.Count; }
-        }
-
-        public int ActualParamCount
+	    public int ActualParamCount
         {
             get
             {
-                int n = ParamCount;
+                int n = Parameters.Count;
                 if (NeedRest)
                     return n + 1;
                 return n;
             }
         }
 
-        public void AddParam(AbcParameter p)
+	    public void AddParam(AbcMultiname type, AbcConst<string> name)
         {
-            _params.Add(p);
+	        Parameters.Add(new AbcParameter(type, name));
         }
 
-        public void AddParam(AbcMultiname type, AbcConst<string> name)
-        {
-            _params.Add(new AbcParameter(type, name));
-        }
-
-        #region Flags
+	    #region Flags
         public AbcMethodFlags Flags
         {
             get { return _flags; }
@@ -397,13 +382,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region IO
         public void Read(SwfReader reader)
         {
-            _begin = (int)reader.Position;
-
             int param_count = (int)reader.ReadUIntEncoded();
 
-            _returnType = reader.ReadMultiname(); //ret_type
-
-            _beginParamTypes = (int)reader.Position;
+            ReturnType = reader.ReadMultiname(); //ret_type
 
             //U30 param_types[param_count]
             for (int i = 0; i < param_count; ++i)
@@ -412,11 +393,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             	_params.Add(new AbcParameter {Type = type});
             }
 
-            _beginName = (int)reader.Position;
             _name = reader.ReadAbcString(); //name_index
             _flags = (AbcMethodFlags)reader.ReadUInt8();
 
-            _beginParamValues = (int)reader.Position;
             if ((_flags & AbcMethodFlags.HasOptional) != 0)
             {
                 int optionalCount = (int)reader.ReadUIntEncoded();
@@ -431,7 +410,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
             
-            _beginParamNames = (int)reader.Position;
             if ((_flags & AbcMethodFlags.HasParamNames) != 0)
             {
                 for (int i = 0; i < param_count; ++i)
@@ -439,7 +417,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     _params[i].Name = reader.ReadAbcString();
                 }
             }
-            _end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -449,8 +426,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             int param_count = _params.Count;
             writer.WriteUIntEncoded((uint)param_count);
 
-            if (_returnType == null) writer.WriteUInt8(0);
-            else writer.WriteUIntEncoded((uint)_returnType.Index);
+            if (ReturnType == null) writer.WriteUInt8(0);
+            else writer.WriteUIntEncoded((uint)ReturnType.Index);
 
             //U30 param_types[param_count]
             for (int i = 0; i < param_count; ++i)
@@ -502,30 +479,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        int _begin;
-        int _end;
-        int _beginParamTypes;
-        int _beginName;
-        int _beginParamValues;
-        int _beginParamNames;
-        
-        public string FormatOffset(int offset, int index)
-        {
-            if (offset >= _begin && offset < _end)
-            {
-                if (offset < _beginParamTypes)
-                    return string.Format("Method {0} before param types", index);
-                if (offset < _beginName)
-                    return string.Format("Method {0} in param types", index);
-                if (offset < _beginParamValues)
-                    return string.Format("Method {0} in method name", index);
-                if (offset < _beginParamNames)
-                    return string.Format("Method {0} in param values", index);
-                return string.Format("Method {0} in param names", index);
-            }
-            return null;
-        }
-        #endregion
+	    #endregion
 
         #region Xml Dump
         public void DumpXml(XmlWriter writer)
@@ -708,9 +662,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         internal int MethodInfoIndex { get; set; }
     }
 
-    public class AbcMethodCollection : List<AbcMethod>, ISwfAtom, ISupportXmlDump
+    public sealed class AbcMethodCollection : List<AbcMethod>, ISwfAtom, ISupportXmlDump
     {
-        readonly AbcFile _abc;
+        private readonly AbcFile _abc;
 
         public AbcMethodCollection(AbcFile abc)
         {
@@ -720,27 +674,23 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region Public Members
         public new void Add(AbcMethod method)
         {
-            if (method.ABC != null)
+            if (method.ByteCode != null)
                 throw new InvalidOperationException();
-            method.ABC = _abc;
+            method.ByteCode = _abc;
             method.Index = Count;
             base.Add(method);
         }
         #endregion
 
         #region IAbcAtom Members
-        //int _begin;
-        //int _end;
 
         public void Read(SwfReader reader)
         {
-            //_begin = (int)reader.Position;
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 0; i < n; ++i)
             {
                 Add(new AbcMethod(reader));
             }
-            //_end = (int)reader.Position;
         }
 
         public void Write(SwfWriter writer)
@@ -751,20 +701,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 this[i].Write(writer);
         }
 
-        public string FormatOffset(int offset)
-        {
-            int n = Count;
-            for (int i = 0; i < n; ++i)
-            {
-                var m = this[i];
-                string s = m.FormatOffset(offset, i);
-                if (!string.IsNullOrEmpty(s))
-                    return s;
-            }
-            return null;
-            //return AbcUtils.FormatOffset(offset, this, _begin, _end, "Methods", false, true);
-        }
-        #endregion
+	    #endregion
 
         #region Dump
         public void DumpXml(XmlWriter writer)

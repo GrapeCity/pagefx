@@ -2021,7 +2021,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 Getlex(instance);
                 if (args != null)
                     args();
-                Construct(method.ParamCount);
+                Construct(method.Parameters.Count);
             }
             else
             {

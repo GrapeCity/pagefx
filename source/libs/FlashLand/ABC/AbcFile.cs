@@ -725,7 +725,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 var f = op.Value as AbcMethod;
                 if (f != null)
                 {
-                    if (f.ABC != this)
+                    if (f.ByteCode != this)
                         throw new InvalidOperationException();
                 }
             }

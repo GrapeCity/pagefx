@@ -114,7 +114,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (method.IsNative)
                 return method;
 
-            var abc = method.ABC;
+            var abc = method.ByteCode;
             if (abc.IsCore)
                 return method;
 
@@ -391,7 +391,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (source.HasPseudoThis())
             {
                 var typeName = DefineMemberType(source.DeclaringType);
-                target.AddParam(CreateParam(typeName, "this"));
+	            target.Parameters.Add(CreateParam(typeName, "this"));
             }
 
             var abm = GetBaseMethod(target, source);
@@ -409,7 +409,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #endif
                     var p = source.Parameters[i];
                     var ap = CreateParam(p.Type, p.Name);
-                    target.AddParam(ap);
+	                target.Parameters.Add(ap);
                 }
             }
         }
@@ -429,7 +429,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private void CopyParams(AbcMethod to, AbcMethod from)
         {
-            int n = from.ParamCount;
+            int n = @from.Parameters.Count;
             for (int i = 0; i < n; ++i)
             {
 #if DEBUG
@@ -447,7 +447,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     ap.Value = Abc.ImportValue(bp.Value);
                     to.HasOptionalParams = true;
                 }
-                to.AddParam(ap);
+	            to.Parameters.Add(ap);
             }
             if (from.NeedRest)
                 to.NeedRest = true;

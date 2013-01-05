@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 			if (klass.Traits.Count == 0) return false;
 			var trait = klass.Traits.FindMethod("init");
 			if (trait == null) return false;
-			if (trait.Method.ParamCount != 1) return false;
+			if (trait.Method.Parameters.Count != 1) return false;
 			if (!strict) return true;
 			var type = trait.Method.Parameters[0].Type;
 			if (type == null) return false;

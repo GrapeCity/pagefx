@@ -260,7 +260,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 name, AvmTypeCode.Object,
                 code =>
 	                {
-		                int n = am.ParamCount;
+		                int n = am.Parameters.Count;
 		                bool hasReturn = false;
 		                if (m.IsConstructor)
 		                {
@@ -324,9 +324,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (addParam)
             {
-                wrapper.AddParam(Abc.DefineParam(AvmTypeCode.Object, "obj"));
+	            wrapper.Parameters.Add(Abc.DefineParam(AvmTypeCode.Object, "obj"));
             }
-            CopyParams(wrapper, am);
+	        CopyParams(wrapper, am);
 
             return wrapper;
         }

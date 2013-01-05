@@ -112,14 +112,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region IO
-        int _begin;
-        int _end;
-        int _beginCode;
-        int _endCode;
-
+        
         public void Read(SwfReader reader)
         {
-            _begin = (int)reader.Position;
             _method = reader.ReadAbcMethod();
             _method.Body = this;
 
@@ -129,13 +124,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             MaxScopeDepth = (int)reader.ReadUIntEncoded();
 
             int len = (int)reader.ReadUIntEncoded();
-            _beginCode = (int)reader.Position;
             var code = reader.ReadUInt8(len);
-            _endCode = (int)reader.Position;
 
             _exceptions.Read(reader);
             _traits.Read(reader);
-            _end = (int)reader.Position;
 
             _il = new ILStream();
 
@@ -174,23 +166,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             _traits.Write(writer);
         }
 
-        public string FormatOffset(int offset, int index)
-        {
-            if (offset >= _begin && offset < _end)
-            {
-                if (offset < _beginCode)
-                {
-                    return string.Format("MethodBody {0} in header", index);
-                }
-                if (offset < _endCode)
-                {
-                    return string.Format("MethodBody {0} in code block", index);
-                }
-                return string.Format("MethodBody {0} in tail", index);
-            }
-            return null;
-        }
-        #endregion
+	    #endregion
 
         #region XmlDump
         public void DumpXml(XmlWriter writer)
@@ -224,7 +200,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         internal void Finish(AbcFile abc)
         {
 	        //this + args
-	        int paramCount = Method.ParamCount;
+	        int paramCount = Method.Parameters.Count;
 	        int lcount = paramCount + 1;
 
 	        int n = IL.Count;
@@ -417,7 +393,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         internal AbcBodyFlags Flags;
     }
 
-    public class AbcMethodBodyCollection : List<AbcMethodBody>, ISwfAtom, ISupportXmlDump
+    public sealed class AbcMethodBodyCollection : List<AbcMethodBody>, ISwfAtom, ISupportXmlDump
     {
         #region IAbcAtom Members
         public void Read(SwfReader reader)
@@ -437,19 +413,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 this[i].Write(writer);
         }
 
-        public string FormatOffset(int offset)
-        {
-            int n = Count;
-            for (int i = 0; i < n; ++i)
-            {
-                var body = this[i];
-                string s = body.FormatOffset(offset, i);
-                if (!string.IsNullOrEmpty(s))
-                    return s;
-            }
-            return null;
-        }
-        #endregion
+	    #endregion
 
         #region ISupportXmlDump Members
         public void DumpXml(XmlWriter writer)
