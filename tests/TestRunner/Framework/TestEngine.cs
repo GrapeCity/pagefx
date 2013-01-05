@@ -50,7 +50,17 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
             test.Reset();
 
-	        RunCore(test, settings);
+			// TODO: provide option to clear caches
+            CommonLanguageInfrastructure.ClearCaches();
+
+            try
+            {
+                RunCore(test, settings);
+            }
+            finally
+            {
+                CommonLanguageInfrastructure.ClearCaches();
+            }
         }
         #endregion
 
@@ -208,19 +218,17 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         {
             if (test.IsBenchmark)
             {
-                if (settings.IsSWF)
+	            if (settings.IsSWF)
                 {
                     var results = FlashPlayer.Run(test.OutputPath);
                     test.Output2 = results.Output;
                     return;
                 }
-                else
-                {
-                    throw new NotImplementedException();
-                }
+
+	            throw new NotImplementedException();
             }
 
-            int exitCode1 = 0;
+	        int exitCode1 = 0;
             if (!test.HasOutput)
             {
                 test.VM = VM.CLR;

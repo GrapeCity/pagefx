@@ -85,6 +85,8 @@ namespace DataDynamics.PageFX.Ecma335
 #if PERF
             ILTranslator.CallCount = 0;
 #endif
+
+			AssemblyResolver.ClearCache();
         }
 
 #if PERF
