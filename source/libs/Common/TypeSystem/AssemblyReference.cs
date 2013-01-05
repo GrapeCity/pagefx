@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.Metadata;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {

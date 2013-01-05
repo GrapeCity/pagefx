@@ -1,5 +1,4 @@
 ﻿using System;
-using DataDynamics.PageFX.Common.Metadata;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.IL;
 using DataDynamics.PageFX.Ecma335.LoaderInternals.Collections;

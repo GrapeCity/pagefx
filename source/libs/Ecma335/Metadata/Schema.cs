@@ -1,5 +1,4 @@
 using System;
-using DataDynamics.PageFX.Common.Metadata;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.Ecma335.Metadata

@@ -104,12 +104,16 @@
     <Compile Include="IO\StreamExtensions.cs" />
     <Compile Include="IO\TextWriterExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Syntax\Keyword.cs" />
+    <Compile Include="Syntax\Punctuator.cs" />
     <Compile Include="TypeSystem\ArgumentCollection.cs" />
     <Compile Include="TypeSystem\ClassSemantics.cs" />
     <Compile Include="TypeSystem\CustomAttributeCollection.cs" />
     <Compile Include="TypeSystem\CustomAttributeProvider.cs" />
     <Compile Include="TypeSystem\IAssemblyLoader.cs" />
     <Compile Include="TypeSystem\IAssemblyReference.cs" />
+    <Compile Include="TypeSystem\MethodAttributes.cs" />
+    <Compile Include="TypeSystem\MethodImplAttributes.cs" />
     <Compile Include="TypeSystem\NumericType.cs" />
     <Compile Include="TypeSystem\ParameterExtensions.cs" />
     <Compile Include="TypeSystem\SystemType.cs" />
@@ -175,7 +179,6 @@
     <Compile Include="TypeSystem\Field.cs" />
     <Compile Include="TypeSystem\FieldCollection.cs" />
     <Compile Include="TypeSystem\FieldProxy.cs" />
-    <Compile Include="Metadata\Flags.cs" />
     <Compile Include="TypeSystem\GenericInstance.cs" />
     <Compile Include="TypeSystem\GenericMethodInstance.cs" />
     <Compile Include="TypeSystem\GenericParameter.cs" />
@@ -262,7 +265,7 @@
     <Compile Include="CodeModel\StatementVisitor.cs" />
     <Compile Include="Syntax\Attributes.cs" />
     <Compile Include="Syntax\EnumExtensions.cs" />
-    <Compile Include="Syntax\Enums.cs" />
+    <Compile Include="Syntax\FormatMode.cs" />
     <Compile Include="Syntax\ISyntaxProvider.cs" />
     <Compile Include="Syntax\SyntaxFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

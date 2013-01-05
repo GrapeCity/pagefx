@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.Common.Metadata;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
+	/// <summary>
+	/// Base implementation of method.
+	/// </summary>
     public class Method : TypeMember, IMethod
     {
 		private readonly string[] _sigNames = new string[2];

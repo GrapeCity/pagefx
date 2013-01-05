@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.Common.Metadata;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.Metadata;
 
@@ -53,10 +52,11 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			var sem = (MethodSemanticsAttributes)row[Schema.MethodSemantics.Semantics].Value;
 
 			SimpleIndex assoc = row[Schema.MethodSemantics.Association].Value;
+			var index = assoc.Index - 1;
 			switch (assoc.Table)
 			{
 				case TableId.Property:
-					var property = _loader.Properties[assoc.Index - 1];
+					var property = _loader.Properties[index];
 
 					Association = property;
 					switch (sem)
@@ -76,7 +76,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 					return property;
 
 				case TableId.Event:
-					var e = _loader.Events[assoc.Index - 1];
+					var e = _loader.Events[index];
 
 					Association = e;
 					switch (sem)
