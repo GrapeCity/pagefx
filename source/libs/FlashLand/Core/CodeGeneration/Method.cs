@@ -124,7 +124,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var instance = method.Instance;
             if (instance != null)
             {
-
                 var i2 = Abc.ImportInstance(instance, ref method);
                 if (i2 == null)
                     throw new InvalidOperationException();
@@ -152,7 +151,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (m != null)
             {
                 tag = ImportMethod(m);
-                DefineOverrideMethods(method);
+                DefineOverrideMethods(method, tag as AbcMethod);
                 return tag;
             }
             throw new InvalidOperationException();
@@ -287,11 +286,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 abcMethod.ReturnType = DefineReturnType(abcMethod, method);
             }
 
-            //if (IsSwc)
-            //{
-            //    abcMethod.Name = DefineMethodName(abcMethod);
-            //}
-
             //HACK: Define mx.core.FlexEvent argument for MX app ctor
             if (isMxAppCtor)
             {
@@ -305,44 +299,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 			DefineMethodBody(abcMethod);
             DefineImplementedMethods(method, instance, abcMethod);
-            DefineOverrideMethods(method);
+            DefineOverrideMethods(method, abcMethod);
 
             ImplementProtoMethods(method, abcMethod);
 
             return abcMethod;
         }
 
-        private AbcConst<string> DefineMethodName(AbcMethod method)
-        {
-            string name = "";
-            var instance = method.Instance;
-            if (instance != null)
-            {
-                string ns = instance.NamespaceString;
-                if (!string.IsNullOrEmpty(ns))
-                {
-                    name += ns;
-                    name += ":";
-                }
-                name += instance.NameString;
-                name += "/";
-            }
-            if (method.IsInitializer)
-            {
-                if (instance != null)
-                    name += instance.NameString;
-                else
-                    name += "iinit";
-            }
-            else
-            {
-                var t = method.Trait;
-                if (t == null) return null;
-                name += t.NameString;
-            }
-            return Abc.DefineString(name);
-        }
-        #endregion
+	    #endregion
 
         private void ImplementProtoMethods(IMethod method, AbcMethod abcMethod)
         {
@@ -351,10 +315,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
 
         #region DefineImplementedMethods
+		/// <summary>
+		/// Compiles <see cref="IMethod.Implements"/> methods.
+		/// </summary>
+		/// <param name="method"></param>
+		/// <param name="instance"></param>
+		/// <param name="abcMethod"></param>
         private void DefineImplementedMethods(IMethod method, AbcInstance instance, AbcMethod abcMethod)
         {
             var impls = method.Implements;
             if (impls == null) return;
+
             int n = impls.Count;
             if (n <= 0) return;
 
@@ -371,10 +342,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return;
             }
 
-            for (int i = 0; i < n; ++i)
-            {
-                DefineExplicitImplementation(instance, abcMethod, method, impls[i]);
-            }
+	        foreach (var ifaceMethod in impls)
+	        {
+		        var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
+				DefineExplicitImplementation(instance, abcMethod, method, ifaceMethod, ifaceAbcMethod);
+	        }
         }
         #endregion
 
@@ -519,7 +491,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region DefineOverrideMethods
-        private void DefineOverrideMethods(IMethod method)
+        private void DefineOverrideMethods(IMethod method, AbcMethod abcMethod)
         {
 	        if (!method.IsAbstract && !method.IsVirtual) return;
 
@@ -531,6 +503,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	        var instance = type.Data as AbcInstance;
 	        if (instance == null)
 		        throw new InvalidOperationException();
+
 	        if (instance.IsInterface)
 	        {
 				//TODO: fix this problem
@@ -541,7 +514,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			        DebugService.DoCancel();
 #endif
 			        var impl = instance.Implementations[i];
-			        DefineImplementation(impl.Type, method);
+			        DefineImplementation(impl, impl.Type, method, abcMethod);
 		        }
 	        }
 	        else
@@ -588,36 +561,39 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region DefineImplementation
-        private void DefineImplementation(IType implType, IMethod method)
+        private void DefineImplementation(AbcInstance implInstance, IType implType, IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
         {
-            if (implType == null)
-                throw new ArgumentNullException();
-
-            if (implType.IsInterface)
+			if (implInstance == null)
+				throw new ArgumentNullException("implInstance");
+			if (implType == null)
+				throw new ArgumentNullException("implType");
+			
+	        if (implType.IsInterface)
                 return;
 
-            var impl = implType.FindImplementation(method);
+            var impl = implType.FindImplementation(ifaceMethod, true, false);
 
             if (impl == null)
             {
-                //impl = AvmHelper.FindImplementation(implType, method);
-
                 throw new InvalidOperationException(
                     string.Format("Unable to find implementation for method {0} in type {1}",
-                                  method.FullName, implType.FullName));
+                                  ifaceMethod.FullName, implType.FullName));
             }
 
-	        impl = impl.ResolveGenericInstance(implType, method);
+	        impl = impl.ResolveGenericInstance(implType, ifaceMethod);
             
-            DefineMethod(impl);
+            var abcImpl = DefineMethod(impl) as AbcMethod;
+
+			if (abcImpl != null && !ReferenceEquals(impl.DeclaringType, implType))
+			{
+				DefineExplicitImplementation(implInstance, abcImpl, impl, ifaceMethod, ifaceAbcMethod);
+			}
         }
         #endregion
 
         #region DefineExplicitImplementation
-        private void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod, IMethod method, IMethod ifaceMethod)
+        private void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod, IMethod method, IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
         {
-            var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
-
             var m = instance.DefineMethod(
                 ifaceAbcMethod,
                 code =>
@@ -629,8 +605,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 		                else code.ReturnValue();
 	                });
 
-            //m.SourceMethod = method;
-            m.Trait.IsOverride = method.DeclaringType.BaseType.FindImplementation(ifaceMethod, true) != null;
+            m.Trait.IsOverride = method.DeclaringType.BaseType.FindImplementation(ifaceMethod, true, true) != null;
         }
         #endregion
 

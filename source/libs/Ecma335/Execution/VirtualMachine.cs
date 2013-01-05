@@ -1436,9 +1436,10 @@ namespace DataDynamics.PageFX.Ecma335.Execution
 		{
 			if (method.DeclaringType.IsInterface)
 			{
-				return type.FindImplementation(method);
+				return type.FindImplementation(method, true, false);
 			}
 
+			// TODO: use type.FindSameMethod
 			while (type != null)
 			{
 				foreach (var typeMethod in type.Methods)

@@ -820,45 +820,45 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		    return type.FindSameMethod(method, false);
 	    }
 
-	    public static IMethod FindImplementation(this IType type, IMethod ifaceMethod, bool inherited)
+	    public static IMethod FindImplementation(this IType type, IMethod ifaceMethod, bool inherit, bool onlyImpls)
 	    {
 		    if (ifaceMethod.IsGenericInstance)
 			    ifaceMethod = ifaceMethod.InstanceOf;
 
 		    while (type != null)
 		    {
-			    var impl = FindImpl(type, ifaceMethod);
+			    var impl = FindImpl(type, ifaceMethod, onlyImpls);
 			    if (impl != null)
 			    {
 				    return impl;
 			    }
-			    if (!inherited) break;
+			    if (!inherit) break;
 			    type = type.BaseType;
 		    }
 
 		    return null;
 	    }
 
-		private static IMethod FindImpl(this IType type, IMethod ifaceMethod)
-		{
-			var impl = (from candidate in type.Methods
-			                    where candidate.Implements != null &&
-			                          candidate.Implements.Any(x => x == ifaceMethod || x.ProxyOf == ifaceMethod)
-			                    select candidate).FirstOrDefault();
-			if (impl != null)
+	    private static IMethod FindImpl(this IType type, IMethod ifaceMethod, bool onlyImpls)
+	    {
+		    var impl = (from candidate in type.Methods
+		                where candidate.Implements != null &&
+		                      candidate.Implements.Any(x => x == ifaceMethod || x.ProxyOf == ifaceMethod)
+		                select candidate).FirstOrDefault();
+		    if (impl != null)
+		    {
+			    return impl;
+		    }
+
+			if (onlyImpls)
 			{
-				return impl;
+				return null;
 			}
 
-			var methods = type.Methods.Find(ifaceMethod.Name);
-			return (from candidate in methods
-			        where Signature.Equals(candidate, ifaceMethod, true)
-			        select candidate).FirstOrDefault();
-		}
-
-	    public static IMethod FindImplementation(this IType type, IMethod ifaceMethod)
-	    {
-		    return type.FindImplementation(ifaceMethod, true);
+		    var methods = type.Methods.Find(ifaceMethod.Name);
+		    return (from candidate in methods
+		            where Signature.Equals(candidate, ifaceMethod, true)
+		            select candidate).FirstOrDefault();
 	    }
 
 	    public static IMethod GetStaticCtor(this IType type)

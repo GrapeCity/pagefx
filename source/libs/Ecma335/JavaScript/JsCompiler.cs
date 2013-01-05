@@ -127,7 +127,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 					var implType = implClass.Type;
 					if (implType.IsInterface) continue;
 
-					var impl = implType.FindImplementation(method);
+					var impl = implType.FindImplementation(method, true, false);
 
 					if (impl == null)
 					{

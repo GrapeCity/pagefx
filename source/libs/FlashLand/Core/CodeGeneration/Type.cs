@@ -582,19 +582,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	    #endregion
 
         #region DefineCompiledMethods
-        void DefineCompiledMethods(AbcInstance instance)
+        private void DefineCompiledMethods(AbcInstance instance)
         {
             var type = instance.Type;
             if (type != null)
-                DefineCompiledMethods(type);
+                DefineCompiledMethods(instance, type);
         }
 
-        void DefineCompiledMethods(IType type)
+        private void DefineCompiledMethods(AbcInstance instance, IType type)
         {
-            var instance = type.Data as AbcInstance;
-            if (instance == null) return;
+            if (instance == null)
+				throw new ArgumentNullException("instance");
+	        if (type == null)
+				throw new ArgumentNullException("type");
 
-            ImplementArrayInterface(type);
+	        ImplementArrayInterface(type);
 
             //Define Compiled Interface Methods
             foreach (var iface in instance.Implements)
@@ -602,7 +604,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
                 DebugService.DoCancel();
 #endif
-                DefineCompiledMethods(type, iface);
+                DefineCompiledMethods(instance, type, iface);
             }
 
             //Define Override Methods for already Compiled Base Methods
@@ -612,12 +614,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
                 DebugService.DoCancel();
 #endif
-                DefineCompiledMethods(type, super);
+                DefineCompiledMethods(instance, type, super);
                 super = super.SuperType;
             }
         }
 
-        private void DefineCompiledMethods(IType type, AbcInstance super)
+		/// <summary>
+		/// Compiles override methods of specified base/interface type.
+		/// </summary>
+		/// <param name="instance"></param>
+		/// <param name="type"></param>
+		/// <param name="super">Base type or interface.</param>
+        private void DefineCompiledMethods(AbcInstance instance, IType type, AbcInstance super)
         {
             if (type.Is(SystemTypeCode.Exception)) return;
 
@@ -631,19 +639,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 if (!trait.IsMethod) continue;
 
                 var abcMethod = trait.Method;
-                var m = abcMethod.SourceMethod;
-                if (m == null) continue;
-                if (m.IsStatic) continue;
-                if (m.IsConstructor) continue;
+                var method = abcMethod.SourceMethod;
+                if (method == null) continue;
+                if (method.IsStatic) continue;
+                if (method.IsConstructor) continue;
 
                 if (super.IsInterface)
                 {
-                    DefineImplementation(type, m);
+                    DefineImplementation(instance, type, method, abcMethod);
                 }
                 else
                 {
-                    if (m.IsVirtual || m.IsAbstract)
-                        DefineOverrideMethod(type, m);
+                    if (method.IsVirtual || method.IsAbstract)
+                        DefineOverrideMethod(type, method);
                 }
             }
         }
