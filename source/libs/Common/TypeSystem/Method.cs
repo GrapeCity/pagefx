@@ -339,7 +339,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
 			if (method.IsStatic
 				|| method.IsAbstract
-				|| method.IsPrivate()
 				|| method.IsConstructor)
 				return null;
             

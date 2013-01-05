@@ -62,14 +62,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		{
 			if (method.BaseMethod != null)
 				return true;
+
 			if (method.Parameters.Count == 0)
 			{
-				switch (method.Visibility)
-				{
-					case Visibility.Private:
-					case Visibility.NestedPrivate:
-						return false;
-				}
+				if (method.IsPrivate())
+					return false;
+
 				string name = method.Name;
 				var bt = method.DeclaringType.BaseType;
 				while (bt != null)
@@ -80,6 +78,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 					bt = bt.BaseType;
 				}
 			}
+
 			return false;
 		}
 
@@ -129,11 +128,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 			var sb = new StringBuilder();
 
-			var sigName = declType.GetSigName(runtime);
+			var declTypeSig = declType.GetSigName(runtime);
 
 			if (declType.IsInterface)
 			{
-				sb.Append(sigName);
+				sb.Append(declTypeSig);
 				sb.Append(runtime == Runtime.Avm ? "." : "$");
 			}
 
@@ -148,7 +147,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			{
 				if (method.NeedDeclaringTypePrefix())
 				{
-					sb.Append(sigName);
+					sb.Append(declTypeSig);
 					sb.Append("_");
 				}
 
