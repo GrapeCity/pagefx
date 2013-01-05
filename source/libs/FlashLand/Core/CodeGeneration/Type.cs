@@ -211,7 +211,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var ifaceNames = DefineInterfaces(type);
 
             if (Abc.IsDefined(type))
-                return type.Data as AbcInstance;
+                return type.AbcInstance();
 
             var name = DefineInstanceName(type);
 
@@ -322,7 +322,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     baseType = SystemTypes.Object;
 
                 superName = DefineTypeName(baseType);
-                superType = baseType.Data as AbcInstance;
+                superType = baseType.AbcInstance();
 				return;
             }
 
@@ -465,7 +465,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 var iface = type.Interfaces[i];
                 var ifaceName = ifaceNames[i];
 
-                var ifaceInstance = iface.Data as AbcInstance;
+                var ifaceInstance = iface.AbcInstance();
                 if (ifaceInstance != null)
                 {
                     ifaceInstance.Implementations.Add(instance);
@@ -517,7 +517,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #region DefineMembers
         private void DefineMembers(IType type)
         {
-            var instance = type.Data as AbcInstance;
+            var instance = type.AbcInstance();
             if (instance == null) return;
             if (instance.IsForeign) return;
             if (type.IsArray) return;

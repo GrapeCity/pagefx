@@ -9,7 +9,6 @@ using System.Xml;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.IO;
-using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
@@ -162,7 +161,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        void LoadStdDoc()
+        private void LoadStdDoc()
         {
             var rs = typeof(AssemblyBuilder).GetResourceStream("apidoc.zip");
             if (rs == null) return;
@@ -181,34 +180,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
         #endregion
 
-        #region IDisposable Members
-        //Implement IDisposable.
-        public void Dispose()
+	    public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+			_abcFiles = null;
         }
 
-        void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // Free other state (managed objects).
-                _abcFiles = null;
-            }
-            // Free your own state (unmanaged objects).
-            // Set large fields to null.
-        }
-
-        // Use C# destructor syntax for finalization code.
-        ~AssemblyBuilder()
-        {
-            // Simply call Dispose(false).
-            Dispose(false);
-        }
-        #endregion
-
-        #region ISwcLinker Members
+	    #region ISwcLinker Members
 
         public IAssembly Assembly
         {
@@ -230,10 +207,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 	    #endregion
 
         #region Naming Utils
-        static readonly Hashtable namemap = new Hashtable();
+		private static readonly Hashtable namemap = new Hashtable();
 
         #region C# keywords
-        static readonly string[] CSharpKeywords =
+		private static readonly string[] CSharpKeywords =
             {
                 "abstract",
                 "event",
@@ -315,7 +292,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             };
         #endregion
 
-        static AssemblyBuilder()
+		static AssemblyBuilder()
         {
             //namemap["CASEINSENSITIVE"] = "CaseInsensitive";
             //namemap["UNIQUESORT"] = "UniqueSort";
@@ -325,9 +302,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             namemap["int"] = "Int";
         }
 
-        static readonly char[] BadNameChars = { '$' };
+		private static readonly char[] BadNameChars = { '$' };
 
-        static bool IsBadNameChar(char c)
+		private static bool IsBadNameChar(char c)
         {
             return BadNameChars.Contains(c);
         }
@@ -465,7 +442,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region BuildSwcDeps
-        void BuildSwcDeps(string path)
+		private void BuildSwcDeps(string path)
         {
             var f = new SwcDepFile();
             f.Build(_swc, this);
@@ -476,7 +453,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region BuildScript, BuildGlobalType
-        IType BuildGlobalType(AbcScript script, string ns)
+		private IType BuildGlobalType(AbcScript script, string ns)
         {
             if (string.IsNullOrEmpty(ns))
                 ns = SetNamespacePrefix(ns, NsPrefix);
@@ -504,7 +481,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return type;
         }
 
-        void BuildScript(AbcScript script)
+		private void BuildScript(AbcScript script)
         {
             foreach (var trait in script.Traits)
             {
@@ -527,7 +504,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return BuildTypeByName(fullname);
         }
 
-        static bool IsVoid(AbcMultiname name)
+		private static bool IsVoid(AbcMultiname name)
         {
             if (name == null) return false;
             if (name.Namespace == null) return false;
@@ -536,39 +513,39 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                    && name.NameString == "void";
         }
 
-        static bool IsVector(AbcMultiname name)
+		private static bool IsVector(AbcMultiname name)
         {
             if (name == null) return false;
             return name.FullName == "__AS3__.vec.Vector";
         }
 
-        static bool IsGlobalType(AbcMultiname name, string type)
+		private static bool IsGlobalType(AbcMultiname name, string type)
         {
             if (name == null) return false;
             return name.IsGlobalName(type);
         }
 
-        static bool IsNumber(AbcMultiname name)
+		private static bool IsNumber(AbcMultiname name)
         {
             return IsGlobalType(name, "Number");
         }
 
-        static bool IsInt(AbcMultiname name)
+		private static bool IsInt(AbcMultiname name)
         {
             return IsGlobalType(name, "int");
         }
 
-        static bool IsUInt(AbcMultiname name)
+		private static bool IsUInt(AbcMultiname name)
         {
             return IsGlobalType(name, "uint");
         }
 
-        static bool IsObject(AbcMultiname name)
+		private static bool IsObject(AbcMultiname name)
         {
             return IsGlobalType(name, "Object");
         }
 
-        static string GetVectorParamType(AbcMultiname param)
+		private static string GetVectorParamType(AbcMultiname param)
         {
             if (IsNumber(param)) return "double";
             if (IsInt(param)) return "int";
@@ -587,7 +564,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
     		return _abcFiles.Select(abc => FindInstance(abc, name)).FirstOrDefault(instance => instance != null);
     	}
 
-    	AbcInstance FindVector(string type)
+		private AbcInstance FindVector(string type)
         {
             string vtype = "Vector$" + type;
     		return _abcFiles.SelectMany(abc => abc.Instances)
@@ -756,7 +733,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         	return _genericVector;
         }
 
-        IGenericType _genericVector;
+		private IGenericType _genericVector;
         #endregion
 
         #region BuildType
@@ -781,7 +758,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 		//    return false;
 		//}
 
-        static bool IsVisible(AbcInstance instance)
+		private static bool IsVisible(AbcInstance instance)
         {
             //if (IsExcluded(instance))
             //{
@@ -805,7 +782,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return true;
         }
 
-        IType BuildType(AbcInstance instance)
+		private IType BuildType(AbcInstance instance)
         {
             if (instance.Type != null)
                 return instance.Type;
@@ -888,7 +865,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return type;
         }
 
-        string FindTypeSummary(AbcInstance instance)
+		private string FindTypeSummary(AbcInstance instance)
         {
 			if (_doc == null || _doc.DocumentElement == null) return null;
             if (instance == null) return null;
@@ -909,7 +886,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return elem == null ? null : elem.InnerText;
         }
 
-        void RegisterType(IType type)
+		private void RegisterType(IType type)
         {
             var mod = _assembly.MainModule;
             type.Module = mod;
@@ -918,9 +895,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region BuildEvents
-        const string FlashEvent = "flash.events.Event";
+		private const string FlashEvent = "flash.events.Event";
 
-        void BuildEvents(IType type, AbcInstance instance)
+		private void BuildEvents(IType type, AbcInstance instance)
         {
             var klass = instance.Class;
             var trait = klass.Trait;
@@ -937,7 +914,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             ImplementEvents(type);
         }
 
-        static void ImplementEvents(IType type)
+		private static void ImplementEvents(IType type)
         {
         	if (type.Interfaces == null) return;
 
@@ -956,7 +933,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         	}
         }
 
-    	static Event CopyEvent(IEvent e)
+		private static Event CopyEvent(IEvent e)
         {
             var copy = new Event
                          {
@@ -970,7 +947,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return copy;
         }
 
-        static void CopyAttrs(ICustomAttributeProvider from, ICustomAttributeProvider to)
+		private static void CopyAttrs(ICustomAttributeProvider from, ICustomAttributeProvider to)
         {
             foreach (var attr in from.CustomAttributes)
             {
@@ -990,7 +967,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
     		return FindMember(type, name) != null;
     	}
 
-        void BuildEvent(AbcMetaEntry me, IType type)
+		private void BuildEvent(AbcMetaEntry me, IType type)
         {
             string name = me["name"];
             string eventType = me["type"];
@@ -1036,7 +1013,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        static IEvent FindBaseEvent(IType type, string name)
+		private static IEvent FindBaseEvent(IType type, string name)
         {
             if (type.Interfaces != null)
             {
@@ -1059,7 +1036,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return null;
         }
 
-        IType BuildEventHandler(string fullname)
+		private IType BuildEventHandler(string fullname)
         {
             var eventType = BuildTypeByName(fullname);
             if (eventType == null)
@@ -1099,9 +1076,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region CustomMembers
-        static Hashtable _customMembers;
+		private static Hashtable _customMembers;
 
-        static void LoadCustomMembers()
+		private static void LoadCustomMembers()
         {
             if (_customMembers != null) return;
             _customMembers = new Hashtable();
@@ -1120,7 +1097,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        static void DefineCustomMembers(IType type, AbcInstance instance)
+		private static void DefineCustomMembers(IType type, AbcInstance instance)
         {
             LoadCustomMembers();
 
@@ -1134,7 +1111,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region BuildMembers
-        void BuildFields(IType type, IEnumerable<AbcTrait> traits)
+		private void BuildFields(IType type, IEnumerable<AbcTrait> traits)
         {
             foreach (var trait in traits)
             {
@@ -1145,7 +1122,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        void BuildMethods(IType type, IEnumerable<AbcTrait> traits)
+		private void BuildMethods(IType type, IEnumerable<AbcTrait> traits)
         {
             //build methods and properties
             foreach (var trait in traits)
@@ -1157,7 +1134,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        static void AddMethod(IType type, IMethod method)
+		private static void AddMethod(IType type, IMethod method)
         {
             if (method == null) return;
 
@@ -1171,7 +1148,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 type.Members.Add(assoc);
         }
 
-        static void AddMethod2(IType type, IMethod method)
+		private static void AddMethod2(IType type, IMethod method)
         {
             if (method.DeclaringType == null)
                 AddMethod(type, method);
@@ -1179,7 +1156,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region BuildCtor
-        void BuildCtors(IType declType, AbcMethod abcMethod, bool isStatic)
+		private void BuildCtors(IType declType, AbcMethod abcMethod, bool isStatic)
         {
             if (DoNotBuildCtor(abcMethod.Instance)) return;
 
@@ -1213,7 +1190,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             BuildOverloads(declType, method, abcMethod);
         }
 
-        XmlElement FindCtorDocElem(AbcMethod abcMethod)
+		private XmlElement FindCtorDocElem(AbcMethod abcMethod)
         {
             if (!_xdoc) return null;
 
@@ -1226,10 +1203,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region Fixes
-        static Hashtable _paramFix;
-        static Hashtable _returnFix;
+		private static Hashtable _paramFix;
+		private static Hashtable _returnFix;
 
-        static void LoadFixes()
+		private static void LoadFixes()
         {
             if (_paramFix != null) return;
             _paramFix = new Hashtable();
@@ -1267,7 +1244,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region BuildParams, BuildParam
-        class ParamFix
+		private sealed class ParamFix
         {
             public int index;
             public string name;
@@ -1885,7 +1862,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region BuildField
-        void BuildField(IType declType, AbcTrait trait)
+		private void BuildField(IType declType, AbcTrait trait)
         {
             bool isConst = trait.Kind == AbcTraitKind.Const;
             string name = trait.Name.NameString;
@@ -1961,7 +1938,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region Custom Attributes
-        static void DefineAttribute(ICustomAttributeProvider owner, string typeName, params object[] args)
+		private static void DefineAttribute(ICustomAttributeProvider owner, string typeName, params object[] args)
         {
             var attr = new CustomAttribute(typeName) {Owner = owner};
 
@@ -1981,17 +1958,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             owner.CustomAttributes.Add(attr);
         }
 
-        static void DefineIndexAttribute(ICustomAttributeProvider owner, string typeName, int index)
+		private static void DefineIndexAttribute(ICustomAttributeProvider owner, string typeName, int index)
         {
             DefineAttribute(owner, typeName, "index", index);
         }
 
-        static void DefineABCAttribute(ICustomAttributeProvider owner)
+		private static void DefineABCAttribute(ICustomAttributeProvider owner)
         {
             DefineAttribute(owner, Attrs.ABC);
         }
 
-        static void DefineQNameAttribute(ITypeMember owner, AbcMultiname name)
+		private static void DefineQNameAttribute(ITypeMember owner, AbcMultiname name)
         {
             var ns = name.Namespace;
 
@@ -2019,7 +1996,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        void DefineFPAttribute(IType declType, ITypeMember owner, AbcMultiname name)
+        private void DefineFPAttribute(IType declType, ITypeMember owner, AbcMultiname name)
         {
             if (!_useFPAttrs) return;
 
@@ -2027,7 +2004,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             var type = owner as IType;
             if (type != null)
             {
-                instance = type.Data as AbcInstance;
+                instance = type.AbcInstance();
                 if (instance != null)
                 {
                     float version = GetTypeFPVersion(name);
@@ -2037,7 +2014,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 return;
             }
 
-            instance = declType.Data as AbcInstance;
+            instance = declType.AbcInstance();
             if (instance != null)
             {
                 if (instance.FlashVersion == 9)
@@ -2057,7 +2034,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        static void DefineFPAttribute(ICustomAttributeProvider owner, float version)
+        private static void DefineFPAttribute(ICustomAttributeProvider owner, float version)
         {
         	if (version == 9)
         	{
@@ -2072,12 +2049,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         	DefineAttribute(owner, Attrs.FP, "version", version.ToString(CultureInfo.InvariantCulture));
         }
 
-    	void DefinePfxAttributes(IType declType, ITypeMember owner, AbcMultiname name)
+    	private void DefinePfxAttributes(IType declType, ITypeMember owner, AbcMultiname name)
         {
             var type = owner as IType;
             if (type != null)
             {
-                var instance = type.Data as AbcInstance;
+                var instance = type.AbcInstance();
                 if (instance != null)
                 {
                     DefineSwcAbcFileAttribute(owner, instance.Abc);
@@ -2090,13 +2067,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             DefineFPAttribute(declType, owner, name);
         }
 
-        void DefinePfxAttributes(IType declType, ITypeMember owner, AbcTrait trait)
+        private void DefinePfxAttributes(IType declType, ITypeMember owner, AbcTrait trait)
         {
             DefineTraitIndexAttribute(owner, trait);
             DefinePfxAttributes(declType, owner, trait.Name);
         }
 
-        void DefineTraitIndexAttribute(ICustomAttributeProvider owner, AbcTrait trait)
+        private void DefineTraitIndexAttribute(ICustomAttributeProvider owner, AbcTrait trait)
         {
             if (trait.Owner is AbcInstance)
             {
@@ -2120,7 +2097,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        void DefineSwcAbcFileAttribute(ICustomAttributeProvider owner, AbcFile abc)
+        private void DefineSwcAbcFileAttribute(ICustomAttributeProvider owner, AbcFile abc)
         {
             if (_swc == null) return;
             if (abc.Swf == null) return;
@@ -2149,7 +2126,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return _fp9.Instances.Contains(name);
         }
 
-        bool IsFP9Trait(AbcMultiname type, AbcMultiname name)
+        private bool IsFP9Trait(AbcMultiname type, AbcMultiname name)
         {
             if (_fpVersion == 9) return true;
             LoadFP9();
@@ -2182,7 +2159,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region Utils
-        static string GetInnerTextOf(XmlNode elem, string childElem)
+        private static string GetInnerTextOf(XmlNode elem, string childElem)
         {
             if (elem != null)
             {
@@ -2193,7 +2170,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return null;
         }
 
-        static string GetSummary(XmlNode elem)
+		private static string GetSummary(XmlNode elem)
         {
             return GetInnerTextOf(elem, "summary");
         }
@@ -2261,14 +2238,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return null;
         }
 
-        static string GetTypeName(AbcInstance instance)
+		private static string GetTypeName(AbcInstance instance)
         {
             if (instance == null) return null;
             string name = instance.FullName;
             return instance.Name.Namespace.IsGlobalPackage ? "Avm." + name : name;
         }
 
-        string GetTypeName(AbcTrait trait)
+		private string GetTypeName(AbcTrait trait)
         {
             if (_xdoc)
                 return GetTypeName(trait.Instance);
@@ -2288,14 +2265,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return typename;
         }
 
-        static bool IsAnyType(ISwfIndexedAtom name)
+		private static bool IsAnyType(ISwfIndexedAtom name)
         {
             if (name == null) return true;
             if (name.Index == 0) return true;
             return false;
         }
 
-        static bool IsVisible(AbcTrait t)
+		private static bool IsVisible(AbcTrait t)
         {
             string ns = t.Name.NamespaceString;
             //mx_internal = http://www.adobe.com/2006/flex/mx/internal
@@ -2304,7 +2281,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return IsVisible(t.Visibility);
         }
 
-        static bool IsVisible(Visibility v)
+		private static bool IsVisible(Visibility v)
         {
             switch (v)
             {
@@ -2319,25 +2296,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return false;
         }
 
-        static void InitTypeMember(ITypeMember m, AbcTrait trait)
+		private static void InitTypeMember(ITypeMember m, AbcTrait trait)
         {
             m.IsStatic = trait.IsStatic;
             m.Visibility = trait.Visibility;
             m.Name = trait.Name.NameString;
         }
 
-        static bool Is(AbcInstance instance, string fullname)
+		private static bool Is(AbcInstance instance, string fullname)
         {
             if (instance == null) return false;
             return instance.FullName == fullname;
         }
 
-        static bool IsDate(AbcInstance instance)
+		private static bool IsDate(AbcInstance instance)
         {
             return Is(instance, "Date");
         }
 
-        static bool DoNotBuildCtor(AbcInstance instance)
+		private static bool DoNotBuildCtor(AbcInstance instance)
         {
             if (instance == null) return true;
             if (IsDate(instance)) return true;
@@ -2355,7 +2332,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             get { return IsCoreAPI ? "Avm" : ""; }
         }
 
-        static string SetNamespacePrefix(string ns, string prefix)
+		private static string SetNamespacePrefix(string ns, string prefix)
         {
             if (string.IsNullOrEmpty(prefix))
                 return ns;

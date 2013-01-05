@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
             if (type == null)
                 throw Errors.Type.UnableToFind.CreateException(fullname);
 
-            var instance = type.Data as AbcInstance;
+            var instance = type.AbcInstance();
             if (instance == null)
                 throw Errors.Type.NotLinked.CreateException(fullname);
 

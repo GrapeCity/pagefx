@@ -603,7 +603,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #region EnumInfo
         private AbcMethod DefineEnumInfoInitializer(IType type)
         {
-            var enumInstance = type.Data as AbcInstance;
+            var enumInstance = type.AbcInstance();
             if (enumInstance == null)
                 throw new InvalidOperationException();
 

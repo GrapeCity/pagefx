@@ -150,15 +150,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return instance;
         }
 
-        AbcInstance FindAssetSuperType(AbcMultiname superName)
+        private AbcInstance FindAssetSuperType(AbcMultiname superName)
         {
             var type = FindTypeDefOrRef(superName.FullName);
             if (type == null)
                 throw new InvalidOperationException();
-            var instance = type.Data as AbcInstance;
+
+            var instance = type.AbcInstance();
             if (instance == null)
                 throw new InvalidOperationException();
+
             instance = Abc.ImportInstance(instance);
+
             return instance;
         }
         #endregion

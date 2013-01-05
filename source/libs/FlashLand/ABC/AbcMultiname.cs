@@ -32,20 +32,20 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             Kind = kind;
             Namespace = ns;
-            _name = name;
+            Name = name;
         }
 
         public AbcMultiname(AbcConstKind kind, AbcNamespaceSet nss, AbcConst<string> name)
         {
             Kind = kind;
             NamespaceSet = nss;
-            _name = name;
+            Name = name;
         }
 
         public AbcMultiname(AbcConstKind kind, AbcConst<string> name)
         {
             Kind = kind;
-            _name = name;
+            Name = name;
         }
 
         public AbcMultiname(AbcConstKind kind, AbcNamespaceSet nss)
@@ -165,21 +165,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
 
         #region Name
-        public AbcConst<string> Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        AbcConst<string> _name;
 
-        public string NameString
+		public AbcConst<string> Name { get; set; }
+
+		public string NameString
         {
             get
             {
                 if (_type != null)
                     return _type.NameString;
-                if (_name != null)
-                    return _name.Value;
+                if (Name != null)
+                    return Name.Value;
                 return "";
             }
         }
@@ -232,11 +228,11 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public bool IsGlobalName(string name)
         {
-            if (Namespace == null || _name == null)
+            if (Namespace == null || Name == null)
                 return false;
             if (!Namespace.IsGlobalPackage)
                 return false;
-            return _name.Value == name;
+            return Name.Value == name;
         }
 
         /// <summary>
@@ -295,7 +291,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     {
                         case AbcConstKind.QName:
                         case AbcConstKind.QNameA:
-                            key = KeyOf(Kind, Namespace, _name);
+                            key = KeyOf(Kind, Namespace, Name);
                             break;
 
                         case AbcConstKind.RTQNameL:
@@ -305,12 +301,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
                         case AbcConstKind.RTQName:
                         case AbcConstKind.RTQNameA:
-                            key = _name.Value + ((int)Kind);
+                            key = Name.Value + ((int)Kind);
                             break;
 
                         case AbcConstKind.Multiname:
                         case AbcConstKind.MultinameA:
-                            key = KeyOf(Kind, NamespaceSet, _name);
+                            key = KeyOf(Kind, NamespaceSet, Name);
                             break;
 
                         case AbcConstKind.MultinameL:
@@ -341,7 +337,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.QName:
                 case AbcConstKind.QNameA:
                     Namespace.Check();
-                    CheckConst(_name);
+                    CheckConst(Name);
                     break;
 
                 case AbcConstKind.RTQNameL:
@@ -350,13 +346,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
                 case AbcConstKind.RTQName:
                 case AbcConstKind.RTQNameA:
-                    CheckConst(_name);
+                    CheckConst(Name);
                     break;
 
                 case AbcConstKind.Multiname:
                 case AbcConstKind.MultinameA:
                     NamespaceSet.Check();
-                    CheckConst(_name);
+                    CheckConst(Name);
                     break;
 
                 case AbcConstKind.MultinameL:
@@ -383,13 +379,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.QName:
                 case AbcConstKind.QNameA:
                     Namespace = reader.ReadAbcNamespace();
-                    _name = reader.ReadAbcString();
+                    Name = reader.ReadAbcString();
                     break;
 
                     //U30 name_index
                 case AbcConstKind.RTQName:
                 case AbcConstKind.RTQNameA:
-                    _name = reader.ReadAbcString();
+                    Name = reader.ReadAbcString();
                     break;
 
                 case AbcConstKind.RTQNameL:
@@ -402,7 +398,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.Multiname:
                 case AbcConstKind.MultinameA:
                     {
-                        _name = reader.ReadAbcString();
+                        Name = reader.ReadAbcString();
 
                         int index = (int)reader.ReadUIntEncoded(); //ns_set
                         if (index == 0)
@@ -456,14 +452,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.QNameA:
                     {
                         writer.WriteUIntEncoded((uint)Namespace.Index);
-                        writer.WriteUIntEncoded((uint)_name.Index);
+                        writer.WriteUIntEncoded((uint)Name.Index);
                     }
                     break;
 
                 case AbcConstKind.RTQName:
                 case AbcConstKind.RTQNameA:
                     {
-                        writer.WriteUIntEncoded((uint)_name.Index);
+                        writer.WriteUIntEncoded((uint)Name.Index);
                     }
                     break;
 
@@ -477,7 +473,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.Multiname:
                 case AbcConstKind.MultinameA:
                     {
-                        writer.WriteUIntEncoded((uint)_name.Index);
+                        writer.WriteUIntEncoded((uint)Name.Index);
                         writer.WriteUIntEncoded((uint)NamespaceSet.Index);
                     }
                     break;
@@ -506,7 +502,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region Object Overrides
         public override int GetHashCode()
         {
-			return new object[] { Namespace, NamespaceSet, _name }.EvalHashCode() ^ (int)Kind;
+			return new object[] { Namespace, NamespaceSet, Name }.EvalHashCode() ^ (int)Kind;
         }
 
         private bool HasNamespace(AbcNamespace ns)
@@ -534,17 +530,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (mn.Kind == Kind)
                 {
-	                return Equals(mn._name, _name)
+	                return Equals(mn.Name, Name)
 	                       && Equals(mn.Namespace, Namespace)
 	                       && Equals(mn.NamespaceSet, NamespaceSet);
                 }
                 if (IsQName && mn.IsMultiname)
                 {
-	                return Equals(mn._name, _name) && mn.HasNamespace(Namespace);
+	                return Equals(mn.Name, Name) && mn.HasNamespace(Namespace);
                 }
 	            if (mn.IsQName && IsMultiname)
 	            {
-		            return Equals(mn._name, _name) && HasNamespace(mn.Namespace);
+		            return Equals(mn.Name, Name) && HasNamespace(mn.Namespace);
 	            }
 	            return false;
             }
@@ -621,7 +617,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     sb.Append(Namespace.ToString("f"));
                     sb.Append("} ");
                 }
-                if (_name != null)
+                if (Name != null)
                 {
                     sb.Append("name = ");
                     sb.Append(Name);
@@ -653,8 +649,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             else
             {
-                if (_name != null)
-                    writer.WriteAttributeString("name", _name.Value);
+                if (Name != null)
+                    writer.WriteAttributeString("name", Name.Value);
                 if (Namespace != null)
                 {
                     writer.WriteAttributeString("ns", Namespace.NameString);

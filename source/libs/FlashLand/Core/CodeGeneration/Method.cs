@@ -248,7 +248,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			}
 
             var declType = method.DeclaringType;
-            var instance = declType.Data as AbcInstance;
+            var instance = declType.AbcInstance();
             if (instance == null)
                 throw new InvalidOperationException();
 
@@ -500,7 +500,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #endif
 
 	        var type = method.DeclaringType;
-	        var instance = type.Data as AbcInstance;
+	        var instance = type.AbcInstance();
 	        if (instance == null)
 		        throw new InvalidOperationException();
 
@@ -584,6 +584,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             
             var abcImpl = DefineMethod(impl) as AbcMethod;
 
+			// determine whether we should create explicit impl
 			if (abcImpl == null || implInstance.IsForeign
 				|| ReferenceEquals(impl.DeclaringType, implType)
 				|| impl.Implements.Any(x => x == ifaceMethod))
@@ -591,10 +592,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 			DefineExplicitImplementation(implInstance, abcImpl, impl, ifaceMethod, ifaceAbcMethod);
         }
+
         #endregion
 
         #region DefineExplicitImplementation
-        private void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod, IMethod method, IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
+        private static void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod, IMethod method, IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
         {
             var m = instance.DefineMethod(
                 ifaceAbcMethod,

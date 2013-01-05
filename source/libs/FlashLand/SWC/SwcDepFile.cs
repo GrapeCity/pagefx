@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Swc
@@ -355,7 +356,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
                     if (string.IsNullOrEmpty(fullName)) continue;
                     var type = resolver.Resolve(fullName);
                     if (type == null) continue;
-                    var instance = type.Data as AbcInstance;
+                    var instance = type.AbcInstance();
                     if (instance != null)
                     {
                         if (instance.Swc == lib.SWC)

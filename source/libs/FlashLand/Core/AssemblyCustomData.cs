@@ -141,7 +141,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			var type = Assembly.FindType(fullname);
 			if (type == null) return null;
 			// type should be linked on type load
-			return type.Data as AbcInstance;
+			return type.AbcInstance();
 		}
     }
 

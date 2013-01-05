@@ -163,10 +163,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 							return _superType = type.Assembly.Corlib().CustomData().ObjectInstance;
 						}
 
-                        var super = type.BaseType;
-                        if (super != null)
+                        var baseType = type.BaseType;
+                        if (baseType != null)
                         {
-                            var instance = super.Data as AbcInstance;
+                            var instance = baseType.AbcInstance();
                             if (instance != null)
                                 return instance;
                         }

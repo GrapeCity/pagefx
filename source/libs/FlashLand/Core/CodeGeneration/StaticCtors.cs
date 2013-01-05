@@ -82,7 +82,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         internal void CallStaticCtor(AbcCode code, IType type)
         {
-            var instance = type.Data as AbcInstance;
+            var instance = type.AbcInstance();
             if (instance == null) return;
             CallStaticCtor(code, instance);
         }

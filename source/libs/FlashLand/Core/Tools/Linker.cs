@@ -210,8 +210,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private static bool IsLinked(IType type)
         {
-            var instance = type.Data as AbcInstance;
-            return instance != null;
+		    return type.AbcInstance() != null;
         }
 
         private bool IsCorLib

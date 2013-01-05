@@ -69,7 +69,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 	    public static bool IsNativeType(this IType type, string fullname)
         {
             if (type == null) return false;
-            var instance = type.Data as AbcInstance;
+            var instance = type.AbcInstance();
             if (instance == null) return false;
             if (!instance.IsNative) return false;
             return instance.FullName == fullname;
@@ -340,12 +340,8 @@ namespace DataDynamics.PageFX.FlashLand.Core
         public static bool IsAvmObject(this IType type)
         {
             if (type == null) return false;
-            var instance = type.Data as AbcInstance;
-            if (instance != null)
-                return instance.IsObject;
-            return false;
-            //string name = type.FullName;
-            //return name == "Avm.Object" || name == "Object";
+            var instance = type.AbcInstance();
+            return instance != null && instance.IsObject;
         }
 
         public static bool IsFromAvmObject(this IType type)
@@ -429,5 +425,14 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			    throw new ArgumentException(String.Format("Unable to find method {0} in type {1}", name, type.FullName));
 		    return m.GetSigName(Runtime.Avm);
 	    }
+
+		/// <summary>
+		/// Gets generated <see cref="AbcInstance"/> associated with the type.
+		/// </summary>
+		/// <param name="type">The type to get linked instance of.</param>
+		public static AbcInstance AbcInstance(this IType type)
+		{
+			return type != null ? type.Data as AbcInstance : null;
+		}
     }
 }

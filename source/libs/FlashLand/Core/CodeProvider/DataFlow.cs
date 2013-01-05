@@ -225,7 +225,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         private void LoadStaticInstance(AbcCode code, IType type)
         {
             EnsureType(type);
-            var instance = type.Data as AbcInstance;
+            var instance = type.AbcInstance();
             if (instance != null)
             {
                 if (instance.IsNative)

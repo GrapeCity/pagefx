@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return SetData(method, tag);
             }
 
-            var instance = type.Data as AbcInstance;
+            var instance = type.AbcInstance();
             if (instance != null)
             {
                 tag = ResolveCall(method, instance);

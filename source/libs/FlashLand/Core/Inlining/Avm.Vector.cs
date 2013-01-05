@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 			var type = method.DeclaringType;
 			if (type.Data is IVectorType) return true;
 
-			var instance = type.Data as AbcInstance;
+			var instance = type.AbcInstance();
 			if (instance != null && instance.IsNative)
 			{
 				var mn = instance.Name;
