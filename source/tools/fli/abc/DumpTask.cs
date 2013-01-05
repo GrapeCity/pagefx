@@ -763,7 +763,7 @@ namespace DataDynamics.PageFX
                         var ch = tag as ISwfCharacter;
                         if (ch != null)
                         {
-                            writer.Write("{0} - ", ch.CharacterID);
+                            writer.Write("{0} - ", ch.CharacterId);
                             writer.Write(tag.TagCode.ToString());
                             if (!string.IsNullOrEmpty(ch.Name))
                             {
@@ -859,7 +859,7 @@ namespace DataDynamics.PageFX
                     var c = tag as ISwfCharacter;
                     if (c != null)
                     {
-                        string name = c.CharacterID.ToString();
+                        string name = c.CharacterId.ToString();
                         if (!string.IsNullOrEmpty(c.Name))
                         {
                             name += "_";

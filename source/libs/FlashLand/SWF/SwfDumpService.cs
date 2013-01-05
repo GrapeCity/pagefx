@@ -77,7 +77,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
                         Directory.CreateDirectory(dir);
 
                         string name = "";
-                        name += c.CharacterID;
+                        name += c.CharacterId;
                         if (img.IsIndexed())
                             name += "_indexed";
                         if (!string.IsNullOrEmpty(c.Name))

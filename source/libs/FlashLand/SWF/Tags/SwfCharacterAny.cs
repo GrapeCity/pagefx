@@ -56,9 +56,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
             if (_body != null)
             {
                 var body = (byte[])_body.Clone();
-                return new SwfCharacterAny(CharacterID, _tagCode, body);
+                return new SwfCharacterAny(CharacterId, _tagCode, body);
             }
-            return new SwfCharacterAny(CharacterID, _tagCode);
+            return new SwfCharacterAny(CharacterId, _tagCode);
         }
     }
 }

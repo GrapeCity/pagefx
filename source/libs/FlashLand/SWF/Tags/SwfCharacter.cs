@@ -13,16 +13,16 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 
     	protected SwfCharacter(int id)
         {
-            CharacterID = checked((ushort)id);
+            CharacterId = checked((ushort)id);
         }
 
-    	public ushort CharacterID { get; set; }
+    	public ushort CharacterId { get; set; }
 
     	public string Name { get; set; }
 
     	public override sealed void ReadTagData(SwfReader reader)
         {
-            CharacterID = reader.ReadUInt16();
+            CharacterId = reader.ReadUInt16();
             ReadBody(reader);
         }
 
@@ -30,7 +30,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 
         public override sealed void WriteTagData(SwfWriter writer)
         {
-            writer.WriteUInt16(CharacterID);
+            writer.WriteUInt16(CharacterId);
             WriteBody(writer);
         }
 
@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteAttributeString("id", CharacterID.ToString());
+            writer.WriteAttributeString("id", CharacterId.ToString());
 
             if (!string.IsNullOrEmpty(Name))
                 writer.WriteAttributeString("name", Name);

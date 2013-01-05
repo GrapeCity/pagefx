@@ -271,7 +271,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
         {
             var tag = CreateBitmapTag(image);
             Tags.Add(tag);
-            return tag.CharacterID;
+            return tag.CharacterId;
         }
 
         public SwfCharacter CreateJpegTag(Image image)
@@ -913,7 +913,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
             var obj = mytag as ISwfCharacter;
             if (obj != null)
             {
-                obj.CharacterID = NewCharacterID();
+                obj.CharacterId = NewCharacterID();
             }
 
             AddImport(tag, mytag);
@@ -934,7 +934,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
                 Import(from, tag);
             _spriteStack.Pop();
 
-            mysprite.CharacterID = NewCharacterID();
+            mysprite.CharacterId = NewCharacterID();
             AddImport(sprite, mysprite);
 
             return mysprite;
@@ -953,7 +953,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
             c = Import(from, c as SwfTag) as ISwfCharacter;
             if (c == null)
                 throw UnableToImportChar(id);
-            id = c.CharacterID;
+            id = c.CharacterId;
         }
         #endregion
 

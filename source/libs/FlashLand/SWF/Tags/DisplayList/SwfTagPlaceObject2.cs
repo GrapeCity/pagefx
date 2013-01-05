@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList
         public SwfTagPlaceObject2(ISwfDisplayObject obj, Matrix matrix, SwfPlaceMode mode)
         {
             _depth = obj.Depth;
-            _cid = obj.CharacterID;
+            _cid = obj.CharacterId;
             _matrix = matrix;
 
             if (mode == SwfPlaceMode.Modify || mode == SwfPlaceMode.Renew)

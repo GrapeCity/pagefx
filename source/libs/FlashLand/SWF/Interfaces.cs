@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
     /// </summary>
     public interface ISwfCharacter : ISwfTag
     {
-        ushort CharacterID { get; set; }
+        ushort CharacterId { get; set; }
 
         string Name { get; set; }
     }

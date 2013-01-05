@@ -20,7 +20,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
         public SwfAsset(ISwfCharacter obj, string name)
         {
             Character = obj;
-            _id = obj.CharacterID;
+            _id = obj.CharacterId;
             Name = name;
         }
 
@@ -36,7 +36,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
             get
             {
                 if (Character != null)
-                    return Character.CharacterID;
+                    return Character.CharacterId;
                 return _id;
             }
             set { _id = value; }

@@ -79,7 +79,7 @@ namespace DataDynamics.PageFX.FlashLand.Tests
                     if (c != null)
                     {
                         msg = string.Format("{0}, #{1}, {2}, {3} - {4}",
-                                            resname, i, tag1.TagCode, c.CharacterID, c.Name);
+                                            resname, i, tag1.TagCode, c.CharacterId, c.Name);
                     }
                     else
                     {

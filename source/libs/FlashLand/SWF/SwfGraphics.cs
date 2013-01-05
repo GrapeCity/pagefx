@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
             var tag = obj as SwfTag;
             if (tag == null)
                 throw new ArgumentException();
-            obj.CharacterID = ++_swf.CID;
+            obj.CharacterId = ++_swf.CID;
             _swf.Tags.Add(tag);
             _swf.PlaceObject(obj, null);
         }

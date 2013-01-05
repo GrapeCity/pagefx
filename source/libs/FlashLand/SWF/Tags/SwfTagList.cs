@@ -176,7 +176,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 		            var c = tag as ISwfCharacter;
 		            if (c == null)
 			            return false;
-		            return c.CharacterID == id;
+		            return c.CharacterId == id;
 	            }) as ISwfCharacter;
         }
         #endregion

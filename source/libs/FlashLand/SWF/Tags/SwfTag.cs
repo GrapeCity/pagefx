@@ -277,7 +277,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
                 var c = this as ISwfCharacter;
                 if (c != null)
                 {
-                    sb.AppendFormat("({0})", c.CharacterID);
+                    sb.AppendFormat("({0})", c.CharacterId);
                 }
             }
             return sb.ToString();
