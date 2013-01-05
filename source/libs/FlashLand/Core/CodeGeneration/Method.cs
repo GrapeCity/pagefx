@@ -584,10 +584,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             
             var abcImpl = DefineMethod(impl) as AbcMethod;
 
-			if (abcImpl != null && !ReferenceEquals(impl.DeclaringType, implType))
-			{
-				DefineExplicitImplementation(implInstance, abcImpl, impl, ifaceMethod, ifaceAbcMethod);
-			}
+			if (abcImpl == null || implInstance.IsForeign
+				|| ReferenceEquals(impl.DeclaringType, implType)
+				|| impl.Implements.Any(x => x == ifaceMethod))
+				return;
+
+			DefineExplicitImplementation(implInstance, abcImpl, impl, ifaceMethod, ifaceAbcMethod);
         }
         #endregion
 

@@ -925,13 +925,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get { return _fileRefs; }
         }
-        readonly List<AbcFile> _fileRefs = new List<AbcFile>();
+        private readonly List<AbcFile> _fileRefs = new List<AbcFile>();
 
         internal List<AbcInstance> InstanceRefs
         {
             get { return _instanceRefs; }
         }
-        readonly List<AbcInstance> _instanceRefs = new List<AbcInstance>();
+        private readonly List<AbcInstance> _instanceRefs = new List<AbcInstance>();
 
         internal void AddNsRef(string ns)
         {
@@ -940,7 +940,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (!_nsrefs.Contains(ns))
                 _nsrefs.Add(ns);
         }
-        HashList<string, string> _nsrefs;
+        private HashList<string, string> _nsrefs;
 
         internal IEnumerable<string> GetNsRefs()
         {

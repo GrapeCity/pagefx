@@ -55,7 +55,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Contains traits for non-static members of user defined type.
     /// </summary>
-    public class AbcInstance : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
+    public sealed class AbcInstance : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
     {
         #region Constructors
         public AbcInstance()
@@ -1045,10 +1045,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     #endregion
 
     #region class AbcInstanceCollection
-    public class AbcInstanceCollection : List<AbcInstance>, ISupportXmlDump
+    public sealed class AbcInstanceCollection : List<AbcInstance>, ISupportXmlDump
     {
-        readonly AbcFile _abc;
-        readonly Hashtable _cache = new Hashtable();
+        private readonly AbcFile _abc;
+        private readonly Hashtable _cache = new Hashtable();
 
         public AbcInstanceCollection(AbcFile abc)
         {
