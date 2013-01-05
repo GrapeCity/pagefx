@@ -100,8 +100,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		public static IMethod GetExplicitImpl(this IMethod method)
 		{
-			if (method == null) return null;
-			if (!method.IsExplicitImplementation) return null;
+			if (method == null || !method.IsExplicitImplementation)
+				return null;
 			var impl = method.Implements;
 			if (impl == null || impl.Count != 1)
 				throw new InvalidOperationException("bad explicit implementation");
@@ -265,6 +265,19 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			}
 
 			return false;
+		}
+
+		public static bool IsPrivate(this IMethod method)
+		{
+			switch (method.Visibility)
+			{
+				case Visibility.PrivateScope:
+				case Visibility.NestedPrivate:
+				case Visibility.Private:
+					return true;
+				default:
+					return false;
+			}
 		}
 	}
 }

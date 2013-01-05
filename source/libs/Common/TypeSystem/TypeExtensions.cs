@@ -433,10 +433,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return false;
 		}
 
-		public static IEnumerable<IType> GetBaseTypes(this IType type)
+		public static IEnumerable<IType> BaseTypes(this IType type)
         {
-            for (var bt = type.BaseType; bt != null; bt = bt.BaseType)
-                yield return bt;
+            for (var t = type.BaseType; t != null; t = t.BaseType)
+                yield return t;
         }
 
         public static bool IsDecimalOrInt64(IType type)

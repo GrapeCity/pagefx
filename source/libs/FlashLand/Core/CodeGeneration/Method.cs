@@ -13,7 +13,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
     internal partial class AbcGenerator
     {
         #region GetMethodName
-        private AbcMultiname GetMethodName(IMethod method)
+        private AbcMultiname DefineQName(IMethod method)
         {
             string name = method.GetSigName(Runtime.Avm);
             return Abc.DefineQName(method, name);
@@ -45,19 +45,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             isOverride = method.IsOverride();
 
-            var bm = method.BaseMethod;
-            if (isOverride && bm != null)
+	        if (isOverride && method.BaseMethod != null)
             {
-                var mn = GetDefinedMethodName(bm);
+                var mn = GetDefinedMethodName(method.BaseMethod);
                 if (mn != null) return mn;
             }
 
             var impls = method.Implements;
             if (impls != null && impls.Count == 1)
             {
-                var impl = impls[0];
-                if (impl != null)
-                    return GetDefinedMethodName(impl);
+	            return GetDefinedMethodName(impls[0]);
             }
 
             string name = GetFixedName(method) ?? method.GetSigName(Runtime.Avm);

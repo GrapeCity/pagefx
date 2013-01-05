@@ -568,33 +568,54 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			return ConvertMethodId.Unknown;
 		}
 
-		private static bool HasBaseExplicitImpl(this IMethod method)
-		{
-			if (method == null) return false;
-			var ifaceMethod = method.GetExplicitImpl();
-			if (ifaceMethod == null) return false;
-			var declType = method.DeclaringType;
-			if (declType.BaseType.FindImplementation(ifaceMethod, true) != null)
-				return true;
-			return false;
-		}
-
 		public static bool IsOverride(this IMethod method)
 		{
-			if (method.IsStatic) return false;
-			if (method.IsConstructor) return false;
-			if (method.IsAbstract) return false;
+			if (method.IsStatic
+			    || method.IsAbstract
+			    || method.IsConstructor)
+				return false;
+
+			if (method.IsExplicitImplementation)
+			{
+				return method.HasBaseExplicitImpl();
+			}
+
+			if (method.IsPrivate())
+				return false;
 
 			if (method.IsVirtual)
 			{
-				if (method.IsNewSlot)
-					return method.HasBaseExplicitImpl();
-
-				return method.HasSameBaseMethod();
-				//return true;
+				return method.IsNewSlot
+					       ? method.HasBaseExplicitImpl()
+					       : method.HasSameBaseMethod();
 			}
 
 			return false;
+		}
+
+		private static bool HasBaseExplicitImpl(this IMethod method)
+		{
+			return method.FindBaseExplicitImpl() != null;
+		}
+
+		private static IMethod FindBaseExplicitImpl(this IMethod method)
+		{
+			if (method == null) return null;
+			var ifaceMethod = method.GetExplicitImpl();
+			if (ifaceMethod == null) return null;
+
+			var type = method.DeclaringType.BaseType;
+			while (type != null)
+			{
+				var impl = type.Methods
+				               .Select(x => x.GetExplicitImpl())
+				               .FirstOrDefault(x => x == ifaceMethod);
+				if (impl != null)
+					return impl;
+				type = type.BaseType;
+			}
+
+			return null;
 		}
 
 		private static bool IsProtected(this Visibility x)
@@ -612,15 +633,13 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
 		private static bool AreEquals(Visibility x, Visibility y)
 		{
-			if (x == y) return true;
-			if (x.IsProtected()) return y.IsProtected();
-			return false;
+			return x == y || (x.IsProtected() && y.IsProtected());
 		}
 
 		private static bool HasSameBaseMethod(this IMethod method)
 		{
 			var bm = method.BaseMethod;
-			return bm != null && ReferenceEquals(bm.Type, method.Type)
+			return bm != null && Signature.TypeEquals(bm.Type, method.Type)
 			       && AreEquals(bm.Visibility, method.Visibility);
 		}
 

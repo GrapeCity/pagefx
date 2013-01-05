@@ -337,11 +337,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    private static IMethod ResolveBaseMethod(IMethod method)
         {
-            if (method.IsStatic) return null;
-            if (method.IsConstructor) return null;
-            if (method.IsAbstract) return null;
-
-            var declType = method.DeclaringType;
+			if (method.IsStatic
+				|| method.IsAbstract
+				|| method.IsPrivate()
+				|| method.IsConstructor)
+				return null;
+            
+		    var declType = method.DeclaringType;
             if (declType.IsInterface) return null;
 
             var baseType = declType.BaseType;

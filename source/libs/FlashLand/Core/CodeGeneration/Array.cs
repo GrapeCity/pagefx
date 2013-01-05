@@ -241,7 +241,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (method.Name != CLRNames.Array.Getter) return null;
 
             //string name = "Get" + NameUtil.GetParamsString(method);
-            var name = GetMethodName(method);
+            var name = DefineQName(method);
             return instance.DefineInstanceMethod(
                 name, method.Type,
                 code =>
@@ -263,7 +263,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (!type.IsArray) return null;
             if (method.Name != CLRNames.Array.Setter) return null;
 
-            var name = GetMethodName(method);
+            var name = DefineQName(method);
             return instance.DefineInstanceMethod(
                 name, method.Type,
                 code =>

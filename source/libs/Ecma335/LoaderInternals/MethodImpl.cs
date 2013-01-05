@@ -106,12 +106,20 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 		protected override IReadOnlyList<IMethod> ResolveImpls()
 		{
 			if (NoImpls(this))
+			{
 				return EmptyReadOnlyList.Create<IMethod>();
+			}
+
+			var explicitImpl = FindExplicitImpl();
+			if (explicitImpl != null)
+			{
+				return new[] {explicitImpl}.AsReadOnlyList();
+			}
 
 			var list = new List<IMethod>();
 			Implements = list.AsReadOnlyList();
 
-			PopulateImpls(list);
+			PopulateImplicitImpls(list);
 
 			return Implements;
 		}
@@ -121,6 +129,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			if (method.IsStatic || method.IsConstructor)
 				return true;
 
+			// exclude protected, internal
 			switch (method.Visibility)
 			{
 				case Visibility.NestedProtected:
@@ -135,34 +144,22 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			return method.DeclaringType.IsInterface;
 		}
 
-		private void PopulateImpls(List<IMethod> list)
+		private void PopulateImplicitImpls(List<IMethod> list)
 		{
 			var declType = DeclaringType;
-				
-			var explicitImpl = FindExplicitImpl();
-			if (explicitImpl != null)
-			{
-				list.Add(explicitImpl);
-				return;
-			}
+			var explictImpls = declType.Methods.Where(x => !NoImpls(x) && x.IsExplicitImplementation).Select(x => x.Implements[0]).ToList();
 
-			//TODO: Add impls of base method
+			// get iface methods that has no explicit impls
+			var ifaces = declType.Interfaces.SelectMany(x => x.Methods).Where(x => explictImpls.All(t => t != x));
 
-			var typeMethods =
-				declType.Methods
-				        .Where(x => x != this && x != ProxyOf && x != InstanceOf && !NoImpls(x))
-				        .ToList();
-
-			var ifaces = declType.Interfaces.SelectMany(x => x.Methods);
-			var impls = ifaces
-				.Where(x => Signature.Equals(this, x, true) && !HasExplicitImpl(typeMethods, x));
-
+			var impls = ifaces.Where(x => Signature.Equals(this, x, true));
 			list.AddRange(impls);
-		}
 
-		private static bool HasExplicitImpl(IEnumerable<IMethod> typeMethods, IMethod ifaceMethod)
-		{
-			return typeMethods.Any(x => x.IsExplicitImplementation && x.Implements[0] == ifaceMethod);
+			// get impls of base method
+			if (BaseMethod != null && Signature.TypeEquals(BaseMethod.Type, Type))
+			{
+				list.AddRange(BaseMethod.Implements);
+			}
 		}
 
 		private IMethod FindExplicitImpl()
@@ -170,18 +167,29 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			var declType = DeclaringType;
 			var typeIndex = declType.RowIndex();
 			var rows = _loader.Metadata.LookupRows(TableId.MethodImpl, Schema.MethodImpl.Class, typeIndex, true);
+			var context = new Context(declType);
 
 			foreach (var row in rows)
 			{
 				SimpleIndex bodyIdx = row[Schema.MethodImpl.MethodBody].Value;
-				var body = _loader.GetMethodDefOrRef(bodyIdx, new Context(declType));
-				if (body == this)
+				SimpleIndex declIdx = row[Schema.MethodImpl.MethodDeclaration].Value;
+
+				var impl = _loader.GetMethodDefOrRef(bodyIdx, context);
+				if (impl == null)
+					throw new InvalidOperationException();
+
+				var iface = _loader.GetMethodDefOrRef(declIdx, new Context(declType, impl));
+				if (iface == null)
+					throw new InvalidOperationException();
+
+				impl.IsExplicitImplementation = true;
+
+				if (impl == this)
 				{
-					SimpleIndex declIdx = row[Schema.MethodImpl.MethodDeclaration].Value;
-					var decl = _loader.GetMethodDefOrRef(declIdx, new Context(declType, body));
-					body.IsExplicitImplementation = true;
-					return decl;
+					return iface;
 				}
+
+				impl.Implements = new[] {iface}.AsReadOnlyList();
 			}
 
 			return null;
