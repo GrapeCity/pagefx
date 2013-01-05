@@ -370,9 +370,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 var i = Owner as AbcInstance;
                 if (i != null) return i;
+
                 var c = Owner as AbcClass;
-                if (c != null) return c.Instance;
-                return null;
+                return c != null ? c.Instance : null;
             }
         }
 

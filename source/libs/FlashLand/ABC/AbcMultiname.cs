@@ -61,8 +61,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (param == null)
                 throw new ArgumentNullException("param");
             Kind = AbcConstKind.TypeName;
-            _type = type;
-            _typeParam = param;
+            Type = type;
+            TypeParameter = param;
         }
 
         internal AbcMultiname(SwfReader reader)
@@ -142,8 +142,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                if (_type != null)
-                    return _type.NamespaceString;
+                if (Type != null)
+                    return Type.NamespaceString;
                 if (Namespace != null)
                     return Namespace.NameString;
                 if (NamespaceSet != null && NamespaceSet.Count > 0)
@@ -156,8 +156,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                if (_type != null)
-                    return _type.Visibility;
+                if (Type != null)
+                    return Type.Visibility;
                 if (Namespace != null)
                     return Namespace.Visibility;
                 return Visibility.Private;
@@ -172,8 +172,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                if (_type != null)
-                    return _type.NameString;
+                if (Type != null)
+                    return Type.NameString;
                 if (Name != null)
                     return Name.Value;
                 return "";
@@ -186,11 +186,11 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (IsParameterizedType)
                 {
-                    if (_type != null)
+                    if (Type != null)
                     {
-                        string s = _type.FullName;
-                        if (_typeParam != null)
-                            s += "$" + _typeParam.FullName;
+                        string s = Type.FullName;
+                        if (TypeParameter != null)
+                            s += "$" + TypeParameter.FullName;
                         return s;
                     }
                     return "";
@@ -244,21 +244,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
 
         #region ParameterizedType
-        public AbcMultiname Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
-        AbcMultiname _type;
 
-        public AbcMultiname TypeParameter
-        {
-            get { return _typeParam; }
-            set { _typeParam = value; }
-        }
-        AbcMultiname _typeParam;
+		public AbcMultiname Type { get; set; }
 
-        public bool IsParameterizedType
+		public AbcMultiname TypeParameter { get; set; }
+
+		public bool IsParameterizedType
         {
             get { return Kind == AbcConstKind.TypeName; }
         }
@@ -315,7 +306,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                             break;
 
                         case AbcConstKind.TypeName:
-                            key = _type.Key + "<" + _typeParam.Key + ">";
+                            key = Type.Key + "<" + TypeParameter.Key + ">";
                             break;
                     }
                 }
@@ -361,8 +352,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     break;
 
                 case AbcConstKind.TypeName:
-                    _type.Check();
-                    _typeParam.Check();
+                    Type.Check();
+                    TypeParameter.Check();
                     break;
             }
         }
@@ -425,7 +416,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                         if (typeIndex == 0 || typeIndex >= reader.MultinameCount)
                             throw new BadImageFormatException(string.Format("TypeIndex {0} is out of range", typeIndex));
 
-                        _type = reader.ABC.Multinames[typeIndex];
+                        Type = reader.ABC.Multinames[typeIndex];
 
                         int one = (int)reader.ReadUIntEncoded();
                         if (one != 1)
@@ -434,7 +425,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                         //NOTE: In Tamarin AbcParser does not check paramIndex
                         //Therefore param multiname can be not read yet.
                         int paramIndex = (int)reader.ReadUIntEncoded();
-                        _typeParam = new AbcMultiname {Index = paramIndex};
+                        TypeParameter = new AbcMultiname {Index = paramIndex};
                     }
                     break;
 
@@ -487,9 +478,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
                 case AbcConstKind.TypeName:
                     {
-                        writer.WriteUIntEncoded((uint)_type.Index);
+                        writer.WriteUIntEncoded((uint)Type.Index);
                         writer.WriteByte(1);
-                        writer.WriteUIntEncoded((uint)_typeParam.Index);
+                        writer.WriteUIntEncoded((uint)TypeParameter.Index);
                     }
                     break;
 
@@ -583,14 +574,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             if (IsParameterizedType)
             {
-                if (_type != null)
+                if (Type != null)
                 {
                     sb.Append("type = ");
-                    sb.Append(_type.ToString());
-                    if (_typeParam != null)
+                    sb.Append(Type.ToString());
+                    if (TypeParameter != null)
                     {
                         sb.Append(", param = ");
-                        sb.Append(_typeParam.ToString());
+                        sb.Append(TypeParameter.ToString());
                     }
                 }
             }
@@ -642,10 +633,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             writer.WriteAttributeString("kind", Kind.ToString());
             if (IsParameterizedType)
             {
-                if (_type != null)
-                    writer.WriteAttributeString("type", _type.ToString());
-                if (_typeParam != null)
-                    writer.WriteAttributeString("param", _typeParam.ToString());
+                if (Type != null)
+                    writer.WriteAttributeString("type", Type.ToString());
+                if (TypeParameter != null)
+                    writer.WriteAttributeString("param", TypeParameter.ToString());
             }
             else
             {

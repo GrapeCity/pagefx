@@ -81,7 +81,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
 
         public string NameString
-
         {
             get { return Name != null ? Name.Value : ""; }
         }

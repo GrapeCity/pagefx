@@ -590,8 +590,34 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				|| impl.Implements.Any(x => x == ifaceMethod))
 				return;
 
-			DefineExplicitImplementation(implInstance, abcImpl, impl, ifaceMethod, ifaceAbcMethod);
+			if (Equals(abcImpl.TraitName, ifaceAbcMethod.TraitName))
+				return;
+
+			if (abcImpl.TraitName != null && ifaceAbcMethod.TraitName != null
+				&& abcImpl.TraitName.IsGlobalName(ifaceAbcMethod.TraitName.NameString)
+				&& HasFlashIfaceName(ifaceAbcMethod))
+				return;
+
+	        DefineExplicitImplementation(implInstance, abcImpl, impl, ifaceMethod, ifaceAbcMethod);
         }
+
+		private static bool HasFlashIfaceName(AbcMethod method)
+		{
+			var mn = method.TraitName;
+			if (mn == null) return false;
+			if (!mn.IsQName) return false;
+			if (mn.Namespace.Kind != AbcConstKind.PublicNamespace) return false;
+
+			var instance = method.Instance;
+			if (instance == null) return false;
+			if (!instance.Name.IsQName) return false;
+
+			var ns = instance.Name.Namespace.NameString;
+			var name = instance.Name.NameString;
+			ns = string.IsNullOrEmpty(ns) ? name : ns + ":" + name;
+
+			return mn.Namespace.NameString == ns;
+		}
 
         #endregion
 
