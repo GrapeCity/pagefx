@@ -632,12 +632,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	    private static void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod,
 	                                                     IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
 	    {
-		    var isOverride =
-			    instance.BaseInstances()
-			            .FirstOrDefault(x => x.Traits.Contains(ifaceAbcMethod.TraitName, ifaceAbcMethod.Trait.Kind)) != null;
-
 		    instance.DefineMethod(
-			    Sig.@from(ifaceAbcMethod).@override(isOverride),
+			    Sig.@from(ifaceAbcMethod),
 			    code =>
 				    {
 					    code.LoadThis();
@@ -645,8 +641,31 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 					    code.Call(abcMethod);
 					    if (ifaceAbcMethod.IsVoid) code.ReturnVoid();
 					    else code.ReturnValue();
+				    },
+			    m =>
+				    {
+					    var isOverride =
+						    instance.BaseInstances()
+						            .FirstOrDefault(x => x.Traits.Contains(ifaceAbcMethod.TraitName, ifaceAbcMethod.Trait.Kind)) != null;
+
+					    m.Trait.IsOverride = isOverride;
+
+					    OverrideExplicitImplsInSubclasses(instance, ifaceAbcMethod);
 				    });
 	    }
+
+		private static void OverrideExplicitImplsInSubclasses(AbcInstance instance, AbcMethod ifaceMethod)
+		{
+			var name = ifaceMethod.TraitName;
+			foreach (var c in instance.Subclasses)
+			{
+				var t = c.Traits.Find(name, ifaceMethod.Trait.Kind);
+				if (t != null)
+				{
+					t.IsOverride = true;
+				}
+			}
+		}
 
 	    #endregion
 

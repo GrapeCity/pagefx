@@ -597,8 +597,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
 
         internal int MethodInfoIndex { get; set; }
-
-		internal AbcMethod ExplicitlyImplements { get; set; }
     }
 
 	[Flags]
