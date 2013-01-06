@@ -474,7 +474,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             RegisterType(type);
 
-            DefineSwcAbcFileAttribute(type, script.ABC);
+            DefineSwcAbcFileAttribute(type, script.Abc);
             //DefineIndexAttribute(type, Attrs.AbcScript, script.Index);
             DefineAttribute(type, Attrs.GlobalFunctions);
 
@@ -815,7 +815,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             DefinePfxAttributes(null, type, instance.Name);
 
-            if (instance.SuperName != null && instance.SuperName.Index != 0)
+            if (instance.BaseTypeName != null && instance.BaseTypeName.Index != 0)
             {
                 if (instance.FullName == "Error")
                 {
@@ -823,7 +823,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 }
                 else
                 {
-                    var baseType = BuildTypeByName(instance.SuperName);
+                    var baseType = BuildTypeByName(instance.BaseTypeName);
                     type.BaseType = baseType;
                 }
             }
@@ -2090,7 +2090,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             var script = trait.Owner as AbcScript;
             if (script != null)
             {
-                DefineSwcAbcFileAttribute(owner, script.ABC);
+                DefineSwcAbcFileAttribute(owner, script.Abc);
                 DefineIndexAttribute(owner, Attrs.AbcScript, script.Index);
                 DefineIndexAttribute(owner, Attrs.AbcScriptTrait, trait.Index);
                 return;

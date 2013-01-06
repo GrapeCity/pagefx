@@ -21,8 +21,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             _owner = owner;
         }
 
-        #region Public Members
-        public int Count
+	    public int Count
         {
             get { return _list.Count; }   
         }
@@ -108,11 +107,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             Add(AbcTrait.CreateClass(klass));
         }
-        #endregion
 
-        #region ISwfAtom Members
-
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 0; i < n; ++i)
@@ -129,10 +125,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 this[i].Write(writer);
         }
 
-    	#endregion
-
-        #region Xml Dump
-        public void DumpXml(XmlWriter writer)
+	    public void DumpXml(XmlWriter writer)
         {
             if (!AbcDumpService.DumpTraits && !(_owner is AbcScript))
                 return;
@@ -147,10 +140,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 writer.WriteEndElement();
             }
         }
-        #endregion
 
-        #region Utils
-        public AbcTrait[] GetRange(AbcTraitKind kind)
+	    public AbcTrait[] GetRange(AbcTraitKind kind)
         {
         	return this.Where(trait => trait.Kind == kind).ToArray();
         }
@@ -171,9 +162,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return list.ToArray();
         }
 
-        public PropertyCollection GetProperties()
+        public AbcPropertyCollection GetProperties()
         {
-            var list = new PropertyCollection();
+            var list = new AbcPropertyCollection();
             foreach (var trait in this)
             {
                 bool isGetter = trait.Kind == AbcTraitKind.Getter;
@@ -193,9 +184,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             return list;
         }
-        #endregion
 
-        public IEnumerator<AbcTrait> GetEnumerator()
+	    public IEnumerator<AbcTrait> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
@@ -218,10 +208,5 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             Add(t);
             return t;
         }
-    }
-
-    public interface IAbcTraitProvider
-    {
-        AbcTraitCollection Traits { get; }
     }
 }

@@ -83,8 +83,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
                                    Flags = AbcClassFlags.FinalSealed,
                                    //ProtectedNamespace = abc.DefineProtectedNamespace(NameMxSysManager),
                                    Type = TypeFlexApp,
-                                   SuperName = superType.Name,
-                                   SuperType = superType
+                                   BaseTypeName = superType.Name,
+                                   BaseInstance = superType
                                };
             instance.Interfaces.Add(flexModuleFactoryInterface.Name);
 

@@ -10,7 +10,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Represents collection of <see cref="AbcMultiname"/> objects.
     /// </summary>
-    public class AbcMultinamePool : ISwfAtom, ISupportXmlDump, IAbcConstPool, IEnumerable<AbcMultiname>
+    public sealed class AbcMultinamePool : ISwfAtom, ISupportXmlDump, IAbcConstPool, IEnumerable<AbcMultiname>
     {
         readonly AbcFile _abc;
         readonly AbcConstList<AbcMultiname> _list = new AbcConstList<AbcMultiname>();
@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         public AbcMultinamePool(AbcFile abc)
         {
             _abc = abc;
-            var mn = new AbcMultiname {key = "*"};
+            var mn = new AbcMultiname {Key = "*"};
             Add(mn);
         }
         #endregion
@@ -191,7 +191,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return mname;
         }
 
-        AbcMultiname ImportQName(bool attr, AbcNamespace ns, AbcConst<string> name)
+        private AbcMultiname ImportQName(bool attr, AbcNamespace ns, AbcConst<string> name)
         {
             var kind = attr ? AbcConstKind.QNameA : AbcConstKind.QName;
             string key = AbcMultiname.KeyOf(kind, ns, name);
@@ -202,13 +202,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             name = _abc.ImportConst(name);
             ns = _abc.ImportConst(ns);
 
-            mn = new AbcMultiname(kind, ns, name) {key = key};
+            mn = new AbcMultiname(kind, ns, name) {Key = key};
 
             Add(mn);
             return mn;
         }
 
-        AbcMultiname ImportCore(AbcMultiname mname)
+        private AbcMultiname ImportCore(AbcMultiname mname)
         {
             var kind = mname.Kind;
             switch (kind)
@@ -224,7 +224,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
                         var name = _abc.ImportConst(mname.Name);
                         var ns = _abc.ImportConst(mname.Namespace);
-                        mname = new AbcMultiname(kind, ns, name) {key = key};
+                        mname = new AbcMultiname(kind, ns, name) {Key = key};
                         Add(mname);
                         return mname;
                     }
@@ -238,7 +238,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                         if (mn != null) return mn;
 
                         var name = _abc.ImportConst(mname.Name);
-                        mname = new AbcMultiname(kind, name) {key = key};
+                        mname = new AbcMultiname(kind, name) {Key = key};
                         Add(mname);
                         return mname;
                     }
@@ -279,7 +279,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
                         var name = _abc.ImportConst(mname.Name);
                         var nss = _abc.ImportConst(mname.NamespaceSet);
-                        mname = new AbcMultiname(kind, nss, name) {key = key};
+                        mname = new AbcMultiname(kind, nss, name) {Key = key};
                         Add(mname);
                         return mname;
                     }
@@ -292,7 +292,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                         var mn = _list[key];
                         if (mn != null) return mn;
                         var nss = _abc.ImportConst(mname.NamespaceSet);
-                        mname = new AbcMultiname(kind, nss) {key = key};
+                        mname = new AbcMultiname(kind, nss) {Key = key};
                         Add(mname);
                         return mname;
                     }
@@ -304,7 +304,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                         if (mn != null) return mn;
                         var type = Import(mname.Type);
                         var param = Import(mname.TypeParameter);
-                        mname = new AbcMultiname(type, param) {key = key};
+                        mname = new AbcMultiname(type, param) {Key = key};
                         Add(mname);
                         return mname;
                     }

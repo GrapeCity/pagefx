@@ -553,7 +553,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             if (!IsImportTypeExternally)
             {
-                var superType = instance.SuperType;
+                var superType = instance.BaseInstance;
                 if (superType != null)
                     ImportInstance(superType);
             }
@@ -599,8 +599,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             AddInstance(instance);
             
             AbcInstance superType;
-            instance.SuperName = ImportType(from.SuperName, out superType);
-            instance.SuperType = superType;
+            instance.BaseTypeName = ImportType(from.BaseTypeName, out superType);
+            instance.BaseInstance = superType;
             instance.Flags = from.Flags;
             instance.ProtectedNamespace = ImportConst(from.ProtectedNamespace);
             instance.Type = from.Type;

@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
             _def = def;
             _defID = defID;
 
-            AddInheritanceRef(def.SuperName);
+            AddInheritanceRef(def.BaseTypeName);
 
             foreach (var ifaceName in def.Interfaces)
                 AddInheritanceRef(ifaceName);

@@ -12,32 +12,29 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Represents namespace set
     /// </summary>
-    public class AbcNamespaceSet : List<AbcNamespace>, ISupportXmlDump, IAbcConst
+    public sealed class AbcNamespaceSet : List<AbcNamespace>, ISupportXmlDump, IAbcConst
     {
-        #region Constructors
-        public AbcNamespaceSet()
+	    public AbcNamespaceSet()
         {
         }
 
         internal AbcNamespaceSet(IEnumerable<AbcNamespace> collection, string key)
             : base(collection)
         {
-            this.key = key;
+            this._key = key;
         }
 
         internal AbcNamespaceSet(SwfReader reader)
         {
             Read(reader);
         }
-        #endregion
 
-        #region Public Members
-        public int Index
+	    public int Index
         {
             get { return _index; }
             set { _index = value; }
         }
-        int _index = -1;
+        private int _index = -1;
 
         object IAbcConst.Value
         {
@@ -63,13 +60,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public string Key
         {
-            get { return key ?? (key = KeyOf(this)); }
+            get { return _key ?? (_key = KeyOf(this)); }
+			internal set { _key = value; }
         }
-        internal string key;
-        #endregion
+        private string _key;
 
-        #region IAbcAtom Members
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             int n = (int)reader.ReadUIntEncoded();
             if (n <= 0)
@@ -89,10 +85,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             for (int i = 0; i < n; ++i)
                 writer.WriteUIntEncoded((uint)this[i].Index);
         }
-        #endregion
 
-        #region Dump
-        public void DumpXml(XmlWriter writer)
+	    public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("nsset");
             writer.WriteAttributeString("index", _index.ToString());
@@ -107,10 +101,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             writer.WriteEndElement();
         }
-        #endregion
 
-        #region Object Overrides
-        public override bool Equals(object obj)
+	    public override bool Equals(object obj)
         {
             if (obj == this) return true;
             var nss = obj as AbcNamespaceSet;
@@ -127,9 +119,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             return this.Join("\n");
         }
-        #endregion
 
-        internal void Check()
+	    internal void Check()
         {
             if (Index == 0)
                 Debugger.Break();
@@ -138,19 +129,18 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
     }
 
-    public class AbcNssetPool : ISwfAtom, ISupportXmlDump, IAbcConstPool, IEnumerable<AbcNamespaceSet>
+    public sealed class AbcNssetPool : ISwfAtom, ISupportXmlDump, IAbcConstPool, IEnumerable<AbcNamespaceSet>
     {
-        readonly AbcFile _abc;
-        readonly AbcConstList<AbcNamespaceSet> _list = new AbcConstList<AbcNamespaceSet>();
+        private readonly AbcFile _abc;
+        private readonly AbcConstList<AbcNamespaceSet> _list = new AbcConstList<AbcNamespaceSet>();
 
         public AbcNssetPool(AbcFile abc)
 	    {
             _abc = abc;
-            Add(new AbcNamespaceSet {key = "*"});
+            Add(new AbcNamespaceSet {Key = "*"});
 	    }
 
-        #region Public Members
-        public int Count
+	    public int Count
         {
             get { return _list.Count; }
         }
@@ -169,11 +159,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             _list.Add(item);
         }
-        #endregion
 
-        #region IAbcAtom Members
-
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 1; i < n; ++i)
@@ -197,10 +184,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-    	#endregion
-
-        #region Dump
-        public void DumpXml(XmlWriter writer)
+	    public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("ns-set-pool");
             writer.WriteAttributeString("count", Count.ToString());
@@ -210,10 +194,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             writer.WriteEndElement();
         }
-        #endregion
 
-        #region IAbcConstPool Members
-        IAbcConst IAbcConstPool.this[int index]
+	    IAbcConst IAbcConstPool.this[int index]
         {
             get { return _list[index]; }
         }
@@ -262,11 +244,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             return Import((AbcNamespaceSet)c);
         }
-        #endregion
 
-        #region IEnumerable Members
-
-        public IEnumerator<AbcNamespaceSet> GetEnumerator()
+	    public IEnumerator<AbcNamespaceSet> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
@@ -280,7 +259,5 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
         	return _list.Cast<IAbcConst>().GetEnumerator();
         }
-
-    	#endregion
     }
 }

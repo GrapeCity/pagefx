@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
@@ -25,8 +23,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             Name = name;
         }
 
-	    #region Properties
-
 	    public AbcConst<string> Name { get; set; }
 
 	    public bool HasName
@@ -45,10 +41,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
 	    public bool IsOptional { get; set; }
 
-	    #endregion
-
-        #region Dump
-        public void DumpXml(XmlWriter writer)
+	    public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("param");
             if (Name != null)
@@ -71,10 +64,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             writer.WriteEndElement();
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+	    public override string ToString()
         {
             return ToString("s");
         }
@@ -95,44 +86,5 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             return s.ToString();
         }
-        #endregion
     }
-
-    /// <summary>
-    /// List of <see cref="AbcParameter"/> objects.
-    /// </summary>
-    public sealed class AbcParameterList : List<AbcParameter>, ISupportXmlDump
-    {
-        #region Dump
-        public void DumpXml(XmlWriter writer)
-        {
-            if (Count > 0)
-            {
-                writer.WriteStartElement("params");
-                foreach (var p in this)
-                    p.DumpXml(writer);
-                writer.WriteEndElement();
-            }
-        }
-        #endregion
-
-        public void CopyFrom(AbcMethod method)
-        {
-            if (method == null)
-                throw new ArgumentNullException("method");
-            CopyFrom(method.Parameters);
-        }
-
-        public void CopyFrom(AbcParameterList list)
-        {
-            if (list == null)
-                throw new ArgumentNullException("list");
-            foreach (var p in list)
-            {
-                Add(new AbcParameter(p.Type, p.Name));
-            }
-        }
-    }
-
-    public delegate void AbcParametersHandler(AbcParameterList list);
 }

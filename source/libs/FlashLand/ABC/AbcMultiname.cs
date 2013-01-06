@@ -12,7 +12,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 	/// <summary>
     /// Represents multiname - a combination of an unqualified name and one or more namespaces.
     /// </summary>
-    public class AbcMultiname : IAbcConst
+    public sealed class AbcMultiname : IAbcConst
     {
         #region Constructors
         /// <summary>
@@ -276,44 +276,48 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                if (key == null)
+                if (_key == null)
                 {
                     switch (Kind)
                     {
                         case AbcConstKind.QName:
                         case AbcConstKind.QNameA:
-                            key = KeyOf(Kind, Namespace, Name);
+                            _key = KeyOf(Kind, Namespace, Name);
                             break;
 
                         case AbcConstKind.RTQNameL:
                         case AbcConstKind.RTQNameLA:
-                            key = ((int)Kind).ToString();
+                            _key = ((int)Kind).ToString();
                             break;
 
                         case AbcConstKind.RTQName:
                         case AbcConstKind.RTQNameA:
-                            key = Name.Value + ((int)Kind);
+                            _key = Name.Value + ((int)Kind);
                             break;
 
                         case AbcConstKind.Multiname:
                         case AbcConstKind.MultinameA:
-                            key = KeyOf(Kind, NamespaceSet, Name);
+                            _key = KeyOf(Kind, NamespaceSet, Name);
                             break;
 
                         case AbcConstKind.MultinameL:
                         case AbcConstKind.MultinameLA:
-                            key = KeyOf(Kind, NamespaceSet);
+                            _key = KeyOf(Kind, NamespaceSet);
                             break;
 
                         case AbcConstKind.TypeName:
-                            key = Type.Key + "<" + TypeParameter.Key + ">";
+                            _key = Type.Key + "<" + TypeParameter.Key + ">";
                             break;
                     }
                 }
-                return key;
+                return _key;
             }
+	        internal set
+	        {
+		        _key = value;
+	        }
         }
-        internal string key;
+        private string _key;
 
         internal static void CheckConst(IAbcConst c)
         {

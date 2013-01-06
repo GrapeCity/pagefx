@@ -588,7 +588,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
 				if (trait.Kind == AbcTraitKind.Class && trait.Embed == null)
 				{
 					var traitInstance = trait.Class.Instance;
-					var superName = traitInstance.SuperName.FullName;
+					var superName = traitInstance.BaseTypeName.FullName;
 					if (superName.EndsWith("Asset"))
 					{
 						string className = traitInstance.FullName;

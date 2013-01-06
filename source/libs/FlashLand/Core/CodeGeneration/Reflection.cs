@@ -147,7 +147,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return false;
 
             var bt = type.BaseType;
-            var st = instance.SuperType;
+            var st = instance.BaseInstance;
             while (bt != null && st != null)
             {
                 if (st.IsObject) return false;
@@ -155,7 +155,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 var m = DefineGetTypeIdMethod(bt, st);
                 if (m != null) return true;
                 bt = bt.BaseType;
-                st = st.SuperType;
+                st = st.BaseInstance;
             }
             return false;
         }

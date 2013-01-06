@@ -138,11 +138,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var instance = new AbcInstance(true)
             {
                 Name = name,
-                SuperName = superName,
+                BaseTypeName = superName,
                 Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
                 ProtectedNamespace = Abc.DefineProtectedNamespace(name.NameString),
                 Initializer = Abc.DefineEmptyConstructor((string)null, true),
-                SuperType = superType
+                BaseInstance = superType
             };
             instance.Class.Initializer = Abc.DefineEmptyMethod(true);
             AddInstance(instance);

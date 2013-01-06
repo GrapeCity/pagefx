@@ -100,7 +100,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
     }
 
-    public sealed class PropertyCollection : List<AbcProperty>
+    public sealed class AbcPropertyCollection : List<AbcProperty>
     {
         public AbcProperty this[AbcMultiname name]
         {

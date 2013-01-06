@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    public class AbcConstList<T> : IEnumerable<T>
+    public sealed class AbcConstList<T> : IReadOnlyList<T>
         where T : class, IAbcConst
     {
-        readonly List<T> _list = new List<T>();
-        readonly Hashtable _index = new Hashtable();
+        private readonly List<T> _list = new List<T>();
+        private readonly Hashtable _index = new Hashtable();
 
         public int Count
         {
@@ -53,18 +54,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return _list[i] == item;
         }
 
-        #region IEnumerable<T> Members
-        public IEnumerator<T> GetEnumerator()
+	    public IEnumerator<T> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
-        #endregion
 
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
+	    IEnumerator IEnumerable.GetEnumerator()
         {
             return _list.GetEnumerator();
         }
-        #endregion
     }
 }

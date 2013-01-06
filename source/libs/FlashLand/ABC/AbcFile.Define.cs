@@ -559,7 +559,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             string key = AbcMultiname.KeyOf(kind, ns, name);
             var mn = Multinames[key];
             if (mn != null) return mn;
-            mn = new AbcMultiname(kind, ns, name) {key = key};
+            mn = new AbcMultiname(kind, ns, name) {Key = key};
             Multinames.Add(mn);
             return mn;
         }
@@ -577,7 +577,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             string key = AbcMultiname.KeyOf(kind, nss, name);
             var mn = Multinames[key];
             if (mn != null) return mn;
-            mn = new AbcMultiname(kind, nss, name) {key = key};
+            mn = new AbcMultiname(kind, nss, name) {Key = key};
             Multinames.Add(mn);
             return mn;
         }
@@ -593,7 +593,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             string key = AbcMultiname.KeyOf(kind, nss);
             var mn = Multinames[key];
             if (mn != null) return mn;
-            mn = new AbcMultiname(kind, nss) {key = key};
+            mn = new AbcMultiname(kind, nss) {Key = key};
             Multinames.Add(mn);
             return mn;
         }
@@ -1312,7 +1312,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var instance = new AbcInstance(true)
             {
                 Name = DefineName(name),
-                SuperName = this[AvmTypeCode.Object],
+                BaseTypeName = this[AvmTypeCode.Object],
                 Flags = AbcClassFlags.Final | AbcClassFlags.Sealed
             };
 

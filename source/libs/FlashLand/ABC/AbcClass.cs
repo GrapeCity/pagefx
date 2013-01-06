@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Xml;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Swf;
@@ -11,25 +9,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// </summary>
     public sealed class AbcClass : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
     {
-        #region Constructors
-        public AbcClass()
+	    public AbcClass()
         {
             _traits = new AbcTraitCollection(this);
         }
 
-        public AbcClass(SwfReader reader) : this()
-        {
-            Read(reader);
-        }
-
-        public AbcClass(AbcInstance instance) : this()
+	    public AbcClass(AbcInstance instance) : this()
         {
             Instance = instance;
         }
-        #endregion
 
-        #region Properties
-        public int Index { get; set; }
+	    public int Index { get; set; }
 
         public AbcMethod Initializer
         {
@@ -37,11 +27,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             set
             {
                 _initializer = value;
+
                 if (value != null)
                     value.IsInitializer = true;
             }
         }
-        AbcMethod _initializer;
+        private AbcMethod _initializer;
 
         public AbcInstance Instance
         {
@@ -62,24 +53,16 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
         }
-        AbcInstance _instance;
+        private AbcInstance _instance;
 
         public IType Type
         {
-            get
-            {
-                return Instance.Type;
-            }
+            get { return Instance.Type; }
         }
 
-        public AbcFile ABC
+        public AbcFile Abc
         {
-            get
-            {
-                if (_instance != null)
-                    return _instance.Abc;
-                return null;
-            }
+            get { return _instance != null ? _instance.Abc : null; }
         }
 
         public string Name
@@ -97,7 +80,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get { return _traits; }
         }
-        readonly AbcTraitCollection _traits;
+        private readonly AbcTraitCollection _traits;
 
         public bool Initialized { get; set; }
 
@@ -117,11 +100,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
         }
-        AbcTrait _trait;
-        #endregion
+        private AbcTrait _trait;
 
-        #region IAbcAtom Members
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             Initializer = reader.ReadAbcMethod();
             _traits.Read(reader);
@@ -132,10 +113,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             writer.WriteUIntEncoded((uint)_initializer.Index);
             _traits.Write(writer);
         }
-        #endregion
 
-        #region Dump
-        public void DumpXml(XmlWriter writer)
+	    public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("class");
             writer.WriteAttributeString("index", Index.ToString());
@@ -162,75 +141,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             _traits.DumpXml(writer);
             writer.WriteEndElement();
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+	    public override string ToString()
         {
             return Name;
         }
-        #endregion
-    }
-
-    public sealed class AbcClassCollection : List<AbcClass>, ISupportXmlDump
-    {
-        #region Public Members
-        public new void Add(AbcClass klass)
-        {
-#if DEBUG
-            if (IsDefined(klass))
-                throw new InvalidOperationException();
-#endif
-            klass.Index = Count;
-            base.Add(klass);
-        }
-
-        internal void AddInternal(AbcClass klass)
-        {
-            base.Add(klass);
-        }
-
-        public bool IsDefined(AbcClass klass)
-        {
-            if (klass == null) return false;
-            int index = klass.Index;
-            if (index < 0 || index >= Count)
-                return false;
-            if (this[index] != klass)
-                return false;
-            return true;
-        }
-        #endregion
-
-        #region IO
-
-        public void Read(int n, SwfReader reader)
-        {
-            for (int i = 0; i < n; ++i)
-            {
-                Add(new AbcClass(reader));
-            }
-        }
-
-        public void Write(SwfWriter writer)
-        {
-            int n = Count;
-            for (int i = 0; i < n; ++i)
-                this[i].Write(writer);
-        }
-
-    	#endregion
-
-        #region Dump
-        public void DumpXml(XmlWriter writer)
-        {
-            if (!AbcDumpService.DumpInstances) return;
-            writer.WriteStartElement("classes");
-            writer.WriteAttributeString("count", Count.ToString());
-            foreach (var c in this)
-                c.DumpXml(writer);
-            writer.WriteEndElement();
-        }
-        #endregion
     }
 }

@@ -174,7 +174,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         List<AbcInstance> GetBaseTypesWithCctors(AbcInstance instance)
         {
             var list = new List<AbcInstance>();
-            var super = instance.SuperType;
+            var super = instance.BaseInstance;
             while (super != null)
             {
                 if (super.IsObject) break;
@@ -182,7 +182,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 var ctor = DefineStaticCtor(super);
                 if (ctor != null)
                     list.Add(super);
-                super = super.SuperType;
+                super = super.BaseInstance;
             }
             list.Reverse();
             return list;

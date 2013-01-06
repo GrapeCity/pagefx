@@ -87,8 +87,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             instance.Flags = AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace;
             instance.ProtectedNamespace = DefineProtectedNamespace(fullname);
 
-            instance.SuperType = superType;
-            instance.SuperName = superType.Name;
+            instance.BaseInstance = superType;
+            instance.BaseTypeName = superType.Name;
 
             AddInstance(instance);
 

@@ -42,8 +42,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			if (superType == null)
 				throw Errors.Type.UnableToFind.CreateException(superTypeName);
 
-			_rootSprite.SuperName = Abc.ImportConst(superType.Name);
-			_rootSprite.SuperType = superType;
+			_rootSprite.BaseTypeName = Abc.ImportConst(superType.Name);
+			_rootSprite.BaseInstance = superType;
 
 			_rootSprite.Class.Initializer = Abc.DefineEmptyMethod();
 

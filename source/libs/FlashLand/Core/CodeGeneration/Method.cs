@@ -116,7 +116,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (method.IsNative)
                 return method;
 
-            var abc = method.ByteCode;
+            var abc = method.Abc;
             if (abc.IsCore)
                 return method;
 

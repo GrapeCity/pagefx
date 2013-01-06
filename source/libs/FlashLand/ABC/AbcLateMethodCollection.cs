@@ -4,25 +4,25 @@ using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    internal class AbcLateMethodCollection
+    internal sealed class AbcLateMethodCollection
     {
         private readonly List<AbcMethod> _methods = new List<AbcMethod>();
 
         private struct Item
         {
-            public readonly AbcMethodHandler handler;
-            public readonly AbcCoder coder;
+            public readonly AbcMethodHandler Handler;
+            public readonly AbcCoder Coder;
 
             public Item(AbcMethodHandler h)
             {
-                handler = h;
-                coder = null;
+                Handler = h;
+                Coder = null;
             }
 
             public Item(AbcCoder coder)
             {
-                this.coder = coder;
-                handler = null;
+                Coder = coder;
+                Handler = null;
             }
         }
 
@@ -50,17 +50,19 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 #endif
                 var method = _methods[i];
                 var item = _items[i];
-                if (item.handler != null)
+                if (item.Handler != null)
                 {
-                    item.handler(method);
+                    item.Handler(method);
                 }
                 else
                 {
-                    var code = new AbcCode(method.ByteCode);
-                    item.coder(code);
+                    var code = new AbcCode(method.Abc);
+                    item.Coder(code);
                     method.Finish(code);
                 }
             }
         }
     }
+
+	internal delegate void AbcMethodHandler(AbcMethod method);
 }

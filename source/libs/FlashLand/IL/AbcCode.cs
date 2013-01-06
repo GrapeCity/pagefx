@@ -2602,8 +2602,8 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             get { return _tryBlocks; }
         }
-        readonly AbcTryBlockList _tryBlocks = new AbcTryBlockList();
-        readonly Stack<AbcTryBlock> _tryStack = new Stack<AbcTryBlock>();
+        private readonly AbcTryBlockList _tryBlocks = new AbcTryBlockList();
+		private readonly Stack<AbcTryBlock> _tryStack = new Stack<AbcTryBlock>();
 
         /// <summary>
         /// Begins try block
@@ -2949,9 +2949,9 @@ namespace DataDynamics.PageFX.FlashLand.IL
             var klass = instance.Class;
             if (klass.Initialized) return;
 
-            var superType = instance.SuperType;
+            var superType = instance.BaseInstance;
             if (superType != null && superType.Script == script)
-                InitClassProperty(script, instance.SuperType);
+                InitClassProperty(script, instance.BaseInstance);
 
             var name = instance.Name;
 
@@ -2971,7 +2971,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             }
 
             //Push base type on the stack
-            Getlex(instance.SuperName);
+            Getlex(instance.BaseTypeName);
             Add(InstructionCode.Newclass, klass);
 
             for (int i = 0; i < n; ++i)
@@ -2988,13 +2988,13 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             var list = new List<AbcMultiname>();
 
-            var super = instance.SuperType;
+            var super = instance.BaseInstance;
             while (super != null)
             {
                 if (super.IsObject) break;
                 list.Insert(0, super.Name);
                 if (super.IsError) break;
-                super = super.SuperType;
+                super = super.BaseInstance;
             }
 
             //TODO: check type hierarchy

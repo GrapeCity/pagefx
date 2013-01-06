@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Xml;
 using DataDynamics.PageFX.FlashLand.IL;
 using DataDynamics.PageFX.FlashLand.Swf;
@@ -35,8 +34,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// </summary>
     public sealed class AbcMethodBody : ISwfAtom, ISupportXmlDump, IAbcTraitProvider
     {
-        #region Constructors
-        public AbcMethodBody()
+	    public AbcMethodBody()
         {
             _traits = new AbcTraitCollection(this);
         }
@@ -46,14 +44,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             Method = method;
         }
 
-        public AbcMethodBody(SwfReader reader) : this()
-        {
-            Read(reader);
-        }
-        #endregion
-
-        #region Properties
-        /// <summary>
+	    /// <summary>
         /// Gets or sets associated method.
         /// </summary>
         public AbcMethod Method
@@ -106,14 +97,11 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get { return _traits; }
         }
-        readonly AbcTraitCollection _traits;
+        private readonly AbcTraitCollection _traits;
 
         internal AbcMethodBody ImportedBody { get; set; }
-        #endregion
 
-        #region IO
-        
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             _method = reader.ReadAbcMethod();
             _method.Body = this;
@@ -166,10 +154,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             _traits.Write(writer);
         }
 
-	    #endregion
-
-        #region XmlDump
-        public void DumpXml(XmlWriter writer)
+	    public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("method-body");
             writer.WriteElementString("max-stack", MaxStackDepth.ToString());
@@ -185,10 +170,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             writer.WriteEndElement();
         }
-        #endregion
 
-        #region Finish
-        class Block
+	    #region Finish
+        private class Block
         {
             public int from; //index of entry instruction
             public int stackDepth;
@@ -289,7 +273,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 #endif
         }
 
-	    void UpdateSizeOfStacks(Block block)
+	    private void UpdateSizeOfStacks(Block block)
         {
             if (block == null) return;
             MaxStackDepth += block.maxStack;
@@ -305,7 +289,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             Finish(code.Abc);
         }
 
-        void CreateSEHs(AbcCode code)
+        private void CreateSEHs(AbcCode code)
         {
             foreach (var tb in code.TryBlocks)
             {
@@ -345,7 +329,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        void MarkSEHTargets()
+        private void MarkSEHTargets()
         {
             foreach (var e in Exceptions)
             {
@@ -354,8 +338,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
         #endregion
 
-        #region Utils
-        static int GetLocalReg(Instruction i)
+	    private static int GetLocalReg(Instruction i)
         {
             switch (i.Code)
             {
@@ -381,9 +364,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             return -1;
         }
-        #endregion
 
-        public override string ToString()
+	    public override string ToString()
         {
             if (_method != null)
                 return _method.ToString();
@@ -391,40 +373,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
 
         internal AbcBodyFlags Flags;
-    }
-
-    public sealed class AbcMethodBodyCollection : List<AbcMethodBody>, ISwfAtom, ISupportXmlDump
-    {
-        #region IAbcAtom Members
-        public void Read(SwfReader reader)
-        {
-            int n = (int)reader.ReadUIntEncoded();
-            for (int i = 0; i < n; ++i)
-            {
-                Add(new AbcMethodBody(reader));
-            }
-        }
-
-        public void Write(SwfWriter writer)
-        {
-            int n = Count;
-            writer.WriteUIntEncoded((uint)n);
-            for (int i = 0; i < n; ++i)
-                this[i].Write(writer);
-        }
-
-	    #endregion
-
-        #region ISupportXmlDump Members
-        public void DumpXml(XmlWriter writer)
-        {
-            writer.WriteStartElement("method-bodies");
-            writer.WriteAttributeString("count", Count.ToString());
-            foreach (var body in this)
-                body.DumpXml(writer);
-            writer.WriteEndElement();
-        }
-        #endregion
     }
 
 	[Flags]

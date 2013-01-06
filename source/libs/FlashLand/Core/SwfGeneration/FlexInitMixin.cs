@@ -145,7 +145,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
     		var instance = new AbcInstance(true)
     		               	{
     		               		Name = app.DefineQName(ns, name),
-    		               		SuperName = app.BuiltinTypes.Object,
+    		               		BaseTypeName = app.BuiltinTypes.Object,
     		               		IsMixin = true,
     		               		IsFlexInitMixin = true,
     		               		Initializer = app.DefineEmptyConstructor(),

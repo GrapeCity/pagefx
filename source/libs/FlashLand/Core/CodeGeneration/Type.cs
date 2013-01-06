@@ -219,8 +219,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                                {
                                    Type = type,
                                    Name = name,
-                                   SuperName = superName,
-                                   SuperType = superType
+                                   BaseTypeName = superName,
+                                   BaseInstance = superType
                                };
 
             SetData(type, instance);
@@ -397,8 +397,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             instance = new AbcInstance(true)
                            {
                                Name = DefinePfxName(GetEnumName(st), false),
-                               SuperName = super.Name,
-                               SuperType = super,
+                               BaseTypeName = super.Name,
+                               BaseInstance = super,
                                Initializer = DefineDefaultInitializer(null)
                            };
             AddInstance(instance);
@@ -608,14 +608,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
 
             //Define Override Methods for already Compiled Base Methods
-            var super = instance.SuperType;
+            var super = instance.BaseInstance;
             while (super != null)
             {
 #if DEBUG
                 DebugService.DoCancel();
 #endif
                 DefineCompiledMethods(instance, type, super);
-                super = super.SuperType;
+                super = super.BaseInstance;
             }
         }
 

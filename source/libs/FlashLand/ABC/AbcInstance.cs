@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Core;
@@ -51,34 +49,24 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     }
     #endregion
 
-    #region class AbcInstance
-    /// <summary>
+	/// <summary>
     /// Contains traits for non-static members of user defined type.
     /// </summary>
     public sealed class AbcInstance : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
     {
-        #region Constructors
-        public AbcInstance()
+		public AbcInstance()
         {
             _traits = new AbcTraitCollection(this);
         }
 
-        public AbcInstance(SwfReader reader)
+		public AbcInstance(bool withClass)
             : this()
         {
-            Read(reader);
-        }
-
-        public AbcInstance(bool createClass)
-            : this()
-        {
-            if (createClass)
+            if (withClass)
                 Class = new AbcClass();
         }
-        #endregion
 
-        #region Properties
-        /// <summary>
+		/// <summary>
         /// Gets or sets index of the <see cref="AbcInstance"/> within collection of <see cref="AbcInstance"/> in ABC file.
         /// </summary>
         public int Index { get; set; }
@@ -147,20 +135,20 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <summary>
         /// Gets or sets the name of base type.
         /// </summary>
-        public AbcMultiname SuperName { get; set; }
+        public AbcMultiname BaseTypeName { get; set; }
 
-        internal AbcInstance SuperType
+        internal AbcInstance BaseInstance
         {
             get
             {
-                if (_superType == null)
+                if (_baseInstance == null)
                 {
 	                var type = Type;
                     if (type != null)
                     {
 						if (IsError)
 						{
-							return _superType = type.Assembly.Corlib().CustomData().ObjectInstance;
+							return _baseInstance = type.Assembly.Corlib().CustomData().ObjectInstance;
 						}
 
                         var baseType = type.BaseType;
@@ -172,22 +160,22 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                         }
                     }
                 }
-                return _superType;
+                return _baseInstance;
             }
             set 
             {
-                if (_superType != null)
+                if (_baseInstance != null)
                 {
-					int i = _superType.Subclasses.IndexOf(this);
+					int i = _baseInstance.Subclasses.IndexOf(this);
                     if (i >= 0)
-                        _superType.Subclasses.RemoveAt(i);
+                        _baseInstance.Subclasses.RemoveAt(i);
                 }
-                _superType = value;
+                _baseInstance = value;
                 if (value != null)
-                    _superType.Subclasses.Add(this);
+                    _baseInstance.Subclasses.Add(this);
             }
         }
-        AbcInstance _superType;
+        private AbcInstance _baseInstance;
 
         /// <summary>
         /// Gets or sets type assotiated with this <see cref="AbcInstance"/>.
@@ -302,7 +290,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get { return _interfaces; }
         }
-        readonly List<AbcMultiname> _interfaces = new List<AbcMultiname>();
+        private readonly List<AbcMultiname> _interfaces = new List<AbcMultiname>();
 
         public bool HasInterface(AbcInstance iface)
         {
@@ -313,28 +301,19 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get { return _traits; }
         }
-
         private readonly AbcTraitCollection _traits;
 
         public IEnumerable<AbcTrait> GetAllTraits()
         {
-            foreach (var t in _traits)
-                yield return t;
-            if (_class != null)
-            {
-                foreach (var t in _class.Traits)
-                    yield return t;
-            }
+	        return _class != null ? _traits.Concat(_class.Traits) : _traits;
         }
 
-        public AbcTraitCollection GetTraits(bool isStatic)
-        {
-            if (isStatic)
-                return Class.Traits;
-            return Traits;
-        }
+	    public AbcTraitCollection GetTraits(bool isStatic)
+	    {
+		    return isStatic ? Class.Traits : Traits;
+	    }
 
-        public AbcClass Class
+	    public AbcClass Class
         {
             get { return _class; }
             set
@@ -407,10 +386,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         private float _flashVersion = -1;
 
         internal bool Ordered;
-        #endregion
 
-        #region Methods
-        /// <summary>
+		/// <summary>
         /// Adds trait to instance or class trait collection.
         /// </summary>
         /// <param name="trait">trait to add</param>
@@ -694,13 +671,11 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
         #endregion
         #endregion
-        #endregion
 
-        #region IO
-        public void Read(SwfReader reader)
+		public void Read(SwfReader reader)
         {
             Name = reader.ReadMultiname();
-            SuperName = reader.ReadMultiname();
+            BaseTypeName = reader.ReadMultiname();
             Flags = (AbcClassFlags)reader.ReadUInt8();
 
             if ((Flags & AbcClassFlags.ProtectedNamespace) != 0)
@@ -724,8 +699,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             writer.WriteUIntEncoded((uint)Name.Index);
 
-            if (SuperName == null) writer.WriteUInt8(0);
-            else writer.WriteUIntEncoded((uint)SuperName.Index);
+            if (BaseTypeName == null) writer.WriteUInt8(0);
+            else writer.WriteUIntEncoded((uint)BaseTypeName.Index);
 
             writer.WriteUInt8((byte)Flags);
 
@@ -745,11 +720,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             writer.WriteUIntEncoded((uint)_initializer.Index);
             _traits.Write(writer);
         }
-        #endregion
 
-        #region Dump
-        #region Xml Format
-        internal bool IsDumped;
+		internal bool IsDumped;
 
         public void DumpXml(XmlWriter writer)
         {
@@ -767,8 +739,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             //if (_name != null)
             //    writer.WriteElementString("name", _name.ToString());
 
-            if (SuperName != null)
-                writer.WriteElementString("super", SuperName.ToString());
+            if (BaseTypeName != null)
+                writer.WriteElementString("super", BaseTypeName.ToString());
 
             writer.WriteElementString("flags", Flags.ToString());
 
@@ -814,10 +786,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             writer.WriteEndElement();
         }
-        #endregion
 
-        #region Text Format
-        public void DumpDirectory(string dir)
+		public void DumpDirectory(string dir)
         {
             string name = NameString;
             string ns = NamespaceString;
@@ -895,12 +865,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             writer.Write("{0} {1}", IsInterface ? "interface" : "class", NameString);
 
             int ifaceNum = _interfaces.Count;
-            if (SuperName != null || ifaceNum > 0)
+            if (BaseTypeName != null || ifaceNum > 0)
                 writer.Write(" : ");
 
-            if (SuperName != null)
+            if (BaseTypeName != null)
             {
-                writer.Write(SuperName.NameString);
+                writer.Write(BaseTypeName.NameString);
                 if (ifaceNum > 0)
                     writer.Write(", ");
             }
@@ -925,19 +895,15 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (withNamespace)
                 writer.WriteLine("}");
         }
-        #endregion
-        #endregion
 
-        #region Object Override Methods
-        public override string ToString()
+		public override string ToString()
         {
             if (Name != null)
                 return Name.ToString();
             return base.ToString();
         }
-        #endregion
 
-        #region Internal Properties
+		#region Internal Properties
         internal List<AbcInstance> Implementations
         {
             get { return _impls ?? (_impls = new List<AbcInstance>()); }
@@ -978,13 +944,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region Trait Cache
-        void CacheTraits()
+        private void CacheTraits()
         {
             if (_traitCache != null) return;
             _traitCache = new AbcTraitCache();
             _traitCache.Add(GetAllTraits());
         }
-        AbcTraitCache _traitCache;
+        private AbcTraitCache _traitCache;
 
         internal AbcTrait FindTrait(ITypeMember member)
         {
@@ -996,7 +962,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region Utils
         internal bool IsInheritedFrom(AbcMultiname typename)
         {
-            if (ReferenceEquals(SuperName, typename)) return true;
+            if (ReferenceEquals(BaseTypeName, typename)) return true;
         	return _interfaces.Any(iface => ReferenceEquals(iface, typename));
         }
 
@@ -1031,221 +997,15 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcTrait FindSuperTrait(AbcMultiname name, AbcTraitKind kind)
         {
-            var st = SuperType;
+            var st = BaseInstance;
             while (st != null)
             {
                 var t = st.Traits.Find(name, kind);
                 if (t != null) return t;
-                st = st.SuperType;
+                st = st.BaseInstance;
             }
             return null;
         }
         #endregion
     }
-    #endregion
-
-    #region class AbcInstanceCollection
-    public sealed class AbcInstanceCollection : List<AbcInstance>, ISupportXmlDump
-    {
-        private readonly AbcFile _abc;
-        private readonly Hashtable _cache = new Hashtable();
-
-        public AbcInstanceCollection(AbcFile abc)
-        {
-            _abc = abc;
-        }
-
-        #region Public Members
-        internal void AddInternal(AbcInstance instance)
-        {
-            base.Add(instance);
-        }
-
-        public new void Add(AbcInstance instance)
-        {
-            //#if DEBUG
-            //            var other = Find(instance.Name);
-            //            if (other != null)
-            //                throw new InvalidOperationException();
-            //            if (IsDefined(instance))
-            //                throw new InvalidOperationException();
-            //#endif
-            instance.Index = Count;
-            instance.Abc = _abc;
-            _cache[instance.FullName] = instance;
-            base.Add(instance);
-        }
-
-        public bool IsDefined(AbcInstance instance)
-        {
-            if (instance == null) return false;
-            int index = instance.Index;
-            if (index < 0 || index >= Count)
-                return false;
-            return this[index] == instance;
-        }
-
-        AbcInstance Find(string fullname)
-        {
-            return _cache[fullname] as AbcInstance;
-        }
-
-        public AbcInstance Find(AbcMultiname mname)
-        {
-            if (mname == null)
-                throw new ArgumentNullException("mname");
-            if (mname.IsRuntime) return null;
-            string name = mname.NameString;
-            if (string.IsNullOrEmpty(name))
-                return null;
-            if (mname.NamespaceSet != null)
-            {
-            	return mname.NamespaceSet
-					.Select(ns => ns.NameString.MakeFullName(name))
-					.Select(fullname => Find(fullname))
-					.FirstOrDefault(instance => instance != null);
-            }
-        	return Find(mname.FullName);
-        }
-
-        public AbcInstance FindStrict(AbcMultiname name)
-        {
-            return Find(i => ReferenceEquals(i.Name, name));
-        }
-
-        public AbcInstance this[AbcMultiname name]
-        {
-            get { return Find(name); }
-        }
-
-        public AbcInstance this[string fullname]
-        {
-            get { return Find(fullname); }
-        }
-
-        public bool Contains(AbcMultiname name)
-        {
-            return Find(name) != null;
-        }
-        #endregion
-
-        #region IO
-
-        public void Read(int n, SwfReader reader)
-        {
-            for (int i = 0; i < n; ++i)
-            {
-                Add(new AbcInstance(reader));
-            }
-        }
-
-        public void Write(SwfWriter writer)
-        {
-            int n = Count;
-            for (int i = 0; i < n; ++i)
-                this[i].Write(writer);
-        }
-
-    	#endregion
-
-        #region Dump
-        public void DumpXml(XmlWriter writer)
-        {
-            if (!AbcDumpService.DumpInstances) return;
-            writer.WriteStartElement("instances");
-            writer.WriteAttributeString("count", XmlConvert.ToString(Count));
-            foreach (var i in this)
-                i.DumpXml(writer);
-            writer.WriteEndElement();
-        }
-
-        public void DumpDirectory(string dir)
-        {
-            foreach (var i in this)
-                i.DumpDirectory(dir);
-        }
-        #endregion
-
-        #region DevUtils
-        public InstanceNamespaceCollection GroupByNamespace()
-        {
-            var list = new InstanceNamespaceCollection();
-            foreach (var info in this)
-            {
-                var ns = list[info.NamespaceString];
-                if (ns == null)
-                {
-                    ns = new InstanceNamespace(info.NamespaceString);
-                    list.Add(ns);
-                }
-                ns.Instances.Add(info);
-            }
-            return list;
-        }
-        #endregion
-    }
-    #endregion
-
-    #region class InstanceNamespace
-    public class InstanceNamespace
-    {
-        public InstanceNamespace(string name)
-        {
-            _name = name;
-        }
-
-        public string Name
-        {
-            get { return _name; }
-        }
-
-        private readonly string _name;
-
-        public List<AbcInstance> Instances
-        {
-            get { return _instances; }
-        }
-
-        private readonly List<AbcInstance> _instances = new List<AbcInstance>();
-
-        public void Dump(TextWriter writer)
-        {
-            writer.WriteLine("#region namespace {0}", _name);
-            writer.WriteLine("namespace {0}", _name);
-            writer.WriteLine("{");
-
-            bool eol = false;
-            foreach (var info in _instances)
-            {
-                if (eol) writer.WriteLine();
-                info.Dump(writer, false);
-                eol = true;
-            }
-
-            writer.WriteLine("}");
-            writer.WriteLine("#endregion");
-        }
-    }
-    #endregion
-
-    #region class InstanceNamespaceCollection
-    public sealed class InstanceNamespaceCollection : List<InstanceNamespace>
-    {
-        public InstanceNamespace this[string name]
-        {
-            get { return Find(ns => ns.Name == name); }
-        }
-
-        public void Dump(TextWriter writer)
-        {
-            bool eol = false;
-            foreach (var ns in this)
-            {
-                if (eol) writer.WriteLine();
-                ns.Dump(writer);
-                eol = true;
-            }
-        }
-    }
-    #endregion
 }

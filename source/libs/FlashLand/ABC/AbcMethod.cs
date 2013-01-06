@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,26 +17,18 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// </summary>
     public sealed class AbcMethod : ISupportXmlDump, ISwfIndexedAtom
     {
-        #region Constructors
-        public AbcMethod()
+	    public AbcMethod()
         {
         }
 
-        public AbcMethod(SwfReader reader)
-        {
-            Read(reader);
-        }
-
-        public AbcMethod(IMethod method)
+	    public AbcMethod(IMethod method)
         {
             if (method == null)
                 throw new ArgumentNullException();
             SourceMethod = method;
         }
-        #endregion
 
-        #region Properties
-        /// <summary>
+	    /// <summary>
         /// Gets or sets the index of this method signature within method array in ABC file.
         /// </summary>
         public int Index
@@ -47,7 +38,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
         int _index = -1;
 
-        public AbcFile ByteCode { get; set; }
+        public AbcFile Abc { get; set; }
         
         /// <summary>
         /// Gets or sets method name.
@@ -159,13 +150,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 	        Parameters.Add(new AbcParameter(type, name));
         }
 
-	    #region Flags
-        public AbcMethodFlags Flags
+	    public AbcMethodFlags Flags
         {
             get { return _flags; }
             set { _flags = value; }
         }
-        AbcMethodFlags _flags;
+        private AbcMethodFlags _flags;
 
         public bool IsNative
         {
@@ -224,9 +214,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return false;
             }
         }
-        #endregion
 
-        /// <summary>
+	    /// <summary>
         /// Gets or sets assotiated method <see cref="AbcTrait"/>
         /// </summary>
         public AbcTrait Trait
@@ -377,10 +366,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         internal AbcMethod OriginalMethod { get; set; }
 
         internal bool IsImported;
-        #endregion
 
-        #region IO
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             int param_count = (int)reader.ReadUIntEncoded();
 
@@ -479,10 +466,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-	    #endregion
-
-        #region Xml Dump
-        public void DumpXml(XmlWriter writer)
+	    public void DumpXml(XmlWriter writer)
         {
             DumpXml(writer, "method");
         }
@@ -507,10 +491,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             writer.WriteEndElement();
         }
-        #endregion
 
-        #region Text Dump
-        public void Dump(TextWriter writer, string tab, bool isStatic)
+	    public void Dump(TextWriter writer, string tab, bool isStatic)
         {
             writer.Write(tab);
 
@@ -579,10 +561,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 writer.WriteLine(";");
             }
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+	    public override string ToString()
         {
             return ToString("f");
         }
@@ -642,18 +622,15 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             return s.ToString();
         }
-        #endregion
 
-        #region Internal Members
-        internal void Finish(AbcCode code)
+	    internal void Finish(AbcCode code)
         {
             if (_body == null)
                 throw new InvalidOperationException("Method has no body");
             _body.Finish(code);
         }
-        #endregion
 
-        internal bool IsTypeUsed(AbcMultiname typeName)
+	    internal bool IsTypeUsed(AbcMultiname typeName)
         {
             if (ReferenceEquals(ReturnType, typeName)) return true;
         	return Parameters.Any(p => ReferenceEquals(p.Type, typeName));
@@ -662,73 +639,53 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         internal int MethodInfoIndex { get; set; }
     }
 
-    public sealed class AbcMethodCollection : List<AbcMethod>, ISwfAtom, ISupportXmlDump
-    {
-        private readonly AbcFile _abc;
+	[Flags]
+	public enum AbcMethodFlags
+	{
+		None = 0,
 
-        public AbcMethodCollection(AbcFile abc)
-        {
-            _abc = abc;
-        }
+		/// <summary>
+		/// Suggests to the run-time that an “arguments” object (as specified by the
+		/// ActionScript 3.0 Language Reference) be created. Must not be used
+		/// together with NeedRest. See Chapter 3.
+		/// </summary>
+		NeedArguments = 0x01,
 
-        #region Public Members
-        public new void Add(AbcMethod method)
-        {
-            if (method.ByteCode != null)
-                throw new InvalidOperationException();
-            method.ByteCode = _abc;
-            method.Index = Count;
-            base.Add(method);
-        }
-        #endregion
+		/// <summary>
+		/// Must be set if this method uses the newactivation opcode.
+		/// </summary>
+		NeedActivation = 0x02,
 
-        #region IAbcAtom Members
+		/// <summary>
+		/// This flag creates an ActionScript 3.0 rest arguments array. Must not be
+		/// used with NeedArguments. See Chapter 3.
+		/// </summary>
+		NeedRest = 0x04,
 
-        public void Read(SwfReader reader)
-        {
-            int n = (int)reader.ReadUIntEncoded();
-            for (int i = 0; i < n; ++i)
-            {
-                Add(new AbcMethod(reader));
-            }
-        }
+		/// <summary>
+		/// Must be set if this method has optional parameters and the options
+		/// field is present in this method_info structure.
+		/// </summary>
+		HasOptional = 0x08,
 
-        public void Write(SwfWriter writer)
-        {
-            int n = Count;
-            writer.WriteUIntEncoded((uint)n);
-            for (int i = 0; i < n; ++i)
-                this[i].Write(writer);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		IgnoreRest = 0x10,
 
-	    #endregion
+		/// <summary>
+		/// Specifies whether method is native (implementation provided by AVM+)
+		/// </summary>
+		Native = 0x20,
 
-        #region Dump
-        public void DumpXml(XmlWriter writer)
-        {
-            if (!AbcDumpService.DumpFunctions) return;
-            writer.WriteStartElement("methods");
-            writer.WriteAttributeString("count", Count.ToString());
-            foreach (var m in this)
-            {
-                if (m.Trait != null) continue;
-                if (m.IsInitializer) continue;
-                m.DumpXml(writer);
-            }
-            writer.WriteEndElement();
-        }
+		/// <summary>
+		/// Must be set if this method uses the dxns or dxnslate opcodes.
+		/// </summary>
+		SetDxns = 0x40,
 
-        public void Dump(TextWriter writer, string tab, bool isStatic)
-        {
-            int n = Count;
-            for (int i = 0; i < n; ++i)
-            {
-                if (i > 0) writer.WriteLine();
-                this[i].Dump(writer, tab, isStatic);
-            }
-        }
-        #endregion
-    }
-
-    public delegate void AbcMethodHandler(AbcMethod method);
+		/// <summary>
+		/// Must be set when the param_names field is present in this method_info structure.
+		/// </summary>
+		HasParamNames = 0x80,
+	}
 }

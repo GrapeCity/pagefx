@@ -10,22 +10,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 {
     public sealed class AbcScript : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
     {
-        #region Constructors
-        public AbcScript()
+	    public AbcScript()
         {
             _traits = new AbcTraitCollection(this);
         }
 
-        public AbcScript(SwfReader reader) : this()
-        {
-            Read(reader);
-        }
-        #endregion
+	    public int Index { get; set; }
 
-        #region Properties
-        public int Index { get; set; }
-
-        public AbcFile ABC { get; internal set; }
+        public AbcFile Abc { get; internal set; }
 
         public AbcMethod Initializer
         {
@@ -33,11 +25,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             set
             {
                 _initializer = value;
+
                 if (value != null)
                     value.IsInitializer = true;
             }
         }
-        AbcMethod _initializer;
+        private AbcMethod _initializer;
 
         public AbcTraitCollection Traits
         {
@@ -59,10 +52,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return klass.Instance;
             }
         }
-        #endregion
 
-        #region Public Method
-        public void DefineClassTraits(IEnumerable<AbcInstance> set, Predicate<AbcInstance> filter)
+	    public void DefineClassTraits(IEnumerable<AbcInstance> set, Predicate<AbcInstance> filter)
         {
             foreach (var instance in set)
             {
@@ -85,11 +76,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             DefineClassTraits(instances, null);
         }
-        #endregion
 
-        #region IAbcAtom Members
-
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             Initializer = reader.ReadAbcMethod();
             _traits.Read(reader);
@@ -101,10 +89,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             _traits.Write(writer);
         }
 
-    	#endregion
-
-        #region Dump
-        bool ShouldDump()
+	    private bool ShouldDump()
         {
             if (!AbcDumpService.DumpScripts) return false;
             if (!AbcDumpService.DumpInstances) return true;
@@ -178,86 +163,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             writer.WriteLine("#endregion");
         }
-        #endregion
 
-        #region Object Override Members
-        public override string ToString()
+	    public override string ToString()
         {
             var def = SingleInstance;
             if (def != null)
                 return def.FullName;
             return "Script" + Index;
         }
-        #endregion
-    }
-
-    public sealed class AbcScriptCollection : List<AbcScript>, ISwfAtom, ISupportXmlDump
-    {
-        private readonly AbcFile _abc;
-
-        public AbcScriptCollection(AbcFile abc)
-        {
-            _abc = abc;
-        }
-
-        #region Public Members
-        public new void Add(AbcScript script)
-        {
-            script.Index = Count;
-            script.ABC = _abc;
-            base.Add(script);
-        }
-
-        public bool IsDefined(AbcScript script)
-        {
-            if (script == null) return false;
-            int index = script.Index;
-            if (index < 0 || index >= Count) return false;
-            return this[index] == script;
-        }
-        #endregion
-
-        #region IAbcAtom Members
-
-        public void Read(SwfReader reader)
-        {
-            int n = (int)reader.ReadUIntEncoded();
-            for (int i = 0; i < n; ++i)
-            {
-                Add(new AbcScript(reader));
-            }
-        }
-
-        public void Write(SwfWriter writer)
-        {
-            int n = Count;
-            writer.WriteUIntEncoded((uint)n);
-            for (int i = 0; i < n; ++i)
-                this[i].Write(writer);
-        }
-
-    	#endregion
-
-        #region Dump
-        public void DumpXml(XmlWriter writer)
-        {
-            writer.WriteStartElement("scripts");
-            writer.WriteAttributeString("count", Count.ToString());
-            foreach (var s in this)
-                s.DumpXml(writer);
-            writer.WriteEndElement();
-        }
-
-        public void Dump(TextWriter writer)
-        {
-            bool eol = false;
-            foreach (var script in this)
-            {
-                if (eol) writer.WriteLine();
-                script.Dump(writer);
-                eol = true;
-            }
-        }
-        #endregion
     }
 }

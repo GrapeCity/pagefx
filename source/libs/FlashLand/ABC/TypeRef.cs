@@ -50,7 +50,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var instance = provider as AbcInstance;
             if (instance != null)
             {
-                Add(instance.SuperName, TypeRefTarget.Inheritance, list, cache);
+                Add(instance.BaseTypeName, TypeRefTarget.Inheritance, list, cache);
                 foreach (var ifaceName in instance.Interfaces)
                     Add(ifaceName, TypeRefTarget.Inheritance, list, cache);
 

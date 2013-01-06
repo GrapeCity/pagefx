@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    public sealed class AbcConstPool<T> : IEnumerable<AbcConst<T>>, ISwfAtom, ISupportXmlDump, IAbcConstPool
+    public sealed class AbcConstPool<T> : IReadOnlyList<AbcConst<T>>, ISwfAtom, ISupportXmlDump, IAbcConstPool
     {
     	private readonly List<AbcConst<T>> _list = new List<AbcConst<T>>();
 		private readonly Dictionary<T, int> _index = new Dictionary<T, int>();
@@ -18,8 +19,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             _list.Add(new AbcConst<T>(default(T)) { Index = 0 });
         }
 
-    	#region Public Members
-        public int Count
+	    public int Count
         {
             get { return _list.Count; }
         }
@@ -60,11 +60,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (i >= 0) return _list[i];
             return Add(value);
         }
-        #endregion
 
-        #region IAbcAtom Members
-        
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 1; i < n; ++i)
@@ -91,10 +88,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-	    #endregion
-
-        #region Dump
-        static string TypeName
+	    private static string TypeName
         {
             get
             {
@@ -153,31 +147,23 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             writer.WriteEndElement();
         }
-        #endregion
 
-        #region IEnumerable<AbcConst<T>> Members
-        public IEnumerator<AbcConst<T>> GetEnumerator()
+	    public IEnumerator<AbcConst<T>> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
-        #endregion
 
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
+	    IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-        #endregion
 
-        #region Object Override Methods
-        public override string ToString()
+	    public override string ToString()
         {
             return string.Format("{0}[{1}]", Name, Count);
         }
-        #endregion
 
-        #region IAbcConstPool Members
-        IAbcConst IAbcConstPool.this[int index]
+	    IAbcConst IAbcConstPool.this[int index]
         {
             get { return this[index]; }
         }
@@ -215,15 +201,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             return Import((AbcConst<T>)c);
         }
-        #endregion
 
-        #region IEnumerable<IAbcConst> Members
-
-        IEnumerator<IAbcConst> IEnumerable<IAbcConst>.GetEnumerator()
+	    IEnumerator<IAbcConst> IEnumerable<IAbcConst>.GetEnumerator()
         {
         	return _list.Cast<IAbcConst>().GetEnumerator();
         }
-
-    	#endregion
     }
 }

@@ -326,7 +326,7 @@ namespace DataDynamics.PageFX
                         while (true)
                         {
                             instance.DumpXml(writer);
-                            var bn = instance.SuperName;
+                            var bn = instance.BaseTypeName;
                             if (bn == null) break;
                             instanceName = bn.FullName;
                             instance = AbcFile.FindInstance(list, instanceName);

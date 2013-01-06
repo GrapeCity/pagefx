@@ -77,30 +77,45 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Abc\AbcCache.cs" />
+    <Compile Include="Abc\AbcClassCollection.cs" />
     <Compile Include="Abc\AbcConst.cs" />
     <Compile Include="Abc\AbcConstKind.cs" />
     <Compile Include="Abc\AbcConstList.cs" />
+    <Compile Include="Abc\AbcExceptionHandlerCollection.cs" />
     <Compile Include="Abc\AbcExtensions.cs" />
     <Compile Include="Abc\AbcFile.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Abc\AbcFile.ResourceBundle.cs" />
     <Compile Include="Abc\AbcFile.Test.cs" />
+    <Compile Include="Abc\AbcInstanceCollection.cs" />
     <Compile Include="Abc\AbcMemberName.cs" />
+    <Compile Include="Abc\AbcMetaEntry.cs" />
+    <Compile Include="Abc\AbcMethodBodyCollection.cs" />
+    <Compile Include="Abc\AbcMethodCollection.cs" />
+    <Compile Include="Abc\AbcMethodSemantics.cs" />
     <Compile Include="Abc\AbcMultinamePool.cs" />
+    <Compile Include="Abc\AbcParameterList.cs" />
+    <Compile Include="Abc\AbcScriptCollection.cs" />
     <Compile Include="Abc\AbcTraitCache.cs" />
     <Compile Include="Abc\AbcTraitCollection.cs" />
     <Compile Include="Abc\AbcFile.Define.cs" />
     <Compile Include="Abc\AbcFile.Import.cs" />
+    <Compile Include="Abc\AbcTryBlock.cs" />
+    <Compile Include="Abc\IAbcConstPool.cs" />
+    <Compile Include="Abc\IAbcFileSubject.cs" />
+    <Compile Include="Abc\IAbcTraitProvider.cs" />
+    <Compile Include="Abc\IImportable.cs" />
     <Compile Include="Abc\IOExtensions.cs" />
     <Compile Include="Abc\AbcLateMethodCollection.cs" />
     <Compile Include="Abc\AbcMerger.cs" />
     <Compile Include="Abc\AbcParameter.cs" />
     <Compile Include="Abc\AbcDumpService.cs" />
     <Compile Include="Abc\AbcExceptionHandler.cs" />
-    <Compile Include="Abc\Interfaces.cs" />
+    <Compile Include="Abc\IAbcConst.cs" />
     <Compile Include="Abc\AbcNamespaceSet.cs" />
     <Compile Include="Abc\AbcProperty.cs" />
+    <Compile Include="Abc\KeyValueList.cs" />
     <Compile Include="Core\AbcFileExtensions.cs" />
     <Compile Include="Core\AbcGenConfig.cs" />
     <Compile Include="Core\AssemblyIndex.cs" />
@@ -220,7 +235,7 @@
     <Compile Include="IL\InstructionCode.cs" />
     <Compile Include="Abc\AbcClass.cs" />
     <Compile Include="Abc\AbcConstPool.cs" />
-    <Compile Include="Abc\Enums.cs" />
+    <Compile Include="Abc\AbcTraitOwner.cs" />
     <Compile Include="Abc\AbcInstance.cs" />
     <Compile Include="IL\Instruction.cs" />
     <Compile Include="Abc\AbcMetadata.cs" />

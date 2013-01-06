@@ -579,7 +579,24 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             using (var writer = new StreamWriter(path))
             {
-                Instances.GroupByNamespace().Dump(writer);
+	            var namespaces = Instances.GroupBy(x => x.NamespaceString);
+
+				bool eol = false;
+	            foreach (var ns in namespaces)
+	            {
+					if (eol) writer.WriteLine();
+
+		            writer.WriteLine("#region namespace {0}", ns.Key);
+					writer.WriteLine("namespace {0}", ns.Key);
+					writer.WriteLine("{");
+
+					DumpInstances(ns, writer);
+
+		            writer.WriteLine("}");
+					writer.WriteLine("#endregion");
+
+					eol = true;
+	            }
 
                 if (Instances.Count > 0)
                     writer.WriteLine();
@@ -587,7 +604,19 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 Scripts.Dump(writer);
             }
         }
-        #endregion
+
+		private static void DumpInstances(IEnumerable<AbcInstance> seq, TextWriter writer)
+		{
+			bool eol = false;
+			foreach (var instance in seq)
+			{
+				if (eol) writer.WriteLine();
+				instance.Dump(writer, false);
+				eol = true;
+			}
+		}
+
+		#endregion
 
         #region Finish
         public void Finish()
@@ -608,8 +637,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 if (!IsDefined(instance.Name))
                     throw Errors.ABC.BadFormat.CreateException();
 
-                if (instance.SuperName != null)
-                    instance.SuperName = ImportConst(instance.SuperName);
+                if (instance.BaseTypeName != null)
+                    instance.BaseTypeName = ImportConst(instance.BaseTypeName);
 
                 EnsureInterfaces(instance);
                 EnsureTraits(instance);
@@ -656,9 +685,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     Debugger.Break();
             }
 
-            if (instance.SuperName != null
-                && !instance.SuperName.IsAny
-                && instance.SuperName.Kind != AbcConstKind.QName)
+            if (instance.BaseTypeName != null
+                && !instance.BaseTypeName.IsAny
+                && instance.BaseTypeName.Kind != AbcConstKind.QName)
                 Debugger.Break();
 
             foreach (var mn in instance.Interfaces)
@@ -718,14 +747,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 var klass = op.Value as AbcClass;
                 if (klass != null)
                 {
-                    if (klass.ABC != this)
+                    if (klass.Abc != this)
                         throw new InvalidOperationException();
                 }
 
                 var f = op.Value as AbcMethod;
                 if (f != null)
                 {
-                    if (f.ByteCode != this)
+                    if (f.Abc != this)
                         throw new InvalidOperationException();
                 }
             }
@@ -778,24 +807,21 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region FixOrder
-        void FixOrder()
+        private void FixOrder()
         {
             OrderInstancesByInheritance();
         }
 
-    	bool IsMxApp
+    	private bool IsFlexApp
         {
-            get 
-            {
-                return _sfc != null && _sfc.IsFlexApplication;
-            }
+            get { return _sfc != null && _sfc.IsFlexApplication; }
         }
 
         private void OrderInstancesByInheritance()
         {
             _order = new List<AbcInstance>();
 
-            if (IsMxApp && Generator != null)
+            if (IsFlexApp && Generator != null)
             {
                 var app = Generator.MainInstance;
                 OrderByInheritance(app);
@@ -816,10 +842,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 var instance = _order[i];
                 var klass = instance.Class;
-                instance.Index = i;
-                klass.Index = i;
-                Instances.AddInternal(instance);
-                Classes.AddInternal(klass);
+                Instances.Add(instance);
+                Classes.Add(klass);
+				Debug.Assert(instance.Index == i);
+				Debug.Assert(klass.Index == i);
             }
 
             Scripts.Sort(CreateScriptComparer());
