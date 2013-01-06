@@ -74,11 +74,12 @@ namespace DataDynamics.PageFX.FlashLand.Core
             if (name.IsRuntime || name.IsAny) 
                 return null;
 
-			if (name.IsGlobalType)
-			{
-				var fullName = GlobalTypes.GetCorlibTypeName(name.NameString);
-				return FindInstance(assembly, fullName);
-			}
+// TODO: fix importing of global types like void
+//			if (name.IsGlobalType)
+//			{
+//				var fullName = GlobalTypes.GetCorlibTypeName(name.NameString);
+//				return FindInstance(assembly, fullName);
+//			}
 
             if (name.NamespaceSet != null)
             {

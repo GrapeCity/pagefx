@@ -69,17 +69,21 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		{
 			if (mname == null)
 				throw new ArgumentNullException("mname");
-			if (mname.IsRuntime) return null;
+			if (mname.IsRuntime)
+				return null;
+
 			string name = mname.NameString;
 			if (string.IsNullOrEmpty(name))
 				return null;
+
 			if (mname.NamespaceSet != null)
 			{
 				return mname.NamespaceSet
-				            .Select(ns => NameExtensions.MakeFullName(ns.NameString, name))
+				            .Select(ns => ns.NameString.MakeFullName(name))
 				            .Select(fullname => Find(fullname))
 				            .FirstOrDefault(instance => instance != null);
 			}
+
 			return Find(mname.FullName);
 		}
 
