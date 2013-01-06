@@ -69,8 +69,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             switch (from.ImportStrategy)
             {
-                    case ImportStrategy.Multinames:
-                        ImportTypesUsingMultinames(from);
+                    case ImportStrategy.Names:
+                        ImportTypesByNames(from);
                         break;
 
                     case ImportStrategy.Refs:
@@ -87,17 +87,24 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 ImportInstance(instance);
         }
 
-        private void ImportTypesUsingMultinames(AbcFile from)
+        private void ImportTypesByNames(AbcFile from)
         {
-            int n = from.Multinames.Count;
-            for (int i = 1; i < n; ++i)
+	        for (int i = 1; i < from.Multinames.Count; ++i)
             {
-                var mn = from.Multinames[i];
-                if (ExcludeTypeName(mn)) continue;
+                var name = from.Multinames[i];
+                if (ExcludeTypeName(name)) continue;
 
                 AbcInstance type;
-                ImportType(mn, out type);
+                ImportType(name, out type);
             }
+
+			for (int i = 1; i < from.StringPool.Count; ++i)
+			{
+				var name = from.StringPool[i];
+
+				AbcInstance type;
+				ImportType(name, out type);
+			}
         }
 
         private static bool ExcludeTypeName(AbcMultiname name)
@@ -105,10 +112,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (name.IsRuntime)
 				return true;
 
-	        if (name.IsQName && name.NamespaceString.IndexOf(':') >= 0)
-		        return true;
-
-            return false;
+	        return false;
         }
         #endregion
 
@@ -793,15 +797,22 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         internal AbcInstance ImportInstance(AbcMultiname name)
         {
-            var asm = ApplicationAssembly;
-            if (asm != null)
+            var assembly = ApplicationAssembly;
+            if (assembly != null)
             {
-                var instance = AssemblyIndex.FindInstance(asm, name);
+                var instance = AssemblyIndex.FindInstance(assembly, name);
                 if (instance != null)
                     return ImportInstance(instance);
             }
             return null;
         }
+
+		internal AbcInstance ImportInstance(AbcConst<string> name)
+		{
+			if (name == null || string.IsNullOrEmpty(name.Value))
+				return null;
+			return ImportInstance(name.Value);
+		}
 
         internal AbcInstance ImportInstance(string fullname)
         {
@@ -827,10 +838,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             type = null;
             if (name == null) return null;
 
-            if (IsImportTypeExternally)
-                return ImportConst(name);
+	        if (IsImportTypeExternally)
+	        {
+		        return ImportConst(name);
+	        }
 
-            if (name.IsRuntime) return ImportConst(name);
+	        if (name.IsRuntime) return ImportConst(name);
 
             type = ImportInstance(name);
             
@@ -839,6 +852,21 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             return ImportConst(name);
         }
+
+		private AbcConst<string> ImportType(AbcConst<string> name, out AbcInstance type)
+		{
+			type = null;
+			if (name == null) return null;
+
+			if (IsImportTypeExternally)
+			{
+				return ImportConst(name);
+			}
+
+			type = ImportInstance(name);
+
+			return ImportConst(name);
+		}
 
         private AbcMultiname ImportType(AbcMultiname name)
         {

@@ -4,6 +4,7 @@ using System.Linq;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 
 namespace DataDynamics.PageFX.FlashLand.Core
@@ -54,31 +55,40 @@ namespace DataDynamics.PageFX.FlashLand.Core
         	return name.GetFullNames().Select(fullName => FindType(assembly, fullName)).FirstOrDefault(type => type != null);
         }
 
-    	public static AbcInstance FindInstance(IAssembly asm, string name)
+    	public static AbcInstance FindInstance(IAssembly assembly, string name)
         {
-            Setup(asm);
+            Setup(assembly);
 
-            var index = asm.CustomData().Index;
+            var index = assembly.CustomData().Index;
             if (index != null)
                 return index.FindInstanceCore(name);
 
             return null;
         }
 
-        public static AbcInstance FindInstance(IAssembly asm, AbcMultiname name)
+        public static AbcInstance FindInstance(IAssembly assembly, AbcMultiname name)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
-            if (name.IsRuntime) 
+			//TODO: decide whether to return Object for any (*) type
+            if (name.IsRuntime || name.IsAny) 
                 return null;
+
+			if (name.IsGlobalType)
+			{
+				var fullName = GlobalTypes.GetCorlibTypeName(name.NameString);
+				return FindInstance(assembly, fullName);
+			}
+
             if (name.NamespaceSet != null)
             {
             	return name.NamespaceSet
 					.Select(ns => ns.NameString.MakeFullName(name.NameString))
-					.Select(fullName => FindInstance(asm, fullName))
+					.Select(fullName => FindInstance(assembly, fullName))
 					.FirstOrDefault(instance => instance != null);
             }
-        	return FindInstance(asm, name.FullName);
+
+        	return FindInstance(assembly, name.FullName);
         }
 
         private AssemblyIndex(IAssembly assembly)
@@ -91,11 +101,11 @@ namespace DataDynamics.PageFX.FlashLand.Core
             Build(assembly);
         }
 
-	    private void Build(IAssembly root)
+	    private void Build(IAssembly assembly)
 	    {
-		    Link(root);
+		    Link(assembly);
 
-		    root.ProcessReferences(true, assembly => { Link(assembly); });
+		    assembly.ProcessReferences(true, x => { Link(x); });
 	    }
 
 	    private void Link(IAssembly assembly)

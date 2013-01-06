@@ -978,7 +978,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
     internal enum ImportStrategy
     {
-        Multinames,
+        Names,
         Refs
     }
 }
