@@ -109,16 +109,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var name = DefinePfxName("init_myfields_" + GetMethodSuffix(type));
 
-            return instance.DefineStaticMethod(
-                name, GetArrayInstance(),
-                code =>
-                    {
-                        var typeFieldInfo = CorlibTypes[CorlibTypeId.FieldInfo];
-                        const int arr = 1;
-                        code.NewArray(arr, typeFieldInfo, myfields,
-                                      f => NewFieldInfo(code, instance, f, 2));
-                        code.ReturnValue();
-                    });
+	        return instance.DefineMethod(
+		        Sig.@static(name, GetArrayInstance()),
+		        code =>
+			        {
+				        var typeFieldInfo = CorlibTypes[CorlibTypeId.FieldInfo];
+				        const int arr = 1;
+				        code.NewArray(arr, typeFieldInfo, myfields,
+				                      f => NewFieldInfo(code, instance, f, 2));
+				        code.ReturnValue();
+			        });
         }
 
         private bool IsMemberwiseCloneCompiled
@@ -172,19 +172,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 ++NameDummyCounter;
             }
             var name = DefinePfxName("init_custom_attrs_" + provname);
-            
-            return instance.DefineStaticMethod(
-                name, GetArrayInstance(),
-                code =>
-	                {
-		                const int arr = 1;
-		                const int varAttr = 2;
 
-		                code.NewArray(arr, SystemTypes.Object, provider.CustomAttributes,
-		                              attr => NewAttribute(code, attr, varAttr));
+	        return instance.DefineMethod(
+		        Sig.@static(name, GetArrayInstance()),
+		        code =>
+			        {
+				        const int arr = 1;
+				        const int varAttr = 2;
 
-		                code.ReturnValue();
-	                });
+				        code.NewArray(arr, SystemTypes.Object, provider.CustomAttributes,
+				                      attr => NewAttribute(code, attr, varAttr));
+
+				        code.ReturnValue();
+			        });
         }
 
         private void NewAttribute(AbcCode code, ICustomAttribute attr, int varAttr)
@@ -256,71 +256,71 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             instance = FixInstance(instance);
 
-            var wrapper = instance.DefineStaticMethod(
-                name, AvmTypeCode.Object,
-                code =>
-	                {
-		                int n = am.Parameters.Count;
-		                bool hasReturn = false;
-		                if (m.IsConstructor)
-		                {
-			                if (init)
-			                {
-				                //addParam = true;
-				                if (am.IsInitializer)
-				                {
-					                //code.ThrowNotSupportedException();
-					                //return;
-					                //addParam = true;
-					                //code.LoadArguments(n + 1);
-					                //code.Add(InstructionCode.Callstatic, am, n);
-				                }
-				                else
-				                {
-					                addParam = true;
-					                code.LoadArguments(n + 1);
-					                code.Call(am);
-				                }
-			                }
-			                else
-			                {
-				                hasReturn = true;
-				                code.Getlex(am);
-				                if (am.IsInitializer)
-				                {
-					                code.LoadArguments(n);
-					                code.Construct(n);
-				                }
-				                else
-				                {
-					                code.Construct(0);
-					                code.Dup();
-					                code.LoadArguments(n);
-					                code.Call(am);
-				                }
-			                }
-		                }
-		                else
-		                {
-			                hasReturn = !am.IsVoid;
-			                if (m.IsStatic)
-			                {
-				                code.Getlex(am);
-			                }
-			                else
-			                {
-				                addParam = true;
-				                ++n;
-			                }
+	        var wrapper = instance.DefineMethod(
+		        Sig.@static(name, AvmTypeCode.Object),
+		        code =>
+			        {
+				        int n = am.Parameters.Count;
+				        bool hasReturn = false;
+				        if (m.IsConstructor)
+				        {
+					        if (init)
+					        {
+						        //addParam = true;
+						        if (am.IsInitializer)
+						        {
+							        //code.ThrowNotSupportedException();
+							        //return;
+							        //addParam = true;
+							        //code.LoadArguments(n + 1);
+							        //code.Add(InstructionCode.Callstatic, am, n);
+						        }
+						        else
+						        {
+							        addParam = true;
+							        code.LoadArguments(n + 1);
+							        code.Call(am);
+						        }
+					        }
+					        else
+					        {
+						        hasReturn = true;
+						        code.Getlex(am);
+						        if (am.IsInitializer)
+						        {
+							        code.LoadArguments(n);
+							        code.Construct(n);
+						        }
+						        else
+						        {
+							        code.Construct(0);
+							        code.Dup();
+							        code.LoadArguments(n);
+							        code.Call(am);
+						        }
+					        }
+				        }
+				        else
+				        {
+					        hasReturn = !am.IsVoid;
+					        if (m.IsStatic)
+					        {
+						        code.Getlex(am);
+					        }
+					        else
+					        {
+						        addParam = true;
+						        ++n;
+					        }
 
-			                code.LoadArguments(n);
-			                code.Call(am);
-		                }
+					        code.LoadArguments(n);
+					        code.Call(am);
+				        }
 
-		                if (!hasReturn)
-			                code.PushNull();
-		                code.ReturnValue();
-	                });
+				        if (!hasReturn)
+					        code.PushNull();
+				        code.ReturnValue();
+			        });
 
             if (addParam)
             {
@@ -485,21 +485,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             instance = FixInstance(instance);
 
-            return instance.DefineStaticMethod(
-                name, GetArrayInstance(),
-                code =>
-                    {
-                        const int arr = 1;
-                        const int varObj = 2;
-                        const int varParams = 3;
-                        const int varParam = 4;
+	        return instance.DefineMethod(
+		        Sig.@static(name, GetArrayInstance()),
+		        code =>
+			        {
+				        const int arr = 1;
+				        const int varObj = 2;
+				        const int varParams = 3;
+				        const int varParam = 4;
 
-                        code.NewArray(arr, mtype, methods,
-                                      (method, index) => NewMethodInfo(code, instance, method,
-                                                                       varObj, varParams, varParam,
-                                                                       mtype, index));
-                        code.ReturnValue();
-                    });
+				        code.NewArray(arr, mtype, methods,
+				                      (method, index) => NewMethodInfo(code, instance, method,
+				                                                       varObj, varParams, varParam,
+				                                                       mtype, index));
+				        code.ReturnValue();
+			        });
         }
 
         private void InitMethods(AbcCode code, AbcInstance instance, IType type, int var)
@@ -579,16 +579,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             instance = FixInstance(instance);
 
-            return instance.DefineStaticMethod(
-                name, GetArrayInstance(),
-                code =>
-	                {
-		                var mtype = CorlibTypes[CorlibTypeId.PropertyInfo];
-		                const int arr = 1;
-		                code.NewArray(arr, mtype, type.Properties,
-		                              property => NewPropertyInfo(code, instance, property, 2));
-		                code.ReturnValue();
-	                });
+	        return instance.DefineMethod(
+		        Sig.@static(name, GetArrayInstance()),
+		        code =>
+			        {
+				        var mtype = CorlibTypes[CorlibTypeId.PropertyInfo];
+				        const int arr = 1;
+				        code.NewArray(arr, mtype, type.Properties,
+				                      property => NewPropertyInfo(code, instance, property, 2));
+				        code.ReturnValue();
+			        });
         }
 
         private void InitProperties(AbcCode code, AbcInstance instance, IType type, int varObj)
@@ -610,8 +610,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var EnumInfo = DefineAbcInstance(CorlibTypes[CorlibTypeId.EnumInfo]);
 
             var name = DefinePfxName("init_enum_info_" + type.GetSigName());
-            return enumInstance.DefineStaticMethod(
-                name, EnumInfo,
+            return enumInstance.DefineMethod(
+                Sig.@static(name, EnumInfo),
                 code =>
 	                {
 		                const int varEnumInfo = 1;

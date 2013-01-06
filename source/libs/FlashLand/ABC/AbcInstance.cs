@@ -511,166 +511,83 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region DefineMethod
-        #region DefineMethod - Main Impl
-        internal AbcMethod DefineMethod(object name, object returnType,
-                                        AbcTraitKind kind, AbcMethodSemantics sem,
-                                        AbcCoder coder, params object[] args)
-        {
-            if (name == null)
-                throw new ArgumentNullException("name");
 
-            var klass = Class;
-            if (klass == null)
-                throw new InvalidOperationException(string.Format("Class is not defined yet for Instance {0}", FullName));
+		internal AbcMethod DefineMethod(Sig sig, AbcCoder coder, Action<AbcMethod> complete)
+		{
+			if (sig == null)
+				throw new ArgumentNullException("sig");
 
-            var traitName = Abc.DefineName(name);
+			if (sig.Name == null)
+				throw new InvalidOperationException();
 
-            bool isStatic = (sem & AbcMethodSemantics.Static) != 0;
+			var klass = Class;
+			if (klass == null)
+				throw new InvalidOperationException(string.Format("Class is not defined yet for Instance {0}", FullName));
 
-            var traits = isStatic ? klass.Traits : Traits;
-            var trait = traits.Find(traitName, kind);
-            if (trait != null)
-                return trait.Method;
+			var traitName = Abc.DefineName(sig.Name);
 
-            var retType = Abc.DefineTypeNameStrict(returnType);
+			bool isStatic = (sig.Semantics & AbcMethodSemantics.Static) != 0;
 
-            var method = new AbcMethod 
-            {
-                ReturnType = retType
-            };
+			var traits = isStatic ? klass.Traits : Traits;
+			var trait = traits.Find(traitName, sig.Kind);
+			if (trait != null)
+			{
+				return trait.Method;
+			}
 
-            trait = AbcTrait.CreateMethod(method, traitName);
-            trait.Kind = kind;
-            if (!isStatic)
-            {
-                trait.IsVirtual = (sem & AbcMethodSemantics.Virtual) != 0;
-                trait.IsOverride = (sem & AbcMethodSemantics.Override) != 0;
-            }
-            traits.Add(trait);
+			var retType = Abc.DefineTypeNameStrict(sig.ReturnType);
 
-            if (args != null)
-            {
-                if (args.Length == 1 && args[0] is IMethod)
-                {
-                    var m = (IMethod)args[0];
-                    Abc.Generator.DefineParameters(method, m);
-                }
-                else
-                {
-                    Abc.DefineParams(method.Parameters, args);
-                }
-            }
+			var method = new AbcMethod
+				{
+					ReturnType = retType
+				};
 
-            var body = new AbcMethodBody(method);
-            Abc.AddMethod(method);
+			trait = AbcTrait.CreateMethod(method, traitName);
+			trait.Kind = sig.Kind;
+			if (!isStatic)
+			{
+				trait.IsVirtual = (sig.Semantics & AbcMethodSemantics.Virtual) != 0;
+				trait.IsOverride = (sig.Semantics & AbcMethodSemantics.Override) != 0;
+			}
+			traits.Add(trait);
 
-            if (coder != null)
-            {
-                var code = new AbcCode(Abc);
-                coder(code);
-                body.Finish(code);
-            }
+			if (sig.Args != null)
+			{
+				if (sig.Args.Length == 1 && sig.Args[0] is IMethod)
+				{
+					var m = (IMethod)sig.Args[0];
+					Abc.Generator.DefineParameters(method, m);
+				}
+				else
+				{
+					Abc.DefineParams(method.Parameters, sig.Args);
+				}
+			}
 
-            return method;
-        }
+			var body = new AbcMethodBody(method);
+			Abc.AddMethod(method);
 
-        internal AbcMethod DefineMethod(AbcMethod prototype, AbcCoder coder, bool resetOverrideFlag)
-        {
-            var t = prototype.Trait;
-            if (t == null)
-                throw new InvalidOperationException();
-            var m = DefineMethod(t.Name, prototype.ReturnType, t.Kind, t.MethodSemantics, coder, prototype);
-            if (resetOverrideFlag)
-                m.Trait.IsOverride = false;
-            return m;
-        }
+			if (coder != null)
+			{
+				var code = new AbcCode(Abc);
+				coder(code);
+				body.Finish(code);
+			}
 
-        internal AbcMethod DefineMethod(AbcMethod prototype, AbcCoder coder)
-        {
-            return DefineMethod(prototype, coder, false);
-        }
-        #endregion
+			if (complete != null)
+			{
+				complete(method);
+			}
 
-        #region DefineMethod
-        internal AbcMethod DefineMethod(object name, object returnType, AbcMethodSemantics sem,
-            AbcCoder coder, params object[] args)
-        {
-            return DefineMethod(name, returnType, AbcTraitKind.Method, sem, coder, args);
-        }
+			return method;
+		}
 
-        internal AbcMethod DefineInstanceMethod(object name, object returnType,
-                                                AbcCoder coder, params object[] args)
-        {
-            return DefineMethod(name, returnType, AbcMethodSemantics.Default, coder, args);
-        }
+		internal AbcMethod DefineMethod(Sig sig, AbcCoder coder)
+		{
+			return DefineMethod(sig, coder, null);
+		}
 
-        internal AbcMethod DefineVirtualMethod(object name, object returnType,
-                                               AbcCoder coder, params object[] args)
-        {
-            return DefineMethod(name, returnType, AbcMethodSemantics.Virtual, coder, args);
-        }
-
-        internal AbcMethod DefineOverrideMethod(object name, object returnType,
-                                                AbcCoder coder, params object[] args)
-        {
-            return DefineMethod(name, returnType, AbcMethodSemantics.Override, coder, args);
-        }
-
-        internal AbcMethod DefineVirtualOverrideMethod(object name, object returnType,
-                                                       AbcCoder coder, params object[] args)
-        {
-            return DefineMethod(name, returnType, AbcMethodSemantics.VirtualOverride, coder, args);
-        }
-
-        internal AbcMethod DefineStaticMethod(object name, object returnType,
-                                              AbcCoder coder, params object[] args)
-        {
-            return DefineMethod(name, returnType, AbcMethodSemantics.Static, coder, args);
-        }
-        #endregion
-
-        #region DefineGetter, DefineSetter
-        internal AbcMethod DefineGetter(object name, object returnType, AbcMethodSemantics sem, AbcCoder coder)
-        {
-            return DefineMethod(name, returnType, AbcTraitKind.Getter, sem, coder);
-        }
-
-        internal AbcMethod DefineSetter(object name, object valueType, AbcMethodSemantics sem, AbcCoder coder)
-        {
-            return DefineMethod(name, AvmTypeCode.Void, AbcTraitKind.Setter, sem, coder, valueType, "value");
-        }
-
-        internal AbcMethod DefineInstanceGetter(object name, object returnType, AbcCoder coder)
-        {
-            return DefineGetter(name, returnType, AbcMethodSemantics.Default, coder);
-        }
-
-        internal AbcMethod DefineInstanceSetter(object name, object valueType, AbcCoder coder)
-        {
-            return DefineSetter(name, valueType, AbcMethodSemantics.Default, coder);
-        }
-
-        internal AbcMethod DefineStaticGetter(object name, object returnType, AbcCoder coder)
-        {
-            return DefineGetter(name, returnType, AbcMethodSemantics.Static, coder);
-        }
-
-        internal AbcMethod DefineStaticSetter(object name, object valueType, AbcCoder coder)
-        {
-            return DefineSetter(name, valueType, AbcMethodSemantics.Static, coder);
-        }
-
-        internal AbcMethod DefinePtrGetter(AbcCoder coder)
-        {
-            return DefineInstanceGetter(Abc.PtrValueName, AvmTypeCode.Object, coder);
-        }
-
-        internal AbcMethod DefinePtrSetter(AbcCoder coder)
-        {
-            return DefineInstanceSetter(Abc.PtrValueName, AvmTypeCode.Object, coder);
-        }
-        #endregion
-        #endregion
+		#endregion
 
 		public void Read(SwfReader reader)
         {
@@ -683,8 +600,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 ProtectedNamespace = reader.ReadAbcNamespace();
             }
 
-            int intrf_count = (int)reader.ReadUIntEncoded();
-            for (int i = 0; i < intrf_count; ++i)
+            int ifaceCount = (int)reader.ReadUIntEncoded();
+            for (int i = 0; i < ifaceCount; ++i)
             {
                 var iface = reader.ReadMultiname();
                 _interfaces.Add(iface);

@@ -26,14 +26,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var instance = DefineAbcInstance(type);
             var name = DefinePfxName(Const.Boxing.MethodBox);
 
-            return instance.DefineStaticMethod(
-                name, instance.Name,
-                code =>
-	                {
-		                code.BoxVariable(instance, 1);
-		                code.ReturnValue();
-	                },
-                type, "value");
+	        return instance.DefineMethod(
+		        Sig.@static(name, instance.Name, type, "value"),
+		        code =>
+			        {
+				        code.BoxVariable(instance, 1);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 
@@ -49,28 +48,27 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var arg = type.GetTypeArgument(0);
             var argInstance = DefineAbcInstance(arg);
 
-            return instance.DefineStaticMethod(
-                name, argInstance.Name,
-                code =>
-	                {
-		                const int value = 1;
-		                code.If(
-			                //hasValue?
-			                () =>
-				                {
-					                code.GetLocal(value);
-					                code.Nullable_HasValue(true);
-					                return code.IfTrue();
-				                },
-			                () =>
-				                {
-					                code.Box(arg, () => code.GetBoxedValue(value));
-					                code.ReturnValue();
-				                },
-			                () => code.ReturnNull()
-			                );
-	                },
-                type, "value");
+	        return instance.DefineMethod(
+		        Sig.@static(name, argInstance.Name, type, "value"),
+		        code =>
+			        {
+				        const int value = 1;
+				        code.If(
+					        //hasValue?
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.Nullable_HasValue(true);
+							        return code.IfTrue();
+						        },
+					        () =>
+						        {
+							        code.Box(arg, () => code.GetBoxedValue(value));
+							        code.ReturnValue();
+						        },
+					        () => code.ReturnNull()
+					        );
+			        });
         }
         #endregion
 
@@ -108,64 +106,63 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var name = DefinePfxName(Const.Boxing.MethodUnbox + (strict ? "strict" : ""));
             var retType = DefineMemberType(type);
-            return instance.DefineStaticMethod(
-                name, retType,
-                code =>
-	                {
-		                const int varValue = 1;
-		                const int varType = 2;
-		                const int varKind = 3;
+	        return instance.DefineMethod(
+		        Sig.@static(name, retType, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int varValue = 1;
+				        const int varType = 2;
+				        const int varKind = 3;
 
-		                if (isInt64)
-			                EnsureInt64Members();
+				        if (isInt64)
+					        EnsureInt64Members();
 
-		                //NOTE: Check null to throw cast exception
-		                code.GetLocal(varValue);
-		                code.ThrowNullReferenceException();
+				        //NOTE: Check null to throw cast exception
+				        code.GetLocal(varValue);
+				        code.ThrowNullReferenceException();
 
-		                code.GetLocal(varValue);
-		                code.CallGetType();
-		                code.SetLocal(varType);
+				        code.GetLocal(varValue);
+				        code.CallGetType();
+				        code.SetLocal(varType);
 
-		                code.If(
-			                delegate
-				                {
-					                code.GetLocal(varType);
-					                return code.IfNull();
-				                },
-			                () => TryUnboxNumber(code, type),
-			                delegate
-				                {
-					                if (strict)
-					                {
-						                code.GetLocal(varType);
-						                code.TypeOf(type);
-						                var ifType = code.Add(InstructionCode.Ifstricteq);
-						                code.ThrowInvalidCastException("not " + type.FullName);
-						                ifType.BranchTarget = code.Label();
-					                }
-					                else
-					                {
-						                code.GetLocal(varType);
-						                code.Call(TypeMethodId.ValueTypeKind);
-						                code.SetLocal(varKind);
+				        code.If(
+					        delegate
+						        {
+							        code.GetLocal(varType);
+							        return code.IfNull();
+						        },
+					        () => TryUnboxNumber(code, type),
+					        delegate
+						        {
+							        if (strict)
+							        {
+								        code.GetLocal(varType);
+								        code.TypeOf(type);
+								        var ifType = code.Add(InstructionCode.Ifstricteq);
+								        code.ThrowInvalidCastException("not " + type.FullName);
+								        ifType.BranchTarget = code.Label();
+							        }
+							        else
+							        {
+								        code.GetLocal(varType);
+								        code.Call(TypeMethodId.ValueTypeKind);
+								        code.SetLocal(varKind);
 
-						                code.GetLocal(varKind);
-						                code.PushInt(type.GetCorlibKind());
-						                var ifKind = code.IfEquals();
-						                code.ThrowInvalidCastException("invalid value type kind (not " + type.FullName +
-						                                               ")");
+								        code.GetLocal(varKind);
+								        code.PushInt(type.GetCorlibKind());
+								        var ifKind = code.IfEquals();
+								        code.ThrowInvalidCastException("invalid value type kind (not " + type.FullName +
+								                                       ")");
 
-						                ifKind.BranchTarget = code.Label();
-					                }
+								        ifKind.BranchTarget = code.Label();
+							        }
 
-					                code.GetBoxedValue(varValue);
-					                code.TryCastToSystemType(null, vtype.SystemType());
-					                code.ReturnValue();
-				                }
-			                );
-	                },
-                AvmTypeCode.Object, "value");
+							        code.GetBoxedValue(varValue);
+							        code.TryCastToSystemType(null, vtype.SystemType());
+							        code.ReturnValue();
+						        }
+					        );
+			        });
         }
 
         private void EnsureInt64Members()
@@ -203,44 +200,43 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             //2. if obj is T? => coerce (T?)
             //3. try unbox T
 
-            return instance.DefineStaticMethod(
-                name, instance,
-                code =>
-	                {
-		                const int value = 1;
+	        return instance.DefineMethod(
+		        Sig.@static(name, instance, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
 
-		                code.If(
-			                () =>
-				                {
-					                code.GetLocal(value);
-					                return code.IfNullable();
-				                },
-			                () =>
-				                {
-					                code.CreateInstance(instance);
-					                code.ReturnValue();
-				                },
-			                () => code.If(
-				                () =>
-					                {
-						                code.GetLocal(value);
-						                code.As(instance.Name);
-						                return code.IfNotNull();
-					                },
-				                delegate
-					                {
-						                code.GetLocal(value);
-						                code.Coerce(instance.Name);
-						                code.ReturnValue();
-					                },
-				                delegate
-					                {
-						                code.NewNullable(type, value);
-						                code.ReturnValue();
-					                })
-			                );
-	                },
-                AvmTypeCode.Object, "value");
+				        code.If(
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        return code.IfNullable();
+						        },
+					        () =>
+						        {
+							        code.CreateInstance(instance);
+							        code.ReturnValue();
+						        },
+					        () => code.If(
+						        () =>
+							        {
+								        code.GetLocal(value);
+								        code.As(instance.Name);
+								        return code.IfNotNull();
+							        },
+						        () =>
+							        {
+								        code.GetLocal(value);
+								        code.Coerce(instance.Name);
+								        code.ReturnValue();
+							        },
+						        () =>
+							        {
+								        code.NewNullable(type, value);
+								        code.ReturnValue();
+							        })
+					        );
+			        });
         }
         #endregion
 
@@ -254,39 +250,38 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var name = GetUnboxMethodName();
 
-            return instance.DefineStaticMethod(
-                name, instance,
-                code =>
-	                {
-		                const int value = 1;
+	        return instance.DefineMethod(
+		        Sig.@static(name, instance, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
 
-		                code.GetLocal(value);
-		                code.ThrowNullReferenceException();
+				        code.GetLocal(value);
+				        code.ThrowNullReferenceException();
 
-		                var MyNullable = DefineAbcInstance(MakeNullable(type));
+				        var MyNullable = DefineAbcInstance(MakeNullable(type));
 
-		                code.If(
-			                delegate
-				                {
-					                code.GetLocal(value);
-					                code.As(MyNullable.Name);
-					                return code.IfNull();
-				                },
-			                delegate
-				                {
-					                code.GetLocal(value);
-					                code.Coerce(instance.Name);
-					                code.ReturnValue();
-				                },
-			                delegate
-				                {
-					                code.GetBoxedValue(value);
-					                code.Coerce(instance.Name);
-					                code.ReturnValue();
-				                }
-			                );
-	                },
-                AvmTypeCode.Object, "value");
+				        code.If(
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.As(MyNullable.Name);
+							        return code.IfNull();
+						        },
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.Coerce(instance.Name);
+							        code.ReturnValue();
+						        },
+					        () =>
+						        {
+							        code.GetBoxedValue(value);
+							        code.Coerce(instance.Name);
+							        code.ReturnValue();
+						        }
+					        );
+			        });
         }
         #endregion
     }

@@ -45,13 +45,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// </summary>
         public AbcConst<string> Name
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.Name.Name;
-                return _name;
-            }
-            set { _name = value; }
+            get { return _trait != null ? _trait.Name.Name : _name; }
+	        set { _name = value; }
         }
         private AbcConst<string> _name;
 
@@ -150,56 +145,51 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 	        Parameters.Add(new AbcParameter(type, name));
         }
 
-	    public AbcMethodFlags Flags
-        {
-            get { return _flags; }
-            set { _flags = value; }
-        }
-        private AbcMethodFlags _flags;
+	    public AbcMethodFlags Flags { get; set; }
 
-        public bool IsNative
+	    public bool IsNative
         {
             get
             {
                 var instance = Instance;
                 if (instance != null && instance.IsNative)
                     return true;
-                return (_flags & AbcMethodFlags.Native) != 0;
+                return (Flags & AbcMethodFlags.Native) != 0;
             }
             set
             {
-                if (value) _flags |= AbcMethodFlags.Native;
-                else _flags &= ~AbcMethodFlags.Native;
+                if (value) Flags |= AbcMethodFlags.Native;
+                else Flags &= ~AbcMethodFlags.Native;
             }
         }
 
         public bool HasParamNames
         {
-            get { return (_flags & AbcMethodFlags.HasParamNames) != 0; }
+            get { return (Flags & AbcMethodFlags.HasParamNames) != 0; }
             set
             {
-                if (value) _flags |= AbcMethodFlags.HasParamNames;
-                else _flags &= ~AbcMethodFlags.HasParamNames;
+                if (value) Flags |= AbcMethodFlags.HasParamNames;
+                else Flags &= ~AbcMethodFlags.HasParamNames;
             }
         }
 
         public bool HasOptionalParams
         {
-            get { return (_flags & AbcMethodFlags.HasOptional) != 0; }
+            get { return (Flags & AbcMethodFlags.HasOptional) != 0; }
             set
             {
-                if (value) _flags |= AbcMethodFlags.HasOptional;
-                else _flags &= ~AbcMethodFlags.HasOptional;
+                if (value) Flags |= AbcMethodFlags.HasOptional;
+                else Flags &= ~AbcMethodFlags.HasOptional;
             }
         }
 
         public bool NeedRest
         {
-            get { return (_flags & AbcMethodFlags.NeedRest) != 0; }
+            get { return (Flags & AbcMethodFlags.NeedRest) != 0; }
             set
             {
-                if (value) _flags |= AbcMethodFlags.NeedRest;
-                else _flags &= ~AbcMethodFlags.NeedRest;
+                if (value) Flags |= AbcMethodFlags.NeedRest;
+                else Flags &= ~AbcMethodFlags.NeedRest;
             }
         }
 
@@ -252,12 +242,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public bool IsOverride
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.IsOverride;
-                return false;
-            }
+            get { return _trait != null && _trait.IsOverride; }
         }
 
         /// <summary>
@@ -265,12 +250,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// </summary>
         public bool IsGetter
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.IsGetter;
-                return false;
-            }
+            get { return _trait != null && _trait.IsGetter; }
         }
 
         /// <summary>
@@ -278,12 +258,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// </summary>
         public bool IsSetter
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.IsSetter;
-                return false;
-            }
+            get { return _trait != null && _trait.IsSetter; }
         }
 
         /// <summary>
@@ -301,26 +276,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public IAbcTraitProvider Owner
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.Owner;
-                return null;
-            }
+            get { return _trait != null ? _trait.Owner : null; }
         }
 
         public AbcInstance Instance
         {
-            get
-            {
-                if (_trait != null)
-                    return _trait.Instance;
-                return _instance;
-            }
-            set
-            {
-                _instance = value;
-            }
+            get { return _trait != null ? _trait.Instance : _instance; }
+	        set { _instance = value; }
         }
         private AbcInstance _instance;
 
@@ -328,10 +290,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                var i = Instance;
-                if (i != null)
-                    return i.Class;
-                return Owner as AbcClass;
+	            var instance = Instance;
+	            return instance != null ? instance.Class : Owner as AbcClass;
             }
         }
 
@@ -369,24 +329,24 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
 	    public void Read(SwfReader reader)
         {
-            int param_count = (int)reader.ReadUIntEncoded();
+            int paramCount = (int)reader.ReadUIntEncoded();
 
             ReturnType = reader.ReadMultiname(); //ret_type
 
             //U30 param_types[param_count]
-            for (int i = 0; i < param_count; ++i)
+            for (int i = 0; i < paramCount; ++i)
             {
 				var type = reader.ReadMultiname();
             	_params.Add(new AbcParameter {Type = type});
             }
 
             _name = reader.ReadAbcString(); //name_index
-            _flags = (AbcMethodFlags)reader.ReadUInt8();
+            Flags = (AbcMethodFlags)reader.ReadUInt8();
 
-            if ((_flags & AbcMethodFlags.HasOptional) != 0)
+            if ((Flags & AbcMethodFlags.HasOptional) != 0)
             {
                 int optionalCount = (int)reader.ReadUIntEncoded();
-                int firstOptionalParam = param_count - optionalCount;
+                int firstOptionalParam = paramCount - optionalCount;
                 for (int i = 0; i < optionalCount; ++i)
                 {
                     int valueIndex = (int)reader.ReadUIntEncoded();
@@ -397,9 +357,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
             
-            if ((_flags & AbcMethodFlags.HasParamNames) != 0)
+            if ((Flags & AbcMethodFlags.HasParamNames) != 0)
             {
-                for (int i = 0; i < param_count; ++i)
+                for (int i = 0; i < paramCount; ++i)
                 {
                     _params[i].Name = reader.ReadAbcString();
                 }
@@ -410,14 +370,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             var abc = writer.ABC;
 
-            int param_count = _params.Count;
-            writer.WriteUIntEncoded((uint)param_count);
+            int paramCount = _params.Count;
+            writer.WriteUIntEncoded((uint)paramCount);
 
             if (ReturnType == null) writer.WriteUInt8(0);
             else writer.WriteUIntEncoded((uint)ReturnType.Index);
 
             //U30 param_types[param_count]
-            for (int i = 0; i < param_count; ++i)
+            for (int i = 0; i < paramCount; ++i)
             {
                 var p = _params[i];
                 //For now even if one of parameter has no name then we will not write param names at all
@@ -436,7 +396,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             else writer.WriteUIntEncoded((uint)_name.Index);
 
             //flags
-            writer.WriteUInt8((byte)_flags);
+            writer.WriteUInt8((byte)Flags);
 
             //param values
             if (HasOptionalParams)
@@ -444,7 +404,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 int optionalCount = _params.Count(p => p.IsOptional);
 
                 writer.WriteUIntEncoded((uint)optionalCount);
-                for (int i = 0; i < param_count; ++i)
+                for (int i = 0; i < paramCount; ++i)
                 {
                     var p = _params[i];
                     if (p.IsOptional)
@@ -457,7 +417,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             //param names
             if (HasParamNames)
             {
-                for (int i = 0; i < param_count; ++i)
+                for (int i = 0; i < paramCount; ++i)
                 {
                     var p = _params[i];
                     if (p.Name == null) writer.WriteUInt8(0);
@@ -483,7 +443,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             writer.WriteElementString("returnType", ReturnType.ToString());
             //writer.WriteElementString("signature", ToString("s"));
-            writer.WriteElementString("flags", _flags.ToString());
+            writer.WriteElementString("flags", Flags.ToString());
             _params.DumpXml(writer);
 
             if (AbcDumpService.DumpCode && _body != null)
@@ -637,6 +597,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
 
         internal int MethodInfoIndex { get; set; }
+
+		internal AbcMethod ExplicitlyImplements { get; set; }
     }
 
 	[Flags]

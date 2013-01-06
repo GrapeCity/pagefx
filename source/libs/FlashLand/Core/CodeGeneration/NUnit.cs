@@ -101,8 +101,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             string name = "run_test_" + test.GetMonoTestCaseName();
             name = name.Replace('.', '_');
 
-            return instance.DefineStaticMethod(
-                name, AvmTypeCode.Void,
+            return instance.DefineMethod(
+                Sig.@static(name, AvmTypeCode.Void, GetInstance(NUnitTypeId.Test)),
                 code =>
                     {
                         var testFixture = test.DeclaringType;
@@ -200,8 +200,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                         code.EndCatch(true);
 
                         code.ReturnVoid();
-                    },
-                GetInstance(NUnitTypeId.Test));
+                    });
         }
 
         IType TypeTest

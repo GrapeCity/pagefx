@@ -154,51 +154,50 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 
     		app.AddInstance(instance);
 
-            instance.DefineStaticMethod(
-                "init", AvmTypeCode.Void,
-                code =>
-                    {
-                        code.PushThisScope();
+    		instance.DefineMethod(
+    			Sig.@static("init", AvmTypeCode.Void, flexModuleFactoryInterface, "f"),
+    			code =>
+    				{
+    					code.PushThisScope();
 
-                    	const int moduleFactoryArg = 1;
-						const int styleManagerVar = 2;
+    					const int moduleFactoryArg = 1;
+    					const int styleManagerVar = 2;
 
-						if (flex4)
-						{
-							CreateInstance(code, childManagerInstance, moduleFactoryArg);
-							code.Pop();
+    					if (flex4)
+    					{
+    						CreateInstance(code, childManagerInstance, moduleFactoryArg);
+    						code.Pop();
 
-							var styleManager2 = GetStyleManager2Interface(app);
-							var styleManagerImpl = GetStyleManagerImpl(app);
-							CreateInstance(code, styleManagerImpl, moduleFactoryArg);
-							code.Coerce(styleManager2);
-							code.SetLocal(styleManagerVar);
-						}
+    						var styleManager2 = GetStyleManager2Interface(app);
+    						var styleManagerImpl = GetStyleManagerImpl(app);
+    						CreateInstance(code, styleManagerImpl, moduleFactoryArg);
+    						code.Coerce(styleManager2);
+    						code.SetLocal(styleManagerVar);
+    					}
 
-                    	RegisterEffectTriggers(app, code);
-                        RegisterRemoteClasses(app, code);
+    					RegisterEffectTriggers(app, code);
+    					RegisterRemoteClasses(app, code);
 
-                    	Action pushStyleManager;
-						if (flex4)
-						{
-							pushStyleManager = () => code.GetLocal(styleManagerVar);
-						}
-						else
-						{
-							pushStyleManager = () => code.Getlex(GetStyleManagerInstance(app));
-						}
+    					Action pushStyleManager;
+    					if (flex4)
+    					{
+    						pushStyleManager = () => code.GetLocal(styleManagerVar);
+    					}
+    					else
+    					{
+    						pushStyleManager = () => code.Getlex(GetStyleManagerInstance(app));
+    					}
 
-						RegisterInheritStyles(app, code, pushStyleManager, flex4);
+    					RegisterInheritStyles(app, code, pushStyleManager, flex4);
 
-                    	//NOTE: Uncomment to add forward refernce to Flex Application
-						//var appInstance = app.generator.MainInstance;
-						//code.Trace(string.Format("PFC: forward reference to FlexApp class {0}", appInstance.FullName));
-						//code.Getlex(appInstance);
-                    	//code.Pop();
+    					//NOTE: Uncomment to add forward refernce to Flex Application
+    					//var appInstance = app.generator.MainInstance;
+    					//code.Trace(string.Format("PFC: forward reference to FlexApp class {0}", appInstance.FullName));
+    					//code.Getlex(appInstance);
+    					//code.Pop();
 
-                        code.ReturnVoid();
-                    },
-                flexModuleFactoryInterface, "f");
+    					code.ReturnVoid();
+    				});
 
             return instance;
         }

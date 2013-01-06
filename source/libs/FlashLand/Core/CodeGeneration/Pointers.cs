@@ -22,27 +22,29 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             instance.Initializer = Abc.DefineTraitsInitializer(getter, setter);
 
-            instance.DefinePtrGetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(getter);
-                    code.PushNull();
-                    code.CallFunction(1); //this
-                    code.ReturnValue();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_get,
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(getter);
+				        code.PushNull();
+				        code.CallFunction(1); //this
+				        code.ReturnValue();
+			        });
 
-            instance.DefinePtrSetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(setter);
-                    code.PushNull();
-                    code.GetLocal(1); //value
-                    code.CallFunction(2); //this + value
-                    code.Pop();
-                    code.ReturnVoid();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_set,
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(setter);
+				        code.PushNull();
+				        code.GetLocal(1); //value
+				        code.CallFunction(2); //this + value
+				        code.Pop();
+				        code.ReturnVoid();
+			        });
 
             return instance;
         }
@@ -69,44 +71,46 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var fieldInstance = DefineAbcInstance(type);
 
             instance = Abc.DefineEmptyInstance(name, true);
-            
-            instance.DefinePtrGetter(
-                code =>
-                {
-                    code.Getlex(fieldInstance);
-                    code.GetField(field);
-                    code.ReturnValue();
-                });
 
-            instance.DefinePtrSetter(
-                code =>
-                {
-                    code.Getlex(fieldInstance);
-                    code.GetLocal(1); //value
-                    code.SetField(field);
-                    code.ReturnVoid();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_get,
+		        code =>
+			        {
+				        code.Getlex(fieldInstance);
+				        code.GetField(field);
+				        code.ReturnValue();
+			        });
+
+	        instance.DefineMethod(
+		        Sig.ptr_set,
+		        code =>
+			        {
+				        code.Getlex(fieldInstance);
+				        code.GetLocal(1); //value
+				        code.SetField(field);
+				        code.ReturnVoid();
+			        });
 
             var ti = instance.CreatePrivateStaticSlot("_instance", instance);
 
-            instance.DefineStaticGetter(
-                Const.Instance, instance.Name,
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(ti);
-                    var br = code.IfNotNull(true);
+	        instance.DefineMethod(
+				Sig.get(Const.Instance, instance.Name).@static(),
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(ti);
+				        var br = code.IfNotNull(true);
 
-                    code.LoadThis();
-                    code.LoadThis();
-                    code.Construct(0);
-                    code.SetProperty(ti);
+				        code.LoadThis();
+				        code.LoadThis();
+				        code.Construct(0);
+				        code.SetProperty(ti);
 
-                    br.BranchTarget = code.Label();
-                    code.LoadThis();
-                    code.GetProperty(ti);
-                    code.ReturnValue();
-                });
+				        br.BranchTarget = code.Label();
+				        code.LoadThis();
+				        code.GetProperty(ti);
+				        code.ReturnValue();
+			        });
 
             return instance;
         }
@@ -128,32 +132,34 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             instance.Initializer = Abc.DefineTraitsInitializer(obj, ns, name);
 
-            instance.DefinePtrGetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(obj);
-                    code.LoadThis();
-                    code.GetProperty(ns);
-                    code.LoadThis();
-                    code.GetProperty(name);
-                    code.GetRuntimeProperty();
-                    code.ReturnValue();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_get,
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(obj);
+				        code.LoadThis();
+				        code.GetProperty(ns);
+				        code.LoadThis();
+				        code.GetProperty(name);
+				        code.GetRuntimeProperty();
+				        code.ReturnValue();
+			        });
 
-            instance.DefinePtrSetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(obj);
-                    code.LoadThis();
-                    code.GetProperty(ns);
-                    code.LoadThis();
-                    code.GetProperty(name);
-                    code.GetLocal(1); //value
-                    code.SetRuntimeProperty();
-                    code.ReturnVoid();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_set,
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(obj);
+				        code.LoadThis();
+				        code.GetProperty(ns);
+				        code.LoadThis();
+				        code.GetProperty(name);
+				        code.GetLocal(1); //value
+				        code.SetRuntimeProperty();
+				        code.ReturnVoid();
+			        });
 
             return instance;
         }
@@ -174,30 +180,30 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             instance.Initializer = Abc.DefineTraitsInitializer(obj, name);
 
-            instance.DefinePtrGetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(obj);
-                    code.PushGlobalPackage();
-                    code.LoadThis();
-                    code.GetProperty(name);
-                    code.GetRuntimeProperty();
-                    code.ReturnValue();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_get,
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(obj);
+				        code.PushGlobalPackage();
+				        code.LoadThis();
+				        code.GetProperty(name);
+				        code.GetRuntimeProperty();
+				        code.ReturnValue();
+			        });
 
-            instance.DefinePtrSetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(obj);
-                    code.PushGlobalPackage();
-                    code.LoadThis();
-                    code.GetProperty(name);
-                    code.GetLocal(1); //value
-                    code.SetRuntimeProperty();
-                    code.ReturnVoid();
-                });
+            instance.DefineMethod(Sig.ptr_set, code =>
+	            {
+		            code.LoadThis();
+		            code.GetProperty(obj);
+		            code.PushGlobalPackage();
+		            code.LoadThis();
+		            code.GetProperty(name);
+		            code.GetLocal(1); //value
+		            code.SetRuntimeProperty();
+		            code.ReturnVoid();
+	            });
 
             return instance;
         }
@@ -236,28 +242,30 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             instance.Initializer = Abc.DefineTraitsInitializer(arr, index);
 
-            instance.DefinePtrGetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(arr);
-                    code.LoadThis();
-                    code.GetProperty(index);
-                    code.GetArrayElem(false);
-                    code.ReturnValue();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_get,
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(arr);
+				        code.LoadThis();
+				        code.GetProperty(index);
+				        code.GetArrayElem(false);
+				        code.ReturnValue();
+			        });
 
-            instance.DefinePtrSetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(arr);
-                    code.LoadThis();
-                    code.GetProperty(index);
-                    code.GetLocal(1); //value
-                    code.SetArrayElem(false);
-                    code.ReturnVoid();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_set,
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(arr);
+				        code.LoadThis();
+				        code.GetProperty(index);
+				        code.GetLocal(1); //value
+				        code.SetArrayElem(false);
+				        code.ReturnVoid();
+			        });
 
             return instance;
         }
@@ -268,18 +276,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var instance = GetArrayInstance();
 
             var name = DefinePfxName("GetElemPtr");
-            return instance.DefineInstanceMethod(
-                name, AvmTypeCode.Object,
-                code =>
-                    {
-                        var ptr = DefineElemPtr();
-                        code.Getlex(ptr);
-                        code.LoadThis();
-                        code.GetLocal(1); //index
-                        code.Construct(2);
-                        code.ReturnValue();
-                    },
-                AvmTypeCode.Int32, "index");
+	        return instance.DefineMethod(
+		        Sig.@this(name, AvmTypeCode.Object, AvmTypeCode.Int32, "index"),
+		        code =>
+			        {
+				        var ptr = DefineElemPtr();
+				        code.Getlex(ptr);
+				        code.LoadThis();
+				        code.GetLocal(1); //index
+				        code.Construct(2);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 
@@ -306,24 +313,26 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             
             instance.Initializer = Abc.DefineTraitsInitializer(obj);
 
-            instance.DefinePtrGetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(obj);
-                    code.GetProperty(slot);
-                    code.ReturnValue();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_get,
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(obj);
+				        code.GetProperty(slot);
+				        code.ReturnValue();
+			        });
 
-            instance.DefinePtrSetter(
-                code =>
-                {
-                    code.LoadThis();
-                    code.GetProperty(obj);
-                    code.GetLocal(1); //value
-                    code.SetProperty(slot);
-                    code.ReturnVoid();
-                });
+	        instance.DefineMethod(
+		        Sig.ptr_set,
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.GetProperty(obj);
+				        code.GetLocal(1); //value
+				        code.SetProperty(slot);
+				        code.ReturnVoid();
+			        });
 
             return instance;
         }

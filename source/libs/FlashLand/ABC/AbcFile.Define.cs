@@ -847,21 +847,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region PageFX Names
+
         public AbcMultiname DefinePfxName(string name)
         {
             return DefineQName(PfxPublicNamespace, name);
         }
-
-        public AbcMultiname PtrValueName
-        {
-            get
-            {
-                if (_mnPtrValue != null) return _mnPtrValue;
-                _mnPtrValue = DefinePackageQName("$ptr", "value");
-                return _mnPtrValue;
-            }
-        }
-        AbcMultiname _mnPtrValue;
+		
         #endregion
 
         #region Method Definitions

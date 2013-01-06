@@ -143,8 +143,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
          */
         void BuildSystemManagerCreate(AbcFile abc, AbcInstance instance)
         {
-            var method = instance.DefineVirtualOverrideMethod(
-                "create", AvmTypeCode.Object,
+            var method = instance.DefineMethod(
+                Sig.@virtual("create", AvmTypeCode.Object).@override(),
                 code =>
                     {
                         var typeString = abc.DefineGlobalQName("String");
@@ -255,6 +255,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
                         code.GetLocal(varInstance);
                         code.ReturnValue();
                     });
+
             method.Flags |= AbcMethodFlags.NeedRest;
         }
         #endregion
@@ -267,13 +268,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             var objType = abc.BuiltinTypes.Object;
             if (_cacheInfoObject)
             {
-                var method = instance.DefineInstanceMethod("$info$", objType, null, null);
+                var method = instance.DefineMethod(Sig.@this("$info$", objType), null);
                 AddLateMethod(method, BuildSystemManagerInfo);
 
                 var infoField = instance.DefineSlot("__info", AvmTypeCode.Object);
 
-                instance.DefineVirtualOverrideMethod(
-                    "info", objType,
+                instance.DefineMethod(
+                    Sig.@virtual("info", objType).@override(),
                     code =>
 	                    {
 		                    code.LoadThis();
@@ -293,7 +294,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             }
             else
             {
-                var method = instance.DefineVirtualOverrideMethod("info", objType, null, null);
+                var method = instance.DefineMethod(Sig.@virtual("info", objType).@override(), null);
                 AddLateMethod(method, BuildSystemManagerInfo);
             }
         }

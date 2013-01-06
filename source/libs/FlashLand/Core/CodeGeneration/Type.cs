@@ -675,9 +675,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var declType = ctor.DeclaringType;
             var instance = DefineAbcInstance(declType);
 
-            return instance.DefineStaticMethod(
-                thisCtor.TraitName.NameString + "__static",
-                instance.Name,
+            return instance.DefineMethod(
+                Sig.@static(thisCtor.TraitName.NameString + "__static", instance.Name, thisCtor),
                 code =>
                     {
                         code.PushThisScope();
@@ -686,8 +685,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                         code.LoadArguments(ctor);
                         code.Call(thisCtor);
                         code.ReturnValue();
-                    },
-                thisCtor);
+                    });
         }
         #endregion
 

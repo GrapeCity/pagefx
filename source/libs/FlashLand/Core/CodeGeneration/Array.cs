@@ -144,8 +144,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             var instance = GetArrayInstance();
 
-            return instance.DefineStaticMethod(
-                "__create_sz_array__", instance.Name,
+            return instance.DefineMethod(
+				Sig.@static("__create_sz_array__", instance.Name, AvmTypeCode.Int32, "size"),
                 code =>
                     {
                         const int varSize = 1;
@@ -165,8 +165,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
                         code.GetLocal(varArray);
                         code.ReturnValue();
-                    },
-                AvmTypeCode.Int32, "size");
+                    });
         }
 
         /// <summary>
@@ -182,35 +181,34 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var name = Abc.DefineGlobalQName("newarr_" + elemType.GetSigName());
 
-            return instance.DefineStaticMethod(
-                name, instance.Name,
-                code =>
-                    {
-                        const int varSize = 1; //size argument
-                        const int varArray = 2;
+	        return instance.DefineMethod(
+		        Sig.@static(name, instance.Name, AvmTypeCode.Int32, "size"),
+		        code =>
+			        {
+				        const int varSize = 1; //size argument
+				        const int varArray = 2;
 
-                        var m = CreateSystemArraySZ();
-                        code.LoadThis();
-                        code.GetLocal(varSize);
-                        code.Call(m);
-                        code.SetLocal(varArray);
+				        var m = CreateSystemArraySZ();
+				        code.LoadThis();
+				        code.GetLocal(varSize);
+				        code.Call(m);
+				        code.SetLocal(varArray);
 
-                        InitArrayFields(code, elemType, varArray);
+				        InitArrayFields(code, elemType, varArray);
 
-                        if (InternalTypeExtensions.IsInitArray(elemType))
-                        {
-                            code.InitArray(elemType,
-                                           () =>
-                                               {
-                                                   code.GetLocal(varArray);
-                                                   code.GetProperty(Const.Array.Value);
-                                               }, varSize);
-                        }
+				        if (InternalTypeExtensions.IsInitArray(elemType))
+				        {
+					        code.InitArray(elemType,
+					                       () =>
+						                       {
+							                       code.GetLocal(varArray);
+							                       code.GetProperty(Const.Array.Value);
+						                       }, varSize);
+				        }
 
-                        code.GetLocal(varArray);
-                        code.ReturnValue();
-                    },
-                AvmTypeCode.Int32, "size");
+				        code.GetLocal(varArray);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 
@@ -242,16 +240,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             //string name = "Get" + NameUtil.GetParamsString(method);
             var name = DefineQName(method);
-            return instance.DefineInstanceMethod(
-                name, method.Type,
-                code =>
-                    {
-                        code.LoadThis();
-                        ToFlatIndex(code, method.Parameters.Count, true);
-                        code.GetArrayElem(method.Type, false);
-                        code.ReturnValue();
-                    },
-                method);
+	        return instance.DefineMethod(
+		        Sig.@this(name, method.Type, method),
+		        code =>
+			        {
+				        code.LoadThis();
+				        ToFlatIndex(code, method.Parameters.Count, true);
+				        code.GetArrayElem(method.Type, false);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 
@@ -264,18 +261,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (method.Name != CLRNames.Array.Setter) return null;
 
             var name = DefineQName(method);
-            return instance.DefineInstanceMethod(
-                name, method.Type,
-                code =>
-                    {
-                        int n = method.Parameters.Count;
-                        code.LoadThis();
-                        ToFlatIndex(code, n, false);
-                        code.GetLocal(n); //value
-                        code.SetArrayElem(false);
-                        code.ReturnVoid();
-                    },
-                method);
+	        return instance.DefineMethod(
+		        Sig.@this(name, method.Type, method),
+		        code =>
+			        {
+				        int n = method.Parameters.Count;
+				        code.LoadThis();
+				        ToFlatIndex(code, n, false);
+				        code.GetLocal(n); //value
+				        code.SetArrayElem(false);
+				        code.ReturnVoid();
+			        });
         }
         #endregion
 
@@ -291,17 +287,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             string name = "GetAddr_" + method.GetParametersSignature(Runtime.Avm);
 
-            return instance.DefineInstanceMethod(
-                name, elemPtr.Name,
-                code =>
-                    {
-                        code.Getlex(elemPtr);
-                        code.LoadThis(); //arr
-                        ToFlatIndex(code, method.Parameters.Count, true);
-                        code.Construct(2);
-                        code.ReturnValue();
-                    },
-                method);
+	        return instance.DefineMethod(
+		        Sig.@this(name, elemPtr.Name, method),
+		        code =>
+			        {
+				        code.Getlex(elemPtr);
+				        code.LoadThis(); //arr
+				        ToFlatIndex(code, method.Parameters.Count, true);
+				        code.Construct(2);
+				        code.ReturnValue();
+			        });
         }
         #endregion
         #endregion
@@ -388,49 +383,48 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			var oppositeType = elemType.Is(SystemTypeCode.Int64) ? SystemTypes.UInt64 : SystemTypes.Int64;
             var oppositeTypeName = DefineReturnType(oppositeType);
 
-            return instance.DefineInstanceMethod(
-                name, elemTypeName,
-                code =>
-                    {
-                        const int index = 1;
-                        const int value = 2;
+	        return instance.DefineMethod(
+		        Sig.@this(name, elemTypeName, AvmTypeCode.Int32, "index"),
+		        code =>
+			        {
+				        const int index = 1;
+				        const int value = 2;
 
-                        code.LoadThis();
-                        code.GetLocal(index);
-                        code.Call(item ? ArrayMethodId.GetItem : ArrayMethodId.GetElem);
-                        code.CoerceObject();
-                        code.SetLocal(value);
+				        code.LoadThis();
+				        code.GetLocal(index);
+				        code.Call(item ? ArrayMethodId.GetItem : ArrayMethodId.GetElem);
+				        code.CoerceObject();
+				        code.SetLocal(value);
 
-                        //check elemType
-                        code.GetLocal(value);
-                        code.As(elemTypeName);
-                        code.PushNull();
-                        var ifElemType = code.IfNotEquals();
+				        //check elemType
+				        code.GetLocal(value);
+				        code.As(elemTypeName);
+				        code.PushNull();
+				        var ifElemType = code.IfNotEquals();
 
-                        //check opposite type
-                        code.GetLocal(value);
-                        code.As(oppositeTypeName);
-                        code.PushNull();
-                        var ifOppositeType = code.IfNotEquals();
+				        //check opposite type
+				        code.GetLocal(value);
+				        code.As(oppositeTypeName);
+				        code.PushNull();
+				        var ifOppositeType = code.IfNotEquals();
 
-                        code.ThrowInvalidCastException("not int64");
+				        code.ThrowInvalidCastException("not int64");
 
-                        //casting
-                        var labelCast = code.Label();
-                        ifOppositeType.BranchTarget = labelCast;
-                        //gotoCast.BranchTarget = labelCast;
-                        code.GetLocal(value);
-                        code.Cast(oppositeType, elemType);
-                        code.ReturnValue();
+				        //casting
+				        var labelCast = code.Label();
+				        ifOppositeType.BranchTarget = labelCast;
+				        //gotoCast.BranchTarget = labelCast;
+				        code.GetLocal(value);
+				        code.Cast(oppositeType, elemType);
+				        code.ReturnValue();
 
-                        var normalExit = code.Label();
-                        ifElemType.BranchTarget = normalExit;
+				        var normalExit = code.Label();
+				        ifElemType.BranchTarget = normalExit;
 
-                        code.GetLocal(value);
-                        code.Coerce(elemTypeName);
-                        code.ReturnValue();
-                    },
-                    AvmTypeCode.Int32, "index");
+				        code.GetLocal(value);
+				        code.Coerce(elemTypeName);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 
@@ -485,15 +479,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
             var arrayInstance = GetArrayInstance();
 
-        	arrayInstance.DefineMethod(
-        		ifaceAbcMethod,
-        		code =>
-        			{
-        				var ArrayEnumerator = DefineArrayEnumerator(elemType);
-        				var ctor = ArrayEnumerator.FindConstructor(1);
-        				code.NewObject(ctor, () => code.LoadThis());
-        				code.ReturnValue();
-        			});
+	        arrayInstance.DefineMethod(
+		        Sig.@from(ifaceAbcMethod),
+		        code =>
+			        {
+				        var ArrayEnumerator = DefineArrayEnumerator(elemType);
+				        var ctor = ArrayEnumerator.FindConstructor(1);
+				        code.NewObject(ctor, () => code.LoadThis());
+				        code.ReturnValue();
+			        });
         }
 
         IType DefineArrayEnumerator(IType elemType)
@@ -512,58 +506,58 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             switch (im.Name)
             {
                 case "get_Count":
-                    GetArrayInstance().DefineMethod(
-                        am,
-                        code =>
-                            {
-                                code.LoadThis();
-                                code.Call(ArrayMethodId.GetLength);
-                                code.ReturnValue();
-                            });
+		            GetArrayInstance().DefineMethod(
+			            Sig.@from(am),
+			            code =>
+				            {
+					            code.LoadThis();
+					            code.Call(ArrayMethodId.GetLength);
+					            code.ReturnValue();
+				            });
                     break;
 
                 case "get_IsReadOnly":
-                    GetArrayInstance().DefineMethod(
-                        am,
-                        code =>
-                            {
-                                code.PushBool(true);
-                                code.ReturnValue();
-                            });
+		            GetArrayInstance().DefineMethod(
+			            Sig.@from(am),
+			            code =>
+				            {
+					            code.PushBool(true);
+					            code.ReturnValue();
+				            });
                     break;
 
                 case "Add":
                 case "Remove":
                 case "Clear":
-                    GetArrayInstance().DefineMethod(
-                        am,
-                        code => code.ThrowException(CorlibTypeId.NotSupportedException));
+		            GetArrayInstance().DefineMethod(
+			            Sig.@from(am),
+			            code => code.ThrowException(CorlibTypeId.NotSupportedException));
                     break;
 
                 case "CopyTo":
-                    GetArrayInstance().DefineMethod(
-                        am,
-                        code =>
-                            {
-                                code.LoadThis();
-                                code.GetLocal(1);
-                                code.GetLocal(2);
-                                code.Call(ArrayMethodId.CopyTo);
-                                code.ReturnVoid();
-                            });
+		            GetArrayInstance().DefineMethod(
+			            Sig.@from(am),
+			            code =>
+				            {
+					            code.LoadThis();
+					            code.GetLocal(1);
+					            code.GetLocal(2);
+					            code.Call(ArrayMethodId.CopyTo);
+					            code.ReturnVoid();
+				            });
                     break;
 
                 case "Contains":
-                    GetArrayInstance().DefineMethod(
-                        am,
-                        code =>
-                            {
-                                code.LoadThis();
-                                var type = im.Parameters[0].Type;
-                                code.BoxVariable(type, 1);
-                                code.Call(ArrayMethodId.Contains);
-                                code.ReturnValue();
-                            });
+		            GetArrayInstance().DefineMethod(
+			            Sig.@from(am),
+			            code =>
+				            {
+					            code.LoadThis();
+					            var type = im.Parameters[0].Type;
+					            code.BoxVariable(type, 1);
+					            code.Call(ArrayMethodId.Contains);
+					            code.ReturnValue();
+				            });
                     break;
             }
         }
@@ -576,48 +570,48 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 case "RemoveAt":
                 case "Insert":
-                    GetArrayInstance().DefineMethod(
-                        am,
-                        code => code.ThrowException(CorlibTypeId.NotSupportedException));
+		            GetArrayInstance().DefineMethod(
+			            Sig.@from(am),
+			            code => code.ThrowException(CorlibTypeId.NotSupportedException));
                     break;
 
                 case "IndexOf":
-                    GetArrayInstance().DefineMethod(
-                        am,
-                        code =>
-                            {
-                                code.LoadThis();
-                                var type = im.Parameters[0].Type;
-                                code.BoxVariable(type, 1);
-                                code.Call(ArrayMethodId.IndexOf);
-                                code.ReturnValue();
-                            });
+		            GetArrayInstance().DefineMethod(
+			            Sig.@from(am),
+			            code =>
+				            {
+					            code.LoadThis();
+					            var type = im.Parameters[0].Type;
+					            code.BoxVariable(type, 1);
+					            code.Call(ArrayMethodId.IndexOf);
+					            code.ReturnValue();
+				            });
                     break;
 
                 case "get_Item":
-                    GetArrayInstance().DefineMethod(
-                        am,
-                        code =>
-                            {
-                                var type = im.DeclaringType.GetTypeArgument(0);
-                                code.LoadThis();
-                                code.GetLocal(1);
-                                code.GetArrayElem(type, true);
-                                code.ReturnValue();
-                            });
+		            GetArrayInstance().DefineMethod(
+			            Sig.@from(am),
+			            code =>
+				            {
+					            var type = im.DeclaringType.GetTypeArgument(0);
+					            code.LoadThis();
+					            code.GetLocal(1);
+					            code.GetArrayElem(type, true);
+					            code.ReturnValue();
+				            });
                     break;
 
                 case "set_Item":
-                    GetArrayInstance().DefineMethod(
-                        am,
-                        code =>
-                            {
-                                code.LoadThis();
-                                code.GetLocal(1);
-                                code.GetLocal(2);
-                                code.SetArrayElem(true);
-                                code.ReturnVoid();
-                            });
+		            GetArrayInstance().DefineMethod(
+			            Sig.@from(am),
+			            code =>
+				            {
+					            code.LoadThis();
+					            code.GetLocal(1);
+					            code.GetLocal(2);
+					            code.SetArrayElem(true);
+					            code.ReturnVoid();
+				            });
                     break;
             }
         }
@@ -666,63 +660,63 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var instance = GetArrayInstance();
 
             string name = "init_" + elemType.GetSigName();
-            return instance.DefineStaticMethod(
-                name, AvmTypeCode.Void,
-                code =>
-                    {
-                        var init = DefineInitArrayMethod();
-                        var f = DefineInitObjectMethod(elemType);
+	        return instance.DefineMethod(
+		        Sig.@static(name, AvmTypeCode.Void,
+		                         AvmTypeCode.Array, "arr",
+		                         AvmTypeCode.Int32, "size"),
+		        code =>
+			        {
+				        var init = DefineInitArrayMethod();
+				        var f = DefineInitObjectMethod(elemType);
 
-                        code.LoadThis();
-                        code.GetLocal(1);
-                        code.GetLocal(2);
-                        code.Getlex(f.Instance);
-                        code.GetProperty(f.TraitName);
-                        code.Call(init);
-                        code.ReturnVoid();
-                    },
-                AvmTypeCode.Array, "arr",
-                AvmTypeCode.Int32, "size");
+				        code.LoadThis();
+				        code.GetLocal(1);
+				        code.GetLocal(2);
+				        code.Getlex(f.Instance);
+				        code.GetProperty(f.TraitName);
+				        code.Call(init);
+				        code.ReturnVoid();
+			        });
         }
 
-        AbcMethod DefineInitArrayMethod()
+        private AbcMethod DefineInitArrayMethod()
         {
             var instance = GetArrayInstance();
 
-            return instance.DefineStaticMethod(
-                "init_core", AvmTypeCode.Void,
-                code =>
-                    {
-                        const int arr = 1;
-                        const int size = 2;
-                        const int func = 3;
+	        return instance.DefineMethod(
+		        Sig.@static("init_core", AvmTypeCode.Void,
+		                         AvmTypeCode.Array, "arr",
+		                         AvmTypeCode.Int32, "size",
+		                         AvmTypeCode.Function, "f"),
+		        code =>
+			        {
+				        const int arr = 1;
+				        const int size = 2;
+				        const int func = 3;
 
-                        code.While(
-	                        () =>
-		                        {
-			                        code.GetLocal(size);
-			                        code.Add(InstructionCode.Decrement_i);
-			                        code.SetLocal(size);
-			                        code.GetLocal(size);
-			                        code.Add(InstructionCode.Pushbyte, 0);
-			                        return code.If(BranchOperator.LessThan);
-		                        },
-	                        () =>
-		                        {
-			                        code.GetLocal(arr);
-			                        code.GetLocal(size);
-			                        code.GetLocal(func);
-			                        code.PushNull();
-			                        code.CallClosure(0);
-			                        code.SetNativeArrayItem();
-		                        }
-	                        );
+				        code.While(
+					        () =>
+						        {
+							        code.GetLocal(size);
+							        code.Add(InstructionCode.Decrement_i);
+							        code.SetLocal(size);
+							        code.GetLocal(size);
+							        code.Add(InstructionCode.Pushbyte, 0);
+							        return code.If(BranchOperator.LessThan);
+						        },
+					        () =>
+						        {
+							        code.GetLocal(arr);
+							        code.GetLocal(size);
+							        code.GetLocal(func);
+							        code.PushNull();
+							        code.CallClosure(0);
+							        code.SetNativeArrayItem();
+						        }
+					        );
 
-                        code.ReturnVoid();
-                    },
-                AvmTypeCode.Array, "arr",
-                AvmTypeCode.Int32, "size",
-                AvmTypeCode.Function, "f");
+				        code.ReturnVoid();
+			        });
         }
 
         AbcMethod DefineInitObjectMethod(IType type)
@@ -738,13 +732,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 name = DefinePfxName("initobj");
             }
-            return instance.DefineStaticMethod(
-                name, AvmTypeCode.Object,
-                code =>
-                {
-                    code.InitObject(type);
-                    code.ReturnValue();
-                });
+	        return instance.DefineMethod(
+		        Sig.@static(name, AvmTypeCode.Object),
+		        code =>
+			        {
+				        code.InitObject(type);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 

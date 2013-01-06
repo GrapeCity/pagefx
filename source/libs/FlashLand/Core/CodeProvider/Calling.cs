@@ -281,18 +281,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             var mname = GetCallName(method.Data);
             string prefix = "$C" + instance.Index;
             prefix += GetBaseCallPrefix(method);
+
             var rname = _abc.DefineQName(mname.Namespace, prefix + mname.NameString);
             var retType = DefineMemberType(method.Type);
-            return instance.DefineInstanceMethod(
-                rname, retType,
-                code =>
-                    {
-                        code.LoadThis();
-                        code.LoadArguments(method);
-                        CallCore(code, method, mname, true);
-                        code.Return(method);
-                    }, 
-                    method);
+
+	        return instance.DefineMethod(
+		        Sig.@this(rname, retType, method),
+		        code =>
+			        {
+				        code.LoadThis();
+				        code.LoadArguments(method);
+				        CallCore(code, method, mname, true);
+				        code.Return(method);
+			        });
         }
 
         private void BaseCall(AbcCode code, IType receiverType, IMethod method)

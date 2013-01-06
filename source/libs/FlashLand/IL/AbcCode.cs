@@ -3457,21 +3457,20 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
             string ovf1Name = "$" + methodName + "1$";
 
-            return instance.DefineStaticMethod(
-                ovf1Name, retType,
-                code =>
-	                {
-		                code.PushThisScope();
+	        return instance.DefineMethod(
+		        Sig.@static(ovf1Name, retType, retType, "left"),
+		        code =>
+			        {
+				        code.PushThisScope();
 
-		                code.LoadThis();
-		                code.GetLocal(1); //left
+				        code.LoadThis();
+				        code.GetLocal(1); //left
 
-		                code.LoadTempValue(type, true); //right
-		                code.Call(ovf2);
+				        code.LoadTempValue(type, true); //right
+				        code.Call(ovf2);
 
-		                code.ReturnValue();
-	                },
-                retType, "left");
+				        code.ReturnValue();
+			        });
         }
         #endregion
         #endregion
@@ -3718,7 +3717,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void ReadPtr()
         {
-            GetProperty(Abc.PtrValueName);
+            GetProperty(Abc.DefineName(QName.PtrValue));
         }
 
         public void ReadPtr(IType type)
@@ -3730,7 +3729,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void WritePtr()
         {
-            SetProperty(Abc.PtrValueName);
+			SetProperty(Abc.DefineName(QName.PtrValue));
         }
 
         public void CreateFuncPtr(AbcTrait trait)

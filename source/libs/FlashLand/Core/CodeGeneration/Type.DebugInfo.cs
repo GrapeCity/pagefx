@@ -3,6 +3,7 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
+using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 {
@@ -47,14 +48,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
                 var name = Abc.DefineGlobalQName(DebugPropertyPrefix + "display");
 
-				var m = instance.DefineInstanceGetter(
-                    name, AvmTypeCode.String,
-                    code =>
-                        {
-                            code.LoadThis();	// this might be redundant --olegz
-                            code.Call(tostr);
-                            code.ReturnValue();
-                        });
+	            var m = instance.DefineMethod(
+					Sig.get(name, AvmTypeCode.String),
+		            code =>
+			            {
+				            code.LoadThis(); // this might be redundant --olegz
+				            code.Call(tostr);
+				            code.ReturnValue();
+			            });
 
 				// as soon the method will be overridden in descendants we have to mark it as virtual (case 147084)
             	m.Trait.IsVirtual = !type.IsSealed;
@@ -77,13 +78,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var name = Abc.DefineGlobalQName(DebugPropertyPrefix + "display$exp");
 
             //TODO: Parse display string to build string
-            var m = instance.DefineInstanceGetter(
-                name, AvmTypeCode.String,
-                code =>
-                {
-                    code.PushString(display);
-                    code.ReturnValue();
-                });
+	        var m = instance.DefineMethod(
+				Sig.get(name, AvmTypeCode.String),
+		        code =>
+			        {
+				        code.PushString(display);
+				        code.ReturnValue();
+			        });
 
 			m.Trait.IsVirtual = !type.IsSealed;
 			m.Trait.IsOverride = instance.FindSuperTrait(name, AbcTraitKind.Getter) != null;
@@ -103,25 +104,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (IsDictionary(instance.Type))
             {
-                instance.DefineInstanceGetter(
-                    DebugPropertyPrefix + "dictionary$marker", AvmTypeCode.Boolean,
-                    code =>
-                        {
-                            code.PushNativeBool(true);
-                            code.ReturnValue();
-                        });
+	            instance.DefineMethod(
+					Sig.get(DebugPropertyPrefix + "dictionary$marker", AvmTypeCode.Boolean),
+		            code =>
+			            {
+				            code.PushNativeBool(true);
+				            code.ReturnValue();
+			            });
             }
 
-            instance.DefineInstanceGetter(
-                name, AvmTypeCode.Array,
-                code =>
-                    {
-                        var m = GetMethod(CompilerMethodId.ToArray);
-                        code.Getlex(m);
-                        code.LoadThis();
-                        code.Call(m);
-                        code.ReturnValue();
-                    });
+	        instance.DefineMethod(
+				Sig.get(name, AvmTypeCode.Array),
+		        code =>
+			        {
+				        var m = GetMethod(CompilerMethodId.ToArray);
+				        code.Getlex(m);
+				        code.LoadThis();
+				        code.Call(m);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 

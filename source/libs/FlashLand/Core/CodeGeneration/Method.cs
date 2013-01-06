@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -633,8 +632,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	    private static void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod,
 	                                                     IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
 	    {
-		    var m = instance.DefineMethod(
-			    ifaceAbcMethod,
+		    var isOverride =
+			    instance.BaseInstances()
+			            .FirstOrDefault(x => x.Traits.Contains(ifaceAbcMethod.TraitName, ifaceAbcMethod.Trait.Kind)) != null;
+
+		    instance.DefineMethod(
+			    Sig.@from(ifaceAbcMethod).@override(isOverride),
 			    code =>
 				    {
 					    code.LoadThis();
@@ -643,10 +646,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 					    if (ifaceAbcMethod.IsVoid) code.ReturnVoid();
 					    else code.ReturnValue();
 				    });
-
-		    m.Trait.IsOverride =
-			    instance.BaseInstances()
-			            .FirstOrDefault(x => x.Traits.Contains(ifaceAbcMethod.TraitName, ifaceAbcMethod.Trait.Kind)) != null;
 	    }
 
 	    #endregion

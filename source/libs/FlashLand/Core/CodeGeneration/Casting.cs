@@ -66,22 +66,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var instance = DefineAbcInstance(type);
             var typeName = DefineMemberType(type);
             var name = GetAsMethodName(type, me);
-            
-            return instance.DefineStaticMethod(
-                name, typeName,
-                code =>
-	                {
-		                const int value = 1;
-		                code.BeginAsMethod();
 
-		                code.Try();
-		                code.GetLocal(value);
-		                code.Coerce(typeName);
-		                code.ReturnValue();
+	        return instance.DefineMethod(
+		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
+				        code.BeginAsMethod();
 
-		                code.CatchReturnNull();
-	                },
-                AvmTypeCode.Object, "value");
+				        code.Try();
+				        code.GetLocal(value);
+				        code.Coerce(typeName);
+				        code.ReturnValue();
+
+				        code.CatchReturnNull();
+			        });
         }
         #endregion
 
@@ -103,27 +102,26 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var typeName = DefineMemberType(type);
             var name = GetAsMethodName(type, me);
 
-            return instance.DefineStaticMethod(
-                    name, typeName,
-                    code =>
-	                    {
-		                    const int value = 1;
+	        return instance.DefineMethod(
+		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
 
-		                    code.BeginAsMethod();
+				        code.BeginAsMethod();
 
-		                    code.Try();
+				        code.Try();
 
-		                    code.GetLocal(value);
-		                    code.Coerce(typeName);
+				        code.GetLocal(value);
+				        code.Coerce(typeName);
 
-		                    code.PushTypeId(type);
-		                    code.Call(ArrayMethodId.CastTo);
+				        code.PushTypeId(type);
+				        code.Call(ArrayMethodId.CastTo);
 
-		                    code.ReturnValue();
+				        code.ReturnValue();
 
-		                    code.CatchReturnNull();
-	                    },
-                    AvmTypeCode.Object, "value");
+				        code.CatchReturnNull();
+			        });
         }
         #endregion
 
@@ -146,51 +144,50 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var typeName = DefineMemberType(type);
             var name = GetAsMethodName(type, me);
 
-            return instance.DefineStaticMethod(
-                name, typeName,
-                code =>
-	                {
-		                var gi = (IGenericInstance)type;
-		                var elemType = gi.GenericArguments[0];
+	        return instance.DefineMethod(
+		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        var gi = (IGenericInstance)type;
+				        var elemType = gi.GenericArguments[0];
 
-		                const int value = 1;
+				        const int value = 1;
 
-		                code.BeginAsMethod();
+				        code.BeginAsMethod();
 
-		                code.Try();
+				        code.Try();
 
-		                code.If(
-			                () =>
-				                {
-					                code.GetLocal(value);
-					                return code.IfNotArray();
-				                },
-			                () =>
-				                {
-					                code.GetLocal(value);
-					                code.Coerce(type, false);
-					                code.ReturnValue();
-				                },
-			                //array case
-			                () => code.If(
-				                () =>
-					                {
-						                code.HasElemType(elemType, value);
-						                return code.IfTrue();
-					                },
-				                () =>
-					                {
-						                //can cast
-						                code.GetLocal(value);
-						                code.ReturnValue();
-					                },
-				                () => code.ReturnNull()
-				                      )
-			                );
+				        code.If(
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        return code.IfNotArray();
+						        },
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.Coerce(type, false);
+							        code.ReturnValue();
+						        },
+					        //array case
+					        () => code.If(
+						        () =>
+							        {
+								        code.HasElemType(elemType, value);
+								        return code.IfTrue();
+							        },
+						        () =>
+							        {
+								        //can cast
+								        code.GetLocal(value);
+								        code.ReturnValue();
+							        },
+						        () => code.ReturnNull()
+						              )
+					        );
 
-		                code.CatchReturnNull();
-	                },
-                AvmTypeCode.Object, "value");
+				        code.CatchReturnNull();
+			        });
         }
         #endregion
 
@@ -210,61 +207,60 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var instance = DefineAbcInstance(SystemTypes.String);
             var name = GetAsMethodName(type, me);
 
-            return instance.DefineStaticMethod(
-                name, AvmTypeCode.Object,
-                code =>
-	                {
-		                const int value = 1;
+	        return instance.DefineMethod(
+		        Sig.@static(name, AvmTypeCode.Object, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
 
-		                code.BeginAsMethod();
+				        code.BeginAsMethod();
 
-		                code.Try();
+				        code.Try();
 
-		                code.If(
-			                delegate
-				                {
-					                code.GetLocal(value);
-					                //code.PushString("String");
-					                //code.PushQName(code[AvmTypeCode.String]);
-					                //code.Add(InstructionCode.Istypelate);
-					                code.Is(AvmTypeCode.String);
-					                return code.IfTrue();
-				                },
-			                delegate
-				                {
-					                code.GetLocal(value);
-					                code.ReturnValue();
-				                },
-			                delegate
-				                {
-					                if (type.IsIEnumerableInstance())
-					                {
-						                var elemType = type.GetTypeArgument(0);
+				        code.If(
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        //code.PushString("String");
+							        //code.PushQName(code[AvmTypeCode.String]);
+							        //code.Add(InstructionCode.Istypelate);
+							        code.Is(AvmTypeCode.String);
+							        return code.IfTrue();
+						        },
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.ReturnValue();
+						        },
+					        () =>
+						        {
+							        if (type.IsIEnumerableInstance())
+							        {
+								        var elemType = type.GetTypeArgument(0);
 
-						                //check array
-						                code.GetLocal(value);
-						                var notArray = code.IfNotArray();
+								        //check array
+								        code.GetLocal(value);
+								        var notArray = code.IfNotArray();
 
-						                code.HasElemType(elemType, value);
+								        code.HasElemType(elemType, value);
 
-						                var notArgArray = code.IfFalse();
-						                code.GetLocal(value);
-						                code.ReturnValue();
+								        var notArgArray = code.IfFalse();
+								        code.GetLocal(value);
+								        code.ReturnValue();
 
-						                var label = code.Label();
-						                notArgArray.BranchTarget = label;
-						                notArray.BranchTarget = label;
-					                }
+								        var label = code.Label();
+								        notArgArray.BranchTarget = label;
+								        notArray.BranchTarget = label;
+							        }
 
-					                code.GetLocal(value);
-					                code.As(Abc.GetTypeName(type, false));
-					                code.ReturnValue();
-				                }
-			                );
+							        code.GetLocal(value);
+							        code.As(Abc.GetTypeName(type, false));
+							        code.ReturnValue();
+						        }
+					        );
 
-		                code.CatchReturnNull();
-	                },
-                AvmTypeCode.Object, "value");
+				        code.CatchReturnNull();
+			        });
         }
         #endregion
 
@@ -286,41 +282,40 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var name = GetAsMethodName(type, me);
 
             var typeName = DefineMemberType(type);
-            return instance.DefineStaticMethod(
-                name, typeName,
-                code =>
-	                {
-		                const int value = 1;
-		                code.BeginAsMethod();
+	        return instance.DefineMethod(
+		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
+				        code.BeginAsMethod();
 
-		                code.Try();
+				        code.Try();
 
-		                code.If(
-			                //not me?
-			                () =>
-				                {
-					                code.GetLocal(value);
-					                code.As(typeName);
-					                return code.IfNull();
-				                },
-			                //not me
-			                () =>
-				                {
-					                code.NewNullable(type, value);
-					                code.ReturnValue();
-				                },
-			                //me
-			                () =>
-				                {
-					                code.GetLocal(value);
-					                code.Coerce(typeName);
-					                code.ReturnValue();
-				                }
-			                );
+				        code.If(
+					        //not me?
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.As(typeName);
+							        return code.IfNull();
+						        },
+					        //not me
+					        () =>
+						        {
+							        code.NewNullable(type, value);
+							        code.ReturnValue();
+						        },
+					        //me
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.Coerce(typeName);
+							        code.ReturnValue();
+						        }
+					        );
 
-		                code.CatchReturnNull();
-	                },
-                AvmTypeCode.Object, "value");
+				        code.CatchReturnNull();
+			        });
         }
         #endregion
 
@@ -344,46 +339,45 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var instance = typeName;
             var name = GetAsMethodName(type, me);
 
-            return instance.DefineStaticMethod(
-                name, typeName,
-                code =>
-	                {
-		                const int value = 1;
-		                code.BeginAsMethod();
+	        return instance.DefineMethod(
+		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
+				        code.BeginAsMethod();
 
-		                code.Try();
+				        code.Try();
 
-		                var MyNullable = DefineAbcInstance(MakeNullable(type));
+				        var MyNullable = DefineAbcInstance(MakeNullable(type));
 
-		                code.If(
-			                delegate
-				                {
-					                code.GetLocal(value);
-					                code.As(MyNullable);
-					                return code.IfNull();
-				                },
-			                delegate
-				                {
-					                code.GetLocal(value);
-					                code.Coerce(typeName);
-					                code.ReturnValue();
-				                },
-			                delegate
-				                {
-					                if (type.IsBoxableType())
-					                {
-						                code.Box(typeName, () => code.GetBoxedValue(value));
-					                }
-					                else
-					                {
-						                code.GetBoxedValue(value);
-					                }
-					                code.ReturnValue();
-				                });
+				        code.If(
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.As(MyNullable);
+							        return code.IfNull();
+						        },
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.Coerce(typeName);
+							        code.ReturnValue();
+						        },
+					        () =>
+						        {
+							        if (type.IsBoxableType())
+							        {
+								        code.Box(typeName, () => code.GetBoxedValue(value));
+							        }
+							        else
+							        {
+								        code.GetBoxedValue(value);
+							        }
+							        code.ReturnValue();
+						        });
 
-		                code.CatchReturnNull();
-	                },
-                AvmTypeCode.Object, "value");
+				        code.CatchReturnNull();
+			        });
         }
         #endregion
 
@@ -400,29 +394,28 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var typeName = DefineMemberType(type);
 
-            return instance.DefineStaticMethod(
-                name, typeName,
-                code =>
-	                {
-		                const int value = 1;
+	        return instance.DefineMethod(
+		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
 
-		                code.GetLocal(value);
-		                code.IfNullReturnNull(1);
+				        code.GetLocal(value);
+				        code.IfNullReturnNull(1);
 
-		                code.Getlex(instance);
-		                code.GetLocal(value);
-		                code.Call(AS);
-		                code.SetLocal(value);
+				        code.Getlex(instance);
+				        code.GetLocal(value);
+				        code.Call(AS);
+				        code.SetLocal(value);
 
-		                code.GetLocal(value);
-		                var notNull = code.IfNotNull(false);
-		                code.ThrowInvalidCastException(type);
+				        code.GetLocal(value);
+				        var notNull = code.IfNotNull(false);
+				        code.ThrowInvalidCastException(type);
 
-		                notNull.BranchTarget = code.Label();
-		                code.GetLocal(value);
-		                code.ReturnValue();
-	                },
-                AvmTypeCode.Object, "value");
+				        notNull.BranchTarget = code.Label();
+				        code.GetLocal(value);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 
@@ -430,31 +423,30 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         public AbcMethod DefineCastToString()
         {
             var instance = DefineAbcInstance(SystemTypes.String);
-            return instance.DefineStaticMethod(
-                "cast_to_me", AvmTypeCode.String,
-                code =>
-	                {
-		                const int value = 1;
+	        return instance.DefineMethod(
+		        Sig.@static("cast_to_me", AvmTypeCode.String, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
 
-		                code.IfNullReturnNull(value);
+				        code.IfNullReturnNull(value);
 
-		                code.If(
-			                () =>
-				                {
-					                code.GetLocal(value);
-					                code.Is(AvmTypeCode.String);
-					                return code.IfTrue();
-				                },
-			                () =>
-				                {
-					                code.GetLocal(value);
-					                code.CoerceString();
-					                code.ReturnValue();
-				                },
-			                () => code.ThrowInvalidCastException()
-			                );
-	                },
-                AvmTypeCode.Object, "value");
+				        code.If(
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.Is(AvmTypeCode.String);
+							        return code.IfTrue();
+						        },
+					        () =>
+						        {
+							        code.GetLocal(value);
+							        code.CoerceString();
+							        code.ReturnValue();
+						        },
+					        () => code.ThrowInvalidCastException()
+					        );
+			        });
         }
         #endregion
 

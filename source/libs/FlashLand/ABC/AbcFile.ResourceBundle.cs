@@ -106,25 +106,24 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             instance.Class.Initializer = DefineEmptyMethod();
             
             var mn = DefineQName(instance.ProtectedNamespace, "getContent");
-            instance.DefineOverrideMethod(
-                mn,
-                AvmTypeCode.Object,
-                code =>
-	                {
-		                int n = 0;
-		                var lines = rb.Content;
-		                for (int i = 0; i < lines.Length; ++i)
-		                {
-			                string line = lines[i];
-			                context.Line = i + 1;
-			                context.RB = rb;
-			                if (PushKeyValue(line, code, context))
-				                ++n;
-		                }
-		                code.Add(InstructionCode.Newobject, n);
-		                code.ReturnValue();
-	                }
-	            );
+	        instance.DefineMethod(
+		        Sig.@override(mn, AvmTypeCode.Object),
+		        code =>
+			        {
+				        int n = 0;
+				        var lines = rb.Content;
+				        for (int i = 0; i < lines.Length; ++i)
+				        {
+					        string line = lines[i];
+					        context.Line = i + 1;
+					        context.RB = rb;
+					        if (PushKeyValue(line, code, context))
+						        ++n;
+				        }
+				        code.Add(InstructionCode.Newobject, n);
+				        code.ReturnValue();
+			        }
+		        );
 
             DefineScript(instance);
         }

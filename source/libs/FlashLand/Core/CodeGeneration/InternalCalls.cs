@@ -20,15 +20,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var name = Abc.DefinePfxName("__static_copy__");
 
-            return instance.DefineStaticMethod(
-                name, instance.Name,
-                code =>
-                    {
-                        code.GetLocal(1); //value
-                        code.Call(copy);
-                        code.ReturnValue();
-                    },
-                instance.Name, "value");
+	        return instance.DefineMethod(
+		        Sig.@static(name, instance.Name, instance.Name, "value"),
+		        code =>
+			        {
+				        code.GetLocal(1); //value
+				        code.Call(copy);
+				        code.ReturnValue();
+			        });
         }
 
         public AbcMethod DefineCopyMethod(IType type)
@@ -51,8 +50,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var name = Abc.DefinePfxName("__copy__");
 
-            return instance.DefineInstanceMethod(
-                name, instance.Name,
+            return instance.DefineMethod(
+                Sig.@this(name, instance.Name),
                 code =>
                     {
                         //SUPER BUG:
@@ -84,14 +83,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var name = Abc.DefinePfxName("__copy_from__");
 
-            return instance.DefineInstanceMethod(
-                name, AvmTypeCode.Void,
-                code =>
-                    {
-                        code.CopySlots(instance, 1, 0);
-                        code.ReturnVoid();
-                    },
-                instance.Name, "value");
+	        return instance.DefineMethod(
+		        Sig.@this(name, AvmTypeCode.Void, instance.Name, "value"),
+		        code =>
+			        {
+				        code.CopySlots(instance, 1, 0);
+				        code.ReturnVoid();
+			        });
         }
         #endregion
 

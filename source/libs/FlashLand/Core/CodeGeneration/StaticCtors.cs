@@ -43,24 +43,24 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return instance.StaticCtorCaller;
 
             var I = DefineRuntimeInstance();
-            instance.StaticCtorCaller =
-                I.DefineStaticMethod(
-                    "call_cctor." + instance.FullName, AvmTypeCode.Void,
-                    code =>
-	                    {
-		                    //NOTE: we must init class before setting cctor flag to true
-		                    code.Getlex(ctor);
+	        instance.StaticCtorCaller =
+		        I.DefineMethod(
+			        Sig.@static("call_cctor." + instance.FullName, AvmTypeCode.Void),
+			        code =>
+				        {
+					        //NOTE: we must init class before setting cctor flag to true
+					        code.Getlex(ctor);
 
-		                    GetStaticCtorFlag(code, instance);
-		                    var br = code.IfFalse();
-		                    code.ReturnVoid();
+					        GetStaticCtorFlag(code, instance);
+					        var br = code.IfFalse();
+					        code.ReturnVoid();
 
-		                    br.BranchTarget = code.Label();
-		                    SetStaticCtorFlag(code, instance, true);
+					        br.BranchTarget = code.Label();
+					        SetStaticCtorFlag(code, instance, true);
 
-		                    code.Call(ctor);
-		                    code.ReturnVoid();
-	                    });
+					        code.Call(ctor);
+					        code.ReturnVoid();
+				        });
 
             return instance.StaticCtorCaller;
         }

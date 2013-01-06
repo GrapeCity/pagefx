@@ -47,18 +47,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
             var retType = DefineReturnType(method.Type);
 
-            return instance.DefineInstanceMethod(
-                thisName, retType,
-                code =>
-	                {
-		                code.Getlex(instance);
-		                code.GetLocal(0); //left
-		                code.GetLocal(1); //right
-		                code.Call(abcOp);
-		                code.Coerce(retType);
-		                code.ReturnValue();
-	                },
-                right, "right");
+	        return instance.DefineMethod(
+		        Sig.@this(thisName, retType, right, "right"),
+		        code =>
+			        {
+				        code.Getlex(instance);
+				        code.GetLocal(0); //left
+				        code.GetLocal(1); //right
+				        code.Call(abcOp);
+				        code.Coerce(retType);
+				        code.ReturnValue();
+			        });
         }
 
         public AbcMethod DefineOperator(BranchOperator op, IType left, IType right)
@@ -88,16 +87,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
             var retType = DefineReturnType(op.Type);
 
-            return instance.DefineInstanceMethod(
-                thisName, retType,
-                code =>
-	                {
-		                code.Getlex(instance);
-		                code.GetLocal(0);
-		                code.Call(abcOp);
-		                code.Coerce(op.Type, true);
-		                code.ReturnValue();
-	                });
+	        return instance.DefineMethod(
+		        Sig.@this(thisName, retType),
+		        code =>
+			        {
+				        code.Getlex(instance);
+				        code.GetLocal(0);
+				        code.Call(abcOp);
+				        code.Coerce(op.Type, true);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 
@@ -127,25 +126,24 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var retType = DefineReturnType(SystemTypes.Boolean);
 
-            return instance.DefineStaticMethod(
-                name, retType,
-                code =>
-	                {
-		                code.GetLocal(1);
-		                code.PushNull();
-		                var ifnotNull = new Instruction(InstructionCode.Ifne);
-		                code.Add(ifnotNull);
-		                code.PushBool(!isTrue);
-		                code.ReturnValue();
+	        return instance.DefineMethod(
+		        Sig.@static(name, retType, instance.Name, "value"),
+		        code =>
+			        {
+				        code.GetLocal(1);
+				        code.PushNull();
+				        var ifnotNull = new Instruction(InstructionCode.Ifne);
+				        code.Add(ifnotNull);
+				        code.PushBool(!isTrue);
+				        code.ReturnValue();
 
-		                ifnotNull.BranchTarget = code.Label();
+				        ifnotNull.BranchTarget = code.Label();
 
-		                code.GetLocal(1);
-		                code.Call(abcOp);
+				        code.GetLocal(1);
+				        code.Call(abcOp);
 
-		                code.ReturnValue();
-	                },
-                instance.Name, "value");
+				        code.ReturnValue();
+			        });
         }
         #endregion
     }

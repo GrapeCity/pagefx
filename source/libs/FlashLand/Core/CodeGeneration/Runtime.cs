@@ -35,18 +35,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             var instance = GetInstance(CorlibTypeId.Environment);
 
-            return instance.DefineStaticGetter(
-                "isFlashInternal",
-                Abc.BuiltinTypes.Boolean,
-                code =>
-	                {
-		                code.GetPlayerType();
-		                code.PushString("AVMPlus");
-		                code.Add(InstructionCode.Equals);
-		                code.Add(InstructionCode.Not);
-		                code.ReturnValue();
-	                }
-	            );
+	        return instance.DefineMethod(
+				Sig.get("isFlashInternal", Abc.BuiltinTypes.Boolean).@static(),
+		        code =>
+			        {
+				        code.GetPlayerType();
+				        code.PushString("AVMPlus");
+				        code.Add(InstructionCode.Equals);
+				        code.Add(InstructionCode.Not);
+				        code.ReturnValue();
+			        });
         }
         #endregion
 
@@ -55,34 +53,32 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             var instance = GetInstance(CorlibTypeId.Environment);
 
-            return instance.DefineStaticGetter(
-                "isFlash",
-                Abc.BuiltinTypes.RealBoolean,
-                code =>
-	                {
-		                var isFlash = instance.DefineStaticSlot("__isFlash", AvmTypeCode.Boolean);
-		                var isFlashInitialized =
-			                instance.DefineStaticSlot("__isFlashInitialized", AvmTypeCode.Boolean);
+	        return instance.DefineMethod(
+				Sig.get("isFlash", Abc.BuiltinTypes.RealBoolean).@static(),
+		        code =>
+			        {
+				        var isFlash = instance.DefineStaticSlot("__isFlash", AvmTypeCode.Boolean);
+				        var isFlashInitialized =
+					        instance.DefineStaticSlot("__isFlashInitialized", AvmTypeCode.Boolean);
 
-		                code.GetLocal(0);
-		                code.GetProperty(isFlashInitialized);
+				        code.GetLocal(0);
+				        code.GetProperty(isFlashInitialized);
 
-		                var ifTrue = code.IfTrue();
+				        var ifTrue = code.IfTrue();
 
-		                code.GetLocal(0);
-		                code.GetLocal(0);
-		                var m = DefineIsFlashPlayerInternal();
-		                code.Call(m);
-		                code.SetProperty(isFlash);
+				        code.GetLocal(0);
+				        code.GetLocal(0);
+				        var m = DefineIsFlashPlayerInternal();
+				        code.Call(m);
+				        code.SetProperty(isFlash);
 
-		                ifTrue.BranchTarget = code.Label();
+				        ifTrue.BranchTarget = code.Label();
 
-		                code.GetLocal(0);
-		                code.GetProperty(isFlash);
-		                code.FixBool();
-		                code.ReturnValue();
-	                }
-	            );
+				        code.GetLocal(0);
+				        code.GetProperty(isFlash);
+				        code.FixBool();
+				        code.ReturnValue();
+			        });
         }
         #endregion
 
@@ -90,35 +86,34 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         public AbcMethod DefineExitMethod()
         {
             var instance = GetInstance(CorlibTypeId.Environment);
-            return instance.DefineStaticMethod(
-                "exit_impl", AvmTypeCode.Void,
-                code =>
-	                {
-		                var isFlash = DefineIsFlashPlayer();
-		                code.Getlex(isFlash);
-		                code.Call(isFlash);
-		                var ifNotFlash = code.IfFalse();
+	        return instance.DefineMethod(
+		        Sig.@static("exit_impl", AvmTypeCode.Void, AvmTypeCode.Int32, "exitCode"),
+		        code =>
+			        {
+				        var isFlash = DefineIsFlashPlayer();
+				        code.Getlex(isFlash);
+				        code.Call(isFlash);
+				        var ifNotFlash = code.IfFalse();
 
-		                var ns = Abc.DefinePackage("avmplus");
-		                var mn = Abc.DefineQName(ns, "System");
-		                code.Getlex(mn);
-		                mn = Abc.DefineQName(ns, "exit");
-		                code.GetLocal(1); //exitCode
-		                code.Call(mn, 1);
-		                code.ReturnVoid();
+				        var ns = Abc.DefinePackage("avmplus");
+				        var mn = Abc.DefineQName(ns, "System");
+				        code.Getlex(mn);
+				        mn = Abc.DefineQName(ns, "exit");
+				        code.GetLocal(1); //exitCode
+				        code.Call(mn, 1);
+				        code.ReturnVoid();
 
-		                ifNotFlash.BranchTarget = code.Label();
+				        ifNotFlash.BranchTarget = code.Label();
 
-		                ns = Abc.DefinePackage("flash.System");
-		                mn = Abc.DefineQName(ns, "System");
-		                code.Getlex(mn);
-		                mn = Abc.DefineQName(ns, "exit");
-		                code.GetLocal(1); //exitCode
-		                code.Add(InstructionCode.Coerce_u); //???
-		                code.Call(mn, 1);
-		                code.ReturnVoid();
-	                },
-                AvmTypeCode.Int32, "exitCode");
+				        ns = Abc.DefinePackage("flash.System");
+				        mn = Abc.DefineQName(ns, "System");
+				        code.Getlex(mn);
+				        mn = Abc.DefineQName(ns, "exit");
+				        code.GetLocal(1); //exitCode
+				        code.Add(InstructionCode.Coerce_u); //???
+				        code.Call(mn, 1);
+				        code.ReturnVoid();
+			        });
         }
         #endregion
 
@@ -180,32 +175,31 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return _methodFindClass;
 
             var instance = SystemType.Instance;
-            _methodFindClass = instance.DefineStaticMethod(
-                new PfxQName("FindClass"),
-                AvmTypeCode.Class,
-                code =>
-	                {
-		                const int ns = 1;
-		                const int name = 2;
+	        _methodFindClass = instance.DefineMethod(
+		        Sig.@static(new PfxQName("FindClass"), AvmTypeCode.Class,
+		                   AvmTypeCode.Namespace, "ns",
+		                   AvmTypeCode.String, "name"),
+		        code =>
+			        {
+				        const int ns = 1;
+				        const int name = 2;
 
-		                code.GetLocal(ns);
-		                code.GetLocal(name);
-		                code.FindPropertyStrict(code.Abc.RuntimeQName);
+				        code.GetLocal(ns);
+				        code.GetLocal(name);
+				        code.FindPropertyStrict(code.Abc.RuntimeQName);
 
-		                code.GetLocal(ns);
-		                code.GetLocal(name);
-		                code.GetRuntimeProperty();
+				        code.GetLocal(ns);
+				        code.GetLocal(name);
+				        code.GetRuntimeProperty();
 
-		                code.CoerceClass();
+				        code.CoerceClass();
 
-		                code.ReturnValue();
-	                },
-                AvmTypeCode.Namespace, "ns",
-                AvmTypeCode.String, "name");
+				        code.ReturnValue();
+			        });
 
             return _methodFindClass;
         }
-        AbcMethod _methodFindClass;
+        private AbcMethod _methodFindClass;
         #endregion
 
         #region DefineIsNullMethod
@@ -214,9 +208,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             var instance = SystemType.Instance;
 
-            return instance.DefineStaticMethod(
-                "IsNull",
-                AvmTypeCode.Boolean,
+            return instance.DefineMethod(
+                Sig.@static("IsNull", AvmTypeCode.Boolean, AvmTypeCode.Object, "value"),
                 code =>
 	                {
 		                const int value = 1;
@@ -239,33 +232,30 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 		                code.PushNativeBool(false);
 		                code.ReturnValue();
 		                code.EndCatch(true);
-	                },
-                AvmTypeCode.Object, "value");
+	                });
         }
 
         public AbcMethod DefineIsNullableMethod()
         {
             var instance = SystemType.Instance;
 
-            return instance.DefineStaticMethod(
-                "IsNullable",
-                AvmTypeCode.Boolean,
-                code =>
-	                {
-		                const int value = 1;
+	        return instance.DefineMethod(
+		        Sig.@static("IsNullable", AvmTypeCode.Boolean, AvmTypeCode.Object, "value"),
+		        code =>
+			        {
+				        const int value = 1;
 
-		                code.GetLocal(value);
-		                var notNull = code.IfNotNull();
-		                code.PushNativeBool(true);
-		                code.ReturnValue();
-		                notNull.BranchTarget = code.Label();
+				        code.GetLocal(value);
+				        var notNull = code.IfNotNull();
+				        code.PushNativeBool(true);
+				        code.ReturnValue();
+				        notNull.BranchTarget = code.Label();
 
-		                code.GetLocal(value);
-		                code.Nullable_HasValue(true);
-		                code.Add(InstructionCode.Not);
-		                code.ReturnValue();
-	                },
-                AvmTypeCode.Object, "value");
+				        code.GetLocal(value);
+				        code.Nullable_HasValue(true);
+				        code.Add(InstructionCode.Not);
+				        code.ReturnValue();
+			        });
         }
         #endregion
     }

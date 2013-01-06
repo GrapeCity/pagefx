@@ -226,14 +226,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (InternalTypeExtensions.HasInitFields(type, true))
             {
                 string name = type.GetStaticCtorName();
-                instance.StaticCtor = instance.DefineStaticMethod(
-                    name, AvmTypeCode.Void,
-                    code =>
-	                    {
-		                    code.PushThisScope();
-		                    code.InitFields(type, true, false);
-		                    code.ReturnVoid();
-	                    });
+	            instance.StaticCtor = instance.DefineMethod(
+		            Sig.@static(name, AvmTypeCode.Void),
+		            code =>
+			            {
+				            code.PushThisScope();
+				            code.InitFields(type, true, false);
+				            code.ReturnVoid();
+			            });
                 return instance.StaticCtor;
             }
             return null;

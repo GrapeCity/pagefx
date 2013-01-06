@@ -139,8 +139,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
     	private void OverrideFlexAppInitialize(AbcInstance instance)
         {
             var name = Abc.DefineGlobalQName("initialize");
-    		instance.DefineVirtualOverrideMethod(
-    			name, AvmTypeCode.Void,
+    		instance.DefineMethod(
+    			Sig.@virtual(name, AvmTypeCode.Void).@override(),
     			code =>
     				{
     					code.LoadThis();
@@ -162,12 +162,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
     		var flexModuleFactoryInterface = ImportType(MX.IFlexModuleFactory);
 
 			var propertyName = Abc.DefineGlobalQName("moduleFactory");
-    		instance.DefineSetter(
-				propertyName, flexModuleFactoryInterface,
-				AbcMethodSemantics.Virtual | AbcMethodSemantics.Override, 
+    		instance.DefineMethod(
+    			Sig.set(propertyName, flexModuleFactoryInterface).@virtual().@override(),
     			code =>
     				{
-						code.Trace("PFC: setting FlexModuleFactory to application");
+    					code.Trace("PFC: setting FlexModuleFactory to application");
 
     					// super.moduleFactory = value
     					code.LoadThis();
@@ -187,18 +186,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
     					CallInitStyles(code, instance);
 
-						// init application after styles are initialized
-						var ctor = instance.FindParameterlessConstructor();
-						if (ctor != null)
-						{
-							var ctorMethod = DefineAbcMethod(ctor);
-							code.LoadThis();
-							if (AbcGenConfig.FlexAppCtorAsHandler)
-							{
-								code.PushNull();
-							}
-							code.Call(ctorMethod);
-						}
+    					// init application after styles are initialized
+    					var ctor = instance.FindParameterlessConstructor();
+    					if (ctor != null)
+    					{
+    						var ctorMethod = DefineAbcMethod(ctor);
+    						code.LoadThis();
+    						if (AbcGenConfig.FlexAppCtorAsHandler)
+    						{
+    							code.PushNull();
+    						}
+    						code.Call(ctorMethod);
+    					}
 
     					code.ReturnVoid();
     				});
@@ -209,8 +208,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             var done = instance.DefineSlot("_init_styles_done", AvmTypeCode.Boolean);
 
-			return instance.DefineInstanceMethod(
-				"$init_flex_styles$", AvmTypeCode.Void,
+			return instance.DefineMethod(
+				Sig.@this("$init_flex_styles$", AvmTypeCode.Void),
 				code =>
 					{
 						code.LoadThis();

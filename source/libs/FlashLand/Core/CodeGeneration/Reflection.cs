@@ -105,9 +105,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var trait = instance.Traits.FindMethod(name);
             if (trait != null) return trait.Method;
 
-            var method = instance.DefineVirtualMethod(
-                name, AvmTypeCode.Int32,
-                code => code.ReturnTypeId(type));
+	        var method = instance.DefineMethod(
+		        Sig.@virtual(name, AvmTypeCode.Int32),
+		        code => code.ReturnTypeId(type));
 
             method.Trait.IsOverride = IsOverrideGetTypeId(type, instance);
 
@@ -118,24 +118,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 //DefinePrototype_GetType(instance, type);
 
                 var getTypeId = GetMethod(ObjectMethodId.GetTypeId);
-                instance.DefineMethod(
-                    getTypeId,
-                    code => code.ReturnTypeId(type), true);
+                instance.DefineMethod(Sig.@from(getTypeId).@override(false), code => code.ReturnTypeId(type));
 
-                instance.DefineMethod(
-                    GetMethod(ObjectMethodId.GetType),
-                    code =>
-	                    {
-		                    code.CallAssemblyGetType(
-			                    () =>
-				                    {
-					                    code.LoadThis();
-					                    code.Call(getTypeId);
-				                    }
-			                    );
-		                    code.ReturnValue();
-	                    },
-                    true);
+	            var prototype = GetMethod(ObjectMethodId.GetType);
+	            instance.DefineMethod(Sig.@from(prototype).@override(false), code =>
+	                {
+		                code.CallAssemblyGetType(
+			                () =>
+				                {
+					                code.LoadThis();
+					                code.Call(getTypeId);
+				                }
+			                );
+		                code.ReturnValue();
+	                });
             }
 
             return method;
