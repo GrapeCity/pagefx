@@ -347,7 +347,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	        foreach (var ifaceMethod in impls)
 	        {
 		        var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
-				DefineExplicitImplementation(instance, abcMethod, method, ifaceMethod, ifaceAbcMethod);
+				DefineExplicitImplementation(instance, abcMethod, ifaceMethod, ifaceAbcMethod);
 	        }
         }
         #endregion
@@ -605,7 +605,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				&& HasFlashIfaceName(ifaceAbcMethod)))
 				return;
 
-	        DefineExplicitImplementation(implInstance, abcImpl, impl, ifaceMethod, ifaceAbcMethod);
+	        DefineExplicitImplementation(implInstance, abcImpl, ifaceMethod, ifaceAbcMethod);
         }
 
 		private static bool HasFlashIfaceName(AbcMethod method)
@@ -629,22 +629,27 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region DefineExplicitImplementation
-        private static void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod, IMethod method, IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
-        {
-            var m = instance.DefineMethod(
-                ifaceAbcMethod,
-                code =>
-	                {
-		                code.LoadThis();
-		                code.LoadArguments(ifaceMethod);
-		                code.Call(abcMethod);
-		                if (ifaceAbcMethod.IsVoid) code.ReturnVoid();
-		                else code.ReturnValue();
-	                });
 
-            m.Trait.IsOverride = method.DeclaringType.BaseType.FindImplementation(ifaceMethod, true, true) != null;
-        }
-        #endregion
+	    private static void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod,
+	                                                     IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
+	    {
+		    var m = instance.DefineMethod(
+			    ifaceAbcMethod,
+			    code =>
+				    {
+					    code.LoadThis();
+					    code.LoadArguments(ifaceMethod);
+					    code.Call(abcMethod);
+					    if (ifaceAbcMethod.IsVoid) code.ReturnVoid();
+					    else code.ReturnValue();
+				    });
+
+		    m.Trait.IsOverride =
+			    instance.BaseInstances()
+			            .FirstOrDefault(x => x.Traits.Contains(ifaceAbcMethod.TraitName, ifaceAbcMethod.Trait.Kind)) != null;
+	    }
+
+	    #endregion
 
         #region DefineMethodBody
 
