@@ -198,7 +198,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		public ITypeCollection Interfaces
         {
-            get { return Constraints; }
+            get { return Constraints ?? TypeCollection.Empty; }
         }
 
         public ITypeCollection Types

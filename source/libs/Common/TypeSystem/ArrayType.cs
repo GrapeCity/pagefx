@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 var impl = ImplType;
                 if (impl != null)
                     return impl.Interfaces;
-                return null;
+                return TypeCollection.Empty;
             }
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.Extensions
@@ -140,6 +141,11 @@ namespace DataDynamics.PageFX.Common.Extensions
 		}
 
 		#endregion
+
+		public static IEnumerable<T> Append<T>(this IEnumerable<T> seq, params T[] items)
+		{
+			return seq.Concat(items);
+		}
 
 		public static int IndexOf<T>(this IEnumerable<T> seq, Func<T,bool> predicate)
 		{

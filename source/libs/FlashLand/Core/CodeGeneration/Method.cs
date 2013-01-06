@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
@@ -587,15 +589,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			// determine whether we should create explicit impl
 			if (abcImpl == null || implInstance.IsForeign
 				|| ReferenceEquals(impl.DeclaringType, implType)
+				|| impl.IsExplicitImplementation
 				|| impl.Implements.Any(x => x == ifaceMethod))
 				return;
 
-			if (Equals(abcImpl.TraitName, ifaceAbcMethod.TraitName))
+			// do not create explicit impl if interface is implemented in base type
+	        var iface = ifaceMethod.DeclaringType;
+	        var baseIfaces = implType.BaseTypes().SelectMany(x => x.Interfaces.SelectMany(i => i.Interfaces.Append(i)));
+			if (baseIfaces.Any(x => ReferenceEquals(x, iface)))
 				return;
-
-			if (abcImpl.TraitName != null && ifaceAbcMethod.TraitName != null
+			
+			if (Equals(abcImpl.TraitName, ifaceAbcMethod.TraitName)
+				|| (abcImpl.TraitName != null && ifaceAbcMethod.TraitName != null
 				&& abcImpl.TraitName.IsGlobalName(ifaceAbcMethod.TraitName.NameString)
-				&& HasFlashIfaceName(ifaceAbcMethod))
+				&& HasFlashIfaceName(ifaceAbcMethod)))
 				return;
 
 	        DefineExplicitImplementation(implInstance, abcImpl, impl, ifaceMethod, ifaceAbcMethod);

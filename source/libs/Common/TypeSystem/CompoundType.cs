@@ -134,7 +134,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public virtual ITypeCollection Interfaces
         {
-            get { return ElementType != null ? ElementType.Interfaces : null; }
+            get { return ElementType != null ? ElementType.Interfaces : TypeCollection.Empty; }
         }
 
         public virtual ITypeCollection Types
