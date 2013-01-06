@@ -6,9 +6,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
     /// <summary>
     /// Tag for types with global ABC functions.
     /// </summary>
-    internal sealed class GlobalType : ISpecialType
+    internal sealed class GlobalFunctionsContainer : ISpecialType
     {
-        public GlobalType(IType type)
+        public GlobalFunctionsContainer(IType type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");

@@ -459,7 +459,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private void LinkGlobalType(IType type)
         {
-		    type.Data = new GlobalType(type);
+		    type.Data = new GlobalFunctionsContainer(type);
 
             LinkMethods(type, null, true);
         }

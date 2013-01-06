@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
 			//TODO: simplify using custom attributes
             var type = method.DeclaringType;
-            if (type.Data is GlobalType)
+            if (type.Data is GlobalFunctionsContainer)
                 return true;
             if (type.IsInternalType())
             {
@@ -39,7 +39,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var type = method.DeclaringType;
 
-            if (type.Data is GlobalType)
+            if (type.Data is GlobalFunctionsContainer)
             {
                 var mn = GetMethodName(method);
                 code.FindPropertyStrict(mn);

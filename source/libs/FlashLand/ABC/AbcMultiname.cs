@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -667,46 +668,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return NamespaceString == "" && NameString == fullname;
         }
         #endregion
-        
-        #region IsGlobalType
-        public bool IsGlobalType
+
+		public bool IsGlobalType
         {
             get { return !IsRuntime && HasGlobalPackage && GlobalTypes.Contains(NameString); }
         }
-
-    	private static readonly HashSet<string> GlobalTypes = new HashSet<string>(
-    		new[]
-    			{
-    				"void",
-    				"int",
-    				"uint",
-    				"Number",
-    				"String",
-    				"Object",
-    				"Boolean",
-    				"Array",
-    				"Date",
-    				"Class",
-    				"Function",
-    				"Math",
-    				"Namespace",
-    				"QName",
-    				"XML",
-    				"XMLList",
-    				"RegExp",
-    				"Error",
-    				"EvalError",
-    				"ReferenceError",
-    				"ArgumentError",
-    				"DefinitionError",
-    				"RangeError",
-    				"SecurityError",
-    				"SyntaxError",
-    				"TypeError",
-    				"URIError",
-    				"VerifyError"
-    			});
-
-    	#endregion
     }
 }

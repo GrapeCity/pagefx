@@ -102,7 +102,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         private static bool ExcludeTypeName(AbcMultiname name)
         {
-            if (name.IsRuntime) return true;
+            if (name.IsRuntime)
+				return true;
+
+	        if (name.IsQName && name.NamespaceString.IndexOf(':') >= 0)
+		        return true;
+
             return false;
         }
         #endregion

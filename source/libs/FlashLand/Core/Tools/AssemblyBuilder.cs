@@ -470,7 +470,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         	           		Visibility = Visibility.Public
         	           	};
 
-        	type.Data = new GlobalType(type);
+        	type.Data = new GlobalFunctionsContainer(type);
 
             RegisterType(type);
 
@@ -2027,7 +2027,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                     DefineFPAttribute(owner, instance.FlashVersion);
                 }
             }
-            else if (declType.Data is GlobalType)
+            else if (declType.Data is GlobalFunctionsContainer)
             {
                 float version = GetGlobalTraitFPVersion(name);
                 DefineFPAttribute(owner, version);

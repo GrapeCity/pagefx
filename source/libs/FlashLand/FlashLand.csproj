@@ -120,6 +120,7 @@
     <Compile Include="Abc\AbcNamespaceSet.cs" />
     <Compile Include="Abc\AbcProperty.cs" />
     <Compile Include="Abc\KeyValueList.cs" />
+    <Compile Include="Avm\GlobalTypes.cs" />
     <Compile Include="Core\AbcFileExtensions.cs" />
     <Compile Include="Core\AbcGenConfig.cs" />
     <Compile Include="Core\AssemblyIndex.cs" />
@@ -203,7 +204,7 @@
     <Compile Include="Core\MimeTypes.cs" />
     <Compile Include="Core\NameExtensions.cs" />
     <Compile Include="Core\RSL.cs" />
-    <Compile Include="Core\SpecialTypes\GlobalType.cs" />
+    <Compile Include="Core\SpecialTypes\GlobalFunctionsContainer.cs" />
     <Compile Include="Core\SpecialTypes\InternalType.cs" />
     <Compile Include="Core\SpecialTypes\ISpecialType.cs" />
     <Compile Include="Core\SpecialTypes\IVectorType.cs" />
@@ -433,6 +434,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
