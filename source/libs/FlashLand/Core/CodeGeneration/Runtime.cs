@@ -133,7 +133,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             for (int i = 0; i < args.Length; i += 2)
             {
                 var value = instance.CreateStaticSlot(args[i], args[i + 1]);
-                value.SlotID = slotID;
+                value.SlotId = slotID;
                 ++slotID;
             }
 

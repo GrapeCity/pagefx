@@ -7,21 +7,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 {
 	public sealed class AbcMetaEntry : ISupportXmlDump, ISwfIndexedAtom
 	{
-		public AbcMetaEntry()
-		{    
-		}
-
-		public AbcMetaEntry(SwfReader reader)
-		{
-			Read(reader);
-		}
-
 		public int Index
 		{
 			get { return _index; }
 			set { _index = value; }
 		}
-		int _index = -1;
+		private int _index = -1;
 
 		/// <summary>
 		/// Gets or sets entry name.

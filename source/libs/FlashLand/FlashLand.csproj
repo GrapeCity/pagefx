@@ -89,12 +89,15 @@
     <Compile Include="Abc\AbcFile.ResourceBundle.cs" />
     <Compile Include="Abc\AbcFile.Test.cs" />
     <Compile Include="Abc\AbcInstanceCollection.cs" />
+    <Compile Include="Abc\AbcInstanceExtensions.cs" />
     <Compile Include="Abc\AbcMemberName.cs" />
     <Compile Include="Abc\AbcMetaEntry.cs" />
     <Compile Include="Abc\AbcMethodBodyCollection.cs" />
     <Compile Include="Abc\AbcMethodCollection.cs" />
     <Compile Include="Abc\AbcMethodSemantics.cs" />
     <Compile Include="Abc\AbcMultinamePool.cs" />
+    <Compile Include="Abc\AbcNamespacePool.cs" />
+    <Compile Include="Abc\AbcNssetPool.cs" />
     <Compile Include="Abc\AbcParameterList.cs" />
     <Compile Include="Abc\AbcScriptCollection.cs" />
     <Compile Include="Abc\AbcTraitCache.cs" />

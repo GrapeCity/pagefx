@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
 	/// <summary>
 	/// List of <see cref="AbcParameter"/> objects.
 	/// </summary>
-	public sealed class AbcParameterList : List<AbcParameter>, ISupportXmlDump
+	public sealed class AbcParameterList : List<AbcParameter>, ISupportXmlDump, IReadOnlyList<AbcParameter>
 	{
 		public void DumpXml(XmlWriter writer)
 		{

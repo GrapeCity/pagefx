@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -10,7 +11,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Represents collection of <see cref="AbcTrait"/>s.
     /// </summary>
-    public sealed class AbcTraitCollection : IEnumerable<AbcTrait>, ISwfAtom, ISupportXmlDump
+    public sealed class AbcTraitCollection : IReadOnlyList<AbcTrait>, ISwfAtom, ISupportXmlDump
     {
         private readonly List<AbcTrait> _list = new List<AbcTrait>();
 		private readonly Hashtable _cache = new Hashtable();
@@ -18,7 +19,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcTraitCollection(IAbcTraitProvider owner)
         {
-            _owner = owner;
+	        if (owner == null)
+				throw new ArgumentNullException("owner");
+
+	        _owner = owner;
         }
 
 	    public int Count
@@ -31,15 +35,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             get { return _list[index]; }
         }
 
-        public int SlotCount
-        {
-            get
-            {
-                return this.Count(t => t.Kind == AbcTraitKind.Slot);
-            }
-        }
-
-        public AbcTrait Find(AbcMultiname name, AbcTraitKind kind)
+	    public AbcTrait Find(AbcMultiname name, AbcTraitKind kind)
         {
             string key = AbcTrait.MakeKey(kind, name);
             return _cache[key] as AbcTrait;
@@ -75,12 +71,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return Find(name, kind) != null;
         }
 
-        public bool Contains(string name)
-        {
-            return Find(name) != null;
-        }
-
-        public void Add(AbcTrait trait)
+	    public void Add(AbcTrait trait)
         {
 #if DEBUG
             //var t = Find(trait.Name, trait.Kind);
@@ -113,7 +104,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 0; i < n; ++i)
             {
-                AddInternal(new AbcTrait(reader));
+	            var trait = new AbcTrait();
+				trait.Read(reader);
+	            AddInternal(trait);
             }
         }
 

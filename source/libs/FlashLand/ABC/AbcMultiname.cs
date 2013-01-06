@@ -14,8 +14,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// </summary>
     public sealed class AbcMultiname : IAbcConst
     {
-        #region Constructors
-        /// <summary>
+		/// <summary>
         /// Initializes new instance of <see cref="AbcMultiname"/> class.
         /// </summary>
         public AbcMultiname()
@@ -65,19 +64,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             TypeParameter = param;
         }
 
-        internal AbcMultiname(SwfReader reader)
-        {
-            Read(reader);
-        }
-        #endregion
-
-        #region Properties
-        public int Index
+		public int Index
         {
             get { return _index; }
             set { _index = value; }
         }
-        int _index = -1;
+        private int _index = -1;
 
     	public AbcConstKind Kind { get; set; }
 
@@ -254,9 +246,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             get { return Kind == AbcConstKind.TypeName; }
         }
         #endregion
-        #endregion
 
-        #region Key
+		#region Key
         public static string KeyOf(AbcConstKind kind, AbcNamespace ns, AbcConst<string> name)
         {
             return ns.Key + "." + name.Value + (int)kind;

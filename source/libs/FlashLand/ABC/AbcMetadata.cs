@@ -47,7 +47,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 0; i < n; ++i)
             {
-                Add(new AbcMetaEntry(reader));
+	            var entry = new AbcMetaEntry();
+				entry.Read(reader);
+	            Add(entry);
             }
         }
 

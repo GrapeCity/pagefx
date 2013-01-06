@@ -691,7 +691,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcTraitKind.Slot:
                 case AbcTraitKind.Const:
                     {
-                        trait.SlotID = from.SlotID;
+                        trait.SlotId = from.SlotId;
                         trait.HasValue = from.HasValue;
                         trait.SlotType = ImportType(from.SlotType);
                         if (from.HasValue)
@@ -703,7 +703,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcTraitKind.Getter:
                 case AbcTraitKind.Setter:
                     {
-                        trait.SlotID = from.SlotID;
+                        trait.SlotId = from.SlotId;
                         trait.Method = ImportMethod(from.Method);
                     }
                     break;
@@ -719,7 +719,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
                 case AbcTraitKind.Function:
                     {
-                        trait.SlotID = from.SlotID;
+                        trait.SlotId = from.SlotId;
                         trait.Method = ImportMethod(from.Method);
                     }
                     break;

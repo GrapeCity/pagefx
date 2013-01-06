@@ -231,12 +231,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (AbcGenConfig.UseActivationTraits)
             {
                 t = _body.Traits.AddSlot(type, traitName);
-                t.SlotID = _body.Traits.Count;
+                t.SlotId = _body.Traits.Count;
             }
             else
             {
                 t = _activation.CreateSlot(traitName, type);
-                t.SlotID = _activation.Traits.Count;
+                t.SlotId = _activation.Traits.Count;
             }
             return t;
         }

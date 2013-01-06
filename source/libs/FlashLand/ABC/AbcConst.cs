@@ -99,8 +99,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        #region IAbcAtom Members
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             Value = reader.ReadAbcConst<T>(SharedKind);
         }
@@ -109,10 +108,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             writer.WriteAbcConst(Value);
         }
-        #endregion
 
-        #region Object Override Methods
-        public override string ToString()
+	    public override string ToString()
         {
             //string s = (object)_value as string;
             //if (s != null) return Escaper.Escape(s);
@@ -129,16 +126,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return false;
         }
 
-        private static readonly int HashSalt = typeof(T).GetHashCode();
-
-        public override int GetHashCode()
+	    public override int GetHashCode()
         {
-            int h = HashSalt;
+            int h = typeof(T).GetHashCode();
             object obj = Value;
             if (obj != null)
                 h ^= obj.GetHashCode();
             return h;
         }
-        #endregion
     }
 }

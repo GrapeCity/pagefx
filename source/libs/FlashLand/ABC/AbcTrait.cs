@@ -57,75 +57,56 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     }
     #endregion
 
-    #region class AbcTrait
-    /// <summary>
+	/// <summary>
     /// Represents ABC trait (type member)
     /// </summary>
-    public class AbcTrait : ISwfIndexedAtom, ISupportXmlDump
+    public sealed class AbcTrait : ISwfIndexedAtom, ISupportXmlDump
     {
         #region InnerTypes
-        interface ITraitData : ISwfAtom, ISupportXmlDump
+        private interface ISlot : ISwfAtom, ISupportXmlDump
         {
-            int SlotID { get; set; }
+            int SlotId { get; set; }
         }
 
-        interface IMethodLink
+		private interface IMethodSlot : ISlot
         {
             AbcMethod Method { get; set; }
         }
 
-        #region class SlotData
-        class SlotData : ITraitData
+        #region class Slot
+        private sealed class Slot : ISlot
         {
-            #region Properties
-            /// <summary>
-            /// The slot_id field is an integer from 0 to N and is used to identify a position in which this trait resides. A
-            /// value of 0 requests the AVM2 to assign a position.
-            /// </summary>
-            public int SlotID
-            {
-                get { return _slotID; }
-                set { _slotID = value; }
-            }
-            int _slotID;
+	        /// <summary>
+	        /// The slot_id field is an integer from 0 to N and is used to identify a position in which this trait resides. A
+	        /// value of 0 requests the AVM2 to assign a position.
+	        /// </summary>
+	        public int SlotId { get; set; }
 
-            public AbcMultiname Type
-            {
-                get { return _type; }
-                set { _type = value; }
-            }
-            AbcMultiname _type;
+	        public AbcMultiname Type { get; set; }
 
-            public bool HasValue
-            {
-                get { return _hasValue; }
-                set { _hasValue = value; }
-            }
-            bool _hasValue;
+	        public bool HasValue { get; set; }
 
-            public object Value
+	        public object Value
             {
                 get { return _value; }
                 set
                 {
                     _value = value;
-                    _hasValue = true;
+                    HasValue = true;
                 }
             }
-            object _value;
-            #endregion
+            private object _value;
 
-            #region IAbcAtom Members
-            public void Read(SwfReader reader)
+	        public void Read(SwfReader reader)
             {
-                _slotID = (int)reader.ReadUIntEncoded(); //slod_id
-                _type = reader.ReadMultiname();
+                SlotId = (int)reader.ReadUIntEncoded(); //slod_id
+                Type = reader.ReadMultiname();
 
-                _hasValue = false;
+                HasValue = false;
                 int index = (int)reader.ReadUIntEncoded(); //vindex
                 if (index != 0)
                 {
-                    _hasValue = true;
+                    HasValue = true;
                     var kind = (AbcConstKind)reader.ReadUInt8(); //vkind
                     _value = reader.ABC.GetConstant(kind, index);
                 }
@@ -133,9 +114,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             public void Write(SwfWriter writer)
             {
-                writer.WriteUIntEncoded((uint)_slotID);
-                writer.WriteUIntEncoded((uint)_type.Index);
-                if (_hasValue)
+                writer.WriteUIntEncoded((uint)SlotId);
+                writer.WriteUIntEncoded((uint)Type.Index);
+                if (HasValue)
                 {
                     writer.WriteConstIndex(_value);
                 }
@@ -144,156 +125,114 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     writer.WriteByte(0);
                 }
             }
-            #endregion
 
-            #region ISupportXmlDump Members
-            public void DumpXml(XmlWriter writer)
+	        public void DumpXml(XmlWriter writer)
             {
-                writer.WriteElementString("slot-id", _slotID.ToString());
-                writer.WriteElementString("type", _type.ToString());
-                if (_hasValue)
+                writer.WriteElementString("slot-id", SlotId.ToString());
+                writer.WriteElementString("type", Type.ToString());
+                if (HasValue)
                     writer.WriteElementString("value", _value != null ? _value.ToString() : "null");
             }
-            #endregion
         }
         #endregion
 
-        #region class ClassData
-        class ClassData : ITraitData
+		#region class ClassSlot
+		private sealed class ClassSlot : ISlot
         {
-            #region Properties
-            /// <summary>
+	        /// <summary>
             /// The slot_id field is an integer from 0 to N and is used to identify a position in which this trait resides. A
             /// value of 0 requests the AVM2 to assign a position.
             /// </summary>
-            public int SlotID { get; set; }
+            public int SlotId { get; set; }
 
             public AbcClass Class { get; set; }
-            #endregion
 
-            #region IAbcAtom Members
-            public void Read(SwfReader reader)
+	        public void Read(SwfReader reader)
             {
-                SlotID = (int)reader.ReadUIntEncoded(); //slot_id
+                SlotId = (int)reader.ReadUIntEncoded(); //slot_id
                 int index = (int)reader.ReadUIntEncoded(); //classi
                 Class = reader.ABC.Classes[index];
             }
 
             public void Write(SwfWriter writer)
             {
-                writer.WriteUIntEncoded((uint)SlotID);
+                writer.WriteUIntEncoded((uint)SlotId);
                 writer.WriteUIntEncoded((uint)Class.Index);
             }
-            #endregion
 
-            #region ISupportXmlDump Members
-            public void DumpXml(XmlWriter writer)
+	        public void DumpXml(XmlWriter writer)
             {
-                writer.WriteElementString("slot-id", SlotID.ToString());
+                writer.WriteElementString("slot-id", SlotId.ToString());
                 if (Class != null)
                     writer.WriteElementString("class", Class.ToString());
             }
-            #endregion
         }
         #endregion
 
-        #region class FunctionData
-        class FunctionData : ITraitData, IMethodLink
+		#region class FunctionSlot
+		private sealed class FunctionSlot : IMethodSlot
         {
-            #region Properties
-            public int SlotID
-            {
-                get { return _slotID; }
-                set { _slotID = value; }
-            }
-            int _slotID;
+	        public int SlotId { get; set; }
 
-            public AbcMethod Method
-            {
-                get { return _method; }
-                set { _method = value; }
-            }
-            AbcMethod _method;
-            #endregion
+	        public AbcMethod Method { get; set; }
 
-            #region IAbcAtom Members
-            public void Read(SwfReader reader)
+	        public void Read(SwfReader reader)
             {
-                _slotID = (int)reader.ReadUIntEncoded(); //slot_id
-                _method = reader.ReadAbcMethod(); //function
+                SlotId = (int)reader.ReadUIntEncoded(); //slot_id
+                Method = reader.ReadAbcMethod(); //function
             }
 
             public void Write(SwfWriter writer)
             {
-                writer.WriteUIntEncoded((uint)_slotID);
-                writer.WriteUIntEncoded((uint)_method.Index);
+                writer.WriteUIntEncoded((uint)SlotId);
+                writer.WriteUIntEncoded((uint)Method.Index);
             }
-            #endregion
 
-            #region ISupportXmlDump Members
-            public void DumpXml(XmlWriter writer)
+	        public void DumpXml(XmlWriter writer)
             {
-                writer.WriteElementString("slot-id", _slotID.ToString());
-                if (_method != null && AbcDumpService.DumpMethods)
+                writer.WriteElementString("slot-id", SlotId.ToString());
+                if (Method != null && AbcDumpService.DumpMethods)
                 {
-                    writer.WriteElementString("function", _method.ToString());
+                    writer.WriteElementString("function", Method.ToString());
                 }
             }
-            #endregion
         }
         #endregion
 
-        #region class MethodData
-        class MethodData : ITraitData, IMethodLink
+		#region class MethodSlot
+		private sealed class MethodSlot : IMethodSlot
         {
-            #region Properties
-            public int SlotID
-            {
-                get { return _dispID; }
-                set { _dispID = value; }
-            }
-            int _dispID;
+	        public int SlotId { get; set; }
 
-            public AbcMethod Method
-            {
-                get { return _method; }
-                set { _method = value; }
-            }
-            AbcMethod _method;
-            #endregion
+	        public AbcMethod Method { get; set; }
 
-            #region IAbcAtom Members
-            public void Read(SwfReader reader)
+	        public void Read(SwfReader reader)
             {
-                _dispID = (int)reader.ReadUIntEncoded(); //disp_id
-                _method = reader.ReadAbcMethod(); //method
+                SlotId = (int)reader.ReadUIntEncoded(); //disp_id
+                Method = reader.ReadAbcMethod(); //method
             }
 
             public void Write(SwfWriter writer)
             {
-                if (_method == null)
+                if (Method == null)
                     throw new InvalidOperationException();
-                writer.WriteUIntEncoded((uint)_dispID);
-                writer.WriteUIntEncoded((uint)_method.Index);
+                writer.WriteUIntEncoded((uint)SlotId);
+                writer.WriteUIntEncoded((uint)Method.Index);
             }
-            #endregion
 
-            #region ISupportXmlDump Members
-            public void DumpXml(XmlWriter writer)
+	        public void DumpXml(XmlWriter writer)
             {
-                writer.WriteElementString("disp-id", _dispID.ToString());
-                if (_method != null && AbcDumpService.DumpMethods)
+                writer.WriteElementString("disp-id", SlotId.ToString());
+                if (Method != null && AbcDumpService.DumpMethods)
                 {
-                    _method.DumpXml(writer);
+                    Method.DumpXml(writer);
                 }
             }
-            #endregion
         }
         #endregion
         #endregion
 
-        #region Constructors
-        public AbcTrait()
+		public AbcTrait()
         {
             Kind = AbcTraitKind.Slot;
         }
@@ -309,30 +248,23 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             Method = method;
         }
 
-        public AbcTrait(SwfReader reader)
+	    public static AbcTrait CreateSlot(AbcMultiname type, AbcMultiname name)
         {
-            Read(reader);
-        }
-
-        public static AbcTrait CreateSlot(AbcMultiname type, AbcMultiname name)
-        {
-            var t = new AbcTrait(AbcTraitKind.Slot)
-                        {
-                            Name = name,
-                            SlotType = type
-                        };
-            return t;
+		    return new AbcTrait(AbcTraitKind.Slot)
+	            {
+		            Name = name,
+		            SlotType = type
+	            };
         }
 
         public static AbcTrait CreateConst(AbcMultiname type, AbcMultiname name, object value)
         {
-            var t = new AbcTrait(AbcTraitKind.Const)
-                        {
-                            Name = name,
-                            SlotType = type,
-                            SlotValue = value
-                        };
-            return t;
+	        return new AbcTrait(AbcTraitKind.Const)
+	            {
+		            Name = name,
+		            SlotType = type,
+		            SlotValue = value
+	            };
         }
 
         public static AbcTrait CreateMethod(AbcMethod method)
@@ -349,16 +281,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public static AbcTrait CreateClass(AbcClass klass)
         {
-            var trait = new AbcTrait(AbcTraitKind.Class)
-                            {
-                                Name = klass.Instance.Name,
-                                Class = klass
-                            };
-            return trait;
+	        return new AbcTrait(AbcTraitKind.Class)
+	            {
+		            Name = klass.Instance.Name,
+		            Class = klass
+	            };
         }
-        #endregion
 
-        #region Properties
+		#region Properties
         /// <summary>
         /// Gets or sets trait owner.
         /// </summary>
@@ -406,26 +336,16 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 _key = null;
             }
         }
-        AbcMultiname _name;
+        private AbcMultiname _name;
 
         public string NameString
         {
-            get
-            {
-                if (_name != null)
-                    return _name.NameString;
-                return "";
-            }
+            get { return _name != null ? _name.NameString : ""; }
         }
 
         public string FullName
         {
-            get
-            {
-                if (_name != null)
-                    return _name.FullName;
-                return "";
-            }
+            get { return _name != null ? _name.FullName : ""; }
         }
 
         /// <summary>
@@ -435,12 +355,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public Visibility Visibility
         {
-            get
-            {
-                if (_name != null)
-                    return _name.Visibility;
-                return Visibility.Private;
-            }
+            get { return _name != null ? _name.Visibility : Visibility.Private; }
         }
 
         #region Kind
@@ -452,7 +367,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             get { return _kind; }
             set
             {
-                if (value != _kind || _data == null)
+                if (value != _kind || _slot == null)
                 {
                     _kind = value;
                     _key = null;
@@ -460,25 +375,25 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     {
                         case AbcTraitKind.Slot:
                         case AbcTraitKind.Const:
-                            if (!(_data is SlotData))
-                                _data = new SlotData();
+                            if (!(_slot is Slot))
+                                _slot = new Slot();
                             break;
 
                         case AbcTraitKind.Method:
                         case AbcTraitKind.Getter:
                         case AbcTraitKind.Setter:
-                            if (!(_data is MethodData))
-                                _data = new MethodData();
+                            if (!(_slot is MethodSlot))
+                                _slot = new MethodSlot();
                             break;
 
                         case AbcTraitKind.Class:
-                            if (!(_data is ClassData))
-                                _data = new ClassData();
+                            if (!(_slot is ClassSlot))
+                                _slot = new ClassSlot();
                             break;
 
                         case AbcTraitKind.Function:
-                            if (!(_data is FunctionData))
-                                _data = new FunctionData();
+                            if (!(_slot is FunctionSlot))
+                                _slot = new FunctionSlot();
                             break;
 
                         default:
@@ -549,18 +464,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public IField Field { get; set; }
 
-        #region Attributes
-        /// <summary>
-        /// Gets or sets trait attributes
-        /// </summary>
-        public AbcTraitAttributes Attributes
-        {
-            get { return _attrs; }
-            set { _attrs = value; }
-        }
-        AbcTraitAttributes _attrs;
+	    /// <summary>
+	    /// Gets or sets trait attributes
+	    /// </summary>
+	    public AbcTraitAttributes Attributes { get; set; }
 
-        public bool IsStatic
+	    public bool IsStatic
         {
             get
             {
@@ -574,41 +483,41 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public bool IsFinal
         {
-            get { return (_attrs & AbcTraitAttributes.Final) != 0; }
+            get { return (Attributes & AbcTraitAttributes.Final) != 0; }
             set
             {
-                if (value) _attrs |= AbcTraitAttributes.Final;
-                else _attrs &= ~AbcTraitAttributes.Final;
+                if (value) Attributes |= AbcTraitAttributes.Final;
+                else Attributes &= ~AbcTraitAttributes.Final;
             }
         }
 
         public bool IsVirtual
         {
-            get { return (_attrs & AbcTraitAttributes.Final) == 0; }
+            get { return (Attributes & AbcTraitAttributes.Final) == 0; }
             set
             {
-                if (value) _attrs &= ~AbcTraitAttributes.Final;
-                else _attrs |= AbcTraitAttributes.Final;
+                if (value) Attributes &= ~AbcTraitAttributes.Final;
+                else Attributes |= AbcTraitAttributes.Final;
             }
         }
 
         public bool IsOverride
         {
-            get { return (_attrs & AbcTraitAttributes.Override) != 0; }
+            get { return (Attributes & AbcTraitAttributes.Override) != 0; }
             set
             {
-                if (value) _attrs |= AbcTraitAttributes.Override;
-                else _attrs &= ~AbcTraitAttributes.Override;
+                if (value) Attributes |= AbcTraitAttributes.Override;
+                else Attributes &= ~AbcTraitAttributes.Override;
             }
         }
 
         public bool IsNew
         {
-            get { return (_attrs & AbcTraitAttributes.Override) == 0; }
+            get { return (Attributes & AbcTraitAttributes.Override) == 0; }
             set
             {
-                if (value) _attrs &= ~AbcTraitAttributes.Override;
-                else _attrs |= AbcTraitAttributes.Override;
+                if (value) Attributes &= ~AbcTraitAttributes.Override;
+                else Attributes |= AbcTraitAttributes.Override;
             }
         }
 
@@ -631,23 +540,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return r;
             }
         }
-        #endregion
 
-        #region Data
-        ITraitData _data;
+	    #region Data
+        private ISlot _slot;
 
-        public int SlotID
+        public int SlotId
         {
-            get
+            get { return _slot != null ? _slot.SlotId : 0; }
+	        set
             {
-                if (_data != null)
-                    return _data.SlotID;
-                return 0;
-            }
-            set
-            {
-                if (_data != null)
-                    _data.SlotID = value;
+                if (_slot != null)
+                    _slot.SlotId = value;
             }
         }
 
@@ -655,14 +558,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                var s = _data as SlotData;
+                var s = _slot as Slot;
                 if (s != null)
                     return s.HasValue;
                 return false;
             }
             set
             {
-                var s = _data as SlotData;
+                var s = _slot as Slot;
                 if (s == null)
                     throw new InvalidOperationException();
                 s.HasValue = value;
@@ -673,14 +576,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                var s = _data as SlotData;
+                var s = _slot as Slot;
                 if (s != null)
                     return s.Value;
                 return null;
             }
             set
             {
-                var s = _data as SlotData;
+                var s = _slot as Slot;
                 if (s == null)
                     throw new InvalidOperationException();
                 s.Value = value;
@@ -691,7 +594,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                var st = _data as SlotData;
+                var st = _slot as Slot;
                 if (st != null) return st.Type;
                 return null;
             }
@@ -699,7 +602,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (value == null)
                     throw new ArgumentNullException();
-                var st = _data as SlotData;
+                var st = _slot as Slot;
                 if (st == null)
                     throw new InvalidOperationException();
                 st.Type = value;
@@ -711,7 +614,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                var ml = _data as IMethodLink;
+                var ml = _slot as IMethodSlot;
                 if (ml != null)
                     return ml.Method;
                 return null;
@@ -720,7 +623,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (value == null)
                     throw new ArgumentNullException();
-                var link = _data as IMethodLink;
+                var link = _slot as IMethodSlot;
                 if (link == null)
                     throw new InvalidOperationException();
                 if (value != link.Method)
@@ -735,7 +638,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                var c = _data as ClassData;
+                var c = _slot as ClassSlot;
                 if (c == null) return null;
                 return c.Class;
             }
@@ -743,7 +646,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
-                var c = _data as ClassData;
+                var c = _slot as ClassSlot;
                 if (c == null)
                     throw new InvalidOperationException();
                 if (value != c.Class)
@@ -770,12 +673,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 if (_metadata == null)
                 {
                     _metadata = new AbcMetadata();
-                    _attrs |= AbcTraitAttributes.HasMetadata;
+                    Attributes |= AbcTraitAttributes.HasMetadata;
                 }
                 return _metadata;
             }
         }
-        AbcMetadata _metadata;
+        private AbcMetadata _metadata;
 
         public bool HasMetadata
         {
@@ -783,7 +686,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (_metadata != null && _metadata.Count > 0)
                 {
-                    _attrs |= AbcTraitAttributes.HasMetadata;
+                    Attributes |= AbcTraitAttributes.HasMetadata;
                     return true;
                 }
                 return false;
@@ -792,13 +695,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (value)
                 {
-                    _attrs |= AbcTraitAttributes.HasMetadata;
+                    Attributes |= AbcTraitAttributes.HasMetadata;
                     if (_metadata == null)
                         _metadata = new AbcMetadata();
                 }
                 else
                 {
-                    _attrs &= ~AbcTraitAttributes.HasMetadata;
+                    Attributes &= ~AbcTraitAttributes.HasMetadata;
                     _metadata = null;
                 }
             }
@@ -813,9 +716,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             byte kind = reader.ReadUInt8();
             Kind = (AbcTraitKind)(kind & 0x0F);
-            _attrs = (AbcTraitAttributes)(kind >> 4);
+            Attributes = (AbcTraitAttributes)(kind >> 4);
 
-            _data.Read(reader);
+            _slot.Read(reader);
 
             switch (_kind)
             {
@@ -831,7 +734,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     break;
             }
 
-            if ((_attrs & AbcTraitAttributes.HasMetadata) != 0)
+            if ((Attributes & AbcTraitAttributes.HasMetadata) != 0)
             {
                 _metadata = new AbcMetadata();
                 int n = (int)reader.ReadUIntEncoded();
@@ -848,14 +751,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             writer.WriteUIntEncoded((uint)_name.Index);
 
             if (_metadata == null)
-                _attrs &= ~AbcTraitAttributes.HasMetadata;
+                Attributes &= ~AbcTraitAttributes.HasMetadata;
             else
-                _attrs |= AbcTraitAttributes.HasMetadata;
+                Attributes |= AbcTraitAttributes.HasMetadata;
 
-            int kind = ((int)_kind & 0x0F) | ((int)_attrs << 4);
+            int kind = ((int)_kind & 0x0F) | ((int)Attributes << 4);
             writer.WriteUInt8((byte)kind);
 
-            _data.Write(writer);
+            _slot.Write(writer);
 
             if (_metadata != null)
             {
@@ -880,8 +783,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 _name.DumpXml(writer, "name");
             }
             writer.WriteElementString("kind", _kind.ToString());
-            writer.WriteElementString("attrs", _attrs.ToString());
-            ISupportXmlDump dump = _data;
+            writer.WriteElementString("attrs", Attributes.ToString());
+            ISupportXmlDump dump = _slot;
             if (dump != null)
                 dump.DumpXml(writer);
             if (_metadata != null && _metadata.Count > 0)
@@ -950,7 +853,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region Verify
         internal void Verify()
         {
-            if (_data == null)
+            if (_slot == null)
                 throw new InvalidOperationException();
             switch (_kind)
             {
@@ -994,7 +897,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
             set { _key = value; }
         }
-        string _key;
+        private string _key;
 
         internal static string MakeKey(AbcTraitKind kind, AbcMultiname name)
         {
@@ -1004,9 +907,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         internal AbcTrait PtrSlot;
         internal PointerKind PtrKind;
     }
-    #endregion
 
-    enum PointerKind
+	internal enum PointerKind
     {
         None,
         FuncPtr,

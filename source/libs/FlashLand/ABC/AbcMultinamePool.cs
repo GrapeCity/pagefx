@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -10,23 +11,21 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Represents collection of <see cref="AbcMultiname"/> objects.
     /// </summary>
-    public sealed class AbcMultinamePool : ISwfAtom, ISupportXmlDump, IAbcConstPool, IEnumerable<AbcMultiname>
+    public sealed class AbcMultinamePool : ISwfAtom, ISupportXmlDump, IAbcConstPool, IReadOnlyList<AbcMultiname>
     {
-        readonly AbcFile _abc;
-        readonly AbcConstList<AbcMultiname> _list = new AbcConstList<AbcMultiname>();
-        AbcMultiname RTQNameL;
-        AbcMultiname RTQNameLA;
+        private readonly AbcFile _abc;
+        private readonly AbcConstList<AbcMultiname> _list = new AbcConstList<AbcMultiname>();
+        private AbcMultiname RTQNameL;
+        private AbcMultiname RTQNameLA;
 
-        #region ctor
-        public AbcMultinamePool(AbcFile abc)
+	    public AbcMultinamePool(AbcFile abc)
         {
             _abc = abc;
             var mn = new AbcMultiname {Key = "*"};
             Add(mn);
         }
-        #endregion
 
-        #region Public Members
+	    #region Public Members
         public int Count
         {
             get { return _list.Count; }
@@ -93,7 +92,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             List<AbcMultiname> ptypes = null;
             for (int i = 1; i < n; ++i)
             {
-                var mn = new AbcMultiname(reader);
+                var mn = new AbcMultiname();
+				mn.Read(reader);
                 Add(mn);
                 if (mn.IsParameterizedType)
                 {

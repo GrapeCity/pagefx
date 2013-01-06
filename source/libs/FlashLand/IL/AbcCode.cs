@@ -886,9 +886,9 @@ namespace DataDynamics.PageFX.FlashLand.IL
 #if false //DEBUG
             return GetProperty(t.Name);
 #else
-            if (t.SlotID <= 0)
+            if (t.SlotId <= 0)
                 return GetProperty(t.Name);
-            return Add(InstructionCode.Getslot, t.SlotID);
+            return Add(InstructionCode.Getslot, t.SlotId);
 #endif
         }
 
@@ -901,9 +901,9 @@ namespace DataDynamics.PageFX.FlashLand.IL
 #if false //DEBUG
             return SetProperty(t.Name);
 #else
-            if (t.SlotID <= 0)
+            if (t.SlotId <= 0)
                 return SetProperty(t.Name);
-            return Add(InstructionCode.Setslot, t.SlotID);
+            return Add(InstructionCode.Setslot, t.SlotId);
 #endif
         }
 
@@ -1865,17 +1865,15 @@ namespace DataDynamics.PageFX.FlashLand.IL
         #endregion
 
         #region LoadArguments
-        public void LoadArguments(int n)
+        public void LoadArguments(int count)
         {
-            for (int i = 0; i < n; ++i)
+            for (int i = 0; i < count; ++i)
                 GetLocal(i + 1);
         }
 
         public void LoadArguments(IMethod method)
         {
-            int n = method.Parameters.Count;
-            for (int i = 0; i < n; ++i)
-                GetLocal(i + 1);
+	        LoadArguments(method.Parameters.Count);
         }
         #endregion
 
