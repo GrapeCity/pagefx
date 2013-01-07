@@ -8,33 +8,28 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
     /// 0xD9, 0xFF, 0xD8 before the JPEG SOI marker.
     /// </summary>
     [SwfTag(SwfTagCode.JPEGTables)]
-    public class SwfTagJPEGTables : SwfTag
+    public sealed class SwfTagJPEGTables : SwfTag
     {
-        public byte[] Data
-        {
-            get { return _data; }
-            set { _data = value; }
-        }
-        private byte[] _data;
+	    public byte[] Data { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.JPEGTables; }
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _data = reader.ReadToEnd();
+            Data = reader.ReadToEnd();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.Write(_data);
+            writer.Write(Data);
         }
 
         public override byte[] GetData()
         {
-            return _data;
+            return Data;
         }
     }
 }

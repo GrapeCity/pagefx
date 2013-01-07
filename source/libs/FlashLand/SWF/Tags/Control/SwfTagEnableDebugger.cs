@@ -3,7 +3,7 @@ using System.Xml;
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 {
     [SwfTag(SwfTagCode.EnableDebugger)]
-    public class SwfTagEnableDebugger : SwfTag
+    public sealed class SwfTagEnableDebugger : SwfTag
     {
         public SwfTagEnableDebugger()
         {
@@ -11,34 +11,29 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 
         public SwfTagEnableDebugger(string password)
         {
-            _password = password;
+            Password = password;
         }
 
-        public string Password
-        {
-            get { return _password; }
-            set { _password = value; }
-        }
-        private string _password;
+	    public string Password { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.EnableDebugger; }
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _password = reader.ReadString();
+            Password = reader.ReadString();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.WriteString(_password);
+            writer.WriteString(Password);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("password", _password);
+            writer.WriteElementString("password", Password);
         }
     }
 }

@@ -254,6 +254,16 @@
     <Compile Include="IL\Operand.cs" />
     <Compile Include="Swf\Actions\SwfActionList.cs" />
     <Compile Include="Swf\Filters\SwfFilterList.cs" />
+    <Compile Include="Swf\ISwfAtom.cs" />
+    <Compile Include="Swf\ISwfCharacter.cs" />
+    <Compile Include="Swf\ISwfDisplayObject.cs" />
+    <Compile Include="Swf\ISwfImageCharacter.cs" />
+    <Compile Include="Swf\ISwfTag.cs" />
+    <Compile Include="Swf\SwfEventList.cs" />
+    <Compile Include="Swf\SwfFocalGradient.cs" />
+    <Compile Include="Swf\Tags\Bitmaps\SwfTagDefineBitsLossless2.cs" />
+    <Compile Include="Swf\Tags\Buttons\SwfButtonList.cs" />
+    <Compile Include="Swf\Tags\Control\SwfAssetCollection.cs" />
     <Compile Include="Tests\ABCDefineTest.cs" />
     <Compile Include="Tests\AbcFileTest.cs" />
     <Compile Include="Tests\ABCImportTest.cs" />
@@ -301,7 +311,6 @@
     <Compile Include="Swf\Filters\SwfGlowFilter.cs" />
     <Compile Include="Swf\Filters\SwfGradientBevelFilter.cs" />
     <Compile Include="Swf\Filters\SwfGradientGlowFilter.cs" />
-    <Compile Include="Swf\Interfaces.cs" />
     <Compile Include="NumericExtensions.cs" />
     <Compile Include="Swf\SwfColorTransform.cs" />
     <Compile Include="Swf\SwfDumpService.cs" />

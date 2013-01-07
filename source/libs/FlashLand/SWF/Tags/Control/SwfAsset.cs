@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Xml;
 
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 {
-    public class SwfAsset : ISupportXmlDump
+    public sealed class SwfAsset : ISupportXmlDump
     {
-        #region ctors
-        public SwfAsset()
+	    public SwfAsset()
         {
         }
 
@@ -28,10 +26,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
         {
             Read(reader);
         }
-        #endregion
 
-        #region Properties
-        public ushort Id
+	    public ushort Id
         {
             get
             {
@@ -78,10 +74,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
                 else Flags &= ~SwfAssetFlags.Symbol;
             }
         }
-        #endregion
 
-        #region IO
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
             _id = reader.ReadUInt16();
             Name = reader.ReadString();
@@ -92,10 +86,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
             writer.WriteUInt16(Id);
             writer.WriteString(Name);
         }
-        #endregion
 
-        #region Dump
-        public void DumpXml(XmlWriter writer, string elementName)
+	    public void DumpXml(XmlWriter writer, string elementName)
         {
             writer.WriteStartElement(elementName);
             writer.WriteAttributeString("id", _id.ToString());
@@ -107,61 +99,14 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
         {
             DumpXml(writer, "asset");
         }
-        #endregion
 
-        public override string ToString()
+	    public override string ToString()
         {
             return string.Format("{0} - {1}", Id, Name);
         }
     }
 
-    public class SwfAssetCollection : List<SwfAsset>, ISupportXmlDump
-    {
-        public void Add(ISwfCharacter obj, string name)
-        {
-            Add(new SwfAsset(obj, name));
-        }
-
-        public void Add(ushort id, string name)
-        {
-            Add(new SwfAsset(id, name));
-        }
-
-        #region IO
-        public void Read(SwfReader reader, SwfAssetFlags flags)
-        {
-            int n = reader.ReadUInt16();
-            for (int i = 0; i < n; ++i)
-            {
-            	Add(new SwfAsset(reader) {Flags = flags});
-            }
-        }
-
-        public void Write(SwfWriter writer)
-        {
-            writer.WriteUInt16((ushort)Count);
-            foreach (var obj in this)
-                obj.Write(writer);
-        }
-        #endregion
-
-        #region Dump
-        public void DumpXml(XmlWriter writer, string name, string assetName)
-        {
-            writer.WriteStartElement(name);
-            foreach (var obj in this)
-                obj.DumpXml(writer, assetName);
-            writer.WriteEndElement();
-        }
-
-        public void DumpXml(XmlWriter writer)
-        {
-            DumpXml(writer, "assets", "asset");
-        }
-        #endregion
-    }
-
-    [Flags]
+	[Flags]
     public enum SwfAssetFlags
     {
         None = 0,

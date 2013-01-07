@@ -11,60 +11,50 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 
         public SwfTagMetadata(string xml)
         {
-            _xml = xml;
+            XmlContent = xml;
         }
 
-        public string MetadataXml
-        {
-            get { return _xml; }
-            set { _xml = value; }
-        }
-        private string _xml;
+	    public string XmlContent { get; set; }
 
-        public XmlDocument Metadata
-        {
-            get { return _metadoc; }
-            set { _metadoc = value; }
-        }
-        private XmlDocument _metadoc;
+	    public XmlDocument XmlDocument { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.Metadata; }
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _xml = reader.ReadString();
+            XmlContent = reader.ReadString();
             try
             {
-                _metadoc = new XmlDocument();
-                _metadoc.LoadXml(_xml);
+                XmlDocument = new XmlDocument();
+                XmlDocument.LoadXml(XmlContent);
             }
             catch
             {
-                _metadoc = null;
+                XmlDocument = null;
             }
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            if (_xml != null)
+            if (XmlContent != null)
             {
-                writer.WriteString(_xml);
+                writer.WriteString(XmlContent);
             }
-            else if (_metadoc != null)
+            else if (XmlDocument != null)
             {
-                writer.WriteString(_metadoc.OuterXml);
+                writer.WriteString(XmlDocument.OuterXml);
             }
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            if (_metadoc != null)
-                _metadoc.WriteTo(writer);
-            else if (_xml != null)
-                writer.WriteCData(_xml);
+            if (XmlDocument != null)
+                XmlDocument.WriteTo(writer);
+            else if (XmlContent != null)
+                writer.WriteCData(XmlContent);
         }
     }
 }

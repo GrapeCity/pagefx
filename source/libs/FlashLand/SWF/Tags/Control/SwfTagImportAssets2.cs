@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
     /// The ImportAssets2 tag replaces the ImportAssets tag for SWF 8 and later.
     /// </summary>
     [SwfTag(SwfTagCode.ImportAssets2)]
-    public class SwfTagImportAssets2 : SwfTagImportAssets
+    public sealed class SwfTagImportAssets2 : SwfTagImportAssets
     {
     	public byte MajorVersion { get; set; }
 
@@ -19,7 +19,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 
         public override void ReadTagData(SwfReader reader)
         {
-            URL = reader.ReadString();
+            Url = reader.ReadString();
             MajorVersion = reader.ReadUInt8();
             MinorVersion = reader.ReadUInt8();
             Assets.Read(reader, SwfAssetFlags.Imported);
@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.WriteString(URL);
+            writer.WriteString(Url);
             writer.WriteUInt8(MajorVersion);
             writer.WriteUInt8(MinorVersion);
             Assets.Write(writer);
@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("url", URL);
+            writer.WriteElementString("url", Url);
             writer.WriteElementString("major-version", MajorVersion.ToString());
             writer.WriteElementString("minor-version", MinorVersion.ToString());
             Assets.DumpXml(writer);

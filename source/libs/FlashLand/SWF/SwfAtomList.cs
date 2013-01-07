@@ -6,8 +6,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
     public class SwfAtomList<T> : List<T>, ISwfAtom, ISupportXmlDump
         where T:ISwfAtom, ISupportXmlDump,new()
     {
-        #region ISwfAtom Members
-        public virtual void Read(SwfReader reader)
+	    public virtual void Read(SwfReader reader)
         {
             int n = (int)reader.ReadUIntEncoded();
             for (int i = 0; i < n; ++i)
@@ -28,10 +27,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf
             for (int i = 0; i < n; ++i)
                 this[i].Write(writer);
         }
-        #endregion
 
-        #region ISupportXmlDump Members
-        protected virtual string XmlElementName
+	    protected virtual string XmlElementName
         {
             get { return GetType().Name; }
         }
@@ -55,6 +52,5 @@ namespace DataDynamics.PageFX.FlashLand.Swf
                     writer.WriteEndElement();
             }
         }
-        #endregion
     }
 }

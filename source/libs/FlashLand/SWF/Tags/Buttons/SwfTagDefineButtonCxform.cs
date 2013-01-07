@@ -5,7 +5,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
 {
     [TODO]
     [SwfTag(SwfTagCode.DefineButtonCxform)]
-    public class SwfTagDefineButtonCxform : SwfTag
+    public sealed class SwfTagDefineButtonCxform : SwfTag
     {
         public override SwfTagCode TagCode
         {
@@ -14,12 +14,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
 
         public override void ReadTagData(SwfReader reader)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
         }
     }
 }

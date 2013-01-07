@@ -3,83 +3,53 @@ using System.Xml;
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 {
     [SwfTag(SwfTagCode.ProductInfo)]
-    public class SwfTagProductInfo : SwfTag
+    public sealed class SwfTagProductInfo : SwfTag
     {
-        public uint ProductID
-        {
-            get { return _productID; }
-            set { _productID = value; }
-        }
-        private uint _productID;
+	    public uint ProductId { get; set; }
 
-        public uint Edition
-        {
-            get { return _edition; }
-            set { _edition = value; }
-        }
-        private uint _edition;
+	    public uint Edition { get; set; }
 
-        public byte MajorVersion
-        {
-            get { return _majorVersion; }
-            set { _majorVersion = value; }
-        }
-        private byte _majorVersion;
+	    public byte MajorVersion { get; set; }
 
-        public byte MinorVersion
-        {
-            get { return _minorVersion; }
-            set { _minorVersion = value; }
-        }
-        private byte _minorVersion;
+	    public byte MinorVersion { get; set; }
 
-        public ulong BuildNumber
-        {
-            get { return _buildNumber; }
-            set { _buildNumber = value; }
-        }
-        private ulong _buildNumber;
+	    public ulong BuildNumber { get; set; }
 
-        public ulong BuildDate
-        {
-            get { return _buildDate; }
-            set { _buildDate = value; }
-        }
-        private ulong _buildDate;
+	    public ulong BuildDate { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.ProductInfo; }
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _productID = reader.ReadUInt32();
-            _edition = reader.ReadUInt32();
-            _majorVersion = reader.ReadUInt8();
-            _minorVersion = reader.ReadUInt8();
-            _buildNumber = reader.ReadUInt64();
-            _buildDate = reader.ReadUInt64();
+            ProductId = reader.ReadUInt32();
+            Edition = reader.ReadUInt32();
+            MajorVersion = reader.ReadUInt8();
+            MinorVersion = reader.ReadUInt8();
+            BuildNumber = reader.ReadUInt64();
+            BuildDate = reader.ReadUInt64();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.WriteUInt32(_productID);
-            writer.WriteUInt32(_edition);
-            writer.WriteUInt8(_majorVersion);
-            writer.WriteUInt8(_minorVersion);
-            writer.WriteUInt64(_buildNumber);
-            writer.WriteUInt64(_buildDate);
+            writer.WriteUInt32(ProductId);
+            writer.WriteUInt32(Edition);
+            writer.WriteUInt8(MajorVersion);
+            writer.WriteUInt8(MinorVersion);
+            writer.WriteUInt64(BuildNumber);
+            writer.WriteUInt64(BuildDate);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("product-id", _productID.ToString());
-            writer.WriteElementString("edition", _edition.ToString());
-            writer.WriteElementString("major-version", _majorVersion.ToString());
-            writer.WriteElementString("minor-version", _minorVersion.ToString());
-            writer.WriteElementString("build-number", _buildNumber.ToString());
-            writer.WriteElementString("build-date", _buildDate.ToString());
+            writer.WriteElementString("product-id", ProductId.ToString());
+            writer.WriteElementString("edition", Edition.ToString());
+            writer.WriteElementString("major-version", MajorVersion.ToString());
+            writer.WriteElementString("minor-version", MinorVersion.ToString());
+            writer.WriteElementString("build-number", BuildNumber.ToString());
+            writer.WriteElementString("build-date", BuildDate.ToString());
         }
     }
 }

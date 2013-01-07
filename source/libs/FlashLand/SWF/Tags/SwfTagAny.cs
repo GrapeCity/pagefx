@@ -1,6 +1,6 @@
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 {
-    public class SwfTagAny : SwfTag
+    public sealed class SwfTagAny : SwfTag
     {
         public SwfTagAny(SwfTagCode tagCode)
         {
@@ -10,17 +10,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
         public SwfTagAny(SwfTagCode tagCode, byte[] data)
         {
             _tagCode = tagCode;
-            _data = data;
+            Data = data;
         }
 
-        public byte[] Data
-        {
-            get { return _data; }
-            set { _data = value; }
-        }
-        private byte[] _data;
+	    public byte[] Data { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return _tagCode; }
         }
@@ -28,25 +23,25 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 
         public override byte[] GetData()
         {
-            return _data;
+            return Data;
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _data = reader.ReadAllBytes();
+            Data = reader.ReadAllBytes();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            if (_data != null)
-                writer.Write(_data);
+            if (Data != null)
+                writer.Write(Data);
         }
 
         public override SwfTag Clone()
         {
-            if (_data != null)
+            if (Data != null)
             {
-                var data = (byte[])_data.Clone();
+                var data = (byte[])Data.Clone();
                 return new SwfTagAny(_tagCode, data);
             }
             return new SwfTagAny(_tagCode);

@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
     /// The ExportAssets tag makes portions of a SWF file available for import by other SWF files.
     /// </summary>
     [SwfTag(SwfTagCode.ExportAssets)]
-    public class SwfTagExportAssets : SwfTag
+    public sealed class SwfTagExportAssets : SwfTag
     {
         public SwfAssetCollection Assets
         {

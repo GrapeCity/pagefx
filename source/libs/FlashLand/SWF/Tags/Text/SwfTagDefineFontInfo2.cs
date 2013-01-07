@@ -5,7 +5,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Text
 {
     [TODO]
     [SwfTag(SwfTagCode.DefineFontInfo2)]
-    public class SwfTagDefineFontInfo2 : SwfTag
+    public sealed class SwfTagDefineFontInfo2 : SwfTag
     {
         public override SwfTagCode TagCode
         {
@@ -14,12 +14,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Text
 
         public override void ReadTagData(SwfReader reader)
         {
-            throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
         }
     }
 }

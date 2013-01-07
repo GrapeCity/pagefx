@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Video
     /// </summary>
     [TODO]
     [SwfTag(SwfTagCode.VideoFrame)]
-    public class SwfTagVideoFrame : SwfTag
+    public sealed class SwfTagVideoFrame : SwfTag
     {
         public override SwfTagCode TagCode
         {
@@ -17,12 +17,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Video
 
         public override void ReadTagData(SwfReader reader)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
         }
     }
 }

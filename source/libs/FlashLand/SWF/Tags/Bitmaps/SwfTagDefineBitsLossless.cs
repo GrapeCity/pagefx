@@ -11,46 +11,35 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
     [SwfTag(SwfTagCode.DefineBitsLossless)]
     public class SwfTagDefineBitsLossless : SwfCharacter, ISwfImageCharacter
     {
-        #region Constructors
-        public SwfTagDefineBitsLossless()
+	    public SwfTagDefineBitsLossless()
         {
         }
 
         public SwfTagDefineBitsLossless(Image image)
         {
-            _image = image;
+            Image = image;
         }
 
         public SwfTagDefineBitsLossless(int id, Image image) : base(id)
         {
-            _image = image;
+            Image = image;
         }
-        #endregion
 
-        #region ISwfImageCharacter Members
-        public Image Image
-        {
-            get { return _image; }
-            set { _image = value; }
-        }
-        private Image _image;
-        #endregion
+	    public Image Image { get; set; }
 
-        #region IO
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.DefineBitsLossless; }
         }
 
-        #region ReadBody
-        protected void ReadBody(SwfReader reader, bool alpha)
+	    protected void ReadBody(SwfReader reader, bool alpha)
         {
             var format = (SwfBitmapFormat)reader.ReadUInt8();
             int width = reader.ReadUInt16();
             int height = reader.ReadUInt16();
             if (format == SwfBitmapFormat.Indexed)
             {
-                _image = ReadIndexed(reader, width, height, alpha);
+                Image = ReadIndexed(reader, width, height, alpha);
             }
             else
             {
@@ -58,11 +47,11 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
 
                 if (!alpha && format == SwfBitmapFormat.RGB15)
                 {
-                    _image = ReadRGB15(reader, width, height);
+                    Image = ReadRGB15(reader, width, height);
                 }
                 else
                 {
-                    _image = ReadRGB24(reader, width, height, alpha);
+                    Image = ReadRGB24(reader, width, height, alpha);
                 }
             }
         }
@@ -176,15 +165,13 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
         {
             ReadBody(reader, false);
         }
-        #endregion
 
-        #region WriteBody
-        protected void WriteBody(SwfWriter writer, bool alpha)
+	    protected void WriteBody(SwfWriter writer, bool alpha)
         {
-            if (_image == null)
+            if (Image == null)
                 throw new InvalidOperationException();
 
-            var bmp = _image.ToBitmap();
+            var bmp = Image.ToBitmap();
             if (IsIndexedImage(bmp))
             {
                 WriteIndexed(writer, bmp, alpha);
@@ -200,7 +187,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
         {
             get
             {
-                return IsIndexedImage(_image);
+                return IsIndexedImage(Image);
             }
         }
 
@@ -339,59 +326,19 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
         {
             WriteBody(writer, false);
         }
-        #endregion
 
-        public override void DumpBody(XmlWriter writer)
+	    public override void DumpBody(XmlWriter writer)
         {
             base.DumpBody(writer);
-            if (_image != null)
+            if (Image != null)
             {
-                writer.WriteElementString("width", _image.Width.ToString());
-                writer.WriteElementString("height", _image.Height.ToString());
+                writer.WriteElementString("width", Image.Width.ToString());
+                writer.WriteElementString("height", Image.Height.ToString());
             }
         }
-        #endregion
     }
 
-    #region class SwfTagDefineBitsLossless2
-    [SwfTag(SwfTagCode.DefineBitsLossless2)]
-    public class SwfTagDefineBitsLossless2 : SwfTagDefineBitsLossless
-    {
-        #region Constructors
-        public SwfTagDefineBitsLossless2()
-        {
-        }
-
-        public SwfTagDefineBitsLossless2(Image image)
-            : base(image)
-        {
-        }
-
-        public SwfTagDefineBitsLossless2(int id, Image image)
-            : base(id, image)
-        {
-        }
-        #endregion
-
-        public override SwfTagCode TagCode
-        {
-            get { return SwfTagCode.DefineBitsLossless2; }
-        }
-
-        protected override void ReadBody(SwfReader reader)
-        {
-            ReadBody(reader, true);
-        }
-
-        protected override void WriteBody(SwfWriter writer)
-        {
-            WriteBody(writer, true);
-        }
-    }
-    #endregion
-
-    #region enum SwfBitmapFormat
-    public enum SwfBitmapFormat : byte
+	public enum SwfBitmapFormat : byte
     {
         /// <summary>
         /// Colormapped image
@@ -408,5 +355,4 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
         /// </summary>
         RGB24 = 5,
     }
-    #endregion
 }

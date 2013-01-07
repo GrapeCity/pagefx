@@ -55,8 +55,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
         {
         }
 
-        #region Shared Members
-        public static SwfFillStyle Create(SwfFillKind kind)
+	    public static SwfFillStyle Create(SwfFillKind kind)
         {
             switch (kind)
             {
@@ -86,12 +85,11 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             fs.Read(reader, shapeType);
             return fs;
         }
-        #endregion
     }
     #endregion
 
     #region SwfFillStyles
-    public class SwfFillStyles : List<SwfFillStyle>
+    public sealed class SwfFillStyles : List<SwfFillStyle>
     {
         public void Read(SwfReader reader, SwfTagCode shapeType)
         {
@@ -159,24 +157,14 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 
         public SwfSolidFillStyle(Color color)
         {
-            _color = color;
+            Color = color;
         }
 
-        public Color Color
-        {
-            get { return _color; }
-            set { _color = value; }
-        }
-        private Color _color;
+	    public Color Color { get; set; }
 
-        public Color EndColor
-        {
-            get { return _endColor; }
-            set { _endColor = value; }
-        }
-        private Color _endColor;
+	    public Color EndColor { get; set; }
 
-        public override SwfFillKind Kind
+	    public override SwfFillKind Kind
         {
             get { return SwfFillKind.Solid; }
         }
@@ -184,41 +172,41 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
         public override void Read(SwfReader reader, SwfTagCode shapeType)
         {
             bool hasAlpha = SwfShape.HasAlpha(shapeType);
-            _color = hasAlpha ? reader.ReadRGBA() : reader.ReadRGB();
+            Color = hasAlpha ? reader.ReadRGBA() : reader.ReadRGB();
             if (SwfShape.IsMorph(shapeType))
-                _endColor = reader.ReadRGBA();
+                EndColor = reader.ReadRGBA();
         }
 
         protected override void WriteBody(SwfWriter writer, SwfTagCode shapeType)
         {
             bool hasAlpha = SwfShape.HasAlpha(shapeType);
             if (hasAlpha)
-                writer.WriteRGBA(_color);
+                writer.WriteRGBA(Color);
             else 
-                writer.WriteRGB(_color);
+                writer.WriteRGB(Color);
 
             if (SwfShape.IsMorph(shapeType))
-                writer.WriteRGBA(_endColor);
+                writer.WriteRGBA(EndColor);
         }
 
         protected override void DumpBody(XmlWriter writer, SwfTagCode shapeType)
         {
             if (SwfShape.IsMorph(shapeType))
             {
-                writer.WriteAttributeString("begin-color", _color.ToHtmlHex());
-                writer.WriteAttributeString("end-color", _endColor.ToHtmlHex());
+                writer.WriteAttributeString("begin-color", Color.ToHtmlHex());
+                writer.WriteAttributeString("end-color", EndColor.ToHtmlHex());
             }
             else
             {
                 bool hasAlpha = SwfShape.HasAlpha(shapeType);
-                writer.WriteAttributeString("color", _color.ToHtmlHex(hasAlpha));
+                writer.WriteAttributeString("color", Color.ToHtmlHex(hasAlpha));
             }
         }
     }
     #endregion
 
     #region SwfGradientFillStyle
-    public class SwfGradientFillStyle : SwfFillStyle
+    public sealed class SwfGradientFillStyle : SwfFillStyle
     {
         public SwfGradientFillStyle(SwfFillKind kind)
         {
@@ -245,12 +233,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 
             if (IsMulticolor(brush))
             {
-                _gradient = new SwfGradient(brush.InterpolationColors);
+                Gradient = new SwfGradient(brush.InterpolationColors);
             }
             else
             {
                 var colors = brush.LinearColors;
-                _gradient = new SwfGradient(colors[0], colors[1]);
+                Gradient = new SwfGradient(colors[0], colors[1]);
             }
 
             //All gradients are defined in a standard space called the gradient square.
@@ -259,15 +247,15 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             var r = brush.Rectangle;
             var gs = RectangleF.FromLTRB(-m, -m, 2 * m, 2 * m);
 
-            _matrix = brush.Transform;
-            if (_matrix.IsIdentity)
-                _matrix = new Matrix();
+            Matrix = brush.Transform;
+            if (Matrix.IsIdentity)
+                Matrix = new Matrix();
 
             float sx = r.Width / gs.Width;
             float sy = r.Height / gs.Height;
 
-            _matrix.Translate(r.X + r.Width / 2, r.Y + r.Height / 2);
-            _matrix.Scale(sx, sy);
+            Matrix.Translate(r.X + r.Width / 2, r.Y + r.Height / 2);
+            Matrix.Scale(sx, sy);
         }
 
         public override SwfFillKind Kind
@@ -276,41 +264,26 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
         }
         private readonly SwfFillKind _kind;
 
-        public Matrix Matrix
-        {
-            get { return _matrix; }
-            set { _matrix = value; }
-        }
-        private Matrix _matrix;
+	    public Matrix Matrix { get; set; }
 
-        public Matrix EndMatrix
-        {
-            get { return _endMatrix; }
-            set { _endMatrix = value; }
-        }
-        private Matrix _endMatrix;
+	    public Matrix EndMatrix { get; set; }
 
-        public SwfGradient Gradient
-        {
-            get { return _gradient; }
-            set { _gradient = value; }
-        }
-        private SwfGradient _gradient;
+	    public SwfGradient Gradient { get; set; }
 
-        public override void Read(SwfReader reader, SwfTagCode shapeType)
+	    public override void Read(SwfReader reader, SwfTagCode shapeType)
         {
             if (_kind != SwfFillKind.FocalGradient)
             {
-                _matrix = reader.ReadMatrix();
+                Matrix = reader.ReadMatrix();
                 if (SwfShape.IsMorph(shapeType))
-                    _endMatrix = reader.ReadMatrix();
-                _gradient = new SwfGradient();
-                _gradient.Read(reader, shapeType);
+                    EndMatrix = reader.ReadMatrix();
+                Gradient = new SwfGradient();
+                Gradient.Read(reader, shapeType);
             }
             else
             {
-                _gradient = new SwfFocalGradient();
-                _gradient.Read(reader, shapeType);
+                Gradient = new SwfFocalGradient();
+                Gradient.Read(reader, shapeType);
             }
         }
 
@@ -318,25 +291,25 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
         {
             if (_kind != SwfFillKind.FocalGradient)
             {
-                writer.WriteMatrix(_matrix);
+                writer.WriteMatrix(Matrix);
                 if (SwfShape.IsMorph(shapeType))
-                    writer.WriteMatrix(_endMatrix);
+                    writer.WriteMatrix(EndMatrix);
             }
-            _gradient.Write(writer, shapeType);
+            Gradient.Write(writer, shapeType);
         }
 
         protected override void DumpBody(XmlWriter writer, SwfTagCode shapeType)
         {
-            writer.WriteElementString("matrix", _matrix.GetMatrixString());
+            writer.WriteElementString("matrix", Matrix.GetMatrixString());
             if (SwfShape.IsMorph(shapeType))
-                writer.WriteElementString("end-matrix", _endMatrix.GetMatrixString());
-            _gradient.Dump(writer, shapeType);
+                writer.WriteElementString("end-matrix", EndMatrix.GetMatrixString());
+            Gradient.Dump(writer, shapeType);
         }
     }
     #endregion
 
     #region SwfTextureFillStyle
-    public class SwfTextureFillStyle : SwfFillStyle
+    public sealed class SwfTextureFillStyle : SwfFillStyle
     {
         public SwfTextureFillStyle(SwfFillKind kind)
         {
@@ -346,31 +319,16 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
         public SwfTextureFillStyle(ushort bmpid, SwfFillKind kind)
         {
             _kind = kind;
-            _bmpid = bmpid;
+            BitmapId = bmpid;
         }
 
-        public ushort BitmapID
-        {
-            get { return _bmpid; }
-            set { _bmpid = value; }
-        }
-        private ushort _bmpid;
+	    public ushort BitmapId { get; set; }
 
-        public Matrix Matrix
-        {
-            get { return _matrix; }
-            set { _matrix = value; }
-        }
-        private Matrix _matrix;
+	    public Matrix Matrix { get; set; }
 
-        public Matrix EndMatrix
-        {
-            get { return _endMatrix; }
-            set { _endMatrix = value; }
-        }
-        private Matrix _endMatrix;
+	    public Matrix EndMatrix { get; set; }
 
-        public override SwfFillKind Kind
+	    public override SwfFillKind Kind
         {
             get { return _kind; }
         }
@@ -378,36 +336,38 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 
         public override void Read(SwfReader reader, SwfTagCode shapeType)
         {
-            _bmpid = reader.ReadUInt16();
-            _matrix = reader.ReadMatrix();
+            BitmapId = reader.ReadUInt16();
+            Matrix = reader.ReadMatrix();
             if (SwfShape.IsMorph(shapeType))
-                _endMatrix = reader.ReadMatrix();
+                EndMatrix = reader.ReadMatrix();
         }
 
         protected override void WriteBody(SwfWriter writer, SwfTagCode shapeType)
         {
-            writer.WriteUInt16(_bmpid);
-            writer.WriteMatrix(_matrix);
+            writer.WriteUInt16(BitmapId);
+            writer.WriteMatrix(Matrix);
             if (SwfShape.IsMorph(shapeType))
-                writer.WriteMatrix(_endMatrix);
+                writer.WriteMatrix(EndMatrix);
         }
 
         protected override void DumpBody(XmlWriter writer, SwfTagCode shapeType)
         {
-            writer.WriteElementString("bmp-id", _bmpid.ToString());
-            writer.WriteElementString("matrix", _matrix.GetMatrixString());
+            writer.WriteElementString("bmp-id", BitmapId.ToString());
+            writer.WriteElementString("matrix", Matrix.GetMatrixString());
             if (SwfShape.IsMorph(shapeType))
-                writer.WriteElementString("end-matrix", _endMatrix.GetMatrixString());
+                writer.WriteElementString("end-matrix", EndMatrix.GetMatrixString());
         }
 
         public override void ImportDependencies(SwfMovie from, SwfMovie to)
         {
-            to.ImportCharacter(from, ref _bmpid);
+	        var cid = BitmapId;
+            to.ImportCharacter(from, ref cid);
+	        BitmapId = cid;
         }
 
         public override void GetRefs(SwfRefList list)
         {
-            list.Add(_bmpid);
+            list.Add(BitmapId);
         }
     }
     #endregion

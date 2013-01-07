@@ -11,44 +11,37 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
     [SwfTag(SwfTagCode.FileAttributes)]
     public class SwfTagFileAttributes : SwfTag
     {
-        #region ctor
-        public SwfTagFileAttributes()
+	    public SwfTagFileAttributes()
         {
         }
 
         public SwfTagFileAttributes(SwfFileAttributes attrs)
         {
-            _attrs = attrs;
+            Attributes = attrs;
         }
-        #endregion
 
-        public SwfFileAttributes Attributes
-        {
-            get { return _attrs; }
-            set { _attrs = value; }
-        }
-        SwfFileAttributes _attrs;
+	    public SwfFileAttributes Attributes { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.FileAttributes; }
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _attrs = (SwfFileAttributes)reader.ReadByte();
+            Attributes = (SwfFileAttributes)reader.ReadByte();
             reader.ReadUInt24(); //reserved
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.WriteUInt8((byte)_attrs);
+            writer.WriteUInt8((byte)Attributes);
             writer.WriteUInt24(0); //reserved
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("file-attributes", string.Format("{0} [0x{1:X4}]", _attrs, (int)_attrs));
+            writer.WriteElementString("file-attributes", string.Format("{0} [0x{1:X4}]", Attributes, (int)Attributes));
         }
     }
 

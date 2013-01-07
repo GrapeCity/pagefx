@@ -1,78 +1,42 @@
-using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Xml;
 using DataDynamics.PageFX.FlashLand.Swf.Filters;
 
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
 {
-    public class SwfButton
+    public sealed class SwfButton
     {
-        #region ctors
-        public SwfButton()
+	    public SwfButton()
         {
         }
 
         public SwfButton(SwfButtonState state)
         {
-            _state = state;
+            State = state;
         }
-        #endregion
 
-        #region Properties
-        public SwfButtonState State
-        {
-            get { return _state; }
-            set { _state = value; }
-        }
-        private SwfButtonState _state;
+	    public SwfButtonState State { get; set; }
 
-        /// <summary>
-        /// Gets or sets id of character to place
-        /// </summary>
-        public ushort CharID
-        {
-            get { return _charID; }
-            set { _charID = value; }
-        }
-        private ushort _charID;
+	    /// <summary>
+	    /// Gets or sets id of character to place
+	    /// </summary>
+	    public ushort CharId { get; set; }
 
-        public ushort PlaceDepth
-        {
-            get { return _placeDepth; }
-            set { _placeDepth = value; }
-        }
-        private ushort _placeDepth;
+	    public ushort PlaceDepth { get; set; }
 
-        public Matrix PlaceMatrix
-        {
-            get { return _placeMatrix; }
-            set { _placeMatrix = value; }
-        }
-        private Matrix _placeMatrix;
+	    public Matrix PlaceMatrix { get; set; }
 
-        public SwfColorTransform ColorTransform
-        {
-            get { return _colorTransform; }
-            set { _colorTransform = value; }
-        }
-        private SwfColorTransform _colorTransform;
+	    public SwfColorTransform ColorTransform { get; set; }
 
-        public SwfFilterList Filters
+	    public SwfFilterList Filters
         {
             get { return _filters; }
         }
         private readonly SwfFilterList _filters = new SwfFilterList();
 
-        public SwfBlendMode BlendMode
-        {
-            get { return _blendMode;  }
-            set { _blendMode = value; }
-        }
-        private SwfBlendMode _blendMode;
-        #endregion
+	    public SwfBlendMode BlendMode { get; set; }
 
-        #region IO
-        private static bool HasAlpha(SwfTagCode tagCode)
+	    private static bool HasAlpha(SwfTagCode tagCode)
         {
             return tagCode == SwfTagCode.DefineButton2;
         }
@@ -80,77 +44,41 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
         public void Read(SwfReader reader, SwfTagCode tagCode)
         {
             //state is already read
-            _charID = reader.ReadUInt16();
-            _placeDepth = reader.ReadUInt16();
-            _placeMatrix = reader.ReadMatrix();
-            _colorTransform = reader.ReadColorTransform(HasAlpha(tagCode));
-            if ((_state & SwfButtonState.HasFilterList) != 0)
+            CharId = reader.ReadUInt16();
+            PlaceDepth = reader.ReadUInt16();
+            PlaceMatrix = reader.ReadMatrix();
+            ColorTransform = reader.ReadColorTransform(HasAlpha(tagCode));
+            if ((State & SwfButtonState.HasFilterList) != 0)
                 _filters.Read(reader);
-            if ((_state & SwfButtonState.HasBlendMode) != 0)
-                _blendMode = (SwfBlendMode)reader.ReadUInt8();
+            if ((State & SwfButtonState.HasBlendMode) != 0)
+                BlendMode = (SwfBlendMode)reader.ReadUInt8();
         }
 
         public void Write(SwfWriter writer, SwfTagCode tagCode)
         {
-            writer.WriteUInt8((byte)_state);
-            writer.WriteUInt16(_charID);
-            writer.WriteUInt16(_placeDepth);
-            writer.WriteMatrix(_placeMatrix);
-            _colorTransform.Write(writer, HasAlpha(tagCode));
-            if ((_state & SwfButtonState.HasFilterList) != 0)
+            writer.WriteUInt8((byte)State);
+            writer.WriteUInt16(CharId);
+            writer.WriteUInt16(PlaceDepth);
+            writer.WriteMatrix(PlaceMatrix);
+            ColorTransform.Write(writer, HasAlpha(tagCode));
+            if ((State & SwfButtonState.HasFilterList) != 0)
                 _filters.Write(writer);
-            if ((_state & SwfButtonState.HasBlendMode) != 0)
-                writer.WriteUInt8((byte)_blendMode);
+            if ((State & SwfButtonState.HasBlendMode) != 0)
+                writer.WriteUInt8((byte)BlendMode);
         }
 
         public void Dump(XmlWriter writer, SwfTagCode tagCode)
         {
             writer.WriteStartElement("button");
-            writer.WriteAttributeString("id", _charID.ToString());
-            writer.WriteAttributeString("depth", _placeDepth.ToString());
-            writer.WriteElementString("matrix", _placeMatrix.GetMatrixString());
-            _colorTransform.Dump(writer, HasAlpha(tagCode));
+            writer.WriteAttributeString("id", CharId.ToString());
+            writer.WriteAttributeString("depth", PlaceDepth.ToString());
+            writer.WriteElementString("matrix", PlaceMatrix.GetMatrixString());
+            ColorTransform.Dump(writer, HasAlpha(tagCode));
             if (_filters.Count > 0)
                 _filters.Dump(writer);
-            if ((_state & SwfButtonState.HasBlendMode) != 0)
-                writer.WriteElementString("blend-mode", _blendMode.ToString());
+            if ((State & SwfButtonState.HasBlendMode) != 0)
+                writer.WriteElementString("blend-mode", BlendMode.ToString());
             writer.WriteEndElement();
         }
-        #endregion
-    }
-
-    public class SwfButtonList : List<SwfButton>
-    {
-        #region IO
-        public void Read(SwfReader reader, SwfTagCode tagCode)
-        {
-            while (true)
-            {
-                byte state = reader.ReadUInt8();
-                if (state == 0) break;
-                var btn = new SwfButton((SwfButtonState)state);
-                btn.Read(reader, tagCode);
-                Add(btn);
-            }
-        }
-
-        public void Write(SwfWriter writer, SwfTagCode tagCode)
-        {
-            int n = Count;
-            for (int i = 0; i < n; ++i)
-                this[i].Write(writer, tagCode);
-            writer.WriteUInt8(0);
-        }
-
-        public void Dump(XmlWriter writer, SwfTagCode tagCode)
-        {
-            writer.WriteStartElement("buttons");
-            int n = Count;
-            writer.WriteAttributeString("count", n.ToString());
-            for (int i = 0; i < n; ++i)
-                this[i].Dump(writer, tagCode);
-            writer.WriteEndElement();
-        }
-        #endregion
     }
 }

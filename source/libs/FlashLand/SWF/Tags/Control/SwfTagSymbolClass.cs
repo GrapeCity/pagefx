@@ -7,10 +7,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
     /// The SymbolClass tag creates associations between symbols in the SWF file and ActionScript 3.0 classes.
     /// </summary>
     [SwfTag(SwfTagCode.SymbolClass)]
-    public class SwfTagSymbolClass : SwfTag
+    public sealed class SwfTagSymbolClass : SwfTag
     {
-        #region ctors
-        public SwfTagSymbolClass()
+	    public SwfTagSymbolClass()
         {
         }
 
@@ -33,10 +32,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
                 }
             }
         }
-        #endregion
 
-        #region Public Members
-        public SwfAssetCollection Symbols
+	    public SwfAssetCollection Symbols
         {
             get { return _symbols; }
         }
@@ -59,10 +56,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
         	            		Name = name
         	            	});
         }
-        #endregion
 
-        #region IO
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.SymbolClass; }
         }
@@ -76,13 +71,10 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
         {
             _symbols.Write(writer);
         }
-        #endregion
 
-        #region Dump
-        public override void DumpBody(XmlWriter writer)
+	    public override void DumpBody(XmlWriter writer)
         {
             _symbols.DumpXml(writer, "symbols", "symbol");
         }
-        #endregion
     }
 }

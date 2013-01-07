@@ -25,7 +25,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
     /// <summary>
     /// Represents flash movie (SWF file).
     /// </summary>
-    public class SwfMovie
+    public sealed class SwfMovie
     {
         #region Constructors
         /// <summary>

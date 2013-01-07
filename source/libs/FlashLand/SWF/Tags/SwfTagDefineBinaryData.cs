@@ -6,18 +6,13 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
     /// The DefineBinaryData tag is used to save any arbitrary user defined binary data in an SWF movie. The Flash player itself ignores that data. The size of the data is not specifically limited.
     /// </summary>
     [SwfTag(SwfTagCode.DefineBinaryData)]
-    public class SwfTagDefineBinaryData : SwfCharacter
+    public sealed class SwfTagDefineBinaryData : SwfCharacter
     {
-        public byte[] Data
-        {
-            get { return _data; }
-            set { _data = value; }
-        }
-        private byte[] _data;
+	    public byte[] Data { get; set; }
 
-        public override int GetDataSize()
+	    public override int GetDataSize()
         {
-            return _data != null ? 6 + _data.Length : 6;
+            return Data != null ? 6 + Data.Length : 6;
         }
 
         public override SwfTagCode TagCode
@@ -28,20 +23,20 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
         protected override void ReadBody(SwfReader reader)
         {
             reader.ReadUInt32(); //reserved
-            _data = reader.ReadToEnd();
+            Data = reader.ReadToEnd();
         }
 
         protected override void WriteBody(SwfWriter writer)
         {
             writer.WriteUInt32(0); //reserved
-            writer.Write(_data);
+            writer.Write(Data);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
             base.DumpBody(writer);
-            if (_data != null)
-                writer.WriteElementString("datasize", _data.Length.ToString());
+            if (Data != null)
+                writer.WriteElementString("datasize", Data.Length.ToString());
         }
     }
 }

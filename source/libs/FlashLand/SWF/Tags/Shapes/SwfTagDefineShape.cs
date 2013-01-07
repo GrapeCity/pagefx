@@ -9,15 +9,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
     [SwfTag(SwfTagCode.DefineShape)]
     public class SwfTagDefineShape : SwfDisplayObject
     {
-        #region Properties
-        public RectangleF Bounds
-        {
-            get { return _bounds; }
-            set { _bounds = value; }
-        }
-        private RectangleF _bounds;
+	    public RectangleF Bounds { get; set; }
 
-        public SwfStyles Styles
+	    public SwfStyles Styles
         {
             get { return _styles; }
         }
@@ -38,10 +32,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             get { return _shape; }
         }
         private readonly SwfShape _shape = new SwfShape();
-        #endregion
 
-        #region IO
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.DefineShape; }
         }
@@ -51,7 +43,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
         protected override void ReadBody(SwfReader reader)
         {
             var shapeType = TagCode;
-            _bounds = reader.ReadRectF();
+            Bounds = reader.ReadRectF();
             _styles.Read(reader, shapeType);
             _shape.Read(reader, shapeType);
             _read = true;
@@ -61,8 +53,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
         {
             var shapeType = TagCode;
             if (!_read)
-                _bounds = RectangleF.FromLTRB(_shape.X1, _shape.Y1, _shape.X2, _shape.Y2);
-            writer.WriteRectTwip(_bounds);
+                Bounds = RectangleF.FromLTRB(_shape.X1, _shape.Y1, _shape.X2, _shape.Y2);
+            writer.WriteRectTwip(Bounds);
             _styles.Write(writer, shapeType);
             _shape.Write(writer, shapeType);
         }
@@ -72,14 +64,13 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             base.DumpBody(writer);
             if (SwfDumpService.DumpShapes)
             {
-                writer.WriteElementString("bounds", _bounds.ToString());
+                writer.WriteElementString("bounds", Bounds.ToString());
                 _styles.Dump(writer, TagCode);
                 _shape.Dump(writer, TagCode);
             }
         }
-        #endregion
 
-        public override void ImportDependencies(SwfMovie from, SwfMovie to)
+	    public override void ImportDependencies(SwfMovie from, SwfMovie to)
         {
             _styles.ImportDependencies(from, to);
             _shape.ImportDependencies(from, to);

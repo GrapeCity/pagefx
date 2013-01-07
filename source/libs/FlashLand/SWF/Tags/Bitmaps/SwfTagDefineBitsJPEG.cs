@@ -5,7 +5,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
 {
     [TODO]
     [SwfTag(SwfTagCode.DefineBitsJPEG)]
-    public class SwfTagDefineBitsJPEG : SwfTag
+    public sealed class SwfTagDefineBitsJPEG : SwfTag
     {
         public override SwfTagCode TagCode
         {
@@ -14,12 +14,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
 
         public override void ReadTagData(SwfReader reader)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
         }
     }
 }

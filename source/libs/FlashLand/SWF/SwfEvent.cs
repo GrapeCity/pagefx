@@ -1,26 +1,15 @@
 using System;
-using System.Collections.Generic;
 using DataDynamics.PageFX.FlashLand.Swf.Actions;
 
 namespace DataDynamics.PageFX.FlashLand.Swf
 {
-    public class SwfEvent
+    public sealed class SwfEvent
     {
-        public SwfEventFlags Flags
-        {
-            get { return _flags; }
-            set { _flags = value; }
-        }
-        private SwfEventFlags _flags;
+	    public SwfEventFlags Flags { get; set; }
 
-        public byte KeyCode
-        {
-            get { return _keyCode; }
-            set { _keyCode = value; }
-        }
-        private byte _keyCode;
+	    public byte KeyCode { get; set; }
 
-        public SwfActionList Actions
+	    public SwfActionList Actions
         {
             get { return _actions; }
         }
@@ -61,9 +50,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf
         public void Read(SwfReader reader)
         {
             uint len = reader.ReadUInt32();
-            if ((_flags & SwfEventFlags.KeyPress) != 0)
+            if ((Flags & SwfEventFlags.KeyPress) != 0)
             {
-                _keyCode = reader.ReadUInt8();
+                KeyCode = reader.ReadUInt8();
             }
             //TODO: use len
             _actions.Read(reader);
@@ -71,11 +60,11 @@ namespace DataDynamics.PageFX.FlashLand.Swf
 
         public void Write(SwfWriter writer)
         {
-            WriteFlags(writer, _flags);
+            WriteFlags(writer, Flags);
 
         	var eventWriter = new SwfWriter {FileVersion = writer.FileVersion};
-        	if ((_flags & SwfEventFlags.KeyPress) != 0)
-                eventWriter.WriteUInt8(_keyCode);
+        	if ((Flags & SwfEventFlags.KeyPress) != 0)
+                eventWriter.WriteUInt8(KeyCode);
             _actions.Write(eventWriter);
 
             var eventData = eventWriter.ToByteArray();
@@ -84,47 +73,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
         }
     }
 
-    public class SwfEventList : List<SwfEvent>
-    {
-        public SwfEventFlags AllEventFlags
-        {
-            get { return _allFlags; }
-            set { _allFlags = value; }
-        }
-        private SwfEventFlags _allFlags;
-
-        public void Read(SwfReader reader)
-        {
-            reader.ReadUInt16(); //reserved
-            _allFlags = SwfEvent.ReadFlags(reader);
-
-            int ver = reader.FileVersion;
-            while (true)
-            {
-            	uint flags = ver >= 6 ? reader.ReadUInt32() : reader.ReadUInt16();
-                if (flags == 0) break;
-            	var e = new SwfEvent {Flags = SwfEvent.ToFlags(flags, ver)};
-            	e.Read(reader);
-            }
-        }
-
-        public void Write(SwfWriter writer)
-        {
-            writer.WriteUInt16(0); //reserved
-            SwfEvent.WriteFlags(writer, _allFlags);
-
-            int n = Count;
-            for (int i = 0; i < n; ++i)
-                this[i].Write(writer);
-
-            if (writer.FileVersion >= 6)
-                writer.WriteUInt32(0);
-            else
-                writer.WriteUInt16(0);
-        }
-    }
-
-    [Flags]
+	[Flags]
     public enum SwfEventFlags
     {
         KeyUp = 0x00000001,

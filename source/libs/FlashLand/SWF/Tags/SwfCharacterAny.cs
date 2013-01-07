@@ -2,8 +2,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 {
     public class SwfCharacterAny : SwfCharacter
     {
-        #region ctors
-        public SwfCharacterAny(SwfTagCode tagCode)
+	    public SwfCharacterAny(SwfTagCode tagCode)
         {
             _tagCode = tagCode;
         }
@@ -16,25 +15,19 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
         public SwfCharacterAny(SwfTagCode tagCode, byte[] body)
         {
             _tagCode = tagCode;
-            _body = body;
+            Body = body;
         }
 
         public SwfCharacterAny(ushort id, SwfTagCode tagCode, byte[] body)
             : base(id)
         {
             _tagCode = tagCode;
-            _body = body;
+            Body = body;
         }
-        #endregion
 
-        public byte[] Body
-        {
-            get { return _body; }
-            set { _body = value; }
-        }
-        private byte[] _body;
+	    public byte[] Body { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return _tagCode; }
         }
@@ -42,20 +35,20 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 
         protected override void ReadBody(SwfReader reader)
         {
-            _body = reader.ReadToEnd();
+            Body = reader.ReadToEnd();
         }
 
         protected override void WriteBody(SwfWriter writer)
         {
-            if (_body != null)
-                writer.Write(_body);
+            if (Body != null)
+                writer.Write(Body);
         }
 
         public override SwfTag Clone()
         {
-            if (_body != null)
+            if (Body != null)
             {
-                var body = (byte[])_body.Clone();
+                var body = (byte[])Body.Clone();
                 return new SwfCharacterAny(CharacterId, _tagCode, body);
             }
             return new SwfCharacterAny(CharacterId, _tagCode);

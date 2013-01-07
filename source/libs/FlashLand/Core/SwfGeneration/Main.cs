@@ -373,7 +373,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         {
         	Swf.Tags.Add(new SwfTagProductInfo
         	              	{
-        	              		ProductID = 1,
+        	              		ProductId = 1,
         	              		Edition = 0,
         	              		MajorVersion = 1,
         	              		MinorVersion = 0,

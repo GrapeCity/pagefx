@@ -8,10 +8,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
     /// scene is exported.
     /// </summary>
     [SwfTag(SwfTagCode.DefineSceneAndFrameLabelData)]
-    public class SwfTagDefineSceneAndFrameLabelData : SwfTag
+    public sealed class SwfTagDefineSceneAndFrameLabelData : SwfTag
     {
-        #region Properties
-        public SwfSceneList Scenes
+	    public SwfSceneList Scenes
         {
             get { return _scenes; }
         }
@@ -22,10 +21,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
             get { return _frameLabels; }
         }
         private readonly SwfFrameLabelList _frameLabels = new SwfFrameLabelList();
-        #endregion
 
-        #region IO
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.DefineSceneAndFrameLabelData; }
         }
@@ -41,113 +38,82 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
             _scenes.Write(writer);
             _frameLabels.Write(writer);
         }
-        #endregion
 
-        #region XmlDump
-        public override void DumpBody(XmlWriter writer)
+	    public override void DumpBody(XmlWriter writer)
         {
             base.DumpBody(writer);
             _scenes.DumpXml(writer);
             _frameLabels.DumpXml(writer);
         }
-        #endregion
     }
 
-    #region class SwfScene
-    public class SwfScene : ISwfAtom, ISupportXmlDump
+	public sealed class SwfScene : ISwfAtom, ISupportXmlDump
     {
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
+	    public string Name { get; set; }
 
-        public int FrameOffset
-        {
-            get { return _frameOffset; }
-            set { _frameOffset = value; }
-        }
-        private int _frameOffset;
+	    public int FrameOffset { get; set; }
 
-        public void Read(SwfReader reader)
+	    public void Read(SwfReader reader)
         {
-            _frameOffset = (int)reader.ReadUIntEncoded();
-            _name = reader.ReadString();
+            FrameOffset = (int)reader.ReadUIntEncoded();
+            Name = reader.ReadString();
         }
 
         public void Write(SwfWriter writer)
         {
-            writer.WriteUIntEncoded(_frameOffset);
-            writer.WriteString(_name);
+            writer.WriteUIntEncoded(FrameOffset);
+            writer.WriteString(Name);
         }
 
         public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("scene");
-            writer.WriteAttributeString("name", _name);
-            writer.WriteAttributeString("frame-offset", _frameOffset.ToString());
+            writer.WriteAttributeString("name", Name);
+            writer.WriteAttributeString("frame-offset", FrameOffset.ToString());
             writer.WriteEndElement();
         }
     }
-    #endregion
 
-    #region class SwfSceneList
-    public class SwfSceneList : SwfAtomList<SwfScene>
+	public sealed class SwfSceneList : SwfAtomList<SwfScene>
     {
         protected override string XmlElementName
         {
             get { return "scenes"; }
         }
     }
-    #endregion
 
-    #region class SwfFrameLabel
-    public class SwfFrameLabel : ISwfAtom, ISupportXmlDump
+	public sealed class SwfFrameLabel : ISwfAtom, ISupportXmlDump
     {
-        public int Frame
-        {
-            get { return _frame; }
-            set { _frame = value; }
-        }
-        private int _frame;
+		public int Frame { get; set; }
 
-        public string Label
-        {
-            get { return _label; }
-            set { _label = value; }
-        }
-        private string _label;
+		public string Label { get; set; }
 
-        public void Read(SwfReader reader)
+		public void Read(SwfReader reader)
         {
-            _frame = (int)reader.ReadUIntEncoded();
-            _label = reader.ReadString();
+            Frame = (int)reader.ReadUIntEncoded();
+            Label = reader.ReadString();
         }
 
         public void Write(SwfWriter writer)
         {
-            writer.WriteUIntEncoded(_frame);
-            writer.WriteString(_label);
+            writer.WriteUIntEncoded(Frame);
+            writer.WriteString(Label);
         }
 
         public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("frame-label");
-            writer.WriteAttributeString("frame", _frame.ToString());
-            writer.WriteAttributeString("label", _label);
+            writer.WriteAttributeString("frame", Frame.ToString());
+            writer.WriteAttributeString("label", Label);
             writer.WriteEndElement();
         }
     }
-    #endregion
 
-    #region class SwfFrameLabelList
-    public class SwfFrameLabelList : SwfAtomList<SwfFrameLabel>
+	public sealed class SwfFrameLabelList : SwfAtomList<SwfFrameLabel>
     {
         protected override string XmlElementName
         {
             get { return "frame-labels"; }
         }
     }
-    #endregion
 }

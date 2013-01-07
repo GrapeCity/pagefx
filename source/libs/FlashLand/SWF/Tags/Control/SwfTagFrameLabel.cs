@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
     /// Names a frame or anchor. This frame can later be referenced using this name.
     /// </summary>
     [SwfTag(SwfTagCode.FrameLabel)]
-    public class SwfTagFrameLabel : SwfTag
+    public sealed class SwfTagFrameLabel : SwfTag
     {
         public SwfTagFrameLabel()
         {    
@@ -14,34 +14,29 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 
         public SwfTagFrameLabel(string label)
         {
-            _label = label;
+            Label = label;
         }
 
-        public string Label
-        {
-            get { return _label; }
-            set { _label = value; }
-        }
-        private string _label;
+	    public string Label { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.FrameLabel; }
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _label = reader.ReadString();
+            Label = reader.ReadString();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.WriteString(_label);
+            writer.WriteString(Label);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("label", _label);
+            writer.WriteElementString("label", Label);
         }
     }
 }

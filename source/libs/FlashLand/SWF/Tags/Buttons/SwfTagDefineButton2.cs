@@ -4,7 +4,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
 {
     [TODO]
     [SwfTag(SwfTagCode.DefineButton2)]
-    public class SwfTagDefineButton2 : SwfCharacter
+    public sealed class SwfTagDefineButton2 : SwfCharacter
     {
         /// <summary>
         /// Gets characters that make up the button.

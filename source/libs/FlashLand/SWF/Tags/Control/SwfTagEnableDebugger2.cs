@@ -3,7 +3,7 @@ using System.Xml;
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 {
     [SwfTag(SwfTagCode.EnableDebugger2)]
-    public class SwfTagEnableDebugger2 : SwfTag
+    public sealed class SwfTagEnableDebugger2 : SwfTag
     {
         public SwfTagEnableDebugger2()
         {
@@ -11,45 +11,35 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 
         public SwfTagEnableDebugger2(ushort flags, string password)
         {
-            _flags = flags;
-            _password = password;
+            Flags = flags;
+            Password = password;
         }
 
-        public ushort Flags
-        {
-            get { return _flags; }
-            set { _flags = value; }
-        }
-        private ushort _flags;
+	    public ushort Flags { get; set; }
 
-        public string Password
-        {
-            get { return _password; }
-            set { _password = value; }
-        }
-        private string _password;
+	    public string Password { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.EnableDebugger2; }
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _flags = reader.ReadUInt16();
-            _password = reader.ReadString();
+            Flags = reader.ReadUInt16();
+            Password = reader.ReadString();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.WriteUInt16(_flags);
-            writer.WriteString(_password);
+            writer.WriteUInt16(Flags);
+            writer.WriteString(Password);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("flags", _flags.ToString());
-            writer.WriteElementString("password", _password);
+            writer.WriteElementString("flags", Flags.ToString());
+            writer.WriteElementString("password", Password);
         }
     }
 }

@@ -8,35 +8,25 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
     /// This is used by the Flash environment and is not required to create movies otherwise.
     /// </summary>
     [SwfTag(SwfTagCode.DebugID)]
-    public class SwfTagDebugID : SwfTag
+    public sealed class SwfTagDebugID : SwfTag
     {
-        #region ctors
-        public SwfTagDebugID()
+	    public SwfTagDebugID()
         {
         }
 
         public SwfTagDebugID(Guid id)
         {
-            _id = id;
+            Id = id;
         }
 
         public SwfTagDebugID(string id)
         {
-            _id = new Guid(id);
+            Id = new Guid(id);
         }
-        #endregion
 
-        #region Properties
-        public Guid ID
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
-        private Guid _id;
-        #endregion
+	    public Guid Id { get; set; }
 
-        #region IO
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.DebugID; }
         }
@@ -44,18 +34,17 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
         public override void ReadTagData(SwfReader reader)
         {
             var uuid = reader.ReadUInt8(16);
-            _id = new Guid(uuid);
+            Id = new Guid(uuid);
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.Write(_id.ToByteArray());
+            writer.Write(Id.ToByteArray());
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("uuid", _id.ToString());
+            writer.WriteElementString("uuid", Id.ToString());
         }
-        #endregion
     }
 }

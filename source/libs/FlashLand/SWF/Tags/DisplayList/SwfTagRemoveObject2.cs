@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList
     /// Removes the character at the specified depth from the display list.
     /// </summary>
     [SwfTag(SwfTagCode.RemoveObject2)]
-    public class SwfTagRemoveObject2 : SwfTag
+    public sealed class SwfTagRemoveObject2 : SwfTag
     {
         public SwfTagRemoveObject2()
         {
@@ -14,36 +14,31 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList
 
         public SwfTagRemoveObject2(ushort depth)
         {
-            _depth = depth;
+            Depth = depth;
         }
 
-        public ushort Depth
-        {
-            get { return _depth; }
-            set { _depth = value; }
-        }
-        private ushort _depth;
+	    public ushort Depth { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.RemoveObject2; }
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _depth = reader.ReadUInt16();
+            Depth = reader.ReadUInt16();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.WriteUInt16(_depth);
+            writer.WriteUInt16(Depth);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
             if (SwfDumpService.DumpDisplayListTags)
             {
-                writer.WriteElementString("depth", _depth.ToString());
+                writer.WriteElementString("depth", Depth.ToString());
             }
         }
     }

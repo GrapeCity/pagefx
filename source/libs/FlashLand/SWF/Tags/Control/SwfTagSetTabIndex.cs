@@ -3,43 +3,33 @@ using System.Xml;
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 {
     [SwfTag(SwfTagCode.SetTabIndex)]
-    public class SwfTagSetTabIndex : SwfTag
+    public sealed class SwfTagSetTabIndex : SwfTag
     {
-        public ushort Depth
-        {
-            get { return _depth; }
-            set { _depth = value; }
-        }
-        private ushort _depth;
+	    public ushort Depth { get; set; }
 
-        public ushort TabIndex
-        {
-            get { return _tabIndex; }
-            set { _tabIndex = value; }
-        }
-        private ushort _tabIndex;
+	    public ushort TabIndex { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.SetTabIndex; }
         }
 
         public override void ReadTagData(SwfReader reader)
         {
-            _depth = reader.ReadUInt16();
-            _tabIndex = reader.ReadUInt16();
+            Depth = reader.ReadUInt16();
+            TabIndex = reader.ReadUInt16();
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.WriteUInt16(_depth);
-            writer.WriteUInt16(_tabIndex);
+            writer.WriteUInt16(Depth);
+            writer.WriteUInt16(TabIndex);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("depth", _depth.ToString());
-            writer.WriteElementString("tab-index", _tabIndex.ToString());
+            writer.WriteElementString("depth", Depth.ToString());
+            writer.WriteElementString("tab-index", TabIndex.ToString());
         }
     }
 }

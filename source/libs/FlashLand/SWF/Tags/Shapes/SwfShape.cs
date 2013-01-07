@@ -210,8 +210,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
     #region SwfShapeSetupRecord
     public class SwfShapeSetupRecord : SwfShapeRecord
     {
-        #region ctors
-        public SwfShapeSetupRecord()
+	    public SwfShapeSetupRecord()
         {
         }
 
@@ -219,122 +218,82 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
         {
             if ((paint & PathPainting.Stroke) != 0)
             {
-                _lineStyle = 1;
-                _state |= SwfStyleState.HasLineStyle;
+                LineStyle = 1;
+                State |= SwfStyleState.HasLineStyle;
             }
 
             if ((paint & PathPainting.Fill) != 0)
             {
-                _fillStyle0 = 1;
-                _fillStyle1 = 0;
-                _state |= SwfStyleState.HasFillStyle0;
-                _state |= SwfStyleState.HasFillStyle1;
+                FillStyle0 = 1;
+                FillStyle1 = 0;
+                State |= SwfStyleState.HasFillStyle0;
+                State |= SwfStyleState.HasFillStyle1;
             }
 
             if (dx != 0 || dy != 0)
             {
-                _state |= SwfStyleState.HasMoveTo;
-                _deltaX = dx;
-                _deltaY = dy;
+                State |= SwfStyleState.HasMoveTo;
+                DeltaX = dx;
+                DeltaY = dy;
             }
         }
-        #endregion
 
-        #region Properties
-        public override SwfShapeRecordType Type
+	    public override SwfShapeRecordType Type
         {
             get { return SwfShapeRecordType.StyleChange; }
         }
 
-        public SwfStyleState State
-        {
-            get { return _state; }
-            set { _state = value; }
-        }
-        private SwfStyleState _state;
+	    public SwfStyleState State { get; set; }
 
-        public float DeltaX
-        {
-            get { return _deltaX; }
-            set { _deltaX = value; }
-        }
-        private float _deltaX;
+	    public float DeltaX { get; set; }
 
-        public float DeltaY
-        {
-            get { return _deltaY; }
-            set { _deltaY = value; }
-        }
-        private float _deltaY;
+	    public float DeltaY { get; set; }
 
-        public int FillStyle0
-        {
-            get { return _fillStyle0; }
-            set { _fillStyle0 = value; }
-        }
-        private int _fillStyle0;
+	    public int FillStyle0 { get; set; }
 
-        public int FillStyle1
-        {
-            get { return _fillStyle1; }
-            set { _fillStyle1 = value; }
-        }
-        private int _fillStyle1;
+	    public int FillStyle1 { get; set; }
 
-        public int LineStyle
-        {
-            get { return _lineStyle; }
-            set { _lineStyle = value; }
-        }
-        private int _lineStyle;
+	    public int LineStyle { get; set; }
 
-        public SwfStyles Styles
-        {
-            get { return _styles; }
-        }
-        private SwfStyles _styles;
-        #endregion
+	    public SwfStyles Styles { get; private set; }
 
-        #region Read
-        private int _bits;
+	    private int _bits;
         private bool _read;
 
         public override void Read(SwfReader reader, SwfTagCode shapeType)
         {
-            if ((_state & SwfStyleState.HasMoveTo) != 0)
+            if ((State & SwfStyleState.HasMoveTo) != 0)
             {
                 int bits = (int)reader.ReadUB(5);
-                _deltaX = reader.ReadTwip(bits);
-                _deltaY = reader.ReadTwip(bits);
+                DeltaX = reader.ReadTwip(bits);
+                DeltaY = reader.ReadTwip(bits);
                 _bits = bits;
                 _read = true;
             }
 
-            if ((_state & SwfStyleState.HasFillStyle0) != 0)
-                _fillStyle0 = reader.ReadFillStyle();
+            if ((State & SwfStyleState.HasFillStyle0) != 0)
+                FillStyle0 = reader.ReadFillStyle();
 
-            if ((_state & SwfStyleState.HasFillStyle1) != 0)
-                _fillStyle1 = reader.ReadFillStyle();
+            if ((State & SwfStyleState.HasFillStyle1) != 0)
+                FillStyle1 = reader.ReadFillStyle();
 
-            if ((_state & SwfStyleState.HasLineStyle) != 0)
-                _lineStyle = reader.ReadLineStyle();
+            if ((State & SwfStyleState.HasLineStyle) != 0)
+                LineStyle = reader.ReadLineStyle();
 
-            if ((_state & SwfStyleState.HasNewStyles) != 0)
+            if ((State & SwfStyleState.HasNewStyles) != 0)
             {
-                _styles = new SwfStyles();
-                _styles.Read(reader, shapeType);
+                Styles = new SwfStyles();
+                Styles.Read(reader, shapeType);
             }
         }
-        #endregion
 
-        #region Write
-        public override void Write(SwfWriter writer, SwfTagCode shapeType)
+	    public override void Write(SwfWriter writer, SwfTagCode shapeType)
         {
             //auto detect state
-            if (_styles != null)
+            if (Styles != null)
             {
                 //TODO: check shape type
-                _state |= SwfStyleState.HasNewStyles;
+                State |= SwfStyleState.HasNewStyles;
             }
 
             writer.WriteBit(false); //edge flag
@@ -343,62 +302,59 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             //writer.WriteBit((_state & SwfStyleState.HasFillStyle1) != 0);
             //writer.WriteBit((_state & SwfStyleState.HasFillStyle0) != 0);
             //writer.WriteBit((_state & SwfStyleState.HasMoveTo) != 0);
-            writer.WriteUB((uint)_state, 5);
+            writer.WriteUB((uint)State, 5);
 
-            if ((_state & SwfStyleState.HasMoveTo) != 0)
+            if ((State & SwfStyleState.HasMoveTo) != 0)
             {
                 if (_read)
                 {
                     writer.WriteUB((uint)_bits, 5);
-                    writer.WriteTwip(_deltaX, _bits);
-                    writer.WriteTwip(_deltaY, _bits);
+                    writer.WriteTwip(DeltaX, _bits);
+                    writer.WriteTwip(DeltaY, _bits);
                 }
                 else
                 {
-                    writer.WriteBitwiseTwipPoint(_deltaX, _deltaY, false);
+                    writer.WriteBitwiseTwipPoint(DeltaX, DeltaY, false);
                 }
             }
 
-            if ((_state & SwfStyleState.HasFillStyle0) != 0)
-                writer.WriteFillStyle(_fillStyle0);
+            if ((State & SwfStyleState.HasFillStyle0) != 0)
+                writer.WriteFillStyle(FillStyle0);
 
-            if ((_state & SwfStyleState.HasFillStyle1) != 0)
-                writer.WriteFillStyle(_fillStyle1);
+            if ((State & SwfStyleState.HasFillStyle1) != 0)
+                writer.WriteFillStyle(FillStyle1);
 
-            if ((_state & SwfStyleState.HasLineStyle) != 0)
-                writer.WriteLineStyle(_lineStyle);
+            if ((State & SwfStyleState.HasLineStyle) != 0)
+                writer.WriteLineStyle(LineStyle);
 
-            if (_styles != null && (_state & SwfStyleState.HasNewStyles) != 0)
+            if (Styles != null && (State & SwfStyleState.HasNewStyles) != 0)
             {
-                _styles.Write(writer, shapeType);
+                Styles.Write(writer, shapeType);
             }
         }
-        #endregion
 
-        #region Dump
-        protected override void DumpBody(XmlWriter writer, SwfTagCode shapeType)
+	    protected override void DumpBody(XmlWriter writer, SwfTagCode shapeType)
         {
-            writer.WriteAttributeString("state", _state.ToString());
+            writer.WriteAttributeString("state", State.ToString());
 
-            if ((_state & SwfStyleState.HasMoveTo) != 0)
+            if ((State & SwfStyleState.HasMoveTo) != 0)
             {
-                writer.WriteAttributeString("dx", _deltaX.ToString());
-                writer.WriteAttributeString("dy", _deltaY.ToString());
+                writer.WriteAttributeString("dx", DeltaX.ToString());
+                writer.WriteAttributeString("dy", DeltaY.ToString());
             }
 
-            if ((_state & SwfStyleState.HasFillStyle0) != 0)
-                writer.WriteAttributeString("fs0", _fillStyle0.ToString());
+            if ((State & SwfStyleState.HasFillStyle0) != 0)
+                writer.WriteAttributeString("fs0", FillStyle0.ToString());
 
-            if ((_state & SwfStyleState.HasFillStyle1) != 0)
-                writer.WriteAttributeString("fs1", _fillStyle1.ToString());
+            if ((State & SwfStyleState.HasFillStyle1) != 0)
+                writer.WriteAttributeString("fs1", FillStyle1.ToString());
 
-            if ((_state & SwfStyleState.HasLineStyle) != 0)
-                writer.WriteAttributeString("ls", _lineStyle.ToString());
+            if ((State & SwfStyleState.HasLineStyle) != 0)
+                writer.WriteAttributeString("ls", LineStyle.ToString());
 
-            if ((_state & SwfStyleState.HasNewStyles) != 0)
-                _styles.Dump(writer, shapeType);
+            if ((State & SwfStyleState.HasNewStyles) != 0)
+                Styles.Dump(writer, shapeType);
         }
-        #endregion
     }
 
     [Flags]
@@ -413,7 +369,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
     #endregion
 
     #region SwfShapeMoveToRecord
-    internal class SwfShapeMoveToRecord : SwfShapeRecord
+    internal sealed class SwfShapeMoveToRecord : SwfShapeRecord
     {
         public SwfShapeMoveToRecord(float dx, float dy)
         {
@@ -453,7 +409,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
     #endregion
 
     #region SwfStraitEdge
-    public class SwfStraitEdge : SwfShapeRecord
+    public sealed class SwfStraitEdge : SwfShapeRecord
     {
         public SwfStraitEdge()
         {
@@ -461,8 +417,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 
         public SwfStraitEdge(float dx, float dy)
         {
-            _dx = dx;
-            _dy = dy;
+            DeltaX = dx;
+            DeltaY = dy;
         }
 
         public override SwfShapeRecordType Type
@@ -470,21 +426,11 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             get { return SwfShapeRecordType.StraitEdge; }
         }
 
-        public float DeltaX
-        {
-            get { return _dx; }
-            set { _dx = value; }
-        }
-        private float _dx;
+	    public float DeltaX { get; set; }
 
-        public float DeltaY
-        {
-            get { return _dy; }
-            set { _dy = value; }
-        }
-        private float _dy;
+	    public float DeltaY { get; set; }
 
-        private int _bits;
+	    private int _bits;
         private bool _read;
         
         public override void Read(SwfReader reader, SwfTagCode shapeType)
@@ -493,14 +439,14 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             bool gl = reader.ReadBit(); //general line, x and y
             if (gl)
             {
-                _dx = reader.ReadTwip(bits);
-                _dy = reader.ReadTwip(bits);
+                DeltaX = reader.ReadTwip(bits);
+                DeltaY = reader.ReadTwip(bits);
             }
             else
             {
                 bool vl = reader.ReadBit(); //vertical line
-                if (vl) _dy = reader.ReadTwip(bits);
-                else _dx = reader.ReadTwip(bits);
+                if (vl) DeltaY = reader.ReadTwip(bits);
+                else DeltaX = reader.ReadTwip(bits);
             }
             _bits = bits;
             _read = true;
@@ -508,23 +454,23 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 
         public override void Write(SwfWriter writer, SwfTagCode shapeType)
         {
-            if (_dx == 0 && _dy == 0) return;
+            if (DeltaX == 0 && DeltaY == 0) return;
 
             writer.WriteBit(true); //edge flag
             writer.WriteBit(true); //strait flag
 
-            if (_dx == 0) //vert
+            if (DeltaX == 0) //vert
             {
-                WriteCoord(writer, _dy, true);
+                WriteCoord(writer, DeltaY, true);
             }
-            else if (_dy == 0) //horz
+            else if (DeltaY == 0) //horz
             {
-                WriteCoord(writer, _dx, false);
+                WriteCoord(writer, DeltaX, false);
             }
             else
             {
-                int x = _dx.ToTwips();
-                int y = _dy.ToTwips();
+                int x = DeltaX.ToTwips();
+                int y = DeltaY.ToTwips();
                 int bits = _bits;
                 if (!_read)
                     bits = Math.Max(x.GetMinBits(y), 2);
@@ -549,23 +495,23 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 
         protected override void DumpBody(XmlWriter writer, SwfTagCode shapeType)
         {
-            writer.WriteAttributeString("dx", _dx.ToString());
-            writer.WriteAttributeString("dy", _dy.ToString());
+            writer.WriteAttributeString("dx", DeltaX.ToString());
+            writer.WriteAttributeString("dy", DeltaY.ToString());
         }
 
         public override string ToString()
         {
-            if (_dx == 0)
-                return string.Format("v {0}", _dy);
-            if (_dy == 0)
-                return string.Format("h {0}", _dx);
-            return string.Format("l {0} {1}", _dx, _dy);
+            if (DeltaX == 0)
+                return string.Format("v {0}", DeltaY);
+            if (DeltaY == 0)
+                return string.Format("h {0}", DeltaX);
+            return string.Format("l {0} {1}", DeltaX, DeltaY);
         }
     }
     #endregion
 
     #region SwfCurveEdge
-    public class SwfCurveEdge : SwfShapeRecord
+    public sealed class SwfCurveEdge : SwfShapeRecord
     {
         public SwfCurveEdge()
         {
@@ -573,10 +519,10 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 
         public SwfCurveEdge(float cdx, float cdy, float adx, float ady)
         {
-            _cdx = cdx;
-            _cdy = cdy;
-            _adx = adx;
-            _ady = ady;
+            ControlDeltaX = cdx;
+            ControlDeltaY = cdy;
+            AnchorDeltaX = adx;
+            AnchorDeltaY = ady;
         }
 
         public override SwfShapeRecordType Type
@@ -584,44 +530,24 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             get { return SwfShapeRecordType.CurveEdge; }
         }
 
-        public float ControlDeltaX
-        {
-            get { return _cdx; }
-            set { _cdx = value; }
-        }
-        private float _cdx;
+	    public float ControlDeltaX { get; set; }
 
-        public float ControlDeltaY
-        {
-            get { return _cdy; }
-            set { _cdy = value; }
-        }
-        private float _cdy;
+	    public float ControlDeltaY { get; set; }
 
-        public float AnchorDeltaX
-        {
-            get { return _adx; }
-            set { _adx = value; }
-        }
-        private float _adx;
+	    public float AnchorDeltaX { get; set; }
 
-        public float AnchorDeltaY
-        {
-            get { return _ady; }
-            set { _ady = value; }
-        }
-        private float _ady;
+	    public float AnchorDeltaY { get; set; }
 
-        private int _bits;
+	    private int _bits;
         private bool _read;
 
         public override void Read(SwfReader reader, SwfTagCode shapeType)
         {
             int bits = (int)reader.ReadUB(4) + 2;
-            _cdx = reader.ReadTwip(bits);
-            _cdy = reader.ReadTwip(bits);
-            _adx = reader.ReadTwip(bits);
-            _ady = reader.ReadTwip(bits);
+            ControlDeltaX = reader.ReadTwip(bits);
+            ControlDeltaY = reader.ReadTwip(bits);
+            AnchorDeltaX = reader.ReadTwip(bits);
+            AnchorDeltaY = reader.ReadTwip(bits);
             _bits = bits;
             _read = true;
         }
@@ -631,10 +557,10 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             writer.WriteBit(true); //edge flag
             writer.WriteBit(false); //strait flag
 
-            int cx = _cdx.ToTwips();
-            int cy = _cdy.ToTwips();
-            int ax = _adx.ToTwips();
-            int ay = _ady.ToTwips();
+            int cx = ControlDeltaX.ToTwips();
+            int cy = ControlDeltaY.ToTwips();
+            int ax = AnchorDeltaX.ToTwips();
+            int ay = AnchorDeltaY.ToTwips();
 
             int bits = _bits;
             if (!_read)
@@ -649,10 +575,10 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
 
         protected override void DumpBody(XmlWriter writer, SwfTagCode shapeType)
         {
-            writer.WriteAttributeString("cdx", _cdx.ToString());
-            writer.WriteAttributeString("cdy", _cdy.ToString());
-            writer.WriteAttributeString("adx", _adx.ToString());
-            writer.WriteAttributeString("ady", _ady.ToString());
+            writer.WriteAttributeString("cdx", ControlDeltaX.ToString());
+            writer.WriteAttributeString("cdy", ControlDeltaY.ToString());
+            writer.WriteAttributeString("adx", AnchorDeltaX.ToString());
+            writer.WriteAttributeString("ady", AnchorDeltaY.ToString());
         }
     }
     #endregion

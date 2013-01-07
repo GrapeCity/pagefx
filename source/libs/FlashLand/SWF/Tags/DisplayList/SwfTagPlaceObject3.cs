@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList
 {
     [TODO]
     [SwfTag(SwfTagCode.PlaceObject3)]
-    public class SwfTagPlaceObject3 : SwfTagPlaceObject2
+    public sealed class SwfTagPlaceObject3 : SwfTagPlaceObject2
     {
         public SwfFilterList Filters
         {

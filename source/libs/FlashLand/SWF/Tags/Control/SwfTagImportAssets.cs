@@ -8,17 +8,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
     [SwfTag(SwfTagCode.ImportAssets)]
     public class SwfTagImportAssets : SwfTag
     {
-        /// <summary>
-        /// Gets or sets URL to the exporting SWF file from which characters will be imported.
-        /// </summary>
-        public string URL
-        {
-            get { return _url; }
-            set { _url = value; }
-        }
-        private string _url;
+	    /// <summary>
+	    /// Gets or sets URL to the exporting SWF file from which characters will be imported.
+	    /// </summary>
+	    public string Url { get; set; }
 
-        public SwfAssetCollection Assets
+	    public SwfAssetCollection Assets
         {
             get { return _assets; }
         }
@@ -31,19 +26,19 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 
         public override void ReadTagData(SwfReader reader)
         {
-            _url = reader.ReadString();
+            Url = reader.ReadString();
             _assets.Read(reader, SwfAssetFlags.Imported);
         }
 
         public override void WriteTagData(SwfWriter writer)
         {
-            writer.WriteString(_url);
+            writer.WriteString(Url);
             _assets.Write(writer);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("url", _url);
+            writer.WriteElementString("url", Url);
             _assets.DumpXml(writer);
         }
     }

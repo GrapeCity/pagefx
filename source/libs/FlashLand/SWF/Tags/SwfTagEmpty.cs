@@ -3,7 +3,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
     /// <summary>
     /// Represents SWF tag that has not data. It is usefull for simple and control tags like ShowFrame.
     /// </summary>
-    public class SwfTagEmpty : SwfTag
+    public sealed class SwfTagEmpty : SwfTag
     {
         public SwfTagEmpty(SwfTagCode code)
         {

@@ -14,29 +14,20 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
     /// </summary>
     [TODO]
     [SwfTag(SwfTagCode.DefineBitsJPEG3)]
-    public class SwfTagDefineBitsJPEG3 : SwfCharacter, ISwfImageCharacter
+    public sealed class SwfTagDefineBitsJPEG3 : SwfCharacter, ISwfImageCharacter
     {
-        #region ctors
-        public SwfTagDefineBitsJPEG3()
+	    public SwfTagDefineBitsJPEG3()
         {
         }
 
         public SwfTagDefineBitsJPEG3(ushort id, Image image) : base(id)
         {
-            _image = image;
+            Image = image;
         }
-        #endregion
 
-        #region ISwfImageCharacter Members
-        public Image Image
-        {
-            get { return _image; }
-            set { _image = value; }
-        }
-        private Image _image;
-        #endregion
+	    public Image Image { get; set; }
 
-        public override SwfTagCode TagCode
+	    public override SwfTagCode TagCode
         {
             get { return SwfTagCode.DefineBitsJPEG3; }
         }
@@ -46,7 +37,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
             int jpegSize = (int)reader.ReadUInt32();
             var jpeg = reader.ReadUInt8(jpegSize);
             var ms = new MemoryStream(jpeg);
-            _image = Image.FromStream(ms);
+            Image = Image.FromStream(ms);
 
             //TODO: read alpha
         }
@@ -54,7 +45,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
         protected override void WriteBody(SwfWriter writer)
         {
             var ms = new MemoryStream();
-            _image.Save(ms, ImageFormat.Jpeg);
+            Image.Save(ms, ImageFormat.Jpeg);
             ms.Flush();
             ms.Close();
             var jpeg = ms.ToArray();
@@ -67,10 +58,10 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
         public override void DumpBody(XmlWriter writer)
         {
             base.DumpBody(writer);
-            if (_image != null)
+            if (Image != null)
             {
-                writer.WriteElementString("width", _image.Width.ToString());
-                writer.WriteElementString("height", _image.Height.ToString());
+                writer.WriteElementString("width", Image.Width.ToString());
+                writer.WriteElementString("height", Image.Height.ToString());
             }
         }
     }
