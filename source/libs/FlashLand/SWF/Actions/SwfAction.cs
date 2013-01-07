@@ -5,8 +5,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Actions
 {
     public abstract class SwfAction : ISupportXmlDump
     {
-        #region Shared Members
-        private static Dictionary<SwfActionCode, int> _mapver;
+	    private static Dictionary<SwfActionCode, int> _mapver;
 
         /// <summary>
         /// Returns minimum SWF version where action with specified code was defined.
@@ -24,10 +23,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Actions
                 return result;
             return -1;
         }
-        #endregion
 
-        #region Public Members
-        /// <summary>
+	    /// <summary>
         /// Gets the action code.
         /// </summary>
         public abstract SwfActionCode ActionCode { get; }
@@ -66,10 +63,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Actions
                 return data.Length;
             return 0;
         }
-        #endregion
 
-        #region ISupportXmlDump Members
-        public void DumpXml(XmlWriter writer)
+	    public void DumpXml(XmlWriter writer)
         {
             writer.WriteStartElement("action");
             var code = ActionCode;
@@ -85,68 +80,5 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Actions
         public virtual void DumpBody(XmlWriter writer)
         {
         }
-        #endregion
-    }
-
-    public class SwfActionList : List<SwfAction>, ISupportXmlDump
-    {
-        #region Read & Write
-        private const byte ActionsWithData = 0x80;
-
-        public void Read(SwfReader reader)
-        {
-            while (true)
-            {
-                byte code = reader.ReadUInt8();
-                if (code == 0) break;
-                if (code >= ActionsWithData)
-                {
-                    int len = reader.ReadUInt16();
-                    var data = reader.ReadUInt8(len);
-                    var action = SwfActionFactory.Create((SwfActionCode)code);
-                    if (action == null)
-                    {
-                        action = new SwfActionUnknown((SwfActionCode)code, data);
-                    }
-                    else
-                    {
-                        action.ReadBody(new SwfReader(data));
-                    }
-                    Add(action);
-                }
-                else
-                {
-                    Add(new SwfActionSimple((SwfActionCode)code));
-                }
-            }
-        }
-
-        public void Write(SwfWriter writer)
-        {
-            foreach (var action in this)
-            {
-                byte code = (byte)action.ActionCode;
-                writer.WriteUInt8(code);
-                if (code >= ActionsWithData)
-                {
-                    var data = action.GetData();
-                    writer.WriteUInt16((ushort)data.Length);
-                    writer.Write(data);
-                }
-            }
-            if (Count <= 0 || this[Count - 1].ActionCode != SwfActionCode.End)
-                writer.WriteUInt8(0);
-        }
-        #endregion
-
-        #region ISupportXmlDump Members
-        public void DumpXml(XmlWriter writer)
-        {
-            writer.WriteStartElement("actions");
-            foreach (var action in this)
-                action.DumpXml(writer);
-            writer.WriteEndElement();
-        }
-        #endregion
     }
 }

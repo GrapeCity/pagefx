@@ -2,21 +2,21 @@ using System;
 
 namespace DataDynamics.PageFX.FlashLand.Swf.Filters
 {
-    public class SwfGradientGlowFilter : SwfFilter
+    public sealed class SwfGradientGlowFilter : SwfFilter
     {
-        public override SwfFilterID ID
+        public override SwfFilterKind Kind
         {
-            get { return SwfFilterID.GradientGlow; }
+            get { return SwfFilterKind.GradientGlow; }
         }
 
         public override void Read(SwfReader reader)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public override void Write(SwfWriter writer)
         {
-            throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
         }
     }
 }

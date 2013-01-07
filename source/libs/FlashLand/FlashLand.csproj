@@ -252,6 +252,8 @@
     <Compile Include="Abc\AbcTrait.cs" />
     <Compile Include="IL\Instructions.cs" />
     <Compile Include="IL\Operand.cs" />
+    <Compile Include="Swf\Actions\SwfActionList.cs" />
+    <Compile Include="Swf\Filters\SwfFilterList.cs" />
     <Compile Include="Tests\ABCDefineTest.cs" />
     <Compile Include="Tests\AbcFileTest.cs" />
     <Compile Include="Tests\ABCImportTest.cs" />
@@ -283,8 +285,8 @@
     <Compile Include="Swf\Actions\SwfActionGotoLabel.cs" />
     <Compile Include="Swf\Actions\SwfActionIf.cs" />
     <Compile Include="Swf\Actions\SwfActionJump.cs" />
-    <Compile Include="Swf\Actions\SwfActionSimple.cs" />
-    <Compile Include="Swf\Actions\SwfActionUnknown.cs" />
+    <Compile Include="Swf\Actions\SwfSimpleAction.cs" />
+    <Compile Include="Swf\Actions\SwfUnknownAction.cs" />
     <Compile Include="Swf\Attributes.cs" />
     <Compile Include="Swf\Actions\SwfAction.cs" />
     <Compile Include="Swf\Actions\SwfActionCode.cs" />

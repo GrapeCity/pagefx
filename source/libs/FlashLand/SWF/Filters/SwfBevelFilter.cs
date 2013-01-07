@@ -89,9 +89,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Filters
         }
         private int _passes;
 
-        public override SwfFilterID ID
+        public override SwfFilterKind Kind
         {
-            get { return SwfFilterID.Bevel; }
+            get { return SwfFilterKind.Bevel; }
         }
 
         public override void Read(SwfReader reader)

@@ -3,33 +3,28 @@ using System.Xml;
 namespace DataDynamics.PageFX.FlashLand.Swf.Actions
 {
     [SwfAction(SwfActionCode.GotoFrame)]
-    public class SwfActionGotoFrame : SwfAction
+    public sealed class SwfActionGotoFrame : SwfAction
     {
-        public ushort FrameIndex
-        {
-            get { return _frameIndex; }
-            set { _frameIndex = value; }
-        }
-        private ushort _frameIndex;
+	    public ushort Frame { get; set; }
 
-        public override SwfActionCode ActionCode
+	    public override SwfActionCode ActionCode
         {
             get { return SwfActionCode.GotoFrame; }
         }
 
         public override void ReadBody(SwfReader reader)
         {
-            _frameIndex = reader.ReadUInt16();
+            Frame = reader.ReadUInt16();
         }
 
         public override void WriteBody(SwfWriter writer)
         {
-            writer.WriteUInt16(_frameIndex);
+            writer.WriteUInt16(Frame);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("frame-index", _frameIndex.ToString());
+            writer.WriteElementString("frame", Frame.ToString());
         }
     }
 }

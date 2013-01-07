@@ -3,33 +3,28 @@ using System.Xml;
 namespace DataDynamics.PageFX.FlashLand.Swf.Actions
 {
     [SwfAction(SwfActionCode.If)]
-    public class SwfActionIf : SwfAction
+    public sealed class SwfActionIf : SwfAction
     {
-        public short Offset
-        {
-            get { return _offset; }
-            set { _offset = value; }
-        }
-        private short _offset;
+	    public short Offset { get; set; }
 
-        public override SwfActionCode ActionCode
+	    public override SwfActionCode ActionCode
         {
             get { return SwfActionCode.If; }
         }
 
         public override void ReadBody(SwfReader reader)
         {
-            _offset = reader.ReadInt16();
+            Offset = reader.ReadInt16();
         }
 
         public override void WriteBody(SwfWriter writer)
         {
-            writer.WriteInt16(_offset);
+            writer.WriteInt16(Offset);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
-            writer.WriteElementString("offset", _offset.ToString());
+            writer.WriteElementString("offset", Offset.ToString());
         }
     }
 }

@@ -1,8 +1,8 @@
 namespace DataDynamics.PageFX.FlashLand.Swf.Actions
 {
-    public class SwfActionSimple : SwfAction
+    public sealed class SwfSimpleAction : SwfAction
     {
-        public SwfActionSimple(SwfActionCode code)
+        public SwfSimpleAction(SwfActionCode code)
         {
             _code = code;
         }

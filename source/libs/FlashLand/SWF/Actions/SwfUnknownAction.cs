@@ -1,26 +1,21 @@
 namespace DataDynamics.PageFX.FlashLand.Swf.Actions
 {
-    public class SwfActionUnknown : SwfAction
+    public sealed class SwfUnknownAction : SwfAction
     {
-        public SwfActionUnknown(SwfActionCode code)
+        public SwfUnknownAction(SwfActionCode code)
         {
             _code = code;
         }
 
-        public SwfActionUnknown(SwfActionCode code, byte[] data)
+        public SwfUnknownAction(SwfActionCode code, byte[] data)
         {
             _code = code;
-            _data = data;
+            Data = data;
         }
 
-        public byte[] Data
-        {
-            get { return _data; }
-            set { _data = value; }
-        }
-        private byte[] _data;
+	    public byte[] Data { get; set; }
 
-        public override SwfActionCode ActionCode
+	    public override SwfActionCode ActionCode
         {
             get { return _code; }
         }
@@ -28,17 +23,17 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Actions
 
         public override byte[] GetData()
         {
-            return _data;
+            return Data;
         }
 
         public override void ReadBody(SwfReader reader)
         {
-            _data = reader.ReadAllBytes();
+            Data = reader.ReadAllBytes();
         }
 
         public override void WriteBody(SwfWriter writer)
         {
-            writer.Write(_data);
+            writer.Write(Data);
         }
     }
 }

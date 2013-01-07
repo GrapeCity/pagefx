@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Xml;
 
 namespace DataDynamics.PageFX.FlashLand.Swf.Filters
 {
-    public enum SwfFilterID : byte 
+    public enum SwfFilterKind : byte 
     {
         [SwfVersion(8)]
         DropShadow,
@@ -33,7 +32,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Filters
 
     public abstract class SwfFilter
     {
-        public abstract SwfFilterID ID { get; }
+        public abstract SwfFilterKind Kind { get; }
 
         public abstract void Read(SwfReader reader);
 
@@ -42,7 +41,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Filters
         public virtual void Dump(XmlWriter writer)
         {
             writer.WriteStartElement("filter");
-            writer.WriteAttributeString("id", ID.ToString());
+            writer.WriteAttributeString("id", Kind.ToString());
             DumpBody(writer);
             writer.WriteEndElement();
         }
@@ -51,68 +50,29 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Filters
         {
         }
 
-        public static SwfFilter Create(SwfFilterID id)
+        public static SwfFilter Create(SwfFilterKind kind)
         {
-            switch (id)
+            switch (kind)
             {
-                case SwfFilterID.DropShadow:
+                case SwfFilterKind.DropShadow:
                     return new SwfDropShadowFilter();
-                case SwfFilterID.Blur:
+                case SwfFilterKind.Blur:
                     return new SwfBlurFilter();
-                case SwfFilterID.Bevel:
+                case SwfFilterKind.Bevel:
                     return new SwfBevelFilter();
-                case SwfFilterID.Glow:
+                case SwfFilterKind.Glow:
                     return new SwfGlowFilter();
-                case SwfFilterID.GradientBevel:
+                case SwfFilterKind.GradientBevel:
                     return new SwfGradientBevelFilter();
-                case SwfFilterID.GradientGlow:
+                case SwfFilterKind.GradientGlow:
                     return new SwfGradientGlowFilter();
-                case SwfFilterID.ColorMatrix:
+                case SwfFilterKind.ColorMatrix:
                     return new SwfColorMatrixFilter();
-                case SwfFilterID.Convolution:
+                case SwfFilterKind.Convolution:
                     return new SwfConvolutionFilter();
                 default:
-                    throw new ArgumentOutOfRangeException("id");
+                    throw new ArgumentOutOfRangeException("kind");
             }
-        }
-    }
-
-    public class SwfFilterList : List<SwfFilter>
-    {
-        public void Read(SwfReader reader)
-        {
-            int n = reader.ReadUInt8();
-            for (int i = 0; i < n; ++i)
-            {
-                var id = (SwfFilterID)reader.ReadUInt8();
-                var f = SwfFilter.Create(id);
-                f.Read(reader);
-                Add(f);
-            }
-        }
-
-        public void Write(SwfWriter writer)
-        {
-            int n = Count;
-            if (n > byte.MaxValue)
-                throw new InvalidOperationException();
-            writer.WriteUInt8((byte)n);
-            for (int i = 0; i < n; ++i)
-            {
-                var f = this[i];
-                writer.WriteUInt8((byte)f.ID);
-                f.Write(writer);
-            }
-        }
-
-        public void Dump(XmlWriter writer)
-        {
-            int n = Count;
-            writer.WriteStartElement("filters");
-            writer.WriteAttributeString("count", n.ToString());
-            for (int i = 0; i < n; ++i)
-                this[i].Dump(writer);
-            writer.WriteEndElement();
         }
     }
 }

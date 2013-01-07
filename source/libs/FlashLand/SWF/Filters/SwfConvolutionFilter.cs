@@ -2,11 +2,11 @@ using System;
 
 namespace DataDynamics.PageFX.FlashLand.Swf.Filters
 {
-    public class SwfConvolutionFilter : SwfFilter
+    public sealed class SwfConvolutionFilter : SwfFilter
     {
-        public override SwfFilterID ID
+        public override SwfFilterKind Kind
         {
-            get { return SwfFilterID.Convolution; }
+            get { return SwfFilterKind.Convolution; }
         }
 
         public override void Read(SwfReader reader)

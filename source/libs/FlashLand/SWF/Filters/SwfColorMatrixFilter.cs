@@ -2,7 +2,7 @@ using System;
 
 namespace DataDynamics.PageFX.FlashLand.Swf.Filters
 {
-    public class SwfColorMatrixFilter : SwfFilter
+    public sealed class SwfColorMatrixFilter : SwfFilter
     {
         public float[] Matrix
         {
@@ -18,9 +18,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Filters
         }
         private float[] _matrix;
 
-        public override SwfFilterID ID
+        public override SwfFilterKind Kind
         {
-            get { return SwfFilterID.ColorMatrix; }
+            get { return SwfFilterKind.ColorMatrix; }
         }
 
         public override void Read(SwfReader reader)
