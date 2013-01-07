@@ -76,6 +76,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 						if (asm.CustomData().Linker == null)
 							asm.CustomData().Linker = new Linker(asm);
 					});
+
+		    if (_swc != null)
+		    {
+			    _swc.ResolveDependencies(this, _swcDeps);
+		    }
         }
 
 	    public IAssembly Assembly { get; private set; }
@@ -113,11 +118,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 #if PERF
             int start = Environment.TickCount;
 #endif
-			if (_swc != null)
-			{
-				_swc.ResolveDependencies(this, _swcDeps);
-			}
-
 			LinkTypes();
 
 #if PERF

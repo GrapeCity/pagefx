@@ -566,9 +566,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
 			if (implInstance == null)
 				throw new ArgumentNullException("implInstance");
+			if (implInstance.IsInterface)
+				return;
+
 			if (implType == null)
 				throw new ArgumentNullException("implType");
-			
 	        if (implType.IsInterface)
                 return;
 
