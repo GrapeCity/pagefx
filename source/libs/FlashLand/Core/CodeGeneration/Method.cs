@@ -90,15 +90,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			if (method.IsStaticCall())
 			{
 				sig.IsStatic = true;
+				sig.IsVirtual = false;
 			}
-			else if (isOverride)
+			else
 			{
+				sig.IsVirtual = method.IsVirtual;
+
 				// exception actually inherited from avm Error
 				if (method.DeclaringType.Is(SystemTypeCode.Exception))
 				{
 					if (method.IsObjectOverrideMethod())
 						isOverride = false;
 				}
+
 				sig.IsOverride = isOverride;
 			}
 
