@@ -120,7 +120,7 @@
     <Compile Include="Abc\AbcNamespaceSet.cs" />
     <Compile Include="Abc\AbcProperty.cs" />
     <Compile Include="Abc\KeyValueList.cs" />
-    <Compile Include="Avm\GlobalTypes.cs" />
+    <Compile Include="Avm\CoreTypes.cs" />
     <Compile Include="Core\AbcFileExtensions.cs" />
     <Compile Include="Core\AbcGenConfig.cs" />
     <Compile Include="Core\AssemblyIndex.cs" />

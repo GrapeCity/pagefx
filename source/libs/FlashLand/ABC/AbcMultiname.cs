@@ -669,9 +669,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
         #endregion
 
-		public bool IsGlobalType
+		public bool IsCoreType
         {
-            get { return !IsRuntime && HasGlobalPackage && GlobalTypes.Contains(NameString); }
+            get { return !IsRuntime && HasGlobalPackage && CoreTypes.Contains(NameString); }
         }
     }
 }

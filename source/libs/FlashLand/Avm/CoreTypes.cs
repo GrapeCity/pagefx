@@ -4,7 +4,7 @@ namespace DataDynamics.PageFX.FlashLand.Avm
 {
 	//TODO: provide caching of AbcInstance for global type like it was done for system types
 
-	internal sealed class GlobalTypes
+	internal sealed class CoreTypes
 	{
 		public const string CorlibNamespace = "Avm";
 

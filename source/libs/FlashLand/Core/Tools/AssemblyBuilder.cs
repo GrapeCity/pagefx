@@ -358,7 +358,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 }
             }
             //auto detection of corlib dependency
-            if (!IsCoreAPI && !HasCorlibRef)
+            if (!IsCoreApi && !HasCorlibRef)
             {
                 string corlib = GlobalSettings.GetCorlibPath(true);
                 //string dir = Path.GetDirectoryName(path);
@@ -725,7 +725,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             _genericVector = type;
 
-			if (IsCoreAPI)
+			if (IsCoreApi)
 			{
 				RegisterType(type);
 			}
@@ -784,14 +784,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 		private IType BuildType(AbcInstance instance)
         {
-            if (instance.Type != null)
-                return instance.Type;
+			if (instance.Type != null)
+			{
+				return instance.Type;
+			}
 
-            if (!IsVisible(instance))
+			if (!IsVisible(instance))
             {
                 //Console.WriteLine("internal type: {0}", instance.FullName);
                 return null;
             }
+
+			if (instance.Name.IsCoreType && !IsCoreApi)
+			{
+				//TODO: return appropriate system type
+				return null;
+			}
 
             var type = new TypeImpl();
             bool isInterface = instance.IsInterface;
@@ -2322,14 +2330,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return false;
         }
 
-        private bool IsCoreAPI
+        private bool IsCoreApi
         {
             get { return _abcFiles.Any(abc => abc.IsCore); }
         }
 
         private string NsPrefix
         {
-            get { return IsCoreAPI ? "Avm" : ""; }
+            get { return IsCoreApi ? "Avm" : ""; }
         }
 
 		private static string SetNamespacePrefix(string ns, string prefix)
