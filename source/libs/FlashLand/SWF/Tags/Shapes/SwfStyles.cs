@@ -79,7 +79,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             _lineStyles.ImportDependencies(from, to);
         }
 
-        public void GetRefs(IIDList list)
+        public void GetRefs(SwfRefList list)
         {
             _fillStyles.GetRefs(list);
             _lineStyles.GetRefs(list);

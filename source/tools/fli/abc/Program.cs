@@ -54,6 +54,12 @@ namespace DataDynamics.PageFX
                     return -1;
                 }
 
+				if (cl.HasOption("help", "?"))
+				{
+					Usage();
+					return 0;
+				}
+
                 Run(cl);
                 return 0;
             }

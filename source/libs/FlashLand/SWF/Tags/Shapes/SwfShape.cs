@@ -164,7 +164,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             }
         }
 
-        public void GetRefs(IIDList list)
+        public void GetRefs(SwfRefList list)
         {
             foreach (var r in this)
             {

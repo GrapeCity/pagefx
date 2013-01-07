@@ -326,7 +326,7 @@
     <Compile Include="Swf\Tags\DisplayList\SwfTagPlaceObject3.cs" />
     <Compile Include="Swf\Tags\DisplayList\SwfTagRemoveObject.cs" />
     <Compile Include="Swf\Tags\DisplayList\SwfTagRemoveObject2.cs" />
-    <Compile Include="Swf\Tags\IDList.cs" />
+    <Compile Include="Swf\Tags\SwfRefList.cs" />
     <Compile Include="Swf\Tags\Shapes\Enums.cs" />
     <Compile Include="Swf\Tags\Shapes\SwfFillStyle.cs" />
     <Compile Include="Swf\Tags\Shapes\SwfLineStyle.cs" />

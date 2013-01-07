@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX
     partial class Program
     {
         #region Entry Point
-        static void Dump(CommandLine cl)
+        private static void Dump(CommandLine cl)
         {
             var exclude = cl.GetOptions("exclude");
             if (exclude != null && exclude.Length > 0)
@@ -179,7 +179,7 @@ namespace DataDynamics.PageFX
                 SwfDumpService.DumpDisplayListTags = true;
             }
 
-            if (cl.HasOption("swfonly"))
+            if (cl.HasOption("swfonly", "swf"))
                 SwfDumpService.SwfOnly = true;
 
             if (cl.HasOption("dumprefs", "dump-refs", "dump_refs"))

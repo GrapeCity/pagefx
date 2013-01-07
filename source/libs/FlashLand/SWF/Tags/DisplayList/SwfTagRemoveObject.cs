@@ -57,7 +57,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList
             to.ImportCharacter(from, ref _cid);
         }
 
-        public override void GetRefs(IIDList list)
+        public override void GetRefs(SwfRefList list)
         {
             list.Add(_cid);
         }

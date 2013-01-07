@@ -85,7 +85,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             _shape.ImportDependencies(from, to);
         }
 
-        public override void GetRefs(IIDList list)
+        public override void GetRefs(SwfRefList list)
         {
             _styles.GetRefs(list);
             _shape.GetRefs(list);

@@ -63,7 +63,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
                 tag.ImportDependencies(from, to);
         }
 
-        public override void GetRefs(IIDList list)
+        public override void GetRefs(SwfRefList list)
         {
             foreach (var tag in _tags)
                 tag.GetRefs(list);

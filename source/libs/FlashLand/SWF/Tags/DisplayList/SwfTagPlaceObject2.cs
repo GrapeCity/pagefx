@@ -231,7 +231,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList
             }
         }
 
-        public override void GetRefs(IIDList list)
+        public override void GetRefs(SwfRefList list)
         {
             if (HasCharacter)
             {

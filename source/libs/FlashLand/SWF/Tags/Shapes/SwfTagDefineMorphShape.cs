@@ -70,7 +70,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             throw new NotImplementedException();
         }
 
-        public override void GetRefs(IIDList list)
+        public override void GetRefs(SwfRefList list)
         {
             throw new NotImplementedException();
         }

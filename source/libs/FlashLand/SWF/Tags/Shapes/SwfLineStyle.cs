@@ -259,7 +259,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
                 _fill.ImportDependencies(from, to);
         }
 
-        public void GetRefs(IIDList list)
+        public void GetRefs(SwfRefList list)
         {
             if (_fill != null)
                 _fill.GetRefs(list);
@@ -320,7 +320,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
                 style.ImportDependencies(from, to);
         }
 
-        public void GetRefs(IIDList list)
+        public void GetRefs(SwfRefList list)
         {
             foreach (var style in this)
                 style.GetRefs(list);

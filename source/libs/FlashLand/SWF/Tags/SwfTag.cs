@@ -256,12 +256,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
         #region Refs
         public int[] GetRefs()
         {
-            var list = new IDList();
+            var list = new SwfRefList();
             GetRefs(list);
             return list.ToArray();
         }
 
-        public virtual void GetRefs(IIDList list)
+        public virtual void GetRefs(SwfRefList list)
         {
         }
         #endregion

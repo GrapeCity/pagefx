@@ -51,7 +51,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
         {
         }
 
-        public virtual void GetRefs(IIDList list)
+        public virtual void GetRefs(SwfRefList list)
         {
         }
 
@@ -142,7 +142,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
                 style.ImportDependencies(from, to);
         }
 
-        public void GetRefs(IIDList list)
+        public void GetRefs(SwfRefList list)
         {
             foreach (var style in this)
                 style.GetRefs(list);
@@ -405,7 +405,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
             to.ImportCharacter(from, ref _bmpid);
         }
 
-        public override void GetRefs(IIDList list)
+        public override void GetRefs(SwfRefList list)
         {
             list.Add(_bmpid);
         }
