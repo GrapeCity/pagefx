@@ -10,10 +10,9 @@ namespace DataDynamics.PageFX.FlashLand.Flv
     //the byte sequence 0x01 0x2C. Also note that FLV uses a 3-byte integer type, UI24, that
     //is not used in SWF.
 
-    public class FlvFile
+    public sealed class FlvFile
     {
-        #region Header
-        public int Version
+	    public int Version
         {
             get { return _version; }
             set
@@ -25,22 +24,15 @@ namespace DataDynamics.PageFX.FlashLand.Flv
         }
         private int _version = 1;
 
-        public FlvFileFlags Flags
-        {
-            get { return _flags; }
-        }
-        private FlvFileFlags _flags;
-        #endregion
+	    public FlvFileFlags Flags { get; private set; }
 
-        public FlvTagList Tags
+	    public FlvTagList Tags
         {
             get { return _tags; }
         }
         private readonly FlvTagList _tags = new FlvTagList();
 
-        #region IO
-        #region Reading
-        public void Load(string path)
+	    public void Load(string path)
         {
             using (var fs = File.OpenRead(path))
                 Load(fs);
@@ -62,7 +54,7 @@ namespace DataDynamics.PageFX.FlashLand.Flv
 
             _version = reader.ReadUInt8();
 
-            _flags = (FlvFileFlags)reader.ReadUInt8();
+            Flags = (FlvFileFlags)reader.ReadUInt8();
 
             uint dataOffset = reader.ReadUInt32BE();
 
@@ -70,10 +62,8 @@ namespace DataDynamics.PageFX.FlashLand.Flv
 
             _tags.Read(reader);
         }
-        #endregion
 
-        #region Writing
-        public void Save(string path)
+	    public void Save(string path)
         {
             using (var fs = File.OpenWrite(path))
                 Save(fs);
@@ -93,13 +83,11 @@ namespace DataDynamics.PageFX.FlashLand.Flv
             writer.WriteUInt8((byte)'L');
             writer.WriteUInt8((byte)'V');
             writer.WriteUInt8((byte)_version);
-            writer.WriteUInt8((byte)_flags);
+            writer.WriteUInt8((byte)Flags);
             writer.WriteUInt8(9); //data offset
 
             //tags
             _tags.Write(writer);
         }
-        #endregion
-        #endregion
     }
 }

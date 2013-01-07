@@ -3,65 +3,40 @@ using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Flv
 {
-    public class FlvAudioTag : FlvTag
+    public sealed class FlvAudioTag : FlvTag
     {
-        public FlvSoundFormat Format
-        {
-            get { return _format; }
-            set { _format = value; }
-        }
-        private FlvSoundFormat _format;
+	    public FlvSoundFormat Format { get; set; }
 
-        public FlvSoundRate Rate
-        {
-            get { return _rate; }
-            set { _rate = value; }
-        }
-        private FlvSoundRate _rate;
+	    public FlvSoundRate Rate { get; set; }
 
-        public int SampleSize
-        {
-            get { return _sampleSize; }
-            set { _sampleSize = value; }
-        }
-        private int _sampleSize;
+	    public int SampleSize { get; set; }
 
-        public FlvSoundType SoundType
-        {
-            get { return _soundType; }
-            set { _soundType = value; }
-        }
-        private FlvSoundType _soundType;
+	    public FlvSoundType SoundType { get; set; }
 
-        public byte[] SoundData
-        {
-            get { return _soundData; }
-            set { _soundData = value; }
-        }
-        private byte[] _soundData;
+	    public byte[] SoundData { get; set; }
 
-        public override FlvTagType Type
+	    public override FlvTagType Type
         {
             get { return FlvTagType.Audio; }
         }
 
         protected override void ReadData(SwfReader reader)
         {
-            _format = (FlvSoundFormat)reader.ReadUB(4);
-            _rate = (FlvSoundRate)reader.ReadUB(2);
-            _sampleSize = reader.ReadBit() ? 8 : 16;
-            _soundType = reader.ReadBit() ? FlvSoundType.Mono : FlvSoundType.Stereo;
-            _soundData = reader.ReadToEnd();
+            Format = (FlvSoundFormat)reader.ReadUB(4);
+            Rate = (FlvSoundRate)reader.ReadUB(2);
+            SampleSize = reader.ReadBit() ? 8 : 16;
+            SoundType = reader.ReadBit() ? FlvSoundType.Mono : FlvSoundType.Stereo;
+            SoundData = reader.ReadToEnd();
         }
 
         protected override void WriteData(SwfWriter writer)
         {
-            Debug.Assert(_sampleSize == 8 || _sampleSize == 16);
-            writer.WriteUB((uint)_format, 4);
-            writer.WriteUB((uint)_rate, 2);
-            writer.WriteBit(_sampleSize == 16);
-            writer.WriteBit(_soundType == FlvSoundType.Stereo);
-            writer.Write(_soundData);
+            Debug.Assert(SampleSize == 8 || SampleSize == 16);
+            writer.WriteUB((uint)Format, 4);
+            writer.WriteUB((uint)Rate, 2);
+            writer.WriteBit(SampleSize == 16);
+            writer.WriteBit(SoundType == FlvSoundType.Stereo);
+            writer.Write(SoundData);
         }
     }
 }

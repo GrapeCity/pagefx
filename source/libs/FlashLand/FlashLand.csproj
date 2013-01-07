@@ -226,6 +226,7 @@
     <Compile Include="Core\Tools\SimpleSwcLinker.cs" />
     <Compile Include="Core\Tools\WrapperGenerator.cs" />
     <Compile Include="FlashLanguageInfrastructure.cs" />
+    <Compile Include="Flv\FlvTagList.cs" />
     <Compile Include="ISupportXmlDump.cs" />
     <Compile Include="Abc\QName.cs" />
     <Compile Include="Abc\RBCache.cs" />
