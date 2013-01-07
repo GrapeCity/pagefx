@@ -15,16 +15,9 @@ namespace DataDynamics.Tools
             writer.WriteAttributeString("name", Name + NameSuffix);
             WriteAttrs(writer);
 
-            if (WrapSummary)
-            {
-                Utils.WriteSummary(writer, "summary", Summary);
-            }
-            else
-            {
-                Utils.WriteSummary(writer, null, Summary);
-            }
+	        Utils.WriteSummary(writer, WrapSummary ? "summary" : null, Summary);
 
-            WriteBody(writer);
+	        WriteBody(writer);
 
             writer.WriteEndElement();
         }

@@ -41,7 +41,7 @@ namespace Mono.Util.CorCompare
 		}
 		protected Type Interface
 		{
-			get { return (ifaceMono != null) ? ifaceMono : ifaceMS; }
+			get { return ifaceMono ?? ifaceMS; }
 		}
 		public override NodeStatus Analyze ()
 		{

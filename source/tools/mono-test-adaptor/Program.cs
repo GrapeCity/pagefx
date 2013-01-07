@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using DataDynamics;
 using DataDynamics.PageFX.Common.Utilities;
 
 namespace mono_test_adaptor
@@ -114,16 +113,9 @@ namespace mono_test_adaptor
 
             newLines.AddRange(Slice(lines, 0, mainBegin));
 
-            if (mainSub)
-            {
-                newLines.Add("\tSub _Main()");
-            }
-            else
-            {
-                newLines.Add("\tFunction _Main() As Integer");
-            }
+	        newLines.Add(mainSub ? "\tSub _Main()" : "\tFunction _Main() As Integer");
 
-            newLines.AddRange(Slice(lines, mainBegin + 1, mainEnd - mainBegin));
+	        newLines.AddRange(Slice(lines, mainBegin + 1, mainEnd - mainBegin));
 
             newLines.Add("");
             newLines.Add("\tSub Main()");

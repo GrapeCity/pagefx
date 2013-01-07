@@ -94,7 +94,7 @@ namespace Mono.Util.CorCompare
 		{
 			if (fMono || fMS)
 			{
-				MissingAttribute ma = new MissingAttribute (
+				var ma = new MissingAttribute (
 					(fMono) ? strName : null,
 					(fMS) ? strName : null);
 				ma.Analyze ();

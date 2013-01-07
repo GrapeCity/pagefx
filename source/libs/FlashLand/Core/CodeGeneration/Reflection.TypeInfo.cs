@@ -645,7 +645,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 		                code.GetLocal(varEnumInfo);
 						code.NewArray(varArr, SystemTypes.String, fields,
-		                              field => { code.PushString(field.Name); });
+		                              field => code.PushString(field.Name));
 		                code.SetProperty(Const.EnumInfo.Names);
 
 		                code.GetLocal(varEnumInfo);

@@ -33,8 +33,8 @@ namespace Mono.Util.CorCompare {
 
 			if (mInfoMono != null && mInfoMS != null)
 			{
-				FieldInfo fiMono = (FieldInfo) mInfoMono;
-				FieldInfo fiMS   = (FieldInfo) mInfoMS;
+				var fiMono = (FieldInfo) mInfoMono;
+				var fiMS   = (FieldInfo) mInfoMS;
 
 				AddFakeAttribute (fiMono.IsNotSerialized, fiMS.IsNotSerialized, "System.NonSerializedAttribute");
 				AddFakeAttribute (fiMono.IsPinvokeImpl, fiMS.IsPinvokeImpl, "System.PInvokeImplAttribute");

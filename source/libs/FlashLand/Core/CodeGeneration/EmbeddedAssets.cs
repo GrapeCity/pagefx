@@ -136,16 +136,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             //TODO: Check existance of instance
 
             var instance = new AbcInstance(true)
-            {
-                Name = name,
-                BaseTypeName = superName,
-                Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
-                ProtectedNamespace = Abc.DefineProtectedNamespace(name.NameString),
-                Initializer = Abc.DefineEmptyConstructor((string)null, true),
-                BaseInstance = superType
-            };
-            instance.Class.Initializer = Abc.DefineEmptyMethod(true);
-            AddInstance(instance);
+	            {
+		            Name = name,
+		            BaseTypeName = superName,
+		            Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
+		            ProtectedNamespace = Abc.DefineProtectedNamespace(name.NameString),
+		            Initializer = Abc.DefineEmptyConstructor((string)null, true),
+		            BaseInstance = superType,
+		            Class = {Initializer = Abc.DefineEmptyMethod(true)}
+	            };
+
+	        AddInstance(instance);
 
             return instance;
         }

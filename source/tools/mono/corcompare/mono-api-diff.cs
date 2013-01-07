@@ -1090,7 +1090,7 @@ namespace Mono.AssemblyCompare
                 AddWarning(parent, "Parameter optional wrong: {0} != {1}", isOptional, oparm.isOptional);
 
             if (defaultValue != oparm.defaultValue)
-                AddWarning(parent, "Parameter default value wrong: {0} != {1}", (defaultValue == null) ? "(no default value)" : defaultValue, (oparm.defaultValue == null) ? "(no default value)" : oparm.defaultValue);
+                AddWarning(parent, "Parameter default value wrong: {0} != {1}", defaultValue ?? "(no default value)", oparm.defaultValue ?? "(no default value)");
 
             if (attributes != null || oparm.attributes != null)
             {
@@ -1122,18 +1122,19 @@ namespace Mono.AssemblyCompare
         static readonly Hashtable ignored_properties;
         static XMLAttributeProperties()
         {
-            ignored_properties = new Hashtable();
-            ignored_properties.Add("System.Reflection.AssemblyKeyFileAttribute", "KeyFile");
-            ignored_properties.Add("System.Reflection.AssemblyCompanyAttribute", "Company");
-            ignored_properties.Add("System.Reflection.AssemblyConfigurationAttribute", "Configuration");
-            ignored_properties.Add("System.Reflection.AssemblyCopyrightAttribute", "Copyright");
-            ignored_properties.Add("System.Reflection.AssemblyProductAttribute", "Product");
-            ignored_properties.Add("System.Reflection.AssemblyTrademarkAttribute", "Trademark");
-            ignored_properties.Add("System.Reflection.AssemblyInformationalVersionAttribute", "InformationalVersion");
-
-            ignored_properties.Add("System.ObsoleteAttribute", "Message");
-            ignored_properties.Add("System.IO.IODescriptionAttribute", "Description");
-            ignored_properties.Add("System.Diagnostics.MonitoringDescriptionAttribute", "Description");
+            ignored_properties = new Hashtable
+	            {
+		            {"System.Reflection.AssemblyKeyFileAttribute", "KeyFile"},
+		            {"System.Reflection.AssemblyCompanyAttribute", "Company"},
+		            {"System.Reflection.AssemblyConfigurationAttribute", "Configuration"},
+		            {"System.Reflection.AssemblyCopyrightAttribute", "Copyright"},
+		            {"System.Reflection.AssemblyProductAttribute", "Product"},
+		            {"System.Reflection.AssemblyTrademarkAttribute", "Trademark"},
+		            {"System.Reflection.AssemblyInformationalVersionAttribute", "InformationalVersion"},
+		            {"System.ObsoleteAttribute", "Message"},
+		            {"System.IO.IODescriptionAttribute", "Description"},
+		            {"System.Diagnostics.MonitoringDescriptionAttribute", "Description"}
+	            };
         }
 
         readonly Hashtable properties = new Hashtable();
@@ -1190,7 +1191,7 @@ namespace Mono.AssemblyCompare
                     continue;
 
                 AddWarning(parent, "Property '{0}' is '{1}' and should be '{2}'",
-                    de.Key, de.Value, other_value == null ? "null" : other_value);
+                    de.Key, de.Value, other_value ?? "null");
             }
         }
 

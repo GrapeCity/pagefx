@@ -1120,10 +1120,8 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			var baseType = type.BaseType;
 			var baseClass = CompileClass(baseType.Is(SystemTypeCode.ValueType) || type.IsEnum ? SystemTypes.Object : baseType);
 
-			if (string.IsNullOrEmpty(type.Namespace))
-				_program.DefineNamespace("$global");
-			else
-				_program.DefineNamespace(type.Namespace);
+			var ns = string.IsNullOrEmpty(type.Namespace) ? "$global" : type.Namespace;
+			_program.DefineNamespace(ns);
 
 			klass = new JsClass(type, baseType.Is(SystemTypeCode.ValueType) || type.IsString() ? null : baseClass);
 

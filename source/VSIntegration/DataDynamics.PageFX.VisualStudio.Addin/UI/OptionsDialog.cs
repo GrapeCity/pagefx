@@ -48,10 +48,9 @@ namespace DataDynamics.UI
         {
             if (opt == null) return;
 
-            var node = new TreeNode(opt.Name);
-            node.Tag = opt;
+            var node = new TreeNode(opt.Name) {Tag = opt};
 
-            if (parent != null)
+	        if (parent != null)
                 parent.Nodes.Add(node);
             else
                 treeOpts.Nodes.Add(node);
@@ -90,29 +89,19 @@ namespace DataDynamics.UI
     {
         public OptionNode(string name, Control ctrl, params OptionNode[] kids)
         {
-            _name = name;
-            _ctrl = ctrl;
+            Name = name;
+            Control = ctrl;
             if (kids != null)
             {
                 _kids.AddRange(kids);
             }
         }
 
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
+	    public string Name { get; set; }
 
-        public Control Control
-        {
-            get { return _ctrl; }
-            set { _ctrl = value; }
-        }
-        private Control _ctrl;
+	    public Control Control { get; set; }
 
-        public List<OptionNode> Kids
+	    public List<OptionNode> Kids
         {
             get { return _kids; }
         }
@@ -121,7 +110,7 @@ namespace DataDynamics.UI
         #region ISupportApply Members
         public void Apply()
         {
-            var a = _ctrl as ISupportApply;
+            var a = Control as ISupportApply;
             if (a != null)
                 a.Apply();
             foreach (var kid in _kids)

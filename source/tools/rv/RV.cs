@@ -56,7 +56,7 @@ namespace DataDynamics.Tools
             string input = AbsPath(inputs[0]);
             string output = cl.GetOption(null, NotVars);
             bool noprefix = cl.HasOption("noprefix");
-            RVScheme scheme = RVScheme.DollarID;
+            var scheme = RVScheme.DollarID;
             if (noprefix)
             {
                 scheme = RVScheme.ID;
@@ -66,9 +66,9 @@ namespace DataDynamics.Tools
                 string s = cl.GetOption(null, "scheme");
                 if (!string.IsNullOrEmpty(s))
                 {
-                    if (string.Compare(s, "ant", true) == 0)
+                    if (string.Equals(s, "ant", StringComparison.OrdinalIgnoreCase))
                         scheme = RVScheme.Ant;
-                    else if (string.Compare(s, "id", true) == 0)
+                    else if (string.Equals(s, "id", StringComparison.OrdinalIgnoreCase))
                         scheme = RVScheme.ID;
                 }
             }
@@ -136,21 +136,21 @@ namespace DataDynamics.Tools
 
         static string EvalFunc(string func, string args)
         {
-            if (string.Compare(func, "file", true) == 0)
+            if (string.Equals(func, "file", StringComparison.OrdinalIgnoreCase))
             {
                 string path = AbsPath(args);
                 return File.ReadAllText(path);
             }
-            if (string.Compare(func, "env", true) == 0)
+            if (string.Equals(func, "env", StringComparison.OrdinalIgnoreCase))
                 return GetEnv(args);
-            if (string.Compare(func, "envp", true) == 0)
+            if (string.Equals(func, "envp", StringComparison.OrdinalIgnoreCase))
             {
                 string path = GetEnv(args);
                 if (!string.IsNullOrEmpty(path))
                     return path.Replace("\\", "\\\\");
                 return "";
             }
-            if (string.Compare(func, "newguid", true) == 0)
+            if (string.Equals(func, "newguid", StringComparison.OrdinalIgnoreCase))
                 return Guid.NewGuid().ToString("D");
             throw new NotImplementedException("The function is not implemented: " + func + "(" + args + ")");
         }

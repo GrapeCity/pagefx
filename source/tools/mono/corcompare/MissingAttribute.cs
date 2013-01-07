@@ -28,13 +28,15 @@ namespace Mono.Util.CorCompare
 
 		static MissingAttribute ()
 		{
-			htIgnore = new Hashtable ();
-			htIgnore.Add ("System.Runtime.InteropServices.ClassInterfaceAttribute", null);
-			htIgnore.Add ("System.Diagnostics.DebuggerHiddenAttribute", null);
-			htIgnore.Add ("System.Diagnostics.DebuggerStepThroughAttribute", null);
-			htIgnore.Add ("System.Runtime.InteropServices.GuidAttribute", null);
-			htIgnore.Add ("System.Runtime.InteropServices.InterfaceTypeAttribute", null);
-			htIgnore.Add ("System.Runtime.InteropServices.ComVisibleAttribute", null);
+			htIgnore = new Hashtable
+				{
+					{"System.Runtime.InteropServices.ClassInterfaceAttribute", null},
+					{"System.Diagnostics.DebuggerHiddenAttribute", null},
+					{"System.Diagnostics.DebuggerStepThroughAttribute", null},
+					{"System.Runtime.InteropServices.GuidAttribute", null},
+					{"System.Runtime.InteropServices.InterfaceTypeAttribute", null},
+					{"System.Runtime.InteropServices.ComVisibleAttribute", null}
+				};
 		}
 
 		public MissingAttribute (Object _attributeMono, Object _attributeMS) 
@@ -62,7 +64,7 @@ namespace Mono.Util.CorCompare
 
 		public Object Attribute
 		{
-			get { return (attributeMono != null) ? attributeMono : attributeMS; }
+			get { return attributeMono ?? attributeMS; }
 		}
 
 		/// <summary>
@@ -73,8 +75,8 @@ namespace Mono.Util.CorCompare
 		/// <returns>a map</returns>
 		public static Hashtable GetAttributeMap (Object [] rgAttributes)
 		{
-			Hashtable map = new Hashtable ();
-			foreach (Object attribute in rgAttributes)
+			var map = new Hashtable ();
+			foreach (var attribute in rgAttributes)
 			{
 				if (attribute != null)
 				{
@@ -96,24 +98,24 @@ namespace Mono.Util.CorCompare
 		/// <returns>completion info for the whole set</returns>
 		public static NodeStatus AnalyzeAttributes (Object [] rgAttributesMono, Object [] rgAttributesMS, ArrayList rgAttributes)
 		{
-			NodeStatus nodeStatus = new NodeStatus ();
+			var nodeStatus = new NodeStatus ();
 
-			Hashtable mapAttributesMono = (rgAttributesMono == null) ? new Hashtable () : MissingAttribute.GetAttributeMap (rgAttributesMono);
-			Hashtable mapAttributesMS   = (rgAttributesMS   == null) ? new Hashtable () : MissingAttribute.GetAttributeMap (rgAttributesMS);
+			var mapAttributesMono = (rgAttributesMono == null) ? new Hashtable () : GetAttributeMap (rgAttributesMono);
+			var mapAttributesMS   = (rgAttributesMS   == null) ? new Hashtable () : GetAttributeMap (rgAttributesMS);
 
-			foreach (Object attribute in mapAttributesMS.Values)
+			foreach (var attribute in mapAttributesMS.Values)
 			{
 				string strAttribute = attribute.ToString ();
-				Object attributeMono = mapAttributesMono [strAttribute];
-				MissingAttribute ma = new MissingAttribute (attributeMono, attribute);
+				var attributeMono = mapAttributesMono [strAttribute];
+				var ma = new MissingAttribute (attributeMono, attribute);
 				rgAttributes.Add (ma);
-				NodeStatus nsAttribute = ma.Analyze ();
+				var nsAttribute = ma.Analyze ();
 				nodeStatus.AddChildren (nsAttribute);
 
 				if (attributeMono != null)
 					mapAttributesMono.Remove (strAttribute);
 			}
-			foreach (Object attribute in mapAttributesMono.Values)
+			foreach (var attribute in mapAttributesMono.Values)
 			{
 				if (attribute.ToString ().EndsWith ("MonoTODOAttribute"))
 				{
@@ -127,9 +129,9 @@ namespace Mono.Util.CorCompare
 				}
 				else
 				{
-					MissingAttribute ma = new MissingAttribute (attribute, null);
+					var ma = new MissingAttribute (attribute, null);
 					rgAttributes.Add (ma);
-					NodeStatus nsAttribute = ma.Analyze ();
+					var nsAttribute = ma.Analyze ();
 					nodeStatus.AddChildren (nsAttribute);
 				}
 			}

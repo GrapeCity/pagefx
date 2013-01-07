@@ -35,8 +35,8 @@ namespace Mono.Util.CorCompare {
 		{
 			m_nodeStatus = base.Analyze ();
 
-			EventInfo eiMono = (EventInfo) mInfoMono;
-			EventInfo eiMS   = (EventInfo) mInfoMS;
+			var eiMono = (EventInfo) mInfoMono;
+			var eiMS   = (EventInfo) mInfoMS;
 
 			MemberInfo miAddMono, miRemoveMono, miRaiseMono;
 			if (eiMono == null)

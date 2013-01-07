@@ -60,7 +60,7 @@ namespace Mono.Util.CorCompare
 		/// </summary>
 		public MemberInfo Info
 		{
-			get { return (mInfoMono != null) ? mInfoMono : mInfoMS; }
+			get { return mInfoMono ?? mInfoMS; }
 		}
 
 		/// <summary>
@@ -68,7 +68,7 @@ namespace Mono.Util.CorCompare
 		/// </summary>
 		public MemberInfo BestInfo
 		{
-			get { return (mInfoMS != null) ? mInfoMS : mInfoMono; }
+			get { return mInfoMS ?? mInfoMono; }
 		}
 
 		public static string GetUniqueName (MemberInfo mi)

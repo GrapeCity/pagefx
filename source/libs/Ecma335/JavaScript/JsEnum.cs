@@ -63,14 +63,8 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			CompileValues(compiler, klass);
 
 			var func = new JsFunction(null);
-			if (type.HasAttribute("System.FlagsAttribute"))
-			{
-				func.Body.Add(new JsText("return $enum.flags(this);"));
-			}
-			else
-			{
-				func.Body.Add(new JsText("return $enum.stringify(this);"));
-			}
+			var withFlags = type.HasAttribute("System.FlagsAttribute");
+			func.Body.Add(new JsText(withFlags ? "return $enum.flags(this);" : "return $enum.stringify(this);"));
 
 			klass.ExtendPrototype(func, "toString");
 		}

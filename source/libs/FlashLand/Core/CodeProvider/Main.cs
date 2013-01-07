@@ -174,17 +174,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return code.ToArray();
         }
 
-        public IInstruction[] InvokeDelegate(IMethod method)
-        {
-            var code = new AbcCode(_abc);
-            code.Add(InstructionCode.Call, method.Parameters.Count);
-            if (method.IsVoid())
-            {
-                code.Add(InstructionCode.Pop);
-            }
-            return code.ToArray();
-        }
-        #endregion
+	    public IInstruction[] InvokeDelegate(IMethod method)
+	    {
+		    var code = new AbcCode(_abc)
+			    {
+				    {InstructionCode.Call, method.Parameters.Count}
+			    };
+		    if (method.IsVoid())
+		    {
+			    code.Add(InstructionCode.Pop);
+		    }
+		    return code.ToArray();
+	    }
+
+	    #endregion
 
         #region IsDuplicate
         static bool CanBeDuplicated(InstructionCode code)

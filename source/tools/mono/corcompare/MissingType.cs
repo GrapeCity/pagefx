@@ -80,12 +80,12 @@ namespace Mono.Util.CorCompare
 
 		public Type TypeInfo
 		{
-			get { return (typeMono != null) ? typeMono : typeMS; }
+			get { return typeMono ?? typeMS; }
 		}
 
 		public Type TypeInfoBest
 		{
-			get { return (typeMS == null) ? typeMono : typeMS; }
+			get { return typeMS ?? typeMono; }
 		}
 
 		public bool IsDelegate

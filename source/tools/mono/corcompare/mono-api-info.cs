@@ -45,9 +45,8 @@ namespace Mono.AssemblyInfo
             //var writer = new XmlTextWriter(Console.Out);
             using (var cout = new StreamWriter("c:\\api-info.xml"))
             {
-                var writer = new XmlTextWriter(cout);
-                writer.Formatting = Formatting.Indented;
-                XmlNode decl = doc.CreateXmlDeclaration("1.0", null, null);
+                var writer = new XmlTextWriter(cout) {Formatting = Formatting.Indented};
+	            XmlNode decl = doc.CreateXmlDeclaration("1.0", null, null);
                 doc.InsertBefore(decl, doc.DocumentElement);
                 doc.WriteTo(writer);
             }
@@ -881,9 +880,7 @@ namespace Mono.AssemblyInfo
 
     class MethodData : MemberData
     {
-        bool noAtts;
-
-        public MethodData(XmlDocument document, XmlNode parent, MethodBase[] members)
+	    public MethodData(XmlDocument document, XmlNode parent, MethodBase[] members)
             : base(document, parent, members)
         {
         }
@@ -994,13 +991,9 @@ namespace Mono.AssemblyInfo
 
         }
 
-        public override bool NoMemberAttributes
-        {
-            get { return noAtts; }
-            set { noAtts = value; }
-        }
+	    public override bool NoMemberAttributes { get; set; }
 
-        public override string ParentTag
+	    public override string ParentTag
         {
             get { return "methods"; }
         }

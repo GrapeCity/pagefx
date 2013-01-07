@@ -1324,14 +1324,9 @@ namespace DataDynamics.PageFX.Ecma335.Execution
 			var obj = context.PopObject();
 			
 			var instance = obj as Instance;
-			if (instance != null)
-			{
-				context.Push(instance.Class.SystemType);
-			}
-			else
-			{
-				context.Push(obj.GetType());
-			}
+			var type = instance != null ? instance.Class.SystemType : obj.GetType();
+
+			context.Push(type);
 		}
 
 		internal Type TypeOf(IType type)
