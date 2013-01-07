@@ -62,14 +62,18 @@ class StringFormatTest
         long lx = 123456789012345667;
         int ix = 123456789;
         float fx = (float)0.1234;
+        Console.WriteLine(lx);
+        Console.WriteLine(ix);
+        Console.WriteLine(fx);
+
+        // PERF TEST
+        /*
         int count = Environment.TickCount;
         for (int i = 0; i < 10000000000; i++)
         {
             Console.WriteLine();
         }
-        
         Console.WriteLine(Environment.TickCount - count);
-
 
         count = Environment.TickCount;
         for (int i = 0; i < 10000000000; i++)
@@ -77,6 +81,7 @@ class StringFormatTest
             Console.WriteLine("lx.ToString(): " + i.ToString());
         }
         Console.WriteLine(Environment.TickCount - count);
+        */
     }
 
     public static void Main()
