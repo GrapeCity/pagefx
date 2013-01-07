@@ -1,5 +1,4 @@
 using System;
-using DataDynamics.PageFX.Common.CodeModel.Expressions;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -215,16 +214,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
         private IMethod _setter;
 
-        public IExpression Initializer { get; set; }
-
-        /// <summary>
-        /// Returns true if the property is indexer.
-        /// </summary>
-        public bool IsIndexer
-        {
-            get { return _parameters.Count > 0; }
-        }
-        #endregion
+	    #endregion
 
 	    public object Value { get; set; }
 

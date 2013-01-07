@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.CodeModel.Expressions;
 using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -58,20 +57,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			set { _setter = value; }
         }
 
-	    public IExpression Initializer
-        {
-            get { return _property.Initializer; }
-            set { throw new NotSupportedException(); }
-        }
-
-        /// <summary>
-        /// Returns true if the property is indexer.
-        /// </summary>
-        public bool IsIndexer
-        {
-            get { return _property.IsIndexer; }
-        }
-        #endregion
+	    #endregion
 
         #region IOverridableMember Members
         public bool IsAbstract

@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	                               t =>
 		                               {
 			                               var set = t.Properties.Find(name) ?? Enumerable.Empty<IProperty>();
-			                               return set.FirstOrDefault(p => !p.IsIndexer);
+			                               return set.FirstOrDefault(p => !p.IsIndexer());
 		                               });
         }
 

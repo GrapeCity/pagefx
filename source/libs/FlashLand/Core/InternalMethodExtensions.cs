@@ -695,12 +695,12 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
 		public static AbcTraitKind ResolveTraitKind(this IMethod method)
 		{
-			var prop = method.Association as IProperty;
-			if (prop != null && prop.Parameters.Count == 0)
+			var property = method.Association as IProperty;
+			if (property != null && !property.IsIndexer())
 			{
-				if (method == prop.Getter)
+				if (method == property.Getter)
 					return AbcTraitKind.Getter;
-				if (method == prop.Setter)
+				if (method == property.Setter)
 					return AbcTraitKind.Setter;
 			}
 			return AbcTraitKind.Method;

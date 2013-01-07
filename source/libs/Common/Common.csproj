@@ -116,6 +116,7 @@
     <Compile Include="TypeSystem\MethodImplAttributes.cs" />
     <Compile Include="TypeSystem\NumericType.cs" />
     <Compile Include="TypeSystem\ParameterExtensions.cs" />
+    <Compile Include="TypeSystem\PropertyExtensions.cs" />
     <Compile Include="TypeSystem\SystemType.cs" />
     <Compile Include="TypeSystem\SystemTypeCode.cs" />
     <Compile Include="TypeSystem\SystemTypeExtensions.cs" />

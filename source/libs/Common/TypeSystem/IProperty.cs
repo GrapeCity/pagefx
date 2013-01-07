@@ -1,5 +1,3 @@
-using DataDynamics.PageFX.Common.CodeModel.Expressions;
-
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
     /// <summary>
@@ -18,16 +16,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// Gerts or sets setter for this property.
         /// </summary>
         IMethod Setter { get; set; }
-
-        /// <summary>
-        /// Gets or sets property initializer.
-        /// </summary>
-        IExpression Initializer { get; set; }
-
-        /// <summary>
-        /// Returns true if the property is indexer.
-        /// </summary>
-        bool IsIndexer { get; }
     }
 
     /// <summary>
