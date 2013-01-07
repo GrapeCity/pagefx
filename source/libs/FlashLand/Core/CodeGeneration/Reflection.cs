@@ -209,7 +209,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         AbcMethod Define_Assembly_GetTypeNum(IMethod method, AbcInstance instance)
         {
             _emitReflection = true;
-            var m = BeginMethod(method, instance);
+            var m = instance.DefineMethod(SigOf(method), null);
             AddLateMethod(m, Finish_Assembly_GetTypeNum);            
             return m;
         }
@@ -238,7 +238,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         AbcMethod Define_Assembly_InitType(IMethod method, AbcInstance instance)
         {
             _emitReflection = true;
-            var m = BeginMethod(method, instance);
+            var m = instance.DefineMethod(SigOf(method), null);
             AddLateMethod(m, Finish_Assembly_InitType);
             return m;
         }

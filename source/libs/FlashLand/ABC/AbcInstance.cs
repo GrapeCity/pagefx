@@ -94,32 +94,20 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// </summary>
         public string NameString
         {
-            get
-            {
-                if (Name != null)
-                    return Name.NameString;
-                return "";
-            }
+            get { return Name != null ? Name.NameString : ""; }
         }
 
         public string FullName
         {
-            get
-            {
-                if (Name != null)
-                    return Name.FullName;
-                return "";
-            }
+            get { return Name != null ? Name.FullName : ""; }
         }
 
         public string Id
         {
             get
             {
-                string ns = NamespaceString;
-                if (string.IsNullOrEmpty(ns))
-                    return NameString;
-                return ns + ":" + NameString;
+	            string ns = NamespaceString;
+	            return string.IsNullOrEmpty(ns) ? NameString : ns + ":" + NameString;
             }
         }
 
@@ -433,7 +421,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 throw new ArgumentNullException("type");
 
             var traitName = Abc.DefineName(name);
-            var typeName = Abc.DefineTypeNameStrict(type);
+            var typeName = Abc.DefineTypeNameSafe(type);
 
             var trait = AbcTrait.CreateSlot(typeName, traitName);
 
@@ -479,7 +467,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var trait = traits.Find(traitName, AbcTraitKind.Slot);
             if (trait != null) return trait;
 
-            var typeName = Abc.DefineTypeNameStrict(type);
+            var typeName = Abc.DefineTypeNameSafe(type);
 
             trait = AbcTrait.CreateSlot(typeName, traitName);
             traits.Add(trait);
@@ -517,46 +505,90 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			if (sig == null)
 				throw new ArgumentNullException("sig");
 
-			if (sig.Name == null)
+			if (!sig.IsInitilizer && sig.Name == null)
 				throw new InvalidOperationException();
 
 			var klass = Class;
 			if (klass == null)
 				throw new InvalidOperationException(string.Format("Class is not defined yet for Instance {0}", FullName));
 
-			var traitName = Abc.DefineName(sig.Name);
+			AbcMultiname traitName = null;
+			AbcTrait trait;
 
-			bool isStatic = (sig.Semantics & AbcMethodSemantics.Static) != 0;
-
+			bool isStatic = (sig.Semantics & MethodSemantics.Static) != 0;
 			var traits = isStatic ? klass.Traits : Traits;
-			var trait = traits.Find(traitName, sig.Kind);
-			if (trait != null)
-			{
-				return trait.Method;
-			}
 
-			var retType = Abc.DefineTypeNameStrict(sig.ReturnType);
+			if (sig.IsInitilizer)
+			{
+				if (Initializer != null)
+					throw new InvalidOperationException();
+			}
+			else
+			{
+				traitName = Abc.DefineName(sig.Name);
+				trait = traits.Find(traitName, sig.Kind);
+				if (trait != null)
+				{
+					return trait.Method;
+				}
+			}
 
 			var method = new AbcMethod
 				{
-					ReturnType = retType
+					SourceMethod = sig.Source
 				};
 
-			trait = AbcTrait.CreateMethod(method, traitName);
-			trait.Kind = sig.Kind;
-			if (!isStatic)
+			var generator = Abc.Generator;
+			if (sig.Source != null)
 			{
-				trait.IsVirtual = (sig.Semantics & AbcMethodSemantics.Virtual) != 0;
-				trait.IsOverride = (sig.Semantics & AbcMethodSemantics.Override) != 0;
+				generator.SetData(sig.Source, method);
 			}
-			traits.Add(trait);
+
+			AbcMethodBody body = null;
+			if (sig.IsAbstract)
+			{
+				if (coder != null)
+					throw new InvalidOperationException();
+			}
+			else
+			{
+				body = new AbcMethodBody(method);
+			}
+
+			Abc.AddMethod(method);
+
+			if (sig.IsInitilizer)
+			{
+				Initializer = method;
+			}
+			else
+			{
+				//for non initializer method we must define trait and return type
+				var retTypeSource = sig.ReturnType as IMethod;
+				method.ReturnType = retTypeSource != null
+					                    ? generator.DefineReturnType(method, retTypeSource)
+					                    : Abc.DefineTypeNameSafe(sig.ReturnType);
+
+				trait = AbcTrait.CreateMethod(method, traitName);
+				trait.Kind = sig.Kind;
+
+				if (!isStatic)
+				{
+					trait.IsVirtual = (sig.Semantics & MethodSemantics.Virtual) != 0;
+					trait.IsOverride = (sig.Semantics & MethodSemantics.Override) != 0;
+				}
+
+				traits.Add(trait);
+			}
 
 			if (sig.Args != null)
 			{
 				if (sig.Args.Length == 1 && sig.Args[0] is IMethod)
 				{
 					var m = (IMethod)sig.Args[0];
-					Abc.Generator.DefineParameters(method, m);
+					if (generator == null)
+						throw new InvalidOperationException();
+					generator.DefineParameters(method, m);
 				}
 				else
 				{
@@ -564,10 +596,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 				}
 			}
 
-			var body = new AbcMethodBody(method);
-			Abc.AddMethod(method);
-
-			if (coder != null)
+			if (body != null && coder != null)
 			{
 				var code = new AbcCode(Abc);
 				coder(code);

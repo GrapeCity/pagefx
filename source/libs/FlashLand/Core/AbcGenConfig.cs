@@ -17,10 +17,6 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
         public static bool UseFuncPointers;
 
-        //NOTE: Currently we can not use non parameterless ctors as instance initializers
-        //because of Object.MemberwiseClone implementation
-        public static bool IsInitializerParameterless = true;
-
         public static bool ParameterlessEntryPoint = true;
 
         public static bool UseIsNull;

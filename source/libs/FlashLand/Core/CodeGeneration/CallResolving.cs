@@ -5,9 +5,9 @@ using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.Inlining;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
-using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 {
@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return SetData(method, tag);
             }
 
-            tag = DefineInlineCode(method, (AbcInstance)null);
+            tag = InlineCodeGenerator.Build(Abc, (AbcInstance)null, method);
             if (tag != null)
             {
                 return SetData(method, tag);
@@ -55,7 +55,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private object ResolveCall(IMethod method, AbcInstance instance)
         {
-            object tag = DefineInlineCode(method, instance);
+            object tag = InlineCodeGenerator.Build(Abc, instance, method);
             if (tag != null) return tag;
 
             if (method.CodeType == MethodCodeType.Native)
@@ -86,7 +86,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private object ResolveInternalCall(IMethod method, AbcInstance instance)
         {
-            var code = DefineInlineCode(method, instance);
+            var code = InlineCodeGenerator.Build(Abc, instance, method);
             if (code != null) return code;
 
             //special methods
@@ -165,37 +165,24 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #region DefineNotImplementedMethod
         private AbcMethod DefineNotImplementedMethod(IMethod method, AbcInstance instance)
         {
-            var abcMethod = new AbcMethod(method);
+	        return instance.DefineMethod(
+		        SigOf(method),
+		        code =>
+			        {
+				        var exceptionType = GetType(CorlibTypeId.NotImplementedException);
+				        code.ThrowException(exceptionType);
 
-	        SetData(method, abcMethod);
-
-            var trait = DefineMethodTrait(abcMethod, method);
-            instance.AddTrait(trait, method.IsStatic);
-            abcMethod.ReturnType = DefineReturnType(method.Type);
-            DefineParameters(abcMethod, method);
-
-            var body = new AbcMethodBody(abcMethod);
-            AddMethod(abcMethod);
-
-            var code = new AbcCode(Abc);
-
-	        var exceptionType = GetType(CorlibTypeId.NotImplementedException);
-            code.ThrowException(exceptionType);
-
-            //TODO: Is it needed???
-            if (method.IsVoid())
-            {
-                code.ReturnVoid();
-            }
-            else
-            {
-                code.PushNull();
-                code.ReturnValue();
-            }
-
-            body.Finish(code);
-            
-            return abcMethod;
+				        //TODO: Is it needed???
+				        if (method.IsVoid())
+				        {
+					        code.ReturnVoid();
+				        }
+				        else
+				        {
+					        code.PushNull();
+					        code.ReturnValue();
+				        }
+			        });
         }
         #endregion
     }

@@ -687,9 +687,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			if (method.IsStatic) return false;
 			if (!method.IsConstructor) return false;
 			var declType = method.DeclaringType;
-			if (method.Parameters.Count > 0
-			    && !InternalTypeExtensions.AllowNonParameterlessInitializer(declType))
-				return false;
+			if (method.Parameters.Count > 0) return false; // because of Object.MemberwiseClone impl
 			return declType.HasSingleConstructor();
 		}
 

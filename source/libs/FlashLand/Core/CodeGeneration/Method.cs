@@ -13,7 +13,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
     //Key method (entry point): DefineMethod
     internal partial class AbcGenerator
     {
-        #region GetMethodName
+        #region Signature
+
         private AbcMultiname DefineQName(IMethod method)
         {
             string name = method.GetSigName(Runtime.Avm);
@@ -42,11 +43,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return null;
         }
 
-        private AbcMultiname GetMethodName(IMethod method, out bool isOverride)
+        private AbcMultiname GetMethodName(IMethod method, bool isOverride)
         {
-            isOverride = method.IsOverride();
-
-	        if (isOverride && method.BaseMethod != null)
+            if (isOverride && method.BaseMethod != null)
             {
                 var mn = GetDefinedMethodName(method.BaseMethod);
                 if (mn != null) return mn;
@@ -76,37 +75,36 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             return name;
         }
-        #endregion
+        
+	    private Sig SigOf(IMethod method)
+		{
+			bool isOverride = method.IsOverride();
+			var name = GetMethodName(method, isOverride);
 
-        #region DefineMethodTrait
-        private AbcTrait DefineMethodTrait(AbcMethod abcMethod, IMethod method)
-        {
-#if DEBUG
-            DebugService.DoCancel();
-#endif
-            bool isOverride;
-            var name = GetMethodName(method, out isOverride);
+		    var sig = new Sig(name, method, method)
+			    {
+				    Kind = method.ResolveTraitKind(),
+				    Source = method
+			    };
 
-            var trait = AbcTrait.CreateMethod(abcMethod, name);
+			if (method.IsStaticCall())
+			{
+				sig.IsStatic = true;
+			}
+			else if (isOverride)
+			{
+				// exception actually inherited from avm Error
+				if (method.DeclaringType.Is(SystemTypeCode.Exception))
+				{
+					if (method.IsObjectOverrideMethod())
+						isOverride = false;
+				}
+				sig.IsOverride = isOverride;
+			}
 
-	        trait.Kind = method.ResolveTraitKind();
-            
-            if (method.IsStaticCall())
-            {
-                trait.IsFinal = true;
-            }
-            else
-            {
-                if (method.DeclaringType.Is(SystemTypeCode.Exception))
-                {
-                    if (method.IsObjectOverrideMethod())
-                        isOverride = false;
-                }
-                trait.IsOverride = isOverride;
-            }
+			return sig;
+		}
 
-            return trait;
-        }
         #endregion
 
         #region ImportMethod
@@ -242,8 +240,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         /// <returns></returns>
         private AbcMethod DefineMethodCore(IMethod method)
         {
-	        var abcMethod = method.Data as AbcMethod;
-			if (abcMethod != null)
+	        if (method.Data is AbcMethod)
 			{
 				throw new InvalidOperationException();
 			}
@@ -253,59 +250,52 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (instance == null)
                 throw new InvalidOperationException();
 
-            abcMethod = new AbcMethod(method);
+			bool isMxAppCtor = false;
+			if (AbcGenConfig.FlexAppCtorAsHandler)
+				isMxAppCtor = IsFlexAppCtor(method);
 
-	        SetData(method, abcMethod);
+			//NOTE:
+			//1. ctor can be used as class or instance initializer
+			//2. Static constructor will be compiled as normal method
+			//3. Only default parameterless ctor will be compiled as initializer,
+			//   all other ctors will be compiled as normal methods
 
-            Abc.Methods.Add(abcMethod);
+			var isInitilizer = !GlobalSettings.ReflectionSupport && !isMxAppCtor && instance.Initializer == null && method.IsInstanceInitializer();
+	        Sig sig;
+			if (isInitilizer)
+			{
+				// initilizer has no name and return type
+				sig = new Sig(null, null, method)
+					{
+						IsInitilizer = true,
+						Source = method
+					};
+			}
+			else
+			{
+				sig = SigOf(method);
+				sig.IsAbstract = method.IsAbstract || method.Body == null; // without body
+			}
 
-            bool isMxAppCtor = false;
-            if (AbcGenConfig.FlexAppCtorAsHandler)
-                isMxAppCtor = IsFlexAppCtor(method);
+			if (isMxAppCtor)
+			{
+				//HACK: Define mx.core.FlexEvent argument for MX app ctor
+				var typeFlexEvent = ImportFlexEventType();
+				sig.Args = new object[] {typeFlexEvent.Name, "e"};
+			}
 
-            //NOTE:
-            //1. ctor can be used as class or instance initializer
-            //2. Static constructor will be compiled as normal method
-            //3. Only default parameterless ctor will be compiled as initializer,
-            //   all other ctors will be compiled as normal methods
-
-            if (!GlobalSettings.ReflectionSupport)
-            {
-                if (!isMxAppCtor && instance.Initializer == null
-                    && method.IsInstanceInitializer())
-                {
-                    instance.Initializer = abcMethod;
-                    //abcMethod.Name = _abc.DefineString(method.DeclaringType.Name);
-                }
-            }
-
-            //for non initializer method we must define trait and return type
-            if (!abcMethod.IsInitializer)
-            {
-                var trait = DefineMethodTrait(abcMethod, method);
-                instance.AddTrait(trait, method.IsStaticCall());
-                abcMethod.ReturnType = DefineReturnType(abcMethod, method);
-            }
-
-            //HACK: Define mx.core.FlexEvent argument for MX app ctor
-            if (isMxAppCtor)
-            {
-                var typeFlexEvent = ImportFlexEventType();
-                abcMethod.AddParam(typeFlexEvent.Name, Abc.DefineString("e"));
-            }
-            else
-            {
-                DefineParameters(abcMethod, method);
-            }
-
-			DefineMethodBody(abcMethod);
-            DefineImplementedMethods(method, instance, abcMethod);
-            DefineOverrideMethods(method, abcMethod);
-
-            ImplementProtoMethods(method, abcMethod);
-
-            return abcMethod;
+	        return instance.DefineMethod(
+		        sig, null,
+		        abcMethod => CompleteMethod(instance, method, abcMethod));
         }
+
+		private void CompleteMethod(AbcInstance instance, IMethod method, AbcMethod abcMethod)
+		{
+			DefineMethodBody(abcMethod);
+			DefineImplementedMethods(method, instance, abcMethod);
+			DefineOverrideMethods(method, abcMethod);
+			ImplementProtoMethods(method, abcMethod);
+		}
 
 	    #endregion
 
@@ -691,8 +681,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 	    private void BuildBodyCore(AbcMethod target, IMethod source)
         {
-            var targetBody = new AbcMethodBody(target);
-            Abc.MethodBodies.Add(targetBody);
+			var targetBody = target.Body;
+			if (targetBody == null)
+			{
+				targetBody = new AbcMethodBody(target);
+				Abc.MethodBodies.Add(targetBody);
+			}
 
 #if DEBUG
             DebugService.DoCancel();

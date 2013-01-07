@@ -407,7 +407,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
     	#endregion
 
-	    private object SetData(ITypeMember member, object data)
+	    internal object SetData(ITypeMember member, object data)
 	    {
 		    if (ReferenceEquals(member.Data, data)) return data;
 

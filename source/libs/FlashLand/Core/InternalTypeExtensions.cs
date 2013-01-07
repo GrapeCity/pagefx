@@ -143,17 +143,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
             return type == null ? null : type.FindParameterlessConstructor();
         }
 
-        public static bool AllowNonParameterlessInitializer(IType type)
-        {
-            if (AbcGenConfig.IsInitializerParameterless)
-                return false;
-            //NOTE: ctor can be call as usual method on value types
-            if (type.TypeKind == TypeKind.Struct)
-                return false;
-            return true;
-        }
-
-        public static IMethod FindInitializer(AbcInstance instance)
+	    public static IMethod FindInitializer(AbcInstance instance)
         {
             if (instance == null) return null;
             var type = instance.Type;
@@ -170,7 +160,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
             {
                 if (m.IsStatic) continue;
                 if (n >= 1) return null;
-                if (m.Parameters.Count > 0 && !AllowNonParameterlessInitializer(type))
+                if (m.Parameters.Count > 0 && !false)
                     return null;
                 ctor = m;
                 ++n;

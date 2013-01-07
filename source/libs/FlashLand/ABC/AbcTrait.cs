@@ -521,21 +521,21 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        public AbcMethodSemantics MethodSemantics
+        public MethodSemantics MethodSemantics
         {
             get
             {
-                var r = AbcMethodSemantics.Default;
+                var r = MethodSemantics.Default;
                 if (IsStatic)
                 {
-                    r |= AbcMethodSemantics.Static;
+                    r |= Abc.MethodSemantics.Static;
                 }
                 else
                 {
                     if (IsVirtual)
-                        r |= AbcMethodSemantics.Virtual;
+                        r |= Abc.MethodSemantics.Virtual;
                     if (IsOverride)
-                        r |= AbcMethodSemantics.Override;
+                        r |= Abc.MethodSemantics.Override;
                 }
                 return r;
             }

@@ -32,60 +32,42 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         #region DefineDelegateConstructor
 		private AbcMethod DefineDelegateConstructor(IMethod method, AbcInstance instance)
-        {
-            bool isInitializer = !AbcGenConfig.IsInitializerParameterless;
-            if (isInitializer && instance.Initializer != null)
-                return instance.Initializer;
+		{
+			EnshureDelegateMethods();
 
-            EnshureDelegateMethods();
+			if (method.Parameters.Count != 2)
+				throw new InvalidOperationException();
 
-            if (method.Parameters.Count != 2)
-                throw new InvalidOperationException();
+			var targetParam = CreateParam(SystemTypes.Object, method.Parameters[0].Name);
+			var funcParam = CreateParam(Abc.BuiltinTypes.Function, method.Parameters[1].Name);
 
-            var abcMethod = new AbcMethod(method);
+			var sig = SigOf(method);
+			sig.Args = new object[] {targetParam, funcParam};
 
-			SetData(method, abcMethod);
+			return instance.DefineMethod(
+				sig,
+				code =>
+					{
+						code.PushThisScope();
 
-            if (isInitializer)
-                instance.Initializer = abcMethod;
+						code.ConstructSuper();
 
-            abcMethod.ReturnType = DefineReturnType(method.Type);
-			abcMethod.Parameters.Add(CreateParam(SystemTypes.Object, method.Parameters[0].Name));
-			abcMethod.Parameters.Add(CreateParam(Abc.BuiltinTypes.Function, method.Parameters[1].Name));
+						const int target = 1;
+						const int func = 2;
 
-			if (!isInitializer)
-            {
-                var trait = DefineMethodTrait(abcMethod, method);
-                instance.AddTrait(trait, false);
-            }
+						code.LoadThis();
+						code.GetLocal(target);
+						code.SetField(FieldId.Delegate_Target);
 
-            var body = new AbcMethodBody(abcMethod);
-            AddMethod(abcMethod);
+						code.LoadThis();
+						code.GetLocal(func);
+						code.SetField(FieldId.Delegate_Function);
 
-            var code = new AbcCode(Abc);
+						code.ReturnVoid();
+					});
+		}
 
-            code.PushThisScope();
-            
-            code.ConstructSuper();
-
-            const int target = 1;
-            const int func = 2;
-
-            code.LoadThis();
-            code.GetLocal(target);
-            code.SetField(FieldId.Delegate_Target);
-
-            code.LoadThis();
-            code.GetLocal(func);
-            code.SetField(FieldId.Delegate_Function);
-
-            code.ReturnVoid();
-
-            body.Finish(code);
-
-            return abcMethod;
-        }
-        #endregion
+	    #endregion
 
         #region DefineDelegateInvoke
 		private AbcMethod DefineDelegateInvoke(IMethod method, AbcInstance instance)
@@ -93,52 +75,53 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             EnshureDelegateMethods();
             //TODO: Check m_function on "not null"
 
-            var m = BeginMethod(method, instance);
+			var sig = SigOf(method);
+			var traitName = Abc.DefineName(sig.Name);
+			sig.Name = traitName; // minor opt to quickly define name next time
 
-            bool isVoid = method.IsVoid();
-            int paramNum = method.Parameters.Count;
-            var type = method.DeclaringType;
+			return instance.DefineMethod(
+				sig,
+				code =>
+					{
+						bool isVoid = method.IsVoid();
+						int paramNum = method.Parameters.Count;
+						var type = method.DeclaringType;
 
-            var code = new AbcCode(Abc);
+						int prev = paramNum + 1;
+						code.LoadThis();
+						code.GetField(FieldId.Delegate_Prev);
+						code.SetLocal(prev);
 
-            int prev = paramNum + 1;
-            code.LoadThis();
-            code.GetField(FieldId.Delegate_Prev);
-            code.SetLocal(prev);
+						code.GetLocal(prev);
+						var gotoCall = code.IfFalse();
 
-            code.GetLocal(prev);
-            var gotoCall = code.IfFalse();
-            
-            code.GetLocal(prev);
-            code.Coerce(type, false);
-            code.LoadArguments(method);
-            //Note: currently we ignore return value of prev function call
-            code.Add(InstructionCode.Callpropvoid, m.TraitName, paramNum);
+						code.GetLocal(prev);
+						code.Coerce(type, false);
+						code.LoadArguments(method);
+						//Note: currently we ignore return value of prev function call
+						code.Add(InstructionCode.Callpropvoid, traitName, paramNum);
 
-            gotoCall.BranchTarget = code.Label();
-            
-            code.LoadThis();
-            code.GetField(FieldId.Delegate_Function);
+						gotoCall.BranchTarget = code.Label();
 
-            code.LoadThis();
-            code.GetField(FieldId.Delegate_Target);
+						code.LoadThis();
+						code.GetField(FieldId.Delegate_Function);
 
-            code.LoadArguments(method);
-            code.Add(InstructionCode.Call, paramNum);
+						code.LoadThis();
+						code.GetField(FieldId.Delegate_Target);
 
-            if (isVoid)
-            {
-                code.Pop();
-                code.ReturnVoid();
-            }
-            else
-            {
-                code.ReturnValue();
-            }
+						code.LoadArguments(method);
+						code.Add(InstructionCode.Call, paramNum);
 
-            m.Finish(code);
-
-            return m;
+						if (isVoid)
+						{
+							code.Pop();
+							code.ReturnVoid();
+						}
+						else
+						{
+							code.ReturnValue();
+						}
+					});
         }
         #endregion
     }

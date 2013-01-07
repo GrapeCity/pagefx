@@ -96,7 +96,7 @@
     <Compile Include="Abc\AbcMethodCollection.cs" />
     <Compile Include="Abc\MemberKey.cs" />
     <Compile Include="Abc\Sig.cs" />
-    <Compile Include="Abc\AbcMethodSemantics.cs" />
+    <Compile Include="Abc\MethodSemantics.cs" />
     <Compile Include="Abc\AbcMultinamePool.cs" />
     <Compile Include="Abc\AbcNamespacePool.cs" />
     <Compile Include="Abc\AbcNssetPool.cs" />
@@ -148,7 +148,6 @@
     <Compile Include="Core\CodeGeneration\Errors.cs" />
     <Compile Include="Core\CodeGeneration\Field.cs" />
     <Compile Include="Core\CodeGeneration\Initializers.cs" />
-    <Compile Include="Core\CodeGeneration\InlineCode.cs" />
     <Compile Include="Core\CodeGeneration\InternalCalls.cs" />
     <Compile Include="Core\CodeGeneration\Main.cs" />
     <Compile Include="Core\CodeGeneration\Method.cs" />
@@ -193,7 +192,10 @@
     <Compile Include="Core\Inlining\Avm.Object.cs" />
     <Compile Include="Core\Inlining\Avm.Vector.cs" />
     <Compile Include="Core\Inlining\Avm.XML.cs" />
+    <Compile Include="Core\Inlining\InlineCodeGenerator.cs" />
     <Compile Include="Core\Inlining\InlineCodeProvider.cs" />
+    <Compile Include="Core\Inlining\InlineMethodExtensions.cs" />
+    <Compile Include="Core\Inlining\InlineMethodInfo.cs" />
     <Compile Include="Core\Inlining\System.Diagnostics.Debugger.cs" />
     <Compile Include="Core\Inlining\System.Object.cs" />
     <Compile Include="Core\Inlining\System.String.cs" />

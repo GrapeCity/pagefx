@@ -978,7 +978,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             AbcMultiname returnType = null;
             
             if (retType != null)
-                returnType = DefineTypeNameStrict(retType);
+                returnType = DefineTypeNameSafe(retType);
 
             var method = new AbcMethod { ReturnType = returnType };
 
@@ -1183,29 +1183,29 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return null;
         }
 
-        public AbcMultiname DefineTypeName(object type)
+        public AbcMultiname DefineTypeName(object typeDef)
         {
-            var typeName = type as AbcMultiname;
-            if (typeName != null)
-                return typeName;
+            var name = typeDef as AbcMultiname;
+            if (name != null)
+                return name;
 
-            if (type is AvmTypeCode)
+            if (typeDef is AvmTypeCode)
             {
-                return this[(AvmTypeCode)type];
+                return this[(AvmTypeCode)typeDef];
             }
 
-            var instance = type as AbcInstance;
+            var instance = typeDef as AbcInstance;
             if (instance != null)
                 return instance.Name;
 
-            var t = type as IType;
-            if (t != null)
+            var type = typeDef as IType;
+            if (type != null)
             {
-                typeName = Generator.DefineMemberType(t);
-                return typeName;
+                name = Generator.DefineMemberType(type);
+                return name;
             }
 
-            var trait = type as AbcTrait;
+            var trait = typeDef as AbcTrait;
             if (trait != null)
             {
                 if (trait.IsField)
@@ -1221,7 +1221,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return null;
         }
 
-        public AbcMultiname DefineTypeNameStrict(object type)
+        public AbcMultiname DefineTypeNameSafe(object type)
         {
             var mn = DefineTypeName(type);
             if (mn == null)
@@ -1236,6 +1236,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             for (int i = 0; i < n; ++i)
             {
                 var arg = args[i];
+
+				var p = arg as AbcParameter;
+				if (p != null)
+				{
+					list.Add(ImportParam(p));
+					continue;
+				}
 
                 var typeName = DefineTypeName(arg);
                 if (typeName != null)
@@ -1256,13 +1263,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 if (pl != null)
                 {
                     list.CopyFrom(pl);
-                    continue;
-                }
-
-                var p = arg as AbcParameter;
-                if (p != null)
-                {
-                    list.Add(ImportParam(p));
                     continue;
                 }
 
@@ -1292,7 +1292,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcTrait CreateSlot(object type, object name)
         {
-            var typeName = DefineTypeNameStrict(type);
+            var typeName = DefineTypeNameSafe(type);
             var mn = DefineName(name);
             return AbcTrait.CreateSlot(typeName, mn);
         }

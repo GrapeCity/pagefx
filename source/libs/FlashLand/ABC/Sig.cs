@@ -1,4 +1,5 @@
 using System;
+using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Core;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -14,15 +15,19 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		public object Name;
 		public object ReturnType;
 		public object[] Args;
-
+		
 		public AbcTraitKind Kind = AbcTraitKind.Method;
-		public AbcMethodSemantics Semantics;
+		public MethodSemantics Semantics;
+
+		public IMethod Source;
+		public bool IsInitilizer;
+
+		public Sig()
+		{
+		}
 
 		public Sig(object name, object returnType, params object[] args)
 		{
-			if (name == null)
-				throw new ArgumentNullException("name");
-
 			Name = name;
 			ReturnType = returnType;
 			Args = args;
@@ -30,31 +35,41 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
 		public bool IsStatic
 		{
-			get { return (Semantics & AbcMethodSemantics.Static) != 0; }
+			get { return (Semantics & MethodSemantics.Static) != 0; }
 			set
 			{
-				if (value) Semantics |= AbcMethodSemantics.Static;
-				else Semantics &= ~AbcMethodSemantics.Static;
+				if (value) Semantics |= MethodSemantics.Static;
+				else Semantics &= ~MethodSemantics.Static;
 			}
 		}
 
 		public bool IsVirtual
 		{
-			get { return (Semantics & AbcMethodSemantics.Virtual) != 0; }
+			get { return (Semantics & MethodSemantics.Virtual) != 0; }
 			set
 			{
-				if (value) Semantics |= AbcMethodSemantics.Virtual;
-				else Semantics &= ~AbcMethodSemantics.Virtual;
+				if (value) Semantics |= MethodSemantics.Virtual;
+				else Semantics &= ~MethodSemantics.Virtual;
 			}
 		}
 
 		public bool IsOverride
 		{
-			get { return (Semantics & AbcMethodSemantics.Override) != 0; }
+			get { return (Semantics & MethodSemantics.Override) != 0; }
 			set
 			{
-				if (value) Semantics |= AbcMethodSemantics.Override;
-				else Semantics &= ~AbcMethodSemantics.Override;
+				if (value) Semantics |= MethodSemantics.Override;
+				else Semantics &= ~MethodSemantics.Override;
+			}
+		}
+
+		public bool IsAbstract
+		{
+			get { return (Semantics & MethodSemantics.Abstract) != 0; }
+			set
+			{
+				if (value) Semantics |= MethodSemantics.Abstract;
+				else Semantics &= ~MethodSemantics.Abstract;
 			}
 		}
 

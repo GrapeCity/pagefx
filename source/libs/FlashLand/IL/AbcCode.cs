@@ -3579,7 +3579,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             if (value == null)
                 throw new ArgumentNullException("value");
 
-            var typeName = Abc.DefineTypeNameStrict(type);
+            var typeName = Abc.DefineTypeNameSafe(type);
             var mn = Abc.DefineName(name);
 
             Getlex(typeName);
