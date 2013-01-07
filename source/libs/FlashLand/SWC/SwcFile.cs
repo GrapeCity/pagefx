@@ -16,7 +16,7 @@ using Ionic.Zip;
 
 namespace DataDynamics.PageFX.FlashLand.Swc
 {
-    public class SwcFile
+    public sealed class SwcFile
     {
         public const string LIBRARY_SWF = "library.swf";
         public const string CATALOG_XML = "catalog.xml";
@@ -300,7 +300,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
         private readonly Hashtable _defCache = new Hashtable();
         private readonly Hashtable _externalRefs = new Hashtable();
         internal readonly AbcCache AbcCache = new AbcCache(false);
-        SwcDepFile _deps;
+        private SwcDepFile _deps;
 
         public void ResolveDependencies(ISwcLinker linker, SwcDepFile deps)
         {
@@ -410,7 +410,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
                     {
                         var r = (SwcDepFile.NamespaceRef)dep;
                         string ns = _deps.Namespaces[r.Index];
-                        var depAbc = AbcCache.FindNamespace(ns);
+                        var depAbc = AbcCache.Namespaces.Find(ns);
                         if (depAbc != null)
                             abc.FileRefs.Add(depAbc);
                     }
@@ -502,7 +502,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
         void ResolveNamespace(AbcInstance defInstance, string ns)
         {
             ns = ns.Replace(':', '.');
-            var depAbc = AbcCache.FindNamespace(ns);
+            var depAbc = AbcCache.Namespaces.Find(ns);
             if (depAbc != null)
             {
                 if (!depAbc.IsCore)

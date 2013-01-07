@@ -1,20 +1,92 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    internal sealed class AbcCache
+	internal sealed class AbcCache
     {
-		private readonly List<AbcInstance> _mixins = new List<AbcInstance>();
-		private readonly Hashtable _instanceCache = new Hashtable();
-		private static readonly Hashtable NamespaceCache = new Hashtable();
-		private readonly Hashtable _globalMethods = new Hashtable();
-		private readonly bool _checkCoreAPI;
-
-		public AbcCache(bool checkCoreAPI)
+		internal interface IInstanceCache
 		{
-			_checkCoreAPI = checkCoreAPI;
+			AbcInstance Find(IType type);
+			AbcInstance Find(string fullname);
+		}
+
+		internal interface INamespaceCache
+		{
+			AbcFile Find(string fullname);
+		}
+
+		internal interface IFunctionCache
+		{
+			AbcMethod Find(IMethod method);
+		}
+
+		private sealed class InstanceCache : IInstanceCache
+		{
+			private readonly Dictionary<string, AbcInstance> _cache = new Dictionary<string, AbcInstance>();
+
+			public void Add(AbcInstance instance)
+			{
+				string key = instance.FullName;
+				_cache.Add(key, instance);
+			}
+
+			public AbcInstance Find(IType type)
+			{
+				return Find(MemberKey.FullName(type));
+			}
+
+			public AbcInstance Find(string fullname)
+			{
+				AbcInstance instance;
+				return _cache.TryGetValue(fullname, out instance) ? instance : null;
+			}
+		}
+
+		private sealed class NamespaceCache : INamespaceCache
+		{
+			private readonly Dictionary<string, AbcFile> _cache = new Dictionary<string, AbcFile>();
+
+			public void Add(string name, AbcFile file)
+			{
+				_cache.Add(name, file);
+			}
+
+			public AbcFile Find(string fullname)
+			{
+				AbcFile value;
+				return _cache.TryGetValue(fullname, out value) ? value : null;
+			}
+		}
+
+		private sealed class FunctionCache : IFunctionCache
+		{
+			private readonly Dictionary<string, AbcMethod> _cache = new Dictionary<string, AbcMethod>();
+
+			public void Add(AbcTrait trait)
+			{
+				string key = MemberKey.BuildKey(trait.Name);
+				_cache.Add(key, trait.Method);
+			}
+
+			public AbcMethod Find(IMethod method)
+			{
+				var key = MemberKey.BuildKey(method);
+				AbcMethod value;
+				return _cache.TryGetValue(key,out value) ? value : null;
+			}
+		}
+
+		private readonly List<AbcInstance> _mixins = new List<AbcInstance>();
+		private readonly InstanceCache _instances = new InstanceCache();
+		private readonly NamespaceCache _namespaces = new NamespaceCache();
+		private readonly FunctionCache _functions = new FunctionCache();
+		private readonly bool _detectCoreApi;
+
+		public AbcCache(bool detectCoreApi)
+		{
+			_detectCoreApi = detectCoreApi;
 		}
 
         public IList<AbcInstance> Mixins
@@ -22,68 +94,53 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             get { return _mixins; }
         }
 
-    	public bool IsCoreAPI { get; private set; }
+    	public bool IsCoreApi { get; private set; }
 
-        public AbcInstance FindInstance(IType type)
+		public IInstanceCache Instances
+		{
+			get { return _instances; }
+		}
+
+		public INamespaceCache Namespaces
+		{
+			get { return _namespaces; }
+		}
+
+		public IFunctionCache Functions
+		{
+			get { return _functions; }
+		}
+
+		public void Add(AbcFile abc)
         {
-            var qn = new AbcQName(type);
-            return FindInstance(qn.FullName);
+	        foreach (var instance in abc.Instances)
+	        {
+		        string fn = instance.FullName;
+		        _instances.Add(instance);
+		        if (_detectCoreApi && !IsCoreApi && fn == "Object")
+			        abc.IsCore = IsCoreApi = true;
+	        }
+
+	        foreach (var trait in abc.Scripts.SelectMany(x => x.Traits))
+	        {
+		        switch (trait.Kind)
+		        {
+			        case AbcTraitKind.Const:
+				        var ns = trait.SlotValue as AbcNamespace;
+				        if (ns != null)
+					        _namespaces.Add(trait.Name.FullName, abc);
+				        break;
+
+			        case AbcTraitKind.Method:
+				        _functions.Add(trait);
+				        break;
+		        }
+	        }
         }
 
-        public AbcInstance FindInstance(string fullname)
+	    public void AddRange(IEnumerable<AbcFile> files)
         {
-            return _instanceCache[fullname] as AbcInstance;
-        }
-
-        public AbcFile FindNamespace(string name)
-        {
-            return NamespaceCache[name] as AbcFile;
-        }
-
-        public AbcMethod FindGlobalMethod(IMethod method)
-        {
-            var qn = new AbcQName(method);
-            return _globalMethods[qn.Key] as AbcMethod;
-        }
-
-        public void Add(AbcFile abc)
-        {
-            foreach (var instance in abc.Instances)
-            {
-                string fn = instance.FullName;
-                _instanceCache[fn] = instance;
-                if (_checkCoreAPI && !IsCoreAPI && fn == "Object")
-                    abc.IsCore = IsCoreAPI = true;
-            }
-
-            foreach (var script in abc.Scripts)
-            {
-                foreach (var t in script.Traits)
-                {
-                    switch (t.Kind)
-                    {
-                        case AbcTraitKind.Const:
-                            {
-                                var ns = t.SlotValue as AbcNamespace;
-                                if (ns != null)
-                                    NamespaceCache[t.Name.FullName] = abc;
-                            }
-                            break;
-
-                        case AbcTraitKind.Method:
-                            {
-                                string key = AbcQName.GetKey(t);
-                                _globalMethods[key] = t.Method;
-                            }
-                            break;
-                    }
-                }
-            }
-        }
-
-        public void Add(IEnumerable<AbcFile> set)
-        {
-            foreach (var abc in set)
+            foreach (var abc in files)
                 Add(abc);
         }
     }

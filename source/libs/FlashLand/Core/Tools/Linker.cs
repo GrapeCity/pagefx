@@ -205,7 +205,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private AbcInstance FindInstance(IType type)
         {
-            return _cache.FindInstance(type);
+            return _cache.Instances.Find(type);
         }
 
 	    private static bool IsLinked(IType type)
@@ -321,7 +321,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private AbcMethod FindGlobalMethod(IMethod method)
         {
-            return _cache.FindGlobalMethod(method);
+            return _cache.Functions.Find(method);
         }
 
         private void LinkMethod(IMethod method, IAbcTraitProvider owner, bool isGlobal)

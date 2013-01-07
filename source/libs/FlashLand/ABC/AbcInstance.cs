@@ -865,7 +865,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             if (_traitCache != null) return;
             _traitCache = new AbcTraitCache();
-            _traitCache.Add(GetAllTraits());
+            _traitCache.AddRange(GetAllTraits());
         }
         private AbcTraitCache _traitCache;
 

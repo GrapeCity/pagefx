@@ -629,7 +629,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         {
             if (_swc != null)
             {
-                var instance = _swc.AbcCache.FindInstance(fullname);
+                var instance = _swc.AbcCache.Instances.Find(fullname);
                 if (instance != null)
                     return BuildType(instance);
             }

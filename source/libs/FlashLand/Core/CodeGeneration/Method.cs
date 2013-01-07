@@ -93,7 +93,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             
             if (method.IsStaticCall())
             {
-                trait.Attributes |= AbcTraitAttributes.Final;
+                trait.IsFinal = true;
             }
             else
             {

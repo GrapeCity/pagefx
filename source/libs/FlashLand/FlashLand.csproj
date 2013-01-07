@@ -94,6 +94,7 @@
     <Compile Include="Abc\AbcMetaEntry.cs" />
     <Compile Include="Abc\AbcMethodBodyCollection.cs" />
     <Compile Include="Abc\AbcMethodCollection.cs" />
+    <Compile Include="Abc\MemberKey.cs" />
     <Compile Include="Abc\Sig.cs" />
     <Compile Include="Abc\AbcMethodSemantics.cs" />
     <Compile Include="Abc\AbcMultinamePool.cs" />
