@@ -2,86 +2,41 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.GAC;
 using DataDynamics.PageFX.Ecma335.Metadata;
 
 namespace DataDynamics.PageFX.Ecma335
 {
     internal static class AssemblyResolver
     {
-        static readonly PathResolver _pathResolver;
+        private static readonly PathResolver PathResolver;
 
         static AssemblyResolver()
         {
-            _pathResolver = new PathResolver();
-            _pathResolver.AddEnvironmentVariable("LIB");
+            PathResolver = new PathResolver();
+            PathResolver.AddEnvironmentVariable("LIB");
         }
 
-        #region GetCacLocation
-        static string GetCacLocation(IAssemblyReference id)
-        {
-            IAssemblyCache cache = null;
+	    private static string GetCacLocation(IAssemblyReference id)
+	    {
+		    try
+		    {
+			    return Gac.ResolvePath(id);
+		    }
+		    catch (Exception e)
+		    {
+			    Console.WriteLine(e);
+		    }
+		    return null;
+	    }
 
-        	try
-            {
-                cache = AssemblyCache.CreateAssemblyCache();
-                using (var e = new GacEnum(id.Name))
-                {
-                    string displayName = null;
-                    foreach (var name in e)
-                    {
-                        if (name.Version >= id.Version)
-                            displayName = name.DisplayName;
-                        name.Dispose();
-                        if (displayName != null)
-                            break;
-                    }
-
-                    var asmInfo = new ASSEMBLY_INFO();
-                    int hr;
-                    try
-                    {
-                        hr = cache.QueryAssemblyInfo((uint)AssemblyInfoFlag.Validate, displayName, ref asmInfo);
-                        if (0 != hr && (uint)hr != AssemblyCache.HResults.E_INSUFFICIENT_BUFFER)
-                            return string.Empty;
-                    }
-                    catch
-                    {
-                        return string.Empty;
-                    }
-
-                    if (asmInfo.cchBuf != 0)
-                    {
-                        asmInfo.pszCurrentAssemblyPathBuf = new string(new char[asmInfo.cchBuf]);
-                        hr = cache.QueryAssemblyInfo((uint)AssemblyInfoFlag.Validate, displayName, ref asmInfo);
-                        if (0 != hr)
-                            return string.Empty;
-                        return asmInfo.pszCurrentAssemblyPathBuf;
-                    }
-                }
-            }
-            catch (SecurityException)
-            {
-            }
-            finally
-            {
-                if (cache != null)
-                    Marshal.ReleaseComObject(cache);
-            }
-            return string.Empty;
-        }
-        #endregion
-
-        static string ResolvePath(string path, string refpath)
+	    private static string ResolvePath(string path, string refpath)
         {
             string dir = Path.GetDirectoryName(refpath);
             string fullpath = Path.Combine(dir, path);
             if (File.Exists(fullpath)) return fullpath;
-            path = _pathResolver.Resolve(path);
+            path = PathResolver.Resolve(path);
             if (!string.IsNullOrEmpty(path))
                 return path;
             return null;
@@ -130,7 +85,7 @@ namespace DataDynamics.PageFX.Ecma335
 
         static string GetPfxLocation(string refname)
         {
-            if (string.Compare(refname, GlobalSettings.CorlibAssemblyName, true) == 0)
+            if (string.Equals(refname, GlobalSettings.CorlibAssemblyName, StringComparison.OrdinalIgnoreCase))
                 return GlobalSettings.GetCorlibPath(true);
 
             var libdirs = GetLibDirs();
@@ -142,38 +97,35 @@ namespace DataDynamics.PageFX.Ecma335
             return null;
         }
 
-        static readonly Dictionary<IAssemblyReference, IAssembly> _cache = new Dictionary<IAssemblyReference, IAssembly>();
+        private static readonly Dictionary<IAssemblyReference, IAssembly> _cache = new Dictionary<IAssemblyReference, IAssembly>();
 
         public static IAssembly GetFromCache(IAssemblyReference id)
         {
-            IAssembly asm;
-            if (_cache.TryGetValue(id, out asm))
-                return asm;
-            return null;
+            IAssembly assembly;
+            return id != null && _cache.TryGetValue(id, out assembly) ? assembly : null;
         }
 
-        public static void AddToCache(IAssembly asm)
+        public static void AddToCache(IAssembly assembly)
         {
-            var id = new AssemblyReference(asm);
+            var id = new AssemblyReference(assembly);
             if (!_cache.ContainsKey(id))
             {
-                _cache.Add(id, asm);
+                _cache.Add(id, assembly);
             }
         }
 
-        static readonly string[] SysRefs = 
-        {
-            "mscorlib",
-            "System",
-            "Microsoft.VisualBasic",
-            "NUnit.Framework"
-        };
+	    private static readonly string[] SysRefs =
+		    {
+			    "mscorlib",
+			    "System",
+			    "Microsoft.VisualBasic",
+			    "NUnit.Framework"
+		    };
 
         public static bool IsFrameworkAssembly(IAssemblyReference asmref)
         {
             string refname = asmref.Name;
-            if (Array.FindIndex(SysRefs,
-                                sr => string.Compare(refname, sr, true) == 0) >= 0)
+            if (Array.FindIndex(SysRefs, sr => string.Equals(refname, sr, StringComparison.OrdinalIgnoreCase)) >= 0)
                 return true;
             return refname.StartsWith("System.", StringComparison.InvariantCultureIgnoreCase);
         }

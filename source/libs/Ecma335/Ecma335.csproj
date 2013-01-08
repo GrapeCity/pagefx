@@ -80,16 +80,7 @@
     <Compile Include="Execution\RuntimeHelpersInvoker.cs" />
     <Compile Include="Execution\RuntimeType.cs" />
     <Compile Include="Execution\VirtualMachine.cs" />
-    <Compile Include="GAC\AssemblyCache.cs" />
-    <Compile Include="GAC\Structs.cs" />
-    <Compile Include="GAC\Enums.cs" />
-    <Compile Include="GAC\GacEnum.cs" />
-    <Compile Include="GAC\IAssemblyCache.cs" />
-    <Compile Include="GAC\IAssemblyCacheItem.cs" />
-    <Compile Include="GAC\IAssemblyEnum.cs" />
-    <Compile Include="GAC\IAssemblyName.cs" />
-    <Compile Include="GAC\IInstallReferenceEnum.cs" />
-    <Compile Include="GAC\IInstallReferenceItem.cs" />
+    <Compile Include="Gac.cs" />
     <Compile Include="IL\BlockExtensions.cs" />
     <Compile Include="IL\HandlerBlock.cs" />
     <Compile Include="IL\IClrMethodBody.cs" />
