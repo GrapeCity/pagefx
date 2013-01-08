@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.TestRunner.UnitTests
             if (!string.IsNullOrEmpty(err))
                 throw new InvalidOperationException("Unable to compile " + resname);
 
-            var asm = QA.LoadAssembly(asmpath, VM.AVM, dir, ref err);
+            var asm = AssemblyLoader.Load(asmpath, VM.AVM, dir, ref err);
 
             string swfpath = Path.Combine(dir, "out.swf");
             FlashLanguageInfrastructure.Serialize(asm, swfpath, "/format:swf");

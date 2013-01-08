@@ -14,9 +14,9 @@ namespace DataDynamics.PageFX.TestRunner.UI
         private void LoadState()
         {
             if (DesignMode) return;
-            tbQaBaseDir.Text = QA.BaseDir;
-            cbOptimizeCode.Checked = QA.OptimizeCode;
-            cbDebug.Checked = QA.EmitDebugInfo;
+            tbQaBaseDir.Text = GlobalOptions.BaseDir;
+            cbOptimizeCode.Checked = GlobalOptions.OptimizeCode;
+            cbDebug.Checked = GlobalOptions.EmitDebugInfo;
         }
 
         #region ISupportApply Members
@@ -25,11 +25,11 @@ namespace DataDynamics.PageFX.TestRunner.UI
             string path = tbQaBaseDir.Text;
             //TODO: Check path
             //if (Path.)
-            QA.BaseDir = path;
-            QA.OptimizeCode = cbOptimizeCode.Checked;
-            QA.EmitDebugInfo = cbDebug.Checked;
+            GlobalOptions.BaseDir = path;
+            GlobalOptions.OptimizeCode = cbOptimizeCode.Checked;
+            GlobalOptions.EmitDebugInfo = cbDebug.Checked;
 
-            QA.SaveGlobalOptions();
+            GlobalOptions.Save();
         }
         #endregion
     }

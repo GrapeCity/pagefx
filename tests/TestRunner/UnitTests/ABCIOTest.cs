@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.TestRunner.UnitTests
             }
 
             int index;
-            string err = QA.CompareByteArrays(original, result, out index);
+            string err = CompareTools.CompareByteArrays(original, result, out index);
             if (!string.IsNullOrEmpty(err))
             {
                 return "SWC: " + swcName + ". ABC: " + abc.Name + "." + err;
@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX.TestRunner.UnitTests
                 return string.Format("Unable to serialize ABC file.\nException: {0}", e);
             }
 
-            string err = QA.CompareByteArrays(original, result, out index);
+            string err = CompareTools.CompareByteArrays(original, result, out index);
             if (!string.IsNullOrEmpty(err))
             {
                 return "SWC: " + swcName + ". ABC: " + abc.Name + "." + err;

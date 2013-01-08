@@ -139,7 +139,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         {
             const string path = "c:\\QA\\report.xml";
             Export(path, "xml");
-            QA.ShowBrowser(Title, path, true);
+            Browser.ShowDialog(Title, path);
         }
         #endregion
     }

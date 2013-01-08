@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.Common.Extensions
         public static string GetTextResource(this Assembly assembly, string name)
         {
             var rs = assembly.GetResourceStream(name);
-            return rs.ReadText();
+            return rs.ReadAllText();
         }
 
         public static string GetTextResource(this Type type, string name)

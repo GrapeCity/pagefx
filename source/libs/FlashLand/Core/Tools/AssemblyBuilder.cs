@@ -1099,7 +1099,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 {
                     var rs = asm.GetManifestResourceStream(resName);
                     string name = resName.Substring(i + 4).Trim().TrimFileExtension();
-                    string text = rs.ReadText();
+                    string text = rs.ReadAllText();
                     _customMembers[name] = text;
                 }
             }

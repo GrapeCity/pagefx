@@ -13,7 +13,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 			var stream = typeof(JsCompiler).Assembly.GetResourceStream(resourceName);
 			if (stream == null)
 				throw new ResourceNotFoundException(resourceName);
-			_text = stream.ReadText();
+			_text = stream.ReadAllText();
 		}
 
 		public override void Write(JsWriter writer)

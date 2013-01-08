@@ -346,7 +346,7 @@ namespace DataDynamics.PageFX.Common.IO
         	return ms.ToArray();
         }
 
-	    public static string ReadText(this Stream s)
+	    public static string ReadAllText(this Stream s)
         {
             using (var reader = new StreamReader(s))
                 return reader.ReadToEnd();

@@ -100,14 +100,22 @@
     <Compile Include="..\..\mono\mcs\class\corlib\System\UInt64.cs">
       <Link>UnitTests\UInt64.cs</Link>
     </Compile>
+    <Compile Include="Framework\AssemblyLoader.cs" />
+    <Compile Include="Framework\Browser.cs" />
+    <Compile Include="Framework\CompareTools.cs" />
+    <Compile Include="Framework\Compiler.cs" />
     <Compile Include="Framework\Enums.cs" />
+    <Compile Include="Framework\ExportTools.cs" />
     <Compile Include="Framework\Extensions.cs" />
     <Compile Include="Framework\Factory.cs" />
     <Compile Include="Framework\ITestItem.cs" />
+    <Compile Include="Framework\NUnitFixtureGeneratpr.cs" />
     <Compile Include="Framework\NUnitSuite.cs" />
+    <Compile Include="Framework\GlobalOptions.cs" />
     <Compile Include="Framework\SimpleSuite.cs" />
     <Compile Include="Framework\SingleFileSuite.cs" />
     <Compile Include="Framework\ITestSuite.cs" />
+    <Compile Include="Framework\Storage.cs" />
     <Compile Include="Tools\ILAsm.cs" />
     <Compile Include="Framework\SimpleTestCases.cs" />
     <Compile Include="Framework\SourceFile.cs" />

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using DataDynamics.PageFX.Common.IO;
 
 namespace DataDynamics.PageFX.TestRunner.Framework
 {
@@ -45,7 +46,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
         public void Add(string name, Stream stream)
         {
-            Add(name, QA.ReadAllText(stream));
+			Add(name, stream.ReadAllText());
         }
 
         public string[] Names

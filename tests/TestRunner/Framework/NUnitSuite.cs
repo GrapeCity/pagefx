@@ -30,7 +30,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
 		public IEnumerable<ITestItem> GetChildren()
 		{
-			if (QA.RunSuiteAsOneTest)
+			if (GlobalOptions.RunSuiteAsOneTest)
 			{
 				var cases = from fixture in _assembly.Types.Where(x => x.IsTestFixture())
 				            select CreateCase(fixture);
@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
 		private ITestItem CreateCase(IType fixture)
 		{
-			var main = fixture.GenerateTestRunnerCode(QA.TestRunnerOptions);
+			var main = fixture.GenerateTestRunnerCode(GlobalOptions.TestRunnerOptions);
 			var name = fixture.GetMonoTestSuiteName();
 			return Factory.CreateNUnitTestCase(name, _path, main);
 		}
@@ -98,7 +98,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 		private IEnumerable<ITestItem> Populate()
 		{
 			return from test in _suite.GetUnitTests()
-			       let main = test.GenerateTestRunnerCode(QA.TestRunnerOptions)
+			       let main = test.GenerateTestRunnerCode(GlobalOptions.TestRunnerOptions)
 			       let name = test.GetMonoTestCaseName()
 			       select (ITestItem)Factory.CreateNUnitTestCase(name, _path, main);
 		}

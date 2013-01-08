@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         #region RunCore
         static void RunCore(TestCase tc, TestDriverSettings tds)
         {
-            if (QA.IsNUnitSession)
+            if (GlobalOptions.IsNUnitSession)
             {
                 tc.Debug = false;
                 GlobalSettings.EmitDebugInfo = false;
@@ -76,7 +76,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             }
             else
             {
-                GlobalSettings.EmitDebugInfo = tc.Debug = QA.TestDebugSupport;
+                GlobalSettings.EmitDebugInfo = tc.Debug = GlobalOptions.TestDebugSupport;
             }
 
             if (!Compile(tc) || tds.IsCancel) return;
@@ -96,14 +96,14 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             if (tc.CompileAVM)
             {
                 tc.VM = VM.AVM;
-                if (!QA.Compile(tc))
+                if (!Compiler.Compile(tc))
                     return false;
             }
 
             if (tc.CompileCLR)
             {
                 tc.VM = VM.CLR;
-                if (!QA.Compile(tc))
+                if (!Compiler.Compile(tc))
                     return false;
             }
 #if DEBUG
@@ -201,7 +201,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             if (tds.ExportCSharpFile)
             {
                 string cspath = Path.Combine(tc.Root, "src.cs");
-                QA.ToCSharp(asm, cspath);
+                ExportTools.ToCSharp(asm, cspath);
             }
 
             if (tds.IsCancel) return false;
@@ -304,14 +304,14 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             }
 
             if (test.CompareOutputs)
-                test.Error = QA.CompareLines(test.Output1, test.Output2, true);
+                test.Error = CompareTools.CompareLines(test.Output1, test.Output2, true);
         }
         #endregion
 
         #region CreateDebugHooks
         static void CreateDebugHooks(TestCase test, TestDriverSettings settings, string outpath)
         {
-            if (QA.IsNUnitSession) return;
+            if (GlobalOptions.IsNUnitSession) return;
 
 #if DEBUG
             if (DebugService.AbcDump)

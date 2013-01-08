@@ -63,7 +63,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
                 if (tag is GlobalOptionName)
                 {
                     var name = (GlobalOptionName)tag;
-                    QA.SetOption(name, mi.Checked);
+                    GlobalOptions.SetOption(name, mi.Checked);
                 }
                 else
                 {
@@ -407,7 +407,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
                 {
                     SaveState();
 
-                    if (QA.UseCommonDirectory)
+                    if (GlobalOptions.UseCommonDirectory)
                         QA.CopyNUnitTests();
 
                     worker.RunWorkerAsync(list);
@@ -474,8 +474,8 @@ namespace DataDynamics.PageFX.TestRunner.UI
 
 		private void RunTestCase(TestCase tc)
         {
-            tc.Optimize = QA.OptimizeCode;
-            tc.Debug = QA.EmitDebugInfo;
+            tc.Optimize = GlobalOptions.OptimizeCode;
+            tc.Debug = GlobalOptions.EmitDebugInfo;
             tc.IsStarted = true;
             var settings = new TestDriverSettings
                           {
@@ -591,7 +591,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             //CompilerConsole.FrameworkVersion = FrameworkVersion;
 
             AvmShell.Options.InterpretDefaultValue = !JITModeEnabled;
-            QA.TestDebugSupport = miPDBTestMode.Checked;
+            GlobalOptions.TestDebugSupport = miPDBTestMode.Checked;
 
 #if DEBUG
             tbLog.Clear();
@@ -739,12 +739,12 @@ namespace DataDynamics.PageFX.TestRunner.UI
                     string key = tag as string;
                     if (key != null)
                     {
-                        mi.Checked = QA.GetValue(key, false);
+                        mi.Checked = Storage.GetValue(key, false);
                     }
                     else if (tag is GlobalOptionName)
                     {
                         var name = (GlobalOptionName)tag;
-                        mi.Checked = QA.GetBoolOption(name);
+                        mi.Checked = GlobalOptions.GetBoolOption(name);
                     }
                     LoadFlags(mi.DropDownItems);
                 }
@@ -761,7 +761,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
                     string key = mi.Tag as string;
                     if (key != null)
                     {
-                        QA.SetValue(key, mi.Checked);
+                        Storage.SetValue(key, mi.Checked);
                     }
                     SaveFlags(mi.DropDownItems);
                 }
@@ -792,22 +792,22 @@ namespace DataDynamics.PageFX.TestRunner.UI
         void LoadSettings()
         {
             _testDriver = TestDriver.AbcSerialization;
-            string str = QA.GetValue(KeyTestDriver, "ABC");
+            string str = Storage.GetValue(KeyTestDriver, "ABC");
 	        _testDriver = str.EnumParse(TestDriver.AbcSerialization);
             
-            str = QA.GetValue(KeyAvmShellMode, AvmShellMode.Interpretation);
+            str = Storage.GetValue(KeyAvmShellMode, AvmShellMode.Interpretation);
             if (string.Compare(str, AvmShellMode.JIT, true) == 0)
                 cbAvmShellMode.SelectedIndex = 1;
 
             LoadFlags(btnOptions.DropDownItems);
 
-            btnLogSwitch.Checked = QA.GetValue("LogSwitch", true);
+            btnLogSwitch.Checked = Storage.GetValue("LogSwitch", true);
 
-            cbTypeName.Text = QA.GetValue(KeyTypeName, "");
-            cbMethodName.Text = QA.GetValue(KeyMethodName, "");
-            tbPhase.Text = QA.GetValue(KeyPhase, "");
+            cbTypeName.Text = Storage.GetValue(KeyTypeName, "");
+            cbMethodName.Text = Storage.GetValue(KeyMethodName, "");
+            tbPhase.Text = Storage.GetValue(KeyPhase, "");
             
-            int v = QA.GetValue(KeyFormState, (int)FormWindowState.Normal);
+            int v = Storage.GetValue(KeyFormState, (int)FormWindowState.Normal);
             switch (v)
             {
                 case (int)FormWindowState.Minimized:
@@ -820,8 +820,8 @@ namespace DataDynamics.PageFX.TestRunner.UI
 
                 default:
                     {
-                        Location = QA.GetValue(KeyFormLocation, Location);
-                        Size = QA.GetValue(KeyFormSize, Size);
+                        Location = Storage.GetValue(KeyFormLocation, Location);
+                        Size = Storage.GetValue(KeyFormSize, Size);
                     }
                     break;
             }
@@ -829,24 +829,24 @@ namespace DataDynamics.PageFX.TestRunner.UI
 
         void SaveSettings()
         {
-			QA.SetValue(KeyTestDriver, _testDriver.EnumString());
+			Storage.SetValue(KeyTestDriver, _testDriver.EnumString());
 
             SaveFlags(btnOptions.DropDownItems);
 
-            QA.SetValue("LogSwitch", btnLogSwitch.Checked);
+            Storage.SetValue("LogSwitch", btnLogSwitch.Checked);
 
-            QA.SetValue(KeyTypeName, cbTypeName.Text);
-            QA.SetValue(KeyMethodName, cbMethodName.Text);
-            QA.SetValue(KeyPhase, tbPhase.Text);
+            Storage.SetValue(KeyTypeName, cbTypeName.Text);
+            Storage.SetValue(KeyMethodName, cbMethodName.Text);
+            Storage.SetValue(KeyPhase, tbPhase.Text);
             
-            QA.SetValue(KeyFormState, (int)WindowState);
-            QA.SetValue(KeyFormLocation, Location);
-            QA.SetValue(KeyFormSize, Size);
+            Storage.SetValue(KeyFormState, (int)WindowState);
+            Storage.SetValue(KeyFormLocation, Location);
+            Storage.SetValue(KeyFormSize, Size);
 
             string mode = JITModeEnabled
                               ? AvmShellMode.JIT
                               : AvmShellMode.Interpretation;
-            QA.SetValue(KeyAvmShellMode, mode);
+            Storage.SetValue(KeyAvmShellMode, mode);
         }
 
 
@@ -966,7 +966,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             tc.VM = VM.AVM;
             docOutput.Text = "";
 
-            if (!QA.Compile(tc))
+            if (!Compiler.Compile(tc))
             {
                 docOutput.Text = tc.Error;
             }
@@ -976,7 +976,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
         {
             try
             {
-                Directory.Delete(QA.BaseDir, true);
+                Directory.Delete(GlobalOptions.BaseDir, true);
             }
             catch (Exception exc)
             {
@@ -1058,7 +1058,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             if (list.Count <= 1) return;
             string path = GetReportPath();
             GenerateHtmlReport(path);
-            QA.ShowBrowser("Test Results", path, false);
+            Browser.Show("Test Results", path);
         }
 
 		private static string GetReportPath()
@@ -1133,7 +1133,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     GenerateHtmlReport(dlg.FileName);
-                    QA.ShowBrowser("Test Results", dlg.FileName, false);
+                    Browser.Show("Test Results", dlg.FileName);
                 }
             }
         }
@@ -1153,7 +1153,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
                         {
                             string out1 = File.ReadAllText(files[0]);
                             string out2 = File.ReadAllText(files[1]);
-                            string err = QA.CompareLines(out1, out2, true);
+                            string err = CompareTools.CompareLines(out1, out2, true);
                             err = Path.GetFileName(files[0]) + " " + Path.GetFileName(files[1]) + "\n" + err;
                             docOutput.Text = err;
                         }
@@ -1208,7 +1208,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
 
 		private void btnNUnitSession_Click(object sender, EventArgs e)
         {
-            QA.IsNUnitSession = btnNUnitSession.Checked;
+            GlobalOptions.IsNUnitSession = btnNUnitSession.Checked;
         }
     }
 }

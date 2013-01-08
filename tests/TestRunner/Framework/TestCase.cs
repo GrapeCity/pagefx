@@ -79,7 +79,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         {
             get
             {
-                if (QA.UseCommonDirectory)
+                if (GlobalOptions.UseCommonDirectory)
                     return QA.CommonDirectory;
 
                 if (string.IsNullOrEmpty(_root) 
@@ -167,8 +167,8 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             }
         }
         
-        public bool Debug = QA.EmitDebugInfo;
-        public bool Optimize = QA.OptimizeCode;
+        public bool Debug = GlobalOptions.EmitDebugInfo;
+        public bool Optimize = GlobalOptions.OptimizeCode;
 
         public SourceFileList SourceFiles
         {
@@ -206,7 +206,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             string suffix = VM == VM.AVM ? ".avm.dll" : ".clr.dll";
             string fullpath = NUnitBasePath + suffix;
             string dest = Path.Combine(root, Path.GetFileName(fullpath));
-            if (!QA.UseCommonDirectory)
+            if (!GlobalOptions.UseCommonDirectory)
                 File.Copy(fullpath, dest, true);
             return dest;
         }
@@ -410,7 +410,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         public IAssembly LoadAssembly()
         {
             string err = null;
-            var asm = QA.LoadAssembly(ExePath, VM, Root, ref err);
+            var asm = AssemblyLoader.Load(ExePath, VM, Root, ref err);
             Error = err;
             return asm;
         }

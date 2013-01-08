@@ -12,6 +12,7 @@ using DataDynamics.PageFX.Ecma335.Tools;
 using DataDynamics.PageFX.FlashLand;
 using DataDynamics.PageFX.FlashLand.Swf;
 using DataDynamics.PageFX.TestRunner.Framework;
+using DataDynamics.PageFX.TestRunner.UI;
 
 namespace DataDynamics.PageFX.TestRunner
 {
@@ -253,7 +254,13 @@ namespace DataDynamics.PageFX.TestRunner
             //NOTE: This flag is used to optimize loading of QAForm.
             //QA.LoadNUnitTests = false;
             //QA.ProtectNUnitTest = false;
-            QA.ShowUI();
+
+	        GlobalOptions.Load();
+
+	        using (var form = new QAForm())
+		        form.ShowDialog();
+
+	        GlobalOptions.Save();
         }
 
         static bool RunTools(CommandLine cl)
@@ -270,9 +277,9 @@ namespace DataDynamics.PageFX.TestRunner
                 string ns = cl.GetOption(null, "ns");
                 string classname = cl.GetOption(null, "class", "classname");
 
-                QA.RunSuiteAsOneTest = true;
-                QA.TestSet = testset;
-                QA.GenerateNUnitTestFixture(path, ns, classname, "swf");
+                GlobalOptions.RunSuiteAsOneTest = true;
+                NUnitFixtureGeneratpr.TestSet = testset;
+                NUnitFixtureGeneratpr.GenerateNUnitTestFixture(path, ns, classname, "swf");
                 return true;
             }
 

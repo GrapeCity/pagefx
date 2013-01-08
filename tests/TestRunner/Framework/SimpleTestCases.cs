@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             string fullpath = path + ".avm.dll";
 	        if (!File.Exists(fullpath))
 		        return null;
-	        if (!QA.LoadNUnitTests)
+	        if (!GlobalOptions.LoadNUnitTests)
 		        return null;
 
             string name = Path.GetFileNameWithoutExtension(path);
@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             try
             {
                 GlobalSettings.EmitDebugInfo = false;
-                asm = QA.LoadAssembly(fullpath, VM.AVM, tcroot, ref error);
+                asm = AssemblyLoader.Load(fullpath, VM.AVM, tcroot, ref error);
             }
             finally
             {
@@ -63,7 +63,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 		public static ITestSuite GetSuite()
 		{
 			var suite1 = new SingleFileSuite(Path.Combine(Factory.RootDir, "Simple"));
-			if (QA.LoadNUnitTests)
+			if (GlobalOptions.LoadNUnitTests)
 			{
 				string dir = QA.NUnitTestsDirectory;
 				var suite2 = LoadNUnitSuite(Path.Combine(dir, "mono"));
