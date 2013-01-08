@@ -108,17 +108,22 @@ namespace DataDynamics.PageFX.TestRunner.Framework
         private int _rootCount = -1;
         private string _root;
 
-        static CompilerLanguage FromExt(string ext)
+        private static CompilerLanguage FromExt(string ext)
         {
             if (string.IsNullOrEmpty(ext))
                 return CompilerLanguage.CSharp;
-            if (ext.EndsWith("vb", StringComparison.OrdinalIgnoreCase))
-                return CompilerLanguage.VB;
-            if (ext.EndsWith("il", StringComparison.OrdinalIgnoreCase))
-                return CompilerLanguage.CIL;
-            if (ext.EndsWith("js", StringComparison.OrdinalIgnoreCase))
-                return CompilerLanguage.JSharp;
-            return CompilerLanguage.CSharp;
+
+	        if (ext.StartsWith("."))
+		        ext = ext.Substring(1);
+
+	        switch (ext.ToLower())
+	        {
+		        case "vb": return CompilerLanguage.VB;
+		        case "il": return CompilerLanguage.CIL;
+		        case "js": return CompilerLanguage.JSharp;
+		        case "fs": return CompilerLanguage.FSharp;
+				default: return CompilerLanguage.CSharp;
+	        }
         }
 
         public string FileExtension

@@ -202,6 +202,7 @@ namespace DataDynamics.PageFX.TestRunner.UI
             switch (tc.Language)
             {
                 case CompilerLanguage.CSharp:
+				case CompilerLanguage.FSharp:
                     return SyntaxLanguage.CSharp;
                 case CompilerLanguage.VB:
                     return SyntaxLanguage.VB;

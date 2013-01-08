@@ -94,6 +94,7 @@ namespace DataDynamics.PageFX.Common.Utilities
         CSharp,
         VB,
         JSharp,
+		FSharp,
         CIL
     }
     #endregion
@@ -536,14 +537,11 @@ namespace DataDynamics.PageFX.Common.Utilities
         {
             switch (lang)
             {
-                case CompilerLanguage.CSharp:
-                    return "csc.exe";
-                case CompilerLanguage.VB:
-                    return "vbc.exe";
-                case CompilerLanguage.JSharp:
-                    return "jsc.exe";
-                default:
-                    throw new ArgumentOutOfRangeException("lang");
+                case CompilerLanguage.CSharp: return "csc.exe";
+                case CompilerLanguage.VB: return "vbc.exe";
+                case CompilerLanguage.JSharp: return "jsc.exe";
+				case CompilerLanguage.FSharp: return "fsc.exe";
+                default: throw new ArgumentOutOfRangeException("lang");
             }
         }
 
@@ -555,24 +553,38 @@ namespace DataDynamics.PageFX.Common.Utilities
     			//FrameworkVersion.NET_1_0, 
     		};
 
-        /// <summary>
-        /// Gets path to compiler.
-        /// </summary>
-        /// <param name="lang"></param>
-        /// <returns></returns>
-        public static string GetPath(CompilerLanguage lang)
-        {
-            string exeName = GetFileName(lang);
-            foreach (var v in FrameworkVersions)
-            {
-                string root = FrameworkInfo.GetRoot(v);
-                string path = Path.Combine(root, exeName);
-                if (File.Exists(path)) return path;
-            }
-            return "";
-        }
+		private static IEnumerable<string> FrameworkRoots()
+		{
+			return FrameworkVersions.Select(v => FrameworkInfo.GetRoot(v));
+		}
 
-        static void ParseLocation(string loc, out string file, out int line, out int col)
+		//TODO: get path to SDKs like NAnt
+	    private static readonly string[] FSharpDirs =
+		    {
+				@"C:\Program Files\Microsoft SDKs\F#\3.0\Framework\v4.0",
+			    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Microsoft F#\v4.0"),
+		    };
+
+	    /// <summary>
+	    /// Gets path to compiler.
+	    /// </summary>
+	    /// <param name="lang"></param>
+	    /// <returns></returns>
+	    public static string GetPath(CompilerLanguage lang)
+	    {
+		    string name = GetFileName(lang);
+
+		    var dirs = lang == CompilerLanguage.FSharp
+			               ? FSharpDirs
+			               : FrameworkRoots();
+
+		    return dirs.Where(dir => Directory.Exists(dir))
+		               .Select(dir => Path.Combine(dir, name))
+		               .FirstOrDefault(path => File.Exists(path))
+		           ?? "";
+	    }
+
+	    private static void ParseLocation(string loc, out string file, out int line, out int col)
         {
             line = 0;
             col = 0;
@@ -607,7 +619,7 @@ namespace DataDynamics.PageFX.Common.Utilities
             }
         }
 
-        static bool Is(string s, int i, string value)
+        private static bool Is(string s, int i, string value)
         {
             if (i + value.Length > s.Length)
                 return false;
@@ -619,19 +631,19 @@ namespace DataDynamics.PageFX.Common.Utilities
             return true;
         }
 
-        static string substr(string s, int start, int end)
+        private static string substr(string s, int start, int end)
         {
             return s.Substring(start, end - start + 1);
         }
 
-        static readonly string[] ErrorLevels =
+        private static readonly string[] ErrorLevels =
             {
                 "error",
                 "warning",
                 "warn"
             };
 
-        static int FindError(string s, ref string level, ref string errorNumber)
+        private static int FindError(string s, ref string level, ref string errorNumber)
         {
             int n = s.Length;
             for (int i = 0; i < n; ++i)
