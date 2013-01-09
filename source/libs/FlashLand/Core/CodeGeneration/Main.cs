@@ -6,6 +6,7 @@ using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
 using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.FlashLand.IL;
@@ -130,6 +131,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	    {
 			get { return AppAssembly.TypeFactory; }
 	    }
+
+		internal PtrManager Pointers
+		{
+			get { return _pointers ?? (_pointers = new PtrManager(this)); }
+		}
+		private PtrManager _pointers;
 
 	    #region Generate - Entry Point
         public AbcFile Generate(IAssembly assembly)

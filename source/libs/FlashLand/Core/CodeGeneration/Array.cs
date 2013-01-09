@@ -14,6 +14,7 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
@@ -283,7 +284,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (!type.IsArray) return null;
             if (method.Name != CLRNames.Array.Address) return null;
 
-            var elemPtr = DefineElemPtr();
+            var elemPtr = Pointers.ElemPtr.Instance;
 
             string name = "GetAddr_" + method.GetParametersSignature(Runtime.Avm);
 

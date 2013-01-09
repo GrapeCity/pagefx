@@ -8,6 +8,7 @@ using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
 
 namespace DataDynamics.PageFX.FlashLand.IL
 {
@@ -3739,14 +3740,14 @@ namespace DataDynamics.PageFX.FlashLand.IL
             if (trait.Kind != AbcTraitKind.Slot)
                 throw new ArgumentException("trait is not slot");
 
-            var instance = Generator.DefineFuncPtr();
+            var instance = Generator.Pointers.FuncPtr.Instance;
             Getlex(instance);
 
-            var m = Generator.DefineFunction_GetProperty(trait.Name);
+            var m = Generator.Pointers.FuncPtr.GetProperty(trait.Name);
             NewFunction(m);
 
-            m = Generator.DefineFunction_SetProperty(trait.Name);
-            NewFunction(m);
+	        m = Generator.Pointers.FuncPtr.SetProperty(trait.Name);
+	        NewFunction(m);
 
             Construct(2);
             CoerceObject();
@@ -3773,7 +3774,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (field.IsStatic)
             {
-                var instance = Generator.DefineStaticFieldPtr(field);
+                var instance = Generator.Pointers.FieldPtr(field);
                 Getlex(instance);
                 GetProperty(Const.Instance);
             }
@@ -3792,9 +3793,9 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="target">if null object must be onto the eval stack</param>
         public void CreatePropertyPtr(AbcMultiname name, Action target)
         {
+			var instance = Generator.Pointers.PropertyPtr(name);
             if (name.Namespace.IsGlobalPackage)
             {
-                var instance = Generator.DefineGlobalPropertyPtr();
                 Getlex(instance);
                 if (target != null) target();
                 else Swap();
@@ -3803,7 +3804,6 @@ namespace DataDynamics.PageFX.FlashLand.IL
             }
             else
             {
-                var instance = Generator.DefinePropertyPtr();
                 Getlex(instance);
                 if (target != null) target();
                 else Swap();
@@ -3816,7 +3816,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         public void GetElemPtr(IType elemType)
         {
             //stack transition: arr, index -> addr
-            var m = Generator.DefineGetElemPtr();
+            var m = Generator.Pointers.GetElemPtr();
             Call(m);
         }
         #endregion

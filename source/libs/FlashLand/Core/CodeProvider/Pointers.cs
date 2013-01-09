@@ -2,6 +2,7 @@ using System;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
@@ -256,12 +257,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (AbcGenConfig.UseActivationTraits && AbcGenConfig.UseFuncPointers)
             {
                 kind = PointerKind.FuncPtr;
-                return _generator.DefineFuncPtr();
+                return _generator.Pointers.FuncPtr.Instance;
             }
             //kind = PointerKind.SlotPtr;
             //return _generator.DefineSlotPtr(slot);
             kind = PointerKind.PropertyPtr;
-            return _generator.DefinePropertyPtr(slot.Name);
+            return _generator.Pointers.PropertyPtr(slot.Name);
         }
 
 		private string ThisTraitName

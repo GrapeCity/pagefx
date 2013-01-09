@@ -156,7 +156,13 @@
     <Compile Include="Core\CodeGeneration\Object.GetHashCode.cs" />
     <Compile Include="Core\CodeGeneration\ObjectAPI.cs" />
     <Compile Include="Core\CodeGeneration\Operators.cs" />
-    <Compile Include="Core\CodeGeneration\Pointers.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\ElemPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\FuncPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\GlobalPropertyPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\PropertyPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\SlotPointers.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\StaticFieldPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\PtrManager.cs" />
     <Compile Include="Core\CodeGeneration\Reflection.cs" />
     <Compile Include="Core\CodeGeneration\Reflection.TypeInfo.cs" />
     <Compile Include="Core\CodeGeneration\RootSprite.cs" />
