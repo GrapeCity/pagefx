@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		public static void SetProperty(AbcCode code)
 		{
 			// stack: name, value
-			var vh = code.Generator.DefineValueHolder();
+			var vh = code.Generator.RuntimeImpl.ValueHolder;
 			var value = vh.GetStaticSlot("value");
 
 			code.Getlex(vh); //after: name, value, vh
@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		[InlineImpl("SetProperty", ArgTypes = new[] { "String", "String" })]
 		public static void SetProperty_String_String(AbcCode code)
 		{
-			var vh = code.Generator.DefineValueHolder();
+			var vh = code.Generator.RuntimeImpl.ValueHolder;
 			var value = vh.GetStaticSlot("value");
 
 			code.Getlex(vh);

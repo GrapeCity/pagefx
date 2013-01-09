@@ -19,7 +19,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 			//NOTE: VerifyError: Error #1078: Illegal opcode/multiname combination: 96<[]::[]>.
 			//code.Getlex(code.abc.RuntimeQName);
 
-			var m = code.Generator.DefineFindClass();
+			var m = code.Generator.RuntimeImpl.FindClass();
 			code.Call(m);
 		}
 

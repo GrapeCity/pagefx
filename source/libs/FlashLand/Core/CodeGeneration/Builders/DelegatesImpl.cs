@@ -3,45 +3,62 @@ using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    internal partial class AbcGenerator
-    {
-        private void EnshureDelegateMethods(IType type)
-        {
-            var m = type.Methods.Find(Const.Delegate.AddEventListeners, 2);
-            if (m == null)
-                throw new InvalidOperationException("Invalid corlib");
-            DefineAbcMethod(m);
+	internal sealed class DelegatesImpl
+	{
+		private readonly AbcGenerator _generator;
 
-	        m = type.Methods.Find(Const.Delegate.RemoveEventListeners, 2);
-	        if (m == null)
-                throw new InvalidOperationException("Invalid corlib");
-            DefineAbcMethod(m);
-        }
+		public DelegatesImpl(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
 
-		private void EnshureDelegateMethods()
-        {
-            if (_enshureDelegateMethods) return;
-            _enshureDelegateMethods = true;
-            EnshureDelegateMethods(SystemTypes.Delegate);
-            EnshureDelegateMethods(SystemTypes.MulticastDelegate);
-        }
+		private void EnshureMethods(IType type)
+		{
+			var m = type.Methods.Find(Const.Delegate.AddEventListeners, 2);
+			if (m == null)
+				throw new InvalidOperationException("Invalid corlib");
+			_generator.DefineAbcMethod(m);
+
+			m = type.Methods.Find(Const.Delegate.RemoveEventListeners, 2);
+			if (m == null)
+				throw new InvalidOperationException("Invalid corlib");
+			_generator.DefineAbcMethod(m);
+		}
+
+		private void EnshureMethods()
+		{
+			if (_enshureDelegateMethods) return;
+			_enshureDelegateMethods = true;
+			EnshureMethods(_generator.SystemTypes.Delegate);
+			EnshureMethods(_generator.SystemTypes.MulticastDelegate);
+		}
 
 		private bool _enshureDelegateMethods;
 
-        #region DefineDelegateConstructor
-		private AbcMethod DefineDelegateConstructor(IMethod method, AbcInstance instance)
+		public AbcMethod Build(IMethod method, AbcInstance instance)
 		{
-			EnshureDelegateMethods();
+			if (method.IsConstructor)
+				return BuildCtor(method, instance);
+
+			if (method.Name == "Invoke")
+				return InvokeImpl(method, instance);
+
+			return _generator.ThrowOrDefineNotImplCall(method, instance);
+		}
+
+		private AbcMethod BuildCtor(IMethod method, AbcInstance instance)
+		{
+			EnshureMethods();
 
 			if (method.Parameters.Count != 2)
 				throw new InvalidOperationException();
 
-			var targetParam = CreateParam(SystemTypes.Object, method.Parameters[0].Name);
-			var funcParam = CreateParam(Abc.BuiltinTypes.Function, method.Parameters[1].Name);
+			var targetParam = _generator.CreateParam(_generator.SystemTypes.Object, method.Parameters[0].Name);
+			var funcParam = _generator.CreateParam(_generator.Abc.BuiltinTypes.Function, method.Parameters[1].Name);
 
-			var sig = SigOf(method);
+			var sig = _generator.SigOf(method);
 			sig.Args = new object[] {targetParam, funcParam};
 
 			return instance.DefineMethod(
@@ -67,16 +84,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 					});
 		}
 
-	    #endregion
+		private AbcMethod InvokeImpl(IMethod method, AbcInstance instance)
+		{
+			EnshureMethods();
+			//TODO: Check m_function on "not null"
 
-        #region DefineDelegateInvoke
-		private AbcMethod DefineDelegateInvoke(IMethod method, AbcInstance instance)
-        {
-            EnshureDelegateMethods();
-            //TODO: Check m_function on "not null"
-
-			var sig = SigOf(method);
-			var traitName = Abc.DefineName(sig.Name);
+			var sig = _generator.SigOf(method);
+			var traitName = _generator.Abc.DefineName(sig.Name);
 			sig.Name = traitName; // minor opt to quickly define name next time
 
 			return instance.DefineMethod(
@@ -122,7 +136,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 							code.ReturnValue();
 						}
 					});
-        }
-        #endregion
-    }
+		}
+	}
 }

@@ -75,12 +75,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var type = method.DeclaringType;
             if (type.TypeKind == TypeKind.Delegate)
             {
-                if (method.IsConstructor)
-                    return DefineDelegateConstructor(method, instance);
-                if (method.Name == "Invoke")
-                    return DefineDelegateInvoke(method, instance);
+                return Delegates.Build(method, instance);
             }
-
             return ThrowOrDefineNotImplCall(method, instance);
         }
 
@@ -99,7 +95,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return ThrowOrDefineNotImplCall(method, instance);
         }
 
-        private object ThrowOrDefineNotImplCall(IMethod method, AbcInstance instance)
+        internal AbcMethod ThrowOrDefineNotImplCall(IMethod method, AbcInstance instance)
         {
             if (AbcGenConfig.ThrowOnUnexpectedCall)
                 throw UnexpectedCall(method);

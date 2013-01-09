@@ -1,19 +1,19 @@
 ﻿using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    partial class AbcGenerator
+    internal static class HashCodeImpl
     {
-        private AbcMethod HashCodeCalc()
+	    public static AbcMethod CalcHashCode(AbcGenerator generator)
         {
-            var instance = DefineRuntimeInstance();
+            var instance = generator.RuntimeImpl.Instance;
 
 	        return instance.DefineMethod(
 		        Sig.@static("get_hash_code", AvmTypeCode.Int32, AvmTypeCode.Object),
 		        code =>
 			        {
-				        var getDic = GetHashCodeDic();
+				        var getDic = GetHashCodeDic(generator);
 
 				        const int varKey = 1;
 				        const int varDic = 2;
@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 				        code.GetLocal(varDic);
 				        code.GetLocal(varKey);
-				        code.CallStatic(GetMethod(ObjectMethodId.NewHashCode));
+				        code.CallStatic(generator.GetMethod(ObjectMethodId.NewHashCode));
 				        code.SetLocal(varHC);
 				        code.GetLocal(varHC);
 				        code.SetNativeArrayItem(); //dic[key] = value
@@ -49,11 +49,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			        });
         }
 
-        private AbcMethod GetHashCodeDic()
+        private static AbcMethod GetHashCodeDic(AbcGenerator generator)
         {
-            var instance = DefineRuntimeInstance();
+            var instance = generator.RuntimeImpl.Instance;
 
-            var dicType = Abc.DefineQName("flash.utils", "Dictionary");
+            var dicType = generator.Abc.DefineQName("flash.utils", "Dictionary");
             var dic = instance.DefineStaticSlot("hcdic$", dicType);
 
 	        return instance.DefineMethod(

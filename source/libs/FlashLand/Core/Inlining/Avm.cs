@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		[InlineImpl]
 		public static void get_IsFlashPlayer(AbcCode code)
 		{
-			var m = code.Generator.DefineIsFlashPlayer();
+			var m = code.Generator.RuntimeImpl.IsFlashPlayer();
 			code.Getlex(m);
 			code.Call(m);
 		}
@@ -32,7 +32,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		[InlineImpl]
 		public static void exit(IMethod method, AbcCode code)
 		{
-			var m = code.Generator.DefineExitMethod();
+			var m = code.Generator.RuntimeImpl.Exit();
 			code.Getlex(m);
 			code.Call(m);
 		}

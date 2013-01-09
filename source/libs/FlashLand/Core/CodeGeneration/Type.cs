@@ -230,7 +230,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             AddInstance(instance);
 
             if (IsRootSprite(type))
-                _rootSprite = instance;
+                RootSprite.Instance = instance;
 
             DefineDebugInfo(type, instance);
 

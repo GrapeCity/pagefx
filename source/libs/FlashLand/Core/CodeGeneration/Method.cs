@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private AbcMultiname DefineQName(IMethod method)
         {
-            string name = method.GetSigName(Runtime.Avm);
+			string name = method.GetSigName(Runtime.Avm);
             return Abc.DefineQName(method, name);
         }
 
@@ -76,7 +76,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return name;
         }
         
-	    private Sig SigOf(IMethod method)
+	    internal Sig SigOf(IMethod method)
 		{
 			bool isOverride = method.IsOverride();
 			var name = GetMethodName(method, isOverride);
@@ -377,7 +377,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         /// <param name="source">source method of given <see cref="AbcMethod"/></param>
         public void DefineParameters(AbcMethod target, IMethod source)
         {
-            if (source == _entryPoint)
+            if (source == EntryPoint)
             {
                 if (AbcGenConfig.ParameterlessEntryPoint)
                     return;

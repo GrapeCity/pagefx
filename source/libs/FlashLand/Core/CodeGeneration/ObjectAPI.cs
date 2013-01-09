@@ -1,6 +1,7 @@
 using System.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 using DataDynamics.PageFX.FlashLand.IL;
 
@@ -48,7 +49,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var coder = val[0] as AbcCoder;
             m = Abc.DefineMethod(sig, coder);
 
-            _newAPI.SetProtoFunction(type, sig.TraitName, m);
+            NewApi.SetProtoFunction(type, sig.TraitName, m);
 
             val[0] = m;
         }
@@ -96,7 +97,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 Const.Object.MethodGetHashCode,
                 code =>
                     {
-                        var hc = HashCodeCalc();
+                        var hc = HashCodeImpl.CalcHashCode(this);
                         code.Getlex(hc);
                         code.LoadThis();
                         code.Call(hc);
@@ -141,7 +142,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 Const.Object.MethodGetType,
                 code =>
                     {
-                        _newAPI.SetProtoFunction(
+                        NewApi.SetProtoFunction(
                             AvmTypeCode.String,
                             Const.Object.MethodGetTypeId,
                             DefineString_GetTypeId());
@@ -183,7 +184,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private void DefinePrototype_GetType(AbcInstance instance, IType type)
         {
-            _newAPI.SetProtoFunction(
+            NewApi.SetProtoFunction(
                     instance.Name,
                     GetMethod(ObjectMethodId.GetType),
                     code => code.ReturnTypeOf(type));

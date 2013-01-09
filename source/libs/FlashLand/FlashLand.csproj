@@ -143,7 +143,7 @@
     <Compile Include="Core\CodeGeneration\Corlib\EnvironmentTypeImpl.cs" />
     <Compile Include="Core\CodeGeneration\Corlib\ObjectTypeImpl.cs" />
     <Compile Include="Core\CodeGeneration\Corlib\TypeImpl.cs" />
-    <Compile Include="Core\CodeGeneration\Delegates.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\DelegatesImpl.cs" />
     <Compile Include="Core\CodeGeneration\EmbeddedAssets.cs" />
     <Compile Include="Core\CodeGeneration\Errors.cs" />
     <Compile Include="Core\CodeGeneration\Field.cs" />
@@ -152,8 +152,8 @@
     <Compile Include="Core\CodeGeneration\Main.cs" />
     <Compile Include="Core\CodeGeneration\Method.cs" />
     <Compile Include="Core\CodeGeneration\MX.cs" />
-    <Compile Include="Core\CodeGeneration\NUnit.cs" />
-    <Compile Include="Core\CodeGeneration\Object.GetHashCode.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\NUnitRunner.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\HashCodeImpl.cs" />
     <Compile Include="Core\CodeGeneration\ObjectAPI.cs" />
     <Compile Include="Core\CodeGeneration\Operators.cs" />
     <Compile Include="Core\CodeGeneration\Pointers\ElemPtr.cs" />
@@ -165,10 +165,10 @@
     <Compile Include="Core\CodeGeneration\Pointers\PtrManager.cs" />
     <Compile Include="Core\CodeGeneration\Reflection.cs" />
     <Compile Include="Core\CodeGeneration\Reflection.TypeInfo.cs" />
-    <Compile Include="Core\CodeGeneration\RootSprite.cs" />
-    <Compile Include="Core\CodeGeneration\Runtime.cs" />
-    <Compile Include="Core\CodeGeneration\Scripts.cs" />
-    <Compile Include="Core\CodeGeneration\StaticCtors.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\RootSpriteImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\RuntimeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ScriptBuilder.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\StaticCtorsImpl.cs" />
     <Compile Include="Core\CodeGeneration\StringAPI.cs" />
     <Compile Include="Core\CodeGeneration\Type.cs" />
     <Compile Include="Core\CodeGeneration\Type.DebugInfo.cs" />

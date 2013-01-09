@@ -7,47 +7,45 @@ using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    internal partial class AbcGenerator
+    internal sealed class NUnitRunner
     {
-        private readonly List<IType> _testFixtures = new List<IType>();
+	    private readonly AbcGenerator _generator;
+	    private readonly List<IType> _fixtures = new List<IType>();
 
-        /// <summary>
-        /// Returns true if application assembly has nunit tests and does not define custom root sprite.
-        /// </summary>
-        public bool IsNUnit
+		public NUnitRunner(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    public int FixtureCount
+	    {
+			get { return _fixtures.Count; }
+	    }
+
+		public void AddFixture(IType type)
+		{
+			_fixtures.Add(type);
+		}
+
+	    public void Main(AbcCode code)
         {
-            get
-            {
-                if (IsSwf)
-                {
-                    if (IsFlexApplication) return false;
-                    if (!_rootSpriteGenerated)
-                        return false;
-                }
-                return _testFixtures.Count > 0;
-            }
+		    if (_fixtures.Count <= 0) return;
+
+		    foreach (var fixture in _fixtures)
+			    RunTestFixture(code, fixture);
+
+		    code.CallStatic(GetMethod(NUnitMethodId.TestRunner_Run), null);
         }
 
-        #region NUnitMain
-        void NUnitMain(AbcCode code)
-        {
-            if (_testFixtures.Count > 0)
-            {
-                foreach (var tf in _testFixtures)
-                    RunTestFixture(code, tf);
-                code.CallStatic(GetMethod(NUnitMethodId.TestRunner_Run), null);
-            }
-        }
-
-        void RunTestFixture(AbcCode code, IType type)
+        private void RunTestFixture(AbcCode code, IType type)
         {
             foreach (var test in type.GetUnitTests(false))
                 RunTest(code, test);
         }
 
-        void RunTest(AbcCode code, IMethod test)
+		private void RunTest(AbcCode code, IMethod test)
         {
             var testFixture = test.DeclaringType;
 
@@ -90,12 +88,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             //register test in FlashTestRunner
             code.CallStatic(GetMethod(NUnitMethodId.TestRunner_Register), () => code.GetLocal(varTest));
         }
-        #endregion
 
-        #region DefineTestRunner
-        AbcMethod DefineTestRunner(IMethod test)
+	    private AbcMethod DefineTestRunner(IMethod test)
         {
-            var method = DefineAbcMethod(test);
+            var method = _generator.DefineAbcMethod(test);
 
             var instance = method.Instance;
             string name = "run_test_" + test.GetMonoTestCaseName();
@@ -115,7 +111,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                         var setup = testFixture.GetUnitTestSetup();
                         AbcMethod setupAM = null;
                         if (setup != null)
-                            setupAM = DefineAbcMethod(setup);
+                            setupAM = _generator.DefineAbcMethod(setup);
 
                         Test_Success(code, true);
                         Test_Executed(code, true);
@@ -168,7 +164,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
                         if (ee != null)
                         {
-                            code.BeginCatch(DefineAbcInstance(ee), false);
+                            code.BeginCatch(_generator.DefineAbcInstance(ee), false);
                             code.Pop();
                             Test_Success(code, true);
                             Test_Output(code, () => code.ConsoleCloseSW(false));
@@ -203,45 +199,42 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     });
         }
 
-        IType TypeTest
+        private IType TestType
         {
             get { return GetType(NUnitTypeId.Test); }
         }
 
-        void Test_SetBool(AbcCode code, string prop, bool value)
+        private void Test_SetBool(AbcCode code, string prop, bool value)
         {
-            code.SetPropertyBool(1, TypeTest, prop, value);
+            code.SetPropertyBool(1, TestType, prop, value);
         }
 
-        void Test_Success(AbcCode code, bool value)
+		private void Test_Success(AbcCode code, bool value)
         {
             Test_SetBool(code, "Success", value);
         }
 
-        void Test_Executed(AbcCode code, bool value)
+		private void Test_Executed(AbcCode code, bool value)
         {
             Test_SetBool(code, "Executed", value);
         }
 
-        void Test_Output(AbcCode code, Action value)
+		private void Test_Output(AbcCode code, Action value)
         {
-            code.SetField(1, TypeTest, "Output", value);
+            code.SetField(1, TestType, "Output", value);
         }
 
-        void Test_StackTrace(AbcCode code, Action value)
+		private void Test_StackTrace(AbcCode code, Action value)
         {
-            code.SetField(1, TypeTest, "StackTrace", value);
+            code.SetField(1, TestType, "StackTrace", value);
         }
 
-        void Test_Output(AbcCode code, string format, params object[] args)
+		private void Test_Output(AbcCode code, string format, params object[] args)
         {
             Test_Output(code, () => code.PushString(string.Format(format, args)));
         }
-        #endregion
 
-        #region NUnitFrameworkAssembly
-
-        private IType FindNUnitType(string fullname)
+	    private IType FindNUnitType(string fullname)
         {
             return InternalTypeExtensions.FindType(NUnitFrameworkAssembly, fullname);
         }
@@ -252,29 +245,24 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         private IAssembly _asmNUnitFramework;
 
-		private static bool IsNUnitFramework(IAssembly asm)
-        {
-            return string.Compare(asm.Name, "NUnit.Framework", true) == 0;
-        }
+	    private IAssembly FindNUnitFramework()
+	    {
+		    return _generator.AppAssembly
+		                     .GetReferences(true)
+		                     .FirstOrDefault(asm => string.Equals(asm.Name, "NUnit.Framework", StringComparison.OrdinalIgnoreCase));
+	    }
 
-		private IAssembly FindNUnitFramework()
-        {
-			return AppAssembly.GetReferences(true).FirstOrDefault(IsNUnitFramework);
-        }
-        
-        #region NUnitTypes & Methods
-
-		private IType GetType(NUnitTypeId id)
+	    private IType GetType(NUnitTypeId id)
         {
             return NUnitTypes[(int)id].Value;
         }
 
 		private AbcInstance GetInstance(NUnitTypeId id)
         {
-            return DefineAbcInstance(GetType(id));
+            return _generator.DefineAbcInstance(GetType(id));
         }
 
-        enum NUnitTypeId
+        private enum NUnitTypeId
         {
             FlashTestRunner,
             Test,
@@ -296,7 +284,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         private LazyValue<IType>[] _nunitTypes;
 
-        enum NUnitMethodId
+		private enum NUnitMethodId
         {
             TestRunner_Register,
             TestRunner_Run
@@ -314,14 +302,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             	return _methodsNUnit ?? (_methodsNUnit =
             	                         new[]
             	                         	{
-            	                         		LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Register", 1),
-            	                         		LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Run", 0)
+            	                         		_generator.LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Register", 1),
+            	                         		_generator.LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Run", 0)
             	                         	});
             }
         }
         private LazyValue<AbcMethod>[] _methodsNUnit;
-
-        #endregion
-        #endregion
     }
 }

@@ -973,6 +973,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion      
 
         #region DefineMethod
+		//TODO: revise using Sig
+
         internal AbcMethod DefineMethod(object retType, AbcCoder coder, params object[] args)
         {
             AbcMultiname returnType = null;

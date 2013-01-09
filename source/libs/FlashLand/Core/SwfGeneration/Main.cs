@@ -448,7 +448,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             }
             else
             {
-                var rootName = IsFlexApplication ? _typeFlexApp.FullName : g.RootSprite.FullName;
+                var rootName = IsFlexApplication ? _typeFlexApp.FullName : g.RootSprite.Instance.FullName;
 
                 //label should be the same as root name
                 Swf.SetFrameLabel(rootName);

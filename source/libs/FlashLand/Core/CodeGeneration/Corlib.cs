@@ -47,7 +47,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			return ObjectType[id];
 		}
 
-		private TypeImpl SystemType
+		internal TypeImpl SystemType
 		{
 			get { return _systemType ?? (_systemType = new TypeImpl(this)); }
 		}

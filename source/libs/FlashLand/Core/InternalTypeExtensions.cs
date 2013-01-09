@@ -308,7 +308,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
             return type.Is(SystemTypeCode.Double) || type.Is(SystemTypeCode.Single);
         }
 
-        public static bool HasInitFields(IType type, bool isStatic)
+        public static bool HasInitFields(this IType type, bool isStatic)
         {
             if (!MustInitValueTypeFields(type)) return false;
         	return type.Fields.Any(f => !f.IsConstant && f.IsStatic == isStatic && IsInitRequiredField(f.Type));

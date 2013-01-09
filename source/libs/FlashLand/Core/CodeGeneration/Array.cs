@@ -41,9 +41,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var body = new AbcMethodBody(ctor);
 
-            AddMethod(ctor);
+	        Abc.AddMethod(ctor);
 
-            var code = new AbcCode(Abc);
+	        var code = new AbcCode(Abc);
 
             code.PushThisScope();
             code.ConstructSuper();

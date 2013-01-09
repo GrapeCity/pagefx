@@ -281,9 +281,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	        method.Parameters.Add(CreateParam(SystemTypes.Type, "type"));
 
 	        var body = new AbcMethodBody(method);
-            AddMethod(method);
+	        Abc.AddMethod(method);
 
-            var code = new AbcCode(Abc);
+	        var code = new AbcCode(Abc);
             InitTypeInfo(code, type, typeId);
             code.ReturnVoid();
 

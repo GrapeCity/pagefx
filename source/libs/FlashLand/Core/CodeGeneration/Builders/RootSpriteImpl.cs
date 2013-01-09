@@ -1,55 +1,64 @@
 ﻿using DataDynamics.PageFX.FlashLand.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-	internal partial class AbcGenerator
+	internal sealed class RootSpriteImpl
 	{
-		private void BuildRootTimeline()
+		private readonly AbcGenerator _generator;
+
+		public RootSpriteImpl(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+		public void BuildTimeline()
 		{
 			DefineRootSprite();
-			BuildMainScript();
+			_generator.Scripts.BuildMainScript();
 		}
 
-		public AbcInstance RootSprite
+		public bool IsGenerated { get; private set; }
+
+		public AbcInstance Instance { get; set; }
+
+		private AbcFile Abc
 		{
-			get { return _rootSprite; }
+			get { return _generator.Abc; }
 		}
-
-		private AbcInstance _rootSprite;
-		private bool _rootSpriteGenerated;
 
 		private void DefineRootSprite()
 		{
-			if (!IsSwf) return;
-			if (IsSwc) return;
-			//NOTE: In Flex Root sprite is MX SystemManager.
-			if (IsFlexApplication) return;
-			if (_rootSprite != null) return;
+			if (!_generator.IsSwf) return;
+			if (_generator.IsSwc) return;
+
+			//NOTE: In Flex Root sprite is SystemManager.
+			if (_generator.IsFlexApplication) return;
+			if (Instance != null) return;
 
 			var rootStageField = DefineRootStageHolder();
 
-			_rootSpriteGenerated = true;
+			IsGenerated = true;
 			const string rootName = "$ROOTSPRITE$";
-			_rootSprite = new AbcInstance(true)
+			Instance = new AbcInstance(true)
 			              	{
-			              		Name = Abc.DefineQName(RootAbcNamespace, rootName),
+			              		Name = Abc.DefineQName(_generator.RootAbcNamespace, rootName),
 			              		Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
 			              		ProtectedNamespace = Abc.DefineProtectedNamespace(rootName)
 			              	};
 
 			const string superTypeName = "flash.display.Sprite";
-			var superType = FindInstanceDefOrRef(superTypeName);
+			var superType = _generator.FindInstanceDefOrRef(superTypeName);
 			if (superType == null)
 				throw Errors.Type.UnableToFind.CreateException(superTypeName);
 
-			_rootSprite.BaseTypeName = Abc.ImportConst(superType.Name);
-			_rootSprite.BaseInstance = superType;
+			Instance.BaseTypeName = Abc.ImportConst(superType.Name);
+			Instance.BaseInstance = superType;
 
-			_rootSprite.Class.Initializer = Abc.DefineEmptyMethod();
+			Instance.Class.Initializer = Abc.DefineEmptyMethod();
 
-			Abc.AddInstance(_rootSprite);
+			Abc.AddInstance(Instance);
 
-			_rootSprite.Initializer = Abc.DefineInitializer(
+			Instance.Initializer = Abc.DefineInitializer(
 				code =>
 					{
 						code.PushThisScope();
@@ -65,9 +74,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 							                       	});
 						}
 
-						NUnitMain(code);
+						_generator.NUnit.Main(code);
 
-						CallEntryPoint(code);
+						_generator.Scripts.CallEntryPoint(code);
 					});
 		}
 

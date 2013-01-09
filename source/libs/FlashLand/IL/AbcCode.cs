@@ -3185,7 +3185,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
                 if (call)
                 {
-                    var m = Generator.DefineIsNullMethod();
+                    var m = Generator.RuntimeImpl.IsNullImpl();
                     GetlexSwapCall(m);
                 }
             }
@@ -3194,7 +3194,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 if (type != null && type.IsNullableInstance())
                 {
                     //Nullable_HasValue(true);
-                    var m = Generator.DefineIsNullableMethod();
+                    var m = Generator.RuntimeImpl.IsNullableImpl();
                     GetlexSwapCall(m);
                 }
                 else

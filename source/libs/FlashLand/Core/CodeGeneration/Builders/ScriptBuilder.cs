@@ -5,14 +5,43 @@ using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    partial class AbcGenerator
+    internal sealed class ScriptBuilder
     {
-        #region BuildMainScript
-        private void BuildMainScript()
+	    private readonly AbcGenerator _generator;
+		private AbcCode _mainScriptCode;
+		private AbcMethodBody _mainScriptBody;
+		private int _insertIndexOfNewApi;
+
+	    public ScriptBuilder(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    private IMethod EntryPoint
+	    {
+		    get { return _generator.EntryPoint; }
+	    }
+
+	    private bool IsSwf
+	    {
+			get { return _generator.IsSwf; }
+	    }
+
+		private bool IsSwc
+		{
+			get { return _generator.IsSwc; }
+		}
+
+	    public void BuildMainScript()
         {
-            var instance = MainInstance;
+            var instance = _generator.MainInstance;
             if (instance == null) return;
 
             instance.IsApp = true;
@@ -23,11 +52,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             script.DefineClassTraits(instance);
             script.Initializer = DefineMainScriptInit(script, instance);
         }
-        #endregion
 
-        #region DefineMainScriptInit
-        //Generates method for script initializer
-        AbcMethod DefineMainScriptInit(AbcScript script, AbcInstance instance)
+	    //Generates method for script initializer
+        private AbcMethod DefineMainScriptInit(AbcScript script, AbcInstance instance)
         {
 #if DEBUG
             DebugService.DoCancel();
@@ -40,16 +67,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             //Note: entry point also can contains arguments
             //Note: but in swf entry point can not have arguments
-            if (_entryPoint != null && notSwf)
+            if (EntryPoint != null && notSwf)
             {
-                method.ReturnType = DefineReturnType(_entryPoint.Type);
-                DefineParameters(method, _entryPoint);
+                method.ReturnType = _generator.DefineReturnType(EntryPoint.Type);
+                _generator.DefineParameters(method, EntryPoint);
             }
 
             var body = new AbcMethodBody(method);
-            AddMethod(method);
+	        _generator.Abc.AddMethod(method);
 
-            _mainScriptBody = body;
+	        _mainScriptBody = body;
 
             var code = new AbcCode(Abc);
 
@@ -59,13 +86,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             //code.Trace("Initialization of " + instance.FullName);
 
-            _insertIndexOfNewAPI = code.Count;
+            _insertIndexOfNewApi = code.Count;
             //code.AddRange(_newAPI);
-            CallStaticCtor(code, instance);
+            _generator.StaticCtors.Call(code, instance);
 
             if (notSwf) //abc?
             {
-                NUnitMain(code);
+                _generator.NUnit.Main(code);
                 CallEntryPoint(code);
             }
             else
@@ -82,29 +109,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return method;
         }
 
-        private AbcCode _mainScriptCode;
-		private AbcMethodBody _mainScriptBody;
-		private int _insertIndexOfNewAPI;
-
-		private void FinishMainScript()
+        public void FinishMainScript()
         {
             var body = _mainScriptBody;
             if (body != null)
             {
-                _mainScriptCode.InsertRange(_insertIndexOfNewAPI, _newAPI);
+                _mainScriptCode.InsertRange(_insertIndexOfNewApi, _generator.NewApi);
                 body.Finish(_mainScriptCode);
             }
         }
-        #endregion
 
-        #region BuildScripts
-        //bool IsMainInstance(AbcInstance instance)
-        //{
-        //    if (instance == null) return false;
-        //    return instance.Type == MainType;
-        //}
-
-        void BuildScripts()
+	    public void BuildScripts()
         {
 #if DEBUG
             DebugService.DoCancel();
@@ -130,10 +145,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             DebugService.DoCancel();
 #endif
         }
-        #endregion
 
-        #region DefineScript
-        void DefineScript(AbcInstance instance)
+	    private void DefineScript(AbcInstance instance)
         {
             var script = new AbcScript();
             Abc.Scripts.Add(script);
@@ -148,7 +161,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
                         if (IsSwc && instance.Type.Is(SystemTypeCode.Object))
                         {
-                            code.AddRange(_newAPI);
+                            code.AddRange(_generator.NewApi);
                         }
 
                         var list = GetBaseTypesWithCctors(instance);
@@ -157,21 +170,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                         code.Add(InstructionCode.Newarray, 0);
                         code.SetLocal(arr);
 
-                        DelayStaticCtors(code, list, arr);
+                        _generator.StaticCtors.DelayCalls(code, list, arr);
                         code.InitClassProperties(script);
-                        UndelayStaticCtors(code, list, arr);
+						_generator.StaticCtors.UndelayCalls(code, list, arr);
 
                         //code.Trace("Initialization of " + instance.FullName);
 
-                        CallStaticCtor(code, instance);
-                        CallStaticCtors(code, list);
+						_generator.StaticCtors.Call(code, instance);
+						_generator.StaticCtors.CallRange(code, list);
 
                         code.ReturnVoid();
                     }
                 );
         }
 
-        List<AbcInstance> GetBaseTypesWithCctors(AbcInstance instance)
+        private List<AbcInstance> GetBaseTypesWithCctors(AbcInstance instance)
         {
             var list = new List<AbcInstance>();
             var super = instance.BaseInstance;
@@ -179,7 +192,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 if (super.IsObject) break;
                 if (super.IsError) break;
-                var ctor = DefineStaticCtor(super);
+				var ctor = _generator.StaticCtors.DefineStaticCtor(super);
                 if (ctor != null)
                     list.Add(super);
                 super = super.BaseInstance;
@@ -188,100 +201,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return list;
         }
 
-        void DelayStaticCtors(AbcCode code, IList<AbcInstance> list, int arr)
-        {
-            int vf = arr + 1;
-            code.GetLocal(arr);
-            int n = list.Count;
-            for (int i = 0; i < n; ++i)
-            {
-                var instance = list[i];
-
-                code.PushNativeBool(false); //delayed
-                code.SetLocal(vf);
-
-                GetStaticCtorFlag(code, instance);
-                var called = code.IfTrue();
-
-                SetStaticCtorFlag(code, instance, true);
-
-                code.PushNativeBool(true);
-                code.SetLocal(vf);
-
-                called.BranchTarget = code.Label();
-
-                code.GetLocal(arr);
-                code.GetLocal(vf);
-                code.CallAS3("push", 1);
-            }
-        }
-
-        void UndelayStaticCtors(AbcCode code, IList<AbcInstance> list, int arr)
-        {
-            int n = list.Count;
-            for (int i = 0; i < n; ++i)
-            {
-                var instance = list[i];
-
-                code.GetLocal(arr);
-                code.PushInt(i);
-                code.GetNativeArrayItem();
-                var br = code.IfFalse();
-
-                SetStaticCtorFlag(code, instance, false);
-                
-                br.BranchTarget = code.Label();
-            }
-        }
-        #endregion
-
-        #region CallEntryPoint
-        public IType MainType
-        {
-            get
-            {
-                if (_entryPoint != null)
-                    return _entryPoint.DeclaringType;
-                if (IsSwf)
-                {
-                    if (IsFlexApplication)
-                        return SwfCompiler.TypeFlexApp;
-                    var root = RootSprite;
-                    if (root != null)
-                        return root.Type;
-                }
-                return null;
-            }
-        }
-
-        public AbcInstance MainInstance
-        {
-            get
-            {
-                if (_rootSpriteGenerated)
-                    return RootSprite;
-                var type = MainType;
-                if (type != null)
-                    return DefineAbcInstance(type);
-                return null;
-            }
-        }
 
         /// <summary>
         /// Calls entry point (Main method).
         /// //NOTE: This method always adds return instruction
         /// </summary>
         /// <param name="code"></param>
-        void CallEntryPoint(AbcCode code)
+        internal void CallEntryPoint(AbcCode code)
         {
             //Note: in swf entry point will be called in ctor of root sprite
-            if (_entryPoint == null)
+            if (EntryPoint == null)
             {
                 code.ReturnVoid();
                 return;
             }
 
-            var main = _entryPoint.Data as AbcMethod;
+            var main = EntryPoint.Data as AbcMethod;
             if (main == null)
                 throw new InvalidOperationException("Invalid entry point");
 
@@ -294,15 +229,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
             else
             {
-                //TODO:
-                int n = _entryPoint.Parameters.Count;
+                //TODO: pass process args
+                int n = EntryPoint.Parameters.Count;
                 for (int i = 0; i < n; ++i)
                 {
                     //code.GetLocal(i + 1);
                     code.PushNull();
                 }
 
-                bool isVoid = _entryPoint.IsVoid();
+                bool isVoid = EntryPoint.IsVoid();
                 if (isVoid || IsSwf)
                 {
                     code.Add(InstructionCode.Callpropvoid, main.Trait.Name, n);
@@ -315,6 +250,5 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 }
             }
         }
-        #endregion
     }
 }

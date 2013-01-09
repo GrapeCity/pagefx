@@ -63,7 +63,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             {
                 if (method.Name == "Find")
                 {
-                    var m = _generator.DefineFindClass();
+                    var m = _generator.RuntimeImpl.FindClass();
                     code.Getlex(m);
                     return;
                 }
@@ -548,7 +548,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             var declType = member.DeclaringType;
             if (ReferenceEquals(declType, _declType)) return;
-            _generator.CallStaticCtor(code, declType);
+            _generator.StaticCtors.Call(code, declType);
         }
         #endregion
 

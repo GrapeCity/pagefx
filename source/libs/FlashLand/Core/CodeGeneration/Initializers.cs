@@ -98,7 +98,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
             else
             {
-                EnsureStaticCtor(instance);
+				StaticCtors.EnsureStaticCtor(instance);
 
                 var info = GetClassInitInfo(instance);
                 if (info != null && info.MustDefine)
@@ -183,9 +183,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         	var method = new AbcMethod {ReturnType = Abc.BuiltinTypes.Void};
         	var body = new AbcMethodBody(method);
 
-            AddMethod(method);
+	        Abc.AddMethod(method);
 
-            var code = new AbcCode(Abc);
+	        var code = new AbcCode(Abc);
 
             foreach (var field in type.Fields.Where(field => field.IsConstant))
             {
@@ -199,49 +199,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             body.Finish(code);
 
             return method;
-        }
-        #endregion
-
-        #region DefineStaticCtor
-        AbcMethod DefineStaticCtor(AbcInstance instance)
-        {
-            if (instance == null) return null;
-            var type = instance.Type;
-            if (type == null) return null;
-            return DefineStaticCtor(instance, type);
-        }
-
-        AbcMethod DefineStaticCtor(AbcInstance instance, IType type)
-        {
-            if (type == null) return null;
-            if (instance.IsForeign) return null;
-
-            if (instance.StaticCtor != null)
-                return instance.StaticCtor;
-
-            var ctor = type.GetStaticCtor();
-            if (ctor != null)
-                return instance.StaticCtor = DefineAbcMethod(ctor);
-
-            if (InternalTypeExtensions.HasInitFields(type, true))
-            {
-                string name = type.GetStaticCtorName();
-	            instance.StaticCtor = instance.DefineMethod(
-		            Sig.@static(name, AvmTypeCode.Void),
-		            code =>
-			            {
-				            code.PushThisScope();
-				            code.InitFields(type, true, false);
-				            code.ReturnVoid();
-			            });
-                return instance.StaticCtor;
-            }
-            return null;
-        }
-
-        void EnsureStaticCtor(AbcInstance instance)
-        {
-            DefineStaticCtor(instance, instance.Type);
         }
         #endregion
     }

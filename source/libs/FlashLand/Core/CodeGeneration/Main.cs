@@ -6,6 +6,7 @@ using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
 using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
@@ -64,8 +65,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-	    private IMethod _entryPoint;
-		private AbcCode _newAPI;
+	    internal IMethod EntryPoint { get; private set; }
+		internal AbcCode NewApi { get; private set; }
 
 		internal AbcFile Abc { get; private set; }
         
@@ -132,11 +133,95 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			get { return AppAssembly.TypeFactory; }
 	    }
 
+		private IType MainType
+		{
+			get
+			{
+				if (EntryPoint != null)
+					return EntryPoint.DeclaringType;
+
+				if (IsSwf)
+				{
+					if (IsFlexApplication)
+						return SwfCompiler.TypeFlexApp;
+					var root = RootSprite.Instance;
+					if (root != null)
+						return root.Type;
+				}
+
+				return null;
+			}
+		}
+
+		public AbcInstance MainInstance
+		{
+			get
+			{
+				if (RootSprite.IsGenerated)
+					return RootSprite.Instance;
+				var type = MainType;
+				return type != null ? DefineAbcInstance(type) : null;
+			}
+		}
+
+		/// <summary>
+		/// Returns true if application assembly has nunit tests and does not define custom root sprite.
+		/// </summary>
+		public bool IsNUnit
+		{
+			get
+			{
+				if (IsSwf)
+				{
+					if (IsFlexApplication) return false;
+					if (!RootSprite.IsGenerated)
+						return false;
+				}
+				return NUnit.FixtureCount > 0;
+			}
+		}
+
+	    internal NUnitRunner NUnit
+	    {
+			get { return _nunit ?? (_nunit = new NUnitRunner(this)); }
+	    }
+		private NUnitRunner _nunit;
+
 		internal PtrManager Pointers
 		{
 			get { return _pointers ?? (_pointers = new PtrManager(this)); }
 		}
 		private PtrManager _pointers;
+
+		private DelegatesImpl Delegates
+		{
+			get { return _delegates ?? (_delegates = new DelegatesImpl(this)); }
+		}
+		private DelegatesImpl _delegates;
+
+	    internal RuntimeImpl RuntimeImpl
+	    {
+			get { return _runtimeImpl ?? (_runtimeImpl = new RuntimeImpl(this)); }
+	    }
+	    private RuntimeImpl _runtimeImpl;
+
+	    internal StaticCtorsImpl StaticCtors
+	    {
+			get { return _staticCtors ?? (_staticCtors = new StaticCtorsImpl(this)); }
+	    }
+	    private StaticCtorsImpl _staticCtors;
+
+	    internal RootSpriteImpl RootSprite
+	    {
+			get { return _rootSprite ?? (_rootSprite = new RootSpriteImpl(this)); }
+	    }
+	    private RootSpriteImpl _rootSprite;
+
+	    internal ScriptBuilder Scripts
+	    {
+			get { return _scripts ?? (_scripts = new ScriptBuilder(this)); }
+	    }
+	    private ScriptBuilder _scripts;
 
 	    #region Generate - Entry Point
         public AbcFile Generate(IAssembly assembly)
@@ -177,7 +262,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     Mode = AbcGenMode.Full;
             }
 
-            _newAPI = new AbcCode(Abc);
+            NewApi = new AbcCode(Abc);
             RegisterObjectFunctions();
 
             BuildApp();
@@ -193,7 +278,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         	#endregion
 
-            BuildRootTimeline();
+            RootSprite.BuildTimeline();
 
             #region Finish Types
 #if DEBUG
@@ -215,10 +300,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
             DebugService.DoCancel();
 #endif
-            BuildScripts();
+            Scripts.BuildScripts();
             #endregion
 
-            FinishMainScript();
+            Scripts.FinishMainScript();
 
             // Finish ABC
 #if DEBUG
@@ -264,9 +349,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private void BuildAppDefault()
         {
-            _entryPoint = AppAssembly.EntryPoint;
-            if (_entryPoint != null)
-                DefineMethod(_entryPoint);
+            EntryPoint = AppAssembly.EntryPoint;
+            if (EntryPoint != null)
+                DefineMethod(EntryPoint);
             else
                 BuildLibrary();
 
@@ -281,7 +366,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			foreach (var type in AppAssembly.GetReferences(false).SelectMany(asm => asm.GetExposedTypes()))
             {
                 if (type.IsTestFixture())
-                    _testFixtures.Add(type);
+                    NUnit.AddFixture(type);
                 DefineType(type);
             }
         }
@@ -340,7 +425,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return AssemblyIndex.FindType(AppAssembly, fullname);
         }
 
-        private AbcInstance FindInstanceDefOrRef(string fullname)
+        public AbcInstance FindInstanceDefOrRef(string fullname)
         {
             var type = FindTypeDefOrRef(fullname);
             if (type == null) return null;
@@ -384,12 +469,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			return field ?? (field = ImportType(fullname));
 		}
 
-    	private void AddMethod(AbcMethod method)
-        {
-            Abc.AddMethod(method);
-        }
-
-        public AbcParameter CreateParam(AbcMultiname type, string name)
+	    public AbcParameter CreateParam(AbcMultiname type, string name)
         {
             return Abc.DefineParam(type, name);
         }

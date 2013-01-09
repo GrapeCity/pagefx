@@ -54,7 +54,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var CharEnumerator = CorlibTypes[CorlibTypeId.CharEnumerator];
 
-            _newAPI.SetProtoFunction(
+            NewApi.SetProtoFunction(
                 AvmTypeCode.String, m,
                 code =>
                     {
@@ -75,14 +75,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (name == "ToString")
             {
-                _newAPI.SetProtoFunction(AvmTypeCode.String, m.TraitName, DefineString_ToString());
+                NewApi.SetProtoFunction(AvmTypeCode.String, m.TraitName, DefineString_ToString());
 
                 return;
             }
 
             if (name == "GetTypeCode")
             {
-                _newAPI.SetProtoFunction(
+                NewApi.SetProtoFunction(
                     AvmTypeCode.String, m,
                     code =>
                         {
@@ -111,7 +111,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var cm = DefineAbcMethod(convertMethod);
 
-            _newAPI.SetProtoFunction(
+            NewApi.SetProtoFunction(
                 AvmTypeCode.String, m,
                 code =>
                     {
@@ -129,7 +129,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var m = method.Data as AbcMethod;
             if (m == null) return;
 
-            _newAPI.SetProtoFunction(
+            NewApi.SetProtoFunction(
                 AvmTypeCode.String, m,
                 code =>
                 {
@@ -155,7 +155,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             var abccmp = DefineAbcMethod(cmp);
 
-            _newAPI.SetProtoFunction(
+            NewApi.SetProtoFunction(
                 AvmTypeCode.String, m,
                 code =>
                     {
@@ -174,7 +174,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var m = method.Data as AbcMethod;
             if (m == null) return;
 
-            _newAPI.SetProtoFunction(
+            NewApi.SetProtoFunction(
                 AvmTypeCode.String, m,
                 code =>
                     {

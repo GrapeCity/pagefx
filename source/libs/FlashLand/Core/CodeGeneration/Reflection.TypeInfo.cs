@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (instance.IsNative)
                 return DefineReflectionInstance();
             if (instance.IsInterface)
-                return DefineRuntimeInstance();
+                return RuntimeImpl.Instance;
             return instance;
         }
 
