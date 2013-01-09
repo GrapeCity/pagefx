@@ -377,7 +377,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #region LoadField, StoreField
         private void EnsureField(IField field)
         {
-            _generator.DefineField(field);
+			_generator.FieldBuilder.Build(field);
         }
 
 		private AbcMultiname GetFieldName(IField field)

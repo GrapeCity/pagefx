@@ -14,7 +14,6 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
@@ -303,16 +302,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region InitArrayFields
-        AbcMethod GetArrayBoxMethod(IType elemType)
+        private AbcMethod GetArrayBoxMethod(IType elemType)
         {
-            var m = DefineBoxMethod(elemType);
+			var m = Boxing.Box(elemType);
             if (m != null) return m;
             return DefineStaticCopyMethod(elemType);
         }
 
-        AbcMethod GetArrayUnboxMethod(IType elemType)
+        private AbcMethod GetArrayUnboxMethod(IType elemType)
         {
-            var m = SelectUnboxMethod(elemType, false);
+			var m = Boxing.Unbox(elemType, false);
             if (m != null) return m;
             return DefineStaticCopyMethod(elemType);
         }
@@ -322,7 +321,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (getArr == null)
                 throw new ArgumentNullException("getArr");
 
-            int typeIndex = GetTypeId(type);
+            int typeIndex = Reflection.GetTypeId(type);
 
             getArr();
             
@@ -432,11 +431,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #region ImplementArrayInterfaces, ImplementArrayInterface
         static void ImplementArrayInterface(IType iface, Action<IMethod, AbcMethod> methodImpl)
         {
-            foreach (var im in iface.Methods)
+            foreach (var method in iface.Methods)
             {
-                var am = im.Data as AbcMethod;
-                if (am != null)
-                    methodImpl(im, am);
+                var abcMethod = method.AbcMethod();
+                if (abcMethod != null)
+                    methodImpl(method, abcMethod);
             }
         }
 

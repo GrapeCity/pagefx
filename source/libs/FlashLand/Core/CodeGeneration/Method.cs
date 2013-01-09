@@ -169,7 +169,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return method.Data;
             }
 
-            var m = method.Data as AbcMethod;
+            var m = method.AbcMethod();
             if (m != null)
             {
                 if (m.ImportedMethod != null)
@@ -305,8 +305,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private void ImplementProtoMethods(IMethod method, AbcMethod abcMethod)
         {
-            ImplementStringMethod(method);
-            ImplementObjectMethod(method, abcMethod);
+            StringPrototypes.Implement(method);
+            ObjectPrototypes.Implement(method, abcMethod);
         }
 
         #region DefineImplementedMethods
@@ -409,22 +409,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
         }
 
-        private AbcMethod GetBaseMethod(AbcMethod am, IMethod m)
+        private AbcMethod GetBaseMethod(AbcMethod abcMethod, IMethod method)
         {
-            var impls = m.Implements;
+            var impls = method.Implements;
             if (impls != null && impls.Count == 1)
                 return DefineAbcMethod(impls[0]);
 
-            var bm = m.BaseMethod;
-            if (am.IsOverride && bm != null)
-                return bm.Data as AbcMethod;
+            var baseMethod = method.BaseMethod;
+            if (abcMethod.IsOverride && baseMethod != null)
+                return baseMethod.AbcMethod();
 
             return null;
         }
 
-        private void CopyParams(AbcMethod to, AbcMethod from)
+        internal void CopyParams(AbcMethod to, AbcMethod from)
         {
-            int n = @from.Parameters.Count;
+            int n = from.Parameters.Count;
             for (int i = 0; i < n; ++i)
             {
 #if DEBUG

@@ -3,17 +3,28 @@ using System.Drawing;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    internal partial class AbcGenerator
+    internal sealed class EmbeddedAssetBuilder
     {
-	    #region DefineEmbeddedAsset
-        void DefineEmbeddedAsset(IField field, AbcTrait trait)
+	    private readonly AbcGenerator _generator;
+
+	    public EmbeddedAssetBuilder(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    public void Build(IField field, AbcTrait trait)
         {
             var attr = field.FindAttribute(Attrs.Embed);
             if (attr == null) return;
 
-            CheckEmbedAsset(field);
+			_generator.CheckEmbedAsset(field);
 
             var embed = Embed.FromCustomAttribute(attr);
             trait.Embed = embed;
@@ -21,81 +32,60 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             string type = embed.MimeType;
             if (MimeTypes.IsBitmap(type))
             {
-                var instance = DefineBitmapAsset(trait);
-                SwfCompiler.DefineBitmapAsset(embed.Source, instance);
+                var instance = BuildBitmapAsset(trait);
+				_generator.SwfCompiler.DefineBitmapAsset(embed.Source, instance);
                 return;
             }
 
             if (MimeTypes.IsJpeg(type))
             {
-                var instance = DefineBitmapAsset(trait);
-                SwfCompiler.DefineJpegAsset(embed.Source, instance);
+                var instance = BuildBitmapAsset(trait);
+				_generator.SwfCompiler.DefineJpegAsset(embed.Source, instance);
                 return;
             }
 
             //TODO: Support other mime-types
             throw Errors.RBC.NotSupportedMimeType.CreateException(embed.Source, embed.MimeType);
         }
-        #endregion
 
-        #region DefineAssetInstanceName
-        AbcMultiname DefineAssetInstanceName(AbcTrait trait)
+	    private AbcMultiname GetAssetInstanceName(AbcTrait trait)
         {
             var owner = trait.Instance;
             string name = owner.NameString + "_" + trait.Name.NameString;
             return Abc.DefineQName(owner.Name.Namespace, name);
         }
-        #endregion
 
-        #region DefineAssetInstance
-        public AbcInstance DefineAssetInstance(AbcTrait trait, string superNS, string superName)
-        {
-            var super = Abc.DefinePackageQName(superNS, superName);
-            return DefineAssetInstance(trait, super);
-        }
-
-        public AbcInstance DefineAssetInstance(AbcMultiname name, string superNS, string superName)
-        {
-            var super = Abc.DefinePackageQName(superNS, superName);
-            return DefineAssetInstance(name, super);
-        }
-
-        AbcMultiname GetBitmapAssetSuperName()
+	    private AbcMultiname GetBitmapAssetSuperName()
         {
             //TODO: For flash application it can flash.display.Bitmap
             return Abc.DefineQName("mx.core", "BitmapAsset");
         }
 
-        public AbcInstance DefineBitmapAsset(AbcMultiname name)
+	    public AbcInstance BuildBitmapAsset(AbcMultiname name, Image image, bool jpeg)
         {
-            return DefineAssetInstance(name, GetBitmapAssetSuperName());
-        }
-
-        public AbcInstance DefineBitmapAsset(AbcMultiname name, Image image, bool jpeg)
-        {
-            var instance = DefineAssetInstance(name, GetBitmapAssetSuperName());
-            SwfCompiler.DefineBitmapAsset(image, instance, jpeg);
+            var instance = BuildAssetInstance(name, GetBitmapAssetSuperName());
+			_generator.SwfCompiler.DefineBitmapAsset(image, instance, jpeg);
             return instance;
         }
 
-        AbcInstance DefineBitmapAsset(AbcTrait trait)
+        private AbcInstance BuildBitmapAsset(AbcTrait trait)
         {
-            return DefineAssetInstance(trait, GetBitmapAssetSuperName());
+            return BuildAssetInstance(trait, GetBitmapAssetSuperName());
         }
         
-        AbcInstance DefineAssetInstance(AbcTrait trait, AbcMultiname superName)
+        private AbcInstance BuildAssetInstance(AbcTrait trait, AbcMultiname superName)
         {
-            var name = DefineAssetInstanceName(trait);
+            var name = GetAssetInstanceName(trait);
             //TODO: Check existance of instance
 
-            var instance = DefineAssetInstance(name, superName);
+            var instance = BuildAssetInstance(name, superName);
             instance.Embed = trait.Embed;
             trait.AssetInstance = instance;
 
             return instance;
         }
 
-        AbcInstance DefineAssetInstance(AbcMultiname name, AbcMultiname superName)
+        private AbcInstance BuildAssetInstance(AbcMultiname name, AbcMultiname superName)
         {
             var superType = FindAssetSuperType(superName);
             if (superType == null)
@@ -114,14 +104,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 		            Class = {Initializer = Abc.DefineEmptyMethod(true)}
 	            };
 
-	        AddInstance(instance);
+	        Abc.AddInstance(instance);
 
-            return instance;
+	        return instance;
         }
 
         private AbcInstance FindAssetSuperType(AbcMultiname superName)
         {
-            var type = FindTypeDefOrRef(superName.FullName);
+			var type = _generator.FindTypeDefOrRef(superName.FullName);
             if (type == null)
                 throw new InvalidOperationException();
 
@@ -133,6 +123,5 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             return instance;
         }
-        #endregion
     }
 }

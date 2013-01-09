@@ -157,7 +157,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (mn != null)
                 return _abc.ImportConst(mn.Name);
 
-            var abcMethod = method.Data as AbcMethod;
+            var abcMethod = method.AbcMethod();
             if (abcMethod != null)
                 return _abc.ImportConst(abcMethod.TraitName);
 

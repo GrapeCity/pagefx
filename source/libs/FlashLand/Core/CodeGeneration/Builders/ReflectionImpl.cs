@@ -6,20 +6,49 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
+using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    internal partial class AbcGenerator
+    internal sealed partial class ReflectionImpl
     {
-        bool _emitReflection;
+	    private readonly AbcGenerator _generator;
 
-        #region GetTypeId
-        Dictionary<IType, int> _typeIndex;
-        Dictionary<int, IType> _id2type;
-        //Used to implement Assembly.InitTypes method
-        List<IType> _initTypes;
+		private Dictionary<IType, int> _typeIndex;
+		private Dictionary<int, IType> _id2type;
+		//Used to implement Assembly.InitTypes method
+		private List<IType> _initTypes;
+
+	    private bool _emitReflection;
+
+		public ReflectionImpl(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    private bool IsSwf
+	    {
+			get { return _generator.IsSwf; }
+	    }
+
+	    private SwfCompiler SwfCompiler
+	    {
+			get { return _generator.SwfCompiler; }
+	    }
+
+	    private SystemTypes SystemTypes
+	    {
+			get { return _generator.SystemTypes; }
+	    }
+
+	    #region GetTypeId
 
         public int GetTypeId(IType type)
         {
@@ -70,7 +99,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return index;
         }
 
-        IType FindTypeById(int id)
+        private IType FindTypeById(int id)
         {
             IType type;
             if (_id2type.TryGetValue(id, out type))
@@ -81,7 +110,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         #region DefineGetTypeIdMethod
         //Called when GetTypeId method is used.
-        private AbcMethod DefineGetTypeIdMethod(IType type, AbcInstance instance)
+        public AbcMethod DefineGetTypeIdMethod(IType type, AbcInstance instance)
         {
             if (type == null) return null;
             if (instance == null) return null;
@@ -117,10 +146,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 //DefinePrototype_GetType(instance, type);
 
-                var getTypeId = GetMethod(ObjectMethodId.GetTypeId);
+                var getTypeId = _generator.GetMethod(ObjectMethodId.GetTypeId);
                 instance.DefineMethod(Sig.@from(getTypeId).@override(false), code => code.ReturnTypeId(type));
 
-	            var prototype = GetMethod(ObjectMethodId.GetType);
+				var prototype = _generator.GetMethod(ObjectMethodId.GetType);
 	            instance.DefineMethod(Sig.@from(prototype).@override(false), code =>
 	                {
 		                code.CallAssemblyGetType(
@@ -158,7 +187,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region DefineGetTypeIdMethods
-        void DefineGetTypeIdMethods()
+        private void DefineGetTypeIdMethods()
         {
             var list = new List<AbcFile>();
             if (IsSwf)
@@ -171,7 +200,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
             foreach (var abc in list)
             {
-                abc.Generator = this;
+                abc.Generator = _generator;
                 for (int i = 0; i < abc.Instances.Count; ++i)
                 {
 #if DEBUG
@@ -192,7 +221,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                         var m = type.Methods.Find("GetType", 0);
                         if (m == null)
                             throw new InvalidOperationException("Unable to find System.Array.GetType method. Invalid corlib.");
-                        DefineAbcMethod(m);
+						_generator.DefineAbcMethod(m);
                     }
                     else
                     {
@@ -205,80 +234,85 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         #region Define_Assembly_GetTypeNum - InternalCall
         //TODO: Add options to control level of reflection support
-        
-        AbcMethod Define_Assembly_GetTypeNum(IMethod method, AbcInstance instance)
-        {
-            _emitReflection = true;
-            var m = instance.DefineMethod(SigOf(method), null);
-            AddLateMethod(m, Finish_Assembly_GetTypeNum);            
-            return m;
-        }
 
-        void Finish_Assembly_GetTypeNum(AbcCode code)
-        {
+	    public AbcMethod Define_Assembly_GetTypeNum(IMethod method, AbcInstance instance)
+	    {
+		    _emitReflection = true;
+		    var m = instance.DefineMethod(_generator.SigOf(method), null);
+		    _generator.AddLateMethod(
+			    m,
+			    code =>
+				    {
 #if DEBUG
-            DebugService.DoCancel();
-            DebugService.LogInfo("FinishInitTypes started");
+					    DebugService.DoCancel();
+					    DebugService.LogInfo("FinishInitTypes started");
 #endif
 
-            DefineInitTypeMethods();
-            DefineGetTypeIdMethods();
+					    DefineInitTypeMethods();
+					    DefineGetTypeIdMethods();
 
-            code.PushInt(_initTypes.Count);
-            code.ReturnValue();
-            
+					    code.PushInt(_initTypes.Count);
+					    code.ReturnValue();
+
 #if DEBUG
-            DebugService.LogInfo("FinishInitTypes succeeded");
-            DebugService.DoCancel();
+					    DebugService.LogInfo("FinishInitTypes succeeded");
+					    DebugService.DoCancel();
 #endif
-        }
-        #endregion
+				    }
+			    );
+		    return m;
+	    }
+
+	    #endregion
 
         #region Define_Assembly_InitType - InternalCall
-        AbcMethod Define_Assembly_InitType(IMethod method, AbcInstance instance)
-        {
-            _emitReflection = true;
-            var m = instance.DefineMethod(SigOf(method), null);
-            AddLateMethod(m, Finish_Assembly_InitType);
-            return m;
-        }
 
-        static void Finish_Assembly_InitType(AbcCode code)
-        {
-            //args: this, type, typeId
+	    public AbcMethod Define_Assembly_InitType(IMethod method, AbcInstance instance)
+	    {
+		    _emitReflection = true;
+		    var m = instance.DefineMethod(_generator.SigOf(method), null);
+		    _generator.AddLateMethod(
+			    m,
+			    code =>
+				    {
+					    //args: this, type, typeId
 
-            const int argType = 1;
-            const int argId = 2;
-            
-            code.LoadThis();
-            code.PushGlobalPackage();
-            code.PushString(Const.InitTypePrefix);
-            code.GetLocal(argId);
-            code.Add(InstructionCode.Add);
-            code.GetRuntimeProperty();
-            code.CoerceFunction();
+					    const int argType = 1;
+					    const int argId = 2;
 
-            code.LoadThis();
-            code.GetLocal(argType);
-            code.Add(InstructionCode.Call, 1);
-            code.Pop();
-            code.ReturnVoid();
-        }
-        #endregion
+					    code.LoadThis();
+					    code.PushGlobalPackage();
+					    code.PushString(Const.InitTypePrefix);
+					    code.GetLocal(argId);
+					    code.Add(InstructionCode.Add);
+					    code.GetRuntimeProperty();
+					    code.CoerceFunction();
+
+					    code.LoadThis();
+					    code.GetLocal(argType);
+					    code.Add(InstructionCode.Call, 1);
+					    code.Pop();
+					    code.ReturnVoid();
+				    });
+		    return m;
+	    }
+
+	    #endregion
 
         #region DefineInitTypeMethods
         void DefineInitTypeMethod(IType type, int typeId)
         {
             Debug.Assert(typeId >= 0);
 
-            var instance = DefineAbcInstance(CorlibTypes[CorlibTypeId.Assembly]);
+	        var assemblyType = _generator.CorlibTypes[CorlibTypeId.Assembly];
+	        var instance = _generator.DefineAbcInstance(assemblyType);
 
             var name = Abc.DefineGlobalQName(Const.InitTypePrefix + typeId);
             var method = new AbcMethod();
             var trait = AbcTrait.CreateMethod(method, name);
             instance.AddTrait(trait, false);
             method.ReturnType = Abc.BuiltinTypes.Void;
-	        method.Parameters.Add(CreateParam(SystemTypes.Type, "type"));
+			method.Parameters.Add(_generator.CreateParam(SystemTypes.Type, "type"));
 
 	        var body = new AbcMethodBody(method);
 	        Abc.AddMethod(method);
@@ -290,7 +324,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             body.Finish(code);
         }
 
-        void DefineInitTypeMethods()
+        private void DefineInitTypeMethods()
         {
             for (int i = 0; i < _initTypes.Count; ++i)
             {
@@ -298,7 +332,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 DebugService.DoCancel();
 #endif
                 var type = _initTypes[i];
-                if (!(DefineType(type) is AbcInstance))
+				if (!(_generator.DefineType(type) is AbcInstance))
                     continue;
                 DefineInitTypeMethod(type, i);
             }

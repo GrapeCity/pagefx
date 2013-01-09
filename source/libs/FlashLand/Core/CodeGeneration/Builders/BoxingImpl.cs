@@ -3,28 +3,39 @@ using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    internal partial class AbcGenerator
+    internal sealed class BoxingImpl
     {
-        #region DefineBoxMethod
-        public AbcMethod DefineBoxMethod(IType type)
+	    private readonly AbcGenerator _generator;
+
+	    public BoxingImpl(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private SystemTypes SystemTypes
+	    {
+			get { return _generator.SystemTypes; }
+	    }
+
+		#region Box Impl
+
+		public AbcMethod Box(IType type)
         {
             if (type.IsNullableInstance())
-                return DefineBoxNullable(type);
+                return BoxNullable(type);
 
-            return DefineBoxPrimitive(type);
+            return BoxPrimitive(type);
         }
-        #endregion
 
-        #region DefineBoxPrimitive
-        AbcMethod DefineBoxPrimitive(IType type)
+	    private AbcMethod BoxPrimitive(IType type)
         {
             if (!type.IsBoxableType())
                 return null;
 
-            var instance = DefineAbcInstance(type);
-            var name = DefinePfxName(Const.Boxing.MethodBox);
+            var instance = _generator.DefineAbcInstance(type);
+			var name = _generator.DefinePfxName(Const.Boxing.MethodBox);
 
 	        return instance.DefineMethod(
 		        Sig.@static(name, instance.Name, type, "value"),
@@ -34,19 +45,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				        code.ReturnValue();
 			        });
         }
-        #endregion
 
-        #region DefineBoxNullable
-        private AbcMethod DefineBoxNullable(IType type)
+	    private AbcMethod BoxNullable(IType type)
         {
             if (!type.IsNullableInstance())
                 return null;
 
-            var instance = DefineAbcInstance(type);
-            var name = DefinePfxName(Const.Boxing.MethodBox);
+			var instance = _generator.DefineAbcInstance(type);
+			var name = _generator.DefinePfxName(Const.Boxing.MethodBox);
 
             var arg = type.GetTypeArgument(0);
-            var argInstance = DefineAbcInstance(arg);
+			var argInstance = _generator.DefineAbcInstance(arg);
 
 	        return instance.DefineMethod(
 		        Sig.@static(name, argInstance.Name, type, "value"),
@@ -70,31 +79,29 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 					        );
 			        });
         }
-        #endregion
 
-        #region SelectUnboxMethod
-        public AbcMethod SelectUnboxMethod(IType type, bool strict)
+		#endregion
+
+		public AbcMethod Unbox(IType type, bool strict)
         {
             if (type.IsNullableInstance())
-                return DefineUnboxNullable(type);
-            var m = DefineUnboxMethod(type, strict);
+                return UnboxNullable(type);
+            var m = UnboxImpl(type, strict);
             if (m != null) return m;
-            return DefineUnboxStruct(type);
-        }
-        #endregion
-
-        #region DefineUnboxMethod
-        private AbcMultiname GetUnboxMethodName()
-        {
-            return DefinePfxName(Const.Boxing.MethodUnbox);
+            return UnboxStruct(type);
         }
 
-        public AbcMethod DefineUnboxMethod(IType type, bool strict)
+	    private AbcMultiname UnboxName
+	    {
+		    get { return _generator.DefinePfxName(Const.Boxing.MethodUnbox); }
+	    }
+
+	    private AbcMethod UnboxImpl(IType type, bool strict)
         {
             if (!type.IsBoxableOrInt64Based())
                 return null;
 
-            var instance = DefineAbcInstance(type);
+			var instance = _generator.DefineAbcInstance(type);
 
             var vtype = type;
             if (type.IsEnum)
@@ -104,8 +111,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (type.IsEnum && !strict)
                 type = vtype;
 
-            var name = DefinePfxName(Const.Boxing.MethodUnbox + (strict ? "strict" : ""));
-            var retType = DefineMemberType(type);
+			var name = _generator.DefinePfxName(Const.Boxing.MethodUnbox + (strict ? "strict" : ""));
+			var retType = _generator.DefineMemberType(type);
 	        return instance.DefineMethod(
 		        Sig.@static(name, retType, AvmTypeCode.Object, "value"),
 		        code =>
@@ -126,13 +133,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				        code.SetLocal(varType);
 
 				        code.If(
-					        delegate
+					        () =>
 						        {
 							        code.GetLocal(varType);
 							        return code.IfNull();
 						        },
 					        () => TryUnboxNumber(code, type),
-					        delegate
+					        () =>
 						        {
 							        if (strict)
 							        {
@@ -167,8 +174,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private void EnsureInt64Members()
         {
-            DefineAbcMethod(SystemTypes.Int64, "get_m_value", 0);
-            DefineAbcMethod(SystemTypes.UInt64, "get_m_value", 0);
+			_generator.DefineAbcMethod(SystemTypes.Int64, "get_m_value", 0);
+			_generator.DefineAbcMethod(SystemTypes.UInt64, "get_m_value", 0);
         }
 
         private static void TryUnboxNumber(AbcCode code, IType type)
@@ -183,17 +190,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 code.Coerce(type, true);
             code.ReturnValue();
         }
-        #endregion
 
-        #region DefineUnboxNullable
-        public AbcMethod DefineUnboxNullable(IType type)
+	    private AbcMethod UnboxNullable(IType type)
         {
             if (!type.IsNullableInstance())
                 return null;
 
-            var instance = DefineAbcInstance(type);
+			var instance = _generator.DefineAbcInstance(type);
 
-            var name = GetUnboxMethodName();
+            var name = UnboxName;
 
             //Rules for operation (T?)obj
             //1. null => new T?();
@@ -238,17 +243,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 					        );
 			        });
         }
-        #endregion
 
-        #region DefineUnboxStruct
-        public AbcMethod DefineUnboxStruct(IType type)
+	    private AbcMethod UnboxStruct(IType type)
         {
             if (type == null) return null;
             if (type.TypeKind != TypeKind.Struct) return null;
 
-            var instance = DefineAbcInstance(type);
+			var instance = _generator.DefineAbcInstance(type);
 
-            var name = GetUnboxMethodName();
+            var name = UnboxName;
 
 	        return instance.DefineMethod(
 		        Sig.@static(name, instance, AvmTypeCode.Object, "value"),
@@ -259,7 +262,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				        code.GetLocal(value);
 				        code.ThrowNullReferenceException();
 
-				        var MyNullable = DefineAbcInstance(MakeNullable(type));
+						var MyNullable = _generator.DefineAbcInstance(_generator.MakeNullable(type));
 
 				        code.If(
 					        () =>
@@ -283,6 +286,5 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 					        );
 			        });
         }
-        #endregion
     }
 }

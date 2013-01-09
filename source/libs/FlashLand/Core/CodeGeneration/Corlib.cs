@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return ConsoleType[id];
         }
 
-		private ConvertTypeImpl ConvertType
+		internal ConvertTypeImpl ConvertType
 		{
 			get { return _convertType ?? (_convertType = new ConvertTypeImpl(this)); }
 		}

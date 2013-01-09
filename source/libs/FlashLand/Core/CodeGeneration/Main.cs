@@ -65,7 +65,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-	    internal IMethod EntryPoint { get; private set; }
+		#region Properties
+
+		internal IMethod EntryPoint { get; private set; }
 		internal AbcCode NewApi { get; private set; }
 
 		internal AbcFile Abc { get; private set; }
@@ -181,7 +183,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			}
 		}
 
-	    internal NUnitRunner NUnit
+		#endregion
+
+		#region Parts, Builders
+
+		internal FieldBuilder FieldBuilder
+	    {
+			get { return _fieldBuilder ?? (_fieldBuilder = new FieldBuilder(this)); }
+	    }
+	    private FieldBuilder _fieldBuilder;
+
+		internal NUnitRunner NUnit
 	    {
 			get { return _nunit ?? (_nunit = new NUnitRunner(this)); }
 	    }
@@ -223,8 +235,46 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	    }
 	    private ScriptBuilder _scripts;
 
-	    #region Generate - Entry Point
-        public AbcFile Generate(IAssembly assembly)
+	    internal OperatorBuilder Operators
+	    {
+			get { return _operators ?? (_operators = new OperatorBuilder(this)); }
+	    }
+		private OperatorBuilder _operators;
+
+	    internal BoxingImpl Boxing
+	    {
+			get { return _boxingImpl ?? (_boxingImpl = new BoxingImpl(this)); }
+	    }
+	    private BoxingImpl _boxingImpl;
+
+	    internal EmbeddedAssetBuilder EmbeddedAssets
+	    {
+		    get { return _embeddedAssets ?? (_embeddedAssets = new EmbeddedAssetBuilder(this)); }
+	    }
+		private EmbeddedAssetBuilder _embeddedAssets;
+
+	    internal ReflectionImpl Reflection
+	    {
+			get { return _reflectionImpl ?? (_reflectionImpl = new ReflectionImpl(this)); }
+	    }
+	    private ReflectionImpl _reflectionImpl;
+
+	    private ObjectPrototypeImpl ObjectPrototypes
+	    {
+			get { return _objectPrototypes ?? (_objectPrototypes = new ObjectPrototypeImpl(this)); }
+	    }
+	    private ObjectPrototypeImpl _objectPrototypes;
+
+	    private StringPrototypeImpl StringPrototypes
+	    {
+			get { return _stringPrototypes ?? (_stringPrototypes = new StringPrototypeImpl(this)); }
+	    }
+	    private StringPrototypeImpl _stringPrototypes;
+
+		#endregion
+
+		#region Generate - Entry Point
+		public AbcFile Generate(IAssembly assembly)
         {
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
@@ -263,7 +313,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
 
             NewApi = new AbcCode(Abc);
-            RegisterObjectFunctions();
+            ObjectPrototypes.Init();
 
             BuildApp();
 
@@ -411,7 +461,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private readonly AbcLateMethodCollection _lateMethods = new AbcLateMethodCollection();
 
-    	private void AddLateMethod(AbcMethod method, AbcCoder coder)
+    	internal void AddLateMethod(AbcMethod method, AbcCoder coder)
         {
             _lateMethods.Add(method, coder);
         }
@@ -420,7 +470,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         #region Utils
 
-        private IType FindTypeDefOrRef(string fullname)
+        public IType FindTypeDefOrRef(string fullname)
         {
             return AssemblyIndex.FindType(AppAssembly, fullname);
         }

@@ -10,13 +10,18 @@ namespace DataDynamics.PageFX.FlashLand.Core
 {
 	internal static class InternalMethodExtensions
 	{
+		public static AbcMethod AbcMethod(this IMethod method)
+		{
+			return method != null ? method.Data as AbcMethod : null;
+		}
+
 		public static bool IsInitializer(this IMethod method)
 		{
 			if (method == null) return false;
 			if (!method.IsConstructor) return false;
-			var m = method.Data as AbcMethod;
-			if (m == null) return false;
-			return m.IsInitializer;
+			var abcMethod = method.AbcMethod();
+			if (abcMethod == null) return false;
+			return abcMethod.IsInitializer;
 		}
 
 		public static bool IsFlashEventMethod(this IMethod method)

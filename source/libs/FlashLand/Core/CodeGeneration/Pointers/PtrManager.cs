@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 		{
 			return field.IsStatic
 				       ? StaticFieldPtr.Define(_generator, field)
-				       : PropertyPtr(_generator.GetFieldName(field));
+					   : PropertyPtr(_generator.FieldBuilder.GetFieldName(field));
 		}
 
 		public AbcInstance PropertyPtr(AbcMultiname name)

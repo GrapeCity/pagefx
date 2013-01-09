@@ -19,6 +19,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return obj.ToMultiname();
         }
 
+		public AbcMultiname DefineMemberType(IType type)
+		{
+			DefineType(type);
+			if (type.Data == null)
+				throw new InvalidOperationException(string.Format("Type {0} is not defined", type.FullName));
+			return Abc.GetTypeName(type, true);
+		}
+
         #region DefineType
         /// <summary>
         /// Defines given type in generated ABC file
@@ -86,7 +94,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     return;
             }
 
-            GetTypeId(type);
+            Reflection.GetTypeId(type);
         }
         #endregion
 
@@ -227,9 +235,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			SetFlags(instance, type);
             AddInterfaces(instance, type, ifaceNames);
 
-            AddInstance(instance);
+	        Abc.AddInstance(instance);
 
-            if (IsRootSprite(type))
+	        if (IsRootSprite(type))
                 RootSprite.Instance = instance;
 
             DefineDebugInfo(type, instance);
@@ -242,12 +250,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return instance;
         }
 
-        void AddInstance(AbcInstance instance)
-        {
-            Abc.AddInstance(instance);
-        }
-
-        bool IsRootSprite(IType type)
+	    bool IsRootSprite(IType type)
         {
             if (SwfCompiler != null && !string.IsNullOrEmpty(SwfCompiler.RootSprite))
                 return type.FullName == SwfCompiler.RootSprite;
@@ -401,9 +404,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                                BaseInstance = super,
                                Initializer = DefineDefaultInitializer(null)
                            };
-            AddInstance(instance);
+	        Abc.AddInstance(instance);
 
-            instance.Class.Initializer = Abc.DefineEmptyMethod();
+	        instance.Class.Initializer = Abc.DefineEmptyMethod();
 
             _enumSuperTypes[index] = instance;
 
@@ -564,7 +567,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 DebugService.DoCancel();
 #endif
                 if (MustDefine(field))
-                    DefineField(field);
+                    FieldBuilder.Build(field);
             }
         }
 

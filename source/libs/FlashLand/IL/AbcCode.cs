@@ -731,7 +731,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public AbcMultiname GetFieldName(IField field)
         {
-            return Generator.GetFieldName(field);
+			return Generator.FieldBuilder.GetFieldName(field);
         }
 
         public Instruction GetField(IField field)
@@ -748,7 +748,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         public Instruction SetField(IField field)
         {
             //No need to call DefineField
-            var name = Generator.GetFieldName(field);
+			var name = GetFieldName(field);
             return SetProperty(name);
         }
 
@@ -2474,7 +2474,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             //TODO: Check primitive type.
             //NOTE: value to box must be on stack
-            var m = Generator.DefineBoxMethod(type);
+            var m = Generator.Boxing.Box(type);
             if (m == null)
                 throw new InvalidOperationException();
             GetlexSwapCall(m);
@@ -2493,7 +2493,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             if (type == null)
                 throw new ArgumentNullException("type");
             
-            var m = Generator.DefineBoxMethod(type);
+            var m = Generator.Boxing.Box(type);
             if (m != null)
             {
                 Getlex(m);
@@ -2529,7 +2529,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             EnsureType(type);
 
-            var m = Generator.SelectUnboxMethod(type, false);
+            var m = Generator.Boxing.Unbox(type, false);
             if (m != null)
             {
                 GetlexSwapCall(m);
@@ -2825,7 +2825,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (type == null)
                 throw new ArgumentNullException();
-            int id = Generator.GetTypeId(type);
+            int id = Generator.Reflection.GetTypeId(type);
             PushInt(id);
         }
 
@@ -3222,13 +3222,13 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         void CallBinOp(BinaryOperator op, IType left, IType right, IType result)
         {
-            var stOp = Generator.FindOperator(op, left, right);
+			var stOp = Generator.Operators.Find(op, left, right);
             if (stOp == null)
             {
                 Cast(right, left);
                 right = left;
             }
-            var m = Generator.DefineOperator(op, left, right);
+			var m = Generator.Operators.Build(op, left, right);
             Call(m);
             Coerce(result, true);
         }
@@ -3264,7 +3264,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (type.IsDecimalOrInt64())
             {
-                var opm = Generator.DefineUnaryOperator(op, type);
+				var opm = Generator.Operators.Build(op, type);
                 Call(opm);
                 //Coerce(type, true);
                 return;
@@ -3539,19 +3539,19 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
             NewObject(
                 type, 1,
-                delegate
-                    {
-                        var unbox = Generator.SelectUnboxMethod(typeArg, true);
-                        if (unbox != null)
-                        {
-                            CallStatic(unbox, () => GetLocal(value));
-                        }
-                        else
-                        {
-                            GetLocal(value);
-                            Unbox(typeArg);
-                        }
-                    });
+                () =>
+	                {
+		                var unbox = Generator.Boxing.Unbox(typeArg, true);
+		                if (unbox != null)
+		                {
+			                CallStatic(unbox, () => GetLocal(value));
+		                }
+		                else
+		                {
+			                GetLocal(value);
+			                Unbox(typeArg);
+		                }
+	                });
         }
         #endregion
 

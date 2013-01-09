@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 {
                     var code = new AbcCode(_abc);
                     bool isTrue = op == BranchOperator.True;
-                    var abcOp = _generator.DefineBooleanOperator(left, isTrue);
+                    var abcOp = _generator.Operators.BuildBoolOp(left, isTrue);
                     //TODO: Should we enshure not null value onto the stack???
                     //AbcMethod abcOp = _generator.DefineTruthOperator(left, isTrue);
                     //code.LoadStaticReceiver(abcOp);
@@ -61,7 +61,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             else if (InternalTypeExtensions.IsDecimalOrInt64(left, right))
             {
                 var code = new AbcCode(_abc);
-                var opm = _generator.DefineOperator(op, left, right);
+				var opm = _generator.Operators.Build(op, left, right);
                 code.Call(opm);
                 code.Add(InstructionCode.Iftrue);
                 return code.ToArray();

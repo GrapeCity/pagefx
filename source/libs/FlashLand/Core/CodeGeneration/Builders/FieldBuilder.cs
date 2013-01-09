@@ -3,39 +3,36 @@ using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
     //contains code to define IField in output ABC file
-    internal partial class AbcGenerator
+    internal sealed class FieldBuilder
     {
-        #region DefineField
-        private static bool MustExcludeField(IField field)
-        {
-            var declType = field.DeclaringType;
-            if (declType.IsEnum)
-            {
-                if (field.IsStatic)
-                    return AbcGenConfig.ExludeEnumConstants;
-                return true;
-            }
-            if (field.IsArrayInitializer())
-                return true;
-            return false;
-        }
+	    private readonly AbcGenerator _generator;
 
-        public void DefineField(IField field)
+	    public FieldBuilder(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    public void Build(IField field)
         {
             if (field == null)
                 throw new ArgumentNullException("field");
 
-            if (MustExcludeField(field))
+            if (MustExclude(field))
                 return;    
 
             if (Abc.IsDefined(field))
                 return;
 
             var declType = field.DeclaringType;
-            var tag = DefineType(declType);
+            var tag = _generator.DefineType(declType);
 
 #if DEBUG
             DebugService.DoCancel();
@@ -53,7 +50,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (Abc.IsDefined(field)) return;
 
-            var type = DefineMemberType(field.Type);
+            var type = _generator.DefineMemberType(field.Type);
             if (Abc.IsDefined(field)) return;
 
 #if DEBUG
@@ -61,7 +58,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             DebugService.LogInfo("ABC DefineField started for field {0}.{1}", field.DeclaringType.FullName, field.Name);
 #endif
 
-            var name = DefineFieldName(field);
+            var name = DefineName(field);
             bool isStatic = field.IsStatic;
             AbcTrait trait = null;
 
@@ -79,21 +76,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (trait == null)
             {
                 trait = AbcTrait.CreateSlot(type, name);
-                SetData(field, trait);
+                _generator.SetData(field, trait);
                 instance.AddTrait(trait, isStatic);
 
-                if (IsImportableConstantField(field))
+                if (IsImportableConstant(field))
                 {
                     trait.Kind = AbcTraitKind.Const;
                     trait.HasValue = true;
                     trait.SlotValue = Abc.ImportValue(field.Value);
                 }
 
-                DefineEmbeddedAsset(field, trait);
+                _generator.EmbeddedAssets.Build(field, trait);
             }
             else
             {
-                SetData(field, trait);
+                _generator.SetData(field, trait);
             }
 
             trait.Type = field.Type;
@@ -104,12 +101,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             DebugService.DoCancel();
 #endif
         }
-        #endregion
 
-        #region GetFieldName
-        public AbcMultiname GetFieldName(IField field)
+	    public AbcMultiname GetFieldName(IField field)
         {
-            DefineField(field);
+            Build(field);
             var trait = field.Data as AbcTrait;
             if (trait == null)
                 throw new InvalidOperationException();
@@ -131,7 +126,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return false;
         }
 
-        AbcNamespace DefineFieldNamespace(IField field)
+        private AbcNamespace DefineNamespace(IField field)
         {
             var declType = field.DeclaringType;
             if (UseGlobalPackage(declType))
@@ -140,25 +135,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return Abc.DefineNamespace(declType, field.Visibility, field.IsStatic);
         }
 
-        AbcMultiname DefineFieldName(IField field)
+		private AbcMultiname DefineName(IField field)
         {
             //NOTE: For enums we will use m_value name for internal value.
             field.Rename();
-            var ns = DefineFieldNamespace(field);
+            var ns = DefineNamespace(field);
             return Abc.DefineQName(ns, field.Name);
         }
-        #endregion
 
-        #region Utils
-        public AbcMultiname DefineMemberType(IType type)
-        {
-            DefineType(type);
-            if (type.Data == null)
-                throw new InvalidOperationException(string.Format("Type {0} is not defined", type.FullName));
-            return Abc.GetTypeName(type, true);
-        }
-
-        static bool IsImportableConstantField(IField field)
+	    private static bool IsImportableConstant(IField field)
         {
             if (!field.IsConstant) return false;
 
@@ -183,6 +168,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return true;
         }
 
-    	#endregion
+		private static bool MustExclude(IField field)
+		{
+			var declType = field.DeclaringType;
+			if (declType.IsEnum)
+			{
+				if (field.IsStatic)
+					return AbcGenConfig.ExludeEnumConstants;
+				return true;
+			}
+			if (field.IsArrayInitializer())
+				return true;
+			return false;
+		}
     }
 }

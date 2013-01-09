@@ -132,7 +132,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var assetTraits = new List<AbcTrait>();
             foreach (var f in info.Assets)
             {
-                DefineField(f);
+				FieldBuilder.Build(f);
                 var t = f.Data as AbcTrait;
                 if (t == null)
                     throw new InvalidOperationException();
@@ -191,7 +191,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
             	code.LoadThis();
             	code.LoadConstant(field.Value);
-            	code.InitProperty(GetFieldName(field));
+				code.InitProperty(FieldBuilder.GetFieldName(field));
             }
 
             code.ReturnVoid();

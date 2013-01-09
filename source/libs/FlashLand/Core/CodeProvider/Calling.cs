@@ -177,7 +177,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 return;
             }
 
-            var abcMethod = method.Data as AbcMethod;
+            var abcMethod = method.AbcMethod();
             if (abcMethod == null)
                 throw new ArgumentException("Invalid method tag");
 
@@ -265,11 +265,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private static string GetBaseCallPrefix(IMethod method)
         {
-            var m = method.Data as AbcMethod;
-            if (m != null)
+            var abcMethod = method.AbcMethod();
+            if (abcMethod != null)
             {
-                if (m.IsGetter) return "$get_super$";
-                if (m.IsSetter) return "$set_super$";
+                if (abcMethod.IsGetter) return "$get_super$";
+                if (abcMethod.IsSetter) return "$set_super$";
             }
             return "$super$";
         }
@@ -329,16 +329,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private void CallCore(AbcCode code, IMethod method, AbcMultiname prop, bool super)
         {
-            var m = method.Data as AbcMethod;
-            if (m != null)
+            var abcMethod = method.AbcMethod();
+            if (abcMethod != null)
             {
-                if (m.IsGetter)
+                if (abcMethod.IsGetter)
                 {
                     code.Add(super ? InstructionCode.Getsuper : InstructionCode.Getproperty, prop);
                     return;
                 }
 
-                if (m.IsSetter)
+                if (abcMethod.IsSetter)
                 {
                     code.Add(super ? InstructionCode.Setsuper : InstructionCode.Setproperty, prop);
                     return;
@@ -355,9 +355,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             {
                 if (method.IsStaticCall()
                     && method.IsManaged()
-                    && m != null && _abc.IsDefined(m))
+                    && abcMethod != null && _abc.IsDefined(abcMethod))
                 {
-                    code.Add(InstructionCode.Callstatic, m, n);
+                    code.Add(InstructionCode.Callstatic, abcMethod, n);
                     if (isVoid) code.Pop();
                     return;
                 }
@@ -427,7 +427,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (MustCoerceReturnType(declType))
                 return true;
             
-            var abcMethod = method.Data as AbcMethod;
+            var abcMethod = method.AbcMethod();
             if (abcMethod != null)
             {
                 if (abcMethod.IsNative) return true;
@@ -498,7 +498,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var type = method.DeclaringType;
 
-            var abcMethod = method.Data as AbcMethod;
+            var abcMethod = method.AbcMethod();
             if (abcMethod != null)
             {
                 if (abcMethod.IsInitializer) //default ctor!

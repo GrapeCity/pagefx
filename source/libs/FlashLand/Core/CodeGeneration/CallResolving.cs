@@ -121,7 +121,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 string name = method.Name;
                 if (name == Const.GetTypeId)
-                    return DefineGetTypeIdMethod(method.DeclaringType, instance);
+                    return Reflection.DefineGetTypeIdMethod(method.DeclaringType, instance);
             }
 
 	        return DefineArrayCtor(method, instance)
@@ -146,8 +146,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             if (_definers != null) return;
             _definers = new Hashtable();
-            RegisterDefiner(Define_Assembly_GetTypeNum, "System.Reflection.Assembly.GetTypeNum");
-            RegisterDefiner(Define_Assembly_InitType, "System.Reflection.Assembly.InitType");
+            RegisterDefiner(Reflection.Define_Assembly_GetTypeNum, "System.Reflection.Assembly.GetTypeNum");
+			RegisterDefiner(Reflection.Define_Assembly_InitType, "System.Reflection.Assembly.InitType");
         }
 
         private MethodDefiner FindMethodDefiner(IMethod method)

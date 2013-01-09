@@ -216,7 +216,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return;
             }
 
-            var main = EntryPoint.Data as AbcMethod;
+            var main = EntryPoint.AbcMethod();
             if (main == null)
                 throw new InvalidOperationException("Invalid entry point");
 
