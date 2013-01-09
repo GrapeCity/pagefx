@@ -7,39 +7,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 {
     internal partial class AbcGenerator
     {
-        #region GetEmbedInfo
-        static Embed GetEmbedInfo(ICustomAttribute attr)
-        {
-            var embed = new Embed();
-            int n = attr.Arguments.Count;
-            if (n == 1) //only source, mime-type is auto detected
-            {
-                embed.Source = attr.Arguments[0].Value as string;
-                if (string.IsNullOrEmpty(embed.Source))
-                    throw new InvalidOperationException("Invalid source in EmbedAttribute");
-                embed.MimeType = MimeTypes.AutoDetect(embed.Source);
-                if (string.IsNullOrEmpty(embed.MimeType))
-                    throw new InvalidOperationException("Unable to auto detect mimeType in EmbedAttribute");
-            }
-            else if (n == 2) //source and mime-type are given
-            {
-                embed.Source = attr.Arguments[0].Value as string;
-                if (string.IsNullOrEmpty(embed.Source))
-                    throw new InvalidOperationException("Invalid source in EmbedAttribute");
-                embed.MimeType = attr.Arguments[1].Value as string;
-                if (string.IsNullOrEmpty(embed.MimeType))
-                    throw new InvalidOperationException("Invalid mimeType in EmbedAttribute");
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-            MimeTypes.Check(embed.MimeType);
-            return embed;
-        }
-        #endregion
-
-        #region DefineEmbeddedAsset
+	    #region DefineEmbeddedAsset
         void DefineEmbeddedAsset(IField field, AbcTrait trait)
         {
             var attr = field.FindAttribute(Attrs.Embed);
@@ -47,7 +15,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             CheckEmbedAsset(field);
 
-            var embed = GetEmbedInfo(attr);
+            var embed = Embed.FromCustomAttribute(attr);
             trait.Embed = embed;
 
             string type = embed.MimeType;

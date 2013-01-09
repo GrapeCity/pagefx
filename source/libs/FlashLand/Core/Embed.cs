@@ -1,12 +1,13 @@
 using System;
 using System.Linq;
+using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Swf;
 using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
 
 namespace DataDynamics.PageFX.FlashLand.Core
 {
-    class Embed
+    internal sealed class Embed
     {
         private static class Attrs
         {
@@ -44,9 +45,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
         public AbcInstance Instance;
 
-		#region Resolve
-
-		public static void Resolve(AbcTrait trait, AbcMetaEntry e, SwfMovie lib)
+	    public static void Resolve(AbcTrait trait, AbcMetaEntry e, SwfMovie lib)
         {
             if (trait.Embed != null) return;
 
@@ -108,10 +107,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			trait.AssetInstance = instance;
 		}
 
-    	#endregion
-
-        #region FromDirective
-        public static Embed FromDirective(Function f)
+	    public static Embed FromDirective(Function f)
         {
             int n = f.Arguments.Count;
             if (n <= 0) return null;
@@ -119,16 +115,16 @@ namespace DataDynamics.PageFX.FlashLand.Core
             if (n == 1) //source
             {
                 string source = f.Arguments[0].Value as string;
-                if (string.IsNullOrEmpty(source))
+                if (String.IsNullOrEmpty(source))
                     throw Errors.RBC.UnableToResolveEmbed.CreateException(f.ToString());
                 return new Embed { Source = source, MimeType = MimeTypes.AutoDetect(source) };
             }
 
-			var src = f.Arguments.FirstOrDefault(a => a.Name == null || string.Equals(a.Name, "source", StringComparison.OrdinalIgnoreCase));
+			var src = f.Arguments.FirstOrDefault(a => a.Name == null || String.Equals(a.Name, "source", StringComparison.OrdinalIgnoreCase));
             if (src != null)
             {
                 string source = src.Value as string;
-                if (string.IsNullOrEmpty(source))
+                if (String.IsNullOrEmpty(source))
                     throw Errors.RBC.UnableToResolveEmbed.CreateException(f.ToString());
                 string mt = MimeTypes.AutoDetect(source);
                 mt = GetMimeType(f, mt);
@@ -138,13 +134,13 @@ namespace DataDynamics.PageFX.FlashLand.Core
             return null;
         }
 
-        static string GetMimeType(Function f, string defval)
+        private static string GetMimeType(Function f, string defval)
         {
             var mt = f.Find("mimeType", true);
             if (mt != null)
             {
                 string s = mt.Value as string;
-                if (!string.IsNullOrEmpty(s))
+                if (!String.IsNullOrEmpty(s))
                 {
                     if (MimeTypes.IsSupported(s))
                         return s;
@@ -152,6 +148,38 @@ namespace DataDynamics.PageFX.FlashLand.Core
             }
             return defval;
         }
-        #endregion
+
+	    public static Embed FromCustomAttribute(ICustomAttribute attr)
+	    {
+		    var embed = new Embed();
+
+		    int n = attr.Arguments.Count;
+		    if (n == 1) //only source, mime-type is auto detected
+		    {
+			    embed.Source = attr.Arguments[0].Value as string;
+			    if (String.IsNullOrEmpty(embed.Source))
+				    throw new InvalidOperationException("Invalid source in EmbedAttribute");
+			    embed.MimeType = MimeTypes.AutoDetect(embed.Source);
+			    if (String.IsNullOrEmpty(embed.MimeType))
+				    throw new InvalidOperationException("Unable to auto detect mimeType in EmbedAttribute");
+		    }
+		    else if (n == 2) //source and mime-type are given
+		    {
+			    embed.Source = attr.Arguments[0].Value as string;
+			    if (String.IsNullOrEmpty(embed.Source))
+				    throw new InvalidOperationException("Invalid source in EmbedAttribute");
+			    embed.MimeType = attr.Arguments[1].Value as string;
+			    if (String.IsNullOrEmpty(embed.MimeType))
+				    throw new InvalidOperationException("Invalid mimeType in EmbedAttribute");
+		    }
+		    else
+		    {
+			    throw new NotImplementedException();
+		    }
+
+		    MimeTypes.Check(embed.MimeType);
+
+		    return embed;
+	    }
     }
 }

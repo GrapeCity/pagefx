@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.FlashLand.Core.ResourceBundles;
 using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 using DataDynamics.PageFX.FlashLand.IL;
-using DataDynamics.PageFX.FlashLand.Swc;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        bool ImportResourceBundle(AbcFile abc, AbcMetaEntry e)
+        private bool ImportResourceBundle(AbcFile abc, AbcMetaEntry e)
         {
             if (e.NameString != MetadataTags.ResourceBundle)
                 return false;
@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (swc != null)
                 swc.LoadResourceBundles();
 
-            var context = new RBContext { SWC = swc };
+            var context = new ResourceBundleContext { Swc = swc };
 
             ImportResourceBundle(name, context);
             return true;
@@ -42,10 +42,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public void ImportResourceBundle(string name)
         {
-            ImportResourceBundle(name, (RBContext)null);
+            ImportResourceBundle(name, (ResourceBundleContext)null);
         }
 
-        public void ImportResourceBundle(string name, RBContext context)
+        public void ImportResourceBundle(string name, ResourceBundleContext context)
         {
             foreach (var locale in Locales)
                 ImportResourceBundle(locale, name, context);
@@ -56,18 +56,18 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             ImportResourceBundle(locale, name, null);
         }
 
-        public void ImportResourceBundle(string locale, string name, RBContext context)
+        public void ImportResourceBundle(string locale, string name, ResourceBundleContext context)
         {
             if (context == null)
-                context = new RBContext();
+                context = new ResourceBundleContext();
             context.Locale = locale;
 
-            RBCache.CopyFlexLocale(locale);
+            ResourceBundles.CopyFlexLocale(locale);
 
             string key = locale + "$" + name;
-            if (HasRB(key)) return;
+            if (ContainsResourceBundle(key)) return;
 
-            var rb = RBCache.Get(locale, name);
+            var rb = ResourceBundles.Get(locale, name);
             //NOTE: null in case of Dynamic Resource Modules!!!
             if (rb == null) return;
 
@@ -116,7 +116,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 				        {
 					        string line = lines[i];
 					        context.Line = i + 1;
-					        context.RB = rb;
+					        context.ResourceBundle = rb;
 					        if (PushKeyValue(line, code, context))
 						        ++n;
 				        }
@@ -130,7 +130,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         readonly Hashtable _rbcache = new Hashtable();
 
-        AbcInstance ResourceBundleSuper
+        private AbcInstance ResourceBundleSuper
         {
             get
             {
@@ -143,9 +143,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return _rbsuper;
             }
         }
-        AbcInstance _rbsuper;
+        private AbcInstance _rbsuper;
 
-        bool HasRB(string key)
+        private bool ContainsResourceBundle(string key)
         {
             var pf = PrevFrame;
             while (pf != null)
@@ -157,10 +157,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return _rbcache.Contains(key);
         }
 
-        const string PrefixEmbed = "Embed(";
-        const string PrefixClassReference = "ClassReference(";
+        private const string PrefixEmbed = "Embed(";
+		private const string PrefixClassReference = "ClassReference(";
 
-        bool PushKeyValue(string line, AbcCode code, RBContext context)
+        private bool PushKeyValue(string line, AbcCode code, ResourceBundleContext context)
         {
             if (string.IsNullOrEmpty(line)) return false;
             line = line.Trim();
@@ -197,7 +197,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return false;
         }
 
-        static Function ParseDirective(string value)
+        private static Function ParseDirective(string value)
         {
             Function func;
             try
@@ -213,7 +213,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return func;
         }
 
-        AbcInstance ResolveClassRef(string value)
+        private AbcInstance ResolveClassRef(string value)
         {
             var func = ParseDirective(value);
             if (func.Arguments.Count != 1)
@@ -228,13 +228,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
 
         #region EmbedResource
-        AbcInstance EmbedResource(RBContext context, string value)
+        private AbcInstance EmbedResource(ResourceBundleContext context, string value)
         {
             var func = ParseDirective(value);
             return EmbedResource(context, func);
         }
 
-        AbcInstance EmbedResource(RBContext context, Function func)
+        private AbcInstance EmbedResource(ResourceBundleContext context, Function func)
         {
             var embed = Embed.FromDirective(func);
             if (embed == null)
@@ -262,24 +262,24 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         readonly Hashtable _embedAssetInstances = new Hashtable();
 
-        static string DefineAssetName(RBContext context, string prefix)
+		private static string DefineAssetName(ResourceBundleContext context, string prefix)
         {
             string name = prefix;
-            if (context.SWC != null)
+            if (context.Swc != null)
             {
-                name += context.SWC.Name;
+                name += context.Swc.Name;
                 name += "_";
             }
             name += context.ResolvedSource;
             return name.ToValidName();
         }
 
-        static Image ResolveImage(RBContext context, string source)
+        private static Image ResolveImage(ResourceBundleContext context, string source)
         {
             try
             {
-                var rb = context.RB;
-                if (context.SWC != null)
+                var rb = context.ResourceBundle;
+                if (context.Swc != null)
                 {
                     if (rb.IsZipped)
                     {
@@ -288,7 +288,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                         imagePath = imagePath.Replace('\\', '/');
                         imagePath = imagePath.ToFullPath();
                         context.ResolvedSource = imagePath;
-                        return context.SWC.ResolveImage(imagePath);
+                        return context.Swc.ResolveImage(imagePath);
                     }
                 }
                 return null;
@@ -299,18 +299,5 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
         #endregion
-    }
-
-    public class RBContext
-    {
-        public SwcFile SWC { get; set; }
-
-        public string Locale { get; set; }
-
-        public int Line { get; set; }
-
-        internal RB RB { get; set; }
-
-        internal string ResolvedSource { get; set; }
     }
 }

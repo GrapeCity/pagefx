@@ -206,6 +206,9 @@
     <Compile Include="Core\MetadataTags.cs" />
     <Compile Include="Core\MimeTypes.cs" />
     <Compile Include="Core\NameExtensions.cs" />
+    <Compile Include="Core\ResourceBundles\ResourceBundle.cs" />
+    <Compile Include="Core\ResourceBundles\ResourceBundleContext.cs" />
+    <Compile Include="Core\ResourceBundles\ResourceBundleExtensions.cs" />
     <Compile Include="Core\RSL.cs" />
     <Compile Include="Core\SpecialTypes\GlobalFunctionsContainer.cs" />
     <Compile Include="Core\SpecialTypes\InternalType.cs" />
@@ -232,7 +235,7 @@
     <Compile Include="Flv\FlvTagList.cs" />
     <Compile Include="ISupportXmlDump.cs" />
     <Compile Include="Abc\QName.cs" />
-    <Compile Include="Abc\RBCache.cs" />
+    <Compile Include="Core\ResourceBundles\ResourceBundles.cs" />
     <Compile Include="Abc\TypeRef.cs" />
     <Compile Include="Flv\Enums.cs" />
     <Compile Include="Flv\FlvAudioTag.cs" />

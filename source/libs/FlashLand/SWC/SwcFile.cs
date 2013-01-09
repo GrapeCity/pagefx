@@ -11,6 +11,7 @@ using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.FlashLand.Core.ResourceBundles;
 using DataDynamics.PageFX.FlashLand.Swf;
 using Ionic.Zip;
 
@@ -677,7 +678,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
         {
             if (_rbloaded) return;
             _rbloaded = true;
-            RBCache.LoadFromZip(_zip, null);
+            ResourceBundles.LoadZipFile(_zip, null);
         }
 
         readonly Hashtable _imageCache = new Hashtable();
