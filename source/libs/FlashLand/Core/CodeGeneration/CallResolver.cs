@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.Inlining;
@@ -11,11 +10,22 @@ using DataDynamics.PageFX.FlashLand.Core.Tools;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 {
-    internal partial class AbcGenerator
+    internal sealed class CallResolver
     {
-        #region ResolveCall
-        //Entry point to resolve spec runtime calls
-        private object ResolveCall(IMethod method)
+	    private readonly AbcGenerator _generator;
+
+	    public CallResolver(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    //Entry point to resolve spec runtime calls
+        public object Resolve(IMethod method)
         {
             var type = method.DeclaringType;
             var tag = type.Data;
@@ -23,25 +33,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (avmType != null)
             {
                 Debug.Assert(method.IsInternalCall);
-                tag = ResolveCall(method, null);
+                tag = Resolve(method, null);
                 if (tag == null)
                     throw new InvalidOperationException();
-                return SetData(method, tag);
+                return _generator.SetData(method, tag);
             }
 
-            tag = InlineCodeGenerator.Build(Abc, (AbcInstance)null, method);
+            tag = InlineCodeGenerator.Build(Abc, null, method);
             if (tag != null)
             {
-                return SetData(method, tag);
+				return _generator.SetData(method, tag);
             }
 
             var instance = type.AbcInstance();
             if (instance != null)
             {
-                tag = ResolveCall(method, instance);
+                tag = Resolve(method, instance);
                 if (tag != null)
                 {
-                    return SetData(method, tag);
+					return _generator.SetData(method, tag);
                 }
             }
 
@@ -53,7 +63,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return null;
         }
 
-        private object ResolveCall(IMethod method, AbcInstance instance)
+        private object Resolve(IMethod method, AbcInstance instance)
         {
             object tag = InlineCodeGenerator.Build(Abc, instance, method);
             if (tag != null) return tag;
@@ -75,7 +85,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var type = method.DeclaringType;
             if (type.TypeKind == TypeKind.Delegate)
             {
-                return Delegates.Build(method, instance);
+				return _generator.Delegates.Build(method, instance);
             }
             return ThrowOrDefineNotImplCall(method, instance);
         }
@@ -95,11 +105,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return ThrowOrDefineNotImplCall(method, instance);
         }
 
-        internal AbcMethod ThrowOrDefineNotImplCall(IMethod method, AbcInstance instance)
+        internal static AbcMethod ThrowOrDefineNotImplCall(IMethod method, AbcInstance instance)
         {
             if (AbcGenConfig.ThrowOnUnexpectedCall)
                 throw UnexpectedCall(method);
-            return DefineNotImplementedMethod(method, instance);
+            return instance.DefineNotImplementedMethod(method);
         }
 
         private static Exception UnexpectedCall(IMethod method)
@@ -111,28 +121,24 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return new NotSupportedException(string.Format("Unexpected internal call: {0}",
                                                            method.GetFullName()));
         }
-        #endregion
 
-        #region ResolveSpecCall
-        private AbcMethod ResolveSpecCall(IMethod method, AbcInstance instance)
+	    private AbcMethod ResolveSpecCall(IMethod method, AbcInstance instance)
         {
             int paramNum = method.Parameters.Count;
             if (paramNum == 0)
             {
                 string name = method.Name;
                 if (name == Const.GetTypeId)
-                    return Reflection.DefineGetTypeIdMethod(method.DeclaringType, instance);
+					return _generator.Reflection.DefineGetTypeIdMethod(method.DeclaringType, instance);
             }
 
-	        return DefineArrayCtor(method, instance)
-	               ?? DefineArrayGetter(method, instance)
-	               ?? DefineArraySetter(method, instance)
-	               ?? DefineArrayAddress(method, instance);
+			return _generator.DefineArrayCtor(method, instance)
+				   ?? _generator.DefineArrayGetter(method, instance)
+				   ?? _generator.DefineArraySetter(method, instance)
+				   ?? _generator.DefineArrayAddress(method, instance);
         }
-        #endregion
 
-        #region Method Definers
-        private delegate AbcMethod MethodDefiner(IMethod method, AbcInstance instance);
+	    private delegate AbcMethod MethodDefiner(IMethod method, AbcInstance instance);
 
         private Hashtable _definers;
 
@@ -146,8 +152,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             if (_definers != null) return;
             _definers = new Hashtable();
-            RegisterDefiner(Reflection.Define_Assembly_GetTypeNum, "System.Reflection.Assembly.GetTypeNum");
-			RegisterDefiner(Reflection.Define_Assembly_InitType, "System.Reflection.Assembly.InitType");
+			RegisterDefiner(_generator.Reflection.Define_Assembly_GetTypeNum, "System.Reflection.Assembly.GetTypeNum");
+			RegisterDefiner(_generator.Reflection.Define_Assembly_InitType, "System.Reflection.Assembly.InitType");
         }
 
         private MethodDefiner FindMethodDefiner(IMethod method)
@@ -156,30 +162,5 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             string key = method.DeclaringType.FullName + "." + method.Name;
             return (MethodDefiner)_definers[key];
         }
-        #endregion
-
-        #region DefineNotImplementedMethod
-        private AbcMethod DefineNotImplementedMethod(IMethod method, AbcInstance instance)
-        {
-	        return instance.DefineMethod(
-		        SigOf(method),
-		        code =>
-			        {
-				        var exceptionType = GetType(CorlibTypeId.NotImplementedException);
-				        code.ThrowException(exceptionType);
-
-				        //TODO: Is it needed???
-				        if (method.IsVoid())
-				        {
-					        code.ReturnVoid();
-				        }
-				        else
-				        {
-					        code.PushNull();
-					        code.ReturnValue();
-				        }
-			        });
-        }
-        #endregion
     }
 }

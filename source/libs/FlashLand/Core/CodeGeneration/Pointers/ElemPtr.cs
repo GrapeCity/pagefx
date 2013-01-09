@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 			var instanceName = abc.DefineName(new PfxQName("elem_ptr"));
 			var instance = abc.DefineEmptyInstance(instanceName, false);
 
-			var arrType = _generator.GetArrayInstance();
+			var arrType = _generator.Corlib.Array.Instance;
 			var arr = instance.CreatePrivateSlot("_arr", arrType);
 			var index = instance.CreatePrivateSlot("_index", AvmTypeCode.Int32);
 

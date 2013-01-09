@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		public AbcMethod IsFlashPlayer()
 		{
-			var instance = _generator.GetInstance(CorlibTypeId.Environment);
+			var instance = _generator.Corlib.Environment.Instance;
 
 			return instance.DefineMethod(
 				Sig.get("isFlash", Abc.BuiltinTypes.RealBoolean).@static(),
@@ -72,7 +72,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		private AbcMethod IsFlashPlayerInternal()
 		{
-			var instance = _generator.GetInstance(CorlibTypeId.Environment);
+			var instance = _generator.Corlib.Environment.Instance;
 
 			return instance.DefineMethod(
 				Sig.get("isFlashInternal", Abc.BuiltinTypes.Boolean).@static(),
@@ -88,7 +88,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		public AbcMethod Exit()
 		{
-			var instance = _generator.GetInstance(CorlibTypeId.Environment);
+			var instance = _generator.Corlib.Environment.Instance;
 			return instance.DefineMethod(
 				Sig.@static("exit_impl", AvmTypeCode.Void, AvmTypeCode.Int32, "exitCode"),
 				code =>
@@ -159,7 +159,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		public AbcMethod FindClass()
 		{
-			var instance = _generator.SystemType.Instance;
+			var instance = _generator.Corlib.SystemType.Instance;
 			return instance.DefineMethod(
 				Sig.@static(new PfxQName("FindClass"), AvmTypeCode.Class,
 				            AvmTypeCode.Namespace, "ns",
@@ -186,7 +186,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		//returns true if passed object is null
 		public AbcMethod IsNullImpl()
 		{
-			var instance = _generator.SystemType.Instance;
+			var instance = _generator.Corlib.SystemType.Instance;
 
 			return instance.DefineMethod(
 				Sig.@static("IsNull", AvmTypeCode.Boolean, AvmTypeCode.Object, "value"),
@@ -217,7 +217,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		public AbcMethod IsNullableImpl()
 		{
-			var instance = _generator.SystemType.Instance;
+			var instance = _generator.Corlib.SystemType.Instance;
 
 			return instance.DefineMethod(
 				Sig.@static("IsNullable", AvmTypeCode.Boolean, AvmTypeCode.Object, "value"),

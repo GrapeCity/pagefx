@@ -19,12 +19,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 
 		public IType Type
 		{
-			get { return _generator.GetType(CorlibTypeId.Convert); }
+			get { return _generator.Corlib.GetType(CorlibTypeId.Convert); }
 		}
 
 		public AbcInstance Instance
 		{
-			get { return _generator.GetInstance(CorlibTypeId.Convert); }
+			get { return _generator.Corlib.GetInstance(CorlibTypeId.Convert); }
 		}
 
 		private SystemTypes SystemTypes

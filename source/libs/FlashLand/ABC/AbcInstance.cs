@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Core;
@@ -614,6 +615,29 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		internal AbcMethod DefineMethod(Sig sig, AbcCoder coder)
 		{
 			return DefineMethod(sig, coder, null);
+		}
+
+		internal AbcMethod DefineNotImplementedMethod(IMethod method)
+		{
+			var generator = Abc.Generator;
+			return DefineMethod(
+				generator.SigOf(method),
+				code =>
+					{
+						var exceptionType = generator.Corlib.GetType(CorlibTypeId.NotImplementedException);
+						code.ThrowException(exceptionType);
+
+						//TODO: Is it needed???
+						if (method.IsVoid())
+						{
+							code.ReturnVoid();
+						}
+						else
+						{
+							code.PushNull();
+							code.ReturnValue();
+						}
+					});
 		}
 
 		#endregion

@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			if (method.Name == "Invoke")
 				return InvokeImpl(method, instance);
 
-			return _generator.ThrowOrDefineNotImplCall(method, instance);
+			return CallResolver.ThrowOrDefineNotImplCall(method, instance);
 		}
 
 		private AbcMethod BuildCtor(IMethod method, AbcInstance instance)

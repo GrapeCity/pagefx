@@ -209,7 +209,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             tag = ImportMethod(method);
             if (tag != null) return tag;
 
-            tag = ResolveCall(method);
+            tag = CallResolver.Resolve(method);
             if (tag != null) return tag;
 
             DefineBaseMethods(method);
@@ -284,7 +284,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			if (isMxAppCtor)
 			{
 				//HACK: Define mx.core.FlexEvent argument for MX app ctor
-				var typeFlexEvent = ImportFlexEventType();
+				var typeFlexEvent = FlexAppBuilder.FlexEventType();
 				sig.Args = new object[] {typeFlexEvent.Name, "e"};
 			}
 

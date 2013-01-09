@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 
@@ -240,7 +241,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	        if (IsRootSprite(type))
                 RootSprite.Instance = instance;
 
-            DefineDebugInfo(type, instance);
+            DebugInfoBuilder.Build(this, type, instance);
 
 #if DEBUG
             DebugService.DoCancel();
@@ -493,7 +494,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         void FinishType(AbcInstance instance)
         {
             //TODO: Comment when copying of value types will be implemented using Reflection
-            DefineCopyMethod(instance);
+            CopyImpl.With(this).Copy(instance);
 
             DefineCompiledMethods(instance);
         }
@@ -534,7 +535,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (!type.IsInterface)
             {
-                DefineFlexAppMembers(instance);
+                FlexAppBuilder.DefineMembers(instance);
                 DefineFields(type);
             }
 
@@ -558,7 +559,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return true;
         }
 
-        private void DefineFields(IType type)
+        internal void DefineFields(IType type)
         {
 			//TODO: PERF do this only once
             foreach (var field in type.Fields)

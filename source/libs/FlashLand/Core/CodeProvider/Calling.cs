@@ -208,7 +208,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             if (!AbcGenConfig.FlexAppCtorAsHandler && IsMxAppBaseCtor(method))
             {
-                _generator.FlexAppCtorAfterSuperCall(code);
+                _generator.FlexAppBuilder.CtorAfterSuperCall(code);
             }
 
             return code.ToArray();

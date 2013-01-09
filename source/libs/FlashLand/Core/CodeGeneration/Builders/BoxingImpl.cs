@@ -262,7 +262,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				        code.GetLocal(value);
 				        code.ThrowNullReferenceException();
 
-						var MyNullable = _generator.DefineAbcInstance(_generator.MakeNullable(type));
+						var MyNullable = _generator.DefineAbcInstance(_generator.Corlib.MakeNullable(type));
 
 				        code.If(
 					        () =>

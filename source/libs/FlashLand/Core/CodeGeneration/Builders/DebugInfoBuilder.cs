@@ -3,29 +3,27 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
-using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    partial class AbcGenerator
+    internal static class DebugInfoBuilder
     {
         const string DebugPropertyPrefix = "pfx$debug$";
 
-        public void DefineDebugInfo(IType type, AbcInstance instance)
+        public static void Build(AbcGenerator generator, IType type, AbcInstance instance)
         {
 			if (!GlobalSettings.EmitDebugInfo) return;
 			if (!GlobalSettings.EmitDebugDisplay) return;
 
-            DefineDebuggerDisplay(type, instance);
+			DefineDebuggerDisplay(generator, type, instance);
             
-            if (IsCollection(type))
+            if (IsCollection(generator, type))
             {
-                DefineDebugCollectionView(instance);
+                DefineDebugCollectionView(generator, instance);
             }
         }
 
-        #region DefineDebuggerDisplay
-        void DefineDebuggerDisplay(IType type, AbcInstance instance)
+	    private static void DefineDebuggerDisplay(AbcGenerator generator, IType type, AbcInstance instance)
         {
 			if (type.IsInterface) return;
             if (type.Is(SystemTypeCode.Object)) return;
@@ -36,7 +34,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var attr = type.FindAttribute(Attrs.DebuggerDisplay);
             if (attr != null)
             {
-                if (DefineDebuggerDisplay(type, instance, attr))
+                if (DefineDebuggerDisplay(generator, type, instance, attr))
                     return;
             }
 
@@ -44,9 +42,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var toString = type.Methods.Find(Const.Object.MethodToString, 0);
             if (toString != null)
             {
-                var tostr = DefineAbcMethod(toString);
+                var tostr = generator.DefineAbcMethod(toString);
 
-                var name = Abc.DefineGlobalQName(DebugPropertyPrefix + "display");
+                var name = generator.Abc.DefineGlobalQName(DebugPropertyPrefix + "display");
 
 	            var m = instance.DefineMethod(
 					Sig.get(name, AvmTypeCode.String),
@@ -63,8 +61,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
         }
 
-        #region DebuggerDisplay attribute
-        bool DefineDebuggerDisplay(IType type, AbcInstance instance, ICustomAttribute attr)
+	    private static bool DefineDebuggerDisplay(AbcGenerator generator, IType type, AbcInstance instance, ICustomAttribute attr)
         {
             if (attr.Arguments.Count != 1) return false;
             var display = attr.Arguments[0].Value as string;
@@ -75,7 +72,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return false;
             }
 
-            var name = Abc.DefineGlobalQName(DebugPropertyPrefix + "display$exp");
+            var name = generator.Abc.DefineGlobalQName(DebugPropertyPrefix + "display$exp");
 
             //TODO: Parse display string to build string
 	        var m = instance.DefineMethod(
@@ -91,18 +88,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             return true;
         }
-        #endregion
-        #endregion
 
-        #region DefineDebugCollectionView
-        void DefineDebugCollectionView(AbcInstance instance)
+	    private static void DefineDebugCollectionView(AbcGenerator generator, AbcInstance instance)
         {
-            var name = Abc.DefineGlobalQName(DebugPropertyPrefix + "collection$view");
+            var name = generator.Abc.DefineGlobalQName(DebugPropertyPrefix + "collection$view");
 
             if (instance.FindSuperTrait(name, AbcTraitKind.Getter) != null)
                 return;
 
-            if (IsDictionary(instance.Type))
+            if (IsDictionary(generator, instance.Type))
             {
 	            instance.DefineMethod(
 					Sig.get(DebugPropertyPrefix + "dictionary$marker", AvmTypeCode.Boolean),
@@ -117,23 +111,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				Sig.get(name, AvmTypeCode.Array),
 		        code =>
 			        {
-				        var m = GetMethod(CompilerMethodId.ToArray);
+				        var m = generator.Corlib.GetMethod(CompilerMethodId.ToArray);
 				        code.Getlex(m);
 				        code.LoadThis();
 				        code.Call(m);
 				        code.ReturnValue();
 			        });
         }
-        #endregion
 
-        #region Utils
-        private bool IsCollection(IType type)
+	    private static bool IsCollection(AbcGenerator generator, IType type)
         {
             if (type == null) return false;
             if (type.TypeKind != TypeKind.Class) return false;
             if (type.Is(SystemTypeCode.String)) return false;
             if (type.Is(SystemTypeCode.Array)) return false;
-            if (type.Implements(GetType(CorlibTypeId.IEnumerable)))
+			if (type.Implements(generator.Corlib.GetType(CorlibTypeId.IEnumerable)))
             {
                 //TODO: Do extra filter
                 return true;
@@ -141,12 +133,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return false;
         }
 
-        private bool IsDictionary(IType type)
+        private static bool IsDictionary(AbcGenerator generator, IType type)
         {
             if (type == null) return false;
             if (type.TypeKind != TypeKind.Class) return false;
-            return type.Implements(GetType(CorlibTypeId.IDictionary));
+			return type.Implements(generator.Corlib.GetType(CorlibTypeId.IDictionary));
         }
-        #endregion
     }
 }

@@ -146,10 +146,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             {
                 //DefinePrototype_GetType(instance, type);
 
-                var getTypeId = _generator.GetMethod(ObjectMethodId.GetTypeId);
+				var getTypeId = _generator.Corlib.GetMethod(ObjectMethodId.GetTypeId);
                 instance.DefineMethod(Sig.@from(getTypeId).@override(false), code => code.ReturnTypeId(type));
 
-				var prototype = _generator.GetMethod(ObjectMethodId.GetType);
+				var prototype = _generator.Corlib.GetMethod(ObjectMethodId.GetType);
 	            instance.DefineMethod(Sig.@from(prototype).@override(false), code =>
 	                {
 		                code.CallAssemblyGetType(
@@ -304,8 +304,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             Debug.Assert(typeId >= 0);
 
-	        var assemblyType = _generator.CorlibTypes[CorlibTypeId.Assembly];
-	        var instance = _generator.DefineAbcInstance(assemblyType);
+			var instance = _generator.Corlib.Assembly.Instance;
 
             var name = Abc.DefineGlobalQName(Const.InitTypePrefix + typeId);
             var method = new AbcMethod();

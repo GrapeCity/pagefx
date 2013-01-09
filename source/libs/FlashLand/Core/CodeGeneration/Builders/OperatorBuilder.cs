@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Diagnostics;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
@@ -116,5 +117,31 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             return BuildUnary(op);
         }
+
+		#region Cache of Casting Operators
+		private static string GetCastOperatorKey(IType source, IType target)
+		{
+			var s = source.SystemType();
+			if (s == null) return null;
+			var t = target.SystemType();
+			if (t == null) return null;
+			return ((int)s.Code).ToString() + ((int)t.Code);
+		}
+
+		public AbcMethod GetCastOperator(IType source, IType target)
+		{
+			string key = GetCastOperatorKey(source, target);
+			if (key == null) return null;
+			return _cacheCastOps[key] as AbcMethod;
+		}
+
+		public void CacheCastOperator(IType source, IType target, AbcMethod op)
+		{
+			string key = GetCastOperatorKey(source, target);
+			_cacheCastOps[key] = op;
+		}
+
+		private readonly Hashtable _cacheCastOps = new Hashtable();
+		#endregion
     }
 }

@@ -7,8 +7,8 @@ using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
 
 namespace DataDynamics.PageFX.FlashLand.IL
 {
@@ -742,7 +742,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction GetField(FieldId id)
         {
-            return GetField(Generator.GetField(id));
+			return GetField(Generator.Corlib.GetField(id));
         }
 
         public Instruction SetField(IField field)
@@ -754,7 +754,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction SetField(FieldId id)
         {
-            return SetField(Generator.GetField(id));
+			return SetField(Generator.Corlib.GetField(id));
         }
 
         static IField FindField(IType type, string name)
@@ -1487,7 +1487,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
             if (InternalTypeExtensions.MustUseCastToMethod(type, true))
             {
-                var m = Generator.DefineCastToMethod(type, false);
+                var m = CastImpl.With(Generator).CastToImpl(type, false);
                 GetlexSwapCall(m);
                 return;
             }
@@ -1655,7 +1655,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         private void CastToString()
         {
-            var m = Generator.DefineCastToString();
+            var m = CastImpl.With(Generator).ToStringImpl();
             GetlexSwapCall(m);
         }
 
@@ -1674,18 +1674,14 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 return;
             }
 
-            var m = Generator.DefineCastToStringInterface(target, true);
+            var m = CastImpl.With(Generator).ToStringInterfaceImpl(target, true);
             GetlexSwapCall(m);
         }
         #endregion
 
         #region CallConvert
-        public IType GetType(CorlibTypeId id)
-        {
-            return Generator.GetType(CorlibTypeId.Convert);
-        }
-        
-        void CallConvert(IType source, IType target)
+
+	    void CallConvert(IType source, IType target)
         {
             //var type = GetType(CorlibTypeId.Convert);
             //EnsureType(type);
@@ -1700,7 +1696,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             var id = source.GetConvertMethodId(target);
             if (id == ConvertMethodId.Unknown)
                 throw new InvalidOperationException();
-            var m = Generator.GetMethod(id);
+			var m = Generator.Corlib.GetMethod(id);
 
             GetlexSwapCall(m);
         }
@@ -1721,20 +1717,20 @@ namespace DataDynamics.PageFX.FlashLand.IL
         private void CallCastToMethod(IType target)
         {
             var typeName = Abc.GetTypeName(target, true);
-            var m = Generator.DefineCastToMethod(target, true);
+            var m = CastImpl.With(Generator).CastToImpl(target, true);
             GetlexSwapCall(m);
             Coerce(typeName);
         }
 
         private void CallCastOp(IType source, IType target, IType type)
         {
-            var m = Generator.GetCastOperator(source, target);
+            var m = Generator.Operators.GetCastOperator(source, target);
             if (m == null)
             {
                 var op = type.FindCastOperator(source, target);
                 
                 m = DefineAbcMethod(op);
-                Generator.CacheCastOperator(source, target, m);
+				Generator.Operators.CacheCastOperator(source, target, m);
             }
             GetlexSwapCall(m);
         }
@@ -2048,27 +2044,27 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void Call(ArrayMethodId id)
         {
-            Call(Generator.GetMethod(id));
+			Call(Generator.Corlib.GetMethod(id));
         }
 
         public void Call(ObjectMethodId id)
         {
-            Call(Generator.GetMethod(id));
+			Call(Generator.Corlib.GetMethod(id));
         }
 
         public void Call(TypeMethodId id)
         {
-            Call(Generator.GetMethod(id));
+			Call(Generator.Corlib.GetMethod(id));
         }
 
         public void Call(EnvironmentMethodId id)
         {
-            Call(Generator.GetMethod(id));
+			Call(Generator.Corlib.GetMethod(id));
         }
 
         public void Call(ConsoleMethodId id)
         {
-            Call(Generator.GetMethod(id));
+			Call(Generator.Corlib.GetMethod(id));
         }
         #endregion
 
@@ -2105,7 +2101,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 var instance = type.AbcInstance();
                 if (instance != null)
                 {
-                    var method = Generator.DefineCopyMethod(instance);
+                    var method = CopyImpl.With(Generator).Copy(instance);
                     if (method != null)
                     {
                         Call(method);
@@ -2133,7 +2129,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                 var instance = type.AbcInstance();
                 if (instance != null)
                 {
-                    var method = Generator.DefineCopyFromMethod(instance);
+                    var method = CopyImpl.With(Generator).CopyFrom(instance);
                     if (method != null)
                         Call(method);
                 }
@@ -2564,12 +2560,12 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void ThrowException(CorlibTypeId exceptionType)
         {
-            ThrowException(Generator.CorlibTypes[exceptionType]);
+			ThrowException(Generator.Corlib.GetType(exceptionType));
         }
 
         void GetStackTrace()
         {
-            var m = Generator.GetMethod(EnvironmentMethodId.StackTrace);
+			var m = Generator.Corlib.GetMethod(EnvironmentMethodId.StackTrace);
             Getlex(m);
             Call(m);
         }
@@ -2713,25 +2709,25 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void ThrowNullReferenceException()
         {
-	        var type = Generator.GetType(CorlibTypeId.NullReferenceException);
+			var type = Generator.Corlib.GetType(CorlibTypeId.NullReferenceException);
             ThrowIfNull(type);
         }
         
         public void ThrowInvalidCastException()
         {
-	        var type = Generator.GetType(CorlibTypeId.InvalidCastException);
+			var type = Generator.Corlib.GetType(CorlibTypeId.InvalidCastException);
 			ThrowException(type);
         }
 
         public void ThrowNotSupportedException()
         {
-	        var type = Generator.GetType(CorlibTypeId.NotSupportedException);
+			var type = Generator.Corlib.GetType(CorlibTypeId.NotSupportedException);
 			ThrowException(type);
         }
 
         public void ThrowInvalidCastException(string message)
         {
-	        var type = Generator.GetType(CorlibTypeId.InvalidCastException);
+			var type = Generator.Corlib.GetType(CorlibTypeId.InvalidCastException);
 			ThrowException(type, message);
         }
 
@@ -2766,7 +2762,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="dup"></param>
         public void ThrowInvalidCastExcpetionIfType(IType type, bool native, bool dup)
         {
-	        var exceptionType = Generator.GetType(CorlibTypeId.InvalidCastException);
+			var exceptionType = Generator.Corlib.GetType(CorlibTypeId.InvalidCastException);
 			ThrowIfType(type, native, exceptionType, dup);
         }
 
@@ -2796,7 +2792,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="dup"></param>
         public void ThrowInvalidCastExcpetionIfNotType(IType type, bool native, bool dup)
         {
-	        var exceptionType = Generator.GetType(CorlibTypeId.InvalidCastException);
+			var exceptionType = Generator.Corlib.GetType(CorlibTypeId.InvalidCastException);
 			ThrowIfNotType(type, native, exceptionType, dup);
         }
 
@@ -2843,7 +2839,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void CallAssemblyGetType(Action getTypeId)
         {
-            var m = Generator.GetMethod(AssemblyMethodId.GetTypeById);
+			var m = Generator.Corlib.GetMethod(AssemblyMethodId.GetTypeById);
 
             Getlex(m);
 
@@ -3697,7 +3693,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void ConsoleOpenSW()
         {
-            CallStatic(Generator.GetMethod(ConsoleMethodId.OpenSW));
+			CallStatic(Generator.Corlib.GetMethod(ConsoleMethodId.OpenSW));
         }
 
         /// <summary>
@@ -3705,7 +3701,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void ConsoleCloseSW(bool pop)
         {
-            CallStatic(Generator.GetMethod(ConsoleMethodId.CloseSW));
+			CallStatic(Generator.Corlib.GetMethod(ConsoleMethodId.CloseSW));
             if (pop) Pop();
         }
         #endregion

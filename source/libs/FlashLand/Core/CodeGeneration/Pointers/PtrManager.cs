@@ -68,7 +68,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 
 		public AbcMethod GetElemPtr()
 		{
-			var instance = _generator.GetArrayInstance();
+			var instance = _generator.Corlib.Array.Instance;
 
 			var name = _generator.DefinePfxName("GetElemPtr");
 			return instance.DefineMethod(

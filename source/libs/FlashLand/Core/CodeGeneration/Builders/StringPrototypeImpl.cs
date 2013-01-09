@@ -72,7 +72,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		    Impl(method,
 		         code =>
 			         {
-				         var implType = _generator.CorlibTypes[CorlibTypeId.CharEnumerator];
+				         var implType = _generator.Corlib.GetType(CorlibTypeId.CharEnumerator);
 				         var ctor = implType.FindConstructor(1);
 				         code.NewObject(ctor, () => code.LoadThis());
 				         code.ReturnValue();
@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		    Impl(method,
 		         code =>
 			         {
-				         var convertInstance = _generator.ConvertType.Instance;
+				         var convertInstance = _generator.Corlib.Convert.Instance;
 				         var convertMethod = FindConvertImpl(method);
 				         var impl = _generator.DefineAbcMethod(convertMethod);
 
@@ -120,7 +120,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 	    private IMethod FindConvertImpl(IMethod method)
 	    {
-		    var type = _generator.ConvertType.Type;
+		    var type = _generator.Corlib.Convert.Type;
 
 		    IMethod convertMethod;
 		    if (method.Name == "ToType")

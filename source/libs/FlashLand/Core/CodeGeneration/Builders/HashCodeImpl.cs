@@ -38,7 +38,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 				        code.GetLocal(varDic);
 				        code.GetLocal(varKey);
-				        code.CallStatic(generator.GetMethod(ObjectMethodId.NewHashCode));
+						code.CallStatic(generator.Corlib.GetMethod(ObjectMethodId.NewHashCode));
 				        code.SetLocal(varHC);
 				        code.GetLocal(varHC);
 				        code.SetNativeArrayItem(); //dic[key] = value

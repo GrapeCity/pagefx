@@ -20,6 +20,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 			get { return CompilerMethods[(int)id].Value; }
 		}
 
+		private IType Type
+		{
+			get { return _generator.Corlib.GetType(CorlibTypeId.CompilerUtils); }
+		}
+
 		private LazyValue<AbcMethod>[] CompilerMethods
 		{
 			get
@@ -30,11 +35,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 						                    _generator.LazyMethod(Type, "ToArray", 1)
 					                    });
 			}
-		}
-
-		private IType Type
-		{
-			get { return _generator.GetType(CorlibTypeId.CompilerUtils); }
 		}
 	}
 

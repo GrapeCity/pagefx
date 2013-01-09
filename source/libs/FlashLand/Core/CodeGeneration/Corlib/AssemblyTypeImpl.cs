@@ -15,9 +15,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 			_generator = generator;
 		}
 
+		private IType Type
+		{
+			get { return _generator.Corlib.GetType(CorlibTypeId.Assembly); }
+		}
+
 		public AbcInstance Instance
 		{
-			get { return _generator.GetInstance(CorlibTypeId.Assembly); }
+			get { return _generator.Corlib.GetInstance(CorlibTypeId.Assembly); }
 		}
 
 		public AbcMethod this[AssemblyMethodId id]
@@ -35,11 +40,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 						                    _generator.LazyMethod(Type, "GetType", 1)
 					                    });
 			}
-		}
-
-		private IType Type
-		{
-			get { return _generator.CorlibTypes[CorlibTypeId.Assembly]; }
 		}
 	}
 

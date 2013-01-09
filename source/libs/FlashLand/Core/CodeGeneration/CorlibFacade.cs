@@ -8,21 +8,49 @@ using TypeImpl = DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib.TypeIm
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 {
 	//TODO: make as independent part
-	internal partial class AbcGenerator
+	internal sealed class CorlibFacade
 	{
+		private readonly AbcGenerator _generator;
+		private CorlibTypes _types;
+
+		public CorlibFacade(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+		private SystemTypes SystemTypes
+		{
+			get { return _generator.SystemTypes; }
+		}
+
+		private TypeFactory TypeFactory
+		{
+			get { return _generator.TypeFactory; }
+		}
+
+		private CorlibTypes Types
+		{
+			get { return _types ?? (_types = new CorlibTypes(_generator.AppAssembly)); }
+		}
+
 		public IType GetType(CorlibTypeId id)
 		{
-			return CorlibTypes[id];
+			return Types[id];
+		}
+
+		public IGenericType GetType(GenericTypeId id)
+		{
+			return Types[id];
 		}
 
 		public AbcInstance GetInstance(CorlibTypeId id)
 		{
-			return DefineAbcInstance(GetType(id));
+			return _generator.DefineAbcInstance(GetType(id));
 		}
 
 		public IType MakeInstance(GenericTypeId typeId, IType arg)
 		{
-			var type = CorlibTypes[typeId];
+			var type = GetType(typeId);
 			return TypeFactory.MakeGenericType(type, arg);
 		}
 
@@ -36,20 +64,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			return MakeInstance(GenericTypeId.IEnumerableT, arg);
 		}
 
-		private ObjectTypeImpl ObjectType
+		public ObjectTypeImpl Object
 		{
-			get { return _objectType ?? (_objectType = new ObjectTypeImpl(this)); }
+			get { return _objectType ?? (_objectType = new ObjectTypeImpl(_generator)); }
 		}
 		private ObjectTypeImpl _objectType;
 
 		public AbcMethod GetMethod(ObjectMethodId id)
 		{
-			return ObjectType[id];
+			return Object[id];
 		}
 
 		internal TypeImpl SystemType
 		{
-			get { return _systemType ?? (_systemType = new TypeImpl(this)); }
+			get { return _systemType ?? (_systemType = new TypeImpl(_generator)); }
 		}
 		private TypeImpl _systemType;
 
@@ -58,78 +86,73 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			return SystemType[id];
 		}
 
-		public EnvironmentTypeImpl EnvironmentType
+		public EnvironmentTypeImpl Environment
 		{
-			get { return _environmentType ?? (_environmentType = new EnvironmentTypeImpl(this)); }
+			get { return _environmentType ?? (_environmentType = new EnvironmentTypeImpl(_generator)); }
 		}
 		private EnvironmentTypeImpl _environmentType;
 
 		public AbcMethod GetMethod(EnvironmentMethodId id)
         {
-			return EnvironmentType[id];
+			return Environment[id];
         }
 
-		public ArrayTypeImpl ArrayType
+		public ArrayTypeImpl Array
 		{
-			get { return _arrayType ?? (_arrayType = new ArrayTypeImpl(this)); }
+			get { return _arrayType ?? (_arrayType = new ArrayTypeImpl(_generator)); }
 		}
 		private ArrayTypeImpl _arrayType;
 
-		public AbcInstance GetArrayInstance()
-		{
-			return ArrayType.Instance;
-        }
-
-        public AbcMethod GetMethod(ArrayMethodId id)
+		public AbcMethod GetMethod(ArrayMethodId id)
         {
-            return ArrayType[id];
+            return Array[id];
         }
 
-		internal AssemblyTypeImpl AssemblyType
+		internal AssemblyTypeImpl Assembly
 		{
-			get { return _assemblyType ?? (_assemblyType = new AssemblyTypeImpl(this)); }
+			get { return _assemblyType ?? (_assemblyType = new AssemblyTypeImpl(_generator)); }
 		}
 		private AssemblyTypeImpl _assemblyType;
 
 		public AbcMethod GetMethod(AssemblyMethodId id)
         {
-            return AssemblyType[id];
+            return Assembly[id];
         }
 
-		private ConsoleTypeImpl ConsoleType
+		private ConsoleTypeImpl Console
 		{
-			get { return _consoleType ?? (_consoleType = new ConsoleTypeImpl(this)); }
+			get { return _consoleType ?? (_consoleType = new ConsoleTypeImpl(_generator)); }
 		}
 		private ConsoleTypeImpl _consoleType;
 
 		public AbcMethod GetMethod(ConsoleMethodId id)
         {
-            return ConsoleType[id];
+            return Console[id];
         }
 
-		internal ConvertTypeImpl ConvertType
+		internal ConvertTypeImpl Convert
 		{
-			get { return _convertType ?? (_convertType = new ConvertTypeImpl(this)); }
+			get { return _convertType ?? (_convertType = new ConvertTypeImpl(_generator)); }
 		}
 		private ConvertTypeImpl _convertType;
 
         public AbcMethod GetMethod(ConvertMethodId id)
         {
-			return ConvertType[id];
+			return Convert[id];
         }
 
 		/// <summary>
 		/// PageFX CompilerUtils Methods inside corlib
 		/// </summary>
-		private CompilerTypeImpl CompilerType
+		private CompilerTypeImpl Compiler
 		{
-			get { return _compilerType ?? (_compilerType = new CompilerTypeImpl(this)); }
+			get { return _compilerType ?? (_compilerType = new CompilerTypeImpl(_generator)); }
 		}
 		private CompilerTypeImpl _compilerType;
 
         public AbcMethod GetMethod(CompilerMethodId id)
         {
-            return CompilerType[id];
+            return Compiler[id];
         }
 
 		#region Fields
@@ -184,7 +207,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
     }
 
 	#region enum FieldId
-    enum FieldId
+    internal enum FieldId
     {
         Delegate_Target,
         Delegate_Function,

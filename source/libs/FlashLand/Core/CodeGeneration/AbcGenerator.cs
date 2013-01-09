@@ -76,9 +76,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         internal SwfCompiler SwfCompiler;
 
         public AbcGenMode Mode;
-		public CorlibTypes CorlibTypes;
-
+		
 	    public IAssembly AppAssembly { get; private set; }
+
+	    internal CorlibFacade Corlib
+	    {
+			get { return _corlib ?? (_corlib = new CorlibFacade(this)); }
+	    }
+		private CorlibFacade _corlib;
 
 	    /// <summary>
         /// Indicates whether we are compiling swf file.
@@ -205,7 +210,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 		}
 		private PtrManager _pointers;
 
-		private DelegatesImpl Delegates
+		internal DelegatesImpl Delegates
 		{
 			get { return _delegates ?? (_delegates = new DelegatesImpl(this)); }
 		}
@@ -271,6 +276,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	    }
 	    private StringPrototypeImpl _stringPrototypes;
 
+	    internal FlexAppBuilder FlexAppBuilder
+	    {
+			get { return _flexAppBuilder ?? (_flexAppBuilder = new FlexAppBuilder(this)); }
+	    }
+		private FlexAppBuilder _flexAppBuilder;
+
+	    internal CallResolver CallResolver
+	    {
+			get { return _callResolver ?? (_callResolver = new CallResolver(this)); }
+	    }
+		private CallResolver _callResolver;
+
 		#endregion
 
 		#region Generate - Entry Point
@@ -289,8 +306,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             DebugService.DoCancel();
 #endif
             AppAssembly = assembly;
-
-			CorlibTypes = new CorlibTypes(assembly);
 
 			AssemblyIndex.Setup(assembly);
 

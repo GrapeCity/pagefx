@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			var name = trait.Name;
 
 			//TODO:
-			var FiledInfoInstance = _generator.DefineAbcInstance(_generator.CorlibTypes[CorlibTypeId.FieldInfo]);
+			var FiledInfoInstance = _generator.Corlib.GetInstance(CorlibTypeId.FieldInfo);
 			code.CreateInstance(FiledInfoInstance);
 			code.SetLocal(varField);
 
@@ -112,10 +112,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			var name = _generator.DefinePfxName("init_myfields_" + GetMethodSuffix(type));
 
 			return instance.DefineMethod(
-				Sig.@static(name, _generator.GetArrayInstance()),
+				Sig.@static(name, _generator.Corlib.Array.Instance),
 				code =>
 					{
-						var typeFieldInfo = _generator.CorlibTypes[CorlibTypeId.FieldInfo];
+						var typeFieldInfo = _generator.Corlib.GetType(CorlibTypeId.FieldInfo);
 						const int arr = 1;
 						code.NewArray(arr, typeFieldInfo, myfields,
 						              f => NewFieldInfo(code, instance, f, 2));
@@ -179,7 +179,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			var name = _generator.DefinePfxName("init_custom_attrs_" + provname);
 
 			return instance.DefineMethod(
-				Sig.@static(name, _generator.GetArrayInstance()),
+				Sig.@static(name, _generator.Corlib.Array.Instance),
 				code =>
 					{
 						const int arr = 1;
@@ -344,7 +344,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		private void NewParameterInfo(AbcCode code, AbcInstance instance, IParameter param, int varMethod, int varParam)
 		{
-			var pitype = _generator.CorlibTypes[CorlibTypeId.ParameterInfo];
+			var pitype = _generator.Corlib.GetType(CorlibTypeId.ParameterInfo);
 			if (param.Type == null)
 				throw new InvalidOperationException("Parametr type is null");
 
@@ -495,13 +495,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				new List<IMethod>(type.Methods.Where(m => m.IsConstructor == ctor && !IsUnsupportedMethod(m)));
 
 			var mtype = ctor
-				            ? _generator.CorlibTypes[CorlibTypeId.ConstructorInfo]
-				            : _generator.CorlibTypes[CorlibTypeId.MethodInfo];
+							? _generator.Corlib.GetType(CorlibTypeId.ConstructorInfo)
+							: _generator.Corlib.GetType(CorlibTypeId.MethodInfo);
 
 			instance = FixInstance(instance);
 
 			return instance.DefineMethod(
-				Sig.@static(name, _generator.GetArrayInstance()),
+				Sig.@static(name, _generator.Corlib.Array.Instance),
 				code =>
 					{
 						const int arr = 1;
@@ -545,7 +545,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		/// <param name="prop"></param>
 		private void NewPropertyInfo(AbcCode code, AbcInstance instance, IProperty prop, int varProp)
 		{
-			var type = _generator.CorlibTypes[CorlibTypeId.PropertyInfo];
+			var type = _generator.Corlib.GetType(CorlibTypeId.PropertyInfo);
 			var ctor = type.FindConstructor(0);
 			if (ctor == null)
 				throw new InvalidOperationException(".ctor not found");
@@ -597,10 +597,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			instance = FixInstance(instance);
 
 			return instance.DefineMethod(
-				Sig.@static(name, _generator.GetArrayInstance()),
+				Sig.@static(name, _generator.Corlib.Array.Instance),
 				code =>
 					{
-						var mtype = _generator.CorlibTypes[CorlibTypeId.PropertyInfo];
+						var mtype = _generator.Corlib.GetType(CorlibTypeId.PropertyInfo);
 						const int arr = 1;
 						code.NewArray(arr, mtype, type.Properties,
 						              property => NewPropertyInfo(code, instance, property, 2));
@@ -626,7 +626,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			if (enumInstance == null)
 				throw new InvalidOperationException();
 
-			var EnumInfo = _generator.DefineAbcInstance(_generator.CorlibTypes[CorlibTypeId.EnumInfo]);
+			var EnumInfo = _generator.Corlib.GetInstance(CorlibTypeId.EnumInfo);
 
 			var name = _generator.DefinePfxName("init_enum_info_" + type.GetSigName());
 			return enumInstance.DefineMethod(
@@ -830,7 +830,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				code.SetProperty(Const.Type.UnboxFunction);
 			}
 
-			f = _generator.DefineStaticCopyMethod(instance);
+			f = CopyImpl.With(_generator).StaticCopy(instance);
 			if (f != null)
 			{
 				code.GetLocal(varType);

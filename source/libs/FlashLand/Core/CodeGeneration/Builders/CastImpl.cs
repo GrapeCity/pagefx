@@ -1,15 +1,36 @@
-using System.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
     //contains casting methods
-    partial class AbcGenerator
+    internal sealed class CastImpl
     {
-        #region DefineCastToMethod
-        AbcMultiname GetAsMethodName(IType type, bool me)
+	    private readonly AbcGenerator _generator;
+
+		public static CastImpl With(AbcGenerator generator)
+		{
+			return new CastImpl(generator);
+		}
+
+	    private CastImpl(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    private SystemTypes SystemTypes
+	    {
+			get { return _generator.SystemTypes; }
+	    }
+
+		#region CastToImpl
+		private AbcMultiname GetAsMethodName(IType type, bool me)
         {
             string name = "as_";
             if (me) name += "me";
@@ -17,7 +38,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return Abc.DefinePfxName(name);
         }
 
-        AbcMultiname GetCastMethodName(IType type, bool me)
+		private AbcMultiname GetCastMethodName(IType type, bool me)
         {
             string name = "cast_to_";
             if (me) name += "me";
@@ -25,46 +46,46 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return Abc.DefinePfxName(name);
         }
 
-        public AbcMethod DefineCastToMethod(IType type, bool cast)
+        public AbcMethod CastToImpl(IType type, bool cast)
         {
             if (type == null) return null;
 
             if (type.IsArray)
-                return DefineCastToArray(type, cast);
+                return ToArrayImpl(type, cast);
 
             if (type.IsNullableInstance())
-                return DefineCastToNullable(type, cast);
+                return ToNullableImpl(type, cast);
 
             if (type.IsValueType())
             {
                 if (AbcGenConfig.UseCastToValueType)
-                    return DefineCastToValueType(type, cast);
+                    return ToValueTypeImpl(type, cast);
                 return null;
             }
 
             if (type.IsStringInterface())
-                return DefineCastToStringInterface(type, cast);
+                return ToStringInterfaceImpl(type, cast);
 
             if (type.IsGenericArrayInterface())
-                return DefineCastToGenericArrayInterface(type, cast);
+                return ToGenericArrayInterfaceImpl(type, cast);
 
-            return DefineCastToDefault(type, cast);
+            return CastToDefaultImpl(type, cast);
         }
         #endregion
 
-        #region DefineCastToDefault
-        AbcMethod DefineCastToDefault(IType type, bool cast)
+		#region CastToDefaultImpl
+		private AbcMethod CastToDefaultImpl(IType type, bool cast)
         {
             const bool me = true;
 
             if (cast)
             {
-                var AS = DefineCastToDefault(type, false);
-                return DefineCastMethod(type, AS, GetCastMethodName(type, me));
+                var AS = CastToDefaultImpl(type, false);
+                return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-            var instance = DefineAbcInstance(type);
-            var typeName = DefineMemberType(type);
+            var instance = _generator.DefineAbcInstance(type);
+			var typeName = _generator.DefineMemberType(type);
             var name = GetAsMethodName(type, me);
 
 	        return instance.DefineMethod(
@@ -84,8 +105,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineCastToArray
-        public AbcMethod DefineCastToArray(IType type, bool cast)
+		#region ToArrayImpl
+		public AbcMethod ToArrayImpl(IType type, bool cast)
         {
             if (type == null) return null;
             if (!type.IsArray) return null;
@@ -94,12 +115,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (cast)
             {
-                var AS = DefineCastToArray(type, false);
-                return DefineCastMethod(type, AS, GetCastMethodName(type, me));
+                var AS = ToArrayImpl(type, false);
+                return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-            var instance = GetArrayInstance();
-            var typeName = DefineMemberType(type);
+			var instance = _generator.Corlib.Array.Instance;
+			var typeName = _generator.DefineMemberType(type);
             var name = GetAsMethodName(type, me);
 
 	        return instance.DefineMethod(
@@ -125,8 +146,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineCastToArrayInterface
-        public AbcMethod DefineCastToGenericArrayInterface(IType type, bool cast)
+		#region ToGenericArrayInterfaceImpl
+		public AbcMethod ToGenericArrayInterfaceImpl(IType type, bool cast)
         {
             if (type == null) return null;
             if (!type.IsGenericArrayInterface())
@@ -136,12 +157,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (cast)
             {
-                var AS = DefineCastToGenericArrayInterface(type, false);
-                return DefineCastMethod(type, AS, GetCastMethodName(type, me));
+                var AS = ToGenericArrayInterfaceImpl(type, false);
+                return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-            var instance = GetArrayInstance();
-            var typeName = DefineMemberType(type);
+			var instance = _generator.Corlib.Array.Instance;
+			var typeName = _generator.DefineMemberType(type);
             var name = GetAsMethodName(type, me);
 
 	        return instance.DefineMethod(
@@ -191,8 +212,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineCastToStringInterface
-        public AbcMethod DefineCastToStringInterface(IType type, bool cast)
+		#region ToStringInterfaceImpl
+		public AbcMethod ToStringInterfaceImpl(IType type, bool cast)
         {
             if (type == null) return null;
 
@@ -200,11 +221,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (cast)
             {
-                var AS = DefineCastToStringInterface(type, false);
-                return DefineCastMethod(type, AS, GetCastMethodName(type, me));
+                var AS = ToStringInterfaceImpl(type, false);
+                return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-            var instance = DefineAbcInstance(SystemTypes.String);
+			var instance = _generator.DefineAbcInstance(SystemTypes.String);
             var name = GetAsMethodName(type, me);
 
 	        return instance.DefineMethod(
@@ -264,8 +285,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineCastToNullable
-        AbcMethod DefineCastToNullable(IType type, bool cast)
+		#region ToNullableImpl
+		private AbcMethod ToNullableImpl(IType type, bool cast)
         {
             if (!type.IsNullableInstance())
                 return null;
@@ -274,14 +295,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (cast)
             {
-                var AS = DefineCastToNullable(type, false);
-                return DefineCastMethod(type, AS, GetCastMethodName(type, me));
+                var AS = ToNullableImpl(type, false);
+                return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-            var instance = DefineAbcInstance(type);
+			var instance = _generator.DefineAbcInstance(type);
             var name = GetAsMethodName(type, me);
 
-            var typeName = DefineMemberType(type);
+			var typeName = _generator.DefineMemberType(type);
 	        return instance.DefineMethod(
 		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
 		        code =>
@@ -319,23 +340,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineCastToValueType
-        AbcMethod DefineCastToValueType(IType type, bool cast)
+		#region ToValueTypeImpl
+		private AbcMethod ToValueTypeImpl(IType type, bool cast)
         {
             if (!type.IsValueType())
                 return null;
             if (type.IsNullableInstance())
-                return DefineCastToNullable(type, cast);
+                return ToNullableImpl(type, cast);
 
             const bool me = true;
 
             if (cast)
             {
-                var AS = DefineCastToValueType(type, false);
-                return DefineCastMethod(type, AS, GetCastMethodName(type, me));
+                var AS = ToValueTypeImpl(type, false);
+                return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-            var typeName = DefineAbcInstance(type);
+			var typeName = _generator.DefineAbcInstance(type);
             var instance = typeName;
             var name = GetAsMethodName(type, me);
 
@@ -348,7 +369,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 				        code.Try();
 
-				        var MyNullable = DefineAbcInstance(MakeNullable(type));
+						var MyNullable = _generator.DefineAbcInstance(_generator.Corlib.MakeNullable(type));
 
 				        code.If(
 					        () =>
@@ -388,11 +409,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         /// <param name="type"></param>
         /// <param name="AS"></param>
         /// <returns></returns>
-        AbcMethod DefineCastMethod(IType type, AbcMethod AS, AbcMultiname name)
+        private AbcMethod Impl(IType type, AbcMethod AS, AbcMultiname name)
         {
             var instance = AS.Instance;
 
-            var typeName = DefineMemberType(type);
+            var typeName = _generator.DefineMemberType(type);
 
 	        return instance.DefineMethod(
 		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
@@ -419,10 +440,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineCastToString
-        public AbcMethod DefineCastToString()
+		#region ToStringImpl
+		public AbcMethod ToStringImpl()
         {
-            var instance = DefineAbcInstance(SystemTypes.String);
+			var instance = _generator.DefineAbcInstance(SystemTypes.String);
 	        return instance.DefineMethod(
 		        Sig.@static("cast_to_me", AvmTypeCode.String, AvmTypeCode.Object, "value"),
 		        code =>
@@ -448,32 +469,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 					        );
 			        });
         }
-        #endregion
-
-        #region Cache of Casting Operators
-        private static string GetCastOperatorKey(IType source, IType target)
-        {
-            var s = source.SystemType();
-            if (s == null) return null;
-            var t = target.SystemType();
-            if (t == null) return null;
-            return ((int)s.Code).ToString() + ((int)t.Code);
-        }
-
-        public AbcMethod GetCastOperator(IType source, IType target)
-        {
-            string key = GetCastOperatorKey(source, target);
-            if (key == null) return null;
-            return _cacheCastOps[key] as AbcMethod;
-        }
-
-        public void CacheCastOperator(IType source, IType target, AbcMethod op)
-        {
-            string key = GetCastOperatorKey(source, target);
-            _cacheCastOps[key] = op;
-        }
-
-        readonly Hashtable _cacheCastOps = new Hashtable();
         #endregion
     }
 }

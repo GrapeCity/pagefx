@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 
 		private IType Type
 		{
-			get { return _generator.GetType(CorlibTypeId.Console); }
+			get { return _generator.Corlib.GetType(CorlibTypeId.Console); }
 		}
 
 		private IType StringType

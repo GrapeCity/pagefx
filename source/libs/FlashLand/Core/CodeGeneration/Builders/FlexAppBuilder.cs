@@ -2,19 +2,31 @@ using System.Diagnostics;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    internal partial class AbcGenerator
+    internal sealed class FlexAppBuilder
     {
-		private static class FlexAppEvents
+	    private readonly AbcGenerator _generator;
+
+	    public FlexAppBuilder(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    private static class FlexAppEvents
 		{
 			public const string Initialize = "initialize";
 		}
 
-    	private void DefineFlexAppMembers(AbcInstance instance)
+    	public void DefineMembers(AbcInstance instance)
         {
-            if (!IsFlexApplication) return;
-            if (!ReferenceEquals(instance.Type, SwfCompiler.TypeFlexApp)) return;
+            if (!_generator.IsFlexApplication) return;
+			if (!ReferenceEquals(instance.Type, _generator.SwfCompiler.TypeFlexApp)) return;
 
             if (AbcGenConfig.FlexAppCtorAsHandler)
                 DefineFlexAppInitializer(instance);
@@ -39,14 +51,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 						code.Trace("PFC: calling App.initializer");
 
-        				FlexAppCtorAfterSuperCall(code);
+        				CtorAfterSuperCall(code);
 
 						if (!IsFlex4)
 						{
 							var ctor = instance.FindParameterlessConstructor();
 							if (ctor != null)
 							{
-								var ctorMethod = DefineAbcMethod(ctor);
+								var ctorMethod = _generator.DefineAbcMethod(ctor);
 								AddEventListener(code, ctorMethod, FlexAppEvents.Initialize);
 							}
 						}
@@ -59,11 +71,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 		/// Adds some initialization after app.ctor super.ctor call.
 		/// </summary>
 		/// <param name="code"></param>
-        public void FlexAppCtorAfterSuperCall(AbcCode code)
+        public void CtorAfterSuperCall(AbcCode code)
         {
-            Debug.Assert(IsFlexApplication);
+			Debug.Assert(_generator.IsFlexApplication);
 
-            var instance = MainInstance;
+			var instance = _generator.MainInstance;
             Debug.Assert(instance != null);
 
 			code.Trace("PFC: init flex _document property");
@@ -101,44 +113,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             code.CallVoid("addEventListener", 2);
         }
 
-        #region MxApp_ShowAssets
-        //AbcMethod MxApp_ShowAssets(AbcInstance instance)
-        //{
-        //    var flexEvent = ImportFlexEventType();
-        //    var method = instance.DefineInstanceMethod("__show_assets__", AvmTypeCode.Void, null,
-        //                                                     flexEvent, "e");
-        //    AddLateMethod(method, MxApp_ShowAssetsCode);
-        //    return method;
-        //}
-
-        //void MxApp_ShowAssetsCode(AbcCode code)
-        //{
-        //    Debug.Assert(sfc != null);
-
-        //    foreach (var instance in sfc.GetAppAssets())
-        //    {
-        //        if (instance != null)
-        //        {
-        //            code.Getlex(instance);
-        //            var br = code.IfNull();
-
-        //            Alert(code, string.Format("Asset instance {0} is linked", instance.FullName));
-
-        //            br.BranchTarget = code.Label();
-        //        }
-        //        else
-        //        {
-        //            throw new InvalidOperationException();
-        //        }
-        //    }
-
-        //    code.ReturnVoid();
-        //}
-        #endregion
-
-    	private void OverrideFlexAppInitialize(AbcInstance instance)
+        private void OverrideFlexAppInitialize(AbcInstance instance)
         {
-            var name = Abc.DefineGlobalQName("initialize");
+			var name = Abc.DefineGlobalQName("initialize");
     		instance.DefineMethod(
     			Sig.@virtual(name, AvmTypeCode.Void).@override(),
     			code =>
@@ -159,7 +136,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			Debug.Assert(IsFlex4);
 
 			var moduleFactoryInitialized = instance.DefineSlot("__moduleFactoryInitialized", AvmTypeCode.Boolean);
-    		var flexModuleFactoryInterface = ImportType(MX.IFlexModuleFactory);
+			var flexModuleFactoryInterface = _generator.ImportType(MX.IFlexModuleFactory);
 
 			var propertyName = Abc.DefineGlobalQName("moduleFactory");
     		instance.DefineMethod(
@@ -190,7 +167,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
     					var ctor = instance.FindParameterlessConstructor();
     					if (ctor != null)
     					{
-    						var ctorMethod = DefineAbcMethod(ctor);
+							var ctorMethod = _generator.DefineAbcMethod(ctor);
     						code.LoadThis();
     						if (AbcGenConfig.FlexAppCtorAsHandler)
     						{
@@ -203,8 +180,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
     				});
 		}
 
-		#region DefineInitFlexAppStyles
-		private AbcMethod DefineInitFlexAppStyles(AbcInstance instance)
+	    private AbcMethod DefineInitFlexAppStyles(AbcInstance instance)
         {
             var done = instance.DefineSlot("_init_styles_done", AvmTypeCode.Boolean);
 
@@ -235,7 +211,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 						}
 						else
 						{
-							var styleMgr = ImportType("mx.styles.StyleManager");
+							var styleMgr = _generator.ImportType("mx.styles.StyleManager");
 							code.Getlex(styleMgr);
 							code.CallVoid(Abc.DefineMxInternalName("initProtoChainRoots"), 0);
 						}
@@ -243,39 +219,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 						code.ReturnVoid();
 					});
         }
-        #endregion
 
-        #region Utils
-        void Alert(AbcCode code, string value)
+	    public AbcInstance FlexEventType()
         {
-            var alert = ImportAlertControl();
-            code.Getlex(alert);
-            code.PushString(value);
-            code.CallVoid("show", 1);
-        }
-
-		private AbcInstance ImportFlexEventType()
-        {
-            return ImportType(MX.FlexEvent, ref _typeFlexEvent);
+			return _generator.ImportType(MX.FlexEvent, ref _typeFlexEvent);
         }
         private AbcInstance _typeFlexEvent;
 
-        private AbcInstance ImportAlertControl()
-        {
-			return ImportType("mx.controls.Alert", ref _typeAlert);
-        }
-        private AbcInstance _typeAlert;
-
-    	private bool IsFlex4
+	    private bool IsFlex4
     	{
     		get
     		{
     			if (!_isFlex4.HasValue)
-    				_isFlex4 = ImportType(MX.IStyleManager2, true) != null;
+					_isFlex4 = _generator.ImportType(MX.IStyleManager2, true) != null;
     			return _isFlex4.Value;
     		}
     	}
     	private bool? _isFlex4;
-        #endregion
     }
 }

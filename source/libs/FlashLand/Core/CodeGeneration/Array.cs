@@ -13,6 +13,7 @@ using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 using DataDynamics.PageFX.FlashLand.IL;
 
@@ -21,7 +22,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
     internal partial class AbcGenerator
     {
         #region DefineArrayCtor
-        private AbcMethod DefineArrayCtor(IMethod method, AbcInstance instance)
+        internal AbcMethod DefineArrayCtor(IMethod method, AbcInstance instance)
         {
             if (!method.IsConstructor) return null;
             if (method.IsStatic) return null;
@@ -54,7 +55,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 code.GetLocal(i + 1);
                 code.PushInt(0);
                 var br = code.If(BranchOperator.GreaterThanOrEqual);
-	            var exceptionType = GetType(CorlibTypeId.ArgumentOutOfRangeException);
+				var exceptionType = Corlib.GetType(CorlibTypeId.ArgumentOutOfRangeException);
                 code.ThrowException(exceptionType);
                 br.BranchTarget = code.Label();
             }
@@ -142,7 +143,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #region NewArray / 1D Array
         private AbcMethod CreateSystemArraySZ()
         {
-            var instance = GetArrayInstance();
+            var instance = Corlib.Array.Instance;
 
             return instance.DefineMethod(
 				Sig.@static("__create_sz_array__", instance.Name, AvmTypeCode.Int32, "size"),
@@ -177,7 +178,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             DefineType(elemType);
 
-            var instance = GetArrayInstance();
+			var instance = Corlib.Array.Instance;
 
             var name = Abc.DefineGlobalQName("newarr_" + elemType.GetSigName());
 
@@ -231,7 +232,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
 
         #region DefineArrayGetter
-        private AbcMethod DefineArrayGetter(IMethod method, AbcInstance instance)
+        internal AbcMethod DefineArrayGetter(IMethod method, AbcInstance instance)
         {
             if (method.IsStatic) return null;
             var type = method.DeclaringType;
@@ -253,7 +254,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region DefineArraySetter
-        private AbcMethod DefineArraySetter(IMethod method, AbcInstance instance)
+        internal AbcMethod DefineArraySetter(IMethod method, AbcInstance instance)
         {
             if (method.IsStatic) return null;
             var type = method.DeclaringType;
@@ -276,7 +277,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region DefineArrayAddress
-        private AbcMethod DefineArrayAddress(IMethod method, AbcInstance instance)
+        internal AbcMethod DefineArrayAddress(IMethod method, AbcInstance instance)
         {
             if (method.IsStatic) return null;
             var type = method.DeclaringType;
@@ -306,14 +307,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
 			var m = Boxing.Box(elemType);
             if (m != null) return m;
-            return DefineStaticCopyMethod(elemType);
+            return CopyImpl.With(this).StaticCopy(elemType);
         }
 
         private AbcMethod GetArrayUnboxMethod(IType elemType)
         {
 			var m = Boxing.Unbox(elemType, false);
             if (m != null) return m;
-            return DefineStaticCopyMethod(elemType);
+            return CopyImpl.With(this).StaticCopy(elemType);
         }
 
         public void InitArrayFields(AbcCode code, IType type, IType elemType, Action getArr)
@@ -376,7 +377,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (elemType.IsEnum)
                 elemType = elemType.ValueType;
 
-            var instance = GetArrayInstance();
+			var instance = Corlib.Array.Instance;
 
             string name = (item ? "get_item_"  : "get_elem_") + elemType.GetSigName();
             var elemTypeName = DefineReturnType(elemType);
@@ -473,11 +474,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #region DefineArrayGetEnumerator
         void DefineArrayGetEnumerator(IType elemType)
         {
-            var IEnumerable = MakeIEnumerable(elemType);
+			var IEnumerable = Corlib.MakeIEnumerable(elemType);
             DefineAbcInstance(IEnumerable);
             var ifaceMethod = IEnumerable.Methods[0];
             var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
-            var arrayInstance = GetArrayInstance();
+			var arrayInstance = Corlib.Array.Instance;
 
 	        arrayInstance.DefineMethod(
 		        Sig.@from(ifaceAbcMethod),
@@ -492,7 +493,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         IType DefineArrayEnumerator(IType elemType)
         {
-            var ArrayEnumerator = TypeFactory.MakeGenericType(CorlibTypes[GenericTypeId.ArrayEnumeratorT], elemType);
+			var ArrayEnumerator = TypeFactory.MakeGenericType(Corlib.GetType(GenericTypeId.ArrayEnumeratorT), elemType);
             DefineAbcInstance(ArrayEnumerator);
             foreach (var method in ArrayEnumerator.Methods)
                 DefineAbcMethod(method);
@@ -506,7 +507,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             switch (im.Name)
             {
                 case "get_Count":
-		            GetArrayInstance().DefineMethod(
+					Corlib.Array.Instance.DefineMethod(
 			            Sig.@from(am),
 			            code =>
 				            {
@@ -517,7 +518,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     break;
 
                 case "get_IsReadOnly":
-		            GetArrayInstance().DefineMethod(
+					Corlib.Array.Instance.DefineMethod(
 			            Sig.@from(am),
 			            code =>
 				            {
@@ -529,13 +530,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 case "Add":
                 case "Remove":
                 case "Clear":
-		            GetArrayInstance().DefineMethod(
+					Corlib.Array.Instance.DefineMethod(
 			            Sig.@from(am),
 			            code => code.ThrowException(CorlibTypeId.NotSupportedException));
                     break;
 
                 case "CopyTo":
-		            GetArrayInstance().DefineMethod(
+					Corlib.Array.Instance.DefineMethod(
 			            Sig.@from(am),
 			            code =>
 				            {
@@ -548,7 +549,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     break;
 
                 case "Contains":
-		            GetArrayInstance().DefineMethod(
+					Corlib.Array.Instance.DefineMethod(
 			            Sig.@from(am),
 			            code =>
 				            {
@@ -570,13 +571,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 case "RemoveAt":
                 case "Insert":
-		            GetArrayInstance().DefineMethod(
+					Corlib.Array.Instance.DefineMethod(
 			            Sig.@from(am),
 			            code => code.ThrowException(CorlibTypeId.NotSupportedException));
                     break;
 
                 case "IndexOf":
-		            GetArrayInstance().DefineMethod(
+					Corlib.Array.Instance.DefineMethod(
 			            Sig.@from(am),
 			            code =>
 				            {
@@ -589,7 +590,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     break;
 
                 case "get_Item":
-		            GetArrayInstance().DefineMethod(
+					Corlib.Array.Instance.DefineMethod(
 			            Sig.@from(am),
 			            code =>
 				            {
@@ -602,7 +603,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     break;
 
                 case "set_Item":
-		            GetArrayInstance().DefineMethod(
+					Corlib.Array.Instance.DefineMethod(
 			            Sig.@from(am),
 			            code =>
 				            {
@@ -657,7 +658,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (elemType.IsEnum)
                 elemType = elemType.ValueType;
 
-            var instance = GetArrayInstance();
+			var instance = Corlib.Array.Instance;
 
             string name = "init_" + elemType.GetSigName();
 	        return instance.DefineMethod(
@@ -681,7 +682,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private AbcMethod DefineInitArrayMethod()
         {
-            var instance = GetArrayInstance();
+			var instance = Corlib.Array.Instance;
 
 	        return instance.DefineMethod(
 		        Sig.@static("init_core", AvmTypeCode.Void,
@@ -725,7 +726,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             AbcMultiname name;
             if (instance.IsNative)
             {
-	            instance = ObjectType.Instance;
+				instance = Corlib.Object.Instance;
 	            name = DefinePfxName("initobj_" + type.GetSigName());
             }
             else

@@ -20,6 +20,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 			get { return EnvironmentMethods[(int)id].Value; }
 		}
 
+		public IType Type
+		{
+			get { return _generator.Corlib.GetType(CorlibTypeId.Environment); }
+		}
+
+		public AbcInstance Instance
+		{
+			get { return _generator.Corlib.GetInstance(CorlibTypeId.Environment); }
+		}
+
 		private LazyValue<AbcMethod>[] EnvironmentMethods
 		{
 			get
@@ -30,11 +40,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 						                    _generator.LazyMethod(Type, "get_StackTrace")
 					                    });
 			}
-		}
-
-		private IType Type
-		{
-			get { return _generator.CorlibTypes[CorlibTypeId.Environment]; }
 		}
 	}
 

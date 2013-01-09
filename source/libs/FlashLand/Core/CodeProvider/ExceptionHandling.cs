@@ -434,7 +434,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var code = new AbcCode(_abc);
             InsertExceptionBreak(code);
-		    var exceptionType = _generator.GetType(CorlibTypeId.TypeLoadException);
+			var exceptionType = _generator.Corlib.GetType(CorlibTypeId.TypeLoadException);
             code.ThrowException(exceptionType, message);
             return code.ToArray();
         }

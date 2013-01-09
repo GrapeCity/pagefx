@@ -1,24 +1,35 @@
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    partial class AbcGenerator
+    internal sealed class CopyImpl
     {
-        #region DefineCopyMethod
-        public AbcMethod DefineStaticCopyMethod(IType type)
+	    private readonly AbcGenerator _generator;
+
+		public static CopyImpl With(AbcGenerator generator)
+		{
+			return new CopyImpl(generator);
+		}
+
+	    private CopyImpl(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    public AbcMethod StaticCopy(IType type)
         {
             if (!InternalTypeExtensions.HasCopy(type)) return null;
-            var instance = DefineAbcInstance(type);
-            return DefineStaticCopyMethod(instance);
+            var instance = _generator.DefineAbcInstance(type);
+            return StaticCopy(instance);
         }
 
-        public AbcMethod DefineStaticCopyMethod(AbcInstance instance)
+        public AbcMethod StaticCopy(AbcInstance instance)
         {
-            var copy = DefineCopyMethod(instance);
+            var copy = Copy(instance);
             if (copy == null) return null;
 
-            var name = Abc.DefinePfxName("__static_copy__");
+			var name = _generator.Abc.DefinePfxName("__static_copy__");
 
 	        return instance.DefineMethod(
 		        Sig.@static(name, instance.Name, instance.Name, "value"),
@@ -30,11 +41,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			        });
         }
 
-        public AbcMethod DefineCopyMethod(IType type)
+        public AbcMethod Copy(IType type)
         {
             if (!InternalTypeExtensions.HasCopy(type)) return null;
-            var instance = DefineAbcInstance(type);
-            return DefineCopyMethod(instance);
+			var instance = _generator.DefineAbcInstance(type);
+            return Copy(instance);
         }
 
         /// <summary>
@@ -42,13 +53,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
-        public AbcMethod DefineCopyMethod(AbcInstance instance)
+        public AbcMethod Copy(AbcInstance instance)
         {
             var type = instance.Type;
             if (type == null) return null;
             if (!InternalTypeExtensions.HasCopy(type)) return null;
 
-            var name = Abc.DefinePfxName("__copy__");
+			var name = _generator.Abc.DefinePfxName("__copy__");
 
             return instance.DefineMethod(
                 Sig.@this(name, instance.Name),
@@ -57,7 +68,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                         //SUPER BUG:
                         //For some times like System.Int64 DefineCopyMethod method can be called before DefineFields
                         //so we should define type fields
-                        DefineFields(type);
+						_generator.DefineFields(type);
 
                         const int obj = 1;
                         code.CreateInstance(instance);
@@ -76,12 +87,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
-        public AbcMethod DefineCopyFromMethod(AbcInstance instance)
+        public AbcMethod CopyFrom(AbcInstance instance)
         {
             var type = instance.Type;
             if (!InternalTypeExtensions.HasCopy(type)) return null;
 
-            var name = Abc.DefinePfxName("__copy_from__");
+			var name = _generator.Abc.DefinePfxName("__copy_from__");
 
 	        return instance.DefineMethod(
 		        Sig.@this(name, AvmTypeCode.Void, instance.Name, "value"),
@@ -91,6 +102,5 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				        code.ReturnVoid();
 			        });
         }
-        #endregion
     }
 }
