@@ -1,6 +1,5 @@
 using System.Reflection;
 using DataDynamics.PageFX.Common.Extensions;
-using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.IL;
@@ -10,44 +9,44 @@ namespace DataDynamics.PageFX.FlashLand.Avm
     #region enum AvmTypeCode
     public enum AvmTypeCode
     {
-        [Name("void")]
+        [QName("void")]
         Void,
 
         Boolean,
 
-        [Name("sbyte")]
+		[QName("sbyte")]
         Int8,
 
-        [Name("byte")]
+		[QName("byte")]
         UInt8,
 
-        [Name("short")]
+		[QName("short")]
         Int16,
 
-        [Name("ushort")]
+		[QName("ushort")]
         UInt16,
 
-        [Name("int")]
+		[QName("int")]
         Int32,
 
-        [Name("uint")]
+		[QName("uint")]
         UInt32,
 
-        [Name("long")]
+		[QName("long")]
         Int64,
 
-        [Name("ulong")]
+		[QName("ulong")]
         UInt64,
 
         Number,
 
-        [Name("float")]
+		[QName("float")]
         Float,
 
-        [Name("double")]
+		[QName("double")]
         Double,
 
-        [Name("decimal")]
+		[QName("decimal")]
         Decimal,
 
         String,
@@ -60,27 +59,30 @@ namespace DataDynamics.PageFX.FlashLand.Avm
         TypeError,
         XML,
         XMLList,
-        QName
+        QName,
+
+		[QName(AS3.Vector.Namespace, AS3.Vector.Name)]
+		Verctor
     }
     #endregion
 
     public sealed class BuiltinTypes
     {
         private readonly AbcFile _abc;
-        private static readonly string[] Names;
+        private static readonly QName[] Names;
 
         static BuiltinTypes()
         {
             var fields = typeof(AvmTypeCode).GetFields(BindingFlags.Public | BindingFlags.Static);
             int n = fields.Length;
-            Names = new string[n];
+            Names = new QName[n];
             for (int i = 0; i < n; ++i)
             {
                 var field = fields[i];
 				var value = field.GetValue(null);
             	var index = (int)value;
-                var attr = field.GetAttribute<NameAttribute>(false);
-            	Names[index] = attr != null ? attr.Name : field.Name;
+                var attr = field.GetAttribute<QNameAttribute>(false);
+            	Names[index] = attr != null ? attr.Value : new QName(field.Name, KnownNamespace.Global);
             }
         }
 
@@ -96,18 +98,8 @@ namespace DataDynamics.PageFX.FlashLand.Avm
         {
             get
             {
-                //int i = (int)code;
-                //return _abc.DefineGlobalQName(Names[i]);
-
-                int i = (int)code;
-                var mn = _types[i];
-                if (mn == null)
-                {
-	                string name = Names[i];
-	                mn = _abc.DefineName(Abc.QName.Global(name));
-	                _types[i] = mn;
-                }
-                return mn;
+	            int i = (int)code;
+				return _types[i] ?? (_types[i] = _abc.DefineName(Names[i]));
             }
         }
 
@@ -246,13 +238,23 @@ namespace DataDynamics.PageFX.FlashLand.Avm
             get { return this[AvmTypeCode.XMLList]; }
         }
 
+		public AbcMultiname Vector
+		{
+			get { return this[AvmTypeCode.Verctor]; }
+		}
+
         public InstructionCode GetCoercionInstructionCode(AbcMultiname type)
         {
-			if (ReferenceEquals(type, Int32)) return InstructionCode.Coerce_i;
-            if (ReferenceEquals(type, UInt32)) return InstructionCode.Coerce_u;
-            if (ReferenceEquals(type, String)) return InstructionCode.Coerce_s;
-            if (ReferenceEquals(type, Boolean)) return InstructionCode.Coerce_b;
-            if (ReferenceEquals(type, Object)) return InstructionCode.Coerce_o;
+			if (ReferenceEquals(type, Int32))
+				return InstructionCode.Coerce_i;
+            if (ReferenceEquals(type, UInt32))
+				return InstructionCode.Coerce_u;
+            if (ReferenceEquals(type, String))
+				return InstructionCode.Coerce_s;
+            if (ReferenceEquals(type, Boolean))
+				return InstructionCode.Coerce_b;
+            if (ReferenceEquals(type, Object))
+				return InstructionCode.Coerce_o;
             return InstructionCode.Coerce;
         }
     }

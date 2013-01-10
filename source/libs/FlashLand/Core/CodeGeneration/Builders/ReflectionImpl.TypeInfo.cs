@@ -332,7 +332,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			if (addParam)
 			{
-				wrapper.Parameters.Add(Abc.DefineParam(AvmTypeCode.Object, "obj"));
+				wrapper.Parameters.Add(Abc.CreateParameter(AvmTypeCode.Object, "obj"));
 			}
 			_generator.MethodBuilder.CopyParameters(wrapper, abcMethod);
 

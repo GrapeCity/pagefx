@@ -592,7 +592,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 				}
 				else
 				{
-					Abc.DefineParams(method.Parameters, sig.Args);
+					Abc.AddParameters(method.Parameters, sig.Args);
 				}
 			}
 

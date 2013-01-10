@@ -1,6 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
@@ -55,8 +56,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			if (method.Parameters.Count != 2)
 				throw new InvalidOperationException();
 
-			var targetParam = _generator.CreateParam(_generator.SystemTypes.Object, method.Parameters[0].Name);
-			var funcParam = _generator.CreateParam(_generator.Abc.BuiltinTypes.Function, method.Parameters[1].Name);
+			var abc = _generator.Abc;
+			var targetParam = abc.CreateParameter(_generator.SystemTypes.Object, method.Parameters[0].Name);
+			var funcParam = abc.CreateParameter(AvmTypeCode.Function, method.Parameters[1].Name);
 
 			var sig = _generator.MethodBuilder.SigOf(method);
 			sig.Args = new object[] {targetParam, funcParam};

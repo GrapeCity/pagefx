@@ -591,25 +591,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region Vector
-        public AbcMultiname VectorTypeName
-        {
-            get
-            {
-                if (_nameVector == null)
-                {
-                    var ns = DefineNamespace(AbcConstKind.PackageNamespace, AS3.Vector.Namespace);
-                    _nameVector = DefineQName(ns, AS3.Vector.Name);
-                }
-                return _nameVector;
-            }
-        }
-        AbcMultiname _nameVector;
 
-        public AbcMultiname DefineVectorTypeName(AbcMultiname param)
+	    public AbcMultiname DefineVectorTypeName(AbcMultiname param)
         {
-            var mn = new AbcMultiname(VectorTypeName, param);
+            var mn = new AbcMultiname(BuiltinTypes.Vector, param);
             return ImportConst(mn);
         }
+
         #endregion
 
         #region Builtin Types
@@ -849,7 +837,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             if (args != null)
             {
-                DefineParams(method.Parameters, args);
+                AddParameters(method.Parameters, args);
             }
 
             var body = new AbcMethodBody(method);
@@ -994,38 +982,19 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
         #endregion
 
-        #region DefineParam
-        public AbcParameter DefineParam(AbcMultiname type, string name)
+        #region Parameters
+
+	    public AbcParameter CreateParameter(object typeDef, string name)
         {
-            return new AbcParameter(type, DefineStringOrNull(name));
+	        if (typeDef == null)
+				throw new ArgumentNullException("typeDef");
+
+	        var typeName = DefineTypeName(typeDef);
+
+	        return new AbcParameter(typeName, DefineStringOrNull(name));
         }
 
-        public AbcParameter DefineParam(AbcInstance type, string name)
-        {
-            return DefineParam(type.Name, name);
-        }
-
-        public AbcParameter DefineParam(AvmTypeCode type, string name)
-        {
-            return new AbcParameter(BuiltinTypes[type], DefineStringOrNull(name));
-        }
-
-        public AbcParameter DefineParam(AbcMultiname type)
-        {
-            return new AbcParameter(type);
-        }
-
-        public AbcParameter DefineParam(AbcInstance type)
-        {
-            return DefineParam(type.Name);
-        }
-
-        public AbcParameter DefineParam(AvmTypeCode type)
-        {
-            return new AbcParameter(BuiltinTypes[type]);
-        }
-
-        private AbcConst<string> GetParamName(object[] args, ref int i)
+	    private AbcConst<string> GetParamName(object[] args, ref int i)
         {
             if (i + 1 < args.Length)
             {
@@ -1094,7 +1063,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return mn;
         }
 
-        public void DefineParams(AbcParameterList list, params object[] args)
+        public void AddParameters(AbcParameterList list, params object[] args)
         {
             if (args == null) return;
             int n = args.Length;
@@ -1148,12 +1117,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return np;
         }
 
-        public AbcParametersHandler DefineParams(params object[] args)
-        {
-            if (args == null) return null;
-            return pl => DefineParams(pl, args);
-        }
-        #endregion
+	    #endregion
 
         public AbcTrait CreateSlot(object type, object name)
         {

@@ -38,6 +38,4 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			}
 		}
 	}
-
-	public delegate void AbcParametersHandler(AbcParameterList list);
 }

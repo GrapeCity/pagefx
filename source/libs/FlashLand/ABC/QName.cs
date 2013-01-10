@@ -135,4 +135,28 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return abc.DefineQName(ns, Name);
         }
     }
+
+	internal sealed class QNameAttribute : Attribute
+	{
+		public QNameAttribute(string name) : this(KnownNamespace.Global, name)
+		{
+		}
+
+		public QNameAttribute(KnownNamespace ns, string name)
+		{
+			Value = new QName(name, ns);
+		}
+
+		public QNameAttribute(string ns, string name)
+		{
+			Value = QName.Package(ns, name);
+		}
+
+		public QNameAttribute(string ns, string name, NamespaceKind kind)
+		{
+			Value = new QName(name, new Namespace(ns, kind));
+		}
+
+		public QName Value { get; private set; }
+	}
 }

@@ -556,30 +556,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			return field ?? (field = ImportType(fullname));
 		}
 
-	    public AbcParameter CreateParam(AbcMultiname type, string name)
-        {
-            return Abc.DefineParam(type, name);
-        }
-
-        public AbcParameter CreateParam(AbcInstance type, string name)
-        {
-            if (type == null)
-                throw new ArgumentNullException("type");
-            return CreateParam(type.Name, name);
-        }
-
-        public AbcParameter CreateParam(IType type, string name)
-        {
-			var typeName = TypeBuilder.BuildMemberType(type);
-            return CreateParam(typeName, name);
-        }
-
-        public AbcParameter CreateParam(AvmTypeCode type, string name)
-        {
-            return Abc.DefineParam(type, name);
-        }
-
-    	#endregion
+	    #endregion
 
 	    internal object SetData(ITypeMember member, object data)
 	    {

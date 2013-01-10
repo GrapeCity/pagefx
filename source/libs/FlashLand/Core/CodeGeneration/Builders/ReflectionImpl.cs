@@ -307,23 +307,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             Debug.Assert(typeId >= 0);
 
 			var instance = _generator.Corlib.Assembly.Instance;
-
-	        string name1 = Const.InitTypePrefix + typeId;
-	        var name = Abc.DefineName(QName.Global(name1));
-            var method = new AbcMethod();
-            var trait = AbcTrait.CreateMethod(method, name);
-            instance.AddTrait(trait, false);
-            method.ReturnType = Abc.BuiltinTypes.Void;
-			method.Parameters.Add(_generator.CreateParam(SystemTypes.Type, "type"));
-
-	        var body = new AbcMethodBody(method);
-	        Abc.AddMethod(method);
-
-	        var code = new AbcCode(Abc);
-            InitTypeInfo(code, type, typeId);
-            code.ReturnVoid();
-
-            body.Finish(code);
+	        instance.DefineMethod(
+		        Sig.@this(QName.Global(Const.InitTypePrefix + typeId),
+		                  AvmTypeCode.Void,
+		                  SystemTypes.Type, "type"),
+		        code =>
+			        {
+				        InitTypeInfo(code, type, typeId);
+				        code.ReturnVoid();
+			        });
         }
 
         private void DefineInitTypeMethods()

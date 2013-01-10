@@ -390,8 +390,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             if (source.HasPseudoThis())
             {
-				var typeName = _generator.TypeBuilder.BuildMemberType(source.DeclaringType);
-				target.Parameters.Add(_generator.CreateParam(typeName, "this"));
+				target.Parameters.Add(Abc.CreateParameter(source.DeclaringType, "this"));
             }
 
             var abm = GetBaseMethod(target, source);
@@ -401,16 +400,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             }
             else
             {
-                int n = source.Parameters.Count;
-                for (int i = 0; i < n; ++i)
-                {
-#if DEBUG
-                    DebugService.DoCancel();
-#endif
-                    var p = source.Parameters[i];
-					var ap = _generator.CreateParam(p.Type, p.Name);
-	                target.Parameters.Add(ap);
-                }
+				target.Parameters.AddRange(source.Parameters.Select(p => Abc.CreateParameter(p.Type, p.Name)));
             }
         }
 
