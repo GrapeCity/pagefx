@@ -1,6 +1,7 @@
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
@@ -30,7 +31,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		private AbcInstance BuildInstance(IAssembly assembly)
 		{
-			var name = Abc.DefineName(new PfxQName(assembly.Name + "$runtime"));
+			var name = Abc.DefineName(QName.PfxPackage(assembly.Name + "$runtime"));
 			var instance = Abc.Instances[name];
 			if (instance != null) return instance;
 			instance = Abc.DefineEmptyInstance(name, true);
@@ -141,7 +142,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			get
 			{
 				return _valueHolder ?? (_valueHolder =
-				                        BuildRecord(new PfxQName("value_holder"),
+				                        BuildRecord(QName.PfxPackage("value_holder"),
 				                                    "value", AvmTypeCode.Object));
 			}
 		}
@@ -151,7 +152,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			get
 			{
 				return _qnameHolder ?? (_qnameHolder =
-				                        BuildRecord(new PfxQName("qname_holder"),
+				                        BuildRecord(QName.PfxPackage("qname_holder"),
 				                                    "ns", AvmTypeCode.Namespace,
 				                                    "name", AvmTypeCode.String));
 			}
@@ -161,7 +162,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		{
 			var instance = _generator.Corlib.SystemType.Instance;
 			return instance.DefineMethod(
-				Sig.@static(new PfxQName("FindClass"), AvmTypeCode.Class,
+				Sig.@static(QName.PfxPackage("FindClass"), AvmTypeCode.Class,
 				            AvmTypeCode.Namespace, "ns",
 				            AvmTypeCode.String, "name"),
 				code =>

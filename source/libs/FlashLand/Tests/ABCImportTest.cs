@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.FlashLand.Tests
         public void ImportQName1()
         {
             var abc1 = new AbcFile();
-            var c1 = abc1.DefineQName("ns", "name");
+            var c1 = abc1.DefineName(QName.Package("ns", "name"));
 
             var abc2 = new AbcFile();
             var c2 = abc2.ImportConst(c1);

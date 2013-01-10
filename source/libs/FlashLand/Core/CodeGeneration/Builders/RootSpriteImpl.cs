@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			const string rootName = "$ROOTSPRITE$";
 			Instance = new AbcInstance(true)
 			              	{
-			              		Name = Abc.DefineQName(_generator.RootAbcNamespace, rootName),
+			              		Name = Abc.DefineName(QName.Package(_generator.RootNamespace, rootName)),
 			              		Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
 			              		ProtectedNamespace = Abc.DefineProtectedNamespace(rootName)
 			              	};

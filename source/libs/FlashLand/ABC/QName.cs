@@ -2,18 +2,7 @@ using System;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    internal enum KnownNamespace : byte
-    {
-        Global,
-        Internal,
-        BodyTrait,
-        AS3,
-        MxInternal,
-        PfxPackage,
-        PfxPublic,
-    }
-
-	internal enum NamespaceKind : byte
+    internal enum NamespaceKind : byte
 	{
 		Package,
 		Public,
@@ -86,6 +75,29 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			return new QName(name, KnownNamespace.PfxPublic);
 		}
 
+		public static QName BodyTrait(string name)
+		{
+			return new QName(name, KnownNamespace.BodyTrait);
+		}
+
+		public static QName Package(string ns, string name)
+		{
+			if (string.IsNullOrEmpty(name))
+				throw new ArgumentNullException("name");
+			if (string.IsNullOrEmpty(ns))
+				return Global(name);
+			return new QName(name, new Namespace(ns, NamespaceKind.Package));
+		}
+
+		public static QName Public(string ns, string name)
+		{
+			if (ns == null)
+				throw new ArgumentNullException("ns");
+			if (string.IsNullOrEmpty(name))
+				throw new ArgumentNullException("name");
+			return new QName(name, new Namespace(ns, NamespaceKind.Public));
+		}
+
 	    private readonly KnownNamespace _knownNamespace;
 	    private readonly Namespace _namespace;
 
@@ -119,7 +131,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
 	    public AbcMultiname Define(AbcFile abc)
         {
-			var ns = _namespace != null ? _namespace.Define(abc) : abc.DefineNamespace(_knownNamespace);
+			var ns = _namespace != null ? _namespace.Define(abc) : abc.KnownNamespaces.Get(_knownNamespace);
             return abc.DefineQName(ns, Name);
         }
     }

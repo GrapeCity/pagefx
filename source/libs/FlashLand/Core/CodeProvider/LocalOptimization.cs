@@ -453,8 +453,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                                 (abc, code, index) => new IInstruction[]
                                                           {
                                                               new Instruction(InstructionCode.Getlocal0),
-                                                              new Instruction(InstructionCode.Getproperty,
-                                                                              abc.DefineGlobalQName(Const.Boxing.Value))
+                                                              new Instruction(InstructionCode.Getproperty, abc.DefineName(QName.Global(Const.Boxing.Value)))
                                                           },
                                 (code, index, i) => IsLoadThis(i),
                                 (code, index, i) => IsGetlexPrimitive(i),
@@ -466,8 +465,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                                 (abc, code, index) => new IInstruction[]
                                                           {
                                                               new Instruction(InstructionCode.Getlocal0),
-                                                              new Instruction(InstructionCode.Getproperty,
-                                                                              abc.DefineGlobalQName(Const.Boxing.Value))
+                                                              new Instruction(InstructionCode.Getproperty, abc.DefineName(QName.Global(Const.Boxing.Value)))
                                                           },
                                 (code, index, i) => IsGetlexPrimitive(i),
                                 (code, index, i) => IsLoadThis(i),

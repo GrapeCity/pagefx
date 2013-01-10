@@ -1,5 +1,6 @@
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 using DataDynamics.PageFX.FlashLand.IL;
 
@@ -35,7 +36,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return null;
 
 			var instance = _generator.TypeBuilder.BuildInstance(type);
-			var name = _generator.DefinePfxName(Const.Boxing.MethodBox);
+			var name = _generator.Abc.DefineName(QName.PfxPublic(Const.Boxing.MethodBox));
 
 	        return instance.DefineMethod(
 		        Sig.@static(name, instance.Name, type, "value"),
@@ -52,7 +53,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return null;
 
 			var instance = _generator.TypeBuilder.BuildInstance(type);
-			var name = _generator.DefinePfxName(Const.Boxing.MethodBox);
+			var name = _generator.Abc.DefineName(QName.PfxPublic(Const.Boxing.MethodBox));
 
             var arg = type.GetTypeArgument(0);
 			var argInstance = _generator.TypeBuilder.BuildInstance(arg);
@@ -93,7 +94,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 	    private AbcMultiname UnboxName
 	    {
-		    get { return _generator.DefinePfxName(Const.Boxing.MethodUnbox); }
+		    get { return _generator.Abc.DefineName(QName.PfxPublic(Const.Boxing.MethodUnbox)); }
 	    }
 
 	    private AbcMethod UnboxImpl(IType type, bool strict)
@@ -111,7 +112,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (type.IsEnum && !strict)
                 type = vtype;
 
-			var name = _generator.DefinePfxName(Const.Boxing.MethodUnbox + (strict ? "strict" : ""));
+			var name = _generator.Abc.DefineName(QName.PfxPublic(Const.Boxing.MethodUnbox + (strict ? "strict" : "")));
 			var retType = _generator.TypeBuilder.BuildMemberType(type);
 	        return instance.DefineMethod(
 		        Sig.@static(name, retType, AvmTypeCode.Object, "value"),

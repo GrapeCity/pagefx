@@ -50,7 +50,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             Debug.Assert(instance.Abc == Abc);
 
-            var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
+		    string name = "this_" + abcOp.TraitName.NameString;
+		    var thisName = Abc.DefineName(QName.Global(name));
 			var retType = _generator.TypeBuilder.BuildReturnType(method.Type);
 
 	        return instance.DefineMethod(
@@ -88,7 +89,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			var instance = _generator.TypeBuilder.BuildInstance(op.DeclaringType);
 
-            var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
+	        string name = "this_" + abcOp.TraitName.NameString;
+	        var thisName = Abc.DefineName(QName.Global(name));
 			var retType = _generator.TypeBuilder.BuildReturnType(op.Type);
 
 	        return instance.DefineMethod(

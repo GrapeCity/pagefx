@@ -302,16 +302,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         //Defines qname for AbcInstance for given type
 		private AbcMultiname DefineInstanceName(IType type)
         {
-            var ns = DefineTypeNamespace(type);
-            string name = InternalTypeExtensions.GetPartialTypeName(type);
-            return Abc.DefineQName(ns, name);
+			string ns = type.GetTypeNamespace(_generator.RootNamespace);
+            string name = type.NestedName;
+            return Abc.DefineName(QName.Package(ns, name));
         }
-
-        private AbcNamespace DefineTypeNamespace(IType type)
-        {
-            string ns = type.GetTypeNamespace(_generator.RootNamespace);
-            return Abc.DefineNamespace(AbcConstKind.PackageNamespace, ns);
-        }
+		
         #endregion
 
         #region DefineSuperType
@@ -420,7 +415,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             instance = new AbcInstance(true)
                            {
-                               Name = _generator.DefinePfxName(GetEnumName(st), false),
+                               Name = Abc.DefineName(QName.PfxPackage(GetEnumName(st))),
                                BaseTypeName = super.Name,
                                BaseInstance = super,
 							   Initializer = Initializers.BuildDefaultInitializer(Abc, null)
@@ -431,7 +426,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             _enumSuperTypes[index] = instance;
 
-            instance.CreateSlot(Abc.DefineGlobalQName(Const.Boxing.Value), BuildMemberType(vtype));
+	        string name = Const.Boxing.Value;
+	        instance.CreateSlot(Abc.DefineName(QName.Global(name)), BuildMemberType(vtype));
 
             //SetFlags(instance, type);
 

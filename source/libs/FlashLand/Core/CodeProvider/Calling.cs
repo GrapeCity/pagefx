@@ -3,6 +3,7 @@ using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.IL;
 
@@ -48,7 +49,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             if (type.IsInternalType())
             {
-                var mn = _abc.DefineGlobalQName(method.Name);
+	            string name = method.Name;
+	            var mn = _abc.DefineName(QName.Global(name));
                 code.FindPropertyStrict(mn);
                 return;
             }

@@ -1,6 +1,6 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.FlashLand.Avm;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {

@@ -1,6 +1,7 @@
 #if NUNIT
 using System;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core;
 using NUnit.Framework;
 
@@ -77,7 +78,7 @@ namespace DataDynamics.PageFX.FlashLand.Tests
         public void TestNamespaces()
         {
             var abc = new AbcFile();
-            Assert.IsTrue(ReferenceEquals(abc.GlobalPackage, abc.DefineNamespace(AbcConstKind.PackageNamespace, "")));
+            Assert.IsTrue(ReferenceEquals(abc.KnownNamespaces.GlobalPackage, abc.DefineNamespace(AbcConstKind.PackageNamespace, "")));
 
             for (int i = 0; i < 10; ++i)
             {
@@ -97,8 +98,10 @@ namespace DataDynamics.PageFX.FlashLand.Tests
             var abc = new AbcFile();
             for (int i = 0; i < 10; ++i)
             {
-                var c1 = abc.DefineGlobalQName("name" + i);
-                var c2 = abc.DefineGlobalQName("name" + i);
+	            string name = "name" + i;
+	            var c1 = abc.DefineName(QName.Global(name));
+	            string name1 = "name" + i;
+	            var c2 = abc.DefineName(QName.Global(name1));
                 Assert.IsTrue(ReferenceEquals(c1, c2));
 
                 c1 = abc.ImportConst(c1);
@@ -121,10 +124,10 @@ namespace DataDynamics.PageFX.FlashLand.Tests
             foreach (AvmTypeCode type in Enum.GetValues(typeof(AvmTypeCode)))
                 TestBuiltinType(abc, type);
 
-            Assert.IsTrue(ReferenceEquals(abc.BuiltinTypes[AvmTypeCode.Void], abc.DefineGlobalQName("void")));
-            Assert.IsTrue(ReferenceEquals(abc.BuiltinTypes[AvmTypeCode.Int32], abc.DefineGlobalQName("int")));
-            Assert.IsTrue(ReferenceEquals(abc.BuiltinTypes[AvmTypeCode.UInt32], abc.DefineGlobalQName("uint")));
-            Assert.IsTrue(ReferenceEquals(abc.BuiltinTypes[AvmTypeCode.String], abc.DefineGlobalQName("String")));
+            Assert.IsTrue(ReferenceEquals(abc.BuiltinTypes[AvmTypeCode.Void], abc.DefineName(QName.Global("void"))));
+            Assert.IsTrue(ReferenceEquals(abc.BuiltinTypes[AvmTypeCode.Int32], abc.DefineName(QName.Global("int"))));
+            Assert.IsTrue(ReferenceEquals(abc.BuiltinTypes[AvmTypeCode.UInt32], abc.DefineName(QName.Global("uint"))));
+            Assert.IsTrue(ReferenceEquals(abc.BuiltinTypes[AvmTypeCode.String], abc.DefineName(QName.Global("String"))));
         }
     }
 }

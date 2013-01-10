@@ -110,12 +110,8 @@ namespace DataDynamics.PageFX.FlashLand.Core
         }
 
         #region name utils
-        public static string GetPartialTypeName(IType type)
-        {
-            return type.NestedName;
-        }
 
-        public static string GetNamespaceForMembers(string ns, string name)
+	    public static string GetNamespaceForMembers(string ns, string name)
         {
             if (String.IsNullOrEmpty(ns))
                 return name;
@@ -124,7 +120,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
         public static string GetNamespaceForMembers(IType type)
         {
-            string name = GetPartialTypeName(type);
+            string name = type.NestedName;
             string ns = type.GetTypeNamespace("");
             return GetNamespaceForMembers(ns, name);
         }

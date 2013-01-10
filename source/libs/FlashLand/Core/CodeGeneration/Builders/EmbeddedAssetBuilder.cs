@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	    private AbcMultiname GetBitmapAssetSuperName()
         {
             //TODO: For flash application it can flash.display.Bitmap
-            return Abc.DefineQName("mx.core", "BitmapAsset");
+            return Abc.DefineName(QName.Package("mx.core", "BitmapAsset"));
         }
 
 	    public AbcInstance BuildBitmapAsset(AbcMultiname name, Image image, bool jpeg)

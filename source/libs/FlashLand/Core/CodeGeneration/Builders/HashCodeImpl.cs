@@ -1,4 +1,5 @@
 ﻿using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
@@ -53,7 +54,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             var instance = generator.RuntimeImpl.Instance;
 
-            var dicType = generator.Abc.DefineQName("flash.utils", "Dictionary");
+            var dicType = generator.Abc.DefineName(QName.Package("flash.utils", "Dictionary"));
             var dic = instance.DefineStaticSlot("hcdic$", dicType);
 
 	        return instance.DefineMethod(

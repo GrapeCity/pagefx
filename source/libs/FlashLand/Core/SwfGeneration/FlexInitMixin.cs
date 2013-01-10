@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
@@ -144,7 +145,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 
     		var instance = new AbcInstance(true)
     		               	{
-    		               		Name = app.DefineQName(ns, name),
+    		               		Name = app.DefineName(QName.Package(ns, name)),
     		               		BaseTypeName = app.BuiltinTypes.Object,
     		               		IsMixin = true,
     		               		IsFlexInitMixin = true,
@@ -217,7 +218,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
     		if (_effects.Count == 0) return;
 
     		var effectManager = ImportType(app, "mx.effects.EffectManager");
-    		var mn = app.DefineMxInternalName("registerEffectTrigger");
+    		var mn = app.DefineName(QName.MxInternal("registerEffectTrigger"));
     		foreach (var pair in _effects)
     		{
     			code.Getlex(effectManager);
@@ -231,7 +232,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
     	{
     		if (_remoteClasses.Count == 0) return;
 
-    		var registerClassAlias = app.DefinePackageQName("flash.net", "registerClassAlias");
+    		var registerClassAlias = app.DefineName(QName.Package("flash.net", "registerClassAlias"));
     		foreach (var pair in _remoteClasses)
     		{
     			code.FindPropertyStrict(registerClassAlias);
@@ -243,7 +244,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 
     	private static void RegisterInheritStyles(AbcFile app, AbcCode code, Action pushStyleManager, bool flex4)
     	{
-    		var registerInheritingStyle = app.DefineGlobalQName("registerInheritingStyle");
+    		var registerInheritingStyle = app.DefineName(QName.Global("registerInheritingStyle"));
 
     		var styles = new List<string>(CommonInheritStyles);
     		styles.AddRange(flex4 ? Flex4InheritStyles : Flex3InheritStyles);

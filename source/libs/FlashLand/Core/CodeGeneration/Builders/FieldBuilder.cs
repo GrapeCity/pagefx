@@ -130,7 +130,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             var declType = field.DeclaringType;
             if (UseGlobalPackage(declType))
-                return Abc.GlobalPackage;
+                return Abc.KnownNamespaces.GlobalPackage;
 
             return Abc.DefineNamespace(declType, field.Visibility, field.IsStatic);
         }

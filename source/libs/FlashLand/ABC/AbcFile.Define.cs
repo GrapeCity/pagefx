@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.IL;
@@ -216,7 +216,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
         private AbcConst<string> _emptyString;
 
-        AbcConst<string> DefineString2(string value)
+        private AbcConst<string> DefineStringOrNull(string value)
         {
             AbcConst<string> c = null;
             if (!string.IsNullOrEmpty(value))
@@ -238,7 +238,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (_mnArrayIndexer == null)
                 {
-                    var nss = DefineNamespaceSet(GlobalPackage);
+                    var nss = DefineNamespaceSet(KnownNamespaces.GlobalPackage);
                     _mnArrayIndexer = DefineMultiname(AbcConstKind.MultinameL, nss);
                 }
                 return _mnArrayIndexer;
@@ -248,54 +248,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region Known Namespaces
-        private LazyValue<AbcNamespace>[] KnownNamespaces
+
+		internal KnownNamespaces KnownNamespaces
         {
             get 
             {
-                if (_knownNamespaces != null)
-                    return _knownNamespaces;
-                return _knownNamespaces = new[]
-                {
-                    new LazyValue<AbcNamespace>(() => DefinePackage(EmptyString)), //Global
-                    new LazyValue<AbcNamespace>(() => DefineInternalNamespace(EmptyString)), //Internal
-                    new LazyValue<AbcNamespace>(() => DefineInternalNamespace(EmptyString)), //BodyTrait
-                    new LazyValue<AbcNamespace>(() => DefinePublicNamespace(AS3.NS2006)), //AS3
-                    new LazyValue<AbcNamespace>(() => DefinePublicNamespace(MX.NamespaceInternal2006)), //MXInternal
-                    new LazyValue<AbcNamespace>(() => DefinePackage(Const.Namespaces.PFX)), //PfxPackage
-                    new LazyValue<AbcNamespace>(() => DefinePublicNamespace(Const.Namespaces.PFX)) //PfxPublic
-                };
+                if (_knownNamespaces == null)
+					_knownNamespaces = new KnownNamespaces(this);
+                return _knownNamespaces;
             }
         }
-        private LazyValue<AbcNamespace>[] _knownNamespaces;
-
-        internal AbcNamespace DefineNamespace(KnownNamespace id)
-        {
-            return KnownNamespaces[(int)id].Value;
-        }
-
-        /// <summary>
-        /// Returns global package namespace.
-        /// </summary>
-        public AbcNamespace GlobalPackage
-        {
-            get { return DefineNamespace(KnownNamespace.Global); }
-        }
-
-        /// <summary>
-        /// Gets empty internal namespace
-        /// </summary>
-        public AbcNamespace InternalNamespace
-        {
-            get { return DefineNamespace(KnownNamespace.Internal); }
-        }
-
-        /// <summary>
-        /// Gets namespace that is used for method body activation traits.
-        /// </summary>
-        public AbcNamespace BodyTraitNamespace
-        {
-            get { return DefineNamespace(KnownNamespace.BodyTrait); }
-        }
+		private KnownNamespaces _knownNamespaces;
 
 	    #endregion
 
@@ -455,7 +418,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     return DefineNamespace(AbcConstKind.InternalNamespace, ns);
 
                 default:
-                    return GlobalPackage;
+                    return KnownNamespaces.GlobalPackage;
             }
         }
 
@@ -494,7 +457,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 throw new ArgumentNullException();
 
             if (type.IsInterface)
-                return GlobalPackage;
+                return KnownNamespaces.GlobalPackage;
 
             //FIX: For internal override methods.
             string ns = GetNsName(v);
@@ -583,6 +546,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region QNames
+
         /// <summary>
         /// Defines qname.
         /// </summary>
@@ -595,71 +559,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return DefineMultiname(AbcConstKind.QName, ns, s);
         }
 
-        public AbcMultiname DefineQName(string ns, string name)
-        {
-            if (ns == null)
-                throw new ArgumentNullException("ns");
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (name.Length == 0)
-                throw new ArgumentException("name cannot be empty");
-            return DefineQName(DefinePackage(ns), name);
-        }
-
-        public AbcMultiname DefineQName(ITypeMember m, string name)
+	    public AbcMultiname DefineQName(ITypeMember m, string name)
         {
             var ns = DefineNamespace(m);
             return DefineQName(ns, name);
-        }
-
-        public AbcMultiname DefineQName(IType type, string name, Visibility v, bool isStatic)
-        {
-            var ns = DefineNamespace(type, v, isStatic);
-            return DefineQName(ns, name);
-        }
-
-        public AbcMultiname DefineQName(AbcConstKind nskind, string ns, string name)
-        {
-            var n = DefineNamespace(nskind, ns);
-            return DefineQName(n, name);
-        }
-
-        /// <summary>
-        /// Defines QName with public namespace
-        /// </summary>
-        /// <param name="ns">QName public namespace to define</param>
-        /// <param name="name">QName name to define</param>
-        /// <returns></returns>
-        public AbcMultiname DefinePublicQName(string ns, string name)
-        {
-            return DefineQName(AbcConstKind.PublicNamespace, ns, name);
-        }
-
-        public AbcMultiname DefinePackageQName(string ns, string name)
-        {
-            return DefineQName(AbcConstKind.PackageNamespace, ns, name);
-        }
-
-        public AbcMultiname DefineQName(AbcConstKind nskind, string fullname)
-        {
-            int i = fullname.LastIndexOf('.');
-            if (i >= 0)
-            {
-                string ns = fullname.Substring(0, i);
-                string name = fullname.Substring(i + 1);
-                return DefineQName(nskind, ns, name);
-            }
-            return DefineQName(nskind, "", fullname);
-        }
-
-        /// <summary>
-        /// Defines qname with global package namespace
-        /// </summary>
-        /// <param name="name">name of qname to define</param>
-        /// <returns></returns>
-        public AbcMultiname DefineGlobalQName(string name)
-        {
-            return DefineName(QName.Global(name));
         }
 
 	    #endregion
@@ -673,13 +576,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             var s = name as string;
             if (s != null)
-                return DefineGlobalQName(s);
+            {
+				return QName.Global(s).Define(this);
+            }
 
             var qn = name as QName;
-            if (qn != null)
-                return qn.Define(this);
+	        if (qn != null)
+	        {
+		        return qn.Define(this);
+	        }
 
-            throw new NotSupportedException("invalid name object");
+	        throw new NotSupportedException("invalid name object");
         }
         #endregion
 
@@ -706,16 +613,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region Builtin Types
-        public AbcMultiname this[AvmTypeCode type]
-        {
-            get { return BuiltinTypes[type]; }
-        }
 
-        public AvmBuiltinTypes BuiltinTypes
+	    public BuiltinTypes BuiltinTypes
         {
-            get { return _avmBuiltinTypes ?? (_avmBuiltinTypes = new AvmBuiltinTypes(this)); }
+            get { return _builtinTypes ?? (_builtinTypes = new BuiltinTypes(this)); }
         }
-        private AvmBuiltinTypes _avmBuiltinTypes;
+        private BuiltinTypes _builtinTypes;
 
         public AbcMultiname GetTypeName(IType type, bool native)
         {
@@ -864,7 +767,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcMethod DefineEmptyVoidMethod(string name, bool pushScope)
         {
-            return DefineEmptyVoidMethod(DefineString2(name), pushScope);
+            return DefineEmptyVoidMethod(DefineStringOrNull(name), pushScope);
         }
 
         public AbcMethod DefineEmptyVoidMethod(AbcConst<string> name)
@@ -874,7 +777,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcMethod DefineEmptyVoidMethod(string name)
         {
-            return DefineEmptyVoidMethod(DefineString2(name), false);
+            return DefineEmptyVoidMethod(DefineStringOrNull(name), false);
         }
         #endregion
 
@@ -903,7 +806,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcMethod DefineEmptyConstructor(string name, bool pushScope)
         {
-            return DefineEmptyConstructor(DefineString2(name), pushScope);
+            return DefineEmptyConstructor(DefineStringOrNull(name), pushScope);
         }
 
         public AbcMethod DefineEmptyConstructor(AbcConst<string> name)
@@ -913,7 +816,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcMethod DefineEmptyConstructor(string name)
         {
-            return DefineEmptyConstructor(DefineString2(name), false);
+            return DefineEmptyConstructor(DefineStringOrNull(name), false);
         }
 
         public AbcMethod DefineEmptyConstructor()
@@ -992,7 +895,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             var method = new AbcMethod
                              {
-                                 ReturnType = this[AvmTypeCode.Object]
+                                 ReturnType = BuiltinTypes.Object
                              };
 
             var traits = new List<AbcTrait>();
@@ -1094,7 +997,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region DefineParam
         public AbcParameter DefineParam(AbcMultiname type, string name)
         {
-            return new AbcParameter(type, DefineString2(name));
+            return new AbcParameter(type, DefineStringOrNull(name));
         }
 
         public AbcParameter DefineParam(AbcInstance type, string name)
@@ -1104,7 +1007,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcParameter DefineParam(AvmTypeCode type, string name)
         {
-            return new AbcParameter(this[type], DefineString2(name));
+            return new AbcParameter(BuiltinTypes[type], DefineStringOrNull(name));
         }
 
         public AbcParameter DefineParam(AbcMultiname type)
@@ -1119,10 +1022,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public AbcParameter DefineParam(AvmTypeCode type)
         {
-            return new AbcParameter(this[type]);
+            return new AbcParameter(BuiltinTypes[type]);
         }
 
-        AbcConst<string> GetParamName(object[] args, ref int i)
+        private AbcConst<string> GetParamName(object[] args, ref int i)
         {
             if (i + 1 < args.Length)
             {
@@ -1153,7 +1056,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             if (typeDef is AvmTypeCode)
             {
-                return this[(AvmTypeCode)typeDef];
+                return BuiltinTypes[(AvmTypeCode)typeDef];
             }
 
             var instance = typeDef as AbcInstance;
@@ -1262,12 +1165,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #region DefineEmptyInstance
         public AbcInstance DefineEmptyInstance(object name, bool emptyCtor)
         {
-            var instance = new AbcInstance(true)
-            {
-                Name = DefineName(name),
-                BaseTypeName = this[AvmTypeCode.Object],
-                Flags = AbcClassFlags.Final | AbcClassFlags.Sealed
-            };
+	        var instance = new AbcInstance(true)
+		        {
+			        Name = DefineName(name),
+			        BaseTypeName = BuiltinTypes.Object,
+			        Flags = AbcClassFlags.Final | AbcClassFlags.Sealed
+		        };
 
             if (emptyCtor)
                 instance.Initializer = DefineEmptyConstructor();
@@ -1291,14 +1194,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (script != null) return script;
             ns = ImportConst(ns);
 
-            var traitName = DefineGlobalQName(name);
+            var traitName = DefineName(QName.Global(name));
             script = new AbcScript
                          {
                              Initializer = DefineEmptyMethod()
                          };
             _nsscripts[name] = script;
 
-            script.Traits.AddConst(this[AvmTypeCode.Namespace], traitName, ns);
+            script.Traits.AddConst(BuiltinTypes.Namespace, traitName, ns);
 
             return script;
         }

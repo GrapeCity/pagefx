@@ -5,6 +5,7 @@ using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
@@ -90,7 +91,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         #region QNames
         public AbcMultiname DefineGlobalQName(string name)
         {
-            return Abc.DefineGlobalQName(name);
+            return Abc.DefineName(QName.Global(name));
         }
 
         public void PushQName(AbcMultiname name)
@@ -245,7 +246,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction FindProperty(string name)
         {
-            var mn = Abc.DefineGlobalQName(name);
+            var mn = Abc.DefineName(QName.Global(name));
             return FindProperty(mn);
         }
 
@@ -263,7 +264,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction FindPropertyStrict(string name)
         {
-            var mn = Abc.DefineGlobalQName(name);
+            var mn = Abc.DefineName(QName.Global(name));
             return FindPropertyStrict(mn);
         }
         #endregion
@@ -619,7 +620,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("Name cannot be null or empty", "name");
-            var mn = Abc.DefineGlobalQName(name);
+            var mn = Abc.DefineName(QName.Global(name));
             return GetProperty(mn);
         }
 
@@ -658,7 +659,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction GetSuper(string name)
         {
-            var mn = Abc.DefineGlobalQName(name);
+            var mn = Abc.DefineName(QName.Global(name));
             return GetSuper(mn);
         }
 
@@ -670,7 +671,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
 		public Instruction SetSuper(string name)
 		{
-			var mn = Abc.DefineGlobalQName(name);
+			var mn = Abc.DefineName(QName.Global(name));
 			return SetSuper(mn);
 		}
 
@@ -682,7 +683,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction SetPublicProperty(string ns, string name)
         {
-            var mn = Abc.DefinePublicQName(ns, name);
+            var mn = Abc.DefineName(QName.Public(ns, name));
             return SetProperty(mn);
         }
 
@@ -702,7 +703,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction SetMxInternalProperty(string name)
         {
-            var mn = Abc.DefineMxInternalName(name);
+            var mn = Abc.DefineName(QName.MxInternal(name));
             return SetProperty(mn);
         }
 
@@ -715,7 +716,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction InitProperty(string name)
         {
-            var mn = Abc.DefineGlobalQName(name);
+            var mn = Abc.DefineName(QName.Global(name));
             return InitProperty(mn);
         }
 
@@ -843,13 +844,13 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public Instruction Getlex(string ns, string name)
         {
-            var mn = Abc.DefinePackageQName(ns, name);
+            var mn = Abc.DefineName(QName.Package(ns, name));
             return Getlex(mn);
         }
 
         public Instruction Getlex(string name)
         {
-            var mn = Abc.DefineGlobalQName(name);
+            var mn = Abc.DefineName(QName.Global(name));
             return Getlex(mn);
         }
 
@@ -1162,7 +1163,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void PushGlobalPackage()
         {
-            PushNamespace(Abc.GlobalPackage);
+            PushNamespace(Abc.KnownNamespaces.GlobalPackage);
         }
 
         public void LoadConstant(object value)
@@ -1928,7 +1929,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="args">code that pushes arguments onto the stack</param>
         public void CallGlobalFunction(string ns, string name, int argc, Action args)
         {
-            var mn = Abc.DefineQName(ns, name);
+            var mn = Abc.DefineName(QName.Package(ns, name));
             FindPropertyStrict(mn);
             if (args != null)
                 args();
@@ -1954,7 +1955,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="args">code that pushes arguments onto the stack</param>
         public void CallGlobalFunctionVoid(string ns, string name, int argc, Action args)
         {
-            var mn = Abc.DefineQName(ns, name);
+            var mn = Abc.DefineName(QName.Package(ns, name));
             FindPropertyStrict(mn);
             if (args != null)
                 args();
@@ -1992,7 +1993,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("name is null or empty", "name");
-            var mn = Abc.DefineAS3Name(name);
+            var mn = Abc.DefineName(QName.AS3(name));
             Call(mn, argc);
         }
 
@@ -2619,7 +2620,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         public void BeginCatch(object exceptionType, bool useSkipHandlers)
         {
             if (exceptionType == null)
-                exceptionType = Abc[AvmTypeCode.Object];
+                exceptionType = Abc.BuiltinTypes.Object;
 
             var type = Abc.DefineTypeName(exceptionType);
 
@@ -3035,7 +3036,8 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void GetEnumValue()
         {
-            var name = Abc.DefineGlobalQName(Const.Enum.GetValue);
+	        string name1 = Const.Enum.GetValue;
+	        var name = Abc.DefineName(QName.Global(name1));
             Call(name, 0);
         }
 
@@ -3631,7 +3633,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// </summary>
         public void LoadCapabilities()
         {
-            var mn = Abc.DefinePackageQName("flash.system", "Capabilities");
+            var mn = Abc.DefineName(QName.Package("flash.system", "Capabilities"));
             Getlex(mn);
         }
 
@@ -3639,7 +3641,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             LoadCapabilities();
 
-            var mn = Abc.DefineGlobalQName(name);
+            var mn = Abc.DefineName(QName.Global(name));
             return GetProperty(mn);
         }
 
@@ -3658,7 +3660,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void AvmplusSystemWrite()
         {
-            var mn = Abc.DefinePackageQName("avmplus", "System");
+            var mn = Abc.DefineName(QName.Package("avmplus", "System"));
             Getlex(mn);
             mn = DefineGlobalQName("write");
             Swap(); //string

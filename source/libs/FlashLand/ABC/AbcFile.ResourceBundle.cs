@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using DataDynamics.PageFX.Common.Extensions;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Core.ResourceBundles;
 using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
@@ -83,8 +84,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             //NOTE: naming is strongly determined in Flex Resource Manager.
             string fullname = locale + '$' + name + "_properties";
-            instance.Name = DefineGlobalQName(fullname);
-            instance.Flags = AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace;
+	        instance.Name = DefineName(QName.Global(fullname));
+	        instance.Flags = AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace;
             instance.ProtectedNamespace = DefineProtectedNamespace(fullname);
 
             instance.BaseInstance = superType;
@@ -137,7 +138,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 //TODO: Check mx context
                 if (_rbsuper == null)
                 {
-                    var superName = DefinePackageQName("mx.resources", "ResourceBundle");
+                    var superName = DefineName(QName.Package("mx.resources", "ResourceBundle"));
                     _rbsuper = ImportInstance(superName);
                 }
                 return _rbsuper;

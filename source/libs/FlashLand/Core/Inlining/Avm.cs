@@ -1,5 +1,7 @@
 ﻿using System;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.Inlining
@@ -138,7 +140,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		[InlineImpl]
 		public static void CopyArray(AbcCode code)
 		{
-			var prop = code.Abc.DefineGlobalQName("concat");
+			var prop = code.Abc.DefineName(QName.Global("concat"));
 			code.Call(prop, 0);
 			code.Coerce(AvmTypeCode.Array);
 		}

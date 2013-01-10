@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 {
@@ -30,7 +31,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 
 			var abc = _generator.Abc;
 
-			var instanceName = abc.DefineName(new PfxQName(name));
+			var instanceName = abc.DefineName(QName.PfxPackage(name));
 			instance = abc.DefineEmptyInstance(instanceName, false);
 			_cache[name] = instance;
 

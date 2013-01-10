@@ -94,6 +94,7 @@
     <Compile Include="Abc\AbcMetaEntry.cs" />
     <Compile Include="Abc\AbcMethodBodyCollection.cs" />
     <Compile Include="Abc\AbcMethodCollection.cs" />
+    <Compile Include="Abc\KnownNamespaces.cs" />
     <Compile Include="Abc\MemberKey.cs" />
     <Compile Include="Abc\Sig.cs" />
     <Compile Include="Abc\MethodSemantics.cs" />
@@ -127,7 +128,7 @@
     <Compile Include="Core\AssemblyIndex.cs" />
     <Compile Include="Core\AssemblyCustomData.cs" />
     <Compile Include="Core\Attrs.cs" />
-    <Compile Include="Core\AvmBuiltinTypes.cs" />
+    <Compile Include="Avm\BuiltinTypes.cs" />
     <Compile Include="Core\AvmConfig.cs" />
     <Compile Include="Core\AvmResolver.cs" />
     <Compile Include="Core\CodeGeneration\Builders\ArrayICollectionImpl.cs" />

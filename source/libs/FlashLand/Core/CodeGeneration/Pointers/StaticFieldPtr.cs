@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 
 			var type = field.DeclaringType;
 			string typeName = type.FullName.MakeFullName(field.Name);
-			var name = abc.DefinePfxName("sfld_ptr$" + typeName);
+			var name = abc.DefineName(QName.PfxPublic("sfld_ptr$" + typeName));
 
 			var instance = abc.Instances[name];
 			if (instance != null)

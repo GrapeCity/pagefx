@@ -2,6 +2,7 @@
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
@@ -44,7 +45,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             {
 				var tostr = generator.MethodBuilder.BuildAbcMethod(toString);
 
-                var name = generator.Abc.DefineGlobalQName(DebugPropertyPrefix + "display");
+                var name = generator.Abc.DefineName(QName.Global(DebugPropertyPrefix + "display"));
 
 	            var m = instance.DefineMethod(
 					Sig.get(name, AvmTypeCode.String),
@@ -72,7 +73,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return false;
             }
 
-            var name = generator.Abc.DefineGlobalQName(DebugPropertyPrefix + "display$exp");
+            var name = generator.Abc.DefineName(QName.Global(DebugPropertyPrefix + "display$exp"));
 
             //TODO: Parse display string to build string
 	        var m = instance.DefineMethod(
@@ -91,7 +92,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 	    private static void DefineDebugCollectionView(AbcGenerator generator, AbcInstance instance)
         {
-            var name = generator.Abc.DefineGlobalQName(DebugPropertyPrefix + "collection$view");
+            var name = generator.Abc.DefineName(QName.Global(DebugPropertyPrefix + "collection$view"));
 
             if (instance.FindSuperTrait(name, AbcTraitKind.Getter) != null)
                 return;

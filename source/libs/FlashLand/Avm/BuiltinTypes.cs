@@ -2,9 +2,10 @@ using System.Reflection;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.FlashLand.Avm
 {
     #region enum AvmTypeCode
     public enum AvmTypeCode
@@ -63,12 +64,12 @@ namespace DataDynamics.PageFX.FlashLand.Core
     }
     #endregion
 
-    public sealed class AvmBuiltinTypes
+    public sealed class BuiltinTypes
     {
         private readonly AbcFile _abc;
         private static readonly string[] Names;
 
-        static AvmBuiltinTypes()
+        static BuiltinTypes()
         {
             var fields = typeof(AvmTypeCode).GetFields(BindingFlags.Public | BindingFlags.Static);
             int n = fields.Length;
@@ -85,7 +86,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
         private readonly AbcMultiname[] _types;
 
-        public AvmBuiltinTypes(AbcFile abc)
+        public BuiltinTypes(AbcFile abc)
         {
             _abc = abc;
             _types = new AbcMultiname[Names.Length];
@@ -102,8 +103,9 @@ namespace DataDynamics.PageFX.FlashLand.Core
                 var mn = _types[i];
                 if (mn == null)
                 {
-                    mn = _abc.DefineGlobalQName(Names[i]);
-                    _types[i] = mn;
+	                string name = Names[i];
+	                mn = _abc.DefineName(Abc.QName.Global(name));
+	                _types[i] = mn;
                 }
                 return mn;
             }

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
@@ -62,7 +63,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         AbcMultiname DefineMxSystemManagerName(AbcFile abc)
         {
             string ns = RootNamespace;
-            return abc.DefineQName(ns, NameMxSysManager);
+            return abc.DefineName(QName.Package(ns, NameMxSysManager));
         }
 
     	void BuildMxSystemManager(AbcFile abc)
@@ -147,10 +148,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
                 Sig.@virtual("create", AvmTypeCode.Object).@override(),
                 code =>
                     {
-                        var typeString = abc.DefineGlobalQName("String");
-                        var typeClass = abc.DefineGlobalQName("Class");
+                        var typeString = abc.DefineName(QName.Global("String"));
+                        var typeClass = abc.DefineName(QName.Global("Class"));
                         //NOTE: getDefinitionByName is method of mx.core.SystemManager
-                        var getDefByName = abc.DefineGlobalQName("getDefinitionByName");
+                        var getDefByName = abc.DefineName(QName.Global("getDefinitionByName"));
 
                         const int argParams = 1;
                         const int varClassName = 2;
@@ -218,7 +219,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 						code.FindPropertyStrict(typeClass);
                     	GetCurrentAppDomain(code);
 						code.GetLocal(varClassName);
-						code.Call(abc.DefineGlobalQName("getDefinition"), 1);
+						code.Call(abc.DefineName(QName.Global("getDefinition")), 1);
 						code.Call(typeClass, 1);
 						code.Coerce(typeClass);
 						code.SetLocal(varClass);

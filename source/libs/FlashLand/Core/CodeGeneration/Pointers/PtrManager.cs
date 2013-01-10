@@ -1,6 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 {
@@ -70,7 +71,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 		{
 			var instance = _generator.Corlib.Array.Instance;
 
-			var name = _generator.DefinePfxName("GetElemPtr");
+			var name = _generator.Abc.DefineName(QName.PfxPublic("GetElemPtr"));
 			return instance.DefineMethod(
 				Sig.@this(name, AvmTypeCode.Object, AvmTypeCode.Int32, "index"),
 				code =>

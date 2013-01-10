@@ -1,5 +1,6 @@
 ﻿using System;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 {
@@ -23,7 +24,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 
 		private AbcInstance Build()
 		{
-			var name = _abc.DefineName(new PfxQName("func_ptr"));
+			var name = _abc.DefineName(QName.PfxPackage("func_ptr"));
 			var instance = _abc.DefineEmptyInstance(name, false);
 
 			var getter = instance.CreatePrivateSlot("_getter", AvmTypeCode.Function);

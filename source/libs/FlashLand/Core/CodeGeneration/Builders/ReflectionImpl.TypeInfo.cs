@@ -7,6 +7,7 @@ using System.Linq;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
@@ -25,7 +26,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		private AbcInstance DefineReflectionInstance()
 		{
 			if (_instanceReflection != null) return _instanceReflection;
-			var name = _generator.DefinePfxName("PlayerReflectionData", false);
+			var name = Abc.DefineName(QName.PfxPackage("PlayerReflectionData"));
 			_instanceReflection = Abc.DefineEmptyInstance(name, true);
 			Abc.DefineScript(_instanceReflection);
 			return _instanceReflection;
@@ -109,7 +110,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			instance = FixInstance(instance);
 
-			var name = _generator.DefinePfxName("init_myfields_" + GetMethodSuffix(type));
+			var name = _generator.Abc.DefineName(QName.PfxPublic("init_myfields_" + GetMethodSuffix(type)));
 
 			return instance.DefineMethod(
 				Sig.@static(name, _generator.Corlib.Array.Instance),
@@ -176,7 +177,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				provname = NameDummyCounter.ToString();
 				++NameDummyCounter;
 			}
-			var name = _generator.DefinePfxName("init_custom_attrs_" + provname);
+			var name = _generator.Abc.DefineName(QName.PfxPublic("init_custom_attrs_" + provname));
 
 			return instance.DefineMethod(
 				Sig.@static(name, _generator.Corlib.Array.Instance),
@@ -257,7 +258,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			var provname = ++MethodWrappperCounter;
 			const string prefix = "wrap_";
-			var name = _generator.DefinePfxName(prefix + provname);
+			var name = _generator.Abc.DefineName(QName.PfxPublic(prefix + provname));
 			var instance = abcMethod.Instance;
 			bool addParam = false;
 
@@ -489,7 +490,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			if (ctor)
 				prefix = "init_ctors_";
 
-			var name = _generator.DefinePfxName(prefix + provname);
+			var name = _generator.Abc.DefineName(QName.PfxPublic(prefix + provname));
 
 			var methods =
 				new List<IMethod>(type.Methods.Where(m => m.IsConstructor == ctor && !IsUnsupportedMethod(m)));
@@ -592,7 +593,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				provname = NameDummyCounter.ToString();
 				++NameDummyCounter;
 			}
-			var name = _generator.DefinePfxName("init_properties_" + provname);
+			var name = _generator.Abc.DefineName(QName.PfxPublic("init_properties_" + provname));
 
 			instance = FixInstance(instance);
 
@@ -628,7 +629,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			var EnumInfo = _generator.Corlib.GetInstance(CorlibTypeId.EnumInfo);
 
-			var name = _generator.DefinePfxName("init_enum_info_" + type.GetSigName());
+			var name = _generator.Abc.DefineName(QName.PfxPublic("init_enum_info_" + type.GetSigName()));
 			return enumInstance.DefineMethod(
 				Sig.@static(name, EnumInfo),
 				code =>
@@ -723,7 +724,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			code.SetProperty(Const.Type.NamespaceObject);
 
 			code.GetLocal(varType);
-			code.PushString(InternalTypeExtensions.GetPartialTypeName(type));
+			code.PushString(type.NestedName);
 			code.SetProperty(Const.Type.Name);
 
 			int baseIndex = GetTypeId(type.BaseType);

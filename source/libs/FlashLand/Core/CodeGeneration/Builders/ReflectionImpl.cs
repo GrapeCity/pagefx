@@ -5,6 +5,7 @@ using System.Linq;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
@@ -130,7 +131,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                     return null;
             }
 
-            var name = abc.DefineGlobalQName(Const.GetTypeId);
+	        string name1 = Const.GetTypeId;
+	        var name = abc.DefineName(QName.Global(name1));
             var trait = instance.Traits.FindMethod(name);
             if (trait != null) return trait.Method;
 
@@ -306,7 +308,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			var instance = _generator.Corlib.Assembly.Instance;
 
-            var name = Abc.DefineGlobalQName(Const.InitTypePrefix + typeId);
+	        string name1 = Const.InitTypePrefix + typeId;
+	        var name = Abc.DefineName(QName.Global(name1));
             var method = new AbcMethod();
             var trait = AbcTrait.CreateMethod(method, name);
             instance.AddTrait(trait, false);

@@ -1,4 +1,5 @@
 ﻿using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 {
@@ -20,7 +21,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 		private AbcInstance Build()
 		{
 			var abc = _generator.Abc;
-			var instanceName = abc.DefineName(new PfxQName("elem_ptr"));
+			var instanceName = abc.DefineName(QName.PfxPackage("elem_ptr"));
 			var instance = abc.DefineEmptyInstance(instanceName, false);
 
 			var arrType = _generator.Corlib.Array.Instance;

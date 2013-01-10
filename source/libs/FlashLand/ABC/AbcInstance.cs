@@ -6,6 +6,7 @@ using System.Xml;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
 using DataDynamics.PageFX.FlashLand.IL;
@@ -408,11 +409,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var ns = GetPrivateNamespace();
             return Abc.DefineQName(ns, name);
         }
-
-        //public AbcTrait GetSlot(string name)
-        //{
-        //    return _traits.Find(name);
-        //}
 
         public AbcTrait GetStaticSlot(string name)
         {

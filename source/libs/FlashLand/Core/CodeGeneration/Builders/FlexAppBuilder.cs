@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
@@ -115,7 +116,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
         private void OverrideFlexAppInitialize(AbcInstance instance)
         {
-			var name = Abc.DefineGlobalQName("initialize");
+			var name = Abc.DefineName(QName.Global("initialize"));
     		instance.DefineMethod(
     			Sig.@virtual(name, AvmTypeCode.Void).@override(),
     			code =>
@@ -138,7 +139,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			var moduleFactoryInitialized = instance.DefineSlot("__moduleFactoryInitialized", AvmTypeCode.Boolean);
 			var flexModuleFactoryInterface = _generator.ImportType(MX.IFlexModuleFactory);
 
-			var propertyName = Abc.DefineGlobalQName("moduleFactory");
+			var propertyName = Abc.DefineName(QName.Global("moduleFactory"));
     		instance.DefineMethod(
     			Sig.set(propertyName, flexModuleFactoryInterface).@virtual().@override(),
     			code =>
@@ -213,7 +214,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 						{
 							var styleMgr = _generator.ImportType("mx.styles.StyleManager");
 							code.Getlex(styleMgr);
-							code.CallVoid(Abc.DefineMxInternalName("initProtoChainRoots"), 0);
+							code.CallVoid(Abc.DefineName(QName.MxInternal("initProtoChainRoots")), 0);
 						}
 
 						code.ReturnVoid();

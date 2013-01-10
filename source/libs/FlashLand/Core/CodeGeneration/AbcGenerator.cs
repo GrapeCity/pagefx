@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
 using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
@@ -121,12 +121,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return "";
             }
         }
-
-        public AbcNamespace RootAbcNamespace
-        {
-            get { return _nsroot ?? (_nsroot = Abc.DefinePackage(RootNamespace)); }
-        }
-        private AbcNamespace _nsroot;
 
 	    internal IType SysType(SystemTypeCode typeCode)
 		{
@@ -586,31 +580,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
 
     	#endregion
-
-	    public AbcNamespace PfxNamespace
-		{
-			get
-			{
-				if (_nspfx == null)
-				{
-					string ns = RootNamespace.MakeFullName(Const.Namespaces.PFX);
-					_nspfx = Abc.DefinePackage(ns);
-				}
-				return _nspfx;
-			}
-		}
-		private AbcNamespace _nspfx;
-
-		public AbcMultiname DefinePfxName(string name, bool member)
-		{
-			if (member) return Abc.DefineName(QName.PfxPublic(name));
-			return Abc.DefineQName(PfxNamespace, name);
-		}
-
-		public AbcMultiname DefinePfxName(string name)
-		{
-			return DefinePfxName(name, true);
-		}
 
 	    internal object SetData(ITypeMember member, object data)
 	    {

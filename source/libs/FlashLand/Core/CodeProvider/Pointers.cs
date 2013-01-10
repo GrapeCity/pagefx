@@ -167,7 +167,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             if (!AbcGenConfig.UseActivationTraits)
             {
-                var name = _abc.DefinePfxName("Activation" + MethodIndex);
+                var name = _abc.DefineName(QName.PfxPublic("Activation" + MethodIndex));
                 _activation = _abc.DefineEmptyInstance(name, true);
             }
 
@@ -280,9 +280,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             if (AbcGenConfig.UseActivationTraits)
             {
-                return _abc.DefineQName(_abc.BodyTraitNamespace, name);
+                return _abc.DefineName(QName.BodyTrait(name));
             }
-            return _abc.DefineGlobalQName(name);
+            return _abc.DefineName(QName.Global(name));
         }
 
 		private AbcMultiname DefineMemberType(IType type)
