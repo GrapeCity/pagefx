@@ -51,7 +51,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             Debug.Assert(instance.Abc == Abc);
 
             var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
-			var retType = _generator.MethodBuilder.BuildReturnType(method.Type);
+			var retType = _generator.TypeBuilder.BuildReturnType(method.Type);
 
 	        return instance.DefineMethod(
 		        Sig.@this(thisName, retType, right, "right"),
@@ -89,7 +89,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			var instance = _generator.TypeBuilder.BuildInstance(op.DeclaringType);
 
             var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
-			var retType = _generator.MethodBuilder.BuildReturnType(op.Type);
+			var retType = _generator.TypeBuilder.BuildReturnType(op.Type);
 
 	        return instance.DefineMethod(
 		        Sig.@this(thisName, retType),

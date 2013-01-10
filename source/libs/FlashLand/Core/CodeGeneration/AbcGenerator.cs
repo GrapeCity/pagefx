@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -209,6 +210,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			get { return _fieldBuilder ?? (_fieldBuilder = new FieldBuilder(this)); }
 	    }
 	    private FieldBuilder _fieldBuilder;
+
+	    internal ArrayImpl ArrayImpl
+	    {
+			get { return _arrayImpl ?? (_arrayImpl = new ArrayImpl(this)); }
+	    }
+	    private ArrayImpl _arrayImpl;
 
 		internal NUnitRunner NUnit
 	    {
@@ -577,6 +584,36 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
 
     	#endregion
+
+	    public AbcNamespace PfxNamespace
+		{
+			get
+			{
+				if (_nspfx == null)
+				{
+					string ns = RootNamespace.MakeFullName(Const.Namespaces.PFX);
+					_nspfx = Abc.DefinePackage(ns);
+				}
+				return _nspfx;
+			}
+		}
+		private AbcNamespace _nspfx;
+
+		public AbcMultiname DefinePfxName(string name, bool member)
+		{
+			if (member) return Abc.DefinePfxName(name);
+			return Abc.DefineQName(PfxNamespace, name);
+		}
+
+		public AbcMultiname DefinePfxName(string name)
+		{
+			return DefinePfxName(name, true);
+		}
+
+		public AbcMultiname GetObjectTypeName()
+		{
+			return TypeBuilder.BuildInstance(SystemTypes.Object).Name;
+		}
 
 	    internal object SetData(ITypeMember member, object data)
 	    {

@@ -359,7 +359,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         #endregion
 
 		#region BuildReturnType
-		//TODO: move to TypeBuilder
 
         public AbcMultiname BuildReturnType(AbcMethod abcMethod, IMethod method)
         {
@@ -370,18 +369,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (bm != null)
                 return bm.ReturnType;
 
-            return BuildReturnType(method.Type);
+			return _generator.TypeBuilder.BuildReturnType(method.Type);
         }
 
-        public AbcMultiname BuildReturnType(IType type)
-        {
-            if (type == null)
-                return Abc.BuiltinTypes.Void;
-			var name = _generator.TypeBuilder.BuildMemberType(type);
-            if (name == null)
-                throw new InvalidOperationException("Unable to define return type for method");
-            return name;
-        }
         #endregion
 
 		#region BuildParameters, CopyParameters

@@ -45,6 +45,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			return Abc.GetTypeName(type, true);
 		}
 
+		public AbcMultiname BuildReturnType(IType type)
+		{
+			if (type == null)
+				return Abc.BuiltinTypes.Void;
+			var name = BuildMemberType(type);
+			if (name == null)
+				throw new InvalidOperationException("Unable to define return type for method");
+			return name;
+		}
+
 		#region Build
 		/// <summary>
         /// Defines given type in generated ABC file
@@ -608,7 +618,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	        if (type == null)
 				throw new ArgumentNullException("type");
 
-			_generator.ImplementArrayInterface(type);
+			_generator.ArrayImpl.ImplementInterface(type);
 
             //Define Compiled Interface Methods
             foreach (var iface in instance.Implements)

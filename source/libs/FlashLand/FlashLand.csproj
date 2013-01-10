@@ -130,7 +130,9 @@
     <Compile Include="Core\AvmBuiltinTypes.cs" />
     <Compile Include="Core\AvmConfig.cs" />
     <Compile Include="Core\AvmResolver.cs" />
-    <Compile Include="Core\CodeGeneration\Array.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ArrayICollectionImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ArrayIListImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ArrayImpl.cs" />
     <Compile Include="Core\CodeGeneration\Builders\BoxingImpl.cs" />
     <Compile Include="Core\CodeGeneration\CallResolver.cs" />
     <Compile Include="Core\CodeGeneration\Builders\CastImpl.cs" />

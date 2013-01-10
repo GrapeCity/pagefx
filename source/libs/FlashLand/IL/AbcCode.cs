@@ -2211,7 +2211,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         /// <param name="elemType">element type</param>
         public void NewArray(IType elemType)
         {
-            var m = Generator.NewArray(elemType);
+            var m = Generator.ArrayImpl.NewArray(elemType);
 
             //NOTE:
             //array size must be on stack [..., size]
@@ -2368,7 +2368,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (elemType.IsInt64Based())
             {
-                var m = Generator.DefineSystemArray_GetElemInt64(elemType, item);
+                var m = Generator.ArrayImpl.GetElemInt64(elemType, item);
                 Call(m);
             }
             else
@@ -2405,7 +2405,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         //native AVM array must be onto the stack
         public void InitArray(IType elemType, Action getArr, int varSize)
         {
-            var m = Generator.DefineInitArrayMethod(elemType);
+            var m = Generator.ArrayImpl.InitImpl(elemType);
             if (m == null) return;
 
             Getlex(m);

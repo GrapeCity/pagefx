@@ -132,10 +132,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 					return _generator.Reflection.DefineGetTypeIdMethod(method.DeclaringType, instance);
             }
 
-			return _generator.DefineArrayCtor(method, instance)
-				   ?? _generator.DefineArrayGetter(method, instance)
-				   ?? _generator.DefineArraySetter(method, instance)
-				   ?? _generator.DefineArrayAddress(method, instance);
+			return _generator.ArrayImpl.BuildSpecMethod(method, instance);
         }
 
 	    private delegate AbcMethod MethodDefiner(IMethod method, AbcInstance instance);

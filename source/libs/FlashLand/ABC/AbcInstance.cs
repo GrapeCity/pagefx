@@ -565,10 +565,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			else
 			{
 				//for non initializer method we must define trait and return type
-				var retTypeSource = sig.ReturnType as IMethod;
-				method.ReturnType = retTypeSource != null
-										? generator.MethodBuilder.BuildReturnType(method, retTypeSource)
-					                    : Abc.DefineTypeNameSafe(sig.ReturnType);
+				method.ReturnType = BuildReturnType(sig.ReturnType, method);
 
 				trait = AbcTrait.CreateMethod(method, traitName);
 				trait.Kind = sig.Kind;
@@ -638,6 +635,30 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 							code.ReturnValue();
 						}
 					});
+		}
+
+		private AbcMultiname BuildReturnType(object returnType, AbcMethod method)
+		{
+			if (returnType == null)
+			{
+				return Abc.DefineTypeName(AvmTypeCode.Void);
+			}
+
+			var generator = Abc.Generator;
+
+			var source = returnType as IMethod;
+			if (source != null)
+			{
+				return generator.MethodBuilder.BuildReturnType(method, source);
+			}
+
+			var type = returnType as IType;
+			if (type != null)
+			{
+				return generator.TypeBuilder.BuildReturnType(type);
+			}
+
+			return Abc.DefineTypeNameSafe(returnType);
 		}
 
 		#endregion

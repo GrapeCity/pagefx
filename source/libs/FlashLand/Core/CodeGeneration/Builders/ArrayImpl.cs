@@ -9,20 +9,34 @@
 
 using System;
 using DataDynamics.PageFX.Common;
-using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 using DataDynamics.PageFX.FlashLand.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-    internal partial class AbcGenerator
+    internal sealed class ArrayImpl
     {
-        #region DefineArrayCtor
-        internal AbcMethod DefineArrayCtor(IMethod method, AbcInstance instance)
+	    private readonly AbcGenerator _generator;
+
+	    public ArrayImpl(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    private SystemTypes SystemTypes
+	    {
+			get { return _generator.SystemTypes; }
+	    }
+
+	    private AbcMethod BuildCtorImpl(IMethod method, AbcInstance instance)
         {
             if (!method.IsConstructor) return null;
             if (method.IsStatic) return null;
@@ -33,7 +47,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         	           	{
         	           		ReturnType = Abc[AvmTypeCode.Void]
         	           	};
-			MethodBuilder.BuildParameters(ctor, method);
+			_generator.MethodBuilder.BuildParameters(ctor, method);
 
             var name = Abc.DefineGlobalQName("arrctor_" + type.GetSigName());
             var trait = AbcTrait.CreateMethod(ctor, name);
@@ -55,7 +69,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 code.GetLocal(i + 1);
                 code.PushInt(0);
                 var br = code.If(BranchOperator.GreaterThanOrEqual);
-				var exceptionType = Corlib.GetType(CorlibTypeId.ArgumentOutOfRangeException);
+				var exceptionType = _generator.Corlib.GetType(CorlibTypeId.ArgumentOutOfRangeException);
                 code.ThrowException(exceptionType);
                 br.BranchTarget = code.Label();
             }
@@ -120,7 +134,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             code.SetProperty(Const.Array.Dims);
 
             var elemType = type.GetElementType();
-            InitArrayFields(code, type, elemType, 0);
+            InitFields(code, type, elemType, 0);
 
             if (InternalTypeExtensions.IsInitArray(elemType))
             {
@@ -138,21 +152,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             return ctor;
         }
-        #endregion
 
-        #region NewArray / 1D Array
+		private AbcInstance Instance
+		{
+			get { return _generator.Corlib.Array.Instance; }
+		}
+
+	    #region NewArray / 1D Array
         private AbcMethod CreateSystemArraySZ()
         {
-            var instance = Corlib.Array.Instance;
-
-            return instance.DefineMethod(
-				Sig.@static("__create_sz_array__", instance.Name, AvmTypeCode.Int32, "size"),
+	        return Instance.DefineMethod(
+				Sig.@static("__create_sz_array__", Instance.Name, AvmTypeCode.Int32, "size"),
                 code =>
                     {
                         const int varSize = 1;
                         const int varArray = 2;
 
-                        code.CreateInstance(instance);
+                        code.CreateInstance(Instance);
                         code.SetLocal(varArray);
 
                         code.GetLocal(varArray);
@@ -169,21 +185,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     });
         }
 
-        /// <summary>
+	    /// <summary>
         /// Creates single-dimensional array with given element type.
         /// </summary>
         /// <param name="elemType"></param>
         /// <returns></returns>
         public AbcMethod NewArray(IType elemType)
         {
-			TypeBuilder.Build(elemType);
+			_generator.TypeBuilder.Build(elemType);
 
-			var instance = Corlib.Array.Instance;
+		    var name = Abc.DefineGlobalQName("newarr_" + elemType.GetSigName());
 
-            var name = Abc.DefineGlobalQName("newarr_" + elemType.GetSigName());
-
-	        return instance.DefineMethod(
-		        Sig.@static(name, instance.Name, AvmTypeCode.Int32, "size"),
+	        return Instance.DefineMethod(
+		        Sig.@static(name, Instance.Name, AvmTypeCode.Int32, "size"),
 		        code =>
 			        {
 				        const int varSize = 1; //size argument
@@ -195,7 +209,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				        code.Call(m);
 				        code.SetLocal(varArray);
 
-				        InitArrayFields(code, elemType, varArray);
+				        InitFields(code, elemType, varArray);
 
 				        if (InternalTypeExtensions.IsInitArray(elemType))
 				        {
@@ -231,8 +245,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             code.Call(ArrayMethodId.ToFlatIndex);
         }
 
-        #region DefineArrayGetter
-        internal AbcMethod DefineArrayGetter(IMethod method, AbcInstance instance)
+	    private AbcMethod BuildGetterImpl(IMethod method, AbcInstance instance)
         {
             if (method.IsStatic) return null;
             var type = method.DeclaringType;
@@ -240,7 +253,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (method.Name != CLRNames.Array.Getter) return null;
 
             //string name = "Get" + NameUtil.GetParamsString(method);
-			var name = MethodBuilder.DefineQName(method);
+			var name = _generator.MethodBuilder.DefineQName(method);
 	        return instance.DefineMethod(
 		        Sig.@this(name, method.Type, method),
 		        code =>
@@ -251,17 +264,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				        code.ReturnValue();
 			        });
         }
-        #endregion
 
-        #region DefineArraySetter
-        internal AbcMethod DefineArraySetter(IMethod method, AbcInstance instance)
+	    private AbcMethod BuildSetterImpl(IMethod method, AbcInstance instance)
         {
             if (method.IsStatic) return null;
             var type = method.DeclaringType;
             if (!type.IsArray) return null;
             if (method.Name != CLRNames.Array.Setter) return null;
 
-			var name = MethodBuilder.DefineQName(method);
+			var name = _generator.MethodBuilder.DefineQName(method);
 	        return instance.DefineMethod(
 		        Sig.@this(name, method.Type, method),
 		        code =>
@@ -274,17 +285,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				        code.ReturnVoid();
 			        });
         }
-        #endregion
 
-        #region DefineArrayAddress
-        internal AbcMethod DefineArrayAddress(IMethod method, AbcInstance instance)
+	    private AbcMethod BuildAddressImpl(IMethod method, AbcInstance instance)
         {
             if (method.IsStatic) return null;
             var type = method.DeclaringType;
             if (!type.IsArray) return null;
             if (method.Name != CLRNames.Array.Address) return null;
 
-            var elemPtr = Pointers.ElemPtr.Instance;
+			var elemPtr = _generator.Pointers.ElemPtr.Instance;
 
             string name = "GetAddr_" + method.GetParametersSignature(Runtime.Avm);
 
@@ -299,37 +308,36 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				        code.ReturnValue();
 			        });
         }
-        #endregion
-        #endregion
 
-        #region InitArrayFields
-        private AbcMethod GetArrayBoxMethod(IType elemType)
+	    #endregion
+
+	    private AbcMethod GetBoxMethod(IType elemType)
         {
-			var m = Boxing.Box(elemType);
+			var m = _generator.Boxing.Box(elemType);
             if (m != null) return m;
-            return CopyImpl.With(this).StaticCopy(elemType);
+            return CopyImpl.With(_generator).StaticCopy(elemType);
         }
 
-        private AbcMethod GetArrayUnboxMethod(IType elemType)
+        private AbcMethod GetUnboxMethod(IType elemType)
         {
-			var m = Boxing.Unbox(elemType, false);
+			var m = _generator.Boxing.Unbox(elemType, false);
             if (m != null) return m;
-            return CopyImpl.With(this).StaticCopy(elemType);
+            return CopyImpl.With(_generator).StaticCopy(elemType);
         }
 
-        public void InitArrayFields(AbcCode code, IType type, IType elemType, Action getArr)
+		private void InitFields(AbcCode code, IType type, IType elemType, Action getArr)
         {
             if (getArr == null)
                 throw new ArgumentNullException("getArr");
 
-            int typeIndex = Reflection.GetTypeId(type);
+			int typeIndex = _generator.Reflection.GetTypeId(type);
 
             getArr();
             
             code.PushInt(typeIndex);
             code.SetProperty("m_type");
 
-            var box = GetArrayBoxMethod(elemType);
+            var box = GetBoxMethod(elemType);
             if (box != null)
             {
                 getArr();
@@ -337,7 +345,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 code.SetProperty("m_box");
             }
 
-            var unbox = GetArrayUnboxMethod(elemType);
+            var unbox = GetUnboxMethod(elemType);
             if (unbox != null)
             {
                 getArr();
@@ -346,27 +354,28 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
         }
 
-        public void InitArrayFields(AbcCode code, IType elemType, Action getArr)
+		private void InitFields(AbcCode code, IType elemType, Action getArr)
         {
-            var arrType = TypeFactory.MakeArray(elemType);
-            InitArrayFields(code, arrType, elemType, getArr);
+			var arrType = _generator.TypeFactory.MakeArray(elemType);
+            InitFields(code, arrType, elemType, getArr);
         }
 
-        public void InitArrayFields(AbcCode code, IType elemType, int varArray)
+		private void InitFields(AbcCode code, IType elemType, int varArray)
         {
-            InitArrayFields(code, elemType,
-                            () => code.GetLocal(varArray));
+            InitFields(code, elemType, () => code.GetLocal(varArray));
         }
 
-        public void InitArrayFields(AbcCode code, IType type, IType elemType, int varArray)
+        private void InitFields(AbcCode code, IType type, IType elemType, int varArray)
         {
-            InitArrayFields(code, type, elemType,
-                            () => code.GetLocal(varArray));
+            InitFields(code, type, elemType, () => code.GetLocal(varArray));
         }
-        #endregion
 
-        #region DefineSystemArray_GetElemInt64
-        public AbcMethod DefineSystemArray_GetElemInt64(IType elemType, bool item)
+		private AbcMultiname BuildReturnType(IType type)
+		{
+			return _generator.TypeBuilder.BuildReturnType(type);
+		}
+
+	    public AbcMethod GetElemInt64(IType elemType, bool item)
         {
             if (elemType == null)
                 throw new ArgumentNullException("elemType");
@@ -377,15 +386,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (elemType.IsEnum)
                 elemType = elemType.ValueType;
 
-			var instance = Corlib.Array.Instance;
-
-            string name = (item ? "get_item_"  : "get_elem_") + elemType.GetSigName();
-			var elemTypeName = MethodBuilder.BuildReturnType(elemType);
+		    string name = (item ? "get_item_"  : "get_elem_") + elemType.GetSigName();
+			var elemTypeName = BuildReturnType(elemType);
 			var oppositeType = elemType.Is(SystemTypeCode.Int64) ? SystemTypes.UInt64 : SystemTypes.Int64;
-			var oppositeTypeName = MethodBuilder.BuildReturnType(oppositeType);
+			var oppositeTypeName = BuildReturnType(oppositeType);
 
-	        return instance.DefineMethod(
-		        Sig.@this(name, elemTypeName, AvmTypeCode.Int32, "index"),
+	        return Instance.DefineMethod(
+				Sig.@this(name, elemTypeName, AvmTypeCode.Int32, "index"),
 		        code =>
 			        {
 				        const int index = 1;
@@ -427,20 +434,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				        code.ReturnValue();
 			        });
         }
-        #endregion
 
-        #region ImplementArrayInterfaces, ImplementArrayInterface
-        static void ImplementArrayInterface(IType iface, Action<IMethod, AbcMethod> methodImpl)
-        {
-            foreach (var method in iface.Methods)
-            {
-                var abcMethod = method.AbcMethod();
-                if (abcMethod != null)
-                    methodImpl(method, abcMethod);
-            }
-        }
-
-        internal void ImplementArrayInterface(IType type)
+	    internal void ImplementInterface(IType type)
         {
             if (type == null) return;
             if (!type.IsInterface) return;
@@ -456,218 +451,63 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     {
                         var elemType = type.GetTypeArgument(0);
                         elemType.HasIEnumerableInstance = true;
-                        DefineArrayGetEnumerator(elemType);
+                        GetEnumeratorImpl(elemType);
                     }
                     break;
 
                 case CLRNames.Types.ICollectionT:
-                    ImplementArrayInterface(type, ImplementArrayICollectionMethod);
+                    ArrayICollectionImpl.Implement(Instance, type);
                     break;
 
                 case CLRNames.Types.IListT:
-                    ImplementArrayInterface(type, ImplementArrayIListMethod);
+					ArrayIListImpl.Implement(Instance, type);
                     break;
             }
         }
-        #endregion
 
-        #region DefineArrayGetEnumerator
-        void DefineArrayGetEnumerator(IType elemType)
+	    private void GetEnumeratorImpl(IType elemType)
         {
-			var IEnumerable = Corlib.MakeIEnumerable(elemType);
-            TypeBuilder.BuildInstance(IEnumerable);
-            var ifaceMethod = IEnumerable.Methods[0];
-			var ifaceAbcMethod = MethodBuilder.BuildAbcMethod(ifaceMethod);
-			var arrayInstance = Corlib.Array.Instance;
+			var iface = _generator.Corlib.MakeIEnumerable(elemType);
+			_generator.TypeBuilder.BuildInstance(iface);
+            var ifaceMethod = iface.Methods[0];
+			var ifaceAbcMethod = _generator.MethodBuilder.BuildAbcMethod(ifaceMethod);
 
-	        arrayInstance.DefineMethod(
+		    Instance.DefineMethod(
 		        Sig.@from(ifaceAbcMethod),
 		        code =>
 			        {
-				        var ArrayEnumerator = DefineArrayEnumerator(elemType);
-				        var ctor = ArrayEnumerator.FindConstructor(1);
+				        var implType = BuildArrayEnumerator(elemType);
+				        var ctor = implType.FindConstructor(1);
 				        code.NewObject(ctor, () => code.LoadThis());
 				        code.ReturnValue();
 			        });
         }
 
-        IType DefineArrayEnumerator(IType elemType)
+        private IType BuildArrayEnumerator(IType elemType)
         {
-			var ArrayEnumerator = TypeFactory.MakeGenericType(Corlib.GetType(GenericTypeId.ArrayEnumeratorT), elemType);
-			TypeBuilder.BuildInstance(ArrayEnumerator);
-            foreach (var method in ArrayEnumerator.Methods)
-				MethodBuilder.BuildAbcMethod(method);
-            return ArrayEnumerator;
-        }
-        #endregion
-
-        #region ICollection<T> Implementation in Array
-        void ImplementArrayICollectionMethod(IMethod im, AbcMethod am)
-        {
-            switch (im.Name)
-            {
-                case "get_Count":
-					Corlib.Array.Instance.DefineMethod(
-			            Sig.@from(am),
-			            code =>
-				            {
-					            code.LoadThis();
-					            code.Call(ArrayMethodId.GetLength);
-					            code.ReturnValue();
-				            });
-                    break;
-
-                case "get_IsReadOnly":
-					Corlib.Array.Instance.DefineMethod(
-			            Sig.@from(am),
-			            code =>
-				            {
-					            code.PushBool(true);
-					            code.ReturnValue();
-				            });
-                    break;
-
-                case "Add":
-                case "Remove":
-                case "Clear":
-					Corlib.Array.Instance.DefineMethod(
-			            Sig.@from(am),
-			            code => code.ThrowException(CorlibTypeId.NotSupportedException));
-                    break;
-
-                case "CopyTo":
-					Corlib.Array.Instance.DefineMethod(
-			            Sig.@from(am),
-			            code =>
-				            {
-					            code.LoadThis();
-					            code.GetLocal(1);
-					            code.GetLocal(2);
-					            code.Call(ArrayMethodId.CopyTo);
-					            code.ReturnVoid();
-				            });
-                    break;
-
-                case "Contains":
-					Corlib.Array.Instance.DefineMethod(
-			            Sig.@from(am),
-			            code =>
-				            {
-					            code.LoadThis();
-					            var type = im.Parameters[0].Type;
-					            code.BoxVariable(type, 1);
-					            code.Call(ArrayMethodId.Contains);
-					            code.ReturnValue();
-				            });
-                    break;
-            }
-        }
-        #endregion
-
-        #region IList<T> Implementation in Array
-        private void ImplementArrayIListMethod(IMethod im, AbcMethod am)
-        {
-            switch (im.Name)
-            {
-                case "RemoveAt":
-                case "Insert":
-					Corlib.Array.Instance.DefineMethod(
-			            Sig.@from(am),
-			            code => code.ThrowException(CorlibTypeId.NotSupportedException));
-                    break;
-
-                case "IndexOf":
-					Corlib.Array.Instance.DefineMethod(
-			            Sig.@from(am),
-			            code =>
-				            {
-					            code.LoadThis();
-					            var type = im.Parameters[0].Type;
-					            code.BoxVariable(type, 1);
-					            code.Call(ArrayMethodId.IndexOf);
-					            code.ReturnValue();
-				            });
-                    break;
-
-                case "get_Item":
-					Corlib.Array.Instance.DefineMethod(
-			            Sig.@from(am),
-			            code =>
-				            {
-					            var type = im.DeclaringType.GetTypeArgument(0);
-					            code.LoadThis();
-					            code.GetLocal(1);
-					            code.GetArrayElem(type, true);
-					            code.ReturnValue();
-				            });
-                    break;
-
-                case "set_Item":
-					Corlib.Array.Instance.DefineMethod(
-			            Sig.@from(am),
-			            code =>
-				            {
-					            code.LoadThis();
-					            code.GetLocal(1);
-					            code.GetLocal(2);
-					            code.SetArrayElem(true);
-					            code.ReturnVoid();
-				            });
-                    break;
-            }
-        }
-        #endregion
-
-        #region Utils
-        public AbcNamespace PfxNamespace
-        {
-            get
-            {
-                if (_nspfx == null)
-                {
-                    string ns = RootNamespace.MakeFullName(Const.Namespaces.PFX);
-                    _nspfx = Abc.DefinePackage(ns);
-                }
-                return _nspfx;
-            }
-        }
-        private AbcNamespace _nspfx;
-
-        public AbcMultiname DefinePfxName(string name, bool member)
-        {
-            if (member) return Abc.DefinePfxName(name);
-            return Abc.DefineQName(PfxNamespace, name);
+			var type = _generator.Corlib.MakeInstance(GenericTypeId.ArrayEnumeratorT, elemType);
+			_generator.TypeBuilder.BuildInstance(type);
+            foreach (var method in type.Methods)
+				_generator.MethodBuilder.BuildAbcMethod(method);
+            return type;
         }
 
-        public AbcMultiname DefinePfxName(string name)
-        {
-            return DefinePfxName(name, true);
-        }
-
-        public AbcMultiname GetObjectTypeName()
-        {
-			return TypeBuilder.BuildInstance(SystemTypes.Object).Name;
-        }
-        #endregion
-
-        #region InitArray Methods
-        public AbcMethod DefineInitArrayMethod(IType elemType)
+	    #region InitArray Methods
+        public AbcMethod InitImpl(IType elemType)
         {
             if (!InternalTypeExtensions.IsInitArray(elemType)) return null;
 
             if (elemType.IsEnum)
                 elemType = elemType.ValueType;
 
-			var instance = Corlib.Array.Instance;
-
-            string name = "init_" + elemType.GetSigName();
-	        return instance.DefineMethod(
+	        string name = "init_" + elemType.GetSigName();
+	        return Instance.DefineMethod(
 		        Sig.@static(name, AvmTypeCode.Void,
 		                         AvmTypeCode.Array, "arr",
 		                         AvmTypeCode.Int32, "size"),
 		        code =>
 			        {
-				        var init = DefineInitArrayMethod();
+				        var init = InitImpl();
 				        var f = DefineInitObjectMethod(elemType);
 
 				        code.LoadThis();
@@ -680,11 +520,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			        });
         }
 
-        private AbcMethod DefineInitArrayMethod()
+        private AbcMethod InitImpl()
         {
-			var instance = Corlib.Array.Instance;
-
-	        return instance.DefineMethod(
+	        return Instance.DefineMethod(
 		        Sig.@static("init_core", AvmTypeCode.Void,
 		                         AvmTypeCode.Array, "arr",
 		                         AvmTypeCode.Int32, "size",
@@ -720,18 +558,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			        });
         }
 
-        AbcMethod DefineInitObjectMethod(IType type)
+        private AbcMethod DefineInitObjectMethod(IType type)
         {
-			var instance = TypeBuilder.BuildInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
             AbcMultiname name;
             if (instance.IsNative)
             {
-				instance = Corlib.Object.Instance;
-	            name = DefinePfxName("initobj_" + type.GetSigName());
+				instance = _generator.Corlib.Object.Instance;
+	            name = _generator.DefinePfxName("initobj_" + type.GetSigName());
             }
             else
             {
-                name = DefinePfxName("initobj");
+				name = _generator.DefinePfxName("initobj");
             }
 	        return instance.DefineMethod(
 		        Sig.@static(name, AvmTypeCode.Object),
@@ -743,5 +581,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
+		public AbcMethod BuildSpecMethod(IMethod method, AbcInstance instance)
+		{
+			return BuildCtorImpl(method, instance)
+				   ?? BuildGetterImpl(method, instance)
+				   ?? BuildSetterImpl(method, instance)
+				   ?? BuildAddressImpl(method, instance);
+		}
     }
 }
