@@ -61,6 +61,31 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
     internal class QName
     {
+		public static QName Global(string name)
+		{
+			return new QName(name, KnownNamespace.Global);
+		}
+
+		public static QName AS3(string name)
+		{
+			return new QName(name, KnownNamespace.AS3);
+		}
+
+		public static QName MxInternal(string name)
+		{
+			return new QName(name, KnownNamespace.MxInternal);
+		}
+
+	    public static QName PfxPackage(string name)
+	    {
+		    return new QName(name, KnownNamespace.PfxPackage);
+	    }
+
+		public static QName PfxPublic(string name)
+		{
+			return new QName(name, KnownNamespace.PfxPublic);
+		}
+
 	    private readonly KnownNamespace _knownNamespace;
 	    private readonly Namespace _namespace;
 
@@ -96,20 +121,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
 			var ns = _namespace != null ? _namespace.Define(abc) : abc.DefineNamespace(_knownNamespace);
             return abc.DefineQName(ns, Name);
-        }
-    }
-
-    internal sealed class PfxQName : QName
-    {
-        public PfxQName(string name) : base(name, KnownNamespace.PfxPackage)
-        {
-        }
-    }
-
-    internal sealed class AS3QName : QName
-    {
-        public AS3QName(string name) : base(name, KnownNamespace.AS3)
-        {
         }
     }
 }

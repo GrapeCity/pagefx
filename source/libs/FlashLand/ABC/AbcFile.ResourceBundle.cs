@@ -250,7 +250,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 var name = DefineAssetName(context, "embedded_image_");
                 var instance = _embedAssetInstances[name] as AbcInstance;
                 if (instance != null) return instance;
-                var mn = DefinePfxName(name);
+                var mn = DefineName(QName.PfxPublic(name));
                 instance = Generator.EmbeddedAssets.BuildBitmapAsset(mn, image, jpeg);
                 _embedAssetInstances[name] = instance;
                 return instance;

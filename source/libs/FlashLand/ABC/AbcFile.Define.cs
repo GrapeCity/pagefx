@@ -297,29 +297,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             get { return DefineNamespace(KnownNamespace.BodyTrait); }
         }
 
-        /// <summary>
-        /// Returns MX internal namespace.
-        /// </summary>
-        public AbcNamespace NamespaceMxInternal
-        {
-            get { return DefineNamespace(KnownNamespace.MxInternal); }
-        }
-
-        public AbcNamespace NamespaceAS3
-        {
-            get { return DefineNamespace(KnownNamespace.AS3); }
-        }
-
-        public AbcNamespace PfxPackage
-        {
-            get { return DefineNamespace(KnownNamespace.PfxPackage); }
-        }
-
-        public AbcNamespace PfxPublicNamespace
-        {
-            get { return DefineNamespace(KnownNamespace.PfxPublic); }
-        }
-        #endregion
+	    #endregion
 
         #region Namespaces
         /// <summary>
@@ -681,19 +659,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <returns></returns>
         public AbcMultiname DefineGlobalQName(string name)
         {
-            return DefineQName(GlobalPackage, name);
+            return DefineName(QName.Global(name));
         }
 
-        public AbcMultiname DefineMxInternalName(string name)
-        {
-            return DefineQName(NamespaceMxInternal, name);
-        }
-
-        public AbcMultiname DefineAS3Name(string name)
-        {
-            return DefineQName(NamespaceAS3, name);
-        }
-        #endregion
+	    #endregion
 
         #region DefineName
         public AbcMultiname DefineName(object name)
@@ -846,16 +815,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
         #endregion
 
-        #region PageFX Names
-
-        public AbcMultiname DefinePfxName(string name)
-        {
-            return DefineQName(PfxPublicNamespace, name);
-        }
-		
-        #endregion
-
-        #region Method Definitions
+	    #region Method Definitions
         #region DefineEmptyMethod
         public AbcMethod DefineEmptyMethod(bool pushThisScope)
         {

@@ -423,7 +423,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                                Name = _generator.DefinePfxName(GetEnumName(st), false),
                                BaseTypeName = super.Name,
                                BaseInstance = super,
-							   Initializer = _generator.DefineDefaultInitializer(null)
+							   Initializer = Initializers.BuildDefaultInitializer(Abc, null)
                            };
 	        Abc.AddInstance(instance);
 
@@ -557,7 +557,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 DefineFields(type);
             }
 
-			_generator.EnshureInitializers(instance);
+			Initializers.EnshureInitializers(instance);
 
             //DefineCompiledMethods(type);
             DefineExposedMethods(type);

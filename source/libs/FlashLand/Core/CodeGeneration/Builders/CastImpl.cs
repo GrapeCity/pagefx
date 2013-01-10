@@ -35,7 +35,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             string name = "as_";
             if (me) name += "me";
             else name += type.GetSigName();
-            return Abc.DefinePfxName(name);
+            return Abc.DefineName(QName.PfxPublic(name));
         }
 
 		private AbcMultiname GetCastMethodName(IType type, bool me)
@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             string name = "cast_to_";
             if (me) name += "me";
             else name += type.GetSigName();
-            return Abc.DefinePfxName(name);
+            return Abc.DefineName(QName.PfxPublic(name));
         }
 
         public AbcMethod CastToImpl(IType type, bool cast)

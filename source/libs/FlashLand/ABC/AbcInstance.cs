@@ -7,6 +7,7 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
 using DataDynamics.PageFX.FlashLand.IL;
 using DataDynamics.PageFX.FlashLand.Swc;
 using DataDynamics.PageFX.FlashLand.Swf;
@@ -240,6 +241,11 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         }
 
 	    public AbcFile Abc { get; set; }
+
+		internal AbcGenerator Generator
+		{
+			get { return Abc != null ? Abc.Generator : null; }
+		}
 
 	    public AbcNamespace ProtectedNamespace { get; set; }
 

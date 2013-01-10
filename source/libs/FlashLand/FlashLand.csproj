@@ -147,9 +147,8 @@
     <Compile Include="Core\CodeGeneration\Corlib\TypeImpl.cs" />
     <Compile Include="Core\CodeGeneration\Builders\DelegatesImpl.cs" />
     <Compile Include="Core\CodeGeneration\Builders\EmbeddedAssetBuilder.cs" />
-    <Compile Include="Core\CodeGeneration\Errors.cs" />
     <Compile Include="Core\CodeGeneration\Builders\FieldBuilder.cs" />
-    <Compile Include="Core\CodeGeneration\Initializers.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\Initializers.cs" />
     <Compile Include="Core\CodeGeneration\Builders\CopyImpl.cs" />
     <Compile Include="Core\CodeGeneration\AbcGenerator.cs" />
     <Compile Include="Core\CodeGeneration\Builders\MethodBuilder.cs" />

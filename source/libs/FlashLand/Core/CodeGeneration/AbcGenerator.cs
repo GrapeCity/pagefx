@@ -1,10 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.NUnit;
-using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
@@ -15,8 +15,10 @@ using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 {
-    //main part of generator - contains entry point to the generator.
-    internal partial class AbcGenerator : IDisposable
+    /// <summary>
+	/// Implements <see cref="AbcFile"/> generation.
+    /// </summary>
+    internal sealed class AbcGenerator : IDisposable
     {
         #region Shared Members
         public static AbcFile ToAbcFile(IAssembly assembly)
@@ -601,18 +603,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 		public AbcMultiname DefinePfxName(string name, bool member)
 		{
-			if (member) return Abc.DefinePfxName(name);
+			if (member) return Abc.DefineName(QName.PfxPublic(name));
 			return Abc.DefineQName(PfxNamespace, name);
 		}
 
 		public AbcMultiname DefinePfxName(string name)
 		{
 			return DefinePfxName(name, true);
-		}
-
-		public AbcMultiname GetObjectTypeName()
-		{
-			return TypeBuilder.BuildInstance(SystemTypes.Object).Name;
 		}
 
 	    internal object SetData(ITypeMember member, object data)
@@ -635,5 +632,52 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 		}
 
 	    private readonly List<ITypeMember> _taggedMembers = new List<ITypeMember>();
+
+		public void CheckEmbedAsset(IField field)
+		{
+			Debug.Assert(field.HasEmbedAttribute());
+
+			if (!field.IsStatic)
+				throw Errors.EmbedAsset.FieldIsNotStatic.CreateException(field.Name);
+
+			if (!IsSwf)
+				throw Errors.EmbedAsset.NotFlashRuntime.CreateException();
+		}
+
+		private int PlayerVersion
+		{
+			get
+			{
+				if (SwfCompiler != null)
+					return SwfCompiler.PlayerVersion;
+				return -1;
+			}
+		}
+
+		public void CheckApiCompatibility(ITypeMember m)
+		{
+			if (m == null) return;
+			if (!IsSwf) return;
+
+			int v = m.GetPlayerVersion();
+			if (v < 0) return;
+
+			if (v > PlayerVersion)
+			{
+				var method = m as IMethod;
+				if (method != null)
+				{
+					CompilerReport.Add(Errors.ABC.IncompatibleCall, method.GetFullName(), v);
+					return;
+				}
+
+				var f = m as IField;
+				if (f != null)
+				{
+					CompilerReport.Add(Errors.ABC.IncompatibleField, f.GetFullName(), v);
+					return;
+				}
+			}
+		}
     }
 }

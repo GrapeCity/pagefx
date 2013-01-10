@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             var copy = Copy(instance);
             if (copy == null) return null;
 
-			var name = _generator.Abc.DefinePfxName("__static_copy__");
+			var name = _generator.Abc.DefineName(QName.PfxPublic("__static_copy__"));
 
 	        return instance.DefineMethod(
 		        Sig.@static(name, instance.Name, instance.Name, "value"),
@@ -59,7 +59,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (type == null) return null;
             if (!InternalTypeExtensions.HasCopy(type)) return null;
 
-			var name = _generator.Abc.DefinePfxName("__copy__");
+			var name = _generator.Abc.DefineName(QName.PfxPublic("__copy__"));
 
             return instance.DefineMethod(
                 Sig.@this(name, instance.Name),
@@ -92,7 +92,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             var type = instance.Type;
             if (!InternalTypeExtensions.HasCopy(type)) return null;
 
-			var name = _generator.Abc.DefinePfxName("__copy_from__");
+			var name = _generator.Abc.DefineName(QName.PfxPublic("__copy_from__"));
 
 	        return instance.DefineMethod(
 		        Sig.@this(name, AvmTypeCode.Void, instance.Name, "value"),
