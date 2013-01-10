@@ -7,15 +7,28 @@ using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeProvider;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
-	//Contains generation of AbcMethod
-    //Key method (entry point): DefineMethod
-    internal partial class AbcGenerator
+	/// <summary>
+	/// Implements generation of <see cref="AbcMethod"/> from <see cref="IMethod"/>.
+	/// </summary>
+    internal sealed class MethodBuilder
     {
-        #region Signature
+	    private readonly AbcGenerator _generator;
 
-        private AbcMultiname DefineQName(IMethod method)
+	    public MethodBuilder(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    #region Signature
+
+        public AbcMultiname DefineQName(IMethod method)
         {
 			string name = method.GetSigName(Runtime.Avm);
             return Abc.DefineQName(method, name);
@@ -63,7 +76,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private AbcMultiname GetDefinedMethodName(IMethod method)
         {
-            var tag = DefineMethod(method);
+            var tag = Build(method);
 
             var m = tag as AbcMethod;
             if (m != null)
@@ -111,8 +124,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         #endregion
 
-        #region ImportMethod
-        private object ImportMethod(AbcMethod method)
+		#region Import
+		private object Import(AbcMethod method)
         {
             if (method.IsNative)
                 return method;
@@ -146,23 +159,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return method;
         }
 
-        private object ImportMethod(IMethod method)
+        private object Import(IMethod method)
         {
             var tag = method.Data;
             if (tag == null) return null;
             var m = tag as AbcMethod;
             if (m != null)
             {
-                tag = ImportMethod(m);
-                DefineOverrideMethods(method, tag as AbcMethod);
+                tag = Import(m);
+                BuildOverrideMethods(method, tag as AbcMethod);
                 return tag;
             }
             throw new InvalidOperationException();
         }
         #endregion
 
-        #region DefineMethod
-        private object IsDefined(IMethod method)
+		#region Build
+		private object IsDefined(IMethod method)
         {
             if (Abc.IsDefined(method))
             {
@@ -188,7 +201,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         /// </summary>
         /// <param name="method">method to define.</param>
         /// <returns></returns>
-        public object DefineMethod(IMethod method)
+        public object Build(IMethod method)
         {
             if (method == null) return null;
 
@@ -199,25 +212,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (tag != null) return tag;
 
 			var type = method.DeclaringType;
-			TypeBuilder.Build(type);
+			_generator.TypeBuilder.Build(type);
 
             tag = IsDefined(method);
             if (tag != null) return tag;
 
-            CheckApiCompatibility(method);
+			_generator.CheckApiCompatibility(method);
 
-            tag = ImportMethod(method);
+            tag = Import(method);
             if (tag != null) return tag;
 
-            tag = CallResolver.Resolve(method);
+			tag = _generator.CallResolver.Resolve(method);
             if (tag != null) return tag;
 
-            DefineBaseMethods(method);
+            BuildBaseMethods(method);
 
             //Define method signature types.
-			TypeBuilder.Build(method.Type);
+			_generator.TypeBuilder.Build(method.Type);
             foreach (var p in method.Parameters)
-				TypeBuilder.Build(p.Type);
+				_generator.TypeBuilder.Build(p.Type);
 
             tag = IsDefined(method);
             if (tag != null) return tag;
@@ -227,7 +240,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             DebugService.LogInfo("ABC DefineMethod started for method: {0}", method);
 #endif
 
-            var abcMethod = DefineMethodCore(method);
+            var abcMethod = BuildCore(method);
 
 #if DEBUG
             DebugService.LogInfo("ABC DefineMethod succeded for method: {0}", method);
@@ -236,13 +249,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineMethodCore
-        /// <summary>
+		#region BuildCore
+		/// <summary>
         /// Defines ABC method from managed method with normal body.
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        private AbcMethod DefineMethodCore(IMethod method)
+        private AbcMethod BuildCore(IMethod method)
         {
 	        if (method.Data is AbcMethod)
 			{
@@ -284,7 +297,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			if (isMxAppCtor)
 			{
 				//HACK: Define mx.core.FlexEvent argument for MX app ctor
-				var typeFlexEvent = FlexAppBuilder.FlexEventType();
+				var typeFlexEvent = _generator.FlexAppBuilder.FlexEventType();
 				sig.Args = new object[] {typeFlexEvent.Name, "e"};
 			}
 
@@ -295,9 +308,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 		private void CompleteMethod(AbcInstance instance, IMethod method, AbcMethod abcMethod)
 		{
-			DefineMethodBody(abcMethod);
-			DefineImplementedMethods(method, instance, abcMethod);
-			DefineOverrideMethods(method, abcMethod);
+			BuildBody(abcMethod);
+			BuildImplementedMethods(method, instance, abcMethod);
+			BuildOverrideMethods(method, abcMethod);
 			ImplementProtoMethods(method, abcMethod);
 		}
 
@@ -305,18 +318,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private void ImplementProtoMethods(IMethod method, AbcMethod abcMethod)
         {
-            StringPrototypes.Implement(method);
-            ObjectPrototypes.Implement(method, abcMethod);
+			_generator.StringPrototypes.Implement(method);
+			_generator.ObjectPrototypes.Implement(method, abcMethod);
         }
 
-        #region DefineImplementedMethods
+		#region BuildImplementedMethods
 		/// <summary>
 		/// Compiles <see cref="IMethod.Implements"/> methods.
 		/// </summary>
 		/// <param name="method"></param>
 		/// <param name="instance"></param>
 		/// <param name="abcMethod"></param>
-        private void DefineImplementedMethods(IMethod method, AbcInstance instance, AbcMethod abcMethod)
+        private void BuildImplementedMethods(IMethod method, AbcInstance instance, AbcMethod abcMethod)
         {
             var impls = method.Implements;
             if (impls == null) return;
@@ -327,57 +340,59 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             //NOTE: To avoid conflict with name of explicit implementation method has the same name as iface method
             if (method.IsExplicitImplementation)
             {
-                DefineMethod(impls[0]);
+                Build(impls[0]);
                 return;
             }
 
             if (n == 1 && !abcMethod.IsOverride)
             {
-                DefineMethod(impls[0]);
+                Build(impls[0]);
                 return;
             }
 
 	        foreach (var ifaceMethod in impls)
 	        {
-		        var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
-				DefineExplicitImplementation(instance, abcMethod, ifaceMethod, ifaceAbcMethod);
+		        var ifaceAbcMethod = BuildAbcMethod(ifaceMethod);
+				BuildExplicitImplementation(instance, abcMethod, ifaceMethod, ifaceAbcMethod);
 	        }
         }
         #endregion
 
-        #region DefineReturnType
-        public AbcMultiname DefineReturnType(AbcMethod abcMethod, IMethod method)
+		#region BuildReturnType
+		//TODO: move to TypeBuilder
+
+        public AbcMultiname BuildReturnType(AbcMethod abcMethod, IMethod method)
         {
             if (method.IsConstructor && method.AsStaticCall())
-				return TypeBuilder.BuildMemberType(method.DeclaringType);
+				return _generator.TypeBuilder.BuildMemberType(method.DeclaringType);
 
             var bm = GetBaseMethod(abcMethod, method);
             if (bm != null)
                 return bm.ReturnType;
 
-            return DefineReturnType(method.Type);
+            return BuildReturnType(method.Type);
         }
 
-        public AbcMultiname DefineReturnType(IType type)
+        public AbcMultiname BuildReturnType(IType type)
         {
             if (type == null)
                 return Abc.BuiltinTypes.Void;
-			var name = TypeBuilder.BuildMemberType(type);
+			var name = _generator.TypeBuilder.BuildMemberType(type);
             if (name == null)
                 throw new InvalidOperationException("Unable to define return type for method");
             return name;
         }
         #endregion
 
-        #region DefineParameters, CopyParameters
-        /// <summary>
+		#region BuildParameters, CopyParameters
+		/// <summary>
         /// Defines parameters for given <see cref="AbcMethod"/>.
         /// </summary>
         /// <param name="target"></param>
         /// <param name="source">source method of given <see cref="AbcMethod"/></param>
-        public void DefineParameters(AbcMethod target, IMethod source)
+        public void BuildParameters(AbcMethod target, IMethod source)
         {
-            if (source == EntryPoint)
+			if (source == _generator.EntryPoint)
             {
                 if (AbcGenConfig.ParameterlessEntryPoint)
                     return;
@@ -385,14 +400,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (source.HasPseudoThis())
             {
-                var typeName = TypeBuilder.BuildMemberType(source.DeclaringType);
-	            target.Parameters.Add(CreateParam(typeName, "this"));
+				var typeName = _generator.TypeBuilder.BuildMemberType(source.DeclaringType);
+				target.Parameters.Add(_generator.CreateParam(typeName, "this"));
             }
 
             var abm = GetBaseMethod(target, source);
             if (abm != null)
             {
-                CopyParams(target, abm);
+                CopyParameters(target, abm);
             }
             else
             {
@@ -403,7 +418,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     DebugService.DoCancel();
 #endif
                     var p = source.Parameters[i];
-                    var ap = CreateParam(p.Type, p.Name);
+					var ap = _generator.CreateParam(p.Type, p.Name);
 	                target.Parameters.Add(ap);
                 }
             }
@@ -413,7 +428,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             var impls = method.Implements;
             if (impls != null && impls.Count == 1)
-                return DefineAbcMethod(impls[0]);
+                return BuildAbcMethod(impls[0]);
 
             var baseMethod = method.BaseMethod;
             if (abcMethod.IsOverride && baseMethod != null)
@@ -422,7 +437,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return null;
         }
 
-        internal void CopyParams(AbcMethod to, AbcMethod from)
+        internal void CopyParameters(AbcMethod to, AbcMethod from)
         {
             int n = from.Parameters.Count;
             for (int i = 0; i < n; ++i)
@@ -449,8 +464,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineBaseMethods
-        private void DefineBaseMethods(IMethod method)
+		#region BuildBaseMethods
+		private void BuildBaseMethods(IMethod method)
         {
             //            var declType = method.DeclaringType;
             //            if (declType.IsInterface) return;
@@ -472,7 +487,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
                 DebugService.DoCancel();
 #endif
-                DefineMethod(bm);
+                Build(bm);
                 bm = bm.BaseMethod;
             }
 
@@ -480,13 +495,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (impls != null)
             {
                 foreach (var impl in impls)
-                    DefineMethod(impl);
+                    Build(impl);
             }
         }
         #endregion
 
-        #region DefineOverrideMethods
-        private void DefineOverrideMethods(IMethod method, AbcMethod abcMethod)
+		#region BuildOverrideMethods
+		private void BuildOverrideMethods(IMethod method, AbcMethod abcMethod)
         {
 	        if (!method.IsAbstract && !method.IsVirtual) return;
 
@@ -509,19 +524,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			        DebugService.DoCancel();
 #endif
 			        var impl = instance.Implementations[i];
-			        DefineImplementation(impl, impl.Type, method, abcMethod);
+			        BuildImplementation(impl, impl.Type, method, abcMethod);
 		        }
 	        }
 	        else
 	        {
-		        DefineSubclassOverrideMethods(instance, method);
+		        BuildSubclassOverrideMethods(instance, method);
 	        }
         }
         #endregion
 
-        #region DefineSubclassOverrideMethods
-        //Defines override methods in subclasses
-        private void DefineSubclassOverrideMethods(AbcInstance instance, IMethod method)
+		#region BuildSubclassOverrideMethods
+		//Defines override methods in subclasses
+        private void BuildSubclassOverrideMethods(AbcInstance instance, IMethod method)
         {
             var type = instance.Type;
             if (type.Is(SystemTypeCode.Enum)) return;
@@ -533,30 +548,30 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 DebugService.DoCancel();
 #endif
                 var subclass = instance.Subclasses[i];
-                DefineOverrideMethod(subclass.Type, method);
+                BuildOverrideMethod(subclass.Type, method);
 
 #if DEBUG
                 DebugService.DoCancel();
 #endif
-                DefineSubclassOverrideMethods(subclass, method);
+                BuildSubclassOverrideMethods(subclass, method);
             }
         }
         #endregion
 
-        #region DefineOverrideMethod
+		#region BuildOverrideMethod
 
-	    internal void DefineOverrideMethod(IType implType, IMethod method)
+		internal void BuildOverrideMethod(IType implType, IMethod method)
         {
             if (implType == null) return;
             var m = implType.FindOverrideMethod(method);
             if (m != null)
-                DefineMethod(m);
+                Build(m);
         }
 
         #endregion
 
-        #region DefineImplementation
-        internal void DefineImplementation(AbcInstance implInstance, IType implType, IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
+		#region BuildImplementation
+		internal void BuildImplementation(AbcInstance implInstance, IType implType, IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
         {
 			if (implInstance == null)
 				throw new ArgumentNullException("implInstance");
@@ -579,7 +594,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 	        impl = impl.ResolveGenericInstance(implType, ifaceMethod);
             
-            var abcImpl = DefineMethod(impl) as AbcMethod;
+            var abcImpl = Build(impl) as AbcMethod;
 
 			// determine whether we should create explicit impl
 			if (abcImpl == null || implInstance.IsForeign
@@ -600,7 +615,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				&& HasFlashIfaceName(ifaceAbcMethod)))
 				return;
 
-	        DefineExplicitImplementation(implInstance, abcImpl, ifaceMethod, ifaceAbcMethod);
+	        BuildExplicitImplementation(implInstance, abcImpl, ifaceMethod, ifaceAbcMethod);
         }
 
 		private static bool HasFlashIfaceName(AbcMethod method)
@@ -623,9 +638,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         #endregion
 
-        #region DefineExplicitImplementation
+		#region BuildExplicitImplementation
 
-	    private static void DefineExplicitImplementation(AbcInstance instance, AbcMethod abcMethod,
+		private static void BuildExplicitImplementation(AbcInstance instance, AbcMethod abcMethod,
 	                                                     IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
 	    {
 		    instance.DefineMethod(
@@ -665,9 +680,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 	    #endregion
 
-        #region DefineMethodBody
+		#region BuildBody
 
-        private void DefineMethodBody(AbcMethod abcMethod)
+		private void BuildBody(AbcMethod abcMethod)
         {
             if (abcMethod == null)
                 throw new ArgumentNullException();
@@ -697,7 +712,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #endif
             var sourceBody = source.Body;
 
-            var codeProvider = new CodeProviderImpl(this, target);
+            var codeProvider = new CodeProviderImpl(_generator, target);
 
             var translator = sourceBody.CreateTranslator();
             if (translator == null)
@@ -713,18 +728,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineAbcMethod
-        public AbcMethod DefineAbcMethod(IMethod method)
+		#region BuildAbcMethod
+		public AbcMethod BuildAbcMethod(IMethod method)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
-            var m = DefineMethod(method) as AbcMethod;
+            var m = Build(method) as AbcMethod;
             if (m == null)
                 throw new InvalidOperationException(string.Format("Unable to define method: {0}", method));
             return m;
         }
 
-        public AbcMethod DefineAbcMethod(IType type, Func<IMethod,bool> p)
+        public AbcMethod BuildAbcMethod(IType type, Func<IMethod,bool> p)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -733,99 +748,99 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         	var m = type.Methods.FirstOrDefault(x => p(x));
             if (m == null)
                 throw new InvalidOperationException("Unable to find method by given predicate");
-            return DefineAbcMethod(m);
+            return BuildAbcMethod(m);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, int argc)
+        public AbcMethod BuildAbcMethod(IType type, string name, int argc)
         {
             var source = type.Methods.Find(name, argc);
-            return DefineAbcMethod(source);
+            return BuildAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, Func<IType,bool> arg1)
+        public AbcMethod BuildAbcMethod(IType type, string name, Func<IType,bool> arg1)
         {
             var source = type.Methods.Find(name, arg1);
-            return DefineAbcMethod(source);
+            return BuildAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2)
+        public AbcMethod BuildAbcMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2)
         {
             var source = type.Methods.Find(name, arg1, arg2);
-            return DefineAbcMethod(source);
+            return BuildAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2, Func<IType,bool> arg3)
+        public AbcMethod BuildAbcMethod(IType type, string name, Func<IType,bool> arg1, Func<IType,bool> arg2, Func<IType,bool> arg3)
         {
             var source = type.Methods.Find(name, arg1, arg2, arg3);
-            return DefineAbcMethod(source);
+            return BuildAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, IType arg1)
+        public AbcMethod BuildAbcMethod(IType type, string name, IType arg1)
         {
             var source = type.Methods.Find(name, arg1);
-            return DefineAbcMethod(source);
+            return BuildAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, IType arg1, IType arg2)
+        public AbcMethod BuildAbcMethod(IType type, string name, IType arg1, IType arg2)
         {
             var source = type.Methods.Find(name, arg1, arg2);
-            return DefineAbcMethod(source);
+            return BuildAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name, IType arg1, IType arg2, IType arg3)
+        public AbcMethod BuildAbcMethod(IType type, string name, IType arg1, IType arg2, IType arg3)
         {
             var source = type.Methods.Find(name, arg1, arg2, arg3);
-            return DefineAbcMethod(source);
+            return BuildAbcMethod(source);
         }
 
-        public AbcMethod DefineAbcMethod(IType type, string name)
+        public AbcMethod BuildAbcMethod(IType type, string name)
         {
-            return DefineAbcMethod(type, name, 0);
+            return BuildAbcMethod(type, name, 0);
         }
 
         public LazyValue<AbcMethod> LazyMethod(IType type, Func<IMethod,bool> p)
         {
-            return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, p));
+            return new LazyValue<AbcMethod>(() => BuildAbcMethod(type, p));
         }
 
 		public LazyValue<AbcMethod> LazyMethod(IType type, string name, int argc)
         {
-            return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, argc));
+            return new LazyValue<AbcMethod>(() => BuildAbcMethod(type, name, argc));
         }
 
 		public LazyValue<AbcMethod> LazyMethod(IType type, string name)
         {
-            return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name));
+            return new LazyValue<AbcMethod>(() => BuildAbcMethod(type, name));
         }
 
 		public LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1)
         {
-            return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1));
+            return new LazyValue<AbcMethod>(() => BuildAbcMethod(type, name, arg1));
         }
 
 		public LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1, Func<IType, bool> arg2)
         {
-            return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2));
+            return new LazyValue<AbcMethod>(() => BuildAbcMethod(type, name, arg1, arg2));
         }
 
 		public LazyValue<AbcMethod> LazyMethod(IType type, string name, Func<IType, bool> arg1, Func<IType, bool> arg2, Func<IType, bool> arg3)
         {
-            return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2, arg3));
+            return new LazyValue<AbcMethod>(() => BuildAbcMethod(type, name, arg1, arg2, arg3));
         }
 
 		public LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1)
         {
-            return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1));
+            return new LazyValue<AbcMethod>(() => BuildAbcMethod(type, name, arg1));
         }
 
 		public LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2)
         {
-            return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2));
+            return new LazyValue<AbcMethod>(() => BuildAbcMethod(type, name, arg1, arg2));
         }
 
 		public LazyValue<AbcMethod> LazyMethod(IType type, string name, IType arg1, IType arg2, IType arg3)
         {
-            return new LazyValue<AbcMethod>(() => DefineAbcMethod(type, name, arg1, arg2, arg3));
+            return new LazyValue<AbcMethod>(() => BuildAbcMethod(type, name, arg1, arg2, arg3));
         }
         #endregion
 
@@ -833,10 +848,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             if (method == null) return false;
             if (method.IsStatic) return false;
-            if (!IsSwf) return false;
+            if (!_generator.IsSwf) return false;
             if (!method.IsConstructor) return false;
             if (method.Parameters.Count != 0) return false;
-            return ReferenceEquals(method.DeclaringType, SwfCompiler.TypeFlexApp);
+            return ReferenceEquals(method.DeclaringType, _generator.SwfCompiler.TypeFlexApp);
         }
     }
 }

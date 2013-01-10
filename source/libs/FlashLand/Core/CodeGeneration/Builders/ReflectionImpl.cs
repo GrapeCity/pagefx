@@ -221,7 +221,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                         var m = type.Methods.Find("GetType", 0);
                         if (m == null)
                             throw new InvalidOperationException("Unable to find System.Array.GetType method. Invalid corlib.");
-						_generator.DefineAbcMethod(m);
+						_generator.MethodBuilder.BuildAbcMethod(m);
                     }
                     else
                     {
@@ -238,7 +238,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	    public AbcMethod Define_Assembly_GetTypeNum(IMethod method, AbcInstance instance)
 	    {
 		    _emitReflection = true;
-		    var m = instance.DefineMethod(_generator.SigOf(method), null);
+			var m = instance.DefineMethod(_generator.MethodBuilder.SigOf(method), null);
 		    _generator.AddLateMethod(
 			    m,
 			    code =>
@@ -270,7 +270,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	    public AbcMethod Define_Assembly_InitType(IMethod method, AbcInstance instance)
 	    {
 		    _emitReflection = true;
-		    var m = instance.DefineMethod(_generator.SigOf(method), null);
+			var m = instance.DefineMethod(_generator.MethodBuilder.SigOf(method), null);
 		    _generator.AddLateMethod(
 			    m,
 			    code =>

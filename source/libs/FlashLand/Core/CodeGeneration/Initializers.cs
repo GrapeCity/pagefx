@@ -43,7 +43,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 var ctor = InternalTypeExtensions.FindInitializer(instance);
                 if (ctor != null)
                 {
-                    DefineAbcMethod(ctor);
+					MethodBuilder.BuildAbcMethod(ctor);
 
                     if (instance.Initializer == null)
                         throw new InvalidOperationException();

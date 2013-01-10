@@ -109,7 +109,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			         {
 				         var convertInstance = _generator.Corlib.Convert.Instance;
 				         var convertMethod = FindConvertImpl(method);
-				         var impl = _generator.DefineAbcMethod(convertMethod);
+						 var impl = _generator.MethodBuilder.BuildAbcMethod(convertMethod);
 
 				         code.Getlex(convertInstance);
 				         code.GetLocals(0, method.Parameters.Count);
@@ -163,7 +163,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			             if (cmp == null)
 				             throw new InvalidOperationException("String has no CompareTo(object) method");
 
-			             var impl = _generator.DefineAbcMethod(cmp);
+						 var impl = _generator.MethodBuilder.BuildAbcMethod(cmp);
 
 			             code.Getlex(impl);
 			             code.LoadThis();

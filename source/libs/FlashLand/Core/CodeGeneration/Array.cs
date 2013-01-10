@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         	           	{
         	           		ReturnType = Abc[AvmTypeCode.Void]
         	           	};
-        	DefineParameters(ctor, method);
+			MethodBuilder.BuildParameters(ctor, method);
 
             var name = Abc.DefineGlobalQName("arrctor_" + type.GetSigName());
             var trait = AbcTrait.CreateMethod(ctor, name);
@@ -240,7 +240,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (method.Name != CLRNames.Array.Getter) return null;
 
             //string name = "Get" + NameUtil.GetParamsString(method);
-            var name = DefineQName(method);
+			var name = MethodBuilder.DefineQName(method);
 	        return instance.DefineMethod(
 		        Sig.@this(name, method.Type, method),
 		        code =>
@@ -261,7 +261,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (!type.IsArray) return null;
             if (method.Name != CLRNames.Array.Setter) return null;
 
-            var name = DefineQName(method);
+			var name = MethodBuilder.DefineQName(method);
 	        return instance.DefineMethod(
 		        Sig.@this(name, method.Type, method),
 		        code =>
@@ -380,9 +380,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			var instance = Corlib.Array.Instance;
 
             string name = (item ? "get_item_"  : "get_elem_") + elemType.GetSigName();
-            var elemTypeName = DefineReturnType(elemType);
+			var elemTypeName = MethodBuilder.BuildReturnType(elemType);
 			var oppositeType = elemType.Is(SystemTypeCode.Int64) ? SystemTypes.UInt64 : SystemTypes.Int64;
-            var oppositeTypeName = DefineReturnType(oppositeType);
+			var oppositeTypeName = MethodBuilder.BuildReturnType(oppositeType);
 
 	        return instance.DefineMethod(
 		        Sig.@this(name, elemTypeName, AvmTypeCode.Int32, "index"),
@@ -477,7 +477,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			var IEnumerable = Corlib.MakeIEnumerable(elemType);
             TypeBuilder.BuildInstance(IEnumerable);
             var ifaceMethod = IEnumerable.Methods[0];
-            var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
+			var ifaceAbcMethod = MethodBuilder.BuildAbcMethod(ifaceMethod);
 			var arrayInstance = Corlib.Array.Instance;
 
 	        arrayInstance.DefineMethod(
@@ -496,7 +496,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			var ArrayEnumerator = TypeFactory.MakeGenericType(Corlib.GetType(GenericTypeId.ArrayEnumeratorT), elemType);
 			TypeBuilder.BuildInstance(ArrayEnumerator);
             foreach (var method in ArrayEnumerator.Methods)
-                DefineAbcMethod(method);
+				MethodBuilder.BuildAbcMethod(method);
             return ArrayEnumerator;
         }
         #endregion

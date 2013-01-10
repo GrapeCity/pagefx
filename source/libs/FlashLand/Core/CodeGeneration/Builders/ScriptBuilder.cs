@@ -69,8 +69,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             //Note: but in swf entry point can not have arguments
             if (EntryPoint != null && notSwf)
             {
-                method.ReturnType = _generator.DefineReturnType(EntryPoint.Type);
-                _generator.DefineParameters(method, EntryPoint);
+                method.ReturnType = _generator.MethodBuilder.BuildReturnType(EntryPoint.Type);
+				_generator.MethodBuilder.BuildParameters(method, EntryPoint);
             }
 
             var body = new AbcMethodBody(method);

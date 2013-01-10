@@ -19,12 +19,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			var m = type.Methods.Find(Const.Delegate.AddEventListeners, 2);
 			if (m == null)
 				throw new InvalidOperationException("Invalid corlib");
-			_generator.DefineAbcMethod(m);
+			_generator.MethodBuilder.BuildAbcMethod(m);
 
 			m = type.Methods.Find(Const.Delegate.RemoveEventListeners, 2);
 			if (m == null)
 				throw new InvalidOperationException("Invalid corlib");
-			_generator.DefineAbcMethod(m);
+			_generator.MethodBuilder.BuildAbcMethod(m);
 		}
 
 		private void EnshureMethods()
@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			var targetParam = _generator.CreateParam(_generator.SystemTypes.Object, method.Parameters[0].Name);
 			var funcParam = _generator.CreateParam(_generator.Abc.BuiltinTypes.Function, method.Parameters[1].Name);
 
-			var sig = _generator.SigOf(method);
+			var sig = _generator.MethodBuilder.SigOf(method);
 			sig.Args = new object[] {targetParam, funcParam};
 
 			return instance.DefineMethod(
@@ -89,7 +89,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			EnshureMethods();
 			//TODO: Check m_function on "not null"
 
-			var sig = _generator.SigOf(method);
+			var sig = _generator.MethodBuilder.SigOf(method);
 			var traitName = _generator.Abc.DefineName(sig.Name);
 			sig.Name = traitName; // minor opt to quickly define name next time
 

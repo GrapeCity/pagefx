@@ -91,7 +91,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 	    private AbcMethod DefineTestRunner(IMethod test)
         {
-            var method = _generator.DefineAbcMethod(test);
+			var method = _generator.MethodBuilder.BuildAbcMethod(test);
 
             var instance = method.Instance;
             string name = "run_test_" + test.GetMonoTestCaseName();
@@ -111,7 +111,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                         var setup = testFixture.GetUnitTestSetup();
                         AbcMethod setupAM = null;
                         if (setup != null)
-                            setupAM = _generator.DefineAbcMethod(setup);
+							setupAM = _generator.MethodBuilder.BuildAbcMethod(setup);
 
                         Test_Success(code, true);
                         Test_Executed(code, true);
@@ -302,8 +302,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             	return _methodsNUnit ?? (_methodsNUnit =
             	                         new[]
             	                         	{
-            	                         		_generator.LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Register", 1),
-            	                         		_generator.LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Run", 0)
+            	                         		_generator.MethodBuilder.LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Register", 1),
+            	                         		_generator.MethodBuilder.LazyMethod(GetType(NUnitTypeId.FlashTestRunner), "Run", 0)
             	                         	});
             }
         }

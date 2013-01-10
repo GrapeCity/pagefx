@@ -44,14 +44,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (method == null)
                 throw new InvalidOperationException();
 
-            var abcOp = _generator.DefineAbcMethod(method);
+			var abcOp = _generator.MethodBuilder.BuildAbcMethod(method);
 
 			var instance = _generator.TypeBuilder.BuildInstance(method.DeclaringType);
 
             Debug.Assert(instance.Abc == Abc);
 
             var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
-            var retType = _generator.DefineReturnType(method.Type);
+			var retType = _generator.MethodBuilder.BuildReturnType(method.Type);
 
 	        return instance.DefineMethod(
 		        Sig.@this(thisName, retType, right, "right"),
@@ -84,12 +84,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (op == null)
                 throw new ArgumentNullException("op");
 
-            var abcOp = _generator.DefineAbcMethod(op);
+			var abcOp = _generator.MethodBuilder.BuildAbcMethod(op);
 
 			var instance = _generator.TypeBuilder.BuildInstance(op.DeclaringType);
 
             var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
-            var retType = _generator.DefineReturnType(op.Type);
+			var retType = _generator.MethodBuilder.BuildReturnType(op.Type);
 
 	        return instance.DefineMethod(
 		        Sig.@this(thisName, retType),

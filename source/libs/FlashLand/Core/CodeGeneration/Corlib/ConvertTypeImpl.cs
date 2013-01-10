@@ -89,7 +89,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 
 		private LazyValue<AbcMethod> GetMethod(string name, IType arg)
 		{
-			return _generator.LazyMethod(Type, name, arg);
+			return _generator.MethodBuilder.LazyMethod(Type, name, arg);
 		}
 	}
 

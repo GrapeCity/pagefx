@@ -36,19 +36,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 				return _methods ?? (_methods =
 				                    new[]
 					                    {
-						                    _generator.LazyMethod(Type, "get_Length"),
-						                    _generator.LazyMethod(Type, "GetElem", 1),
-						                    _generator.LazyMethod(Type, "SetElem", 2),
-						                    _generator.LazyMethod(Type, "GetItem", 1),
-						                    _generator.LazyMethod(Type, "SetItem", 2),
-						                    _generator.LazyMethod(Type, "ToFlatIndex", t => !t.IsArray),
-						                    _generator.LazyMethod(Type, "IsCharArray"),
-						                    _generator.LazyMethod(Type, "CastTo", 1),
-						                    _generator.LazyMethod(Type, "HasElemType", 2),
-						                    _generator.LazyMethod(Type, "Clear"),
-						                    _generator.LazyMethod(Type, "IndexOf", 1),
-						                    _generator.LazyMethod(Type, "Contains", 1),
-						                    _generator.LazyMethod(Type, "CopyTo", 2)
+						                    _generator.MethodBuilder.LazyMethod(Type, "get_Length"),
+						                    _generator.MethodBuilder.LazyMethod(Type, "GetElem", 1),
+						                    _generator.MethodBuilder.LazyMethod(Type, "SetElem", 2),
+						                    _generator.MethodBuilder.LazyMethod(Type, "GetItem", 1),
+						                    _generator.MethodBuilder.LazyMethod(Type, "SetItem", 2),
+						                    _generator.MethodBuilder.LazyMethod(Type, "ToFlatIndex", t => !t.IsArray),
+						                    _generator.MethodBuilder.LazyMethod(Type, "IsCharArray"),
+						                    _generator.MethodBuilder.LazyMethod(Type, "CastTo", 1),
+						                    _generator.MethodBuilder.LazyMethod(Type, "HasElemType", 2),
+						                    _generator.MethodBuilder.LazyMethod(Type, "Clear"),
+						                    _generator.MethodBuilder.LazyMethod(Type, "IndexOf", 1),
+						                    _generator.MethodBuilder.LazyMethod(Type, "Contains", 1),
+						                    _generator.MethodBuilder.LazyMethod(Type, "CopyTo", 2)
 					                    });
 			}
 		}

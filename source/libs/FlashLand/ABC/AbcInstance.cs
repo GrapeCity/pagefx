@@ -567,7 +567,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 				//for non initializer method we must define trait and return type
 				var retTypeSource = sig.ReturnType as IMethod;
 				method.ReturnType = retTypeSource != null
-					                    ? generator.DefineReturnType(method, retTypeSource)
+										? generator.MethodBuilder.BuildReturnType(method, retTypeSource)
 					                    : Abc.DefineTypeNameSafe(sig.ReturnType);
 
 				trait = AbcTrait.CreateMethod(method, traitName);
@@ -589,7 +589,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 					var m = (IMethod)sig.Args[0];
 					if (generator == null)
 						throw new InvalidOperationException();
-					generator.DefineParameters(method, m);
+					generator.MethodBuilder.BuildParameters(method, m);
 				}
 				else
 				{
@@ -621,7 +621,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		{
 			var generator = Abc.Generator;
 			return DefineMethod(
-				generator.SigOf(method),
+				generator.MethodBuilder.SigOf(method),
 				code =>
 					{
 						var exceptionType = generator.Corlib.GetType(CorlibTypeId.NotImplementedException);

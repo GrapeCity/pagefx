@@ -218,7 +218,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 					var prop = arg.Member as IProperty;
 					if (prop == null)
 						throw new InvalidOperationException();
-					var s = _generator.DefineAbcMethod(prop.Setter);
+					var s = _generator.MethodBuilder.BuildAbcMethod(prop.Setter);
 					code.Call(s);
 				}
 
@@ -333,7 +333,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			{
 				wrapper.Parameters.Add(Abc.DefineParam(AvmTypeCode.Object, "obj"));
 			}
-			_generator.CopyParams(wrapper, abcMethod);
+			_generator.MethodBuilder.CopyParameters(wrapper, abcMethod);
 
 			return wrapper;
 		}
@@ -841,7 +841,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			var ctor = type.FindParameterlessConstructor();
 			if (ctor != null)
 			{
-				f = _generator.DefineMethod(ctor) as AbcMethod;
+				f = _generator.MethodBuilder.Build(ctor) as AbcMethod;
 				if (f != null && !f.IsInitializer)
 				{
 					f = _generator.TypeBuilder.DefineCtorStaticCall(ctor);

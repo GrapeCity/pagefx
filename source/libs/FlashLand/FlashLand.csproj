@@ -150,7 +150,7 @@
     <Compile Include="Core\CodeGeneration\Initializers.cs" />
     <Compile Include="Core\CodeGeneration\Builders\CopyImpl.cs" />
     <Compile Include="Core\CodeGeneration\AbcGenerator.cs" />
-    <Compile Include="Core\CodeGeneration\Method.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\MethodBuilder.cs" />
     <Compile Include="Core\CodeGeneration\Builders\FlexAppBuilder.cs" />
     <Compile Include="Core\CodeGeneration\Builders\NUnitRunner.cs" />
     <Compile Include="Core\CodeGeneration\Builders\HashCodeImpl.cs" />

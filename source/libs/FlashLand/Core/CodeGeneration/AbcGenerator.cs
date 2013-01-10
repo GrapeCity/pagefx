@@ -198,6 +198,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	    }
 	    private TypeBuilder _typeBuilder;
 
+		internal MethodBuilder MethodBuilder
+		{
+			get { return _methodBuilder ?? (_methodBuilder = new MethodBuilder(this)); }
+		}
+	    private MethodBuilder _methodBuilder;
+
 		internal FieldBuilder FieldBuilder
 	    {
 			get { return _fieldBuilder ?? (_fieldBuilder = new FieldBuilder(this)); }
@@ -270,13 +276,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	    }
 	    private ReflectionImpl _reflectionImpl;
 
-	    private ObjectPrototypeImpl ObjectPrototypes
+	    internal ObjectPrototypeImpl ObjectPrototypes
 	    {
 			get { return _objectPrototypes ?? (_objectPrototypes = new ObjectPrototypeImpl(this)); }
 	    }
 	    private ObjectPrototypeImpl _objectPrototypes;
 
-	    private StringPrototypeImpl StringPrototypes
+	    internal StringPrototypeImpl StringPrototypes
 	    {
 			get { return _stringPrototypes ?? (_stringPrototypes = new StringPrototypeImpl(this)); }
 	    }
@@ -422,7 +428,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             EntryPoint = AppAssembly.EntryPoint;
             if (EntryPoint != null)
-                DefineMethod(EntryPoint);
+				MethodBuilder.Build(EntryPoint);
             else
                 BuildLibrary();
 

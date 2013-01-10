@@ -1448,7 +1448,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         AbcMethod DefineAbcMethod(IMethod m)
         {
-            return Generator.DefineAbcMethod(m);
+			return Generator.MethodBuilder.BuildAbcMethod(m);
         }
 
         AbcMethod DefineAbcMethod(IType type, string name, int argCount)
@@ -2683,7 +2683,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             var clone = type.Methods.Find("Clone", 0);
             if (clone == curmethod) return;
-            var m = Generator.DefineAbcMethod(clone);
+			var m = DefineAbcMethod(clone);
             Call(m);
         }
 

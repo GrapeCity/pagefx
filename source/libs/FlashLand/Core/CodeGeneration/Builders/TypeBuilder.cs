@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
 	/// <summary>
 	/// Implements creation of <see cref="AbcInstance"/> for given <see cref="IType"/>.
@@ -588,7 +587,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 if (method.IsInternalCall) continue;
                 if (GenericType.IsGenericContext(method)) continue;
 				if (_generator.Mode == AbcGenMode.Full || method.IsExposed())
-					_generator.DefineMethod(method);
+					_generator.MethodBuilder.Build(method);
             }
         }
 
@@ -659,12 +658,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
                 if (super.IsInterface)
                 {
-					_generator.DefineImplementation(instance, type, method, abcMethod);
+					_generator.MethodBuilder.BuildImplementation(instance, type, method, abcMethod);
                 }
                 else
                 {
                     if (method.IsVirtual || method.IsAbstract)
-						_generator.DefineOverrideMethod(type, method);
+						_generator.MethodBuilder.BuildOverrideMethod(type, method);
                 }
             }
         }
@@ -681,7 +680,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             Debug.Assert(ctor.IsConstructor);
             Debug.Assert(!ctor.IsStatic);
 
-            var thisCtor = _generator.DefineAbcMethod(ctor);
+			var thisCtor = _generator.MethodBuilder.BuildAbcMethod(ctor);
             if (thisCtor.IsInitializer)
                 throw new InvalidOperationException("ctor is initializer");
 

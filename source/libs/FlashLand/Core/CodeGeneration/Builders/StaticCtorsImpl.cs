@@ -115,7 +115,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			var ctor = type.GetStaticCtor();
 			if (ctor != null)
-				return instance.StaticCtor = _generator.DefineAbcMethod(ctor);
+				return instance.StaticCtor = _generator.MethodBuilder.BuildAbcMethod(ctor);
 
 			if (type.HasInitFields(true))
 			{

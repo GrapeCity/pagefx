@@ -141,7 +141,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 code =>
                     {
 
-                        var m = _generator.DefineAbcMethod(SystemTypes.String, "CalcHashCode", 1);
+						var m = _generator.MethodBuilder.BuildAbcMethod(SystemTypes.String, "CalcHashCode", 1);
 
                         code.Getlex(m);
                         code.LoadThis();

@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 				return _methods ?? (_methods =
 				                    new[]
 					                    {
-						                    _generator.LazyMethod(Type, "GetType", 1)
+						                    _generator.MethodBuilder.LazyMethod(Type, "GetType", 1)
 					                    });
 			}
 		}

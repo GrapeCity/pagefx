@@ -275,7 +275,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
 			if (method == _method) return;
 
-            _generator.DefineMethod(method);
+			_generator.MethodBuilder.Build(method);
         }
 
 	    private bool IsBaseCtor(IMethod method)
@@ -313,7 +313,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private AbcMethod DefineAbcMethod(IMethod m)
         {
-            return _generator.DefineAbcMethod(m);
+			return _generator.MethodBuilder.BuildAbcMethod(m);
         }
 
         private AbcInstance DefineAbcInstance(IType type)

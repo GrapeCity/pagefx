@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             var toString = type.Methods.Find(Const.Object.MethodToString, 0);
             if (toString != null)
             {
-                var tostr = generator.DefineAbcMethod(toString);
+				var tostr = generator.MethodBuilder.BuildAbcMethod(toString);
 
                 var name = generator.Abc.DefineGlobalQName(DebugPropertyPrefix + "display");
 

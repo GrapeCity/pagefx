@@ -27,10 +27,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 				return _methods ?? (_methods =
 				                    new[]
 					                    {
-						                    _generator.LazyMethod(Type, "WriteLine", 0),
-						                    _generator.LazyMethod(Type, "WriteLine", StringType),
-						                    _generator.LazyMethod(Type, "OpenSW", 0),
-						                    _generator.LazyMethod(Type, "CloseSW", 0)
+						                    _generator.MethodBuilder.LazyMethod(Type, "WriteLine", 0),
+						                    _generator.MethodBuilder.LazyMethod(Type, "WriteLine", StringType),
+						                    _generator.MethodBuilder.LazyMethod(Type, "OpenSW", 0),
+						                    _generator.MethodBuilder.LazyMethod(Type, "CloseSW", 0)
 					                    });
 			}
 		}

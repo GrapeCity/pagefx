@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 							var ctor = instance.FindParameterlessConstructor();
 							if (ctor != null)
 							{
-								var ctorMethod = _generator.DefineAbcMethod(ctor);
+								var ctorMethod = _generator.MethodBuilder.BuildAbcMethod(ctor);
 								AddEventListener(code, ctorMethod, FlexAppEvents.Initialize);
 							}
 						}
@@ -167,7 +167,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
     					var ctor = instance.FindParameterlessConstructor();
     					if (ctor != null)
     					{
-							var ctorMethod = _generator.DefineAbcMethod(ctor);
+							var ctorMethod = _generator.MethodBuilder.BuildAbcMethod(ctor);
     						code.LoadThis();
     						if (AbcGenConfig.FlexAppCtorAsHandler)
     						{
