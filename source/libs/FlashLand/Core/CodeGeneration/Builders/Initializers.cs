@@ -62,14 +62,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
         public static AbcMethod BuildDefaultInitializer(AbcFile abc, IType type)
         {
-            return abc.DefineInitializer(
-	            code =>
-		            {
-			            code.PushThisScope();
-			            code.InitFields(type, false, false);
-			            code.ConstructSuper();
-			            code.ReturnVoid();
-		            });
+	        return abc.DefineMethod(
+		        Sig.@global(null),
+		        code =>
+			        {
+				        code.PushThisScope();
+				        code.InitFields(type, false, false);
+				        code.ConstructSuper();
+				        code.ReturnVoid();
+			        });
         }
 
 	    private static void EnshureClassInitializer(AbcClass klass)
@@ -143,22 +144,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             var type = klass.Type;
 
-            return abc.DefineInitializer(
-	            code =>
+            return abc.DefineMethod(Sig.@global(null), code =>
+	            {
+		            code.PushThisScope();
+
+		            code.InitFields(type, true, false);
+
+		            foreach (var t in assetTraits)
 		            {
-			            code.PushThisScope();
+			            code.LoadThis();
+			            code.Getlex(t.AssetInstance.Name);
+			            code.SetProperty(t.Name);
+		            }
 
-			            code.InitFields(type, true, false);
-
-			            foreach (var t in assetTraits)
-			            {
-				            code.LoadThis();
-				            code.Getlex(t.AssetInstance.Name);
-				            code.SetProperty(t.Name);
-			            }
-
-			            code.ReturnVoid();
-		            });
+		            code.ReturnVoid();
+	            });
         }
 
         private static InitInfo GetClassInitInfo(AbcInstance instance)

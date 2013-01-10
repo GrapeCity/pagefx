@@ -62,9 +62,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (m != null) return;
 
             var coder = val[0] as AbcCoder;
-            m = Abc.DefineMethod(sig, coder);
+	        m = Abc.DefineMethod(Sig.@from(sig), coder);
 
-            _generator.NewApi.SetProtoFunction(type, sig.TraitName, m);
+	        _generator.NewApi.SetProtoFunction(type, sig.TraitName, m);
 
             val[0] = m;
         }
@@ -182,7 +182,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	    private AbcMethod DefineString_GetTypeId()
 	    {
 		    return Abc.DefineMethod(
-			    AvmTypeCode.Int32,
+			    Sig.@global(AvmTypeCode.Int32),
 			    code =>
 				    {
 					    code.PushTypeId(SystemTypes.String);

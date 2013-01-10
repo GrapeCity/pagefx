@@ -89,8 +89,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
                                };
             instance.Interfaces.Add(flexModuleFactoryInterface.Name);
 
-            instance.Initializer = abc.DefineEmptyConstructor();
-            instance.Class.Initializer = abc.DefineEmptyMethod();
+    		instance.Initializer = abc.DefineMethod(
+    			Sig.@void(),
+    			code =>
+    				{
+    					code.ConstructSuper();
+    					code.ReturnVoid();
+    				});
+    		instance.Class.Initializer = abc.DefineEmptyMethod();
 
             abc.AddInstance(instance);
 

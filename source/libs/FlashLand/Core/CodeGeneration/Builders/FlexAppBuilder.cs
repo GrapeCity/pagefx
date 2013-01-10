@@ -44,7 +44,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             Debug.Assert(instance.Initializer == null);
 
-        	instance.Initializer = Abc.DefineInitializer(
+        	instance.Initializer = Abc.DefineMethod(
+				Sig.@global(null),
         		code =>
         			{
         				code.PushThisScope();

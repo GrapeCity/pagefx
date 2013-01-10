@@ -89,7 +89,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             if (name == "ToString")
             {
-	            var impl = Abc.DefineMethod(AvmTypeCode.String, code => code.ReturnThis());
+	            var impl = Abc.DefineMethod(
+		            Sig.@global(AvmTypeCode.String),
+		            code => code.ReturnThis());
+
 	            _generator.NewApi.SetProtoFunction(AvmTypeCode.String, m.TraitName, impl);
 				return;
             }

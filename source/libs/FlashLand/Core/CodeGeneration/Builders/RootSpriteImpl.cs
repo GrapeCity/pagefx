@@ -1,4 +1,5 @@
 ﻿using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
@@ -58,7 +59,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			Abc.AddInstance(Instance);
 
-			Instance.Initializer = Abc.DefineInitializer(
+			Instance.Initializer = Abc.DefineMethod(
+				Sig.@global(null),
 				code =>
 					{
 						code.PushThisScope();
@@ -68,10 +70,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 						{
 							code.SetStaticProperty(rootStageField,
 							                       () =>
-							                       	{
-							                       		code.LoadThis();
-							                       		code.GetProperty("stage");
-							                       	});
+								                       {
+									                       code.LoadThis();
+									                       code.GetProperty("stage");
+								                       });
 						}
 
 						_generator.NUnit.Main(code);

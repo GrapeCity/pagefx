@@ -3610,7 +3610,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void SetProtoFunction(object type, AbcMethod sig, AbcCoder coder)
         {
-            var f = Abc.DefineMethod(sig, coder);
+            var f = Abc.DefineMethod(Sig.@from(sig), coder);
             SetProtoFunction(type, sig.TraitName, f, true); 
         }
         #endregion

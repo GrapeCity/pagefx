@@ -65,7 +65,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 				throw new ArgumentNullException("prop");
 
 			var m = _abc.DefineMethod(
-				AvmTypeCode.Object,
+				Sig.@global(AvmTypeCode.Object),
 				code =>
 					{
 						code.Getlex(prop);
@@ -85,15 +85,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 				throw new ArgumentNullException("prop");
 
 			var m = _abc.DefineMethod(
-				AvmTypeCode.Void,
+				Sig.@void(AvmTypeCode.Object, "value"),
 				code =>
 					{
 						code.FindProperty(prop);
 						code.GetLocal(1); //value
 						code.SetProperty(prop);
 						code.ReturnVoid();
-					},
-				AvmTypeCode.Object, "value");
+					});
 
 #if DEBUG
 			m.Name = _abc.DefineString("set_" + prop.NameString);

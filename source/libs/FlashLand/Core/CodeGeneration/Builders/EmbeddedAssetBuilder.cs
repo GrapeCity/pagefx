@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
@@ -99,9 +100,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		            BaseTypeName = superName,
 		            Flags = (AbcClassFlags.Sealed | AbcClassFlags.ProtectedNamespace),
 		            ProtectedNamespace = Abc.DefineProtectedNamespace(name.NameString),
-		            Initializer = Abc.DefineEmptyConstructor((string)null, true),
+		            Initializer = Abc.DefineMethod(
+			            Sig.@void(),
+			            code =>
+				            {
+					            code.PushThisScope();
+					            code.ConstructSuper();
+					            code.ReturnVoid();
+				            }),
 		            BaseInstance = superType,
-		            Class = {Initializer = Abc.DefineEmptyMethod(true)}
+		            Class = {Initializer = Abc.DefineMethod(
+			            Sig.global(null),
+			            code =>
+				            {
+					            if (true)
+						            code.PushThisScope();
+					            code.ReturnVoid();
+				            })}
 	            };
 
 	        Abc.AddInstance(instance);

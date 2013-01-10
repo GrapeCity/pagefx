@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core;
@@ -81,16 +82,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return IsDefined(script);
             return false;
         }
-
-        //public bool IsDefined(AbcMethodBody body)
-        //{
-        //    int index = body.Index;
-        //    if (index < 0 || index >= _methods.Count)
-        //        return false;
-        //    if (_methodBodies[index] != body)
-        //        return false;
-        //    return true;
-        //}
 
         /// <summary>
         /// Determines whether the given type is defined in this ABC file.
@@ -707,249 +698,106 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
 	    #region Method Definitions
-        #region DefineEmptyMethod
-        public AbcMethod DefineEmptyMethod(bool pushThisScope)
-        {
-            var method = new AbcMethod();
-            var body = new AbcMethodBody(method);
-            var code = new AbcCode(this);
-            if (pushThisScope)
-                code.PushThisScope();
-            code.ReturnVoid();
-            body.Finish(code);
-            AddMethod(method);
-            return method;
-        }
 
-        public AbcMethod DefineEmptyMethod()
-        {
-            return DefineEmptyMethod(false);
-        }
-        #endregion
-
-        #region DefineEmptyVoidMethod
-        public AbcMethod DefineEmptyVoidMethod(AbcConst<string> name, bool pushScope)
-        {
-            var method = new AbcMethod
-                             {
-                                 ReturnType = BuiltinTypes.Void,
-                                 Name = name
-                             };
-
-            var body = new AbcMethodBody(method);
-            var code = new AbcCode(this);
-            if (pushScope)
-                code.PushThisScope();
-            code.ReturnVoid();
-            body.Finish(code);
-
-            AddMethod(method);
-
-            return method;
-        }
-
-        public AbcMethod DefineEmptyVoidMethod()
-        {
-            return DefineEmptyVoidMethod((AbcConst<string>)null, false);
-        }
-
-        public AbcMethod DefineEmptyVoidMethod(string name, bool pushScope)
-        {
-            return DefineEmptyVoidMethod(DefineStringOrNull(name), pushScope);
-        }
-
-        public AbcMethod DefineEmptyVoidMethod(AbcConst<string> name)
-        {
-            return DefineEmptyVoidMethod(name, false);
-        }
-
-        public AbcMethod DefineEmptyVoidMethod(string name)
-        {
-            return DefineEmptyVoidMethod(DefineStringOrNull(name), false);
-        }
-        #endregion
-
-        #region DefineEmptyConstructor
-        public AbcMethod DefineEmptyConstructor(AbcConst<string> name, bool pushScope)
-        {
-            var method = new AbcMethod
-                             {
-                                 ReturnType = BuiltinTypes.Void,
-                                 Name = name
-                             };
-
-            var body = new AbcMethodBody(method);
-            var code = new AbcCode(this);
-
-            if (pushScope)
-                code.PushThisScope();
-            code.ConstructSuper();
-            code.ReturnVoid();
-            body.Finish(code);
-
-            AddMethod(method);
-
-            return method;
-        }
-
-        public AbcMethod DefineEmptyConstructor(string name, bool pushScope)
-        {
-            return DefineEmptyConstructor(DefineStringOrNull(name), pushScope);
-        }
-
-        public AbcMethod DefineEmptyConstructor(AbcConst<string> name)
-        {
-            return DefineEmptyConstructor(name, false);
-        }
-
-        public AbcMethod DefineEmptyConstructor(string name)
-        {
-            return DefineEmptyConstructor(DefineStringOrNull(name), false);
-        }
-
-        public AbcMethod DefineEmptyConstructor()
-        {
-            return DefineEmptyConstructor((AbcConst<string>)null, false);
-        }
-        #endregion
-
-        #region DefineEmptyAbstractMethod
-        //Used to define static initializer for interfaces
+	    //Used to define static initializer for interfaces
         public AbcMethod DefineEmptyAbstractMethod()
         {
             var method = new AbcMethod();
             Methods.Add(method);
             return method;
         }
-        #endregion      
 
-        #region DefineMethod
-		//TODO: revise using Sig
+	    internal AbcMethod DefineMethod(Sig sig, AbcCoder coder)
+	    {
+		    var method = new AbcMethod
+			    {
+				    ReturnType = sig.ReturnType != null
+					                 ? DefineTypeNameSafe(sig.ReturnType)
+					                 : null
+			    };
 
-        internal AbcMethod DefineMethod(object retType, AbcCoder coder, params object[] args)
-        {
-            AbcMultiname returnType = null;
-            
-            if (retType != null)
-                returnType = DefineTypeNameSafe(retType);
+		    if (sig.Args != null)
+		    {
+			    AddParameters(method.Parameters, sig.Args);
+		    }
 
-            var method = new AbcMethod { ReturnType = returnType };
+		    var body = new AbcMethodBody(method);
 
-            if (args != null)
-            {
-                AddParameters(method.Parameters, args);
-            }
+		    AddMethod(method);
 
-            var body = new AbcMethodBody(method);
+		    if (coder != null)
+		    {
+			    var code = new AbcCode(this);
+			    coder(code);
+			    body.Finish(code);
+		    }
 
-            AddMethod(method);
+		    return method;
+	    }
 
-            if (coder != null)
-            {
-                var code = new AbcCode(this);
-                coder(code);
-                body.Finish(code);
-            }
+		public AbcMethod DefineEmptyMethod()
+		{
+			return DefineMethod(
+				Sig.global(null),
+				code => code.ReturnVoid());
+		}
 
-            return method;
-        }
-
-        internal AbcMethod DefineMethod(AbcMethod sig, AbcCoder coder)
-        {
-            return DefineMethod(sig.ReturnType, coder, sig);
-        }
-
-        internal AbcMethod DefineVoidMethod(AbcCoder coder, params object[] args)
-        {
-            return DefineMethod(AvmTypeCode.Void, coder, args);
-        }
-
-        internal AbcMethod DefineInitializer(AbcCoder coder, params object[] args)
-        {
-            return DefineMethod(null, coder, args);
-        }
-        #endregion
-
-        #region DefineTraitsInitializer
-        /// <summary>
+	    /// <summary>
         /// Defines instance initializer which init given traits.
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
         public AbcMethod DefineTraitsInitializer(params object[] args)
         {
-            if (args == null)
-                throw new ArgumentNullException("args");
+            var pairs = args
+				.Pairwise(x => x is string ? 1 : 0)
+				.Select(x =>
+				{
+					var t = x.First as AbcTrait;
+					if (t == null)
+						throw new InvalidOperationException();
+					if (!t.IsSlot)
+						throw new InvalidOperationException();
+					return new KeyValuePair<AbcTrait, string>(t, x.Second as string);
+				})
+				.ToList();
 
-            var method = new AbcMethod
-                             {
-                                 ReturnType = BuiltinTypes.Object
-                             };
+			var traits = pairs.Select(x => x.Key).ToList();
 
-            var traits = new List<AbcTrait>();
-            int n = args.Length;
-            for (int i = 0; i < n; ++i)
-            {
-                var t = args[i] as AbcTrait;
-                if (t == null)
-                    throw new InvalidOperationException();
-                if (!t.IsSlot)
-                    throw new InvalidOperationException();
+	        return DefineMethod(
+		        Sig.global(AvmTypeCode.Void, args),
+		        code =>
+			        {
+				        code.PushThisScope();
 
-                AbcConst<string> name = null;
-                if (i + 1 < n)
-                {
-                    string s = args[i + 1] as string;
-                    if (s != null)
-                    {
-                        name = DefineString(s);
-                        ++i;
-                    }
-                }
+				        code.ConstructSuper();
 
-                method.AddParam(t.SlotType, name);
+						for (int i = 0; i < traits.Count; ++i)
+				        {
+					        code.LoadThis();
+					        code.GetLocal(i + 1);
+					        code.SetProperty(traits[i]);
+				        }
 
-                traits.Add(t);
-            }
-
-            var body = new AbcMethodBody(method);
-
-            AddMethod(method);
-
-            var code = new AbcCode(this);
-
-            code.PushThisScope();
-
-            code.ConstructSuper();
-
-            n = traits.Count;
-            for (int i = 0; i < n; ++i)
-            {
-                code.LoadThis();
-                code.GetLocal(i + 1);
-                code.SetProperty(traits[i]);
-            }
-
-            code.ReturnVoid();
-            body.Finish(code);
-
-            return method;
+				        code.ReturnVoid();
+			        }
+		        );
         }
-        #endregion
-        #endregion
+
+	    #endregion
 
         #region DefineScript
         public void DefineScriptInit(AbcScript script)
         {
-            script.Initializer = DefineMethod(
-                AvmTypeCode.Void,
-                code =>
-	                {
-		                code.PushThisScope();
-		                code.InitClassProperties(script);
-		                code.ReturnVoid();
-	                }
-	            );
+	        script.Initializer = DefineMethod(
+		        Sig.@void(),
+		        code =>
+			        {
+				        code.PushThisScope();
+				        code.InitClassProperties(script);
+				        code.ReturnVoid();
+			        }
+		        );
         }
 
         public void DefineScript(IEnumerable<AbcInstance> instances, Predicate<AbcInstance> filter)
@@ -1137,9 +985,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		        };
 
             if (emptyCtor)
-                instance.Initializer = DefineEmptyConstructor();
+            {
+	            instance.Initializer = DefineMethod(
+		            Sig.@void(),
+		            code =>
+			            {
+				            code.ConstructSuper();
+				            code.ReturnVoid();
+			            });
+            }
 
-            instance.Class.Initializer = DefineEmptyMethod();
+	        instance.Class.Initializer = DefineEmptyMethod();
 
             AddInstance(instance);
 

@@ -142,6 +142,55 @@ namespace DataDynamics.PageFX.Common.Extensions
 
 		#endregion
 
+		public static IEnumerable<Pair<T>> Pairwise<T>(this IEnumerable<T> seq)
+		{
+			var p = new T[2];
+			var i = 0;
+			foreach (var item in seq)
+			{
+				p[i++] = item;
+				if (i != 2) continue;
+
+				yield return new Pair<T>(p[0], p[1]);
+
+				i = 0;
+				p = new T[2];
+			}
+		}
+
+		public static IEnumerable<Pair<T>> Pairwise<T>(this IEnumerable<T> seq, Func<T,int> indexSelector)
+		{
+			var p = new T[2];
+			int prev = -1;
+			bool empty = true;
+			foreach (var item in seq)
+			{
+				var i = indexSelector(item);
+				if (i == 0 && prev == 0)
+				{
+					yield return new Pair<T>(p[0], p[1]);
+					p = new T[2];
+				}
+
+				p[i] = item;
+				empty = false;
+
+				if (i == 1)
+				{
+					yield return new Pair<T>(p[0], p[1]);
+					p = new T[2];
+					empty = true;
+				}
+
+				prev = i;
+			}
+
+			if (!empty)
+			{
+				yield return new Pair<T>(p[0], p[1]);
+			}
+		}
+
 		public static IEnumerable<T> Append<T>(this IEnumerable<T> seq, params T[] items)
 		{
 			return seq.Concat(items);

@@ -93,16 +93,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             AddInstance(instance);
 
-            instance.Initializer = DefineVoidMethod(
-	            code =>
-		            {
-			            code.PushThisScope();
-			            code.LoadThis();
-			            code.PushString(locale);
-			            code.PushString(name);
-			            code.ConstructSuper(2);
-			            code.ReturnVoid();
-		            });
+	        instance.Initializer = DefineMethod(
+		        Sig.@void(),
+		        code =>
+			        {
+				        code.PushThisScope();
+				        code.LoadThis();
+				        code.PushString(locale);
+				        code.PushString(name);
+				        code.ConstructSuper(2);
+				        code.ReturnVoid();
+			        });
 
             instance.Class.Initializer = DefineEmptyMethod();
             

@@ -154,5 +154,15 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		{
 			return new Sig(name, returnType, args) {IsOverride = true};
 		}
+
+		public static Sig @global(object returnType, params object[] args)
+		{
+			return new Sig(null, returnType, args);
+		}
+
+		public static Sig @void(params object[] args)
+		{
+			return @global(AvmTypeCode.Void, args);
+		}
 	}
 }

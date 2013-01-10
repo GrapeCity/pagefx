@@ -149,7 +149,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
     		               		BaseTypeName = app.BuiltinTypes.Object,
     		               		IsMixin = true,
     		               		IsFlexInitMixin = true,
-    		               		Initializer = app.DefineEmptyConstructor(),
+    		               		Initializer = app.DefineMethod(
+    		               			Sig.@this(null, AvmTypeCode.Void),
+    		               			code =>
+    		               				{
+    		               					code.ConstructSuper();
+    		               					code.ReturnVoid();
+    		               				}),
     		               		Class = {Initializer = app.DefineEmptyMethod()}
     		               	};
 

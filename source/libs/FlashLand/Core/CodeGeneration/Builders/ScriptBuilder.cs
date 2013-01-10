@@ -155,7 +155,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             script.DefineClassTraits(instance);
 
             script.Initializer = Abc.DefineMethod(
-                AvmTypeCode.Void,
+                Sig.@void(),
                 code =>
                     {
                         code.PushThisScope();
