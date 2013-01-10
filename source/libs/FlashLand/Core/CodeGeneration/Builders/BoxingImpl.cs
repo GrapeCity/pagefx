@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (!type.IsBoxableType())
                 return null;
 
-            var instance = _generator.DefineAbcInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
 			var name = _generator.DefinePfxName(Const.Boxing.MethodBox);
 
 	        return instance.DefineMethod(
@@ -51,11 +51,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (!type.IsNullableInstance())
                 return null;
 
-			var instance = _generator.DefineAbcInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
 			var name = _generator.DefinePfxName(Const.Boxing.MethodBox);
 
             var arg = type.GetTypeArgument(0);
-			var argInstance = _generator.DefineAbcInstance(arg);
+			var argInstance = _generator.TypeBuilder.BuildInstance(arg);
 
 	        return instance.DefineMethod(
 		        Sig.@static(name, argInstance.Name, type, "value"),
@@ -101,7 +101,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (!type.IsBoxableOrInt64Based())
                 return null;
 
-			var instance = _generator.DefineAbcInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
 
             var vtype = type;
             if (type.IsEnum)
@@ -112,7 +112,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 type = vtype;
 
 			var name = _generator.DefinePfxName(Const.Boxing.MethodUnbox + (strict ? "strict" : ""));
-			var retType = _generator.DefineMemberType(type);
+			var retType = _generator.TypeBuilder.BuildMemberType(type);
 	        return instance.DefineMethod(
 		        Sig.@static(name, retType, AvmTypeCode.Object, "value"),
 		        code =>
@@ -196,7 +196,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (!type.IsNullableInstance())
                 return null;
 
-			var instance = _generator.DefineAbcInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
 
             var name = UnboxName;
 
@@ -249,7 +249,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (type == null) return null;
             if (type.TypeKind != TypeKind.Struct) return null;
 
-			var instance = _generator.DefineAbcInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
 
             var name = UnboxName;
 
@@ -262,7 +262,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				        code.GetLocal(value);
 				        code.ThrowNullReferenceException();
 
-						var MyNullable = _generator.DefineAbcInstance(_generator.Corlib.MakeNullable(type));
+						var MyNullable = _generator.TypeBuilder.BuildInstance(_generator.Corlib.MakeNullable(type));
 
 				        code.If(
 					        () =>

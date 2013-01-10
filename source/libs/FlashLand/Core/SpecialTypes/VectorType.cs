@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
             {
                 if (_name == null)
                 {
-                    ByteCode.Generator.DefineType(Param);
+					ByteCode.Generator.TypeBuilder.Build(Param);
                     var paramType = Param.GetMultiname();
                     _name = ByteCode.DefineVectorTypeName(paramType);
                 }

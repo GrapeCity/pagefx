@@ -59,7 +59,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 throw new InvalidOperationException();
         }
 
-        AbcMethod DefineDefaultInitializer(IType type)
+        internal AbcMethod DefineDefaultInitializer(IType type)
         {
             return Abc.DefineInitializer(
 	            code =>

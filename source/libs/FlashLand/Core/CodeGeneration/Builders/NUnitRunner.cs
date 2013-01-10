@@ -164,7 +164,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
                         if (ee != null)
                         {
-                            code.BeginCatch(_generator.DefineAbcInstance(ee), false);
+							code.BeginCatch(_generator.TypeBuilder.BuildInstance(ee), false);
                             code.Pop();
                             Test_Success(code, true);
                             Test_Output(code, () => code.ConsoleCloseSW(false));
@@ -259,7 +259,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		private AbcInstance GetInstance(NUnitTypeId id)
         {
-            return _generator.DefineAbcInstance(GetType(id));
+			return _generator.TypeBuilder.BuildInstance(GetType(id));
         }
 
         private enum NUnitTypeId

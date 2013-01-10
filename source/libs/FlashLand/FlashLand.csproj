@@ -170,7 +170,7 @@
     <Compile Include="Core\CodeGeneration\Builders\ScriptBuilder.cs" />
     <Compile Include="Core\CodeGeneration\Builders\StaticCtorsImpl.cs" />
     <Compile Include="Core\CodeGeneration\Builders\StringPrototypeImpl.cs" />
-    <Compile Include="Core\CodeGeneration\Type.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\TypeBuilder.cs" />
     <Compile Include="Core\CodeGeneration\Builders\DebugInfoBuilder.cs" />
     <Compile Include="Core\CodeProvider\Arrays.cs" />
     <Compile Include="Core\CodeProvider\Branching.cs" />

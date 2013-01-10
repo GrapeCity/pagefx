@@ -513,7 +513,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     return;
                 }
 
-                var ctor = _generator.DefineCtorStaticCall(method);
+				var ctor = _generator.TypeBuilder.DefineCtorStaticCall(method);
                 code.Call(ctor);
             }
             else

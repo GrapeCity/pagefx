@@ -1203,7 +1203,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var type = typeDef as IType;
             if (type != null)
             {
-                name = Generator.DefineMemberType(type);
+                name = Generator.TypeBuilder.BuildMemberType(type);
                 return name;
             }
 

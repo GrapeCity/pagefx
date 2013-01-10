@@ -176,7 +176,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         /// <returns></returns>
         public AbcMethod NewArray(IType elemType)
         {
-            DefineType(elemType);
+			TypeBuilder.Build(elemType);
 
 			var instance = Corlib.Array.Instance;
 
@@ -440,7 +440,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
         }
 
-        void ImplementArrayInterface(IType type)
+        internal void ImplementArrayInterface(IType type)
         {
             if (type == null) return;
             if (!type.IsInterface) return;
@@ -475,7 +475,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         void DefineArrayGetEnumerator(IType elemType)
         {
 			var IEnumerable = Corlib.MakeIEnumerable(elemType);
-            DefineAbcInstance(IEnumerable);
+            TypeBuilder.BuildInstance(IEnumerable);
             var ifaceMethod = IEnumerable.Methods[0];
             var ifaceAbcMethod = DefineAbcMethod(ifaceMethod);
 			var arrayInstance = Corlib.Array.Instance;
@@ -494,7 +494,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         IType DefineArrayEnumerator(IType elemType)
         {
 			var ArrayEnumerator = TypeFactory.MakeGenericType(Corlib.GetType(GenericTypeId.ArrayEnumeratorT), elemType);
-            DefineAbcInstance(ArrayEnumerator);
+			TypeBuilder.BuildInstance(ArrayEnumerator);
             foreach (var method in ArrayEnumerator.Methods)
                 DefineAbcMethod(method);
             return ArrayEnumerator;
@@ -646,7 +646,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         public AbcMultiname GetObjectTypeName()
         {
-            return DefineAbcInstance(SystemTypes.Object).Name;
+			return TypeBuilder.BuildInstance(SystemTypes.Object).Name;
         }
         #endregion
 
@@ -722,7 +722,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         AbcMethod DefineInitObjectMethod(IType type)
         {
-            var instance = DefineAbcInstance(type);
+			var instance = TypeBuilder.BuildInstance(type);
             AbcMultiname name;
             if (instance.IsNative)
             {

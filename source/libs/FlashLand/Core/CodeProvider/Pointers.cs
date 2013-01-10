@@ -288,7 +288,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 		private AbcMultiname DefineMemberType(IType type)
         {
             type = type.UnwrapRef();
-            return _abc.Generator.DefineMemberType(type);
+			return _abc.Generator.TypeBuilder.BuildMemberType(type);
         }
 
 		private class VarPtr

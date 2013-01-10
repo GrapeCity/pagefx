@@ -84,8 +84,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-            var instance = _generator.DefineAbcInstance(type);
-			var typeName = _generator.DefineMemberType(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
+			var typeName = _generator.TypeBuilder.BuildMemberType(type);
             var name = GetAsMethodName(type, me);
 
 	        return instance.DefineMethod(
@@ -120,7 +120,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             }
 
 			var instance = _generator.Corlib.Array.Instance;
-			var typeName = _generator.DefineMemberType(type);
+			var typeName = _generator.TypeBuilder.BuildMemberType(type);
             var name = GetAsMethodName(type, me);
 
 	        return instance.DefineMethod(
@@ -162,7 +162,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             }
 
 			var instance = _generator.Corlib.Array.Instance;
-			var typeName = _generator.DefineMemberType(type);
+			var typeName = _generator.TypeBuilder.BuildMemberType(type);
             var name = GetAsMethodName(type, me);
 
 	        return instance.DefineMethod(
@@ -225,7 +225,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-			var instance = _generator.DefineAbcInstance(SystemTypes.String);
+			var instance = _generator.TypeBuilder.BuildInstance(SystemTypes.String);
             var name = GetAsMethodName(type, me);
 
 	        return instance.DefineMethod(
@@ -299,10 +299,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-			var instance = _generator.DefineAbcInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
             var name = GetAsMethodName(type, me);
 
-			var typeName = _generator.DefineMemberType(type);
+			var typeName = _generator.TypeBuilder.BuildMemberType(type);
 	        return instance.DefineMethod(
 		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
 		        code =>
@@ -356,7 +356,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return Impl(type, AS, GetCastMethodName(type, me));
             }
 
-			var typeName = _generator.DefineAbcInstance(type);
+			var typeName = _generator.TypeBuilder.BuildInstance(type);
             var instance = typeName;
             var name = GetAsMethodName(type, me);
 
@@ -369,7 +369,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 				        code.Try();
 
-						var MyNullable = _generator.DefineAbcInstance(_generator.Corlib.MakeNullable(type));
+						var MyNullable = _generator.TypeBuilder.BuildInstance(_generator.Corlib.MakeNullable(type));
 
 				        code.If(
 					        () =>
@@ -413,7 +413,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             var instance = AS.Instance;
 
-            var typeName = _generator.DefineMemberType(type);
+			var typeName = _generator.TypeBuilder.BuildMemberType(type);
 
 	        return instance.DefineMethod(
 		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
@@ -443,7 +443,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		#region ToStringImpl
 		public AbcMethod ToStringImpl()
         {
-			var instance = _generator.DefineAbcInstance(SystemTypes.String);
+			var instance = _generator.TypeBuilder.BuildInstance(SystemTypes.String);
 	        return instance.DefineMethod(
 		        Sig.@static("cast_to_me", AvmTypeCode.String, AvmTypeCode.Object, "value"),
 		        code =>

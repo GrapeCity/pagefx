@@ -1275,7 +1275,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
 		public void CreateInstance(IType type, bool mustBeInstance, Func<int> pushArgs)
         {
-            var tag = Generator.DefineType(type);
+			var tag = Generator.TypeBuilder.Build(type);
             if (mustBeInstance && !(tag is AbcInstance))
                 throw new InvalidOperationException("Type has invalid tag. Tag must be AbcInstance.");
             var mn = Abc.GetTypeName(type, false);
@@ -1443,7 +1443,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         AbcInstance DefineAbcInstance(IType type)
         {
-            return Generator.DefineAbcInstance(type);
+			return Generator.TypeBuilder.BuildInstance(type);
         }
 
         AbcMethod DefineAbcMethod(IMethod m)
@@ -1459,11 +1459,11 @@ namespace DataDynamics.PageFX.FlashLand.IL
             return DefineAbcMethod(m);
         }
 
-        void EnsureType(IType type)
+        private void EnsureType(IType type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            Generator.DefineType(type);
+			Generator.TypeBuilder.Build(type);
         }
 
         private static bool AsNative(IType type)
@@ -2553,7 +2553,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            var instance = Generator.DefineAbcInstance(type);
+			var instance = Generator.TypeBuilder.BuildInstance(type);
             CreateInstance(instance);
             Throw();
         }
@@ -2579,7 +2579,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            var instance = Generator.DefineAbcInstance(type);
+			var instance = Generator.TypeBuilder.BuildInstance(type);
             CreateInstance(instance);
             Dup();
             GetStackTrace();
@@ -2827,7 +2827,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
 
         public void TypeOf(IType type)
         {
-            var instance = Generator.DefineType(type) as AbcInstance;
+			var instance = Generator.TypeBuilder.Build(type) as AbcInstance;
             if (instance == null)
             {
                 PushNull();
@@ -3508,7 +3508,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
             }
             else
             {
-                m = Generator.DefineCtorStaticCall(ctor);
+				m = Generator.TypeBuilder.DefineCtorStaticCall(ctor);
                 CallStatic(m, args);
             }
         }

@@ -45,7 +45,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 		public AbcInstance GetInstance(CorlibTypeId id)
 		{
-			return _generator.DefineAbcInstance(GetType(id));
+			return _generator.TypeBuilder.BuildInstance(GetType(id));
 		}
 
 		public IType MakeInstance(GenericTypeId typeId, IType arg)

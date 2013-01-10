@@ -268,7 +268,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private void EnsureType(IType type)
         {
-            _generator.DefineType(type);
+			_generator.TypeBuilder.Build(type);
         }
 
         private void EnsureMethod(IMethod method)
@@ -318,7 +318,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private AbcInstance DefineAbcInstance(IType type)
         {
-            return _generator.DefineAbcInstance(type);
+			return _generator.TypeBuilder.BuildInstance(type);
         }
     }
 }

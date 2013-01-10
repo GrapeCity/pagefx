@@ -20,7 +20,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
 
 		public AbcInstance Instance
 		{
-			get { return _generator.DefineAbcInstance(Type); }
+			get { return _generator.TypeBuilder.BuildInstance(Type); }
 		}
 
 		public AbcMethod this[ObjectMethodId id]

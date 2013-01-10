@@ -9,32 +9,50 @@ using DataDynamics.PageFX.FlashLand.Core.Tools;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 {
-    //contains creation of AbcInstance for given IType.
-    //key methods: DefineType
-    partial class AbcGenerator
+	/// <summary>
+	/// Implements creation of <see cref="AbcInstance"/> for given <see cref="IType"/>.
+	/// </summary>
+    internal sealed class TypeBuilder
     {
-        public AbcMultiname DefineTypeName(IType type)
+	    private readonly AbcGenerator _generator;
+
+	    public TypeBuilder(AbcGenerator generator)
+		{
+			_generator = generator;
+		}
+
+	    private AbcFile Abc
+	    {
+			get { return _generator.Abc; }
+	    }
+
+	    private SystemTypes SystemTypes
+	    {
+			get { return _generator.SystemTypes; }
+	    }
+
+	    public AbcMultiname DefineTypeName(IType type)
         {
             if (type == null) return null;
-            var obj = DefineType(type);
+            var obj = Build(type);
             return obj.ToMultiname();
         }
 
-		public AbcMultiname DefineMemberType(IType type)
+		public AbcMultiname BuildMemberType(IType type)
 		{
-			DefineType(type);
+			Build(type);
 			if (type.Data == null)
 				throw new InvalidOperationException(string.Format("Type {0} is not defined", type.FullName));
 			return Abc.GetTypeName(type, true);
 		}
 
-        #region DefineType
-        /// <summary>
+		#region Build
+		/// <summary>
         /// Defines given type in generated ABC file
         /// </summary>
         /// <param name="type">the type to define</param>
         /// <returns>tag associated with given type</returns>
-        public object DefineType(IType type)
+        public object Build(IType type)
         {
             if (type == null) return null;
 
@@ -55,7 +73,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 if (type.Data != null)
                     throw new InvalidOperationException();
-                tag = DefineTypeCore(type);
+                tag = BuildCore(type);
             }
             else
             {
@@ -64,12 +82,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (tag != null)
             {
-                SetData(type, tag);
+                _generator.SetData(type, tag);
 
                 RegisterType(type);
 
                 if (!isImported)
-                    DefineMembers(type);
+                    BuildMembers(type);
             }
 
             abcSubject = type.Data as IAbcFileSubject;
@@ -81,7 +99,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region RegisterType
-        void RegisterType(IType type)
+        private void RegisterType(IType type)
         {
             if (type.IsModuleType())
                 return;
@@ -95,44 +113,44 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     return;
             }
 
-            Reflection.GetTypeId(type);
+            _generator.Reflection.GetTypeId(type);
         }
         #endregion
 
-        #region DefineAbcInstance
-        /// <summary>
+		#region BuildInstance
+		/// <summary>
         /// Defines <see cref="AbcInstance"/> for given <see cref="IType"/>.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public AbcInstance DefineAbcInstance(IType type)
+        public AbcInstance BuildInstance(IType type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            var res = DefineType(type) as AbcInstance;
+            var res = Build(type) as AbcInstance;
             if (res == null)
                 throw new InvalidOperationException(string.Format("Unable to define AbcInstance for type: {0}", type));
             return res;
         }
         #endregion
 
-        #region DefineBaseTypes
-        void DefineBaseTypes(IType type)
+		#region BuildBaseTypes
+		private void BuildBaseTypes(IType type)
         {
             if (type == null) return;
 
-            DefineType(type.BaseType);
+            Build(type.BaseType);
 
             if (type.Interfaces != null)
             {
                 foreach (var ifaceType in type.Interfaces)
-                    DefineType(ifaceType);
+                    Build(ifaceType);
             }
         }
         #endregion
 
         #region ImportType
-        object ImportType(IType type)
+        private object ImportType(IType type)
         {
             var tag = type.Data;
             if (tag != null)
@@ -140,7 +158,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 var instance = tag as AbcInstance;
                 if (instance != null)
                 {
-                    DefineBaseTypes(type);
+                    BuildBaseTypes(type);
                     return Abc.ImportInstance(instance);
                 }
 
@@ -152,8 +170,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineTypeCore
-        object DefineTypeCore(IType type)
+		#region BuildCore
+		private object BuildCore(IType type)
         {
             if (type.CanExclude())
                 return null;
@@ -171,11 +189,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                     return null;
 
                 case TypeKind.Enum:
-                    DefineType(type.ValueType);
+                    Build(type.ValueType);
                     return DefineUserType(type);
 
                 case TypeKind.Array:
-                    return DefineArrayType((IArrayType)type);
+                    return BuildArrayType((IArrayType)type);
 
                 case TypeKind.Pointer:
                     throw new NotSupportedException();
@@ -183,7 +201,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 case TypeKind.Reference:
                     {
                         var ctype = (ICompoundType)type;
-                        DefineType(ctype.ElementType);
+                        Build(ctype.ElementType);
                         return Abc.BuiltinTypes.Object;
                     }
             }
@@ -193,7 +211,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region DefineUserType
-        object DefineUserType(IType type)
+		private object DefineUserType(IType type)
         {
             if (LinkVectorInstance(type))
                 return type.Data;
@@ -217,7 +235,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             DebugService.DoCancel();
             DebugService.LogInfo("DefineUserType started for {0}", type.FullName);
 #endif
-            var ifaceNames = DefineInterfaces(type);
+            var ifaceNames = BuildInterfaces(type);
 
             if (Abc.IsDefined(type))
                 return type.AbcInstance();
@@ -232,16 +250,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                                    BaseInstance = superType
                                };
 
-            SetData(type, instance);
+            _generator.SetData(type, instance);
 			SetFlags(instance, type);
             AddInterfaces(instance, type, ifaceNames);
 
 	        Abc.AddInstance(instance);
 
-	        if (IsRootSprite(type))
-                RootSprite.Instance = instance;
+	        if (_generator.IsRootSprite(type))
+				_generator.RootSprite.Instance = instance;
 
-            DebugInfoBuilder.Build(this, type, instance);
+            DebugInfoBuilder.Build(_generator, type, instance);
 
 #if DEBUG
             DebugService.DoCancel();
@@ -251,14 +269,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return instance;
         }
 
-	    bool IsRootSprite(IType type)
-        {
-            if (SwfCompiler != null && !string.IsNullOrEmpty(SwfCompiler.RootSprite))
-                return type.FullName == SwfCompiler.RootSprite;
-            return type.IsRootSprite();
-        }
-
-        void SetFlags(AbcInstance instance, IType type)
+	    private void SetFlags(AbcInstance instance, IType type)
         {
             if (type.TypeKind == TypeKind.Interface)
             {
@@ -280,16 +291,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
 
         //Defines qname for AbcInstance for given type
-        AbcMultiname DefineInstanceName(IType type)
+		private AbcMultiname DefineInstanceName(IType type)
         {
             var ns = DefineTypeNamespace(type);
             string name = InternalTypeExtensions.GetPartialTypeName(type);
             return Abc.DefineQName(ns, name);
         }
 
-        AbcNamespace DefineTypeNamespace(IType type)
+        private AbcNamespace DefineTypeNamespace(IType type)
         {
-            string ns = type.GetTypeNamespace(RootNamespace);
+            string ns = type.GetTypeNamespace(_generator.RootNamespace);
             return Abc.DefineNamespace(AbcConstKind.PackageNamespace, ns);
         }
         #endregion
@@ -336,9 +347,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	        }
         }
 
-        readonly AbcInstance[] _enumSuperTypes = new AbcInstance[8];
+        private readonly AbcInstance[] _enumSuperTypes = new AbcInstance[8];
 
-        static int GetEnumIndex(SystemType st)
+		private static int GetEnumIndex(SystemType st)
         {
             switch (st.Code)
             {
@@ -355,7 +366,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
         }
 
-        static string GetEnumName(SystemType st)
+		private static string GetEnumName(SystemType st)
         {
             switch (st.Code)
             {
@@ -393,17 +404,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var instance = _enumSuperTypes[index];
             if (instance != null) return instance;
 
-            var super = DefineAbcInstance(type.BaseType);
+            var super = BuildInstance(type.BaseType);
 
             instance = _enumSuperTypes[index];
             if (instance != null) return instance;
 
             instance = new AbcInstance(true)
                            {
-                               Name = DefinePfxName(GetEnumName(st), false),
+                               Name = _generator.DefinePfxName(GetEnumName(st), false),
                                BaseTypeName = super.Name,
                                BaseInstance = super,
-                               Initializer = DefineDefaultInitializer(null)
+							   Initializer = _generator.DefineDefaultInitializer(null)
                            };
 	        Abc.AddInstance(instance);
 
@@ -411,7 +422,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             _enumSuperTypes[index] = instance;
 
-            instance.CreateSlot(Abc.DefineGlobalQName(Const.Boxing.Value), DefineMemberType(vtype));
+            instance.CreateSlot(Abc.DefineGlobalQName(Const.Boxing.Value), BuildMemberType(vtype));
 
             //SetFlags(instance, type);
 
@@ -419,15 +430,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region DefineInterfaces
-        private static bool OnlyDeclareInterfaces(IType type)
+		private static bool OnlyDeclareInterfaces(IType type)
         {
             if (type.Is(SystemTypeCode.String))
                 return true;
             return false;
         }
 
-        private IList<AbcMultiname> DefineInterfaces(IType type)
+        private IList<AbcMultiname> BuildInterfaces(IType type)
         {
             if (type.Interfaces == null) return null;
             int n = type.Interfaces.Count;
@@ -456,7 +466,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return list;
         }
 
-        static void AddInterfaces(AbcInstance instance, IType type, IList<AbcMultiname> ifaceNames)
+        private static void AddInterfaces(AbcInstance instance, IType type, IList<AbcMultiname> ifaceNames)
         {
             if (ifaceNames == null) return;
             if (type.Interfaces == null) return;
@@ -478,28 +488,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 instance.Interfaces.Add(ifaceName);
             }
         }
-        #endregion
 
-        #region DefineArrayType
-        private object DefineArrayType(IArrayType type)
+		private object BuildArrayType(IArrayType type)
         {
-            var arr = DefineType(SystemTypes.Array);
+            var arr = Build(SystemTypes.Array);
             var elemType = type.ElementType;
-            DefineType(elemType);
+            Build(elemType);
             return arr;
         }
-        #endregion
 
-        #region FinishTypes, FinishType
-        void FinishType(AbcInstance instance)
-        {
-            //TODO: Comment when copying of value types will be implemented using Reflection
-            CopyImpl.With(this).Copy(instance);
+		#region FinishTypes, FinishType
 
-            DefineCompiledMethods(instance);
-        }
-
-        void FinishTypes()
+	    public void FinishTypes()
         {
 #if PERF
             int start = Environment.TickCount;
@@ -516,10 +516,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             Console.WriteLine("AbcGen.FinishTypes: {0}", Environment.TickCount - start);
 #endif
         }
-        #endregion
 
-        #region DefineMembers
-        private void DefineMembers(IType type)
+	    private void FinishType(AbcInstance instance)
+	    {
+		    //TODO: Comment when copying of value types will be implemented using Reflection
+		    CopyImpl.With(_generator).Copy(instance);
+
+		    BuildCompiledMethods(instance);
+	    }
+
+	    #endregion
+
+		#region BuildMembers
+		private void BuildMembers(IType type)
         {
             var instance = type.AbcInstance();
             if (instance == null) return;
@@ -535,11 +544,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (!type.IsInterface)
             {
-                FlexAppBuilder.DefineMembers(instance);
+                _generator.FlexAppBuilder.DefineMembers(instance);
                 DefineFields(type);
             }
 
-            EnshureInitializers(instance);
+			_generator.EnshureInitializers(instance);
 
             //DefineCompiledMethods(type);
             DefineExposedMethods(type);
@@ -554,7 +563,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (field.HasEmbedAttribute()) return true;
             if (GenericType.HasGenericParams(field.Type)) return false;
             if (field.IsExposed()) return true;
-            if (Mode == AbcGenMode.Full) return true;
+			if (_generator.Mode == AbcGenMode.Full) return true;
             if (field.IsStatic) return false;
             return true;
         }
@@ -568,7 +577,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 DebugService.DoCancel();
 #endif
                 if (MustDefine(field))
-                    FieldBuilder.Build(field);
+					_generator.FieldBuilder.Build(field);
             }
         }
 
@@ -578,29 +587,29 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 if (method.IsInternalCall) continue;
                 if (GenericType.IsGenericContext(method)) continue;
-                if (Mode == AbcGenMode.Full || method.IsExposed())
-                    DefineMethod(method);
+				if (_generator.Mode == AbcGenMode.Full || method.IsExposed())
+					_generator.DefineMethod(method);
             }
         }
 
 	    #endregion
 
-        #region DefineCompiledMethods
-        private void DefineCompiledMethods(AbcInstance instance)
+		#region BuildCompiledMethods
+		private void BuildCompiledMethods(AbcInstance instance)
         {
             var type = instance.Type;
             if (type != null)
-                DefineCompiledMethods(instance, type);
+                BuildCompiledMethods(instance, type);
         }
 
-        private void DefineCompiledMethods(AbcInstance instance, IType type)
+        private void BuildCompiledMethods(AbcInstance instance, IType type)
         {
             if (instance == null)
 				throw new ArgumentNullException("instance");
 	        if (type == null)
 				throw new ArgumentNullException("type");
 
-	        ImplementArrayInterface(type);
+			_generator.ImplementArrayInterface(type);
 
             //Define Compiled Interface Methods
             foreach (var iface in instance.Implements)
@@ -608,7 +617,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
                 DebugService.DoCancel();
 #endif
-                DefineCompiledMethods(instance, type, iface);
+                BuildCompiledMethods(instance, type, iface);
             }
 
             //Define Override Methods for already Compiled Base Methods
@@ -618,7 +627,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
                 DebugService.DoCancel();
 #endif
-                DefineCompiledMethods(instance, type, super);
+                BuildCompiledMethods(instance, type, super);
                 super = super.BaseInstance;
             }
         }
@@ -629,7 +638,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 		/// <param name="instance"></param>
 		/// <param name="type"></param>
 		/// <param name="super">Base type or interface.</param>
-        private void DefineCompiledMethods(AbcInstance instance, IType type, AbcInstance super)
+        private void BuildCompiledMethods(AbcInstance instance, IType type, AbcInstance super)
         {
             if (type.Is(SystemTypeCode.Exception)) return;
 
@@ -650,12 +659,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
                 if (super.IsInterface)
                 {
-                    DefineImplementation(instance, type, method, abcMethod);
+					_generator.DefineImplementation(instance, type, method, abcMethod);
                 }
                 else
                 {
                     if (method.IsVirtual || method.IsAbstract)
-                        DefineOverrideMethod(type, method);
+						_generator.DefineOverrideMethod(type, method);
                 }
             }
         }
@@ -672,12 +681,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             Debug.Assert(ctor.IsConstructor);
             Debug.Assert(!ctor.IsStatic);
 
-            var thisCtor = DefineAbcMethod(ctor);
+            var thisCtor = _generator.DefineAbcMethod(ctor);
             if (thisCtor.IsInitializer)
                 throw new InvalidOperationException("ctor is initializer");
 
             var declType = ctor.DeclaringType;
-            var instance = DefineAbcInstance(declType);
+            var instance = BuildInstance(declType);
 
             return instance.DefineMethod(
                 Sig.@static(thisCtor.TraitName.NameString + "__static", instance.Name, thisCtor),
@@ -693,8 +702,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         }
         #endregion
 
-        #region Utils
-        void DefineTypes(IEnumerable<IType> types)
+	    private void BuildRange(IEnumerable<IType> types)
         {
             if (types == null) return;
             foreach (var type in types)
@@ -702,7 +710,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
                 DebugService.DoCancel();
 #endif
-                DefineType(type);
+                Build(type);
             }
         }
 
@@ -714,12 +722,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (!instance.Type.HasAttribute(Attrs.GenericVector))
                 return false;
 
-            DefineTypes(instance.GenericArguments);
+            BuildRange(instance.GenericArguments);
 
-            SetData(type, new VectorInstance(type));
+            _generator.SetData(type, new VectorInstance(type));
 
             return true;
         }
-        #endregion
     }
 }

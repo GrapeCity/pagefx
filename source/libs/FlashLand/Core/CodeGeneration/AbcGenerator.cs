@@ -167,7 +167,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				if (RootSprite.IsGenerated)
 					return RootSprite.Instance;
 				var type = MainType;
-				return type != null ? DefineAbcInstance(type) : null;
+				return type != null ? TypeBuilder.BuildInstance(type) : null;
 			}
 		}
 
@@ -191,6 +191,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 		#endregion
 
 		#region Parts, Builders
+
+	    internal TypeBuilder TypeBuilder
+	    {
+			get { return _typeBuilder ?? (_typeBuilder = new TypeBuilder(this)); }
+	    }
+	    private TypeBuilder _typeBuilder;
 
 		internal FieldBuilder FieldBuilder
 	    {
@@ -350,7 +356,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             DebugService.DoCancel();
 #endif
 
-            FinishTypes();
+			TypeBuilder.FinishTypes();
             #endregion
 
             #region Late Methods
@@ -432,11 +438,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 if (type.IsTestFixture())
                     NUnit.AddFixture(type);
-                DefineType(type);
+				TypeBuilder.Build(type);
             }
         }
 
 	    #region BuildLibrary
+		internal bool IsRootSprite(IType type)
+		{
+			if (SwfCompiler != null && !string.IsNullOrEmpty(SwfCompiler.RootSprite))
+				return type.FullName == SwfCompiler.RootSprite;
+			return type.IsRootSprite();
+		}
+
         private void BuildLibrary()
         {
             if (IsFlexApplication)
@@ -444,7 +457,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 var type = SwfCompiler.TypeFlexApp;
                 if (type == null)
                     throw new InvalidOperationException();
-                DefineType(type);
+				TypeBuilder.Build(type);
                 return;
             }
 
@@ -453,7 +466,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				var type = AppAssembly.Types.FirstOrDefault(IsRootSprite);
                 if (type != null)
                 {
-                    DefineType(type);
+					TypeBuilder.Build(type);
                     return;
                 }
             }
@@ -467,7 +480,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             foreach (var type in list)
             {
                 if (GenericType.HasGenericParams(type)) continue;
-                DefineType(type);
+				TypeBuilder.Build(type);
             }
         }
         #endregion
@@ -494,7 +507,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             var type = FindTypeDefOrRef(fullname);
             if (type == null) return null;
-            return DefineAbcInstance(type);
+			return TypeBuilder.BuildInstance(type);
         }
 
         public AbcInstance FindInstanceRef(AbcMultiname name)
@@ -548,7 +561,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         public AbcParameter CreateParam(IType type, string name)
         {
-            var typeName = DefineMemberType(type);
+			var typeName = TypeBuilder.BuildMemberType(type);
             return CreateParam(typeName, name);
         }
 

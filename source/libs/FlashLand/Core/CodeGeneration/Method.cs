@@ -199,7 +199,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             if (tag != null) return tag;
 
 			var type = method.DeclaringType;
-            DefineType(type);
+			TypeBuilder.Build(type);
 
             tag = IsDefined(method);
             if (tag != null) return tag;
@@ -215,9 +215,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             DefineBaseMethods(method);
 
             //Define method signature types.
-            DefineType(method.Type);
+			TypeBuilder.Build(method.Type);
             foreach (var p in method.Parameters)
-                DefineType(p.Type);
+				TypeBuilder.Build(p.Type);
 
             tag = IsDefined(method);
             if (tag != null) return tag;
@@ -349,7 +349,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         public AbcMultiname DefineReturnType(AbcMethod abcMethod, IMethod method)
         {
             if (method.IsConstructor && method.AsStaticCall())
-                return DefineMemberType(method.DeclaringType);
+				return TypeBuilder.BuildMemberType(method.DeclaringType);
 
             var bm = GetBaseMethod(abcMethod, method);
             if (bm != null)
@@ -362,7 +362,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             if (type == null)
                 return Abc.BuiltinTypes.Void;
-            var name = DefineMemberType(type);
+			var name = TypeBuilder.BuildMemberType(type);
             if (name == null)
                 throw new InvalidOperationException("Unable to define return type for method");
             return name;
@@ -385,7 +385,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             if (source.HasPseudoThis())
             {
-                var typeName = DefineMemberType(source.DeclaringType);
+                var typeName = TypeBuilder.BuildMemberType(source.DeclaringType);
 	            target.Parameters.Add(CreateParam(typeName, "this"));
             }
 
@@ -545,7 +545,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         #region DefineOverrideMethod
 
-	    private void DefineOverrideMethod(IType implType, IMethod method)
+	    internal void DefineOverrideMethod(IType implType, IMethod method)
         {
             if (implType == null) return;
             var m = implType.FindOverrideMethod(method);
@@ -556,7 +556,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         #endregion
 
         #region DefineImplementation
-        private void DefineImplementation(AbcInstance implInstance, IType implType, IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
+        internal void DefineImplementation(AbcInstance implInstance, IType implType, IMethod ifaceMethod, AbcMethod ifaceAbcMethod)
         {
 			if (implInstance == null)
 				throw new ArgumentNullException("implInstance");

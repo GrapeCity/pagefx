@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             var abcOp = _generator.DefineAbcMethod(method);
 
-			var instance = _generator.DefineAbcInstance(method.DeclaringType);
+			var instance = _generator.TypeBuilder.BuildInstance(method.DeclaringType);
 
             Debug.Assert(instance.Abc == Abc);
 
@@ -86,7 +86,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             var abcOp = _generator.DefineAbcMethod(op);
 
-            var instance = _generator.DefineAbcInstance(op.DeclaringType);
+			var instance = _generator.TypeBuilder.BuildInstance(op.DeclaringType);
 
             var thisName = Abc.DefineGlobalQName("this_" + abcOp.TraitName.NameString);
             var retType = _generator.DefineReturnType(op.Type);

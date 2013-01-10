@@ -32,7 +32,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return;
 
             var declType = field.DeclaringType;
-            var tag = _generator.DefineType(declType);
+			var tag = _generator.TypeBuilder.Build(declType);
 
 #if DEBUG
             DebugService.DoCancel();
@@ -50,7 +50,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             if (Abc.IsDefined(field)) return;
 
-            var type = _generator.DefineMemberType(field.Type);
+			var type = _generator.TypeBuilder.BuildMemberType(field.Type);
             if (Abc.IsDefined(field)) return;
 
 #if DEBUG

@@ -706,7 +706,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		private void InitTypeInfo(AbcCode code, IType type, int typeId)
 		{
-			var instance = _generator.DefineAbcInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
 
 			//NOTE: typeId is assigned in corlib in Assembly.GetType
 			//code.GetLocal(varType);
@@ -844,7 +844,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				f = _generator.DefineMethod(ctor) as AbcMethod;
 				if (f != null && !f.IsInitializer)
 				{
-					f = _generator.DefineCtorStaticCall(ctor);
+					f = _generator.TypeBuilder.DefineCtorStaticCall(ctor);
 					Debug.Assert(f != null);
 					code.GetLocal(varType);
 					code.GetStaticFunction(f);

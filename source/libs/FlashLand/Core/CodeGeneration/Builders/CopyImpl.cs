@@ -20,7 +20,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	    public AbcMethod StaticCopy(IType type)
         {
             if (!InternalTypeExtensions.HasCopy(type)) return null;
-            var instance = _generator.DefineAbcInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
             return StaticCopy(instance);
         }
 
@@ -44,7 +44,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         public AbcMethod Copy(IType type)
         {
             if (!InternalTypeExtensions.HasCopy(type)) return null;
-			var instance = _generator.DefineAbcInstance(type);
+			var instance = _generator.TypeBuilder.BuildInstance(type);
             return Copy(instance);
         }
 
@@ -68,7 +68,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                         //SUPER BUG:
                         //For some times like System.Int64 DefineCopyMethod method can be called before DefineFields
                         //so we should define type fields
-						_generator.DefineFields(type);
+						_generator.TypeBuilder.DefineFields(type);
 
                         const int obj = 1;
                         code.CreateInstance(instance);

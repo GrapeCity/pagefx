@@ -331,7 +331,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 DebugService.DoCancel();
 #endif
                 var type = _initTypes[i];
-				if (!(_generator.DefineType(type) is AbcInstance))
+				if (!(_generator.TypeBuilder.Build(type) is AbcInstance))
                     continue;
                 DefineInitTypeMethod(type, i);
             }

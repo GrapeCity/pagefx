@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
 			if (instance != null)
 				return instance;
 
-			var fieldInstance = generator.DefineAbcInstance(type);
+			var fieldInstance = generator.TypeBuilder.BuildInstance(type);
 
 			instance = abc.DefineEmptyInstance(name, true);
 
