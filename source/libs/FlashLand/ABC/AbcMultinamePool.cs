@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
-using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -11,10 +7,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Represents collection of <see cref="AbcMultiname"/> objects.
     /// </summary>
-    public sealed class AbcMultinamePool : ISwfAtom, ISupportXmlDump, IAbcConstPool, IReadOnlyList<AbcMultiname>
+    public sealed class AbcMultinamePool : AbcConstList<AbcMultiname>
     {
         private readonly AbcFile _abc;
-        private readonly AbcConstList<AbcMultiname> _list = new AbcConstList<AbcMultiname>();
         private AbcMultiname RTQNameL;
         private AbcMultiname RTQNameLA;
 
@@ -25,23 +20,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             Add(mn);
         }
 
-	    #region Public Members
-        public int Count
-        {
-            get { return _list.Count; }
-        }
-
-        public AbcMultiname this[int index]
-        {
-            get { return _list[index]; }
-        }
-
-        public AbcMultiname this[string key]
-        {
-            get { return _list[key]; }
-        }
-
-        public AbcMultiname Define(AbcConstKind kind)
+	    public AbcMultiname Define(AbcConstKind kind)
         {
             switch (kind)
             {
@@ -62,30 +41,26 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return mn;
         }
 
-        public void Add(AbcMultiname mn)
-        {
-            mn.ABC = _abc;
-            _list.Add(mn);
+		protected override void OnAdded(AbcMultiname item)
+		{
+			item.ABC = _abc;
+			
+			switch (item.Kind)
+			{
+				case AbcConstKind.RTQNameL:
+					RTQNameL = item;
+					break;
 
-            switch (mn.Kind)
-            {
-                case AbcConstKind.RTQNameL:
-                    RTQNameL = mn;
-                    break;
+				case AbcConstKind.RTQNameLA:
+					RTQNameLA = item;
+					break;
+			}
 
-                case AbcConstKind.RTQNameLA:
-                    RTQNameLA = mn;
-                    break;
-            }
+			//if (item.Index != 0)
+			//    item.Check();
+		}
 
-            //if (mn.Index != 0)
-            //    mn.Check();
-        }
-        #endregion
-
-        #region IO
-
-        public void Read(SwfReader reader)
+	    public override void Read(SwfReader reader)
         {
             int n = (int)reader.ReadUIntEncoded();
             reader.MultinameCount = n;
@@ -114,79 +89,23 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        public void Write(SwfWriter writer)
-        {
-            int n = Count;
-            if (n <= 1)
-            {
-                writer.WriteUInt8(0);
-            }
-            else
-            {
-                writer.WriteUIntEncoded((uint)n);
-                for (int i = 1; i < n; ++i)
-                {
-                    var mn = this[i];
-                    mn.Write(writer);
-                }
-            }
-        }
-
-    	#endregion
-
-        #region Dump
-        public void DumpXml(XmlWriter writer)
-        {
-            writer.WriteStartElement("multinames");
-            writer.WriteAttributeString("count", Count.ToString());
-            for (int i = 0; i < Count; ++i)
-                this[i].DumpXml(writer, "item");
-            writer.WriteEndElement();
-        }
-        #endregion
-
-        #region IAbcConstPool Members
-        IAbcConst IAbcConstPool.this[int index]
-        {
-            get { return _list[index]; }
-        }
-
-        /// <summary>
-        /// Determines whether given constant is defined in this pool.
-        /// </summary>
-        /// <param name="c">constant to check.</param>
-        /// <returns>true if defined; otherwise, false</returns>
-        public bool IsDefined(IAbcConst c)
-        {
-            return _list.IsDefined((AbcMultiname)c);
-        }
-
-#if PERF
-        public static int CallCount;
-        public static int Time;
-#endif
+		protected override string DumpElementName
+		{
+			get { return "multinames"; }
+		}
 
         /// <summary>
         /// Imports given name.
         /// </summary>
         /// <param name="mname">name to import.</param>
         /// <returns>imported name.</returns>
-        public AbcMultiname Import(AbcMultiname mname)
+        public override AbcMultiname Import(AbcMultiname mname)
         {
             if (mname == null) return null;
             if (IsDefined(mname)) return mname;
             if (mname.IsAny) return this[0];
 
-#if PERF
-            CallCount++;
-            int start = Environment.TickCount;
-#endif
-
             mname = ImportCore(mname);
-
-#if PERF
-            Time += Environment.TickCount - start;
-#endif
 
             return mname;
         }
@@ -196,7 +115,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var kind = attr ? AbcConstKind.QNameA : AbcConstKind.QName;
             string key = AbcMultiname.KeyOf(kind, ns, name);
 
-            var mn = _list[key];
+            var mn = this[key];
             if (mn != null) return mn;
 
             name = _abc.ImportConst(name);
@@ -219,7 +138,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.QNameA:
                     {
                         string key = mname.Key;
-                        var mn = _list[key];
+                        var mn = this[key];
                         if (mn != null) return mn;
 
                         var name = _abc.ImportConst(mname.Name);
@@ -234,7 +153,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.RTQNameA:
                     {
                         string key = mname.Key;
-                        var mn = _list[key];
+                        var mn = this[key];
                         if (mn != null) return mn;
 
                         var name = _abc.ImportConst(mname.Name);
@@ -274,7 +193,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                         }
 
                         string key = mname.Key;
-                        var mn = _list[key];
+                        var mn = this[key];
                         if (mn != null) return mn;
 
                         var name = _abc.ImportConst(mname.Name);
@@ -289,7 +208,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.MultinameLA:
                     {
                         string key = mname.Key;
-                        var mn = _list[key];
+                        var mn = this[key];
                         if (mn != null) return mn;
                         var nss = _abc.ImportConst(mname.NamespaceSet);
                         mname = new AbcMultiname(kind, nss) {Key = key};
@@ -300,7 +219,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 case AbcConstKind.TypeName:
                     {
                         string key = mname.Key;
-                        var mn = _list[key];
+                        var mn = this[key];
                         if (mn != null) return mn;
                         var type = Import(mname.Type);
                         var param = Import(mname.TypeParameter);
@@ -313,35 +232,5 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     return mname;
             }
         }
-
-        /// <summary>
-        /// Imports given constant.
-        /// </summary>
-        /// <param name="c">constant to import.</param>
-        /// <returns>imported constant.</returns>
-        public IAbcConst Import(IAbcConst c)
-        {
-            return Import((AbcMultiname)c);
-        }
-        #endregion
-
-        #region IEnumerable Members
-
-        public IEnumerator<AbcMultiname> GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
-
-        IEnumerator<IAbcConst> IEnumerable<IAbcConst>.GetEnumerator()
-        {
-        	return _list.Cast<IAbcConst>().GetEnumerator();
-        }
-
-    	#endregion
     }
 }

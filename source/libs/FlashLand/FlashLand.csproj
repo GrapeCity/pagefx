@@ -76,6 +76,7 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Abc\AbcAtomList.cs" />
     <Compile Include="Abc\AbcCache.cs" />
     <Compile Include="Abc\AbcClassCollection.cs" />
     <Compile Include="Abc\AbcConst.cs" />

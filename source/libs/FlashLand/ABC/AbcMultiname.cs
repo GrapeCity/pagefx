@@ -622,6 +622,11 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
 
         #region Dump
+		public void DumpXml(XmlWriter writer)
+		{
+			DumpXml(writer, "multiname");
+		}
+
         public void DumpXml(XmlWriter writer, string elementName)
         {
             writer.WriteStartElement(elementName);

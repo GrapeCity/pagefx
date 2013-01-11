@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
 	/// <summary>
 	/// Interfaces ABC constant pool.
 	/// </summary>
-	public interface IAbcConstPool : IEnumerable<IAbcConst>
+	public interface IAbcConstPool
 	{
 		/// <summary>
 		/// Gets number of constants in pool.

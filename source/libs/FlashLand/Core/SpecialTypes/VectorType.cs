@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
             Param = param;
         }
 
-	    public AbcFile ByteCode { get; set; }
+	    public AbcFile Abc { get; set; }
 
 	    public IType Type { get; private set; }
 
@@ -29,9 +29,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
             {
                 if (_name == null)
                 {
-					ByteCode.Generator.TypeBuilder.Build(Param);
+					Abc.Generator.TypeBuilder.Build(Param);
                     var paramType = Param.GetMultiname();
-                    _name = ByteCode.DefineVectorTypeName(paramType);
+                    _name = Abc.DefineVectorTypeName(paramType);
                 }
                 return _name;
             }

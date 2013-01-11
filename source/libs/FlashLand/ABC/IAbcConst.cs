@@ -5,7 +5,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Interfaces ABC constant.
     /// </summary>
-    public interface IAbcConst : ISwfIndexedAtom
+    public interface IAbcConst : ISwfIndexedAtom, ISupportXmlDump
     {
         /// <summary>
         /// Returns kind of the constant.

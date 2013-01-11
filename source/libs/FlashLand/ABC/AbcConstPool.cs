@@ -201,10 +201,5 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             return Import((AbcConst<T>)c);
         }
-
-	    IEnumerator<IAbcConst> IEnumerable<IAbcConst>.GetEnumerator()
-        {
-        	return _list.Cast<IAbcConst>().GetEnumerator();
-        }
     }
 }

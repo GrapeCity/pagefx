@@ -201,9 +201,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return false;
         }
 
-		public void DumpXml(XmlWriter writer, string elementName)
+		public void DumpXml(XmlWriter writer)
         {
-            writer.WriteStartElement(elementName);
+            writer.WriteStartElement("namespace");
             writer.WriteAttributeString("index", Index.ToString());
             writer.WriteAttributeString("name", NameString);
             writer.WriteAttributeString("kind", Kind.ToString());

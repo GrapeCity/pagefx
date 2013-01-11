@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
+using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
-    public sealed class AbcConstList<T> : IReadOnlyList<T>
-        where T : class, IAbcConst
+	public abstract class AbcConstList<T> : IReadOnlyList<T>, ISupportXmlDump, IAbcConstPool
+        where T : class, IAbcConst, new()
     {
         private readonly List<T> _list = new List<T>();
         private readonly Hashtable _index = new Hashtable();
@@ -35,9 +38,16 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             int i = _list.Count;
             item.Index = i;
+
             _list.Add(item);
             _index[item.Key] = i;
+
+			OnAdded(item);
         }
+
+		protected virtual void OnAdded(T item)
+		{
+		}
 
         public int IndexOf(string key)
         {
@@ -54,6 +64,58 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return _list[i] == item;
         }
 
+		public virtual void Read(SwfReader reader)
+		{
+			int n = (int)reader.ReadUIntEncoded();
+			for (int i = 1; i < n; ++i)
+			{
+				var item = new T();
+				item.Read(reader);
+				Add(item);
+			}
+		}
+
+		public virtual void Write(SwfWriter writer)
+		{
+			int n = Count;
+			if (n <= 1)
+			{
+				writer.WriteUInt8(0);
+			}
+			else
+			{
+				writer.WriteUIntEncoded((uint)n);
+				for (int i = 1; i < n; ++i)
+				{
+					this[i].Write(writer);
+				}
+			}
+		}
+
+	    protected virtual string DumpElementName
+	    {
+			get { return typeof(T).Name + "pool"; }
+	    }
+
+		public void DumpXml(XmlWriter writer)
+		{
+			if (Count <= 1) return;
+
+			DumpXml(writer, DumpElementName);
+		}
+
+		public void DumpXml(XmlWriter writer, string elementName)
+		{
+			if (Count <= 1) return;
+			writer.WriteStartElement(elementName);
+			writer.WriteAttributeString("count", Count.ToString());
+			foreach (var item in _list)
+			{
+				item.DumpXml(writer);
+			}
+			writer.WriteEndElement();
+		}
+
 	    public IEnumerator<T> GetEnumerator()
         {
             return _list.GetEnumerator();
@@ -63,5 +125,22 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             return _list.GetEnumerator();
         }
+
+		IAbcConst IAbcConstPool.this[int index]
+		{
+			get { return this[index]; }
+		}
+
+		bool IAbcConstPool.IsDefined(IAbcConst c)
+		{
+			return IsDefined((T)c);
+		}
+
+		IAbcConst IAbcConstPool.Import(IAbcConst c)
+		{
+			return Import((T)c);
+		}
+
+		public abstract T Import(T item);
     }
 }

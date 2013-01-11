@@ -26,7 +26,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
 	    public IType Param { get; private set; }
 
-	    public AbcFile ByteCode { get; set; }
+	    public AbcFile Abc { get; set; }
 
 	    public AbcMultiname Name
         {
@@ -36,8 +36,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
                 //TODO: Process builtin vector types (Vector$double, Vector$int, Vector$uint)
 
-                var param = ByteCode.GetTypeName(Param, true);
-                _name = ByteCode.DefineVectorTypeName(param);
+                var param = Abc.GetTypeName(Param, true);
+                _name = Abc.DefineVectorTypeName(param);
 
                 return _name;
             }

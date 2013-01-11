@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         /// </summary>
         internal SwfCompiler SwfCompiler;
 
-        public AbcGenMode Mode;
+        public AbcGenerationMode Mode;
 		
 	    public IAssembly AppAssembly { get; private set; }
 
@@ -317,7 +317,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             {
                 SwfCompiler.AppFrame = Abc;
                 if (SwfCompiler.IsSwc)
-                    Mode = AbcGenMode.Full;
+                    Mode = AbcGenerationMode.Full;
             }
 
             NewApi = new AbcCode(Abc);
@@ -362,11 +362,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #endif
             switch (Mode)
             {
-                case AbcGenMode.Default:
+                case AbcGenerationMode.Default:
                     BuildAppDefault();
                     break;
 
-                case AbcGenMode.Full:
+                case AbcGenerationMode.Full:
                     BuildAssemblyTypes();
                     break;
             }

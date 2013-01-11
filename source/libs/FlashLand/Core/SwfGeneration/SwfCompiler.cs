@@ -561,27 +561,27 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 
         private void GenerateFlexSystemManagerFrame()
         {
-            if (IsSwc) return;
+	        if (IsSwc) return;
+	        if (!IsFlexApplication) return;
 
-	        var managerFullName = FlexSystemManager.BuildMxFrame();
-        	if (managerFullName != null)
-            {
-                Debug.Assert(FrameWithFlexSystemManager != null);
-                Swf.FrameCount++;
+	        var managerFullName = FlexSystemManager.BuildFrame();
 
-                Swf.SetFrameLabel("System Manager");
+	        Debug.Assert(FrameWithFlexSystemManager != null);
+	        Swf.FrameCount++;
 
-                var symTable = new SwfTagSymbolClass();
-                AddAbcTag(FrameWithFlexSystemManager);
-                Assets.ImportLateAssets();
-				Assets.FlushAssets(symTable);
+	        Swf.SetFrameLabel("System Manager");
 
-				symTable.AddSymbol(0, managerFullName);
-                Swf.Tags.Add(symTable);
-                Swf.ShowFrame();
-            }
+	        var symTable = new SwfTagSymbolClass();
+	        AddAbcTag(FrameWithFlexSystemManager);
+	        Assets.ImportLateAssets();
+	        Assets.FlushAssets(symTable);
+
+	        symTable.AddSymbol(0, managerFullName);
+	        Swf.Tags.Add(symTable);
+	        Swf.ShowFrame();
         }
-        #endregion
+
+	    #endregion
 
         #region Late Methods
         private readonly AbcLateMethodCollection _lateMethods = new AbcLateMethodCollection();
@@ -601,9 +601,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         }
         #endregion
 
-		#region ImportType Helpers
-
-		internal AbcInstance ImportType(AbcFile abc, string fullname)
+	    internal AbcInstance ImportType(AbcFile abc, string fullname)
 		{
 			return ImportType(abc, fullname, false);
 		}
@@ -624,17 +622,5 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 				throw;
 			}
 		}
-
-		internal AbcInstance ImportType(AbcFile abc, string fullname, ref AbcInstance field)
-		{
-			return ImportType(abc, fullname, ref field, false);
-		}
-
-		internal AbcInstance ImportType(AbcFile abc, string fullname, ref AbcInstance field, bool safe)
-		{
-			return field ?? (field = ImportType(abc, fullname, safe));
-		}
-
-		#endregion
     }
 }

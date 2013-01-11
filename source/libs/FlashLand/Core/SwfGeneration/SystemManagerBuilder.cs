@@ -432,11 +432,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         }
         #endregion
 
-		public string BuildMxFrame()
+		public string BuildFrame()
         {
-			if (!_compiler.IsFlexApplication)
-				return null;
-
 			_sysManagerName = "$" + _compiler.FlexAppPrefix + MxMgrNameSuffix;
 
             AbcFile.AllowExternalLinking = false;

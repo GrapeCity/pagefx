@@ -70,7 +70,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             var abcSubject = type.Data as IAbcFileSubject;
             if (abcSubject != null)
             {
-                abcSubject.ByteCode = Abc;
+                abcSubject.Abc = Abc;
                 return abcSubject;
             }
 
@@ -103,7 +103,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             abcSubject = type.Data as IAbcFileSubject;
             if (abcSubject != null)
-                abcSubject.ByteCode = Abc;
+                abcSubject.Abc = Abc;
 
             return type.Data;
         }
@@ -559,7 +559,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (field.HasEmbedAttribute()) return true;
             if (GenericType.HasGenericParams(field.Type)) return false;
             if (field.IsExposed()) return true;
-			if (_generator.Mode == AbcGenMode.Full) return true;
+			if (_generator.Mode == AbcGenerationMode.Full) return true;
             if (field.IsStatic) return false;
             return true;
         }
@@ -580,7 +580,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             {
                 if (method.IsInternalCall) continue;
                 if (GenericType.IsGenericContext(method)) continue;
-				if (_generator.Mode == AbcGenMode.Full || method.IsExposed())
+				if (_generator.Mode == AbcGenerationMode.Full || method.IsExposed())
 					_generator.MethodBuilder.Build(method);
             }
         }

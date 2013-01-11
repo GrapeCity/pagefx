@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Xml;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -134,5 +135,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 h ^= obj.GetHashCode();
             return h;
         }
+
+	    public void DumpXml(XmlWriter writer)
+	    {
+	    }
     }
 }

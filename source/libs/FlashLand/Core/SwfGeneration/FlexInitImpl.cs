@@ -112,12 +112,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             _effects.Add(new KeyValuePair<string, string>(name, eventName));
         }
 
-		
-
     	internal AbcInstance DefineFlexInitMixin(AbcFile app)
         {
-            Debug.Assert(_compiler.IsFlexApplication);
-
 			var flexModuleFactoryInterface = FlexTypes.GetFlexModuleFactoryInterface(app);
 			var childManagerInstance = FlexTypes.GetChildManagerInstance(app);
     		var flex4 = childManagerInstance != null;

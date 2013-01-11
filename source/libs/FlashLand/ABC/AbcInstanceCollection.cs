@@ -1,19 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
-using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
-	public sealed class AbcInstanceCollection : IReadOnlyList<AbcInstance>, ISupportXmlDump
+	public sealed class AbcInstanceCollection : AbcAtomList<AbcInstance>
 	{
 		private readonly AbcFile _abc;
-		private readonly Hashtable _cache = new Hashtable();
-		private readonly List<AbcInstance> _list = new List<AbcInstance>();
+		private readonly Dictionary<string,AbcInstance> _cache = new Dictionary<string, AbcInstance>();
 
 		public AbcInstanceCollection(AbcFile abc)
 		{
@@ -23,46 +19,23 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			_abc = abc;
 		}
 
-		public int Count
+		protected override void OnAdded(AbcInstance item)
 		{
-			get { return _list.Count; }
+			item.Abc = _abc;
+			_cache.Add(item.FullName, item);
 		}
 
-		public AbcInstance this[int index]
+		public override void Clear()
 		{
-			get { return _list[index]; }
-		}
+			base.Clear();
 
-		public void Add(AbcInstance instance)
-		{
-			if (instance == null)
-				throw new ArgumentNullException("instance");
-
-			instance.Index = Count;
-			instance.Abc = _abc;
-
-			_cache[instance.FullName] = instance;
-			_list.Add(instance);
-		}
-
-		public void Clear()
-		{
-			_list.Clear();
 			_cache.Clear();
-		}
-
-		public bool IsDefined(AbcInstance instance)
-		{
-			if (instance == null) return false;
-			int index = instance.Index;
-			if (index < 0 || index >= Count)
-				return false;
-			return this[index] == instance;
 		}
 
 		private AbcInstance Find(string fullname)
 		{
-			return _cache[fullname] as AbcInstance;
+			AbcInstance instance;
+			return _cache.TryGetValue(fullname, out instance) ? instance : null;
 		}
 
 		public AbcInstance Find(AbcMultiname mname)
@@ -107,31 +80,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			return Find(name) != null;
 		}
 
-		public void Read(int n, SwfReader reader)
+		protected override bool DumpDisabled
 		{
-			for (int i = 0; i < n; ++i)
-			{
-				var instance = new AbcInstance();
-				instance.Read(reader);
-				Add(instance);
-			}
+			get { return !AbcDumpService.DumpInstances; }
 		}
 
-		public void Write(SwfWriter writer)
+		protected override string DumpElementName
 		{
-			int n = Count;
-			for (int i = 0; i < n; ++i)
-				this[i].Write(writer);
-		}
-
-		public void DumpXml(XmlWriter writer)
-		{
-			if (!AbcDumpService.DumpInstances) return;
-			writer.WriteStartElement("instances");
-			writer.WriteAttributeString("count", XmlConvert.ToString(Count));
-			foreach (var i in this)
-				i.DumpXml(writer);
-			writer.WriteEndElement();
+			get { return "instances"; }
 		}
 
 		public void DumpDirectory(string dir)
@@ -140,14 +96,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 				i.DumpDirectory(dir);
 		}
 
-		public IEnumerator<AbcInstance> GetEnumerator()
+		protected override void WriteCount(SwfWriter writer)
 		{
-			return _list.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
 		}
 	}
 }

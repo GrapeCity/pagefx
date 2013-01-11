@@ -9,7 +9,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
         UInt64
     }
 
-    internal enum AbcGenMode
+    internal enum AbcGenerationMode
     {
         Default,
         Full,

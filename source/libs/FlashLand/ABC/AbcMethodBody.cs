@@ -32,17 +32,20 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Represents body of ABC method.
     /// </summary>
-    public sealed class AbcMethodBody : ISwfAtom, ISupportXmlDump, IAbcTraitProvider
+    public sealed class AbcMethodBody : ISwfIndexedAtom, ISupportXmlDump, IAbcTraitProvider
     {
 	    public AbcMethodBody()
         {
             _traits = new AbcTraitCollection(this);
+		    Index = -1;
         }
 
         public AbcMethodBody(AbcMethod method) : this()
         {
             Method = method;
         }
+
+		public int Index { get; set; }
 
 	    /// <summary>
         /// Gets or sets associated method.

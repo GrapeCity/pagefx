@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Represents namespace set
     /// </summary>
-    public sealed class AbcNamespaceSet : List<AbcNamespace>, ISupportXmlDump, IAbcConst, IReadOnlyList<AbcNamespace>
+    public sealed class AbcNamespaceSet : List<AbcNamespace>, IAbcConst, IReadOnlyList<AbcNamespace>
     {
 	    public AbcNamespaceSet()
         {
