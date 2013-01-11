@@ -8,6 +8,8 @@ using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 {
+	//TODO: use reflection to parse options by metadata
+
     internal sealed class SwfCompilerOptions
     {
         public const string DefaultDebugPassword = "$1$22$D52fy3bya4.1fRX17bpC00";

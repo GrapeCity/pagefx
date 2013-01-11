@@ -224,13 +224,13 @@
     <Compile Include="Core\SpecialTypes\IVectorType.cs" />
     <Compile Include="Core\SpecialTypes\VectorInstance.cs" />
     <Compile Include="Core\SpecialTypes\VectorType.cs" />
-    <Compile Include="Core\SwfGeneration\Assets.cs" />
-    <Compile Include="Core\SwfGeneration\FlexInitMixin.cs" />
-    <Compile Include="Core\SwfGeneration\Main.cs" />
-    <Compile Include="Core\SwfGeneration\Mixins.cs" />
-    <Compile Include="Core\SwfGeneration\MXFrame.cs" />
+    <Compile Include="Core\SwfGeneration\AssetCompiler.cs" />
+    <Compile Include="Core\SwfGeneration\FlexInitImpl.cs" />
+    <Compile Include="Core\SwfGeneration\FlexTypes.cs" />
+    <Compile Include="Core\SwfGeneration\SwfCompiler.cs" />
+    <Compile Include="Core\SwfGeneration\MixinManager.cs" />
+    <Compile Include="Core\SwfGeneration\SystemManagerBuilder.cs" />
     <Compile Include="Core\SwfGeneration\Options.cs" />
-    <Compile Include="Core\SwfGeneration\StyleMixins.cs" />
     <Compile Include="Core\SwfGeneration\SwcCatalog.cs" />
     <Compile Include="Core\SwfGeneration\SwcScripts.cs" />
     <Compile Include="Core\Tools\AssemblyBuilder.cs" />
@@ -244,7 +244,6 @@
     <Compile Include="ISupportXmlDump.cs" />
     <Compile Include="Abc\QName.cs" />
     <Compile Include="Core\ResourceBundles\ResourceBundles.cs" />
-    <Compile Include="Abc\TypeRef.cs" />
     <Compile Include="Flv\Enums.cs" />
     <Compile Include="Flv\FlvAudioTag.cs" />
     <Compile Include="Flv\FlvFile.cs" />

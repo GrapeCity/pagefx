@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,79 +10,52 @@ using DataDynamics.PageFX.FlashLand.IL;
 namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 {
     //Contains generation of MX preloading frame where flex environment is initialized.
-    internal partial class SwfCompiler
+	internal sealed class SystemManagerBuilder
 	{
-		#region ImportType Helpers
+		private readonly SwfCompiler _compiler;
+		private AbcInstance _mxSystemManager;
+		private const string MxMgrNameSuffix = "_PFX_SYSMGR$";
+		private string _sysManagerName;
 
-		private AbcInstance ImportType(AbcFile abc, string fullname)
+		public SystemManagerBuilder(SwfCompiler compiler)
 		{
-			return ImportType(abc, fullname, false);
+			_compiler = compiler;
 		}
 
-        private AbcInstance ImportType(AbcFile abc, string fullname, bool safe)
-        {
-        	try
-        	{
-				return abc.ImportType(AppAssembly, fullname);
-        	}
-        	catch (Exception)
-        	{
-        		if (safe)
-        		{
-					CompilerReport.Add(Warnings.UnableImportType, fullname);
-        			return null;
-        		}
-        		throw;
-        	}
-        }
-
-		private AbcInstance ImportType(AbcFile abc, string fullname, ref AbcInstance field)
+		private FlexTypes FlexTypes
 		{
-			return ImportType(abc, fullname, ref field, false);
+			get { return _compiler.FlexTypes; }
 		}
 
-		private AbcInstance ImportType(AbcFile abc, string fullname, ref AbcInstance field, bool safe)
-		{
-			return field ?? (field = ImportType(abc, fullname, safe));
-		}
-
-		#endregion
-
-		#region BuildMxSystemManager
 		private bool HasCrossDomainRsls
         {
-            get
-            {
-                return _options.RslList.Any(rsl => rsl.IsCrossDomain);
-            }
+            get { return _compiler.Options.RslList.Any(rsl => rsl.IsCrossDomain); }
         }
 
-        private AbcInstance _mxSystemManager;
-
-        AbcMultiname DefineMxSystemManagerName(AbcFile abc)
+        private AbcMultiname DefineSystemManagerName(AbcFile abc)
         {
-            string ns = RootNamespace;
-            return abc.DefineName(QName.Package(ns, NameMxSysManager));
+			string ns = _compiler.RootNamespace;
+            return abc.DefineName(QName.Package(ns, _sysManagerName));
         }
 
-    	void BuildMxSystemManager(AbcFile abc)
+    	private void BuildSystemManager(AbcFile abc)
         {
-            var superType = ImportType(abc, "mx.managers.SystemManager");
-        	var flexModuleFactoryInterface = GetFlexModuleFactoryInterface(abc);
+			var superType = _compiler.ImportType(abc, "mx.managers.SystemManager");
+        	var flexModuleFactoryInterface = FlexTypes.GetFlexModuleFactoryInterface(abc);
 
             if (HasCrossDomainRsls)
             {
                 // Cause the CrossDomainRSLItem class to be linked into this application.
-                var crossDomainRSLItem = ImportType(abc, "mx.core.CrossDomainRSLItem");
+				var crossDomainRSLItem = _compiler.ImportType(abc, "mx.core.CrossDomainRSLItem");
                 Debug.Assert(crossDomainRSLItem != null);
             }
             
             var instance = new AbcInstance(true)
                                {
-                                   Name = DefineMxSystemManagerName(abc),
+                                   Name = DefineSystemManagerName(abc),
                                    Flags = AbcClassFlags.FinalSealed,
                                    //ProtectedNamespace = abc.DefineProtectedNamespace(NameMxSysManager),
-                                   Type = TypeFlexApp,
+								   Type = _compiler.FlexAppType,
                                    BaseTypeName = superType.Name,
                                    BaseInstance = superType
                                };
@@ -109,9 +81,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             abc.DefineEmptyScript();
         }
 
-		#endregion
-
-        #region BuildSystemManagerCreate
+		#region BuildSystemManagerCreate
         /* Base Method Code
             public function create(... params):Object
 	        {
@@ -246,7 +216,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 
                         //if (instance is mx.core.IFlexModule)
                         code.GetLocal(varInstance);
-                        var flexModule = ImportType(abc, MX.IFlexModule);
+						var flexModule = _compiler.ImportType(abc, MX.IFlexModule);
                         code.Getlex(flexModule);
                         code.Add(InstructionCode.Istypelate);
                         var gotoReturn = code.IfFalse();
@@ -276,7 +246,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             if (_cacheInfoObject)
             {
                 var method = instance.DefineMethod(Sig.@this("$info$", objType), null);
-                AddLateMethod(method, BuildSystemManagerInfo);
+				_compiler.AddLateMethod(method, BuildSystemManagerInfo);
 
                 var infoField = instance.DefineSlot("__info", AvmTypeCode.Object);
 
@@ -302,7 +272,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             else
             {
                 var method = instance.DefineMethod(Sig.@virtual("info", objType).@override(), null);
-                AddLateMethod(method, BuildSystemManagerInfo);
+                _compiler.AddLateMethod(method, BuildSystemManagerInfo);
             }
         }
 
@@ -310,7 +280,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         {
             var list = new List<string>();
             var hash = new Hashtable();
-            foreach (var abc in AbcFrames)
+            foreach (var abc in _compiler.AbcFrames)
             {
                 foreach (var instance in abc.Instances)
                 {
@@ -332,10 +302,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         {
 			get
 			{
-				var type = TypeFlexApp;
+				var type = _compiler.FlexAppType;
 				if (type == null) return null;
 
-				string ns = type.GetTypeNamespace(RootNamespace);
+				string ns = type.GetTypeNamespace(_compiler.RootNamespace);
 				return string.IsNullOrEmpty(ns)
 				       	? type.Name
 				       	: ns + "::" + type.Name;
@@ -348,8 +318,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 
             code.PushThisScope();
 
-			var cdRsls = _options.RslList.Where(x => x.IsCrossDomain).ToList();
-			var rsls = _options.RslList.Where(x => !x.IsCrossDomain).ToList();
+			var cdRsls = _compiler.Options.RslList.Where(x => x.IsCrossDomain).ToList();
+			var rsls = _compiler.Options.RslList.Where(x => !x.IsCrossDomain).ToList();
             
             if (cdRsls.Count > 0)
             {
@@ -366,7 +336,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             }
 
             code.PushString("compiledLocales");
-            code.PushStringArray(Locales);
+			code.PushStringArray(_compiler.Locales);
             ++propertyCount;
 
             var list = GetResourceBundleNames();
@@ -396,7 +366,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 			code.PushBool(false);
 			++propertyCount;
 
-            list = _mixinNames;
+			list = _compiler.Mixins.MixinNames;
             if (list != null && list.Count > 0)
             {
                 code.PushString("mixins");
@@ -462,34 +432,28 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         }
         #endregion
 
-        #region BuildMxFrame
-        const string MxMgrNameSuffix = "_PFX_SYSMGR$";
-        string MxAppPrefix;
-        string NameMxSysManager;
-
-        bool BuildMxFrame()
+		public string BuildMxFrame()
         {
-            if (!IsFlexApplication) return false;
+			if (!_compiler.IsFlexApplication)
+				return null;
 
-            MxAppPrefix = _typeFlexApp.FullName.Replace('.', '_');
-            NameMxSysManager = "$" + MxAppPrefix + MxMgrNameSuffix;
+			_sysManagerName = "$" + _compiler.FlexAppPrefix + MxMgrNameSuffix;
 
             AbcFile.AllowExternalLinking = false;
 
-            FrameWithFlexSystemManager = new AbcFile
+			_compiler.FrameWithFlexSystemManager = new AbcFile
                           {
                               Name = "MX Frame",
-                              SwfCompiler = this
+                              SwfCompiler = _compiler
                           };
 
-            BuildMxSystemManager(FrameWithFlexSystemManager);
+			BuildSystemManager(_compiler.FrameWithFlexSystemManager);
 
-            FrameWithFlexSystemManager.Finish();
+			_compiler.FrameWithFlexSystemManager.Finish();
 
             AbcFile.AllowExternalLinking = true;
 
-            return true;
+			return _mxSystemManager.FullName;
         }
-        #endregion
-    }
+	}
 }

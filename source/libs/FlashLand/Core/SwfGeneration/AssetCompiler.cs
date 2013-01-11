@@ -12,17 +12,27 @@ using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 {
-    internal partial class SwfCompiler
+    internal sealed class AssetCompiler
     {
-        private readonly Hashtable _charCache = new Hashtable();
+	    private readonly SwfCompiler _compiler;
+	    private readonly Hashtable _charCache = new Hashtable();
 		private readonly Hashtable _imageCache = new Hashtable();
 		private readonly SwfAssetCollection _symbols = new SwfAssetCollection();
 		private readonly SwfAssetCollection _exports = new SwfAssetCollection();
 
-        #region Image Assets
-        public Image GetImageResoucre(string source)
+		public AssetCompiler(SwfCompiler compiler)
+		{
+			_compiler = compiler;
+		}
+
+	    private SwfMovie Swf
+	    {
+			get { return _compiler.Swf; }
+	    }
+
+	    private Image ResolveImageResoucre(string source)
         {
-            var res = AppAssembly.FindResource(source);
+            var res = _compiler.AppAssembly.FindResource(source);
             if (res == null)
                 throw Errors.SWF.UnableToFindImageResource.CreateException(source);
 
@@ -43,7 +53,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             var c = _imageCache[source] as ISwfCharacter;
             if (c == null)
             {
-                var image = GetImageResoucre(source);
+                var image = ResolveImageResoucre(source);
                 c = creator(image);
                 _imageCache[source] = c;
             }
@@ -81,15 +91,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             else
                 DefineBitmapAsset(image, instance);
         }
-        #endregion
 
-        #region ImportAsset
-        /// <summary>
+	    /// <summary>
         /// Imports embedded asset.
         /// </summary>
         /// <param name="embed">contains info to locate asset to import.</param>
         /// <returns></returns>
-        public SwfAsset ImportAsset(Embed embed)
+        public SwfAsset Import(Embed embed)
         {
             if (embed == null)
                 throw new ArgumentNullException("embed");
@@ -108,10 +116,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
                 return embed.Asset;
             }
 
-            return ImportAssetCore(embed);
+            return ImportCore(embed);
         }
 
-        private SwfAsset ImportAssetCore(Embed embed)
+        private SwfAsset ImportCore(Embed embed)
         {
             var c = ImportCharacter(embed.Movie, embed.Asset);
             return AddSymbol(c, embed.Instance);
@@ -152,7 +160,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         private readonly List<Embed> _lateAssets = new List<Embed>();
         private static readonly bool DeferredAssetImport = true;
 
-        private void ImportLateAssets()
+        public void ImportLateAssets()
         {
             if (_lateAssets.Count > 0)
             {
@@ -160,7 +168,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
                 {
                     foreach (var embed in _lateAssets)
                     {
-                        ImportAssetCore(embed);
+                        ImportCore(embed);
                     }
                 }
                 else
@@ -170,7 +178,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 						var embed = _lateAssets.FirstOrDefault(e => e.Asset.Name == name);
                         if (embed != null)
                         {
-                            ImportAssetCore(embed);
+                            ImportCore(embed);
                         }
                     }
                 }
@@ -187,9 +195,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             if (obj == null)
                 throw Errors.SWF.TagIsNotCharacter.CreateException();
         }
-        #endregion
 
-		private SwfAsset AddSymbol(ISwfCharacter obj, AbcInstance instance)
+	    private SwfAsset AddSymbol(ISwfCharacter obj, AbcInstance instance)
         {
             if (obj == null)
                 throw new ArgumentNullException("obj");
@@ -210,7 +217,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         }
 
         //NOTE: assets should be defined before ABC file.
-        private void FlushAssets(SwfTagSymbolClass table)
+        public void FlushAssets(SwfTagSymbolClass table)
         {
             if (_exports.Count > 0)
             {

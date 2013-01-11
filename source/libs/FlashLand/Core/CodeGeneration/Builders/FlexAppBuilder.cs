@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
     	public void DefineMembers(AbcInstance instance)
         {
             if (!_generator.IsFlexApplication) return;
-			if (!ReferenceEquals(instance.Type, _generator.SwfCompiler.TypeFlexApp)) return;
+			if (!ReferenceEquals(instance.Type, _generator.SwfCompiler.FlexAppType)) return;
 
             if (AbcGenConfig.FlexAppCtorAsHandler)
                 DefineFlexAppInitializer(instance);

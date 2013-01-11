@@ -34,14 +34,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (MimeTypes.IsBitmap(type))
             {
                 var instance = BuildBitmapAsset(trait);
-				_generator.SwfCompiler.DefineBitmapAsset(embed.Source, instance);
+				_generator.SwfCompiler.Assets.DefineBitmapAsset(embed.Source, instance);
                 return;
             }
 
             if (MimeTypes.IsJpeg(type))
             {
                 var instance = BuildBitmapAsset(trait);
-				_generator.SwfCompiler.DefineJpegAsset(embed.Source, instance);
+				_generator.SwfCompiler.Assets.DefineJpegAsset(embed.Source, instance);
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	    public AbcInstance BuildBitmapAsset(AbcMultiname name, Image image, bool jpeg)
         {
             var instance = BuildAssetInstance(name, GetBitmapAssetSuperName());
-			_generator.SwfCompiler.DefineBitmapAsset(image, instance, jpeg);
+			_generator.SwfCompiler.Assets.DefineBitmapAsset(image, instance, jpeg);
             return instance;
         }
 

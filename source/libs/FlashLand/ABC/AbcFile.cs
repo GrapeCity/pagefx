@@ -265,9 +265,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (Generator != null)
                     return Generator.AppAssembly;
-                if (_sfc != null)
-                    return _sfc.AppAssembly;
-                return null;
+				return SwfCompiler != null ? SwfCompiler.AppAssembly : null;
             }
         }
 
@@ -398,6 +396,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         #endregion
         
         #region IO
+
         #region Read
         public string Path
         {

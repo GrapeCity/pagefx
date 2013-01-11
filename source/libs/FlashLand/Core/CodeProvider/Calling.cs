@@ -572,7 +572,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 if (!_method.IsConstructor) return false;
                 if (_method.Parameters.Count > 0) return false;
                 if (!IsMxApp) return false;
-                return ReferenceEquals(_declType, _generator.SwfCompiler.TypeFlexApp);
+                return ReferenceEquals(_declType, _generator.SwfCompiler.FlexAppType);
             }
         }
 

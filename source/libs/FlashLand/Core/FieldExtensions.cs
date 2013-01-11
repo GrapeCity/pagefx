@@ -10,10 +10,12 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			return attr != null;
 		}
 
+		//TODO: do not rename, do this on loading phase or make it computable
+
 		/// <summary>
 		/// For enums we will use m_value name for internal value.
 		/// </summary>
-		/// <param name="type"></param>
+		/// <param name="field"></param>
 		/// <returns></returns>
 		public static void Rename(this IField field)
 		{

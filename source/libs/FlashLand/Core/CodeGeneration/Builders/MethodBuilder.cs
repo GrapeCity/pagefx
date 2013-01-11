@@ -785,7 +785,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (!_generator.IsSwf) return false;
             if (!method.IsConstructor) return false;
             if (method.Parameters.Count != 0) return false;
-            return ReferenceEquals(method.DeclaringType, _generator.SwfCompiler.TypeFlexApp);
+            return ReferenceEquals(method.DeclaringType, _generator.SwfCompiler.FlexAppType);
         }
     }
 }

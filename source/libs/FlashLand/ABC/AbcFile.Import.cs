@@ -894,7 +894,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     var sfc = SwfCompiler;
                     if (sfc != null)
                     {
-                        sfc.RegisterMixin(instance);
+                        sfc.Mixins.RegisterMixinClass(instance);
                     }
                 }
                 return true;
@@ -909,7 +909,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     if (klass != null)
                     {
                         string alias = e["alias"];
-                        sfc.RegisterRemoteClass(alias, klass.Instance);
+                        sfc.FlexInit.RegisterRemoteClass(alias, klass.Instance);
                     }
                 }
                 return true;
@@ -922,7 +922,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 {
                     string effectName = e["name"];
                     string effectEvent = e["event"];
-                    sfc.RegisterEffectTrigger(effectName, effectEvent);
+					sfc.FlexInit.RegisterEffectTrigger(effectName, effectEvent);
                 }
                 return true;
             }
@@ -938,7 +938,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     var sfc = SwfCompiler;
                     if (sfc != null)
                     {
-                        sfc.AddStyleClient(klass.Instance);
+                        sfc.Mixins.AddStyleClient(klass.Instance);
                     }
                 }
             }
@@ -970,7 +970,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 throw Errors.NotSwf.CreateException();
             
             var sfc = SwfCompiler;
-            var asset = sfc.ImportAsset(embed);
+            var asset = sfc.Assets.Import(embed);
 
         	return new Embed(embed) {Asset = asset, Movie = sfc.Swf};
         }

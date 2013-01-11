@@ -127,7 +127,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				if (IsSwf)
 				{
 					if (IsFlexApplication)
-						return SwfCompiler.TypeFlexApp;
+						return SwfCompiler.FlexAppType;
 					var root = RootSprite.Instance;
 					if (root != null)
 						return root.Type;
@@ -410,7 +410,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             if (IsFlexApplication)
             {
-                var type = SwfCompiler.TypeFlexApp;
+                var type = SwfCompiler.FlexAppType;
                 if (type == null)
                     throw new InvalidOperationException();
 				TypeBuilder.Build(type);

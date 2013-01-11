@@ -8,9 +8,9 @@ using DataDynamics.PageFX.FlashLand.IL;
 namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 {
 	// This module builds flex mixin to initialize flex infrastructure
-    internal partial class SwfCompiler
+	internal sealed class FlexInitImpl
 	{
-    	#region Inherit Style Names
+		#region Inherit Style Names
 		//TODO: Get inheriting styles handling Style tag
     	private static readonly string[] CommonInheritStyles =
     		{
@@ -82,16 +82,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
     		};
 		#endregion
 
+		private readonly SwfCompiler _compiler;
 		private readonly List<KeyValuePair<string, AbcMultiname>> _remoteClasses = new List<KeyValuePair<string, AbcMultiname>>();
 		private readonly List<KeyValuePair<string, string>> _effects = new List<KeyValuePair<string, string>>();
 
-		private AbcInstance _flexModuleFactoryInterface;
-		private AbcInstance _childManagerInstance;
-    	private AbcInstance _styleManagerInstance;
-    	private AbcInstance _styleManager2Interface;
-		private AbcInstance _styleManagerImpl;
+		public FlexInitImpl(SwfCompiler compiler)
+		{
+			_compiler = compiler;
+		}
 
-    	public void RegisterRemoteClass(string alias, AbcMultiname name)
+		private FlexTypes FlexTypes
+		{
+			get { return _compiler.FlexTypes; }
+		}
+
+		public void RegisterRemoteClass(string alias, AbcMultiname name)
         {
             if (name == null) throw new ArgumentNullException("name");
             _remoteClasses.Add(new KeyValuePair<string, AbcMultiname>(alias, name));
@@ -107,41 +112,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             _effects.Add(new KeyValuePair<string, string>(name, eventName));
         }
 
-		private AbcInstance GetFlexModuleFactoryInterface(AbcFile app)
-		{
-			return ImportType(app, MX.IFlexModuleFactory, ref _flexModuleFactoryInterface);
-		}
+		
 
-    	private AbcInstance GetChildManagerInstance(AbcFile app)
-    	{
-			return ImportType(app, MX.ChildManager, ref _childManagerInstance, true);
-    	}
-
-		private AbcInstance GetStyleManagerInstance(AbcFile app)
-		{
-			return ImportType(app, MX.StyleManager, ref _styleManagerInstance);
-		}
-
-		private AbcInstance GetStyleManager2Interface(AbcFile app)
-		{
-			return ImportType(app, MX.IStyleManager2, ref _styleManager2Interface);
-		}
-
-		private AbcInstance GetStyleManagerImpl(AbcFile app)
-		{
-			return ImportType(app, MX.StyleManagerImpl, ref _styleManagerImpl);
-		}
-
-    	private AbcInstance DefineFlexInitMixin(AbcFile app)
+    	internal AbcInstance DefineFlexInitMixin(AbcFile app)
         {
-            Debug.Assert(IsFlexApplication);
+            Debug.Assert(_compiler.IsFlexApplication);
 
-            var flexModuleFactoryInterface = GetFlexModuleFactoryInterface(app);
-			var childManagerInstance = GetChildManagerInstance(app);
+			var flexModuleFactoryInterface = FlexTypes.GetFlexModuleFactoryInterface(app);
+			var childManagerInstance = FlexTypes.GetChildManagerInstance(app);
     		var flex4 = childManagerInstance != null;
 
-			string name = "_FlexInit_" + MxAppPrefix;
-			string ns = RootNamespace;
+			string name = "_FlexInit_" + _compiler.FlexAppPrefix;
+			string ns = _compiler.RootNamespace;
 
     		var instance = new AbcInstance(true)
     		               	{
@@ -175,8 +157,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
     						CreateInstance(code, childManagerInstance, moduleFactoryArg);
     						code.Pop();
 
-    						var styleManager2 = GetStyleManager2Interface(app);
-    						var styleManagerImpl = GetStyleManagerImpl(app);
+    						var styleManager2 = FlexTypes.GetStyleManager2Interface(app);
+							var styleManagerImpl = FlexTypes.GetStyleManagerImpl(app);
     						CreateInstance(code, styleManagerImpl, moduleFactoryArg);
     						code.Coerce(styleManager2);
     						code.SetLocal(styleManagerVar);
@@ -192,7 +174,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
     					}
     					else
     					{
-    						pushStyleManager = () => code.Getlex(GetStyleManagerInstance(app));
+							pushStyleManager = () => code.Getlex(FlexTypes.GetStyleManagerInstance(app));
     					}
 
     					RegisterInheritStyles(app, code, pushStyleManager, flex4);
@@ -223,7 +205,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
     	{
     		if (_effects.Count == 0) return;
 
-    		var effectManager = ImportType(app, "mx.effects.EffectManager");
+    		var effectManager = _compiler.ImportType(app, "mx.effects.EffectManager");
     		var mn = app.DefineName(QName.MxInternal("registerEffectTrigger"));
     		foreach (var pair in _effects)
     		{
