@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         public bool HasCopy(IType type)
         {
-            return InternalTypeExtensions.HasCopy(type);
+            return type.SupportsCopyMethods();
         }
 
         //stack transition: ..., this, value -> ...

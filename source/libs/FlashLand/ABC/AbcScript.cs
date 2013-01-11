@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.FlashLand.Swf;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -57,9 +56,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             foreach (var instance in set)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 //NOTE: Ignore instances initilized by other scripts
                 if (instance.Script != null && instance.Script != this)
                     continue;

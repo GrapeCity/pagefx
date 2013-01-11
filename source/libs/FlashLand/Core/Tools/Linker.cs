@@ -166,9 +166,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             foreach (var type in Assembly.Types)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 LinkType(type);
             }
         }
@@ -326,9 +323,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private void LinkMethod(IMethod method, IAbcTraitProvider owner, bool isGlobal)
         {
-#if DEBUG
-            DebugService.DoCancel();
-#endif
             var instance = owner as AbcInstance;
 
             if (instance != null && method.IsConstructor && !isGlobal)
@@ -424,9 +418,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private void LinkField(IField field, AbcInstance instance)
         {
-#if DEBUG
-            DebugService.DoCancel();
-#endif
             var t = GetTrait(field, instance);
             if (t != null)
             {

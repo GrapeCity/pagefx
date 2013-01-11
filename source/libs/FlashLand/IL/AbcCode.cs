@@ -2086,7 +2086,7 @@ namespace DataDynamics.PageFX.FlashLand.IL
                     GetLocal(to);
                     GetLocal(from);
                     GetProperty(prop);
-                    if (InternalTypeExtensions.HasCopy(t.Type))
+                    if (t.Type.SupportsCopyMethods())
                         CopyValue(t.Type);
                     SetProperty(prop);
                 }
@@ -2097,12 +2097,12 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             EnsureType(type);
 
-            if (InternalTypeExtensions.HasCopy(type))
+            if (type.SupportsCopyMethods())
             {
                 var instance = type.AbcInstance();
                 if (instance != null)
                 {
-                    var method = CopyImpl.With(Generator).Copy(instance);
+                    var method = CopyImpl.Copy(instance);
                     if (method != null)
                     {
                         Call(method);
@@ -2125,12 +2125,12 @@ namespace DataDynamics.PageFX.FlashLand.IL
         {
             EnsureType(type);
 
-            if (InternalTypeExtensions.HasCopy(type))
+            if (type.SupportsCopyMethods())
             {
                 var instance = type.AbcInstance();
                 if (instance != null)
                 {
-                    var method = CopyImpl.With(Generator).CopyFrom(instance);
+                    var method = CopyImpl.CopyFrom(instance);
                     if (method != null)
                         Call(method);
                 }

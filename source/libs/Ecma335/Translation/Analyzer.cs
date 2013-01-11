@@ -35,27 +35,19 @@ namespace DataDynamics.PageFX.Ecma335.Translation
         {
 #if DEBUG
             DebugHooks.LogInfo("Flowgraph analysis started");
-            DebugHooks.DoCancel();
 #endif
             foreach (var bb in context.Body.ControlFlowGraph.Blocks)
             {
-#if DEBUG
-                DebugHooks.DoCancel();
-#endif
                 AnalyzeBlock(bb, context);
             }
 
             foreach (var bb in context.Body.ControlFlowGraph.Blocks)
             {
-#if DEBUG
-                DebugHooks.DoCancel();
-#endif
                 bb.Stack = null;
             }
 
 #if DEBUG
             DebugHooks.LogInfo("Flowgraph analysis succeeded");
-            DebugHooks.DoCancel();
 #endif
         }
 
@@ -84,9 +76,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
         {
             foreach (var e in bb.InEdges)
             {
-#if DEBUG
-                DebugHooks.DoCancel();
-#endif
                 if (ShouldAnalyzePredecessor(e, bb))
                     AnalyzeBlock(e.From, context);
             }
@@ -109,9 +98,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
             foreach (var instr in bb.Code)
             {
-#if DEBUG
-                DebugHooks.DoCancel();
-#endif
                 AnalyzeInstruction(bb, instr, context);
             }
         }

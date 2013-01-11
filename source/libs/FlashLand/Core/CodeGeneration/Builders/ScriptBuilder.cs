@@ -58,8 +58,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         private AbcMethod DefineMainScriptInit(AbcScript script, AbcInstance instance)
         {
 #if DEBUG
-            DebugService.DoCancel();
-            DebugService.LogInfo("DefineScriptInit started");
+	        DebugService.LogInfo("DefineScriptInit started");
 #endif
 
             var method = new AbcMethod();
@@ -105,7 +104,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 #if DEBUG
             DebugService.LogInfo("DefineScriptInit succeeded");
-            DebugService.DoCancel();
 #endif
             return method;
         }
@@ -123,8 +121,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	    public void BuildScripts()
         {
 #if DEBUG
-            DebugService.DoCancel();
-            DebugService.LogInfo("BuildScripts started");
+		    DebugService.LogInfo("BuildScripts started");
 #endif
 #if PERF
             int start = Environment.TickCount;
@@ -143,7 +140,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 #if DEBUG
             DebugService.LogInfo("BuildScripts succeeded");
-            DebugService.DoCancel();
 #endif
         }
 

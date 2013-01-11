@@ -6,6 +6,8 @@ using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
+	//TODO: make static
+
     internal sealed class BoxingImpl
     {
 	    private readonly AbcGenerator _generator;

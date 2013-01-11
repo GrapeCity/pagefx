@@ -831,7 +831,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				code.SetProperty(Const.Type.UnboxFunction);
 			}
 
-			f = CopyImpl.With(_generator).StaticCopy(instance);
+			f = CopyImpl.StaticCopy(instance);
 			if (f != null)
 			{
 				code.GetLocal(varType);

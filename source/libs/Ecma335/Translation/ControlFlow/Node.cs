@@ -806,18 +806,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow
             list.AddRange(OutEdges);
             foreach (var e in list)
                 e.Remove();
-
-//#if DEBUG
-//            if (_firstIn != null)
-//                throw new InvalidOperationException();
-//            if (_lastIn != null)
-//                throw new InvalidOperationException();
-//            if (_firstOut != null)
-//                throw new InvalidOperationException();
-//            if (_lastOut != null)
-//                throw new InvalidOperationException();
-//#endif
-            
+          
             Index = -1;
             Remove();
 

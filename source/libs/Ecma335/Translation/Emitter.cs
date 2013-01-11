@@ -16,7 +16,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 		{
 #if DEBUG
 			DebugHooks.LogInfo("ConcatBlocks started");
-			DebugHooks.DoCancel();
 #endif
 
 			var begin = Begin(context, debugFile);
@@ -29,9 +28,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 			foreach (var bb in context.Body.ControlFlowGraph.Blocks)
 			{
-#if DEBUG
-				DebugHooks.DoCancel();
-#endif
 				//UNCOMMENT TO CHECK STACK BALANCE
 				//Checks.CheckStackBalance(bb);
 
@@ -57,7 +53,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 #if DEBUG
 			DebugHooks.LogInfo("ConcatBlocks succeeded. CodeSize = {0}", output.Count);
-			DebugHooks.DoCancel();
 #endif
 			return new TranslatorResult
 				{

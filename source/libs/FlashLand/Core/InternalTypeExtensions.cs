@@ -224,7 +224,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
             return type.IsBoxableType() || type.IsInt64Based();
         }
 
-	    public static bool HasCopy(IType type)
+	    public static bool SupportsCopyMethods(this IType type)
         {
             if (type == null) return false;
             if (type.Is(SystemTypeCode.ValueType)) return false;

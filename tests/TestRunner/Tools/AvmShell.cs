@@ -206,7 +206,6 @@ namespace DataDynamics.PageFX.TestRunner.Tools
     	public static string Dump(string path)
     	{
 #if DEBUG
-    		DebugService.DoCancel();
     		DebugService.LogInfo("AvmDump started");
     		int start = Environment.TickCount;
 #endif
@@ -230,7 +229,6 @@ namespace DataDynamics.PageFX.TestRunner.Tools
 #if DEBUG
     		int end = Environment.TickCount;
     		DebugService.LogInfo("AvmDump succeeded. Ellapsed Time: {0}", (end - start) + "ms");
-    		DebugService.DoCancel();
 #endif
 
     		return cout;

@@ -8,6 +8,8 @@ using DataDynamics.PageFX.FlashLand.Core.Tools;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 {
+	//TODO: make static
+
 	/// <summary>
 	/// Implements creation of <see cref="AbcInstance"/> for given <see cref="IType"/>.
 	/// </summary>
@@ -241,8 +243,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return type.Data;
 
 #if DEBUG
-            DebugService.DoCancel();
-            DebugService.LogInfo("DefineUserType started for {0}", type.FullName);
+			DebugService.LogInfo("DefineUserType started for {0}", type.FullName);
 #endif
             var ifaceNames = BuildInterfaces(type);
 
@@ -271,8 +272,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             DebugInfoBuilder.Build(_generator, type, instance);
 
 #if DEBUG
-            DebugService.DoCancel();
-            DebugService.LogInfo("DefineUserType succeeded for {0}", type.FullName);
+			DebugService.LogInfo("DefineUserType succeeded for {0}", type.FullName);
 #endif
 
             return instance;
@@ -457,9 +457,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             for (int i = 0; i < n; ++i)
             {
                 var iface = type.Interfaces[i];
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 var ifaceName = DefineTypeName(iface);
                 if (ifaceName == null)
                     throw new InvalidOperationException(string.Format("Unable to define interface {0}", iface.FullName));
@@ -478,9 +475,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             int n = type.Interfaces.Count;
             for (int i = 0; i < n; ++i)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 var iface = type.Interfaces[i];
                 var ifaceName = ifaceNames[i];
 
@@ -511,9 +505,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 #endif
             for (int i = 0; i < Abc.Instances.Count; ++i)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 var instance = Abc.Instances[i];
                 FinishType(instance);
             }
@@ -525,7 +516,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	    private void FinishType(AbcInstance instance)
 	    {
 		    //TODO: Comment when copying of value types will be implemented using Reflection
-		    CopyImpl.With(_generator).Copy(instance);
+		    CopyImpl.Copy(instance);
 
 		    BuildCompiledMethods(instance);
 	    }
@@ -578,9 +569,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			//TODO: PERF do this only once
             foreach (var field in type.Fields)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 if (MustDefine(field))
 					_generator.FieldBuilder.Build(field);
             }
@@ -619,9 +607,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             //Define Compiled Interface Methods
             foreach (var iface in instance.Implements)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 BuildCompiledMethods(instance, type, iface);
             }
 
@@ -629,9 +614,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             var super = instance.BaseInstance;
             while (super != null)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 BuildCompiledMethods(instance, type, super);
                 super = super.BaseInstance;
             }
@@ -650,9 +632,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             //NOTE: super.Traits.Count can be changed during execution
             for (int i = 0; i < super.Traits.Count; ++i)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 var trait = super.Traits[i];
                 if (!trait.IsMethod) continue;
 
@@ -712,9 +691,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (types == null) return;
             foreach (var type in types)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 Build(type);
             }
         }

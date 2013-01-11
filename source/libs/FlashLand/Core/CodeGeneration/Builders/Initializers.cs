@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
@@ -26,10 +25,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             if (instance.Initializer != null)
                 return;
-
-#if DEBUG
-            DebugService.DoCancel();
-#endif
 
             if (instance.IsInterface)
             {
@@ -77,9 +72,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             if (klass.Initializer != null) return;
 
-#if DEBUG
-            DebugService.DoCancel();
-#endif
 	        var abc = klass.Abc;
 	        var type = klass.Type;
             if (type != null && type.IsEnum)

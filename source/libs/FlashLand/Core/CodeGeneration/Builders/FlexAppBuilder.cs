@@ -224,7 +224,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 	    public AbcInstance FlexEventType()
         {
-			return _generator.ImportType(MX.FlexEvent, ref _typeFlexEvent);
+			return _typeFlexEvent ?? (_typeFlexEvent = _generator.ImportType(MX.FlexEvent));
         }
         private AbcInstance _typeFlexEvent;
 

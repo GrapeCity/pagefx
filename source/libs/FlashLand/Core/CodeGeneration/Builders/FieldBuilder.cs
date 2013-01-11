@@ -34,19 +34,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             var declType = field.DeclaringType;
 			var tag = _generator.TypeBuilder.Build(declType);
 
-#if DEBUG
-            DebugService.DoCancel();
-#endif
-
             var instance = tag as AbcInstance;
             if (instance == null)
                 throw new InvalidOperationException();
 
             if (instance.IsForeign) return;
-
-#if DEBUG
-            DebugService.DoCancel();
-#endif
 
             if (Abc.IsDefined(field)) return;
 
@@ -54,8 +46,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (Abc.IsDefined(field)) return;
 
 #if DEBUG
-            DebugService.DoCancel();
-            DebugService.LogInfo("ABC DefineField started for field {0}.{1}", field.DeclaringType.FullName, field.Name);
+		    DebugService.LogInfo("ABC DefineField started for field {0}.{1}", field.DeclaringType.FullName, field.Name);
 #endif
 
             var name = DefineName(field);
@@ -68,10 +59,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             	var kind = field.IsConstant ? AbcTraitKind.Const : AbcTraitKind.Slot;
             	trait = isStatic ? instance.Class.Traits.Find(name, kind) : instance.Traits.Find(name, kind);
             }
-
-#if DEBUG
-            DebugService.DoCancel();
-#endif
 
             if (trait == null)
             {
@@ -98,7 +85,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 #if DEBUG
             DebugService.LogInfo("ABC DefineField succeeded for field {0}", field.FullName);
-            DebugService.DoCancel();
 #endif
         }
 

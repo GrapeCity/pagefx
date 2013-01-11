@@ -37,8 +37,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 
 	            foreach (var bb in body.ControlFlowGraph.Blocks)
                 {
-                    DebugHooks.DoCancel();
-                    writer.WriteLine("#BASIC BLOCK {0}", bb.Index);
+	                writer.WriteLine("#BASIC BLOCK {0}", bb.Index);
                     DumpStackState(writer, bb);
                     writer.WriteLine(Separator);
 

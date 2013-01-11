@@ -422,9 +422,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             int n = from.Parameters.Count;
             for (int i = 0; i < n; ++i)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 var bp = from.Parameters[i];
                 var ap = new AbcParameter
                              {
@@ -444,29 +441,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         }
         #endregion
 
-		#region BuildBaseMethods
 		private void BuildBaseMethods(IMethod method)
         {
-            //            var declType = method.DeclaringType;
-            //            if (declType.IsInterface) return;
-
-            //            var baseType = declType.BaseType;
-            //            while (baseType != null)
-            //            {
-            //#if DEBUG
-            //                DebugService.DoCancel();
-            //#endif
-            //                var m = Method.FindMethod(baseType, method, false);
-            //                DefineMethod(m);
-            //                baseType = baseType.BaseType;
-            //            }
-
             var bm = method.BaseMethod;
             while (bm != null)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 Build(bm);
                 bm = bm.BaseMethod;
             }
@@ -478,16 +457,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                     Build(impl);
             }
         }
-        #endregion
 
 		#region BuildOverrideMethods
 		private void BuildOverrideMethods(IMethod method, AbcMethod abcMethod)
         {
 	        if (!method.IsAbstract && !method.IsVirtual) return;
-
-#if DEBUG
-	        DebugService.DoCancel();
-#endif
 
 	        var type = method.DeclaringType;
 	        var instance = type.AbcInstance();
@@ -500,9 +474,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		        //warning: do not use for each since instance.Implementations is modifiable.
 		        for (int i = 0; i < instance.Implementations.Count; ++i)
 		        {
-#if DEBUG
-			        DebugService.DoCancel();
-#endif
 			        var impl = instance.Implementations[i];
 			        BuildImplementation(impl, impl.Type, method, abcMethod);
 		        }
@@ -524,15 +495,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			//warning: do not use foreach since instance.Subclasses is modifiable collection.
             for (int i = 0; i < instance.Subclasses.Count; ++i)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 var subclass = instance.Subclasses[i];
                 BuildOverrideMethod(subclass.Type, method);
 
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 BuildSubclassOverrideMethods(subclass, method);
             }
         }
@@ -671,10 +636,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (method == null) return;
             if (method.Body == null) return;
 
-#if DEBUG
-            DebugService.DoCancel();
-#endif
-
             BuildBodyCore(abcMethod, method);
         }
 
@@ -687,9 +648,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				Abc.MethodBodies.Add(targetBody);
 			}
 
-#if DEBUG
-            DebugService.DoCancel();
-#endif
             var sourceBody = source.Body;
 
             var codeProvider = new CodeProviderImpl(_generator, target);
@@ -698,10 +656,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (translator == null)
                 throw new InvalidOperationException("No IL translator");
             var il = translator.Translate(source, sourceBody, codeProvider);
-
-#if DEBUG
-            DebugService.DoCancel();
-#endif
 
             targetBody.IL.Add(il);
             targetBody.Finish(Abc);

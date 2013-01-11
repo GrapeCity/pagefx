@@ -321,14 +321,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		{
 			var m = _generator.Boxing.Box(elemType);
 			if (m != null) return m;
-			return CopyImpl.With(_generator).StaticCopy(elemType);
+			return CopyImpl.StaticCopy(_generator, elemType);
 		}
 
 		private AbcMethod GetUnboxMethod(IType elemType)
 		{
 			var m = _generator.Boxing.Unbox(elemType, false);
 			if (m != null) return m;
-			return CopyImpl.With(_generator).StaticCopy(elemType);
+			return CopyImpl.StaticCopy(_generator, elemType);
 		}
 
 		private void InitFields(AbcCode code, IType type, IType elemType, Action getArr)

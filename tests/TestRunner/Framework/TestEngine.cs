@@ -45,7 +45,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
 #if DEBUG
             DebugService.LogInfo("TestCase {0} started", test.Name);
-            DebugService.DoCancel();
 #endif
 
             test.Reset();
@@ -108,7 +107,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
             }
 #if DEBUG
             DebugService.LogInfo("TestCase '{0}' has been compiled", tc.FullName);
-            DebugService.DoCancel();
 #endif
 
             return true;
@@ -175,10 +173,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
                     test.Error = string.Format("Unable to generate {0} file.\nException: {1}", tds.OutputFormat, e);
                     return false;
                 }
-
-#if DEBUG
-                DebugService.DoCancel();
-#endif
             }
             
             return true;
@@ -193,7 +187,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
 #if DEBUG
             DebugService.LogInfo("TestCase assembly was deserialized");
-            DebugService.DoCancel();
 #endif
 
             if (tds.IsCancel) return false;
@@ -206,9 +199,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 
             if (tds.IsCancel) return false;
 
-#if DEBUG
-            DebugService.DoCancel();
-#endif
             return true;
         }
         #endregion
@@ -382,8 +372,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
                 if (File.Exists(abcPath))
                 {
 #if DEBUG
-                    DebugService.DoCancel();
-                    DebugService.LogInfo("AbcDump started");
+	                DebugService.LogInfo("AbcDump started");
                     int start = Environment.TickCount;
 #endif
 
@@ -392,7 +381,6 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 #if DEBUG
                     int end = Environment.TickCount;
                     DebugService.LogInfo("AbcDump succeeded. Ellapsed Time: {0}", (end - start) + "ms");
-                    DebugService.DoCancel();
 #endif
                 }
             }

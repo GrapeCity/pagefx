@@ -28,8 +28,7 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 		public void Translate(TranslationContext context)
         {
 #if DEBUG
-			DebugHooks.DoCancel();
-            DebugHooks.LogInfo("TranslateBlocks started for method: {0}", context.Method);
+			DebugHooks.LogInfo("TranslateBlocks started for method: {0}", context.Method);
 #endif
 
             //Note: CIL pops exception from stack for us if it is not used
@@ -39,7 +38,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 			foreach (var bb in context.Body.ControlFlowGraph.Blocks)
 			{
 #if DEBUG
-				DebugHooks.DoCancel();
 				//if (DebugHooks.CanBreak(_method)) Debugger.Break();
 #endif
 				TranslateBlock(context.New(bb));

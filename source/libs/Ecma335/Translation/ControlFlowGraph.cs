@@ -36,14 +36,12 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 		{
 #if DEBUG
 			DebugHooks.LogInfo("CFG Builder started");
-			DebugHooks.DoCancel();
 #endif
 
 			var graph = body.ControlFlowGraph;
 			if (graph != null)
 			{
 #if DEBUG
-				DebugHooks.DoCancel();
 				body.VisualizeGraph(graph.Entry, false);
 #endif
 				return graph;
@@ -55,7 +53,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 				throw new ILTranslatorException("Unable to build flowgraph");
 
 #if DEBUG
-			DebugHooks.DoCancel();
 			body.VisualizeGraph(entry, false);
 #endif
 
@@ -64,9 +61,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 			Node prevNode = null;
 			foreach (var instruction in body.Code)
 			{
-#if DEBUG
-				DebugHooks.DoCancel();
-#endif
 				var bb = instruction.BasicBlock;
 				//if (bb == null)
 				//    throw new InvalidOperationException();

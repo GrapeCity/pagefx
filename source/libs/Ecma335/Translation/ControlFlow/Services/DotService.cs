@@ -95,9 +95,8 @@ namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow.Services
 		internal static void VisualizeGraph(this IClrMethodBody body, NodeList list, bool translatedCode)
     	{
     		DebugHooks.LogInfo("Flow graph constructed");
-    		DebugHooks.DoCancel();
 
-    		DotService.NameService = null;
+			DotService.NameService = null;
 
     		bool filter = DebugHooks.EvalFilter(body.Method);
     		var after = translatedCode;

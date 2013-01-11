@@ -267,10 +267,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
 	        TranslateIndices();
 	        ResolveExceptionOffsets(abc);
-
-#if DEBUG
-	        //IL.Verify();
-#endif
         }
 
 	    private void UpdateSizeOfStacks(Block block)

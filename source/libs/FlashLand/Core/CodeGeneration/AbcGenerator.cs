@@ -6,7 +6,6 @@ using System.Linq;
 using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
 using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
@@ -20,8 +19,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
     /// </summary>
     internal sealed class AbcGenerator : IDisposable
     {
-        #region Shared Members
-        public static AbcFile ToAbcFile(IAssembly assembly)
+	    public static AbcFile ToAbcFile(IAssembly assembly)
         {
             using (var g = new AbcGenerator())
             {
@@ -40,42 +38,24 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var f = ToAbcFile(assembly);
             f.Save(output);
         }
-        #endregion
 
-        #region IDisposable Members
-        //Implement IDisposable.
-        public void Dispose()
+	    public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
-        void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // Free other state (managed objects).
-            }
-            // Free your own state (unmanaged objects).
-            // Set large fields to null.
-        }
-
-        // Use C# destructor syntax for finalization code.
-        ~AbcGenerator()
-        {
-            // Simply call Dispose(false).
-            Dispose(false);
-        }
-        #endregion
-
-		#region Properties
+	    #region Properties
 
 		internal IMethod EntryPoint { get; private set; }
 		internal AbcCode NewApi { get; private set; }
 
+		/// <summary>
+		/// Gets currently generated ABC file.
+		/// </summary>
 		internal AbcFile Abc { get; private set; }
         
-        //If not null indicates that we genearate swiff file.
+        /// <summary>
+		/// If not null indicates that we genearate swiff file.
+        /// </summary>
         internal SwfCompiler SwfCompiler;
 
         public AbcGenMode Mode;
@@ -305,8 +285,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 		#endregion
 
-		#region Generate - Entry Point
-		public AbcFile Generate(IAssembly assembly)
+	    public AbcFile Generate(IAssembly assembly)
         {
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
@@ -318,7 +297,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 #if DEBUG
             DebugService.LogInfo("ABC Generator started");
             DebugService.LogSeparator();
-            DebugService.DoCancel();
 #endif
             AppAssembly = assembly;
 
@@ -347,49 +325,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             BuildApp();
 
-            #region Finish Application
-#if DEBUG
-            DebugService.DoCancel();
-#endif
 			if (SwfCompiler != null)
 			{
 				SwfCompiler.FinishApplication();
 			}
 
-        	#endregion
-
-            RootSprite.BuildTimeline();
-
-            #region Finish Types
-#if DEBUG
-            DebugService.DoCancel();
-#endif
+			RootSprite.BuildTimeline();
 
 			TypeBuilder.FinishTypes();
-            #endregion
 
-            #region Late Methods
-#if DEBUG
-            DebugService.DoCancel();
-#endif
+			_lateMethods.Finish();
 
-            _lateMethods.Finish();
-            #endregion
-
-            #region Scripts
-#if DEBUG
-            DebugService.DoCancel();
-#endif
             Scripts.BuildScripts();
-            #endregion
 
-            Scripts.FinishMainScript();
+			Scripts.FinishMainScript();
 
             // Finish ABC
-#if DEBUG
-            DebugService.DoCancel();
-#endif
-
             Abc.Finish();
 
 #if PERF
@@ -403,10 +354,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             return Abc;
         }
-        #endregion
 
-        #region BuildApp
-        private void BuildApp()
+	    private void BuildApp()
         {
 #if PERF
             int start = Environment.TickCount;
@@ -437,7 +386,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
             BuildExposedTypes();
         }
-        #endregion
 
 	    private void BuildExposedTypes()
         {
@@ -451,8 +399,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             }
         }
 
-	    #region BuildLibrary
-		internal bool IsRootSprite(IType type)
+	    internal bool IsRootSprite(IType type)
 		{
 			if (SwfCompiler != null && !string.IsNullOrEmpty(SwfCompiler.RootSprite))
 				return type.FullName == SwfCompiler.RootSprite;
@@ -492,9 +439,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				TypeBuilder.Build(type);
             }
         }
-        #endregion
 
-        #region Late Methods
+	    #region Late Methods
 
         private readonly AbcLateMethodCollection _lateMethods = new AbcLateMethodCollection();
 
@@ -505,9 +451,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         #endregion
 
-        #region Utils
-
-        public IType FindTypeDefOrRef(string fullname)
+	    public IType FindTypeDefOrRef(string fullname)
         {
             return AssemblyIndex.FindType(AppAssembly, fullname);
         }
@@ -545,18 +489,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         		throw;
         	}            
         }
-
-		public AbcInstance ImportType(string fullname, ref AbcInstance field)
-		{
-			return ImportType(fullname, ref field, false);
-		}
-
-		public AbcInstance ImportType(string fullname, ref AbcInstance field, bool safe)
-		{
-			return field ?? (field = ImportType(fullname));
-		}
-
-	    #endregion
 
 	    internal object SetData(ITypeMember member, object data)
 	    {

@@ -24,13 +24,9 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 		{
 #if DEBUG
 			DebugHooks.LogInfo("ResolveBranches started");
-			DebugHooks.DoCancel();
 #endif
 			for (int i = 0; i < branches.Count; ++i)
 			{
-#if DEBUG
-				DebugHooks.DoCancel();
-#endif
 				var br = branches[i].Source;
 				var bb = branches[i].TargetBlock;
 				if (br.IsSwitch)
@@ -71,7 +67,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 			}
 #if DEBUG
 			DebugHooks.LogInfo("ResolveBranches succeeded");
-			DebugHooks.DoCancel();
 #endif
 		}
 	}

@@ -4,7 +4,6 @@ using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
 
 namespace DataDynamics.PageFX.FlashLand.Core
 {
@@ -718,9 +717,6 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			var bt = method.DeclaringType.BaseType;
 			while (bt != null)
 			{
-#if DEBUG
-				DebugService.DoCancel();
-#endif
 				var bm = bt.FindSameMethod(method, false);
 				if (bm != null)
 				{

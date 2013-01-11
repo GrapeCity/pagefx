@@ -205,9 +205,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 abc.Generator = _generator;
                 for (int i = 0; i < abc.Instances.Count; ++i)
                 {
-#if DEBUG
-                    DebugService.DoCancel();
-#endif
                     var instance = abc.Instances[i];
                     if (instance.Abc != abc)
                     {
@@ -246,7 +243,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			    code =>
 				    {
 #if DEBUG
-					    DebugService.DoCancel();
 					    DebugService.LogInfo("FinishInitTypes started");
 #endif
 
@@ -258,7 +254,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 #if DEBUG
 					    DebugService.LogInfo("FinishInitTypes succeeded");
-					    DebugService.DoCancel();
 #endif
 				    }
 			    );
@@ -322,9 +317,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             for (int i = 0; i < _initTypes.Count; ++i)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 var type = _initTypes[i];
 				if (!(_generator.TypeBuilder.Build(type) is AbcInstance))
                     continue;

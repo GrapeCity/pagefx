@@ -1,5 +1,4 @@
 ﻿using System;
-using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.IL;
 using DataDynamics.PageFX.Ecma335.Translation.ControlFlow;
@@ -24,9 +23,6 @@ namespace DataDynamics.PageFX.Ecma335.Translation
 				return;
 			}
 
-#if DEBUG
-			DebugHooks.DoCancel();
-#endif
 			var from = e.From;
 			var prevStack = @from.Stack;
 			bb.Stack = prevStack != null ? prevStack.Clone() : new EvalStack();

@@ -25,13 +25,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        public static void DoCancel()
-        {
-            if (IsCancel)
-                throw new Exception("CANCEL");
-        }
-
-        public static Func<bool> CancelCallback;
+	    public static Func<bool> CancelCallback;
 
         public static TextWriter Log;
 

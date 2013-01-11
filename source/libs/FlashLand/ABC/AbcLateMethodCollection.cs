@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
@@ -45,9 +44,6 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             int n = _methods.Count;
             for (int i = 0; i < n; ++i)
             {
-#if DEBUG
-                DebugService.DoCancel();
-#endif
                 var method = _methods[i];
                 var item = _items[i];
                 if (item.Handler != null)
