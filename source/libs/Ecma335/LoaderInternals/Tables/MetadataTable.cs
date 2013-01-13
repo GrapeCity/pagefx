@@ -9,6 +9,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 	internal abstract class MetadataTable<T> : IMetadataTable<T> where T:class 
 	{
 		protected readonly AssemblyLoader Loader;
+		private T[] _rows;
 		
 		protected MetadataTable(AssemblyLoader loader)
 		{
@@ -26,21 +27,31 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 		{
 			get
 			{
-				if (index < 0 || index >= Count)
+				int count = Count;
+				if (index < 0 || index >= count)
 					throw new ArgumentOutOfRangeException("index");
+
+				if (_rows == null)
+				{
+					_rows = new T[count];
+				}
 
 				var row = Loader.Metadata.GetRow(Id, index);
 
-				if (row.Object == null)
+				if (_rows[index] == null)
 				{
 					var item = ParseRow(row, index);
 
-					row.Object = item;
+					_rows[index] = item;
 
 					OnLoaded(item);
 				}
 
-				return (T)row.Object;
+				return _rows[index];
+			}
+			protected set
+			{
+				_rows[index] = value;
 			}
 		}
 

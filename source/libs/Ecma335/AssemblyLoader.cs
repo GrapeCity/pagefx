@@ -256,7 +256,7 @@ namespace DataDynamics.PageFX.Ecma335
 
 	    public MethodBody LoadMethodBody(IMethod method, uint rva)
         {
-            var reader = Metadata.SeekRVA(rva);
+            var reader = Metadata.MoveToVirtualAddress(rva);
             var body = new MethodBody(method, this, reader);
             method.Body = body;
             return body;

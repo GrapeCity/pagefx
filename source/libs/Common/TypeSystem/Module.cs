@@ -50,13 +50,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			get { return _resources ?? EmptyResourceCollection.Instance; }
 			set { _resources = value; }
         }
-        
-        public IUnmanagedResourceCollection UnmanagedResources
-        {
-            get { throw new NotSupportedException(); }
-        }
 
-        public object ResolveMetadataToken(IMethod method, int token)
+	    public object ResolveMetadataToken(IMethod method, int token)
         {
             if (Loader != null)
 				return Loader.ResolveMetadataToken(method, token);

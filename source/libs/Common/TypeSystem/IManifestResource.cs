@@ -6,9 +6,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public interface IManifestResource : ICustomAttributeProvider
     {
         string Name { get; set; }
+
         int Offset { get; set; }
+
         bool IsPublic { get; set; }
+
         IModule Module { get; set; }
+
+		//TODO: Use BufferedBinaryReader or Stream instead of byte array (to provide fast to resource stream without copying bytes from PE image)
         byte[] Data { get; set; }
     }
 
@@ -29,23 +34,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public interface IManifestFileCollection : IList<IManifestFile>
     {
         IManifestFile this[string name] { get; }
-    }
-
-    public interface IUnmanagedResource
-    {
-        int CodePage { get; set; }
-
-        int Language { get; set; }
-
-        object Name { get; set; }
-
-        object Type { get; set; }
-
-        byte[] Value { get; set; }
-    }
-
-    public interface IUnmanagedResourceCollection : IList<IUnmanagedResource>
-    {
     }
 }
 

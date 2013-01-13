@@ -132,60 +132,43 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
         {
             for (int i = 0; i < All.Length; i++)
             {
-                All[i]._id = i;
+                All[i].Id = i;
             }
         }
 
-        private readonly int _bits;
-        private int _id;
-        private readonly string _name;
-        private readonly TableId[] _tables;
-
-        internal CodedIndex(string name, int bits, params TableId[] tables)
+	    internal CodedIndex(string name, int bits, params TableId[] tables)
         {
-            _name = name;
-            _bits = bits;
-            _tables = tables;
+            Name = name;
+            Bits = bits;
+            Tables = tables;
         }
 
-        /// <summary>
-        /// Gets the name of this coded index.
-        /// </summary>
-        public string Name
-        {
-            get { return _name; }
-        }
+	    /// <summary>
+	    /// Gets the name of this coded index.
+	    /// </summary>
+	    public string Name { get; private set; }
 
-        /// <summary>
-        /// Gets the id of this coded index.
-        /// </summary>
-        public int ID
-        {
-            get { return _id; }
-        }
+	    /// <summary>
+	    /// Gets the id of this coded index.
+	    /// </summary>
+	    public int Id { get; private set; }
 
-        /// <summary>
-        /// Number of bits to encode table id.
-        /// </summary>
-        public int Bits
-        {
-            get { return _bits; }
-        }
+	    /// <summary>
+	    /// Number of bits to encode table id.
+	    /// </summary>
+	    public int Bits { get; private set; }
 
-        public TableId[] Tables
-        {
-            get { return _tables; }
-        }
+	    public TableId[] Tables { get; private set; }
 
-        public override string ToString()
+	    public override string ToString()
         {
             var s = new StringBuilder();
-            s.AppendFormat("CodedIndex({0}", _name);
-            int n = _tables.Length;
+            s.AppendFormat("CodedIndex({0}", Name);
+            int n = Tables.Length;
             for (int i = 0; i < n; ++i)
             {
                 s.Append(", ");
-                s.Append(_tables[i].ToString());
+                s.Append(Tables[i].ToString());
             }
             s.AppendFormat(", {0})", Bits);
             return s.ToString();

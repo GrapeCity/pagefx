@@ -14,10 +14,10 @@ namespace DataDynamics.PageFX.Ecma335.Tools
                 writer.WriteStartDocument();
                 writer.WriteStartElement("mdb");
 
-                for (int i = 0; i < MetadataReader.MaxTableNum; ++i)
+                for (int i = 0; i < MetadataReader.MaxTableCount; ++i)
                 {
                     var id = (TableId)i;
-                    var table = reader[id];
+                    var table = reader.GetTable(id);
                     if (table != null)
                     {
                         writer.WriteStartElement("table");
@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.Ecma335.Tools
                             var row = reader.GetRow(id, k);
                             writer.WriteStartElement("row");
                             writer.WriteAttributeString("id", table.Name + k);
-                            foreach (var cell in row.Cells)
+                            foreach (var cell in row)
                             {
                                 writer.WriteStartElement("cell");
                                 writer.WriteAttributeString("name", cell.Name);

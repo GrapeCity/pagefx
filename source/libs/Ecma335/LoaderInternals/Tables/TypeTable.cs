@@ -174,7 +174,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 			type.Module = Loader.MainModule;
 
 			// to avoid problems with self refs in fields/methods,etc
-			row.Object = type;
+			this[index] = type;
 
 			type.MetadataToken = token;
 			type.CustomAttributes = new CustomAttributes(Loader, type);

@@ -55,6 +55,8 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			return row == null ? -1 : (int)row[Schema.FieldLayout.Offset].Value;
 		}
 
+		//TODO: return BufferedBinaryReader (as slice of (offset from RVA, field size)) instead of object
+
 		private static object ResolveBlobValue(MetadataReader metadata, IType fieldType, int fieldIndex)
 		{
 			var row = metadata.LookupRow(TableId.FieldRVA, Schema.FieldRVA.Field, fieldIndex, true);
@@ -64,7 +66,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals
 			if (size > 0)
 			{
 				uint rva = row[Schema.FieldRVA.RVA].Value;
-				var reader = metadata.SeekRVA(rva);
+				var reader = metadata.MoveToVirtualAddress(rva);
 				return reader.ReadBytes(size);
 			}
 

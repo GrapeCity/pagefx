@@ -34,9 +34,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		IManifestResourceCollection Resources { get; set; }
 
-        IUnmanagedResourceCollection UnmanagedResources { get; }
-
-        object ResolveMetadataToken(IMethod method, int token);
+	    object ResolveMetadataToken(IMethod method, int token);
     }
 
     public interface IModuleCollection : IList<IModule>, ICodeNode

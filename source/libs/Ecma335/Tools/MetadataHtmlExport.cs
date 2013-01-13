@@ -54,7 +54,7 @@ namespace DataDynamics.PageFX.Ecma335.Tools
                     if (k == 0)
                     {
                         writer.WriteStartElement("tr");
-                        foreach (var cell in row.Cells)
+                        foreach (var cell in row)
                         {
                             writer.WriteStartElement("td");
                             writer.WriteString(cell.Name);
@@ -65,7 +65,7 @@ namespace DataDynamics.PageFX.Ecma335.Tools
 
                     writer.WriteStartElement("tr");
                     writer.WriteAttributeString("id", "row" + k);
-                    foreach (var cell in row.Cells)
+                    foreach (var cell in row)
                     {
                         writer.WriteStartElement("td");
 
@@ -102,10 +102,10 @@ namespace DataDynamics.PageFX.Ecma335.Tools
             using (var reader = new MetadataReader(path))
             {
                 Directory.CreateDirectory(outdir);
-                for (int i = 0; i < MetadataReader.MaxTableNum; ++i)
+                for (int i = 0; i < MetadataReader.MaxTableCount; ++i)
                 {
                     var id = (TableId)i;
-                    var table = reader[id];
+                    var table = reader.GetTable(id);
                     if (table != null)
                     {
                         ExportTable(reader, table, outdir);

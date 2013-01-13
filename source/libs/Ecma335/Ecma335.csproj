@@ -187,6 +187,7 @@
     <Compile Include="LoaderInternals\Tables\TypeSpecTable.cs" />
     <Compile Include="LoaderInternals\Tables\TypeTable.cs" />
     <Compile Include="Metadata\ArrayShape.cs" />
+    <Compile Include="Metadata\BlobHeap.cs" />
     <Compile Include="Metadata\ColumnType.cs" />
     <Compile Include="Metadata\ElementType.cs" />
     <Compile Include="Metadata\EventAttributes.cs" />
@@ -194,11 +195,14 @@
     <Compile Include="Metadata\FieldSignature.cs" />
     <Compile Include="Metadata\FileFlags.cs" />
     <Compile Include="Metadata\GenericParamAttributes.cs" />
+    <Compile Include="Metadata\GuidHeap.cs" />
     <Compile Include="Metadata\ManifestResourceAttributes.cs" />
+    <Compile Include="Metadata\MetadataColumnCollection.cs" />
     <Compile Include="Metadata\MethodSemanticsAttributes.cs" />
     <Compile Include="Metadata\MethodSignature.cs" />
     <Compile Include="Metadata\PInvokeAttributes.cs" />
     <Compile Include="Metadata\PropertyAttributes.cs" />
+    <Compile Include="Metadata\StringHeap.cs" />
     <Compile Include="Metadata\TableId.cs" />
     <Compile Include="Metadata\TypeAttributes.cs" />
     <Compile Include="Metadata\TypeSignature.cs" />
@@ -217,6 +221,7 @@
     </Compile>
     <Compile Include="CommonLanguageInfrastructure.cs" />
     <Compile Include="AssemblyResolver.cs" />
+    <Compile Include="Metadata\UserStringHeap.cs" />
     <Compile Include="Pdb\ISymbolLoader.cs" />
     <Compile Include="Pdb\Microsoft.Cci.Pdb\BitAccess.cs" />
     <Compile Include="Pdb\Microsoft.Cci.Pdb\BitSet.cs" />

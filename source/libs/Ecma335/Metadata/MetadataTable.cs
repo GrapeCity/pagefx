@@ -53,19 +53,13 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 
     	public bool IsSorted { get; internal set; }
 
-        /// <summary>
-        /// Row cache
-        /// </summary>
-        internal MetadataRow[] Rows { get; set; }
-
-		internal MetadataTable(TableId id, params MetadataColumn[] columns)
+        internal MetadataTable(TableId id, params MetadataColumn[] columns)
         {
     		Columns = new MetadataColumnCollection();
     		Id = id;
 			
         	foreach (var col in columns.Select(c => c.Clone()))
         	{
-        		col.TableId = id;
         		Columns.Add(col);
         	}
         }

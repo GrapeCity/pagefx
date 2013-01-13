@@ -69,7 +69,5 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 
 			return resource;
 		}
-
-		
 	}
 }

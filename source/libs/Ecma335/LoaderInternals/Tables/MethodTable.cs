@@ -44,7 +44,7 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				};
 
 			// for ref from types
-			row.Object = method;
+			this[index] = method;
 
 			var genericParams = Loader.GenericParameters.Find(token);
 			foreach (var genericParameter in genericParams)
