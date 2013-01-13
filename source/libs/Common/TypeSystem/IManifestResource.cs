@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -13,8 +14,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         IModule Module { get; set; }
 
-		//TODO: Use BufferedBinaryReader or Stream instead of byte array (to provide fast to resource stream without copying bytes from PE image)
-        byte[] Data { get; set; }
+        Stream Data { get; set; }
     }
 
     public interface IManifestResourceCollection : IReadOnlyList<IManifestResource>

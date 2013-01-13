@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Reflection.Emit;
 using DataDynamics.PageFX.Common.CodeModel;
@@ -17,7 +16,6 @@ using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.Metadata;
-using DataDynamics.PageFX.Ecma335.Pdb;
 using DataDynamics.PageFX.Ecma335.Translation;
 
 namespace DataDynamics.PageFX.Ecma335.IL

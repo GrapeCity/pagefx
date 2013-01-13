@@ -25,7 +25,8 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 				return Zero;
 			}
 
-			return _heap.Slice(_heap.Position, length);
+			//TODO: implement slice without need to know that _heap is another slice
+			return _heap.Slice(0, length);
 		}
 
 		private static readonly BufferedBinaryReader Zero = new BufferedBinaryReader(new byte[0]);

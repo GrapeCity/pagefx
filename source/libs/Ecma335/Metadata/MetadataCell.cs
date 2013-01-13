@@ -10,21 +10,16 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
     /// </summary>
     internal struct MetadataCell
     {
-	    internal MetadataCell(MetadataColumn column, uint value) : this()
-        {
+		private readonly MetadataReader _metadata;
+
+	    internal MetadataCell(MetadataReader metadata, MetadataColumn column, uint value) : this()
+	    {
+		    _metadata = metadata;
             Column = column;
             Value = value;
-            Data = null;
         }
 
-        internal MetadataCell(MetadataColumn column, uint value, object data) : this()
-        {
-            Column = column;
-            Value = value;
-            Data = data;
-        }
-
-	    /// <summary>
+        /// <summary>
 	    /// Gets the column of this cell.
 	    /// </summary>
 	    public MetadataColumn Column { get; private set; }
@@ -99,9 +94,28 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
             }
         }
 
-	    public object Data { get; private set; }
+	    public object Data
+	    {
+		    get
+		    {
+			    switch (Column.Type)
+			    {
+				    case ColumnType.StringIndex:
+					    return _metadata.FetchString(Value);
 
-	    public string String
+				    case ColumnType.BlobIndex:
+					    return _metadata.FetchBlob(Value);
+
+				    case ColumnType.GuidIndex:
+					    return _metadata.FetchGuid(Value);
+
+				    default:
+					    return null;
+			    }
+		    }
+	    }
+
+		public string String
         {
             get { return Data as string; }
         }

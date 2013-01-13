@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 
 		private int _resourceOrigin = -1;
 
-		public BufferedBinaryReader SeekResourceOffset(int offset)
+		public Stream GetResourceStream(int offset)
 		{
 			if (_resourceOrigin < 0)
 			{
@@ -55,8 +55,18 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 			}
 			if (offset >= _image.Resources.Size)
 				throw new BadMetadataException();
-			_reader.Position = _resourceOrigin + offset;
-			return _reader;
+
+			var oldPos = _reader.Position;
+			try
+			{
+				_reader.Position = _resourceOrigin + offset;
+				var size = _reader.ReadInt32();
+				return _reader.Slice(_reader.Position, size);
+			}
+			finally
+			{
+				_reader.Position = oldPos;
+			}
 		}
 
 		public int SizeOfResources
@@ -71,8 +81,8 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 
 		public BufferedBinaryReader MoveToVirtualAddress(uint rva)
 		{
-			_reader.Position = _image.ResolveVirtualAddress(rva);
-			return _reader;
+			var offset = _image.ResolveVirtualAddress(rva);
+			return _reader.Slice(offset, _reader.Length - offset);
 		}
 
 		public MetadataTable GetTable(TableId tableId)
@@ -298,60 +308,42 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 
 		private void CreateStringHeap(long offset, long size)
 		{
-			if (_strings != null)
-				throw new BadMetadataException("Multiple #Strings heaps.");
 			_strings = new StringHeap(_reader.Slice(offset, size));
 		}
 
 		internal string FetchString(uint offset)
 		{
-			if (_strings == null)
-				throw new BadMetadataException("#Strings heap not found.");
 			return _strings.Fetch(offset);
 		}
 
 		private void CreateUserStringHeap(long offset, long size)
 		{
-			if (_userStrings != null)
-				throw new BadMetadataException("Multiple #US heaps.");
 			_userStrings = new UserStringHeap(_reader.Slice(offset, size));
 		}
 
 		public string GetUserString(uint offset)
 		{
-			if (_userStrings == null)
-				throw new BadMetadataException("#US heap not found.");
 			return _userStrings.Fetch(offset);
 		}
 
 		private void CreateGuidHeap(long offset, long size)
 		{
-			if (_guids != null)
-				throw new BadMetadataException("Multiple #GUID heaps.");
 			_guids = new GuidHeap(_reader.Slice(offset, size));
 		}
 
 		internal Guid FetchGuid(uint index)
 		{
-			if (index == 0)
-				return Guid.Empty;
-			if (_guids == null)
-				throw new BadMetadataException("#GUID heap not found.");
 			//guid index is 1 based
-			return _guids.Fetch((int)(index - 1));
+			return index == 0 ? Guid.Empty : _guids.Fetch((int)(index - 1));
 		}
 
 		private void CreateBlobHeap(long offset, long size)
 		{
-			if (_blob != null)
-				throw new BadMetadataException("Multiple #Blob heaps.");
 			_blob = new BlobHeap(_reader.Slice(offset, size));
 		}
 
 		internal BufferedBinaryReader FetchBlob(uint offset)
 		{
-			if (_blob == null)
-				throw new BadMetadataException("#Blob heap not found.");
 			return _blob.Fetch(offset);
 		}
 

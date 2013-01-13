@@ -1,13 +1,13 @@
-using System.Collections.Generic;
+using System.IO;
 using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public class ManifestFile : CustomAttributeProvider, IManifestFile
+    public sealed class ManifestFile : CustomAttributeProvider, IManifestFile
     {
-        #region IManifestResource Members
+	    private Stream _data;
 
-    	public string Name { get; set; }
+	    public string Name { get; set; }
 
     	public int Offset { get; set; }
 
@@ -15,19 +15,24 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public IModule Module { get; set; }
 
-    	public byte[] Data { get; set; }
+		public Stream Data
+		{
+			get
+			{
+				if (_data != null)
+				{
+					_data.Seek(0, SeekOrigin.Begin);
+				}
+				return _data;
+			}
+			set { _data = value; }
+		}
 
-    	#endregion
-
-        #region IManifestFile Members
-
-    	public string Location { get; set; }
+	    public string Location { get; set; }
 
     	public byte[] HashValue { get; set; }
 
     	public bool ContainsMetadata { get; set; }
-
-    	#endregion
     }
 
     public sealed class ManifestFileCollection : HashList<string, IManifestFile>, IManifestFileCollection

@@ -1,10 +1,14 @@
+using System.IO;
+
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
     /// <summary>
     /// Represents manifest resource.
     /// </summary>
-    public class ManifestResource : CustomAttributeProvider, IManifestResource
+    public sealed class ManifestResource : CustomAttributeProvider, IManifestResource
     {
+	    private Stream _data;
+
 	    /// <summary>
     	/// Gets the resource name.
     	/// </summary>
@@ -16,7 +20,18 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public IModule Module { get; set; }
 
-    	public byte[] Data { get; set; }
+	    public Stream Data
+	    {
+		    get
+		    {
+				if (_data != null)
+				{
+					_data.Seek(0, SeekOrigin.Begin);
+				}
+			    return _data;
+		    }
+		    set { _data = value; }
+	    }
 
 	    public override string ToString()
         {

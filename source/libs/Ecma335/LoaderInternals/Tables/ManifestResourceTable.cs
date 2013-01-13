@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Ecma335.LoaderInternals.Collections;
@@ -51,19 +52,11 @@ namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
 				switch (impl.Table)
 				{
 					case TableId.File:
-						{
-							//if (offset != 0)
-							//    throw new BadMetadataException(string.Format("Offset of manifest resource {0} shall be zero.", mr.Name));
-							var reader = Metadata.SeekResourceOffset(offset);
-							int size = reader.ReadInt32();
-							resource.Data = reader.ReadBytes(size);
-						}
+						resource.Data = Metadata.GetResourceStream(offset);
 						break;
 
 					case TableId.AssemblyRef:
-						{
-							throw new NotSupportedException();
-						}
+						throw new NotSupportedException();
 				}
 			}
 

@@ -54,19 +54,14 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 		    {
 			    var column = table.Columns[i];
 				Debug.Assert(column.Size != 0);
-			    uint value = column.Size == 2 ? reader.ReadUInt16() : reader.ReadUInt32();
 
-			    object data = null;
-			    if (column.Type == ColumnType.CodedIndex)
+			    uint value = column.Size == 2 ? reader.ReadUInt16() : reader.ReadUInt32();
+				if (column.Type == ColumnType.CodedIndex)
 			    {
 				    value = column.CodedIndex.Decode(value);
 			    }
-			    else
-			    {
-				    data = GetCellData(metadata, column, value);
-			    }
-
-			    _cells[i] = new MetadataCell(column, value, data);
+			    
+			    _cells[i] = new MetadataCell(metadata, column, value);
 		    }
 	    }
 
@@ -86,24 +81,6 @@ namespace DataDynamics.PageFX.Ecma335.Metadata
 	    IEnumerator IEnumerable.GetEnumerator()
 	    {
 		    return GetEnumerator();
-	    }
-
-	    private static object GetCellData(MetadataReader metadata, MetadataColumn column, uint index)
-	    {
-		    switch (column.Type)
-		    {
-			    case ColumnType.StringIndex:
-				    return metadata.FetchString(index);
-
-			    case ColumnType.BlobIndex:
-				    return metadata.FetchBlob(index);
-
-			    case ColumnType.GuidIndex:
-				    return metadata.FetchGuid(index);
-
-			    default:
-				    return null;
-		    }
 	    }
     }
 }

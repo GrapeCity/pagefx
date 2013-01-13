@@ -106,11 +106,15 @@ namespace DataDynamics.PageFX.Common.IO
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (_pos + count > Length)
-                count = (int)(Length - _pos);
+	        var source = _buffer;
+	        if (_pos + count > source.Length)
+	        {
+				count = (int)(source.Length - _pos);
+	        }
 
-            Array.Copy(_buffer, _pos, buffer, offset, count);
+	        Buffer.BlockCopy(source, (int)_pos, buffer, offset, count);
             _pos += count;
+
             return count;
         }
 
@@ -291,8 +295,8 @@ namespace DataDynamics.PageFX.Common.IO
 		public byte[] ReadBytes(int count)
         {
             var buf = new byte[count];
-            Array.Copy(_buffer, _pos, buf, 0, count);
-            _pos += count;
+	        Buffer.BlockCopy(_buffer, (int)_pos, buf, 0, count);
+	        _pos += count;
             return buf;
         }
 
@@ -513,7 +517,7 @@ namespace DataDynamics.PageFX.Common.IO
 		    return _pos += bytes;
 	    }
 
-		public BufferedBinaryReader Slice(long start, long size)
+		public virtual BufferedBinaryReader Slice(long start, long size)
 		{
 			return new SliceImpl(_buffer, start, size);
 		}
@@ -549,9 +553,20 @@ namespace DataDynamics.PageFX.Common.IO
 				return _pos;
 			}
 
+			public override long Position
+			{
+				get { return _pos - _start; }
+				set { Seek(value, SeekOrigin.Begin); }
+			}
+
 			public override long Length
 			{
 				get { return _size; }
+			}
+
+			public override BufferedBinaryReader Slice(long start, long size)
+			{
+				return base.Slice(_pos + start, size);
 			}
 		}
     }

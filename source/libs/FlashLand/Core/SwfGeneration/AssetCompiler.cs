@@ -39,8 +39,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             try
             {
                 var data = res.Data;
-                var ms = new MemoryStream(data);
-                return Image.FromStream(ms);
+                return Image.FromStream(data);
             }
             catch (Exception exc)
             {
