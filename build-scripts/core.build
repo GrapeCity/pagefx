@@ -17,7 +17,7 @@
 	<property name="dir.root" value="${project.dir}/.."/>
 	<property name="dir.libs" value="${dir.root}/libs"/>
 	<property name="dir.srcroot" value="${dir.root}/source"/>
-	<property name="dir.src" value="${dir.srcroot}/libs/Ecma335"/>
+	<property name="dir.src" value="${dir.srcroot}/libs/core"/>
 	
 	<target name="build">
 		<csc target="library" output="${outputdir}/${assembly}.dll"

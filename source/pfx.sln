@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scri
 		..\build-scripts\tools.build = ..\build-scripts\tools.build
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecma335", "libs\Ecma335\Ecma335.csproj", "{3C215B55-8587-4A60-8CAA-91FE412B9013}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "libs\Core\Core.csproj", "{3C215B55-8587-4A60-8CAA-91FE412B9013}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "libs\Common\Common.csproj", "{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}"
 EndProject

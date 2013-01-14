@@ -62,7 +62,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\Ecma335\Ecma335.csproj">
+    <ProjectReference Include="..\..\libs\Core\Core.csproj">
       <Project>{3C215B55-8587-4A60-8CAA-91FE412B9013}</Project>
       <Name>Ecma335</Name>
     </ProjectReference>
