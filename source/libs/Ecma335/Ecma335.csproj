@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DataDynamics.PageFX.Ecma335</RootNamespace>
-    <AssemblyName>DataDynamics.PageFX.Ecma335</AssemblyName>
+    <AssemblyName>pfx.core</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\pfx.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>

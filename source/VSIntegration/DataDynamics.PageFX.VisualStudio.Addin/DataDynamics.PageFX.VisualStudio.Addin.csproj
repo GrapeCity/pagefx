@@ -10,7 +10,7 @@
     <StartupObject>
     </StartupObject>
     <NoStandardLibraries>false</NoStandardLibraries>
-    <AssemblyName>DataDynamics.PageFX.VisualStudio.Addin</AssemblyName>
+    <AssemblyName>pfx.vsaddin</AssemblyName>
     <RootNamespace>DataDynamics.PageFX.VisualStudio.Addin</RootNamespace>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileUpgradeFlags>

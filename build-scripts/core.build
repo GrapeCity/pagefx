@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<project xmlns="http://nant.sf.net" name="Builds Common Assembly" default="rebuild">
+<project xmlns="http://nant.sf.net" name="Builds Core Assembly" default="rebuild">
 
 	<!-- input properties -->
 	<property name="debug" value="true"/>
 	<property name="delaysign" value="false"/>
 	<property name="outputdir" value="c:\pfx\bin"/>
-	<property name="assembly" value="DataDynamics.PageFX.Ecma335"/>
+	<property name="assembly" value="pfx.core"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
 		<property name="define" value="DEBUG;NUNIT"/>

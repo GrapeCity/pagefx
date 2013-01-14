@@ -4,13 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scripts", "{C6142C3D-9C9C-4CC4-911A-740DAD86D70B}"
 	ProjectSection(SolutionItems) = preProject
 		..\build-scripts\build.nant = ..\build-scripts\build.nant
+		..\build-scripts\common.build = ..\build-scripts\common.build
 		..\build-scripts\common.nant = ..\build-scripts\common.nant
+		..\build-scripts\core.build = ..\build-scripts\core.build
+		..\build-scripts\flashland.build = ..\build-scripts\flashland.build
 		..\build-scripts\nant.xsd = ..\build-scripts\nant.xsd
 		..\build-scripts\pfc.build = ..\build-scripts\pfc.build
-		..\build-scripts\pfx.common.build = ..\build-scripts\pfx.common.build
-		..\build-scripts\pfx.ecma335.build = ..\build-scripts\pfx.ecma335.build
-		..\build-scripts\pfx.flashland.build = ..\build-scripts\pfx.flashland.build
 		..\build-scripts\qa.nant = ..\build-scripts\qa.nant
+		..\build-scripts\testrunner.build = ..\build-scripts\testrunner.build
+		..\build-scripts\tools.build = ..\build-scripts\tools.build
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecma335", "libs\Ecma335\Ecma335.csproj", "{3C215B55-8587-4A60-8CAA-91FE412B9013}"

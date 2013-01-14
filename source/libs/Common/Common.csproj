@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DataDynamics.PageFX.Common</RootNamespace>
-    <AssemblyName>DataDynamics.PageFX.Common</AssemblyName>
+    <AssemblyName>pfx.common</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\pfx.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>

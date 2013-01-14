@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<project xmlns="http://nant.sf.net" name="Builds Common Assembly" default="rebuild">
+<project xmlns="http://nant.sf.net" name="Builds Flash Backend Assembly" default="rebuild">
 
 	<!-- input properties -->
 	<property name="debug" value="true"/>
 	<property name="delaysign" value="false"/>
 	<property name="outputdir" value="c:\pfx\bin"/>
-	<property name="assembly" value="DataDynamics.PageFX.Common"/>
+	<property name="assembly" value="pfx.flashland"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
 		<property name="define" value="DEBUG;NUNIT"/>
@@ -17,7 +17,7 @@
 	<property name="dir.root" value="${project.dir}/.."/>
 	<property name="dir.libs" value="${dir.root}/libs"/>
 	<property name="dir.srcroot" value="${dir.root}/source"/>
-	<property name="dir.src" value="${dir.srcroot}/libs/Common"/>
+	<property name="dir.src" value="${dir.srcroot}/libs/FlashLand"/>
 	
 	<target name="build">
 		<csc target="library" output="${outputdir}/${assembly}.dll"
@@ -28,12 +28,15 @@
 				<include name="System.Core.dll"/>
 				<include name="System.Drawing.dll"/>
 				<include name="System.Xml.dll"/>
+				<include name="System.Xml.Linq.dll"/>
+				<include name="${outputdir}/DataDynamics.PageFX.Common.dll"/>
 				<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
 				<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/>
 			</references>
 			<sources basedir="${dir.src}">
 				<include name="**/*.cs"/>
 				<include name="{dir.srcroot}/CommonAssemblyInfo.cs"/>
+				<exclude name="Resources/**"/>
 			</sources>
 			<resources basedir="${dir.src}/Resources"
 					   prefix="${assembly}" dynamicprefix="true" failonempty="true">

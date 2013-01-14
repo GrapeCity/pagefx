@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="Builds PFX Tools" default="rebuild">
+
+	<!-- input properties -->
+	<property name="debug" value="true"/>
+	<property name="delaysign" value="false"/>
+	<property name="outputdir" value="c:/pfx/tools"/>
+	<property name="define" value=""/>
+	<if test="${debug}">
+		<property name="define" value="DEBUG;NUNIT"/>
+	</if>
+	
+	<property name="nant.settings.currentframework" value="net-3.5" />
+
+	<property name="pfx.bindir" value="c:/pfx/bin"/>
+	<property name="pfx.common.dll" value="${pfx.bindir}/pfx.common.dll"/>
+	<property name="pfx.core.dll" value="${pfx.bindir}/pfx.core.dll"/>
+	<property name="pfx.flashland.dll" value="${pfx.bindir}/pfx.flashland.dll"/>
+	<property name="pfx.testrunner.exe" value="c:/pfx/qa/bin/pfx.testrunner.exe"/>
+	
+	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+	<property name="dir.root" value="${project.dir}/.."/>
+	<property name="dir.libs" value="${dir.root}/libs"/>
+	<property name="dir.srcroot" value="${dir.root}/source"/>
+	<property name="dir.src" value="${dir.srcroot}/tools"/>
+	<property name="tools" value="as2xdoc;mono-test-adaptor;pfx-api-info;pfx-bench;pfx-bench-report;pfx-nunit-info;pfx-qa;pfx-wix;rv;xools"/>
+
+	<fileset id="refs">
+		<include name="System.dll"/>
+		<include name="System.Core.dll"/>
+		<include name="System.Drawing.dll"/>
+		<include name="System.Xml.dll"/>
+		<include name="System.Xml.Linq.dll"/>
+		<include name="${pfx.common.dll}"/>
+		<include name="${pfx.core.dll}"/>
+		<include name="${pfx.flashland.dll}"/>
+		<include name="${pfx.testrunner.exe}"/>
+	</fileset>
+	
+	<target name="build">
+
+		<csc target="exe" output="${outputdir}/api-diff.exe"
+				 debug="${debug}" unsafe="true" define="${define}"
+				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+			<references refid="refs"/>
+			<sources basedir="${dir.src}/mono/corcompare">
+				<include name="**/*.cs"/>
+				<include name="{dir.srcroot}/CommonAssemblyInfo.cs"/>
+				<exclude name="mono-api-info.cs"/>
+				<exclude name="CorCompare.cs"/>
+				<exclude name="transform.cs"/>
+			</sources>
+		</csc>
+		
+		<csc target="exe" output="${outputdir}/api-info.exe"
+				 debug="${debug}" unsafe="true" define="${define}"
+				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+			<references refid="refs"/>
+			<sources basedir="${dir.src}/mono/corcompare">
+				<include name="**/*.cs"/>
+				<include name="{dir.srcroot}/CommonAssemblyInfo.cs"/>
+				<exclude name="mono-api-diff.cs"/>
+				<exclude name="CorCompare.cs"/>
+				<exclude name="transform.cs"/>
+			</sources>
+		</csc>
+		
+		<csc target="exe" output="${outputdir}/pfx-nunit-console.exe"
+				 debug="${debug}" unsafe="true" define="${define}"
+				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+			<references refid="refs"/>
+			<sources basedir="${dir.src}/pfx-nunit-console">
+				<include name="**/*.cs"/>
+				<include name="${dir.srcroot}/CommonAssemblyInfo.cs"/>
+				<include name="${dir.srcroot}/libs/NUnit/src/NUnit.Framework/PageFX/*.cs"/>
+			</sources>
+		</csc>
+		
+		<foreach item="String" in="${tools}" delim=";" property="tool">
+			<call target="__get_tooldir"/>
+			<csc target="exe" output="${outputdir}/${tool}.exe"
+				 debug="${debug}" unsafe="true" define="${define}"
+				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+				<references refid="refs"/>
+				<sources basedir="${tooldir}">
+					<include name="**/*.cs"/>
+					<include name="{dir.srcroot}/CommonAssemblyInfo.cs"/>
+					<exclude name="Resources/**"/>
+				</sources>
+				<resources basedir="${tooldir}/Resources"
+						   prefix="${tool}" dynamicprefix="true" failonempty="false">
+					<include name="**/*.*"/>
+				</resources>
+			</csc>
+		</foreach>
+	</target>
+
+	<target name="clean">
+		<foreach item="String" in="mono/api-diff;mono/api-info;pfx-unit-console" delim=";" property="dir">
+			<delete dir="${dir.src}/${dir}/obj" failonerror="false"/>
+			<delete dir="${dir.src}/${dir}/bin" failonerror="false"/>
+		</foreach>
+		<foreach item="String" in="${tools}" delim=";" property="tool">
+			<call target="__get_tooldir"/>
+			<delete dir="${tooldir}/obj" failonerror="false"/>
+			<delete dir="${tooldir}/bin" failonerror="false"/>
+			<delete failonerror="false">
+				<fileset basedir="${outputdir}">
+					<include name="${tool}.*"/>
+				</fileset>
+			</delete>
+		</foreach>
+	</target>
+	
+	<target name="rebuild" depends="clean, build"/>
+
+	<target name="__get_tooldir">
+		<property name="dirs" value="mono;fli"/>
+		<property name="tooldir" value="${dir.src}/${tool}"/>
+		<if test="${not directory::exists(tooldir)}">
+			<foreach item="String" in="${dirs}" delim=";" property="dir">
+				<if test="${not directory::exists(tooldir)}">
+					<property name="tooldir" value="${dir.src}/${dir}/${tool}"/>
+				</if>
+			</foreach>
+		</if>
+	</target>
+
+</project>

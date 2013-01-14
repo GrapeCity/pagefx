@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DataDynamics.PageFX.VisualStudio.Debugger</RootNamespace>
-    <AssemblyName>DataDynamics.PageFX.VisualStudio.Debugger</AssemblyName>
+    <AssemblyName>pfx.debugger</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>

@@ -86,10 +86,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ReportTemplate.xml" />
+    <EmbeddedResource Include="Resources\ReportTemplate.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="HtmlTemplate.xml" />
+    <EmbeddedResource Include="Resources\HtmlTemplate.xml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
