@@ -1,9 +1,10 @@
 ﻿#if NUNIT
 using System.Collections.Generic;
 using System.Linq;
+using DataDynamics.PageFX.Common.Collections;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.Tests
+namespace DataDynamics.PageFX.Common.Tests
 {
 	[TestFixture]
 	public class MemoizationTests

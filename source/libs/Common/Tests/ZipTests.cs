@@ -2,10 +2,11 @@
 using System;
 using System.IO;
 using System.Linq;
+using DataDynamics.PageFX.Common.IO;
 using Ionic.Zip;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.Tests
+namespace DataDynamics.PageFX.Common.Tests
 {
     [TestFixture]
     public class ZipTests

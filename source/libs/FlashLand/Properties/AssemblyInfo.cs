@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("DataDynamics.PageFX.FLI")]
+[assembly: AssemblyTitle("DataDynamics.PageFX.FlashLand")]
 [assembly: AssemblyDescription("Flash Language Infrastructure")]
 [assembly: AssemblyConfiguration("")]
-//[assembly: AssemblyDelaySign(true)]
-[assembly: AssemblyKeyFile("../../pfx.snk")]

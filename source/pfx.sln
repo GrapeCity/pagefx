@@ -6,6 +6,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scri
 		..\build-scripts\build.nant = ..\build-scripts\build.nant
 		..\build-scripts\common.nant = ..\build-scripts\common.nant
 		..\build-scripts\nant.xsd = ..\build-scripts\nant.xsd
+		..\build-scripts\pfc.build = ..\build-scripts\pfc.build
+		..\build-scripts\pfx.common.build = ..\build-scripts\pfx.common.build
+		..\build-scripts\pfx.ecma335.build = ..\build-scripts\pfx.ecma335.build
+		..\build-scripts\pfx.flashland.build = ..\build-scripts\pfx.flashland.build
 		..\build-scripts\qa.nant = ..\build-scripts\qa.nant
 	EndProjectSection
 EndProject

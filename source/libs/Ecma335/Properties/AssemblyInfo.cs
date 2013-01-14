@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("DataDynamics.PageFX.CLI")]
+[assembly: AssemblyTitle("DataDynamics.PageFX.Ecma335")]
 [assembly: AssemblyDescription("Common Language Infrastructure")]
 [assembly: AssemblyConfiguration("")]
-//[assembly: AssemblyDelaySign(true)]
-[assembly: AssemblyKeyFile("../../pfx.snk")]

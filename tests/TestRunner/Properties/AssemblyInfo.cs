@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("DataDynamics.PageFX.QA")]
+[assembly: AssemblyTitle("DataDynamics.PageFX.TestRunner")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-//[assembly: AssemblyDelaySign(true)]
-[assembly: AssemblyKeyFile("../../source/pfx.snk")]

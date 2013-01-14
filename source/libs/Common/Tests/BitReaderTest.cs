@@ -1,8 +1,8 @@
 #if NUNIT
-using System.IO;
+using DataDynamics.PageFX.Common.IO;
 using NUnit.Framework;
 
-namespace DataDynamics.Tests
+namespace DataDynamics.PageFX.Common.Tests
 {
     [TestFixture]
     public class BitReaderTest

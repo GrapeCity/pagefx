@@ -1,7 +1,8 @@
 ﻿#if NUNIT
+using DataDynamics.PageFX.Common.Extensions;
 using NUnit.Framework;
 
-namespace DataDynamics.Tests
+namespace DataDynamics.PageFX.Common.Tests
 {
     [TestFixture]
     public class StrTest

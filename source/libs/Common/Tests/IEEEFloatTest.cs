@@ -1,8 +1,9 @@
 #if NUNIT
 using System;
+using DataDynamics.PageFX.Common.Utilities;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common.Tests
 {
 	[TestFixture]
 	public class IEEEFloatTest
