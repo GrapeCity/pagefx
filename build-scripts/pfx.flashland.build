@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="Builds Common Assembly" default="rebuild">
+
+	<!-- input properties -->
+	<property name="debug" value="true"/>
+	<property name="delaysign" value="false"/>
+	<property name="outputdir" value="c:\pfx\bin"/>
+	<property name="assembly" value="DataDynamics.PageFX.FlashLand"/>
+	<property name="define" value=""/>
+	<if test="${debug}">
+		<property name="define" value="DEBUG;NUNIT"/>
+	</if>
+	
+	<property name="nant.settings.currentframework" value="net-3.5" />
+	
+	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+	<property name="dir.root" value="${project.dir}/.."/>
+	<property name="dir.libs" value="${dir.root}/libs"/>
+	<property name="dir.srcroot" value="${dir.root}/source"/>
+	<property name="dir.src" value="${dir.srcroot}/libs/FlashLand"/>
+	
+	<target name="build">
+		<csc target="library" output="${outputdir}/${assembly}.dll"
+			 debug="${debug}" unsafe="true" define="${define}"
+			 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+			<references>
+				<include name="System.dll"/>
+				<include name="System.Core.dll"/>
+				<include name="System.Drawing.dll"/>
+				<include name="System.Xml.dll"/>
+				<include name="System.Xml.Linq.dll"/>
+				<include name="${outputdir}/DataDynamics.PageFX.Common.dll"/>
+				<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
+				<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/>
+			</references>
+			<sources basedir="${dir.src}">
+				<include name="**/*.cs"/>
+				<include name="{dir.srcroot}/CommonAssemblyInfo.cs"/>
+				<exclude name="Resources/**"/>
+			</sources>
+			<resources basedir="${dir.src}/Resources"
+					   prefix="${assembly}" dynamicprefix="true" failonempty="true">
+				<include name="**/*.*"/>
+			</resources>
+		</csc>
+	</target>
+
+	<target name="clean">
+		<delete dir="${dir.src}\obj" failonerror="false"/>
+		<delete dir="${dir.src}\bin" failonerror="false"/>
+		<delete failonerror="false">
+			<fileset basedir="${outputdir}">
+				<include name="${assembly}.*"/>
+			</fileset>
+		</delete>
+	</target>
+	
+	<target name="rebuild" depends="clean, build"/>
+
+</project>
