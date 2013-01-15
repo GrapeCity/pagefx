@@ -1,1 +1,0 @@
-nant -buildfile:build.nant fast

@@ -1,1 +1,0 @@
-nant -buildfile:build.nant -logfile:build.release.log build.release

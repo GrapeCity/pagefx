@@ -1,1 +1,1 @@
-nant -buildfile:build.nant -logfile:build.log
+nant -buildfile:main.build -logfile:build.log -verbose

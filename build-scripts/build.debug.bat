@@ -1,1 +1,0 @@
-nant -buildfile:build.nant -logfile:build.debug.log build.debug

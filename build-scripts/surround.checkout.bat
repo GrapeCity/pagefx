@@ -1,1 +1,0 @@
-nant -buildfile:surround.nant scc-checkout

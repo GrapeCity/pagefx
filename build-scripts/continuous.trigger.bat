@@ -1,1 +1,0 @@
-nant -buildfile:build.nant -logfile:continuous-trigger.log continuous-trigger

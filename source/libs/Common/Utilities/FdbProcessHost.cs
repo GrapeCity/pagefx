@@ -5,81 +5,80 @@ using System.Security.Permissions;
 
 namespace DataDynamics.PageFX.Common.Utilities
 {
-    [SecurityPermission(SecurityAction.LinkDemand, Unrestricted = true)]
-    public static class FdbProcessHost
-    {
-        private static string GetFdbExe()
-        {
-            string flexdir = GlobalSettings.GetVar("FlexSdkHome");
-            if (!string.IsNullOrEmpty(flexdir))
-                return Path.Combine(flexdir, "bin\\fdb.exe");
-            return "fdb.exe";
-        }
+	[SecurityPermission(SecurityAction.LinkDemand, Unrestricted = true)]
+	public static class FdbProcessHost
+	{
+		private static string GetFdbExe()
+		{
+			string flexdir = GlobalSettings.GetVar("FlexSdkHome");
+			if (!string.IsNullOrEmpty(flexdir))
+				return Path.Combine(flexdir, "bin\\fdb.exe");
+			return "fdb.exe";
+		}
 
-        private const int waitTimeForProcess = 30000;
-        
-        public static string Run(string args, string[] input, string workdir, out int exitCode)
-        {
-            string fileName = GetFdbExe();
+		private const int waitTimeForProcess = 30000;
 
-            using (var process = new Process())
-            {
-                var si = process.StartInfo;
+		public static string Run(string args, string[] input, string workdir, out int exitCode)
+		{
+			string fileName = GetFdbExe();
 
-                {
-                    si.FileName = fileName;
-                    si.Arguments = args;
-                }
-                
-                si.UseShellExecute = false;
-                si.RedirectStandardInput = true;
-                si.RedirectStandardOutput = true;
-                si.RedirectStandardError = false;
-                si.WorkingDirectory = workdir;
-                si.CreateNoWindow = false;
+			using (var process = new Process())
+			{
+				var si = process.StartInfo;
 
-                if (process.Start())
-                {
-                    WriteToProccessInput(process, input);
+				{
+					si.FileName = fileName;
+					si.Arguments = args;
+				}
 
-                    if (!process.WaitForExit(waitTimeForProcess))
-                    {
-                        exitCode = -1;
-                        process.Kill();
-                        return string.Format("Error: Timeout");
-                    }
+				si.UseShellExecute = false;
+				si.RedirectStandardInput = true;
+				si.RedirectStandardOutput = true;
+				si.RedirectStandardError = false;
+				si.WorkingDirectory = workdir;
+				si.CreateNoWindow = false;
 
-                    StreamReader sr = process.StandardOutput;
-                    for (int skipline = 0; skipline < 8; skipline++)
-                        sr.ReadLine();
-                    string retVal = sr.ReadToEnd();
-                    exitCode = 0;
+				if (process.Start())
+				{
+					WriteToProccessInput(process, input);
 
-                    //At this point the process should surely have exited,
-                    //since both the error and output streams have been fully read.
-                    //To be paranoid, let's check anyway...
-                    if (!process.HasExited)
-                    {
-                        exitCode = -1;
-                        process.Kill();
-                        return string.Format("Error: Process deadlock");
-                    }
+					if (!process.WaitForExit(waitTimeForProcess))
+					{
+						exitCode = -1;
+						process.Kill();
+						return string.Format("Error: Timeout");
+					}
 
-                    return retVal;
-                }
+					StreamReader sr = process.StandardOutput;
+					for (int skipline = 0; skipline < 8; skipline++)
+						sr.ReadLine();
+					string retVal = sr.ReadToEnd();
+					exitCode = 0;
 
-                exitCode = -1;
-                return "Error: Unable to start process";
-            }
-        }
+					//At this point the process should surely have exited,
+					//since both the error and output streams have been fully read.
+					//To be paranoid, let's check anyway...
+					if (!process.HasExited)
+					{
+						exitCode = -1;
+						process.Kill();
+						return string.Format("Error: Process deadlock");
+					}
 
-        private static void WriteToProccessInput(Process process, IEnumerable<string> input)
-        {
-            foreach (string cmd in input)
-            {
-                process.StandardInput.WriteLine(cmd);
-            }
-        }
+					return retVal;
+				}
 
-    }
+				exitCode = -1;
+				return "Error: Unable to start process";
+			}
+		}
+
+		private static void WriteToProccessInput(Process process, IEnumerable<string> input)
+		{
+			foreach (string cmd in input)
+			{
+				process.StandardInput.WriteLine(cmd);
+			}
+		}
+	}
 }

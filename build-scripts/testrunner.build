@@ -4,7 +4,7 @@
 	<!-- input properties -->
 	<property name="debug" value="true"/>
 	<property name="delaysign" value="false"/>
-	<property name="outputdir" value="c:\pfx\qa\bin"/>
+	<property name="outdir" value="c:\pfx\qa\bin"/>
 	<property name="assembly" value="pfx.testrunner"/>
 	<property name="define" value="IMPL64;NET_2_0;NUNIT"/>
 	<if test="${debug}">
@@ -24,7 +24,7 @@
 	<property name="dir.src" value="${dir.root}/tests/testrunner"/>
 	
 	<target name="build">
-		<csc target="exe" output="${outputdir}/${assembly}.exe"
+		<csc target="exe" output="${outdir}/${assembly}.exe"
 			 debug="${debug}" unsafe="true" define="${define}"
 			 keyfile="${dir.root}/source/pfx.snk" delaysign="${delaysign}">
 			<references>
@@ -64,12 +64,20 @@
 		<delete dir="${dir.src}\obj" failonerror="false"/>
 		<delete dir="${dir.src}\bin" failonerror="false"/>
 		<delete failonerror="false">
-			<fileset basedir="${outputdir}">
+			<fileset basedir="${outdir}">
 				<include name="${assembly}.*"/>
 			</fileset>
 		</delete>
 	</target>
 	
 	<target name="rebuild" depends="clean, build"/>
+
+	<target name="runtests">
+		<nunit2>
+			<formatter type="Xml" usefile="true" extension=".xml" outputdir="${outdir}"/>
+			<formatter type="Plain"/>
+			<test assemblyname="${outdir}/${assembly}.exe"/>
+		</nunit2>
+	</target>
 
 </project>

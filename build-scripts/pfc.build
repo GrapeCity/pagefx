@@ -67,4 +67,12 @@
 	
 	<target name="rebuild" depends="clean, build"/>
 
+	<target name="runtests">
+		<nunit2>
+			<formatter type="Xml" usefile="true" extension=".xml" outputdir="${outdir}"/>
+			<formatter type="Plain"/>
+			<test assemblyname="${outdir}/${assembly}.exe"/>
+		</nunit2>
+	</target>
+
 </project>

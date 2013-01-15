@@ -1,1 +1,0 @@
-nant -buildfile:qa.nant qa-report-local

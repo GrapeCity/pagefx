@@ -29,7 +29,26 @@
 		<nant buildfile="flashland.build" target="${target}"/>
 		<nant buildfile="pfc.build" target="${target}"/>
 		<nant buildfile="testrunner.build" target="${target}"/>
-		<nant buildfile="tools.build" target="${target}"/>
+		<nant buildfile="tools.build" target="${target}" unless="${target == 'runtests'}"/>
+	</target>
+
+	<property name="pfx.bindir" value="c:/pfx/bin"/>
+	<property name="pfx.common.dll" value="${pfx.bindir}/pfx.common.dll"/>
+	<property name="pfx.core.dll" value="${pfx.bindir}/pfx.core.dll"/>
+	<property name="pfx.flashland.dll" value="${pfx.bindir}/pfx.flashland.dll"/>
+	<property name="pfx.testrunner.exe" value="c:/pfx/qa/bin/pfx.testrunner.exe"/>
+	
+	<target name="runtests">
+		<nunit2>
+			<formatter type="Xml" usefile="true" extension=".xml" outputdir="c:/pfx/qa/nunit-reports"/>
+			<formatter type="Plain"/>
+			<test assemblyname="${pfx.common.dll}"/>
+			<test assemblyname="${pfx.core.dll}"/>
+			<test assemblyname="${pfx.flashland.dll}"/>
+			<test assemblyname="${pfx.testrunner.exe}"/>
+		</nunit2>
+		
+		<!-- TODO: generate unit tests for test files and compile to separate assembly, and then run these unit tests  -->
 	</target>
 
 </project>
