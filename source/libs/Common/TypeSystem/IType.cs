@@ -1,6 +1,5 @@
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -104,13 +103,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         string SourceCode { get; set; }
 
-        #region Type Name Caches
-        /// <summary>
-        /// Gets c# keyword used for this type
-        /// </summary>
-        string CSharpKeyword { get; }
-
-        /// <summary>
+		/// <summary>
         /// Gets unique key of this type. Used for <see cref="TypeFactory"/>.
         /// </summary>
         string Key { get;  }
@@ -124,7 +117,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// Name with names of enclosing types.
         /// </summary>
         string NestedName { get; }
-        #endregion
     }
 
 	public interface ITypeCollection : IReadOnlyList<IType>, ICodeNode

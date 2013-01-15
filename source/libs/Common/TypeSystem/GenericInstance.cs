@@ -251,15 +251,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region Names
-        /// <summary>
-        /// Gets c# keyword used for this type
-        /// </summary>
-        public string CSharpKeyword
-        {
-            get { return ""; }
-        }
 
-        string EvalNameBase(TypeNameKind kind)
+	    string EvalNameBase(TypeNameKind kind)
         {
             switch (kind)
             {

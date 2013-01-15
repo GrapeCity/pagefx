@@ -188,6 +188,7 @@
     <Compile Include="LoaderInternals\Tables\TypeRefTable.cs" />
     <Compile Include="LoaderInternals\Tables\TypeSpecTable.cs" />
     <Compile Include="LoaderInternals\Tables\TypeTable.cs" />
+    <Compile Include="LoaderInternals\InternalType.cs" />
     <Compile Include="Metadata\ArrayShape.cs" />
     <Compile Include="Metadata\BlobHeap.cs" />
     <Compile Include="Metadata\ColumnType.cs" />

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Syntax;
@@ -11,6 +12,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public class TypeImpl : TypeMember, IType
     {
+		private ClassLayout _layout;
+		private string _namespace;
+		private string _fullName;
+		private IType _baseType;
+		private ITypeCollection _interfaces;
+		private readonly TypeMemberCollection _members;
+		private ITypeCollection _types;
+
 	    public TypeImpl()
         {
             _members = new TypeMemberCollection(this);
@@ -21,8 +30,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             TypeKind = kind;
         }
 
-	    #region IType Members
-        /// <summary>
+	    /// <summary>
         /// Gets the module in which the current type is defined. 
         /// </summary>
         public override IModule Module { get; set; }
@@ -38,7 +46,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    /// <summary>
 	    /// Gets kind of the type.
 	    /// </summary>
-	    public TypeKind TypeKind { get; set; }
+	    public virtual TypeKind TypeKind { get; set; }
 
 	    /// <summary>
         /// Gets or sets flag specifing that this type is abstract.
@@ -127,8 +135,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
             set { _namespace = value; }
         }
-        private string _namespace;
-
+        
         /// <summary>
         /// Gets the full name of this type.
         /// </summary>
@@ -136,8 +143,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return _fullName ?? (_fullName = FullNameBase + FullNameSuffix); }
         }
-        private string _fullName;
-
+        
         protected virtual string FullNameBase
         {
             get { return GetName(this, true); }
@@ -152,10 +158,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get
             {
-                string k = CSharpKeyword;
-                if (!string.IsNullOrEmpty(k))
-                    return k;
-                return FullName;
+                string k = this.CSharpKeyword();
+                return !string.IsNullOrEmpty(k) ? k : FullName;
             }
         }
 
@@ -164,12 +168,21 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public IMethod DeclaringMethod { get; set; }
 
-        /// <summary>
-        /// Gets or sets base type.
-        /// </summary>
-        public IType BaseType { get; set; }
+	    /// <summary>
+	    /// Gets or sets base type.
+	    /// </summary>
+	    public IType BaseType
+	    {
+		    get { return _baseType ?? (_baseType = ResolveBaseType()); }
+		    set { _baseType = value; }
+	    }
 
-        /// <summary>
+	    protected virtual IType ResolveBaseType()
+	    {
+		    return null;
+	    }
+
+	    /// <summary>
         /// Gets list of interfaces implemented by this type.
         /// </summary>
         public ITypeCollection Interfaces
@@ -177,14 +190,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _interfaces ?? (_interfaces = new SimpleTypeCollection()); }
 			set { _interfaces = value; }
         }
-        private ITypeCollection _interfaces;
-
+        
         public ITypeMemberCollection Members
         {
             get { return _members; }
         }
-        private readonly TypeMemberCollection _members;
-
+        
         public IFieldCollection Fields
         {
             get { return _members.Fields; }
@@ -213,14 +224,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 {
                     if (_valueType == null)
                     {
-                        foreach (var field in Fields)
-                        {
-                            if (field.IsSpecialName)
-                            {
-                                _valueType = field.Type;
-                                break;
-                            }
-                        }
+	                    _valueType = Fields.Where(field => field.IsSpecialName).Select(x => x.Type).FirstOrDefault();
                     }
                 }
                 return _valueType;
@@ -228,9 +232,18 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
         private IType _valueType;
 
-        public ClassLayout Layout { get; set; }
+	    public virtual ClassLayout Layout
+	    {
+		    get { return _layout ?? (_layout = ResolveLayout()); }
+		    set { _layout = value; }
+	    }
 
-        /// <summary>
+	    protected virtual ClassLayout ResolveLayout()
+	    {
+		    return null;
+	    }
+
+	    /// <summary>
         /// Gets or sets members defined with syntax of some language
         /// </summary>
         public string CustomMembers { get; set; }
@@ -239,7 +252,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// Gets or sets type source code.
         /// </summary>
         public string SourceCode { get; set; }
-        #endregion
 
 	    /// <summary>
         /// Get all nested types.
@@ -249,16 +261,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _types ?? (_types = new TypeCollection(this)); }
 			set { _types = value; }
         }
-        private ITypeCollection _types;
 
-	    #region IFormattable Members
-        public override string ToString(string format, IFormatProvider formatProvider)
+	    public override string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
-        #endregion
 
-        #region Object Override Members
+	    #region Object Override Members
         public override bool Equals(object obj)
         {
             return this.IsEqual(obj as IType);
@@ -278,29 +287,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
         #endregion
 
-        #region ICodeNode Members
-
 	    public override IEnumerable<ICodeNode> ChildNodes
         {
             get { return new ICodeNode[] { Types, Fields, Properties, Events, Methods }; }
         }
-        #endregion
 
-        #region Names
-
-        /// <summary>
-        /// Gets c# keyword used for this type
-        /// </summary>
-        public string CSharpKeyword
-        {
-            get
-            {
-                var st = this.SystemType();
-                return st != null ? st.CSharpKeyword : "";
-            }
-        }
-
-        /// <summary>
+	    /// <summary>
         /// Gets unique key of this type. Used for <see cref="TypeFactory"/>.
         /// </summary>
         public virtual string Key
@@ -317,7 +309,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             {
                 if (_sigName == null)
                 {
-                	string k = CSharpKeyword;
+                	string k = this.CSharpKeyword();
                 	_sigName = !string.IsNullOrEmpty(k) ? k : GenericType.ToDisplayName(FullName, true);
                 }
             	return _sigName;
@@ -333,10 +325,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _nestedName ?? (_nestedName = GetName(this, false)); }
         }
         private string _nestedName;
-
-        #endregion
-
-        #region XmlSerialization
+	    
+	    #region XmlSerialization
 
 	    #endregion
 
@@ -358,7 +348,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 case TypeNameKind.SigName:
                     return type.SigName;
                 case TypeNameKind.CSharpKeyword:
-                    return type.CSharpKeyword;
+                    return type.CSharpKeyword();
             }
             return type.FullName;
         }

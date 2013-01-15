@@ -196,15 +196,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { throw new NotSupportedException(); }
         }
 
-        /// <summary>
-        /// Gets c# keyword used for this type
-        /// </summary>
-        public string CSharpKeyword
-        {
-            get { return ""; }
-        }
-
-        /// <summary>
+	    /// <summary>
         /// Gets unique key of this type. Used for <see cref="TypeFactory"/>.
         /// </summary>
         public string Key

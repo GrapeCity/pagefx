@@ -9,6 +9,15 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public static class TypeExtensions
     {
+		/// <summary>
+		/// Gets c# keyword used for this type
+		/// </summary>
+		public static string CSharpKeyword(this IType type)
+		{
+			var systemType = type.SystemType();
+			return systemType != null ? systemType.CSharpKeyword : "";
+		}
+
 		public static IType GetArrayType(this IType elementType)
 		{
 			return elementType != null ? elementType.Assembly.TypeFactory.MakeArray(elementType) : null;

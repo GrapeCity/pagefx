@@ -161,17 +161,13 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			var token = SimpleIndex.MakeToken(TableId.TypeDef, index + 1);
 			var genericParams = Loader.GenericParameters.Find(token);
 
-			bool isIface = IsInterface(flags);
-			var kind = isIface ? TypeKind.Interface : TypeKind.Class;
-			var sysType = !isIface && ns == SystemType.Namespace ? SystemTypes.Find(name) : null;
-			if (sysType != null) kind = sysType.Kind;
-
-			var type = CreateType(kind, genericParams);
+			var type = genericParams != null && genericParams.Count > 0
+				           ? new InternalGenericType(Loader, genericParams)
+				           : (TypeImpl)new InternalType(Loader);
 
 			type.Namespace = ns;
 			type.Name = name;
 			SetTypeFlags(type, flags);
-			type.Module = Loader.MainModule;
 
 			// to avoid problems with self refs in fields/methods,etc
 			this[index] = type;
@@ -179,16 +175,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			type.MetadataToken = token;
 			type.CustomAttributes = new CustomAttributes(Loader, type);
 
-			//TODO: lazy resolving of class layout
-			type.Layout = ResolveLayout(Metadata, index);
-
-			//TODO: lazy resolving of declaring type
-			var declType = ResolveDeclaringType(index);
-			if (declType != null)
-			{
-				type.DeclaringType = declType;
-			}
-			else
+			if (!IsNestedType(index))
 			{
 				_cache[type.FullName] = type;
 			}
@@ -196,61 +183,16 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			var nextRow = index + 1 < Count ? Metadata.GetRow(TableId.TypeDef, index + 1) : null;
 			SetMembers(row, nextRow, type);
 
-			//TODO: lazy resolving of base type
-			SetBaseType(row, type);
-
 			type.Interfaces = new InterfaceImpl(Loader, type);
 			type.Types = new NestedTypeList(Loader, type);
 
 			return type;
 		}
 
-		private void SetBaseType(MetadataRow row, IType type)
-		{
-			if (type.FullName == "System.Object") return;
-
-			SimpleIndex baseIndex = row[Schema.TypeDef.Extends].Value;
-
-			var baseType = Loader.GetTypeDefOrRef(baseIndex, new Context(type));
-			type.BaseType = baseType;
-
-			var thisType = type as TypeImpl;
-			if (thisType == null || thisType.TypeKind == TypeKind.Primitive) return;
-
-			TypeKind kind;
-			if (TypeKindByBase.TryGetValue(baseType.FullName, out kind))
-			{
-				thisType.TypeKind = kind;
-			}
-		}
-
-		private static readonly Dictionary<string, TypeKind> TypeKindByBase =
-			new Dictionary<string, TypeKind>
-				{
-					{"System.Enum", TypeKind.Enum},
-					{"System.ValueType", TypeKind.Struct},
-					{"System.Delegate", TypeKind.Delegate},
-					{"System.MulticastDelegate", TypeKind.Delegate},
-				};
-
-		private static ClassLayout ResolveLayout(MetadataReader metadata, int typeIndex)
-		{
-			var row = metadata.LookupRow(TableId.ClassLayout, Schema.ClassLayout.Parent, typeIndex, true);
-			if (row == null)
-				return null;
-
-			var size = (int)row[Schema.ClassLayout.ClassSize].Value;
-			var pack = (int)row[Schema.ClassLayout.PackingSize].Value;
-			return new ClassLayout(size, pack);
-		}
-
-		private IType ResolveDeclaringType(int index)
+		private bool IsNestedType(int index)
 		{
 			var row = Metadata.LookupRow(TableId.NestedClass, Schema.NestedClass.Class, index, true);
-			if (row == null) return null;
-
-			int enclosingIndex = row[Schema.NestedClass.EnclosingClass].Index - 1;
-			return this[enclosingIndex];
+			return row != null;
 		}
 
 		public string GetFullName(int index)
@@ -347,22 +289,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			return from == to ? null : new[] { from, to };
 		}
 
-		private static TypeImpl CreateType(TypeKind kind, IList<IGenericParameter> genericParameters)
-		{
-			if (genericParameters != null && genericParameters.Any())
-			{
-				var type = new GenericType {TypeKind = kind};
-				foreach (var parameter in genericParameters)
-				{
-					type.GenericParameters.Add(parameter);
-					parameter.DeclaringType = type;
-				}
-				return type;
-			}
-			return new TypeImpl(kind);
-		}
-
-		private static void SetTypeFlags(IType type, TypeAttributes flags)
+		private static void SetTypeFlags(TypeImpl type, TypeAttributes flags)
 		{
 			type.Visibility = ToVisibility(flags);
 			type.IsAbstract = (flags & TypeAttributes.Abstract) != 0;
@@ -370,11 +297,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			type.IsBeforeFieldInit = (flags & TypeAttributes.BeforeFieldInit) != 0;
 			type.IsSpecialName = (flags & TypeAttributes.SpecialName) != 0;
 			type.IsRuntimeSpecialName = (flags & TypeAttributes.RTSpecialName) != 0;
-		}
 
-		private static bool IsInterface(TypeAttributes f)
-		{
-			return (f & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
+			if ((flags & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface)
+			{
+				type.TypeKind = TypeKind.Interface;
+			}
 		}
 
 		private static Visibility ToVisibility(TypeAttributes f)

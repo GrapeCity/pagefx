@@ -2,12 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public class GenericType : TypeImpl, IGenericType
     {
+		public GenericType()
+		{
+		}
+
+		public GenericType(IEnumerable<IGenericParameter> parameters)
+		{
+			foreach (var parameter in parameters)
+			{
+				GenericParameters.Add(parameter);
+				parameter.DeclaringType = this;
+			}
+		}
+
     	IGenericParameterCollection IGenericType.GenericParameters
     	{
 			get { return _genericParams; }
@@ -158,7 +170,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                     return method;
             }
             return null;
-            //return Algorithms.Find(gi.Methods, i => i.ProxyOfMethod == m);
         }
 
         public static IField FindFieldProxy(IType type, IField f)
@@ -171,7 +182,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                     return field;
             }
             return null;
-            //return Algorithms.Find(gi.Fields, i => i.ProxyOfField == f);
         }
         #endregion
 
@@ -231,7 +241,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return Create(declType, method, args);
         }
 
-        static IMethod Create(IType declType, IMethod method, IType[] args)
+        private static IMethod Create(IType declType, IMethod method, IType[] args)
         {
             var gm = GenericMethodInstance.Unwrap(method);
             if (gm == null)
@@ -354,6 +364,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 return base.Key;
             }
         }
-        string _key;
+        private string _key;
     }
 }
