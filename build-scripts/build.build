@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="Builds Common Assembly" default="rebuild">
+
+	<!-- input properties -->
+	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
+	<property name="debug" value="true" unless="${property::exists('debug')}"/>
+	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
+	
+	<property name="nant.settings.currentframework" value="net-3.5" />
+	<if test="${runtime == 'mono'}">
+		<property name="nant.settings.currentframework" value="mono-3.5" />
+	</if>
+	
+	<target name="build">
+		<property name="target" value="build"/>
+		<call target="delegate"/>
+	</target>
+
+	<target name="clean">
+		<property name="target" value="clean"/>
+		<call target="delegate"/>
+	</target>
+	
+	<target name="rebuild" depends="clean, build"/>
+
+	<target name="delegate">
+		<nant buildfile="common.build" target="${target}"/>	
+		<nant buildfile="core.build" target="${target}"/>
+		<nant buildfile="flashland.build" target="${target}"/>
+		<nant buildfile="pfc.build" target="${target}"/>
+		<nant buildfile="testrunner.build" target="${target}"/>
+		<nant buildfile="tools.build" target="${target}"/>
+	</target>
+
+</project>

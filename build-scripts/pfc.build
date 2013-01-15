@@ -2,9 +2,10 @@
 <project xmlns="http://nant.sf.net" name="Builds Common Assembly" default="rebuild">
 
 	<!-- input properties -->
-	<property name="debug" value="true"/>
-	<property name="delaysign" value="false"/>
-	<property name="outputdir" value="c:\pfx\bin"/>
+	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
+	<property name="debug" value="true" unless="${property::exists('debug')}"/>
+	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
+	<property name="outdir" value="c:\pfx\bin" unless="${property::exists('outdir')}"/>
 	<property name="assembly" value="pfc"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
@@ -12,15 +13,22 @@
 	</if>
 	
 	<property name="nant.settings.currentframework" value="net-3.5" />
+	<if test="${runtime == 'mono'}">
+		<property name="nant.settings.currentframework" value="mono-3.5" />
+	</if>
 	
 	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
 	<property name="dir.root" value="${project.dir}/.."/>
 	<property name="dir.libs" value="${dir.root}/libs"/>
 	<property name="dir.srcroot" value="${dir.root}/source"/>
 	<property name="dir.src" value="${dir.srcroot}/pfc"/>
+
+	<property name="pfx.common.dll" value="${outdir}/pfx.common.dll"/>
+	<property name="pfx.core.dll" value="${outdir}/pfx.core.dll"/>
+	<property name="pfx.flashland.dll" value="${outdir}/pfx.flashland.dll"/>
 	
 	<target name="build">
-		<csc target="exe" output="${outputdir}/${assembly}.exe"
+		<csc target="exe" output="${outdir}/${assembly}.exe"
 			 debug="${debug}" unsafe="true" define="${define}"
 			 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
 			<references>
@@ -29,9 +37,9 @@
 				<include name="System.Drawing.dll"/>
 				<include name="System.Xml.dll"/>
 				<include name="System.Xml.Linq.dll"/>
-				<include name="${outputdir}/DataDynamics.PageFX.Common.dll"/>
-				<include name="${outputdir}/DataDynamics.PageFX.Ecma335.dll"/>
-				<include name="${outputdir}/DataDynamics.PageFX.FlashLand.dll"/>
+				<include name="${pfx.common.dll}"/>
+				<include name="${pfx.core.dll}"/>
+				<include name="${pfx.flashland.dll}"/>
 				<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
 				<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/>
 			</references>
@@ -51,7 +59,7 @@
 		<delete dir="${dir.src}\obj" failonerror="false"/>
 		<delete dir="${dir.src}\bin" failonerror="false"/>
 		<delete failonerror="false">
-			<fileset basedir="${outputdir}">
+			<fileset basedir="${outdir}">
 				<include name="${assembly}.*"/>
 			</fileset>
 		</delete>

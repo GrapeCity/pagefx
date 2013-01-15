@@ -2,10 +2,10 @@
 <project xmlns="http://nant.sf.net" name="Builds Common Assembly" default="rebuild">
 
 	<!-- input properties -->
-	<property name="runtime" value="clr"/>
-	<property name="debug" value="true"/>
-	<property name="delaysign" value="false"/>
-	<property name="outputdir" value="c:\pfx\bin"/>
+	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
+	<property name="debug" value="true" unless="${property::exists('debug')}"/>
+	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
+	<property name="outdir" value="c:\pfx\bin" unless="${property::exists('outdir')}"/>
 	<property name="assembly" value="pfx.common"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
@@ -24,7 +24,7 @@
 	<property name="dir.src" value="${dir.srcroot}/libs/Common"/>
 	
 	<target name="build">
-		<csc target="library" output="${outputdir}/${assembly}.dll"
+		<csc target="library" output="${outdir}/${assembly}.dll"
 			 debug="${debug}" unsafe="true" define="${define}"
 			 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
 			<references>
@@ -50,7 +50,7 @@
 		<delete dir="${dir.src}\obj" failonerror="false"/>
 		<delete dir="${dir.src}\bin" failonerror="false"/>
 		<delete failonerror="false">
-			<fileset basedir="${outputdir}">
+			<fileset basedir="${outdir}">
 				<include name="${assembly}.*"/>
 			</fileset>
 		</delete>

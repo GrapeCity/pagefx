@@ -17,17 +17,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             LanguageInfrastructure.CLI.Deserialize(GlobalSettings.GetCorlibPath(true), null);
         }
 
-        public static void Wrap(string commandLine)
-        {
-            if (string.IsNullOrEmpty(commandLine))
-                throw new ArgumentException("Command line is null or empty", "commandLine");
-            var cl = CommandLine.Parse(commandLine);
-            if (cl == null)
-                throw new InvalidOperationException(
-                    string.Format("Unable to parse command line: {0}", commandLine));
-            Wrap(cl);
-        }
-
         public static void Wrap(string path, string outpath, CommandLine cl)
         {
             Wrap(path, outpath, cl.ToString());

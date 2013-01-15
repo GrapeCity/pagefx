@@ -2,15 +2,19 @@
 <project xmlns="http://nant.sf.net" name="Builds PFX Tools" default="rebuild">
 
 	<!-- input properties -->
-	<property name="debug" value="true"/>
-	<property name="delaysign" value="false"/>
-	<property name="outputdir" value="c:/pfx/tools"/>
+	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
+	<property name="debug" value="true" unless="${property::exists('debug')}"/>
+	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
+	<property name="outdir" value="c:/pfx/tools" unless="${property::exists('outdir')}"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
 		<property name="define" value="DEBUG;NUNIT"/>
 	</if>
 	
 	<property name="nant.settings.currentframework" value="net-3.5" />
+	<if test="${runtime == 'mono'}">
+		<property name="nant.settings.currentframework" value="mono-3.5" />
+	</if>
 
 	<property name="pfx.bindir" value="c:/pfx/bin"/>
 	<property name="pfx.common.dll" value="${pfx.bindir}/pfx.common.dll"/>
@@ -35,11 +39,13 @@
 		<include name="${pfx.core.dll}"/>
 		<include name="${pfx.flashland.dll}"/>
 		<include name="${pfx.testrunner.exe}"/>
+		<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
+		<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/> 
 	</fileset>
 	
 	<target name="build">
 
-		<csc target="exe" output="${outputdir}/api-diff.exe"
+		<csc target="exe" output="${outdir}/api-diff.exe"
 				 debug="${debug}" unsafe="true" define="${define}"
 				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
 			<references refid="refs"/>
@@ -52,7 +58,7 @@
 			</sources>
 		</csc>
 		
-		<csc target="exe" output="${outputdir}/api-info.exe"
+		<csc target="exe" output="${outdir}/api-info.exe"
 				 debug="${debug}" unsafe="true" define="${define}"
 				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
 			<references refid="refs"/>
@@ -65,7 +71,7 @@
 			</sources>
 		</csc>
 		
-		<csc target="exe" output="${outputdir}/pfx-nunit-console.exe"
+		<csc target="exe" output="${outdir}/pfx-nunit-console.exe"
 				 debug="${debug}" unsafe="true" define="${define}"
 				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
 			<references refid="refs"/>
@@ -78,7 +84,7 @@
 		
 		<foreach item="String" in="${tools}" delim=";" property="tool">
 			<call target="__get_tooldir"/>
-			<csc target="exe" output="${outputdir}/${tool}.exe"
+			<csc target="exe" output="${outdir}/${tool}.exe"
 				 debug="${debug}" unsafe="true" define="${define}"
 				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
 				<references refid="refs"/>
@@ -105,7 +111,7 @@
 			<delete dir="${tooldir}/obj" failonerror="false"/>
 			<delete dir="${tooldir}/bin" failonerror="false"/>
 			<delete failonerror="false">
-				<fileset basedir="${outputdir}">
+				<fileset basedir="${outdir}">
 					<include name="${tool}.*"/>
 				</fileset>
 			</delete>
