@@ -1,7 +1,7 @@
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Core.IL;
 
-namespace DataDynamics.PageFX.Ecma335.Translation
+namespace DataDynamics.PageFX.Core.Translation
 {
 	internal sealed class CallInstructionInfo
 	{

@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.LoaderInternals
+namespace DataDynamics.PageFX.Core.LoaderInternals
 {
 	internal sealed class Context
 	{

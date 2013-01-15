@@ -6,10 +6,10 @@ using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.LoaderInternals.Collections;
-using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Core.LoaderInternals.Collections;
+using DataDynamics.PageFX.Core.Metadata;
 
-namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
+namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 {
 	internal sealed class TypeTable : MetadataTable<IType>, ITypeCollection
 	{

@@ -12,9 +12,9 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Core.IL;
 
-namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow.Services
+namespace DataDynamics.PageFX.Core.Translation.ControlFlow.Services
 {
     internal static class MethodBodyExtensions
     {

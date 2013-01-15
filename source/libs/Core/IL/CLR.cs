@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel.Expressions;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.LoaderInternals;
+using DataDynamics.PageFX.Core.LoaderInternals;
 
-namespace DataDynamics.PageFX.Ecma335.IL
+namespace DataDynamics.PageFX.Core.IL
 {
     internal static class CLR
     {

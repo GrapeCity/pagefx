@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow.Services
+namespace DataDynamics.PageFX.Core.Translation.ControlFlow.Services
 {
     internal sealed class NameService
     {

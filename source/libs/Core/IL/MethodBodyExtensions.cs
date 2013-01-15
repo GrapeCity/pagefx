@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DataDynamics.PageFX.Ecma335.IL
+namespace DataDynamics.PageFX.Core.IL
 {
 	internal static class MethodBodyExtensions
 	{

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.Common.IO;
 
-namespace DataDynamics.PageFX.Ecma335.Metadata
+namespace DataDynamics.PageFX.Core.Metadata
 {
 	//ref: Partition II, 24.2.1 Metadata root
 

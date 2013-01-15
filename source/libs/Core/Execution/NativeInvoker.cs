@@ -6,7 +6,7 @@ using System.Reflection;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.Execution
+namespace DataDynamics.PageFX.Core.Execution
 {
 	internal class NativeInvoker
 	{

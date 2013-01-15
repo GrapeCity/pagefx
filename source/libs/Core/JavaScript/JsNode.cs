@@ -2,7 +2,7 @@ using System.IO;
 using System.Text;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	public sealed class JsWriter : CodeTextWriter
 	{

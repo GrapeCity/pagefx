@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	internal sealed class JsFunction : JsNode
 	{

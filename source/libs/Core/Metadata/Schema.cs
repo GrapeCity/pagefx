@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.Metadata
+namespace DataDynamics.PageFX.Core.Metadata
 {
 	/// <summary>
 	/// Contains MDB Table Schemas

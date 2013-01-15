@@ -2,7 +2,7 @@ using System;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.IO;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	internal sealed class JsResource : JsNode
 	{

@@ -4,7 +4,7 @@ using System.Reflection;
 using DataDynamics.PageFX.Common.TypeSystem;
 using Module = System.Reflection.Module;
 
-namespace DataDynamics.PageFX.Ecma335.Execution
+namespace DataDynamics.PageFX.Core.Execution
 {
 	internal sealed class RuntimeType : Type
 	{

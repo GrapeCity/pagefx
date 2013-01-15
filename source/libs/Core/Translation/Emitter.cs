@@ -2,9 +2,9 @@
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
-using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Core.IL;
 
-namespace DataDynamics.PageFX.Ecma335.Translation
+namespace DataDynamics.PageFX.Core.Translation
 {
 	internal static class Emitter
 	{

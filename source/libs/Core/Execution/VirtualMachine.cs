@@ -6,9 +6,9 @@ using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Core.IL;
 
-namespace DataDynamics.PageFX.Ecma335.Execution
+namespace DataDynamics.PageFX.Core.Execution
 {
 	//TODO: - nullables
 	//TODO: - reflection: Object.GetType

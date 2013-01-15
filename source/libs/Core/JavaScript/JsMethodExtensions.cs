@@ -4,7 +4,7 @@ using DataDynamics.PageFX.Common.JavaScript;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	internal static class JsMethodExtensions
 	{

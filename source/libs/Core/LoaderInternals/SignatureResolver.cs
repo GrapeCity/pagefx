@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Core.Metadata;
 
-namespace DataDynamics.PageFX.Ecma335.LoaderInternals
+namespace DataDynamics.PageFX.Core.LoaderInternals
 {
 	internal class SignatureResolver
 	{

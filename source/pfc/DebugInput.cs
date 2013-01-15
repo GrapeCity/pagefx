@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.Ecma335;
+using DataDynamics.PageFX.Core;
 
 namespace DataDynamics.PageFX
 {

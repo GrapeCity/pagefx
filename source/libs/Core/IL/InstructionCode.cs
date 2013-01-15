@@ -2,7 +2,7 @@
 // WARNING: Automatically generated file. DO NOT EDIT
 //
 
-namespace DataDynamics.PageFX.Ecma335.IL
+namespace DataDynamics.PageFX.Core.IL
 {
     /// <summary>
     /// Enumerates CIL instruction codes

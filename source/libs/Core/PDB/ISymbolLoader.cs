@@ -1,7 +1,7 @@
 ﻿using System;
-using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Core.IL;
 
-namespace DataDynamics.PageFX.Ecma335.Pdb
+namespace DataDynamics.PageFX.Core.Pdb
 {
 	internal interface ISymbolLoader : IDisposable
 	{

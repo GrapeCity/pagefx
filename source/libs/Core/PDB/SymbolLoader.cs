@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Core.IL;
 using Microsoft.Cci.Pdb;
 
-namespace DataDynamics.PageFX.Ecma335.Pdb
+namespace DataDynamics.PageFX.Core.Pdb
 {
 	internal sealed class SymbolLoader : ISymbolLoader
 	{

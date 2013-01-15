@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace DataDynamics.PageFX.Ecma335.Execution
+namespace DataDynamics.PageFX.Core.Execution
 {
 	internal sealed class ArrayIterator : IEnumerator
 	{

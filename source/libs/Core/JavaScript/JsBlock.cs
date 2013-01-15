@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.Collections;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	internal sealed class JsBlock : JsNode, IReadOnlyList<JsNode>
 	{

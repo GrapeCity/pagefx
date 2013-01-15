@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Core.Metadata;
 
-namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Tables
+namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 {
 	internal abstract class MetadataTable<T> : IMetadataTable<T> where T:class 
 	{

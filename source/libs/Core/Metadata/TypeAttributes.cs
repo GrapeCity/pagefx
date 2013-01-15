@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.Ecma335.Metadata
+namespace DataDynamics.PageFX.Core.Metadata
 {
 	/// <summary>
 	/// Type record metadata attributes

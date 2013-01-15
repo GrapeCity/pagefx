@@ -2,7 +2,7 @@ using System;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.Execution
+namespace DataDynamics.PageFX.Core.Execution
 {
 	public interface ILocalVariable
 	{

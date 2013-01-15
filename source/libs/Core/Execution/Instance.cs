@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.Execution
+namespace DataDynamics.PageFX.Core.Execution
 {
 	/// <summary>
 	/// HACK: inherited from Exception to allow throw of such objects

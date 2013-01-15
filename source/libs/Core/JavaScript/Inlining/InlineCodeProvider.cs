@@ -5,7 +5,7 @@ using System.Reflection;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript.Inlining
+namespace DataDynamics.PageFX.Core.JavaScript.Inlining
 {
 	internal class InlineCodeProvider
 	{

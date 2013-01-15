@@ -1,7 +1,7 @@
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.Translation.Values
+namespace DataDynamics.PageFX.Core.Translation.Values
 {
     internal class Var : IValue
     {

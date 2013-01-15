@@ -8,7 +8,7 @@
     <ProjectGuid>{3C215B55-8587-4A60-8CAA-91FE412B9013}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataDynamics.PageFX.Ecma335</RootNamespace>
+    <RootNamespace>DataDynamics.PageFX.Core</RootNamespace>
     <AssemblyName>pfx.core</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\pfx.snk</AssemblyOriginatorKeyFile>

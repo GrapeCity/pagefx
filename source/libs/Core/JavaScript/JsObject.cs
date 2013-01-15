@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.JavaScript;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	internal sealed class JsObject : JsNode, IEnumerable<KeyValuePair<object, object>>
 	{

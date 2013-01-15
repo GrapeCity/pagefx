@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.Ecma335;
+using DataDynamics.PageFX.Core;
 using DataDynamics.PageFX.FlashLand;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.Tools;

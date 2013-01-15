@@ -1,6 +1,6 @@
 using DataDynamics.PageFX.Common.CodeModel;
 
-namespace DataDynamics.PageFX.Ecma335.IL
+namespace DataDynamics.PageFX.Core.IL
 {
     internal sealed class ILStream : InstructionList<Instruction>
     {

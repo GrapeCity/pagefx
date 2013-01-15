@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.Collections;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	public sealed class JsProgram : JsNode
 	{

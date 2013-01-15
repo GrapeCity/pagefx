@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Core.IL;
 
-namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow.Services
+namespace DataDynamics.PageFX.Core.Translation.ControlFlow.Services
 {
     internal class DumpService
     {

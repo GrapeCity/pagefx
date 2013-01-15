@@ -7,7 +7,7 @@ using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
+namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 {
 	internal sealed class EventList : IEventCollection
 	{

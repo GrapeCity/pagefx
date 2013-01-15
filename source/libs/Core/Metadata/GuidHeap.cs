@@ -4,7 +4,7 @@ using System.IO;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.IO;
 
-namespace DataDynamics.PageFX.Ecma335.Metadata
+namespace DataDynamics.PageFX.Core.Metadata
 {
 	internal sealed class GuidHeap
 	{

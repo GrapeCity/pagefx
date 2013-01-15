@@ -1,7 +1,7 @@
 using System.Xml;
-using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Core.Metadata;
 
-namespace DataDynamics.PageFX.Ecma335.Tools
+namespace DataDynamics.PageFX.Core.Tools
 {
     public static class MetadataXmlExport
     {

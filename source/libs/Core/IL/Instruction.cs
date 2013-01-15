@@ -7,9 +7,9 @@ using System.Text;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.Ecma335.Translation.ControlFlow;
+using DataDynamics.PageFX.Core.Translation.ControlFlow;
 
-namespace DataDynamics.PageFX.Ecma335.IL
+namespace DataDynamics.PageFX.Core.IL
 {
     internal sealed class Instruction : IInstruction
     {

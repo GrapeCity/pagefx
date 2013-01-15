@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Core.Metadata;
 
-namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
+namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 {
 	internal sealed class NestedTypeList : LazyTypeList
 	{

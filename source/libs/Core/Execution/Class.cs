@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.Execution
+namespace DataDynamics.PageFX.Core.Execution
 {
 	internal sealed class FieldSlot
 	{

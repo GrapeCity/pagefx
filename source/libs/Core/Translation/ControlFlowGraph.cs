@@ -1,9 +1,9 @@
 using DataDynamics.PageFX.Common.Services;
-using DataDynamics.PageFX.Ecma335.IL;
-using DataDynamics.PageFX.Ecma335.Translation.ControlFlow;
-using DataDynamics.PageFX.Ecma335.Translation.ControlFlow.Services;
+using DataDynamics.PageFX.Core.IL;
+using DataDynamics.PageFX.Core.Translation.ControlFlow;
+using DataDynamics.PageFX.Core.Translation.ControlFlow.Services;
 
-namespace DataDynamics.PageFX.Ecma335.Translation
+namespace DataDynamics.PageFX.Core.Translation
 {
 	internal sealed class ControlFlowGraph
 	{

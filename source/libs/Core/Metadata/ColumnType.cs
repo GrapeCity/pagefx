@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.Ecma335.Metadata
+namespace DataDynamics.PageFX.Core.Metadata
 {
 	/// <summary>
 	/// Enumerates MDB column types.

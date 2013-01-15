@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.Ecma335.IL
+namespace DataDynamics.PageFX.Core.IL
 {
 	[Serializable]
     public class ILTranslatorException : Exception

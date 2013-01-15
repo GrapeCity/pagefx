@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Core.Metadata;
 
-namespace DataDynamics.PageFX.Ecma335.LoaderInternals
+namespace DataDynamics.PageFX.Core.LoaderInternals
 {
 	internal sealed class MethodImpl : Method
 	{

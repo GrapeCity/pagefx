@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow
+namespace DataDynamics.PageFX.Core.Translation.ControlFlow
 {
     internal sealed class NodeList : List<Node>
     {

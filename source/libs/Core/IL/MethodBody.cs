@@ -15,10 +15,10 @@ using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.Metadata;
-using DataDynamics.PageFX.Ecma335.Translation;
+using DataDynamics.PageFX.Core.Metadata;
+using DataDynamics.PageFX.Core.Translation;
 
-namespace DataDynamics.PageFX.Ecma335.IL
+namespace DataDynamics.PageFX.Core.IL
 {
 	/// <summary>
     /// Reads method body

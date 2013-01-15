@@ -5,7 +5,7 @@ using System.Linq;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.Ecma335;
+using DataDynamics.PageFX.Core;
 using DataDynamics.PageFX.FlashLand;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Core.Tools;

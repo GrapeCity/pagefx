@@ -5,7 +5,7 @@ using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.Ecma335
+namespace DataDynamics.PageFX.Core
 {
 	// TODO: support mono gac
 	// TODO: support short assembly versions?

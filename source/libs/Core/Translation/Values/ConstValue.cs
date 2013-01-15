@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.Translation.Values
+namespace DataDynamics.PageFX.Core.Translation.Values
 {
     internal sealed class ConstValue : IValue
     {

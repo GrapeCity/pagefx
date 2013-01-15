@@ -1,6 +1,6 @@
 ﻿using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335;
+using DataDynamics.PageFX.Core;
 
 namespace DataDynamics.PageFX.TestRunner.Framework
 {

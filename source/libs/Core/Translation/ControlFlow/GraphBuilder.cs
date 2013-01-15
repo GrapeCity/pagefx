@@ -18,9 +18,9 @@ using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Core.IL;
 
-namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow
+namespace DataDynamics.PageFX.Core.Translation.ControlFlow
 {
 	/// <summary>
 	/// Builds control flow graph.

@@ -9,7 +9,7 @@ using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.Ecma335;
+using DataDynamics.PageFX.Core;
 using DataDynamics.PageFX.FlashLand;
 
 namespace DataDynamics.PageFX.NUnit

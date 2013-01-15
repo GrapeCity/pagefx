@@ -6,7 +6,7 @@ using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.Extensions;
 
-namespace DataDynamics.PageFX.Ecma335.Metadata
+namespace DataDynamics.PageFX.Core.Metadata
 {
     /// <summary>
     /// Represents row in metadata table.

@@ -3,7 +3,7 @@ using System.IO;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335
+namespace DataDynamics.PageFX.Core
 {
     public static class CommonLanguageInfrastructure
     {

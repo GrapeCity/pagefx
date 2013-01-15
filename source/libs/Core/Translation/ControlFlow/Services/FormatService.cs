@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace DataDynamics.PageFX.Ecma335.Translation.ControlFlow.Services
+namespace DataDynamics.PageFX.Core.Translation.ControlFlow.Services
 {
     [Flags]
     internal enum FormatOptions

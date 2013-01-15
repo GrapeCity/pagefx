@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Extensions;
 
-namespace DataDynamics.PageFX.Ecma335.Metadata
+namespace DataDynamics.PageFX.Core.Metadata
 {
 	/// <summary>
 	/// List of <see cref="MetadataColumn"/>s.

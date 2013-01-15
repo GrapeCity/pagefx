@@ -1,7 +1,7 @@
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.IL
+namespace DataDynamics.PageFX.Core.IL
 {
     internal interface IMethodContext : IMetadataTokenResolver
     {

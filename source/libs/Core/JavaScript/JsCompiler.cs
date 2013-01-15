@@ -9,10 +9,10 @@ using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.JavaScript;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.IL;
-using DataDynamics.PageFX.Ecma335.Translation;
+using DataDynamics.PageFX.Core.IL;
+using DataDynamics.PageFX.Core.Translation;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	/// <summary>
 	/// Compiles assembly into javascript.
@@ -49,7 +49,7 @@ namespace DataDynamics.PageFX.Ecma335.JavaScript
 		/// </summary>
 		/// <param name="assemblyFile">The file of the assembly to be compiled.</param>
 		public JsCompiler(FileInfo assemblyFile)
-			: this(CommonLanguageInfrastructure.Deserialize(assemblyFile.FullName, null))
+			: this((IAssembly) CommonLanguageInfrastructure.Deserialize(assemblyFile.FullName, null))
 		{
 		}
 

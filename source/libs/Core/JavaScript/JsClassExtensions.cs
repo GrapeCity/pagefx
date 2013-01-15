@@ -1,4 +1,4 @@
-﻿namespace DataDynamics.PageFX.Ecma335.JavaScript
+﻿namespace DataDynamics.PageFX.Core.JavaScript
 {
 	internal static class JsClassExtensions
 	{

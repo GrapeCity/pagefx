@@ -6,9 +6,9 @@ using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Core.Metadata;
 
-namespace DataDynamics.PageFX.Ecma335.LoaderInternals.Collections
+namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 {
 	internal sealed class ParamList : IParameterCollection
 	{

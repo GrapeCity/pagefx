@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.Metadata;
+using DataDynamics.PageFX.Core.Metadata;
 
-namespace DataDynamics.PageFX.Ecma335
+namespace DataDynamics.PageFX.Core
 {
     internal static class AssemblyResolver
     {

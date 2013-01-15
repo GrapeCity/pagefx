@@ -1,7 +1,7 @@
 ﻿using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.Execution
+namespace DataDynamics.PageFX.Core.Execution
 {
 	internal static class InternalTypeExtensions
 	{

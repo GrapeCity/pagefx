@@ -3,9 +3,9 @@ using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CodeModel.Statements;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.Translation;
+using DataDynamics.PageFX.Core.Translation;
 
-namespace DataDynamics.PageFX.Ecma335.IL
+namespace DataDynamics.PageFX.Core.IL
 {
     internal sealed class LateMethodBody : IClrMethodBody
     {

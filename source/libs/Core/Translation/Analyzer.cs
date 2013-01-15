@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.IL;
-using DataDynamics.PageFX.Ecma335.Translation.ControlFlow;
+using DataDynamics.PageFX.Core.IL;
+using DataDynamics.PageFX.Core.Translation.ControlFlow;
 
-namespace DataDynamics.PageFX.Ecma335.Translation
+namespace DataDynamics.PageFX.Core.Translation
 {
     internal static class Analyzer
     {

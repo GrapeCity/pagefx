@@ -2,9 +2,9 @@ using System.Reflection.Emit;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Ecma335.IL;
+using DataDynamics.PageFX.Core.IL;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	internal class NopCodeProvider : ICodeProvider
 	{

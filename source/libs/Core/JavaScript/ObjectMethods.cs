@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.Ecma335.JavaScript
+namespace DataDynamics.PageFX.Core.JavaScript
 {
 	internal static class ObjectMethods
 	{

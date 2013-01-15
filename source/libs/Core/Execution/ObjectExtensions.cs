@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataDynamics.PageFX.Ecma335.Execution
+namespace DataDynamics.PageFX.Core.Execution
 {
 	internal static class ObjectExtensions
 	{
