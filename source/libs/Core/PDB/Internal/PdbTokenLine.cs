@@ -8,9 +8,8 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
-using System;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal class PdbTokenLine {
     internal uint token;
     internal uint file_id;

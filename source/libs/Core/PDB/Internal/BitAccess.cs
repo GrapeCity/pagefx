@@ -8,11 +8,12 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
+
 using System;
 using System.IO;
 using System.Text;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal class BitAccess {
 
     internal BitAccess(int capacity) {

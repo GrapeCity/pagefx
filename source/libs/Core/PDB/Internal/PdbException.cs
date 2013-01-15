@@ -8,22 +8,14 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
+
 using System;
+using System.IO;
 
-namespace Microsoft.Cci.Pdb {
-  internal struct PdbLine {
-    internal uint offset;
-    internal uint lineBegin;
-    internal uint lineEnd;
-    internal ushort colBegin;
-    internal ushort colEnd;
-
-    internal PdbLine(uint offset, uint lineBegin, ushort colBegin, uint lineEnd, ushort colEnd) {
-      this.offset = offset;
-      this.lineBegin = lineBegin;
-      this.colBegin = colBegin;
-      this.lineEnd = lineEnd;
-      this.colEnd = colEnd;
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
+  internal class PdbException : IOException {
+    internal PdbException(String format, params object[] args)
+      : base(String.Format(format, args)) {
     }
   }
 }

@@ -27,9 +27,10 @@
 //
 //  This is a read-only copy of the C++ file converted to C#.
 //
+
 using System;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal struct FLOAT10 {
     internal byte Data_0;
     internal byte Data_1;

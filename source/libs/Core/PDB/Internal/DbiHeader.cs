@@ -8,9 +8,8 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
-using System;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal struct DbiHeader {
     internal DbiHeader(BitAccess bits) {
       bits.ReadInt32(out sig);

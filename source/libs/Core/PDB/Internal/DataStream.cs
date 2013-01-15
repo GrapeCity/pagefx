@@ -8,10 +8,8 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
-using System;
-using System.IO;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal class DataStream {
     internal DataStream() {
     }

@@ -8,9 +8,8 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
-using System;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal struct BitSet {
     internal BitSet(BitAccess bits) {
       bits.ReadInt32(out size);    // 0..3 : Number of words

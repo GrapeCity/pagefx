@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Core.IL;
-using Microsoft.Cci.Pdb;
+using DataDynamics.PageFX.Core.Pdb.Internal;
 
 namespace DataDynamics.PageFX.Core.Pdb
 {

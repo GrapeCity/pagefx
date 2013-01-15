@@ -8,10 +8,10 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
-using System;
-using System.Collections;
 
-namespace Microsoft.Cci.Pdb {
+using System;
+
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   // The IntHashTable class represents a dictionary of associated keys and
   // values with constant lookup time.
   //

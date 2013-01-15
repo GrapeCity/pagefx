@@ -8,13 +8,14 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics.SymbolStore;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal class PdbFile {
     private PdbFile()   // This class can't be instantiated.
     {

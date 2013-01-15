@@ -8,16 +8,14 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
+
 using System;
+using System.IO;
 
-namespace Microsoft.Cci.Pdb {
-  internal class PdbLines {
-    internal PdbSource file;
-    internal PdbLine[] lines;
-
-    internal PdbLines(PdbSource file, uint count) {
-      this.file = file;
-      this.lines = new PdbLine[count];
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
+  internal class PdbDebugException : IOException {
+    internal PdbDebugException(String format, params object[] args)
+      : base(String.Format(format, args)) {
     }
   }
 }

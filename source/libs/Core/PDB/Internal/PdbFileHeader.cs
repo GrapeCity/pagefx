@@ -8,11 +8,10 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
-using System;
-using System.IO;
-using System.Text;
 
-namespace Microsoft.Cci.Pdb {
+using System.IO;
+
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal class PdbFileHeader {
     //internal PdbFileHeader(int pageSize) {
     //  this.magic = new byte[32] {

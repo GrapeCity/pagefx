@@ -8,9 +8,8 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
-using System;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal class DbiModuleInfo {
     internal DbiModuleInfo(BitAccess bits, bool readStrings) {
       bits.ReadInt32(out opened);

@@ -8,10 +8,10 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
-using System;
+
 using System.IO;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal class PdbReader {
     internal PdbReader(Stream reader, int pageSize) {
       this.pageSize = pageSize;

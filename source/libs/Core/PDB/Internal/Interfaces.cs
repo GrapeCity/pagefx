@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace Microsoft.Cci {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
 
   /// <summary>
   /// A range of CLR IL operations that comprise a lexical scope, specified as an IL offset and a length.

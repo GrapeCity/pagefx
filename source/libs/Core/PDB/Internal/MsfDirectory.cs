@@ -8,9 +8,8 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //-----------------------------------------------------------------------------
-using System;
 
-namespace Microsoft.Cci.Pdb {
+namespace DataDynamics.PageFX.Core.Pdb.Internal {
   internal class MsfDirectory {
     internal MsfDirectory(PdbReader reader, PdbFileHeader head, BitAccess bits) {
       int pages = reader.PagesFromSize(head.directorySize);
