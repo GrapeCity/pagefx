@@ -182,7 +182,7 @@
     <Compile Include="Core\CodeProvider\Debug.cs" />
     <Compile Include="Core\CodeProvider\DebugUtils.cs" />
     <Compile Include="Core\CodeProvider\ExceptionHandling.cs" />
-    <Compile Include="Core\CodeProvider\LocalOptimization.cs" />
+    <Compile Include="Core\CodeProvider\LocalOptimizer.cs" />
     <Compile Include="Core\CodeProvider\Main.cs" />
     <Compile Include="Core\CodeProvider\Pointers.cs" />
     <Compile Include="Core\CodeProvider\Reflection.cs" />

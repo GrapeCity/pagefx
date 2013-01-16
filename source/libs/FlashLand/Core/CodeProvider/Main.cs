@@ -311,6 +311,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             EnsureMethod(method);
         }
 
+		/// <summary>
+		/// Performs local optimization.
+		/// </summary>
+		/// <param name="code">instruction set to optimize</param>
+		/// <returns>optimized instruction set</returns>
+		public IInstruction[] OptimizeBasicBlock(IInstruction[] code)
+		{
+			return LocalOptimizer.OptimizeBasicBlock(_abc, code);
+		}
+
         private AbcMethod DefineAbcMethod(IMethod m)
         {
 			return _generator.MethodBuilder.BuildAbcMethod(m);
