@@ -348,6 +348,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             Console.WriteLine("AbcGenerator Elapsed Time: {0}", Environment.TickCount - start);
 #endif
 
+			// uncomment to list generated methods 
+//		    Console.WriteLine("Number of generated methods: {0}", Abc.Methods.Count(x => x.IsGenerated));
+//		    Console.WriteLine("Number of anon methods: {0}", Abc.Methods.Count(x => x.IsGenerated && string.IsNullOrEmpty(x.FullName)));
+//		    Abc.Methods
+//		       .Where(x => x.IsGenerated && !string.IsNullOrEmpty(x.FullName))
+//		       .OrderBy(x => x.FullName)
+//		       .ToList()
+//		       .ForEach(x => Console.WriteLine(x.FullName));
+
 			// reset tags to allow recompilation
 			if (!IsSwf && !IsSwc)
 				ResetMembersData();
@@ -355,7 +364,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return Abc;
         }
 
-	    private void BuildApp()
+		private void BuildApp()
         {
 #if PERF
             int start = Environment.TickCount;

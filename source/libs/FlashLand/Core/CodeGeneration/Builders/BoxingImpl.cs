@@ -32,16 +32,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             return BoxPrimitive(type);
         }
 
+	    private AbcMultiname BoxName
+	    {
+			get { return _generator.Abc.DefineName(QName.PfxPublic(Const.Boxing.MethodBox)); }
+	    }
+
 	    private AbcMethod BoxPrimitive(IType type)
         {
             if (!type.IsBoxableType())
                 return null;
 
 			var instance = _generator.TypeBuilder.BuildInstance(type);
-			var name = _generator.Abc.DefineName(QName.PfxPublic(Const.Boxing.MethodBox));
 
 	        return instance.DefineMethod(
-		        Sig.@static(name, instance.Name, type, "value"),
+		        Sig.@static(BoxName, instance.Name, type, "value"),
 		        code =>
 			        {
 				        code.BoxVariable(instance, 1);
@@ -55,13 +59,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return null;
 
 			var instance = _generator.TypeBuilder.BuildInstance(type);
-			var name = _generator.Abc.DefineName(QName.PfxPublic(Const.Boxing.MethodBox));
 
             var arg = type.GetTypeArgument(0);
 			var argInstance = _generator.TypeBuilder.BuildInstance(arg);
 
 	        return instance.DefineMethod(
-		        Sig.@static(name, argInstance.Name, type, "value"),
+		        Sig.@static(BoxName, argInstance.Name, type, "value"),
 		        code =>
 			        {
 				        const int value = 1;

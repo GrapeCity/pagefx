@@ -327,6 +327,24 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         internal bool IsImported;
 
+	    internal bool IsGenerated
+	    {
+		    get
+		    {
+				if (SourceMethod != null)
+					return false;
+				if (Instance != null)
+				{
+					if (Instance.IsForeign)
+						return false;
+
+					if (Instance.IsInterface && IsInitializer)
+						return false;
+				}
+			    return true;
+		    }
+	    }
+
 	    public void Read(SwfReader reader)
         {
             int paramCount = (int)reader.ReadUIntEncoded();
