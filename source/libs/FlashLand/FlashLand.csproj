@@ -230,7 +230,7 @@
     <Compile Include="Core\SwfGeneration\SwfCompiler.cs" />
     <Compile Include="Core\SwfGeneration\MixinManager.cs" />
     <Compile Include="Core\SwfGeneration\SystemManagerBuilder.cs" />
-    <Compile Include="Core\SwfGeneration\Options.cs" />
+    <Compile Include="Core\SwfGeneration\SwfCompilerOptions.cs" />
     <Compile Include="Core\SwfGeneration\SwcCatalog.cs" />
     <Compile Include="Core\SwfGeneration\SwcScripts.cs" />
     <Compile Include="Core\Tools\AssemblyBuilder.cs" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.IO;
+using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Utilities;
 
 #region pfc /help
@@ -34,7 +34,7 @@ c)       policyFile - path to policy file
 */
 #endregion
 
-namespace DataDynamics.PageFX.Common.CompilerServices
+namespace DataDynamics.PageFX.Common.Tools
 {
     #region class PfxCompilerOptions
     public class PfxCompilerOptions
@@ -182,25 +182,6 @@ namespace DataDynamics.PageFX.Common.CompilerServices
                 return writer.ToString();
             }
         }
-
-        private static void WriteSignOption(TextWriter writer, string name, bool value)
-        {
-            writer.Write("/{0}{1} ", name, value ? "+" : "-");
-        }
-
-        private static void WriteList(TextWriter writer, IEnumerable<string> arr, string prefix, bool path)
-        {
-            if (arr == null) return;
-            foreach (var s in arr)
-            {
-                writer.Write(prefix);
-                if (path && s.IndexOf(' ') >= 0)
-                    writer.Write("\"" + s + "\"");
-                else
-                    writer.Write(s);
-                writer.Write(" ");
-            }
-        }
     }
     #endregion
     
@@ -226,12 +207,7 @@ namespace DataDynamics.PageFX.Common.CompilerServices
     #region class PfxCompiler
     public static class PfxCompiler
     {
-        private static string GetFileName()
-        {
-            return "pfc.exe";
-        }
-
-        public static FrameworkVersion FrameworkVersion = FrameworkVersion.NET_3_5;
+	    public static FrameworkVersion FrameworkVersion = FrameworkVersion.NET_3_5;
 
         /// <summary>
         /// Gets path to .NET Framework root folder.

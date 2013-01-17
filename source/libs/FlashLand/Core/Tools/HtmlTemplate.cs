@@ -7,7 +7,7 @@ using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 
 namespace DataDynamics.PageFX.FlashLand.Core.Tools
 {
-    class HtmlTemplate
+    internal sealed class HtmlTemplate
     {
         public static void Deploy(SwfCompiler sfc)
         {
@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             string templateName = sfc.Options.HtmlTemplate;
             if (string.IsNullOrEmpty(templateName))
-                templateName = PfxConfig.HTML.Template;
+                templateName = PfxConfig.Default.Html.Template;
 
             src = Path.Combine(src, templateName);
             if (!Directory.Exists(src))

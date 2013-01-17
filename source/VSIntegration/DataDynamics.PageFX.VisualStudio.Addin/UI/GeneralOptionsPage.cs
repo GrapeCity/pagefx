@@ -16,26 +16,28 @@ namespace DataDynamics.PageFX.UI
         private void LoadState()
         {
             if (DesignMode) return;
-            tbHTMLWDir.Text = PfxConfig.HTML.Template;
-            cbGenHTMLWrapper.Checked = (PfxConfig.HTML.Template != "") ? true : false;
+            tbHTMLWDir.Text = Config.Html.Template;
+            cbGenHTMLWrapper.Checked = (Config.Html.Template != "") ? true : false;
             
-            if (PfxConfig.Compiler.ExceptionBreak)
+            if (Config.Compiler.ExceptionBreak)
                 cbBreakException.Checked = true;
 
-            nuFPVersion.Text = PfxConfig.Runtime.FlashVersion.ToString();
-            tbLocale.Text = PfxConfig.Flex.Locale;
+            nuFPVersion.Text = Config.Runtime.FlashVersion.ToString();
+            tbLocale.Text = Config.Flex.Locale;
         }
 
-        #region ISupportApply Members
-        public void Apply()
+	    private static PfxConfig Config
+	    {
+			get { return PfxConfig.Default; }
+	    }
+
+	    public void Apply()
         {
-            PfxConfig.HTML.Template             = cbGenHTMLWrapper.Checked ? tbHTMLWDir.Text : "";
-            PfxConfig.Compiler.ExceptionBreak   = cbBreakException.Checked ? true : false;
-            PfxConfig.Runtime.FlashVersion = Convert.ToInt32(nuFPVersion.Text);
-            PfxConfig.Flex.Locale = tbLocale.Text;
-            PfxConfig.Save();
+            Config.Html.Template             = cbGenHTMLWrapper.Checked ? tbHTMLWDir.Text : "";
+            Config.Compiler.ExceptionBreak   = cbBreakException.Checked ? true : false;
+            Config.Runtime.FlashVersion = Convert.ToInt32(nuFPVersion.Text);
+            Config.Flex.Locale = tbLocale.Text;
+            Config.Save();
         }
-
-        #endregion
     }
 }

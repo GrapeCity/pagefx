@@ -77,13 +77,15 @@
     <Compile Include="CodeModel\VariableExtensions.cs" />
     <Compile Include="Collections\EmptyReadOnlyList.cs" />
     <Compile Include="Collections\ReadOnlyListExtensions.cs" />
+    <Compile Include="CompilerServices\CompilerContext.cs" />
     <Compile Include="CompilerServices\CompilerException.cs" />
     <Compile Include="CompilerServices\CompilerReport.cs" />
+    <Compile Include="CompilerServices\ErrorInfo.cs" />
     <Compile Include="CompilerServices\Error.cs" />
     <Compile Include="CompilerServices\Errors.cs" />
     <Compile Include="CompilerServices\GlobalSettings.cs" />
     <Compile Include="CompilerServices\PFCOptions.cs" />
-    <Compile Include="CompilerServices\PfxCompiler.cs" />
+    <Compile Include="Tools\PfxCompiler.cs" />
     <Compile Include="CompilerServices\PfxConfig.cs" />
     <Compile Include="CompilerServices\Warnings.cs" />
     <Compile Include="Graphics\ColorExtensions.cs" />

@@ -625,7 +625,7 @@ namespace DataDynamics.PageFX
         #endregion
 
         #region Error Reporting
-        static void LogException(Exception e, Error err, params object[] args)
+        static void LogException(Exception e, ErrorInfo err, params object[] args)
         {
             var ce = e as CompilerException;
             if (ce != null)
@@ -638,7 +638,7 @@ namespace DataDynamics.PageFX
             Console.WriteLine("Exception:\n{0}", e);
         }
 
-        static void LogError(Error err, params object[] args)
+        static void LogError(ErrorInfo err, params object[] args)
         {
             err.LogConsole(args);
         }

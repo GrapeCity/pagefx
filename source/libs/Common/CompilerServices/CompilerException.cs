@@ -16,12 +16,12 @@ namespace DataDynamics.PageFX.Common.CompilerServices
             ErrorCode = code;
         }
 
-        public CompilerException(Error err, string message)
+        public CompilerException(ErrorInfo err, string message)
             : this(err.Code, message)
         {
         }
 
-        public CompilerException(Error err, string message, Exception innerException)
+        public CompilerException(ErrorInfo err, string message, Exception innerException)
             : this(err.Code, message, innerException)
         {
         }

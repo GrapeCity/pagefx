@@ -15,19 +15,27 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
     {
         public const string DefaultDebugPassword = "$1$22$D52fy3bya4.1fRX17bpC00";
 
-        public SwfCompilerOptions()
+		public SwfCompilerOptions() : this(PfxConfig.Default)
+		{
+		}
+
+		public SwfCompilerOptions(PfxConfig config)
         {
         	FrameSize = SwfMovie.DefaultFrameSize;
         	FrameRate = SwfMovie.DefaultFrameRate;
         	Compressed = true;
-        	FlashVersion = PfxConfig.Runtime.DefaultFlashVersion;
-        	BackgroundColor = PfxConfig.SWF.DefaultBgColor;
+        	FlashVersion = config.Runtime.DefaultFlashVersion;
+        	BackgroundColor = config.Swf.DefaultBgColor;
 			DebugPassword = DefaultDebugPassword;
 			OutputFormat = OutputFormat.SWF;
 
         	RslList = new RslList();
 
-            LoadDefaults();
+	        FlashVersion = config.Runtime.FlashVersion;
+	        FrameSize = new SizeF(config.Swf.Width, config.Swf.Height);
+	        BackgroundColor = config.Swf.BgColor;
+	        Compressed = config.Swf.Compressed;
+	        Locales = new []{ Const.Locales.en_US };
         }
 
         public SwfCompilerOptions(CommandLine cl) : this()
@@ -62,22 +70,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         	StyleMixins = cl.GetPath("", PFCOptions.StyleMixins.Names);
         }
 
-        private void LoadDefaults()
-        {
-            FlashVersion = PfxConfig.Runtime.FlashVersion;
-            FrameSize = new SizeF(PfxConfig.SWF.Width, PfxConfig.SWF.Height);
-            BackgroundColor = PfxConfig.SWF.BgColor;
-            Compressed = PfxConfig.SWF.Compressed;
-            Locales = new []{ Const.Locales.en_US };
-        }
-
-		public SizeF FrameSize { get; set; }
+	    public SizeF FrameSize { get; set; }
 
     	public float FrameRate { get; set; }
 
     	public bool Compressed { get; set; }
 
-    	public int FlashVersion { get; set; }
+    	public float FlashVersion { get; set; }
 
 		public string RootSprite { get; set; }
 

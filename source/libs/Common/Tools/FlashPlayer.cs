@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.Common.Tools
             {
                 if (string.IsNullOrEmpty(_path)
                     || !File.Exists(_path))
-                    return FindFP();
+                    return FindPath();
                 return _path;
             }
             set 
@@ -50,9 +50,9 @@ namespace DataDynamics.PageFX.Common.Tools
         }
         private static string _path;
 
-        static string FindFP()
+        private static string FindPath()
         {
-            return PfxConfig.FlashPlayer.Path;
+	        return PfxConfig.Default.FlashPlayer.Path;
         }
 
         public static Results Run(string path)

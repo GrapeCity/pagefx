@@ -532,7 +532,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 				throw Errors.EmbedAsset.NotFlashRuntime.CreateException();
 		}
 
-		private int PlayerVersion
+		private float PlayerVersion
 		{
 			get
 			{

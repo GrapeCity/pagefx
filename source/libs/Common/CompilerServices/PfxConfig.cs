@@ -1,215 +1,313 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.Common.CompilerServices
 {
-    public class PfxConfig
+    public sealed class PfxConfig
     {
-        #region data
-        private static SimpleConfig Config
-        {
-            get
-            {
-                Load();
-                return _config;
-            }
-        }
+	    private static PfxConfig _default;
 
-        private static string GetConfigPath()
+		//TODO: reduce usage of PfxConfig.Default
+
+	    public static PfxConfig Default
+	    {
+		    get
+		    {
+			    if (_default == null)
+			    {
+				    var config = new PfxConfig();
+				    config.Load();
+				    _default = config;
+			    }
+			    return _default;
+		    }
+	    }
+
+	    private SimpleConfig _config = new SimpleConfig();
+        
+        private static string GetDefaultPath()
         {
             string exe = GlobalSettings.PfcPath;
             return Path.Combine(Path.GetDirectoryName(exe), "pfc.config");
         }
 
-        private static void Load()
+		public void Load(string path)
+		{
+			_config = File.Exists(path) ? new SimpleConfig(path) : new SimpleConfig();
+
+			// reset sections
+			_flashPlayer = null;
+			_compiler = null;
+			_runtime = null;
+			_swf = null;
+			_flex = null;
+			_html = null;
+		}
+
+        public void Load()
         {
-            if (_config != null) return;
-            string path = GetConfigPath();
-            _config = File.Exists(path) ? new SimpleConfig(path) : new SimpleConfig();
+			Load(GetDefaultPath());
         }
 
-        public static void Save()
+        public void Save()
         {
-            Config.Save(GetConfigPath());
+            _config.Save(GetDefaultPath());
         }
 
-        static SimpleConfig _config;
-        #endregion
+	    private sealed class Section
+		{
+			private readonly SimpleConfig _config;
+			private readonly string _key;
 
-        #region Keys
-        static class Keys
+			public Section(SimpleConfig config, string key)
+			{
+				_config = config;
+				_key = key;
+			}
+
+			public T Get<T>(string name, T defval, Predicate<T> validator)
+			{
+				var key = _key + "." + name;
+				return _config.Get(key, defval, validator);
+			}
+
+			public T Get<T>(string name, T defval)
+			{
+				var key = _key + "." + name;
+				return _config.Get(key, defval);
+			}
+
+		    public void Set<T>(string name, T value)
+			{
+				var key = _key + "." + name;
+				_config.Set(key, value);
+			}
+
+		    private static readonly Regex _repath = new Regex("%(?<env>.*)%", RegexOptions.Compiled);
+
+			public string GetPath(string name)
+			{
+				var key = _key + "." + name;
+				string path = _config[key, null];
+				if (!string.IsNullOrEmpty(path))
+				{
+					path = _repath.Replace(path,
+						m =>
+						{
+							var env = m.Groups["env"].Value;
+							if (!string.IsNullOrEmpty(env))
+								return GlobalSettings.GetVar(env);
+							return env;
+						});
+					path = path.Replace(@"\\", @"\");
+					return path;
+				}
+				return "";
+			}
+		}
+
+	    #region flash-player section
+        
+	    public FlashPlayerSection FlashPlayer
+	    {
+			get { return _flashPlayer ?? (_flashPlayer = new FlashPlayerSection(_config)); }
+	    }
+		private FlashPlayerSection _flashPlayer;
+
+        public sealed class FlashPlayerSection
         {
-            public const string flash_player_path = "flash-player.path";
-            public const string compiler_exception_break = "compiler.exception-break";
-            public const string runtime_version = "runtime.version";
-            public const string swf_compressed = "swf.compressed";
-            public const string swf_width = "swf.width";
-            public const string swf_height = "swf.height";
-            public const string swf_bgcolor = "swf.bgcolor";
-            public const string html_template = "html.template";
-            public const string flex_locale = "flex.locale";
-        }
-        #endregion
+	        private readonly Section _section;
 
-        #region flash-player section
-        static readonly Regex _repath = new Regex("%(?<env>.*)%", RegexOptions.Compiled);
+			internal FlashPlayerSection(SimpleConfig config)
+			{
+				_section = new Section(config, "flash-player");
+			}
 
-        static string GetPath(string key)
-        {
-            string path = Config[key, null];
-            if (!string.IsNullOrEmpty(path))
+            public string Path
             {
-                path = _repath.Replace(path,
-                    m =>
-                    {
-                        var env = m.Groups["env"].Value;
-                        if (!string.IsNullOrEmpty(env))
-                            return GlobalSettings.GetVar(env);
-                        return env;
-                    });
-                path = path.Replace(@"\\", @"\");
-                return path;
+                get { return _section.GetPath("path"); }
+                internal set { _section.Set("path", value); }
             }
-            return "";
         }
 
-        public static class FlashPlayer
-        {
-            public static string Path
-            {
-                get { return GetPath(Keys.flash_player_path); }
-                internal set { Config[Keys.flash_player_path] = value; }
-            }
-        }
         #endregion
 
         #region compiler section
-        public static class Compiler
+
+	    public CompilerSection Compiler
+	    {
+		    get { return _compiler ?? (_compiler = new CompilerSection(_config)); }
+	    }
+		private CompilerSection _compiler;
+
+        public sealed class CompilerSection
         {
-            public static bool ExceptionBreak
+	        private readonly Section _section;
+
+			internal CompilerSection(SimpleConfig config)
+			{
+				_section = new Section(config, "compiler");
+			}
+
+	        public bool ExceptionBreak
             {
-                get
-                {
-                    return Config.GetBool(Keys.compiler_exception_break, true);
-                }
-                set 
-                {
-                    Config[Keys.compiler_exception_break] = value ? "true" : "false";
-                }
+                get { return _section.Get("exception-break", true); }
+                set { _section.Set("exception-break", value); }
             }
         }
+
         #endregion
 
         #region runtime section
-        public static class Runtime
-        {
-            public const int DefaultFlashVersion = 9;
 
-            public static int FlashVersion
+	    public RuntimeSection Runtime
+	    {
+			get { return _runtime ?? (_runtime = new RuntimeSection(_config)); }
+	    }
+		private RuntimeSection _runtime;
+
+        public sealed class RuntimeSection
+        {
+	        private readonly Section _section;
+
+	        public RuntimeSection(SimpleConfig config)
+	        {
+		        _section = new Section(config, "runtime");
+	        }
+
+	        public float DefaultFlashVersion = 9;
+
+            public float FlashVersion
             {
                 get
                 {
-                    return Config.GetInt32(
-                        Keys.runtime_version,
+                    return _section.Get(
+                        "version",
                         DefaultFlashVersion,
-                        v => v >= 9 && v <= 10);
+                        v => v >= 9 && v <= 11.5);
                 }
-                set 
-                {
-                    Config[Keys.runtime_version] = value.ToString();
-                }
+                set { _section.Set("version", value); }
             }
         }
+
         #endregion
 
         #region swf section
-        public static class SWF
+
+	    public SwfSection Swf
+	    {
+			get { return _swf ?? (_swf = new SwfSection(_config)); }
+	    }
+		private SwfSection _swf;
+
+        public sealed class SwfSection
         {
-            public static bool Compressed
+	        private readonly Section _section;
+
+	        public SwfSection(SimpleConfig config)
+	        {
+		        _section = new Section(config, "swf");
+	        }
+
+	        public bool Compressed
             {
-                get { return Config.GetBool(Keys.swf_compressed, true); }
-                internal set { Config[Keys.swf_compressed] = value ? "true" : "false"; }
+                get { return _section.Get("compressed", true); }
+                internal set { _section.Set("compressed", value); }
             }
 
-            public const int DefaultWidth = 800;
+            public int DefaultWidth = 800;
 
-            public static int Width
+            public int Width
             {
-                get { return Config.GetPositiveInt32(Keys.swf_width, DefaultWidth); }
-                internal set { Config[Keys.swf_width] = value.ToString(); }
+                get { return _section.Get("width", DefaultWidth, v => v > 0); }
+                internal set { _section.Set("width", value); }
             }
 
-            public const int DefaultHeight = 800;
+            public int DefaultHeight = 800;
 
-            public static int Height
+            public int Height
             {
-                get { return Config.GetPositiveInt32(Keys.swf_height, DefaultHeight); }
-                internal set { Config[Keys.swf_height] = value.ToString(); }
+                get { return _section.Get("height", DefaultHeight, v => v > 0); }
+                internal set { _section.Set("height", value); }
             }
 
-            public static Color DefaultBgColor
+            public Color DefaultBgColor
             {
                 get { return Color.FromArgb(0x86, 0x96, 0xA7); }
             }
 
-            public static Color BgColor
+            public Color BgColor
             {
-                get
-                {
-                    return Config.GetColor(Keys.swf_bgcolor, DefaultBgColor);
-                }
-                internal set
-                {
-	                Config[Keys.swf_bgcolor] = "#" + value.R.ToString("x2") + value.G.ToString("x2") + value.B.ToString("x2");
-                }
+                get { return _section.Get("bgcolor", DefaultBgColor); }
+                internal set { _section.Set("bgcolor", value); }
             }
         }
+
         #endregion
 
         #region flex section
-        public static class Flex
+
+	    public FlexSection Flex
+	    {
+			get { return _flex ?? (_flex = new FlexSection(_config)); }
+	    }
+		private FlexSection _flex;
+
+        public sealed class FlexSection
         {
-            public static string DefaultLocale
+	        private readonly Section _section;
+
+	        public FlexSection(SimpleConfig config)
+	        {
+		        _section = new Section(config, "flex");
+	        }
+
+	        public string DefaultLocale
             {
                 get { return "en_US"; }
             }
 
-            public static string Locale
+            public string Locale
             {
-                get
-                {
-                    return Config[Keys.flex_locale, DefaultLocale];
-                }
-                set
-                {
-                    Config[Keys.flex_locale] = value;
-                }
+                get { return _section.Get("locale", DefaultLocale); }
+                set { _section.Set("locale", value); }
             }
         }
+
         #endregion
 
         #region html section
-        public static class HTML
+
+	    public HtmlSection Html
+	    {
+			get { return _html ?? (_html = new HtmlSection(_config)); }
+	    }
+		private HtmlSection _html;
+
+        public sealed class HtmlSection
         {
-            public static string DefaultTemplate
+	        private readonly Section _section;
+
+	        public HtmlSection(SimpleConfig config)
+	        {
+		        _section = new Section(config, "html");
+	        }
+
+	        public string DefaultTemplate
             {
                 get { return "swfobject"; }
             }
 
-            public static string Template
+            public string Template
             {
-                get 
-                {
-                    return Config[Keys.html_template, DefaultTemplate];
-                }
-                set 
-                {
-                    Config[Keys.html_template] = value;
-                }
+                get { return _section.Get("template", DefaultTemplate); }
+                set { _section.Set("template", value); }
             }
         }
+
         #endregion
     }
 }

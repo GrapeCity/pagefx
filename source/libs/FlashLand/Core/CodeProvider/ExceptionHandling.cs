@@ -394,7 +394,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         #region Throw, Rethrow
 
-        bool ExceptionBreakEnabled
+        private bool ExceptionBreakEnabled
         {
             get 
             {
@@ -402,7 +402,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 var opts = _generator.SwfCompiler.Options;
                 if (opts.IgnoreExceptionBreaks) return false;
                 if (opts.ExceptionBreak) return true;
-                return PfxConfig.Compiler.ExceptionBreak;
+                return PfxConfig.Default.Compiler.ExceptionBreak;
             }
         }
 

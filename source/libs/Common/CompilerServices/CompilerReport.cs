@@ -4,6 +4,8 @@ using System.IO;
 
 namespace DataDynamics.PageFX.Common.CompilerServices
 {
+	//TODO: remove, replace with usage of CompilerContext logging API
+
     public static class CompilerReport
     {
         static List<string> _errors;
@@ -11,7 +13,7 @@ namespace DataDynamics.PageFX.Common.CompilerServices
 
         public static bool CollectErrors;
 
-        public static void Add(Error err, params object[] args)
+        public static void Add(ErrorInfo err, params object[] args)
         {
             if (CollectErrors)
             {

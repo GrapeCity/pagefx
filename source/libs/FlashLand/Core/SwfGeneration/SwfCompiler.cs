@@ -52,14 +52,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
 {
     internal partial class SwfCompiler : IDisposable
     {
-        #region ctors
-        public SwfCompiler(SwfCompilerOptions options)
+	    public SwfCompiler(SwfCompilerOptions options)
         {
-            _options = options ?? new SwfCompilerOptions();
-        }
-        #endregion
+	        if (options == null)
+				throw new ArgumentNullException("options");
 
-        #region Options
+	        _options = options;
+        }
+
+	    #region Options
         readonly SwfCompilerOptions _options;
 
         public SwfCompilerOptions Options
@@ -77,7 +78,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
             get { return _options.RootSprite; }
         }
 
-        public int PlayerVersion
+        public float PlayerVersion
         {
             get { return _options.FlashVersion; }
         }
@@ -133,6 +134,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         #endregion
 
         #region Shared Members
+
         public static void Compile(IAssembly assembly, string path, SwfCompilerOptions options)
         {
             if (options == null)
@@ -148,13 +150,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         public static void Compile(IAssembly assembly, Stream output, SwfCompilerOptions options)
         {
             if (options == null)
-                options = new SwfCompilerOptions();
+				options = new SwfCompilerOptions();
             using (var compiler = new SwfCompiler(options))
             {
                 compiler.Build(assembly);
                 compiler.Save(output);
             }
         }
+
         #endregion
 
 	    public void Dispose()
@@ -330,7 +333,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
         #region Header
         void SetupHeader()
         {
-            Swf.Version = _options.FlashVersion;
+            Swf.Version = (int)_options.FlashVersion;
             Swf.FrameSize = _options.FrameSize;
             Swf.FrameRate = _options.FrameRate;
             Swf.AllowCompression = _options.Compressed;
