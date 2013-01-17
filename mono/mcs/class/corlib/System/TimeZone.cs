@@ -35,6 +35,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace System
 {
@@ -96,39 +97,37 @@ namespace System
             return IsDaylightSavingTime(time, null);
         }
 
-#if NOT_PFX
-        public
-#else
-        internal 
-#endif
-        static bool IsDaylightSavingTime(DateTime time, DaylightTime daylightTimes)
-        {
-            // Another timezone hack. We determine if it daylightsavings time by
-            // getting timezone offset for the specified time and for a known 
-            // point in standard time (at least for the northern hemisphere).
-            // If the offsets differ then it must be DST.
+	    [MethodImpl(MethodImplOptions.InternalCall)]
+	    internal static extern bool IsDaylightSavingTime(DateTime time, DaylightTime daylightTimes);
 
-            int noDLS, now;
-
-            Avm.Date dt = new Avm.Date();
-            dt.fullYear = time.Year; // Enter a known standard time
-            dt.month = 1;
-            dt.setDate(1);
-            dt.hours = 12;
-            dt.minutes = 0;
-            dt.seconds = 0;
-            dt.milliseconds = 0;
-            noDLS = dt.timezoneOffset;
-
-            dt.month = time.Month;
-            dt.setDate(time.Day);
-            dt.hours = time.Hour;
-            dt.minutes = time.Minute;
-            dt.milliseconds = time.Millisecond;
-            now = dt.timezoneOffset;
-
-            return (now != noDLS); // If they differ it's DSL
-        }
+//		internal static bool IsDaylightSavingTime(DateTime time, DaylightTime daylightTimes)
+//        {
+//            // Another timezone hack. We determine if it daylightsavings time by
+//            // getting timezone offset for the specified time and for a known 
+//            // point in standard time (at least for the northern hemisphere).
+//            // If the offsets differ then it must be DST.
+//
+//            int noDLS, now;
+//
+//            Avm.Date dt = new Avm.Date();
+//            dt.fullYear = time.Year; // Enter a known standard time
+//            dt.month = 1;
+//            dt.setDate(1);
+//            dt.hours = 12;
+//            dt.minutes = 0;
+//            dt.seconds = 0;
+//            dt.milliseconds = 0;
+//            noDLS = dt.timezoneOffset;
+//
+//            dt.month = time.Month;
+//            dt.setDate(time.Day);
+//            dt.hours = time.Hour;
+//            dt.minutes = time.Minute;
+//            dt.milliseconds = time.Millisecond;
+//            now = dt.timezoneOffset;
+//
+//            return (now != noDLS); // If they differ it's DSL
+//        }
 
         /// <include file="D:\\PageFX\\Source\\DDCorLib\\Docs\\DDCorLib.xml" path="doc/members/member[@name=&quot;M:System.TimeZone.ToLocalTime(System.DateTime)&quot;]/*"/>
         public virtual DateTime ToLocalTime(DateTime time)
@@ -242,28 +241,28 @@ namespace System
         // Constructor
         internal CurrentTimeZone()
         {
-            Avm.Date dt = new Avm.Date();
-
-            // How to get daylight savings info: Flash hides daylight savings details
-            // from the user so we create two dates one in winter (standard time) and 
-            // one in summer (daylight time) and subtract their TimeZoneOffset values.
-            // A hack but it should work.
-            dt.month = 1;
-            dt.setDate(1);
-            dt.hours = 12;
-            dt.minutes = 0;
-            dt.seconds = 0;
-            dt.milliseconds = 0;
-            noDLS = -dt.timezoneOffset;
-            dt.month = 7;
-            yesDLS = -dt.timezoneOffset;
-
-            string[] names = GetTimeZoneNames(noDLS);
-            standardName = names[0];
-            daylightName = names[1];
-
-            utcOffsetWithOutDLS = new TimeSpan(noDLS * TimeSpan.TicksPerMinute);
-            utcOffsetWithDLS = new TimeSpan(yesDLS * TimeSpan.TicksPerMinute);
+//            Avm.Date dt = new Avm.Date();
+//
+//            // How to get daylight savings info: Flash hides daylight savings details
+//            // from the user so we create two dates one in winter (standard time) and 
+//            // one in summer (daylight time) and subtract their TimeZoneOffset values.
+//            // A hack but it should work.
+//            dt.month = 1;
+//            dt.setDate(1);
+//            dt.hours = 12;
+//            dt.minutes = 0;
+//            dt.seconds = 0;
+//            dt.milliseconds = 0;
+//            noDLS = -dt.timezoneOffset;
+//            dt.month = 7;
+//            yesDLS = -dt.timezoneOffset;
+//
+//            string[] names = GetTimeZoneNames(noDLS);
+//            standardName = names[0];
+//            daylightName = names[1];
+//
+//            utcOffsetWithOutDLS = new TimeSpan(noDLS * TimeSpan.TicksPerMinute);
+//            utcOffsetWithDLS = new TimeSpan(yesDLS * TimeSpan.TicksPerMinute);
         }
 
         // Properties

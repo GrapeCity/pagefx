@@ -163,7 +163,7 @@ namespace System.Reflection
 		}
 
 
-	    internal Avm.Function m_getValue;
+	    internal object m_getValue;
 
 		[DebuggerHidden]
 		[DebuggerStepThrough]

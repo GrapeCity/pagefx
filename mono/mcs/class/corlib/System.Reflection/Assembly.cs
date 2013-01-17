@@ -29,11 +29,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.IO;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Collections;
-using System.Security.Permissions;
+using Native;
+
 #if NOT_PFX
 using System.Security.Policy;
 #endif
@@ -218,8 +217,8 @@ public virtual FileStream GetFile(string name)
         #endregion
 
         #region PageFX ReflectionInfo
-        internal static Avm.Array Types;
-        internal static Avm.Array ArrayTypes;
+		internal static List<Type> Types;
+        private static List<Type> ArrayTypes;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private static extern int GetTypeNum();
@@ -228,10 +227,7 @@ public virtual FileStream GetFile(string name)
         {
             Assembly asm = Instance;
             string name = avm.Concat("__inittype__", index);
-            object v = avm.GetProperty(asm, avm.GlobalPackage, name);
-            Avm.Function f = v as Avm.Function;
-            if (avm.IsNull(f))
-                throw new InvalidOperationException(string.Format("No function to init type with id {0}", index));
+			Function f = (Function)avm.GetProperty(asm, avm.GlobalPackage, name);
             f.call(null, type);
         }
         
@@ -242,10 +238,12 @@ public virtual FileStream GetFile(string name)
             {
                 int n = GetTypeNum();
                 if (n <= 0) return null;
-                Types = avm.NewArray(n);
-                ArrayTypes = avm.NewArray();
+				Types = new List<Type>(n);
+	            for (int i = 0; i < n; i++)
+		            Types.Add(null);
+	            ArrayTypes = new List<Type>();
             }
-            Type type = (Type)Types[index];
+            Type type = Types[index];
             if (type == null)
             {
                 type = new Type();
@@ -253,12 +251,12 @@ public virtual FileStream GetFile(string name)
                 type.index = index;
                 Types[index] = type;
                 if (type.IsArray)
-                    ArrayTypes.push(type);
+                    ArrayTypes.Add(type);
             }
             return type;
         }
 
-        internal static Avm.String GetArrayTypeName(Type elementType, int[] lengths, int[] bounds)
+        internal static string GetArrayTypeName(Type elementType, int[] lengths, int[] bounds)
         {
             //TODO:
             string name = elementType.Name;
@@ -273,7 +271,7 @@ public virtual FileStream GetFile(string name)
                 throw new ArgumentNullException("elementType");
 
             Type type;
-            uint n = ArrayTypes.length;
+            int n = ArrayTypes.Count;
             for (int i = 0; i < n; ++i)
             {
                 type = (Type)ArrayTypes[i];
@@ -284,7 +282,7 @@ public virtual FileStream GetFile(string name)
                 }
             }
 
-            n = Types.length;
+            n = Types.Count;
 
             type = new Type();
             type.index = (int)n;
@@ -293,8 +291,8 @@ public virtual FileStream GetFile(string name)
             type.ns = elementType.ns;
             type.name = GetArrayTypeName(elementType, lengths, bounds);
             type.kind = Type.KIND_ARRAY;
-            Types.push(type);
-            ArrayTypes.push(type);
+            Types.Add(type);
+            ArrayTypes.Add(type);
             return type;
         }
         #endregion
@@ -313,7 +311,7 @@ public virtual FileStream GetFile(string name)
         private static Type[] GetTypes(bool exportedOnly)
         {
             if (!InitTypes()) return null;
-            uint n = Types.length;
+            int n = Types.Count;
             Type[] types = new Type[n];
             for (int i = 0; i < n; ++i)
                 types[i] = GetType(i);
@@ -343,7 +341,7 @@ public virtual FileStream GetFile(string name)
         internal static Type InternalGetType(String name, bool throwOnError, bool ignoreCase)
         {
             if (!InitTypes()) return null;
-            uint n = Types.length;
+            int n = Types.Count;
             for (int i = 0; i < n; ++i)
             {
                 Type type = GetType(i);

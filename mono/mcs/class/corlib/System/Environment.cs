@@ -233,12 +233,10 @@ namespace System
             get
             {
                 if (avm.IsFlashPlayer)
-                    return flash.utils.Global.getTimer();
+                    return avm.getTimer();
                 return 0;
             }
         }
-
-        
         
         /// <summary>
         /// Get the version of the common language runtime 

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Native;
 
 public class AvmErrors
 {
@@ -197,20 +198,21 @@ public class AvmErrors
         return new SystemException();
     }
 
-    public static Exception ExceptionFromError(Avm.Error err)
+	internal static Exception ExceptionFromError(Error err)
     {
         Exception exc;
-        if (err is Avm.RangeError)
+        if (err is RangeError)
             exc = new OverflowException();
         else
             exc = ExceptionFromErrorID(err.errorID);
 
-        exc.InternalMessage = (string)err.message;
+        exc.InternalMessage = err.message;
 
-        if (flash.system.Capabilities.isDebugger)
+        //if (flash.system.Capabilities.isDebugger)
             exc.stack_trace = err.getStackTrace();
 
         return exc;
     }
-    #endregion
+
+	#endregion
 }

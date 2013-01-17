@@ -31,7 +31,7 @@
 //
 
 using System;
-using flash.utils;
+using Native;
 
 namespace Mono.Security
 {
@@ -115,34 +115,31 @@ namespace Mono.Security
 
         private static ByteArray CreateByteArray()
         {
-            ByteArray arr = new ByteArray();
-            arr.endian = Endian.LITTLE_ENDIAN;
-            return arr;
+	        return new ByteArray(true);
         }
 
         internal static byte[] GetBytes(float value)
         {
-            ByteArray arr = CreateByteArray();
-            arr.writeFloat(value);
-            arr.position = 0;
-            int n = 4;
-            byte[] res = new byte[n];
-            for (int i = 0; i < n; ++i)
-                res[i] = (byte)arr.readByte();
-            return res;
+			ByteArray arr = CreateByteArray();
+			arr.WriteFloat(value);
+	        return ReadBytes(arr, 4);
         }
 
         internal static byte[] GetBytes(double value)
         {
             ByteArray arr = CreateByteArray();
-            arr.writeDouble(value);
-            arr.position = 0;
-            int n = 8;
-            byte[] res = new byte[n];
-            for (int i = 0; i < n; ++i)
-                res[i] = (byte)arr.readByte();
-            return res;
+			arr.WriteDouble(value);
+	        return ReadBytes(arr, 8);
         }
+
+		private static byte[] ReadBytes(ByteArray byteArray, int n)
+		{
+			byteArray.Seek(0);
+			byte[] res = new byte[n];
+			for (int i = 0; i < n; ++i)
+				res[i] = (byte)byteArray.ReadByte();
+			return res;
+		}
 
         internal static bool ToBoolean(byte[] value, int startIndex)
         {
@@ -196,22 +193,25 @@ namespace Mono.Security
                            | ((ulong)value[startIndex + 7] << 56));
         }
 
+		private static ByteArray CreateByteArray(byte[] value, int startIndex)
+		{
+			ByteArray arr = CreateByteArray();
+			while (startIndex < value.Length)
+				arr.WriteByte(value[startIndex++]);
+			arr.Seek(0);
+			return arr;
+		}
+
         internal static float ToSingle(byte[] value, int startIndex)
         {
-            ByteArray arr = CreateByteArray();
-            while (startIndex < value.Length)
-                arr.writeByte(value[startIndex++]);
-            arr.position = 0;
-            return (float)arr.readFloat();
+            ByteArray arr = CreateByteArray(value, startIndex);
+            return arr.ReadFloat();
         }
 
         internal static double ToDouble(byte[] value, int startIndex)
         {
-            ByteArray arr = CreateByteArray();
-            while (startIndex < value.Length)
-                arr.writeByte(value[startIndex++]);
-            arr.position = 0;
-            return arr.readDouble();
+			ByteArray arr = CreateByteArray(value, startIndex);
+            return arr.ReadDouble();
         }
     }
 }

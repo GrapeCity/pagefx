@@ -30,8 +30,7 @@
 //
 
 using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.InteropServices;
+using Native;
 
 namespace System.Reflection 
 {
@@ -74,7 +73,7 @@ namespace System.Reflection
 	    }
 
 
-        internal Avm.Function m_create;
+        internal Function m_create;
 
         [DebuggerStepThrough]
         [DebuggerHidden]
@@ -87,7 +86,7 @@ namespace System.Reflection
             {
                 if (parameters.Length != GetParameterCount())
                     throw new TargetParameterCountException("Parameter count mismatch.");
-                Avm.Array arr = new Avm.Array();
+                NativeArray arr = new NativeArray();
                 int n = parameters.Length;
                 ParameterInfo[] pi = GetParameters();
 
@@ -102,10 +101,10 @@ namespace System.Reflection
                     arr.push(v);
                 }
 
-                return m_create.apply(null, arr);
+				return m_create.apply(null, arr);
             }
 
-            return m_create.apply(null);
+			return m_create.apply(null);
         }
 
 

@@ -15,8 +15,7 @@ namespace System
 
         public override void Write(char value)
         {
-            Avm.String s = Avm.String.fromCharCode(value);
-            write(s);
+            write(value.ToString());
         }
 
         static void write(string s)

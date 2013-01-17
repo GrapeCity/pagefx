@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Avm;
+using Native;
 
 namespace PageFX
 {
@@ -10,9 +10,9 @@ namespace PageFX
             return o != null ? o.GetType().Unbox(o) : o;
         }
 
-        public static Array ToArray(IEnumerable collection)
+        public static NativeArray ToArray(IEnumerable collection)
         {
-            Array arr = new Array();
+			NativeArray arr = new NativeArray();
             var dic = collection as IDictionary;
             if (dic != null)
             {

@@ -41,14 +41,14 @@ namespace System
         internal MulticastDelegate m_prev;
         internal MulticastDelegate m_next;
 
-        public override void AddEventListeners(Avm.Object dispatcher, Avm.String eventName)
+        public override void AddEventListeners(object dispatcher, string eventName)
         {
             if (m_prev != null)
                 m_prev.AddEventListeners(dispatcher, eventName);
             base.AddEventListeners(dispatcher, eventName);
         }
 
-        public override void RemoveEventListeners(Avm.Object dispatcher, Avm.String eventName)
+        public override void RemoveEventListeners(object dispatcher, string eventName)
         {
             if (m_prev != null)
                 m_prev.RemoveEventListeners(dispatcher, eventName);

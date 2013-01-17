@@ -35,7 +35,7 @@
 
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Avm;
+using Native;
 
 namespace System
 {
@@ -301,41 +301,12 @@ namespace System
 #endif
         {
             //return DynamicInvokeImpl(args);
-            return m_function.apply(m_target, args.m_value);
+			return m_function.apply(m_target, args.m_value);
         }
 
         protected virtual object DynamicInvokeImpl(object[] args)
         {
-#if AVM
-            return m_function.apply(m_target, args.m_value);
-#else
-            if (Method == null)
-            {
-                Type[] mtypes = new Type[args.Length];
-                for (int i = 0; i < args.Length; ++i)
-                {
-                    mtypes[i] = args[i].GetType();
-                }
-                method_info = m_target.GetType().GetMethod(method_name, mtypes);
-            }
-
-#if NET_2_0
-            if ((m_target != null) && Method.IsStatic) {
-                // The delegate is bound to m_target
-                if (args != null) {
-                    object[] newArgs = new object [args.Length + 1];
-                    args.CopyTo (newArgs, 1);
-                    newArgs [0] = m_target;
-                    args = newArgs;
-                } else {
-                    args = new object [] { m_target };
-                }
-                return Method.Invoke (null, args);
-            }
-#endif
-
-            return Method.Invoke(m_target, args);
-#endif
+			return m_function.apply(m_target, args.m_value);
         }
         #endregion
 
@@ -376,14 +347,20 @@ namespace System
             return new Delegate[] { this };
         }
 
-        public virtual void AddEventListeners(Avm.Object dispatcher, Avm.String eventName)
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void AddEventListener(object dispatcher, string eventName, object f);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern void RemoveEventListener(object dispatcher, string eventName, object f);
+		
+        public virtual void AddEventListeners(object dispatcher, string eventName)
         {
-            avm.AddEventListener(dispatcher, eventName, m_function);
+            AddEventListener(dispatcher, eventName, m_function);
         }
 
-        public virtual void RemoveEventListeners(Avm.Object dispatcher, Avm.String eventName)
+        public virtual void RemoveEventListeners(object dispatcher, string eventName)
         {
-            avm.RemoveEventListener(dispatcher, eventName, m_function);
+            RemoveEventListener(dispatcher, eventName, m_function);
         }
 
         public virtual int GetInvocationCount()
@@ -486,13 +463,13 @@ namespace System
             return !(a == b);
         }
 
-        public static implicit operator Function(Delegate d)
-        {
-            if (d == null)
-                throw new ArgumentNullException("d");
-            if (d.GetInvocationCount() > 1)
-                throw new ArgumentException("Unable cast delegate to function. Delegates has more than one invocated functions.");
-            return d.m_function;
-        }
+//        public static implicit operator Function(Delegate d)
+//        {
+//            if (d == null)
+//                throw new ArgumentNullException("d");
+//            if (d.GetInvocationCount() > 1)
+//                throw new ArgumentException("Unable cast delegate to function. Delegates has more than one invocated functions.");
+//            return d.m_function;
+//        }
     }
 }

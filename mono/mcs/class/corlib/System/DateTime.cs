@@ -31,9 +31,9 @@
 
 using System.Collections;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using Avm;
 
 namespace System
 {
@@ -264,11 +264,11 @@ namespace System
         }
 
         #region Constructors
-        internal DateTime(Date d)
-            : this(d.fullYear, d.month + 1, d.DayOfMonth,
-                   d.hours, d.minutes, d.seconds, d.milliseconds)
-        {
-        }
+//        internal DateTime(Date d)
+//            : this(d.fullYear, d.month + 1, d.DayOfMonth,
+//                   d.hours, d.minutes, d.seconds, d.milliseconds)
+//        {
+//        }
 
         /// <summary>
         /// Constructs a DateTime for specified ticks
@@ -447,7 +447,7 @@ namespace System
         {
             get
             {
-                DateTime ret = new DateTime(new Date());
+                DateTime ret = NowImpl();
 #if NET_2_0
 				// TODO: this is incorrect: 
                 ret.kind = DateTimeKind.Local;
@@ -456,6 +456,9 @@ namespace System
                 return ret;
             }
         }
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+	    private static extern DateTime NowImpl();
 
         public long Ticks
         {
@@ -477,17 +480,21 @@ namespace System
 
         public static DateTime UtcNow
         {
-            get
-            {
-                Date d = new Date();
-                DateTime ret = new DateTime(d.fullYearUTC, d.monthUTC + 1, d.dateUTC,
-                                            d.hoursUTC, d.minutesUTC, d.secondsUTC, d.millisecondsUTC);
+			get
+			{
+				DateTime ret = UtcNowImpl();
 #if NET_2_0
 				ret.kind = DateTimeKind.Utc;
 #endif
                 return ret;
             }
         }
+
+//		Date d = new Date();
+//		DateTime ret = new DateTime(d.fullYearUTC, d.monthUTC + 1, d.dateUTC,
+//									d.hoursUTC, d.minutesUTC, d.secondsUTC, d.millisecondsUTC);
+		[MethodImpl(MethodImplOptions.InternalCall)]
+	    private static extern DateTime UtcNowImpl();
 
         public int Year
         {

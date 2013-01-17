@@ -719,15 +719,10 @@ namespace System
             return ToLower(c, CultureInfo.CurrentCulture);
         }
 
-#if NET_2_0
-		public static char ToLowerInvariant (char c)
-#else
-        internal static char ToLowerInvariant(char c)
-#endif
-        {
-            return (char)Avm.String.fromCharCode(c).toLowerCase().charCodeAt(0);
-        }
-
+	    [MethodImpl(MethodImplOptions.InternalCall)]
+	    public static extern char ToLowerInvariant(char c);
+		// return (char)Avm.String.fromCharCode(c).toLowerCase().charCodeAt(0);
+        
         public static char ToLower(char c, CultureInfo culture)
         {
             if (culture == null)
@@ -743,15 +738,10 @@ namespace System
             return ToUpper(c, CultureInfo.CurrentCulture);
         }
 
-#if NET_2_0
-		public static char ToUpperInvariant (char c)
-#else
-        internal static char ToUpperInvariant(char c)
-#endif
-        {
-            return (char)Avm.String.fromCharCode(c).toUpperCase().charCodeAt(0);
-        }
-
+	    [MethodImpl(MethodImplOptions.InternalCall)]
+	    public static extern char ToUpperInvariant(char c);
+		// return (char)Avm.String.fromCharCode(c).toUpperCase().charCodeAt(0);
+        
         public static char ToUpper(char c, CultureInfo culture)
         {
             if (culture == null)
@@ -767,7 +757,7 @@ namespace System
             // LAMESPEC: ECMA draft lists this as returning ToString (null), 
             // However it doesn't list another ToString() method.
             //return new String(m_value, 1);
-            return Avm.String.fromCharCode(m_value);
+            return avm.fromCharCode(m_value);
         }
 
         public static string ToString(char c)

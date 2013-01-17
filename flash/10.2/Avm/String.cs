@@ -862,9 +862,12 @@ namespace Avm
         [PageFX.QName("fromCharCode", "http://adobe.com/AS3/2006/builtin", "public")]
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern static String fromCharCode(uint ch);
-        #endregion
 
+		[MethodImpl(MethodImplOptions.InternalCall)]
+	    public static extern implicit operator System.String(Avm.String s);
 
-
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern implicit operator Avm.String(System.String s);
+	    #endregion
     }
 }

@@ -32,6 +32,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Native;
 
 namespace System.Reflection
 {
@@ -87,7 +88,7 @@ namespace System.Reflection
             return m_parameters;
         }
 
-        internal Avm.Function m_function;
+        internal Function m_function;
         
         // FIXME: when this method is uncommented, corlib fails
         // to build
@@ -95,7 +96,7 @@ namespace System.Reflection
         [DebuggerHidden]
         public virtual object Invoke(object obj, object[] parameters)
         {
-            Avm.Array arr = new Avm.Array();
+            NativeArray arr = new NativeArray();
 
             if (!IsStatic)
                 arr.push(obj);
@@ -125,7 +126,7 @@ namespace System.Reflection
                     throw new TargetParameterCountException("Parameter count mismatch.");
             }
 
-            return m_function.apply(null, arr);
+			return m_function.apply(null, arr);
         }
 
         
@@ -141,18 +142,6 @@ namespace System.Reflection
 
             return pi.Length;
         }
-
-#if NOT_PFX
-        [DebuggerHidden]
-        [DebuggerStepThrough]
-#if NET_2_0 || BOOTSTRAP_NET_2_0
-		virtual
-#endif
-        public Object Invoke(Object obj, Object[] parameters)
-        {
-            return Invoke(obj, 0, null, parameters, null);
-        }
-#endif
 
 #if NOT_PFX
 #if NET_2_0 || BOOTSTRAP_NET_2_0

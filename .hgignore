@@ -12,6 +12,8 @@ _ReSharper*
 Artifacts/
 build-scripts/*.log
 
+flash/**/[Bb]in
+flash/**/[Oo]bj
 mono/**/[Bb]in
 mono/**/[Oo]bj
 tests/**/[Bb]in

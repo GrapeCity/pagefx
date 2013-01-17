@@ -36,7 +36,7 @@
 
 using System.Collections;
 using System.Globalization;
-using Avm;
+using Native;
 
 namespace System
 {
@@ -138,16 +138,17 @@ namespace System
         }
 
         #region GetValue/SetValue
-        internal object GetValue()
-        {
-            object v = avm.get_m_value(this);
-            Type vtype = GetValueType();
-            Function f = vtype.m_box;
-            if (f != null)
-                return f.call(null, v);
-            f = vtype.m_copy; //int64
-            return f.call(null, v);
-        }
+
+		internal object GetValue()
+		{
+			object v = avm.get_m_value(this);
+			Type vtype = GetValueType();
+			Function f = vtype.m_box;
+			if (f != null)
+				return f.call(null, v);
+			f = vtype.m_copy; //int64
+			return f.call(null, v);
+		}
 
         internal void SetValue(object value)
         {
@@ -177,7 +178,8 @@ namespace System
                                                + ", but enum value type is " + vtype);
             }
         }
-        #endregion
+
+		#endregion
 
         internal int ValueTypeKind
         {

@@ -179,6 +179,10 @@
     <Compile Include="System.Drawing\ToolboxBitmapAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\flash\10.2\Flash.v10.2.csproj">
+      <Project>{272baae0-0d67-4765-a1a9-8239ad3ab8b2}</Project>
+      <Name>Flash.v10.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\corlib\mscorlib.csproj">
       <Project>{C9A6CF06-1E1F-4196-8339-B060F0B5714C}</Project>
       <Name>mscorlib</Name>

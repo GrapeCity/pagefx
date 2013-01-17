@@ -500,14 +500,14 @@ namespace System
             int index = 0;
             for (int i = 0; i < 4; ++i)
             {
-                b[index++] = (byte)Avm.Math.floor(Avm.Math.random() * m);
+                b[index++] = (byte)Math.Floor(Math.random() * m);
             }
 
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 2; j++)
                 {
-                    b[index++] = (byte)Avm.Math.floor(Avm.Math.random() * m);
+					b[index++] = (byte)Math.Floor(Math.random() * m);
                 }
             }
 
@@ -539,7 +539,7 @@ namespace System
 
             for (int i = 0; i < 2; i++)
             {
-                b[index++] = (byte)Avm.Math.floor(Avm.Math.random() * m);
+				b[index++] = (byte)Math.Floor(Math.random() * m);
             }
 
             return b;

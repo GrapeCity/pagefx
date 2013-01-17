@@ -39,7 +39,6 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using PageFX;
-using avmstr = Avm.String;
 
 namespace System
 {
@@ -153,13 +152,7 @@ namespace System
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern String substr(int startIndex, int length);
 
-		[MethodImpl(MethodImplOptions.InternalCall)]
-	    public static extern implicit operator avmstr(String s);
-
-	    [MethodImpl(MethodImplOptions.InternalCall)]
-	    public static extern implicit operator String(avmstr s);
-        
-        #endregion
+		#endregion
 
         [IndexerName("Chars")]
         public char this[int index]

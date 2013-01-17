@@ -1,0 +1,462 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{272BAAE0-0D67-4765-A1A9-8239AD3AB8B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>flash</RootNamespace>
+    <AssemblyName>Flash.v10.2</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\..\pfx\framework\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="adobe.utils\CustomActions.cs" />
+    <Compile Include="adobe.utils\Global.cs" />
+    <Compile Include="adobe.utils\ProductManager.cs" />
+    <Compile Include="adobe.utils\XMLUI.cs" />
+    <Compile Include="avmplus\Global.cs" />
+    <Compile Include="Avm\ArgumentError.cs" />
+    <Compile Include="Avm\Array.cs" />
+    <Compile Include="Avm\Boolean.cs" />
+    <Compile Include="Avm\Class.cs" />
+    <Compile Include="Avm\Date.cs" />
+    <Compile Include="Avm\DefinitionError.cs" />
+    <Compile Include="Avm\Error.cs" />
+    <Compile Include="Avm\EvalError.cs" />
+    <Compile Include="Avm\Function.cs" />
+    <Compile Include="Avm\Global.cs" />
+    <Compile Include="Avm\Int.cs" />
+    <Compile Include="Avm\Math.cs" />
+    <Compile Include="Avm\Namespace.cs" />
+    <Compile Include="Avm\Number.cs" />
+    <Compile Include="Avm\Object.cs" />
+    <Compile Include="Avm\QName.cs" />
+    <Compile Include="Avm\RangeError.cs" />
+    <Compile Include="Avm\ReferenceError.cs" />
+    <Compile Include="Avm\RegExp.cs" />
+    <Compile Include="Avm\SecurityError.cs" />
+    <Compile Include="Avm\String.cs" />
+    <Compile Include="Avm\SyntaxError.cs" />
+    <Compile Include="Avm\TypeError.cs" />
+    <Compile Include="Avm\UInt.cs" />
+    <Compile Include="Avm\UninitializedError.cs" />
+    <Compile Include="Avm\URIError.cs" />
+    <Compile Include="Avm\Vector.cs" />
+    <Compile Include="Avm\VerifyError.cs" />
+    <Compile Include="Avm\XML.cs" />
+    <Compile Include="Avm\XMLList.cs" />
+    <Compile Include="flash.accessibility\Accessibility.cs" />
+    <Compile Include="flash.accessibility\AccessibilityImplementation.cs" />
+    <Compile Include="flash.accessibility\AccessibilityProperties.cs" />
+    <Compile Include="flash.accessibility\ISearchableText.cs" />
+    <Compile Include="flash.accessibility\ISimpleTextSelection.cs" />
+    <Compile Include="flash.automation\ActionGenerator.cs" />
+    <Compile Include="flash.automation\AutomationAction.cs" />
+    <Compile Include="flash.automation\Configuration.cs" />
+    <Compile Include="flash.automation\KeyboardAutomationAction.cs" />
+    <Compile Include="flash.automation\MouseAutomationAction.cs" />
+    <Compile Include="flash.automation\StageCapture.cs" />
+    <Compile Include="flash.automation\StageCaptureEvent.cs" />
+    <Compile Include="flash.debugger\Global.cs" />
+    <Compile Include="flash.desktop\Clipboard.cs" />
+    <Compile Include="flash.desktop\ClipboardFormats.cs" />
+    <Compile Include="flash.desktop\ClipboardTransferMode.cs" />
+    <Compile Include="flash.display\ActionScriptVersion.cs" />
+    <Compile Include="flash.display\AVM1Movie.cs" />
+    <Compile Include="flash.display\Bitmap.cs" />
+    <Compile Include="flash.display\BitmapData.cs" />
+    <Compile Include="flash.display\BitmapDataChannel.cs" />
+    <Compile Include="flash.display\BlendMode.cs" />
+    <Compile Include="flash.display\CapsStyle.cs" />
+    <Compile Include="flash.display\ColorCorrection.cs" />
+    <Compile Include="flash.display\ColorCorrectionSupport.cs" />
+    <Compile Include="flash.display\DisplayObject.cs" />
+    <Compile Include="flash.display\DisplayObjectContainer.cs" />
+    <Compile Include="flash.display\FocusDirection.cs" />
+    <Compile Include="flash.display\FrameLabel.cs" />
+    <Compile Include="flash.display\GradientType.cs" />
+    <Compile Include="flash.display\Graphics.cs" />
+    <Compile Include="flash.display\GraphicsBitmapFill.cs" />
+    <Compile Include="flash.display\GraphicsEndFill.cs" />
+    <Compile Include="flash.display\GraphicsGradientFill.cs" />
+    <Compile Include="flash.display\GraphicsPath.cs" />
+    <Compile Include="flash.display\GraphicsPathCommand.cs" />
+    <Compile Include="flash.display\GraphicsPathWinding.cs" />
+    <Compile Include="flash.display\GraphicsShaderFill.cs" />
+    <Compile Include="flash.display\GraphicsSolidFill.cs" />
+    <Compile Include="flash.display\GraphicsStroke.cs" />
+    <Compile Include="flash.display\GraphicsTrianglePath.cs" />
+    <Compile Include="flash.display\IBitmapDrawable.cs" />
+    <Compile Include="flash.display\IGraphicsData.cs" />
+    <Compile Include="flash.display\IGraphicsFill.cs" />
+    <Compile Include="flash.display\IGraphicsPath.cs" />
+    <Compile Include="flash.display\IGraphicsStroke.cs" />
+    <Compile Include="flash.display\InteractiveObject.cs" />
+    <Compile Include="flash.display\InterpolationMethod.cs" />
+    <Compile Include="flash.display\JointStyle.cs" />
+    <Compile Include="flash.display\LineScaleMode.cs" />
+    <Compile Include="flash.display\Loader.cs" />
+    <Compile Include="flash.display\LoaderInfo.cs" />
+    <Compile Include="flash.display\MorphShape.cs" />
+    <Compile Include="flash.display\MovieClip.cs" />
+    <Compile Include="flash.display\NativeMenu.cs" />
+    <Compile Include="flash.display\NativeMenuItem.cs" />
+    <Compile Include="flash.display\PixelSnapping.cs" />
+    <Compile Include="flash.display\Scene.cs" />
+    <Compile Include="flash.display\Shader.cs" />
+    <Compile Include="flash.display\ShaderData.cs" />
+    <Compile Include="flash.display\ShaderInput.cs" />
+    <Compile Include="flash.display\ShaderJob.cs" />
+    <Compile Include="flash.display\ShaderParameter.cs" />
+    <Compile Include="flash.display\ShaderParameterType.cs" />
+    <Compile Include="flash.display\ShaderPrecision.cs" />
+    <Compile Include="flash.display\Shape.cs" />
+    <Compile Include="flash.display\SimpleButton.cs" />
+    <Compile Include="flash.display\SpreadMethod.cs" />
+    <Compile Include="flash.display\Sprite.cs" />
+    <Compile Include="flash.display\Stage.cs" />
+    <Compile Include="flash.display\StageAlign.cs" />
+    <Compile Include="flash.display\StageDisplayState.cs" />
+    <Compile Include="flash.display\StageQuality.cs" />
+    <Compile Include="flash.display\StageScaleMode.cs" />
+    <Compile Include="flash.display\SWFVersion.cs" />
+    <Compile Include="flash.display\TriangleCulling.cs" />
+    <Compile Include="flash.errors\DRMManagerError.cs" />
+    <Compile Include="flash.errors\EOFError.cs" />
+    <Compile Include="flash.errors\IllegalOperationError.cs" />
+    <Compile Include="flash.errors\InvalidSWFError.cs" />
+    <Compile Include="flash.errors\IOError.cs" />
+    <Compile Include="flash.errors\MemoryError.cs" />
+    <Compile Include="flash.errors\ScriptTimeoutError.cs" />
+    <Compile Include="flash.errors\StackOverflowError.cs" />
+    <Compile Include="flash.events\AccelerometerEvent.cs" />
+    <Compile Include="flash.events\AccelerometerEventHandler.cs" />
+    <Compile Include="flash.events\ActivityEvent.cs" />
+    <Compile Include="flash.events\ActivityEventHandler.cs" />
+    <Compile Include="flash.events\AsyncErrorEvent.cs" />
+    <Compile Include="flash.events\AsyncErrorEventHandler.cs" />
+    <Compile Include="flash.events\ContextMenuEvent.cs" />
+    <Compile Include="flash.events\ContextMenuEventHandler.cs" />
+    <Compile Include="flash.events\DataEvent.cs" />
+    <Compile Include="flash.events\DataEventHandler.cs" />
+    <Compile Include="flash.events\DRMAuthenticateEvent.cs" />
+    <Compile Include="flash.events\DRMAuthenticateEventHandler.cs" />
+    <Compile Include="flash.events\DRMAuthenticationCompleteEvent.cs" />
+    <Compile Include="flash.events\DRMAuthenticationCompleteEventHandler.cs" />
+    <Compile Include="flash.events\DRMAuthenticationErrorEvent.cs" />
+    <Compile Include="flash.events\DRMAuthenticationErrorEventHandler.cs" />
+    <Compile Include="flash.events\DRMErrorEvent.cs" />
+    <Compile Include="flash.events\DRMErrorEventHandler.cs" />
+    <Compile Include="flash.events\DRMStatusEvent.cs" />
+    <Compile Include="flash.events\DRMStatusEventHandler.cs" />
+    <Compile Include="flash.events\ErrorEvent.cs" />
+    <Compile Include="flash.events\ErrorEventHandler.cs" />
+    <Compile Include="flash.events\Event.cs" />
+    <Compile Include="flash.events\EventDispatcher.cs" />
+    <Compile Include="flash.events\EventHandler.cs" />
+    <Compile Include="flash.events\EventPhase.cs" />
+    <Compile Include="flash.events\FocusEvent.cs" />
+    <Compile Include="flash.events\FocusEventHandler.cs" />
+    <Compile Include="flash.events\FullScreenEvent.cs" />
+    <Compile Include="flash.events\FullScreenEventHandler.cs" />
+    <Compile Include="flash.events\GeolocationEvent.cs" />
+    <Compile Include="flash.events\GeolocationEventHandler.cs" />
+    <Compile Include="flash.events\GestureEvent.cs" />
+    <Compile Include="flash.events\GestureEventHandler.cs" />
+    <Compile Include="flash.events\GesturePhase.cs" />
+    <Compile Include="flash.events\HTTPStatusEvent.cs" />
+    <Compile Include="flash.events\HTTPStatusEventHandler.cs" />
+    <Compile Include="flash.events\IEventDispatcher.cs" />
+    <Compile Include="flash.events\IMEEvent.cs" />
+    <Compile Include="flash.events\IMEEventHandler.cs" />
+    <Compile Include="flash.events\IOErrorEvent.cs" />
+    <Compile Include="flash.events\IOErrorEventHandler.cs" />
+    <Compile Include="flash.events\KeyboardEvent.cs" />
+    <Compile Include="flash.events\KeyboardEventHandler.cs" />
+    <Compile Include="flash.events\MouseEvent.cs" />
+    <Compile Include="flash.events\MouseEventHandler.cs" />
+    <Compile Include="flash.events\NetFilterEvent.cs" />
+    <Compile Include="flash.events\NetStatusEvent.cs" />
+    <Compile Include="flash.events\NetStatusEventHandler.cs" />
+    <Compile Include="flash.events\PressAndTapGestureEvent.cs" />
+    <Compile Include="flash.events\PressAndTapGestureEventHandler.cs" />
+    <Compile Include="flash.events\ProgressEvent.cs" />
+    <Compile Include="flash.events\ProgressEventHandler.cs" />
+    <Compile Include="flash.events\SampleDataEvent.cs" />
+    <Compile Include="flash.events\SampleDataEventHandler.cs" />
+    <Compile Include="flash.events\SecurityErrorEvent.cs" />
+    <Compile Include="flash.events\SecurityErrorEventHandler.cs" />
+    <Compile Include="flash.events\ShaderEvent.cs" />
+    <Compile Include="flash.events\ShaderEventHandler.cs" />
+    <Compile Include="flash.events\SoftKeyboardEvent.cs" />
+    <Compile Include="flash.events\SoftKeyboardEventHandler.cs" />
+    <Compile Include="flash.events\SoftKeyboardTrigger.cs" />
+    <Compile Include="flash.events\StageVideoAvailabilityEvent.cs" />
+    <Compile Include="flash.events\StageVideoAvailabilityEventHandler.cs" />
+    <Compile Include="flash.events\StageVideoEvent.cs" />
+    <Compile Include="flash.events\StageVideoEventHandler.cs" />
+    <Compile Include="flash.events\StatusEvent.cs" />
+    <Compile Include="flash.events\StatusEventHandler.cs" />
+    <Compile Include="flash.events\SyncEvent.cs" />
+    <Compile Include="flash.events\SyncEventHandler.cs" />
+    <Compile Include="flash.events\TextEvent.cs" />
+    <Compile Include="flash.events\TextEventHandler.cs" />
+    <Compile Include="flash.events\TimerEvent.cs" />
+    <Compile Include="flash.events\TimerEventHandler.cs" />
+    <Compile Include="flash.events\TouchEvent.cs" />
+    <Compile Include="flash.events\TouchEventHandler.cs" />
+    <Compile Include="flash.events\TransformGestureEvent.cs" />
+    <Compile Include="flash.events\TransformGestureEventHandler.cs" />
+    <Compile Include="flash.events\UncaughtErrorEvent.cs" />
+    <Compile Include="flash.events\UncaughtErrorEventHandler.cs" />
+    <Compile Include="flash.events\UncaughtErrorEvents.cs" />
+    <Compile Include="flash.events\VideoEvent.cs" />
+    <Compile Include="flash.external\ExternalInterface.cs" />
+    <Compile Include="flash.filters\BevelFilter.cs" />
+    <Compile Include="flash.filters\BitmapFilter.cs" />
+    <Compile Include="flash.filters\BitmapFilterQuality.cs" />
+    <Compile Include="flash.filters\BitmapFilterType.cs" />
+    <Compile Include="flash.filters\BlurFilter.cs" />
+    <Compile Include="flash.filters\ColorMatrixFilter.cs" />
+    <Compile Include="flash.filters\ConvolutionFilter.cs" />
+    <Compile Include="flash.filters\DisplacementMapFilter.cs" />
+    <Compile Include="flash.filters\DisplacementMapFilterMode.cs" />
+    <Compile Include="flash.filters\DropShadowFilter.cs" />
+    <Compile Include="flash.filters\GlowFilter.cs" />
+    <Compile Include="flash.filters\GradientBevelFilter.cs" />
+    <Compile Include="flash.filters\GradientGlowFilter.cs" />
+    <Compile Include="flash.filters\ShaderFilter.cs" />
+    <Compile Include="flash.geom\ColorTransform.cs" />
+    <Compile Include="flash.geom\Matrix.cs" />
+    <Compile Include="flash.geom\Matrix3D.cs" />
+    <Compile Include="flash.geom\Orientation3D.cs" />
+    <Compile Include="flash.geom\PerspectiveProjection.cs" />
+    <Compile Include="flash.geom\Point.cs" />
+    <Compile Include="flash.geom\Rectangle.cs" />
+    <Compile Include="flash.geom\Transform.cs" />
+    <Compile Include="flash.geom\Utils3D.cs" />
+    <Compile Include="flash.geom\Vector3D.cs" />
+    <Compile Include="flash.globalization\Collator.cs" />
+    <Compile Include="flash.globalization\CollatorMode.cs" />
+    <Compile Include="flash.globalization\CurrencyFormatter.cs" />
+    <Compile Include="flash.globalization\CurrencyParseResult.cs" />
+    <Compile Include="flash.globalization\DateTimeFormatter.cs" />
+    <Compile Include="flash.globalization\DateTimeNameContext.cs" />
+    <Compile Include="flash.globalization\DateTimeNameStyle.cs" />
+    <Compile Include="flash.globalization\DateTimeStyle.cs" />
+    <Compile Include="flash.globalization\LastOperationStatus.cs" />
+    <Compile Include="flash.globalization\LocaleID.cs" />
+    <Compile Include="flash.globalization\NationalDigitsType.cs" />
+    <Compile Include="flash.globalization\NumberFormatter.cs" />
+    <Compile Include="flash.globalization\NumberParseResult.cs" />
+    <Compile Include="flash.globalization\StringTools.cs" />
+    <Compile Include="flash.media\Camera.cs" />
+    <Compile Include="flash.media\Global.cs" />
+    <Compile Include="flash.media\ID3Info.cs" />
+    <Compile Include="flash.media\Microphone.cs" />
+    <Compile Include="flash.media\Sound.cs" />
+    <Compile Include="flash.media\SoundChannel.cs" />
+    <Compile Include="flash.media\SoundCodec.cs" />
+    <Compile Include="flash.media\SoundLoaderContext.cs" />
+    <Compile Include="flash.media\SoundMixer.cs" />
+    <Compile Include="flash.media\SoundTransform.cs" />
+    <Compile Include="flash.media\StageVideo.cs" />
+    <Compile Include="flash.media\StageVideoAvailability.cs" />
+    <Compile Include="flash.media\Video.cs" />
+    <Compile Include="flash.media\VideoStatus.cs" />
+    <Compile Include="flash.net.drm\AuthenticationMethod.cs" />
+    <Compile Include="flash.net.drm\DRMContentData.cs" />
+    <Compile Include="flash.net.drm\DRMManager.cs" />
+    <Compile Include="flash.net.drm\DRMPlaybackTimeWindow.cs" />
+    <Compile Include="flash.net.drm\DRMVoucher.cs" />
+    <Compile Include="flash.net.drm\LoadVoucherSetting.cs" />
+    <Compile Include="flash.net.drm\VoucherAccessInfo.cs" />
+    <Compile Include="flash.net\FileFilter.cs" />
+    <Compile Include="flash.net\FileReference.cs" />
+    <Compile Include="flash.net\FileReferenceList.cs" />
+    <Compile Include="flash.net\Global.cs" />
+    <Compile Include="flash.net\GroupSpecifier.cs" />
+    <Compile Include="flash.net\IDynamicPropertyOutput.cs" />
+    <Compile Include="flash.net\IDynamicPropertyWriter.cs" />
+    <Compile Include="flash.net\LocalConnection.cs" />
+    <Compile Include="flash.net\NetConnection.cs" />
+    <Compile Include="flash.net\NetGroup.cs" />
+    <Compile Include="flash.net\NetGroupInfo.cs" />
+    <Compile Include="flash.net\NetGroupReceiveMode.cs" />
+    <Compile Include="flash.net\NetGroupReplicationStrategy.cs" />
+    <Compile Include="flash.net\NetGroupSendMode.cs" />
+    <Compile Include="flash.net\NetGroupSendResult.cs" />
+    <Compile Include="flash.net\NetStream.cs" />
+    <Compile Include="flash.net\NetStreamAppendBytesAction.cs" />
+    <Compile Include="flash.net\NetStreamInfo.cs" />
+    <Compile Include="flash.net\NetStreamMulticastInfo.cs" />
+    <Compile Include="flash.net\NetStreamPlayOptions.cs" />
+    <Compile Include="flash.net\NetStreamPlayTransitions.cs" />
+    <Compile Include="flash.net\ObjectEncoding.cs" />
+    <Compile Include="flash.net\Responder.cs" />
+    <Compile Include="flash.net\SharedObject.cs" />
+    <Compile Include="flash.net\SharedObjectFlushStatus.cs" />
+    <Compile Include="flash.net\Socket.cs" />
+    <Compile Include="flash.net\URLLoader.cs" />
+    <Compile Include="flash.net\URLLoaderDataFormat.cs" />
+    <Compile Include="flash.net\URLRequest.cs" />
+    <Compile Include="flash.net\URLRequestHeader.cs" />
+    <Compile Include="flash.net\URLRequestMethod.cs" />
+    <Compile Include="flash.net\URLStream.cs" />
+    <Compile Include="flash.net\URLVariables.cs" />
+    <Compile Include="flash.net\XMLSocket.cs" />
+    <Compile Include="flash.printing\PrintJob.cs" />
+    <Compile Include="flash.printing\PrintJobOptions.cs" />
+    <Compile Include="flash.printing\PrintJobOrientation.cs" />
+    <Compile Include="flash.profiler\Global.cs" />
+    <Compile Include="flash.sampler\DeleteObjectSample.cs" />
+    <Compile Include="flash.sampler\Global.cs" />
+    <Compile Include="flash.sampler\NewObjectSample.cs" />
+    <Compile Include="flash.sampler\Sample.cs" />
+    <Compile Include="flash.sampler\StackFrame.cs" />
+    <Compile Include="flash.sensors\Accelerometer.cs" />
+    <Compile Include="flash.sensors\Geolocation.cs" />
+    <Compile Include="flash.system\ApplicationDomain.cs" />
+    <Compile Include="flash.system\Capabilities.cs" />
+    <Compile Include="flash.system\Global.cs" />
+    <Compile Include="flash.system\IME.cs" />
+    <Compile Include="flash.system\IMEConversionMode.cs" />
+    <Compile Include="flash.system\JPEGLoaderContext.cs" />
+    <Compile Include="flash.system\LoaderContext.cs" />
+    <Compile Include="flash.system\Security.cs" />
+    <Compile Include="flash.system\SecurityDomain.cs" />
+    <Compile Include="flash.system\SecurityPanel.cs" />
+    <Compile Include="flash.system\System.cs" />
+    <Compile Include="flash.system\SystemUpdater.cs" />
+    <Compile Include="flash.system\SystemUpdaterType.cs" />
+    <Compile Include="flash.system\TouchscreenType.cs" />
+    <Compile Include="flash.text.engine\BreakOpportunity.cs" />
+    <Compile Include="flash.text.engine\CFFHinting.cs" />
+    <Compile Include="flash.text.engine\ContentElement.cs" />
+    <Compile Include="flash.text.engine\DigitCase.cs" />
+    <Compile Include="flash.text.engine\DigitWidth.cs" />
+    <Compile Include="flash.text.engine\EastAsianJustifier.cs" />
+    <Compile Include="flash.text.engine\ElementFormat.cs" />
+    <Compile Include="flash.text.engine\FontDescription.cs" />
+    <Compile Include="flash.text.engine\FontLookup.cs" />
+    <Compile Include="flash.text.engine\FontMetrics.cs" />
+    <Compile Include="flash.text.engine\FontPosture.cs" />
+    <Compile Include="flash.text.engine\FontWeight.cs" />
+    <Compile Include="flash.text.engine\GraphicElement.cs" />
+    <Compile Include="flash.text.engine\GroupElement.cs" />
+    <Compile Include="flash.text.engine\JustificationStyle.cs" />
+    <Compile Include="flash.text.engine\Kerning.cs" />
+    <Compile Include="flash.text.engine\LigatureLevel.cs" />
+    <Compile Include="flash.text.engine\LineJustification.cs" />
+    <Compile Include="flash.text.engine\RenderingMode.cs" />
+    <Compile Include="flash.text.engine\SpaceJustifier.cs" />
+    <Compile Include="flash.text.engine\TabAlignment.cs" />
+    <Compile Include="flash.text.engine\TabStop.cs" />
+    <Compile Include="flash.text.engine\TextBaseline.cs" />
+    <Compile Include="flash.text.engine\TextBlock.cs" />
+    <Compile Include="flash.text.engine\TextElement.cs" />
+    <Compile Include="flash.text.engine\TextJustifier.cs" />
+    <Compile Include="flash.text.engine\TextLine.cs" />
+    <Compile Include="flash.text.engine\TextLineCreationResult.cs" />
+    <Compile Include="flash.text.engine\TextLineMirrorRegion.cs" />
+    <Compile Include="flash.text.engine\TextLineValidity.cs" />
+    <Compile Include="flash.text.engine\TextRotation.cs" />
+    <Compile Include="flash.text.engine\TypographicCase.cs" />
+    <Compile Include="flash.text.ime\CompositionAttributeRange.cs" />
+    <Compile Include="flash.text.ime\IIMEClient.cs" />
+    <Compile Include="flash.text\AntiAliasType.cs" />
+    <Compile Include="flash.text\CSMSettings.cs" />
+    <Compile Include="flash.text\Font.cs" />
+    <Compile Include="flash.text\FontStyle.cs" />
+    <Compile Include="flash.text\FontType.cs" />
+    <Compile Include="flash.text\GridFitType.cs" />
+    <Compile Include="flash.text\StaticText.cs" />
+    <Compile Include="flash.text\StyleSheet.cs" />
+    <Compile Include="flash.text\TextColorType.cs" />
+    <Compile Include="flash.text\TextDisplayMode.cs" />
+    <Compile Include="flash.text\TextExtent.cs" />
+    <Compile Include="flash.text\TextField.cs" />
+    <Compile Include="flash.text\TextFieldAutoSize.cs" />
+    <Compile Include="flash.text\TextFieldType.cs" />
+    <Compile Include="flash.text\TextFormat.cs" />
+    <Compile Include="flash.text\TextFormatAlign.cs" />
+    <Compile Include="flash.text\TextFormatDisplay.cs" />
+    <Compile Include="flash.text\TextInteractionMode.cs" />
+    <Compile Include="flash.text\TextLineMetrics.cs" />
+    <Compile Include="flash.text\TextRenderer.cs" />
+    <Compile Include="flash.text\TextRun.cs" />
+    <Compile Include="flash.text\TextSnapshot.cs" />
+    <Compile Include="flash.trace\Trace.cs" />
+    <Compile Include="flash.ui\ContextMenu.cs" />
+    <Compile Include="flash.ui\ContextMenuBuiltInItems.cs" />
+    <Compile Include="flash.ui\ContextMenuClipboardItems.cs" />
+    <Compile Include="flash.ui\ContextMenuItem.cs" />
+    <Compile Include="flash.ui\Keyboard.cs" />
+    <Compile Include="flash.ui\KeyboardType.cs" />
+    <Compile Include="flash.ui\KeyLocation.cs" />
+    <Compile Include="flash.ui\Mouse.cs" />
+    <Compile Include="flash.ui\MouseCursor.cs" />
+    <Compile Include="flash.ui\MouseCursorData.cs" />
+    <Compile Include="flash.ui\Multitouch.cs" />
+    <Compile Include="flash.ui\MultitouchInputMode.cs" />
+    <Compile Include="flash.utils\ByteArray.cs" />
+    <Compile Include="flash.utils\Dictionary.cs" />
+    <Compile Include="flash.utils\Endian.cs" />
+    <Compile Include="flash.utils\Global.cs" />
+    <Compile Include="flash.utils\IDataInput.cs" />
+    <Compile Include="flash.utils\IDataOutput.cs" />
+    <Compile Include="flash.utils\IExternalizable.cs" />
+    <Compile Include="flash.utils\Proxy.cs" />
+    <Compile Include="flash.utils\Timer.cs" />
+    <Compile Include="flash.xml\XMLDocument.cs" />
+    <Compile Include="flash.xml\XMLNode.cs" />
+    <Compile Include="flash.xml\XMLNodeType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="__AS3__.vec\Vector.cs" />
+    <Compile Include="__AS3__.vec\Vector_double.cs" />
+    <Compile Include="__AS3__.vec\Vector_int.cs" />
+    <Compile Include="__AS3__.vec\Vector_object.cs" />
+    <Compile Include="__AS3__.vec\Vector_uint.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\mono\mcs\class\corlib\mscorlib.csproj">
+      <Project>{C9A6CF06-1E1F-4196-8339-B060F0B5714C}</Project>
+      <Name>mscorlib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="flash.abc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

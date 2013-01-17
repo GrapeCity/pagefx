@@ -33,6 +33,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Runtime.CompilerServices;
+
 namespace System
 {
 #if NET_2_0
@@ -104,16 +106,9 @@ namespace System
 		}
 #endif
 
-        public static double Ceiling(double a)
-        {
-            return Avm.Math.ceil(a);
-            //double result = Floor(a);
-            //if (result != a) {
-            //    result++;
-            //}
-            //return result;
-        }
-
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Ceiling(double a); // Avm.Math.ceil(a);
+        
         // The following methods are defined in ECMA specs but they are
         // not implemented in MS.NET. However, they are in MS.NET 1.1
 
@@ -136,11 +131,9 @@ namespace System
         }
 #endif
 
-        public static double Floor(double value)
-        {
-            return Avm.Math.floor(value);
-        }
-
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Floor(double value); // Avm.Math.floor(value)
+        
         public static double IEEERemainder(double x, double y)
         {
             double r;
@@ -475,21 +468,15 @@ namespace System
         }
 
         // internal calls
-        public static double Sin(double x)
-        {
-            return Avm.Math.sin(x);
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Sin(double x); // Avm.Math.sin(x)
 
-        public static double Cos(double x)
-        {
-            return Avm.Math.cos(x);
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Cos(double x); // Avm.Math.cos(x)
 
-        public static double Tan(double x)
-        {
-            return Avm.Math.tan(x);
-        }
-
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Tan(double x); // Avm.Math.tan(x)
+        
         public static double Sinh(double x)
         {
             return (Pow(E, x) - Pow(E, -x)) / 2;
@@ -511,50 +498,41 @@ namespace System
             return (a - b) / (a + b);
         }
 
-        public static double Acos(double x)
-        {
-            return Avm.Math.acos(x);
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Acos(double x); // Avm.Math.acos(x)
 
-        public static double Asin(double x)
-        {
-            return Avm.Math.asin(x);
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Asin(double x); // Avm.Math.asin(x)
 
-        public static double Atan(double x)
-        {
-            return Avm.Math.atan(x);
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Atan(double x); // Avm.Math.atan(x)
 
-        public static double Atan2(double y, double x)
-        {
-            return Avm.Math.atan2(y, x);
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Atan2(double y, double x); // Avm.Math.atan2(y, x)
 
-        public static double Exp(double x)
-        {
-            return Avm.Math.exp(x);
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Exp(double x); // Avm.Math.exp(x)
 
-        public static double Log(double x)
-        {
-            return Avm.Math.log(x);
-        }
-
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Log(double x); // Avm.Math.log(x)
+        
         public static double Log10(double x)
         {
             return Log(x, 10.0);
         }
 
-        public static double Pow(double x, double y)
-        {
-            if (Double.IsNaN(x)) return x;
-            return Avm.Math.pow(x, y);
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Pow(double x, double y);
+//        {
+//            if (Double.IsNaN(x)) return x;
+//            return Avm.Math.pow(x, y);
+//        }
 
-        public static double Sqrt(double x)
-        {
-            return Avm.Math.sqrt(x);
-        }
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Sqrt(double x); // Avm.Math.sqrt(x)
+
+		// Avm.Math.random()
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern double random();
     }
 }
