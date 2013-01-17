@@ -5,7 +5,7 @@ using System.Linq;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common.CompilerServices
 {
     /// <summary>
     /// Contains global PageFX settings

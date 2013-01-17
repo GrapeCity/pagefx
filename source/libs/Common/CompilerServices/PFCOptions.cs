@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Linq;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common.CompilerServices
 {
     /// <summary>
     /// Contains pfc options

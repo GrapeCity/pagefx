@@ -34,7 +34,7 @@ c)       policyFile - path to policy file
 */
 #endregion
 
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common.CompilerServices
 {
     #region class PfxCompilerOptions
     public class PfxCompilerOptions

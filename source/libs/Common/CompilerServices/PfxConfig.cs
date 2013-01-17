@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common.CompilerServices
 {
     public class PfxConfig
     {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
@@ -13,6 +14,7 @@ using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.Tools;
 using DataDynamics.PageFX.TestRunner.Tools;
 using NUnit.Framework;
+using GlobalSettings = DataDynamics.PageFX.Common.CompilerServices.GlobalSettings;
 
 namespace DataDynamics.PageFX.TestRunner.Framework
 {

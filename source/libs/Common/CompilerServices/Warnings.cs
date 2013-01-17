@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common.CompilerServices
 {
     public static class Warnings
     {

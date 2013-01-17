@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.IO;
 using Ionic.Zip;
 

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using DataDynamics.PageFX.Common.CompilerServices;
 
 namespace DataDynamics.PageFX.Common.Tools
 {

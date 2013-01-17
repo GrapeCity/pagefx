@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using DataDynamics.PageFX.FlashLand.Swf;
 using NUnit.Framework;
+using GlobalSettings = DataDynamics.PageFX.Common.CompilerServices.GlobalSettings;
 
 namespace DataDynamics.PageFX.TestRunner.Framework
 {

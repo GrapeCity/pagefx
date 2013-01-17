@@ -1,11 +1,13 @@
 using System;
 using System.IO;
 using System.Linq;
+using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand;
 using DataDynamics.PageFX.TestRunner.Framework;
 using NUnit.Framework;
+using GlobalSettings = DataDynamics.PageFX.Common.CompilerServices.GlobalSettings;
 
 namespace DataDynamics.PageFX.TestRunner.UnitTests
 {

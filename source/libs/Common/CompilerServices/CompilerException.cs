@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX
+namespace DataDynamics.PageFX.Common.CompilerServices
 {
     public class CompilerException : ApplicationException
     {

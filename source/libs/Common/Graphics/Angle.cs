@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics
+namespace DataDynamics.PageFX.Common.Graphics
 {
     public class Angle
     {

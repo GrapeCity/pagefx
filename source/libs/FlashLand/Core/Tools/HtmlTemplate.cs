@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
 

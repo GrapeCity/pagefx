@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
+using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;

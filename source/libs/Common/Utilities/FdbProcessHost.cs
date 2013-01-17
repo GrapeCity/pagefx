@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Security.Permissions;
+using DataDynamics.PageFX.Common.CompilerServices;
 
 namespace DataDynamics.PageFX.Common.Utilities
 {

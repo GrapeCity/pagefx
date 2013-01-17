@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.IL;
 

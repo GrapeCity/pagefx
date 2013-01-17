@@ -1,4 +1,5 @@
 using System.IO;
+using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Utilities;
 
 namespace DataDynamics.PageFX.TestRunner.Tools

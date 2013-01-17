@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.UI;
 
 namespace DataDynamics.PageFX.UI

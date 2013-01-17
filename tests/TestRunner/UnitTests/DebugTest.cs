@@ -2,6 +2,7 @@
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 using NUnit.Framework;
+using GlobalSettings = DataDynamics.PageFX.Common.CompilerServices.GlobalSettings;
 
 namespace DataDynamics.PageFX.TestRunner.UnitTests
 {
