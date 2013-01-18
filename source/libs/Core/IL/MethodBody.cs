@@ -73,14 +73,13 @@ namespace DataDynamics.PageFX.Core.IL
                         int localSig = reader.ReadInt32();
 
                         flags = (MethodBodyFlags)((msb & 0x0F) << 8 | lsb);
-                        var code = reader.ReadBytes(codeSize);
+
+						_code = ReadCode(method, context, reader, codeSize);
 
                         if ((flags & MethodBodyFlags.MoreSects) != 0)
                         {
                             sehBlocks = ReadSehBlocks(reader);
                         }
-
-                        _code = ReadCode(method, context, code);
 
 	                    bool hasGenericVars;
                         _vars = context.ResolveLocalVariables(method, localSig, out hasGenericVars);
@@ -94,8 +93,7 @@ namespace DataDynamics.PageFX.Core.IL
                 case MethodBodyFlags.TinyFormat1:
                     {
                         int codeSize = (lsb >> 2);
-                        var code = reader.ReadBytes(codeSize);
-                        _code = ReadCode(method, context, code);
+                        _code = ReadCode(method, context, reader, codeSize);
                     }
                     break;
 
@@ -210,26 +208,35 @@ namespace DataDynamics.PageFX.Core.IL
 
 		private ILStream ReadCode(IMethod method, IMethodContext context, byte[] code)
         {
-            var list = new ILStream();
-            var reader = new BufferedBinaryReader(code);
-            while (reader.Position < reader.Length)
-            {
-                var instr = ReadInstruction(method, context, reader, (int)reader.Position);
-
-                instr.Index = list.Count;
-                list.Add(instr);
-
-                if (!HasGenericInstructions && instr.IsGenericContext)
-                    _genericFlags |= GenericFlags.HasGenericInstructions;
-            }
-            return list;
+			return ReadCode(method, context, new BufferedBinaryReader(code), code.Length);
         }
 
-        private static Instruction ReadInstruction(IMethod method, IMethodContext context, BufferedBinaryReader reader, int offset)
+		private ILStream ReadCode(IMethod method, IMethodContext context, BufferedBinaryReader reader, int codeSize)
+		{
+			var list = new ILStream();
+			var startPos = reader.Position;
+			int offset = 0;
+			while (offset < codeSize)
+			{
+				var pos = reader.Position;
+				var instr = ReadInstruction(method, context, reader, startPos);
+				var size = reader.Position - pos;
+				offset += (int)size;
+
+				instr.Index = list.Count;
+				list.Add(instr);
+
+				if (!HasGenericInstructions && instr.IsGenericContext)
+					_genericFlags |= GenericFlags.HasGenericInstructions;
+			}
+			return list;
+		}
+
+        private static Instruction ReadInstruction(IMethod method, IMethodContext context, BufferedBinaryReader reader, long startPosition)
         {
 	        var instr = new Instruction
 		        {
-			        Offset = offset,
+					Offset = (int)(reader.Position - startPosition),
 			        OpCode = OpCodes.Nop
 		        };
 
@@ -275,15 +282,15 @@ namespace DataDynamics.PageFX.Core.IL
 
                 case OperandType.InlineBrTarget:
                     {
-                        offset = reader.ReadInt32();
-                        instr.Value = (int)(offset + reader.Position);
+                        int offset = reader.ReadInt32();
+                        instr.Value = (int)(offset + reader.Position - startPosition);
                     }
                     break;
 
                 case OperandType.ShortInlineBrTarget:
                     {
-                        offset = reader.ReadSByte();
-                        instr.Value = (int)(offset + reader.Position);
+                        int offset = reader.ReadSByte();
+                        instr.Value = (int)(offset + reader.Position - startPosition);
                     }
                     break;
 
@@ -293,9 +300,11 @@ namespace DataDynamics.PageFX.Core.IL
                         var switchBranches = new int[casesCount];
                         for (int k = 0; k < casesCount; k++)
                             switchBranches[k] = reader.ReadInt32();
-                        int pos = (int)reader.Position;
+
+                        int shift = (int)(reader.Position - startPosition);
                         for (int k = 0; k < casesCount; k++)
-                            switchBranches[k] += pos;
+                            switchBranches[k] += shift;
+
                         instr.Value = switchBranches;
                     }
                     break;
