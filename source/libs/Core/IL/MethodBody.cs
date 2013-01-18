@@ -4,7 +4,6 @@
 /// SEH Sections
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -31,15 +30,17 @@ namespace DataDynamics.PageFX.Core.IL
 		private readonly IReadOnlyList<TryCatchBlock> _protectedBlocks;
 		private readonly ILStream _code;
 
-		private readonly bool _hasGenericVars;
-		private bool _hasGenericInstructions;
-		private bool _hasGenericExceptions;
+		[Flags]
+		private enum GenericFlags : byte
+		{
+			HasGenericVars = 1,
+			HasGenericInstructions = 2,
+			HasGenericExceptions = 4
+		}
 
-		private readonly List<int> _tokens = new List<int>();
-		private readonly Hashtable _tokenCache = new Hashtable();
+		private GenericFlags _genericFlags;
 
-        #region ctor
-        public MethodBody(IMethod method, IMethodContext context, BufferedBinaryReader reader)
+		public MethodBody(IMethod method, IMethodContext context, BufferedBinaryReader reader)
         {
 	        if (method == null)
 				throw new ArgumentNullException("method");
@@ -65,9 +66,12 @@ namespace DataDynamics.PageFX.Core.IL
                         byte msb = reader.ReadUInt8();
                         int dwordMultipleSize = (msb & 0xF0) >> 4;
                         Debug.Assert(dwordMultipleSize == 3); // the fat header is 3 dwords
+
                         _maxStackSize = reader.ReadUInt16();
+
                         int codeSize = reader.ReadInt32();
                         int localSig = reader.ReadInt32();
+
                         flags = (MethodBodyFlags)((msb & 0x0F) << 8 | lsb);
                         var code = reader.ReadBytes(codeSize);
 
@@ -77,7 +81,12 @@ namespace DataDynamics.PageFX.Core.IL
                         }
 
                         _code = ReadCode(method, context, code);
-                        _vars = context.ResolveLocalVariables(method, localSig, out _hasGenericVars);
+
+	                    bool hasGenericVars;
+                        _vars = context.ResolveLocalVariables(method, localSig, out hasGenericVars);
+
+						if (hasGenericVars)
+							_genericFlags |= GenericFlags.HasGenericVars;
                     }
                     break;
 
@@ -103,9 +112,8 @@ namespace DataDynamics.PageFX.Core.IL
 
             context.LinkDebugInfo(this);
         }
-        #endregion
 
-        #region Public Properties
+		#region Public Properties
         public IMethod Method
         {
             get { return _method; }
@@ -158,41 +166,24 @@ namespace DataDynamics.PageFX.Core.IL
 			return _code.Where<Instruction>(x => x.FlowControl == FlowControl.Call).Select(x => x.Method).ToArray();
         }
 
-        /// <summary>
-        /// Gets all metadata tokens referenced by the method.
-        /// </summary>
-        /// <returns></returns>
-        public int[] GetReferencedMetadataTokens()
+		public bool HasGenerics
         {
-            return _tokens.ToArray();
-        }
-        
-        void AddToken(int token)
-        {
-            if (_tokenCache.ContainsKey(token))
-                return;
-            _tokens.Add(token);
-            _tokenCache[token] = this;
-        }
-
-        public bool HasGenerics
-        {
-            get { return _hasGenericInstructions || _hasGenericVars || _hasGenericExceptions; }
+            get { return _genericFlags != 0; }
         }
 
     	public bool HasGenericVars
     	{
-    		get { return _hasGenericVars; }
+    		get { return (_genericFlags & GenericFlags.HasGenericVars) != 0; }
     	}
 
     	public bool HasGenericInstructions
     	{
-    		get { return _hasGenericInstructions; }
+    		get { return (_genericFlags & GenericFlags.HasGenericInstructions) != 0; }
     	}
 
     	public bool HasGenericExceptions
     	{
-    		get { return _hasGenericExceptions; }
+    		get { return (_genericFlags & GenericFlags.HasGenericExceptions) != 0; }
     	}
 
         //Number of compilations
@@ -216,28 +207,29 @@ namespace DataDynamics.PageFX.Core.IL
         }
 
 		#region Private Members
-        #region ReadCode
-        private ILStream ReadCode(IMethod method, IMethodContext context, byte[] code)
+
+		private ILStream ReadCode(IMethod method, IMethodContext context, byte[] code)
         {
             var list = new ILStream();
             var reader = new BufferedBinaryReader(code);
             while (reader.Position < reader.Length)
             {
-                var instr = ReadInstruction(method, context, reader);
+                var instr = ReadInstruction(method, context, reader, (int)reader.Position);
+
                 instr.Index = list.Count;
                 list.Add(instr);
 
-                if (!_hasGenericInstructions && instr.IsGenericContext)
-                    _hasGenericInstructions = true;
+                if (!HasGenericInstructions && instr.IsGenericContext)
+                    _genericFlags |= GenericFlags.HasGenericInstructions;
             }
             return list;
         }
 
-        private Instruction ReadInstruction(IMethod method, IMethodContext context, BufferedBinaryReader reader)
+        private static Instruction ReadInstruction(IMethod method, IMethodContext context, BufferedBinaryReader reader, int offset)
         {
 	        var instr = new Instruction
 		        {
-			        Offset = ((int)reader.Position),
+			        Offset = offset,
 			        OpCode = OpCodes.Nop
 		        };
 
@@ -283,14 +275,14 @@ namespace DataDynamics.PageFX.Core.IL
 
                 case OperandType.InlineBrTarget:
                     {
-                        int offset = reader.ReadInt32();
+                        offset = reader.ReadInt32();
                         instr.Value = (int)(offset + reader.Position);
                     }
                     break;
 
                 case OperandType.ShortInlineBrTarget:
                     {
-                        int offset = reader.ReadSByte();
+                        offset = reader.ReadSByte();
                         instr.Value = (int)(offset + reader.Position);
                     }
                     break;
@@ -334,9 +326,10 @@ namespace DataDynamics.PageFX.Core.IL
                         
                         object val = context.ResolveMetadataToken(method, token);
                         if (val is ITypeMember)
-                            AddToken(token);
+                        {
+                        }
 
-                        if (val == null)
+	                    if (val == null)
                         {
 #if DEBUG
                             if (DebugHooks.BreakInvalidMetadataToken)
@@ -362,11 +355,10 @@ namespace DataDynamics.PageFX.Core.IL
 
             return instr;
         }
-        #endregion
 
-        #region ReadSehBlocks
+		#region ReadSehBlocks
         [Flags]
-        enum SectionFlags
+        private enum SectionFlags
         {
             EHTable = 0x01,
             OptILTable = 0x02,
@@ -374,7 +366,7 @@ namespace DataDynamics.PageFX.Core.IL
             MoreSects = 0x80,
         }
 
-        static List<SEHBlock> ReadSehBlocks(BufferedBinaryReader reader)
+        private static List<SEHBlock> ReadSehBlocks(BufferedBinaryReader reader)
         {
             const int FatSize = 24;
             const int TinySize = 12;
@@ -448,10 +440,11 @@ namespace DataDynamics.PageFX.Core.IL
                 case SEHFlags.Catch:
                     {
                         int token = block.Value;
-                        AddToken(token);
-                        var type = context.ResolveType(method, token);
-                        if (!_hasGenericExceptions && GenericType.IsGenericContext(type))
-                            _hasGenericExceptions = true;
+
+	                    var type = context.ResolveType(method, token);
+                        if (!HasGenericExceptions && GenericType.IsGenericContext(type))
+                            _genericFlags |= GenericFlags.HasGenericExceptions;
+
                         var h = new HandlerBlock(BlockType.Catch)
                                     {
                                         ExceptionType = type
@@ -503,7 +496,7 @@ namespace DataDynamics.PageFX.Core.IL
             block.SetupInstructions(code);
         }
 
-        static int GetIndex(ILStream code, int offset, int length)
+        private static int GetIndex(ILStream code, int offset, int length)
         {
 			int index = code.GetOffsetIndex(offset + length);
 			if (index == code.Count - 1)
@@ -515,7 +508,7 @@ namespace DataDynamics.PageFX.Core.IL
         	return index >= 0 ? index : code.Count - 1;
         }
 
-        static TryCatchBlock CreateTryBlock(ILStream code, int tryOffset, int tryLength)
+        private static TryCatchBlock CreateTryBlock(ILStream code, int tryOffset, int tryLength)
         {
             int entryIndex = code.GetOffsetIndex(tryOffset);
             int exitIndex = GetIndex(code, tryOffset, tryLength);
@@ -567,14 +560,14 @@ namespace DataDynamics.PageFX.Core.IL
             return list.AsReadOnlyList();
         }
 
-        static TryCatchBlock EnshureTryBlock(IList<SEHBlock> blocks, int i, TryCatchBlock tryBlock, ILStream code, SEHBlock block, ICollection<TryCatchBlock> list)
+        private static TryCatchBlock EnshureTryBlock(IList<SEHBlock> blocks, int i, TryCatchBlock tryBlock, ILStream code, SEHBlock block, ICollection<TryCatchBlock> list)
         {
             if (tryBlock == null)
             {
                 tryBlock = CreateTryBlock(code, block.TryOffset, block.TryLength);
                 list.Add(tryBlock);
             }
-            else /*if (block.Type == SEHFlags.Catch)*/
+            else
             {
                 var prev = blocks[i - 1];
                 if (prev.TryOffset != block.TryOffset
@@ -584,71 +577,58 @@ namespace DataDynamics.PageFX.Core.IL
                     list.Add(tryBlock);
                 }
             }
-            //else if (block.Type == SEHFlags.Finally || block.Type == SEHFlags.Fault)
-            //{
-            //    SEHBlock prev = blocks[i - 1];
-            //    if (block.HandlerOffset - prev.HandlerEnd > 2)
-            //    {
-            //        tryBlock = CreateTryBlock(code, block.TryOffset, block.TryLength);
-            //        list.Add(tryBlock);
-            //    }
-            //}
             return tryBlock;
         }
         #endregion
         #endregion
 
-        #region Object Override Members
-        public override string ToString()
+		public override string ToString()
         {
             return _method.DeclaringType.FullName + "." + _method.Name;
         }
-        #endregion
-    }
 
-    #region enum MethodBodyFlags
-    /// <summary>
-    /// IL method body flags
-    /// </summary>
-    [Flags]
-    internal enum MethodBodyFlags
-    {
-        None = 0,
+		/// <summary>
+		/// IL method body flags
+		/// </summary>
+		[Flags]
+		private enum MethodBodyFlags
+		{
+			None = 0,
 
-        /// <summary>
-        /// Small Code 
-        /// </summary>
-        SmallFormat = 0x00,
+			/// <summary>
+			/// Small Code 
+			/// </summary>
+			SmallFormat = 0x00,
 
-        /// <summary>
-        /// Tiny code format (use this code if the code size is even)
-        /// </summary>
-        TinyFormat = 0x02,
+			/// <summary>
+			/// Tiny code format (use this code if the code size is even)
+			/// </summary>
+			TinyFormat = 0x02,
 
-        /// <summary>
-        /// Fat code format
-        /// </summary>
-        FatFormat = 0x03,
+			/// <summary>
+			/// Fat code format
+			/// </summary>
+			FatFormat = 0x03,
 
-        /// <summary>
-        /// Use this code if the code size is odd 
-        /// </summary>
-        TinyFormat1 = 0x06,
+			/// <summary>
+			/// Use this code if the code size is odd 
+			/// </summary>
+			TinyFormat1 = 0x06,
 
-        /// <summary>
-        /// Mask for extract code type
-        /// </summary>
-        FormatMask = 0x07,
+			/// <summary>
+			/// Mask for extract code type
+			/// </summary>
+			FormatMask = 0x07,
 
-        /// <summary>
-        /// Runtime call default constructor on all local vars
-        /// </summary>
-        InitLocals = 0x10,
+			/// <summary>
+			/// Runtime call default constructor on all local vars
+			/// </summary>
+			InitLocals = 0x10,
 
-        /// <summary>
-        /// There is another attribute after this one
-        /// </summary>
-        MoreSects = 0x08,
-    }
-    #endregion
+			/// <summary>
+			/// There is another attribute after this one
+			/// </summary>
+			MoreSects = 0x08,
+		}
+	}
 }

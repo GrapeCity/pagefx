@@ -36,11 +36,5 @@ namespace DataDynamics.PageFX.Common.CodeModel
         /// </summary>
         /// <returns></returns>
         IMethod[] GetCalls();
-
-        /// <summary>
-        /// Gets all metadata tokens referenced by the method.
-        /// </summary>
-        /// <returns></returns>
-        int[] GetReferencedMetadataTokens();
     }
 }
