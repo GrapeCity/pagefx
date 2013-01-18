@@ -52,10 +52,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return null;
         }
 
-        public int[] GetReferencedMetadataTokens()
-        {
-            return null;
-        }
-        #endregion
+	    #endregion
     }
 }

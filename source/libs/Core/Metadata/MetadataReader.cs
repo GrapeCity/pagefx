@@ -85,6 +85,12 @@ namespace DataDynamics.PageFX.Core.Metadata
 			return _reader.Slice(offset, _reader.Length - offset);
 		}
 
+		public BufferedBinaryReader SliceAtVirtualAddress(uint rva, long size)
+		{
+			var offset = _image.ResolveVirtualAddress(rva);
+			return _reader.Slice(offset, size);
+		}
+
 		public MetadataTable GetTable(TableId tableId)
 		{
 			int i = (int)tableId;

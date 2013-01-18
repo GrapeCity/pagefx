@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using DataDynamics.PageFX.Common.CodeModel.Expressions;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -27,12 +28,11 @@ namespace DataDynamics.PageFX.Core.IL
 
 		public static List<object> ReadArrayValues(IField f, SystemTypeCode type)
 		{
-			var blob = f.GetBlob();
-			if (blob == null)
+			var reader = f.GetBlob();
+			if (reader == null)
 				throw new ArgumentException("Invalid value of field. Value must be blob.", "f");
 
 			var vals = new List<object>();
-			var reader = new BufferedBinaryReader(blob);
 			while (reader.Position < reader.Length)
 			{
 				var value = ReadValue(reader, type);
@@ -42,49 +42,62 @@ namespace DataDynamics.PageFX.Core.IL
 			return vals;
 		}
 
-		public static byte[] GetBlob(this IField field)
+		public static BufferedBinaryReader GetBlob(this IField field)
 		{
 			var value = field.Value;
-			var blob = value as byte[];
-			if (blob == null)
+			if (value == null)
+			{
+				return null;
+			}
+
+			var reader = value as BufferedBinaryReader;
+			if (reader != null)
+			{
+				reader.Seek(0, SeekOrigin.Begin);
+				return reader;
+			}
+
+			var bytes = value as byte[];
+			if (bytes == null)
 			{
 				switch (Type.GetTypeCode(value.GetType()))
 				{
 					case TypeCode.Boolean:
-						blob = new[] { (bool)value ? (byte)1 : (byte)0 };
+						bytes = new[] { (bool)value ? (byte)1 : (byte)0 };
 						break;
 					case TypeCode.Char:
-						blob = BitConverter.GetBytes((char)value);
+						bytes = BitConverter.GetBytes((char)value);
 						break;
 					case TypeCode.SByte:
-						blob = new[] { (byte)(sbyte)value };
+						bytes = new[] { (byte)(sbyte)value };
 						break;
 					case TypeCode.Byte:
-						blob = new[] { (byte)value };
+						bytes = new[] { (byte)value };
 						break;
 					case TypeCode.Int16:
-						blob = BitConverter.GetBytes((Int16)value);
+						bytes = BitConverter.GetBytes((Int16)value);
 						break;
 					case TypeCode.UInt16:
-						blob = BitConverter.GetBytes((UInt16)value);
+						bytes = BitConverter.GetBytes((UInt16)value);
 						break;
 					case TypeCode.Int32:
-						blob = BitConverter.GetBytes((Int32)value);
+						bytes = BitConverter.GetBytes((Int32)value);
 						break;
 					case TypeCode.UInt32:
-						blob = BitConverter.GetBytes((UInt32)value);
+						bytes = BitConverter.GetBytes((UInt32)value);
 						break;
 					case TypeCode.Int64:
-						blob = BitConverter.GetBytes((Int64)value);
+						bytes = BitConverter.GetBytes((Int64)value);
 						break;
 					case TypeCode.UInt64:
-						blob = BitConverter.GetBytes((UInt64)value);
+						bytes = BitConverter.GetBytes((UInt64)value);
 						break;
 					default:
 						throw new ArgumentOutOfRangeException();
 				}
 			}
-			return blob;
+
+			return new BufferedBinaryReader(bytes);
 		}
 
         private static object ReadValue(BufferedBinaryReader reader, SystemTypeCode type)

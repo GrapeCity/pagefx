@@ -1626,16 +1626,12 @@ namespace DataDynamics.PageFX.Core.Translation
             int n = vals.Count;
             for (int i = 0; i < n; ++i)
             {
-                //put array onto the stack
-	            code.Dup()
-	                .LoadConstant(i) //index
+                // put array onto the stack
+				if (i < n - 1) code.Dup();
+				code.LoadConstant(i) //index
 	                .LoadConstant(vals[i])
 	                .SetArrayElem(elemType);
             }
-
-			//TODO: remove this pop by doing n-1 dups only
-            //Note: Now we must remove from stack array because it does InitializeArray CLR method
-            code.Pop();
         }
 
 		private bool IsGetTypeFromHandle(IMethod m)

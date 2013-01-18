@@ -7,13 +7,13 @@ using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals
 {
-	internal sealed class MethodImpl : Method
+	internal sealed class InternalMethod : Method
 	{
 		private readonly AssemblyLoader _loader;
 		private readonly MethodSignature _signature;
 		private bool _associationResolved;
 
-		public MethodImpl(AssemblyLoader loader, MethodSignature signature)
+		public InternalMethod(AssemblyLoader loader, MethodSignature signature)
 		{
 			_loader = loader;
 			_signature = signature;

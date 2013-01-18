@@ -4,14 +4,14 @@ using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals
 {
-	internal sealed class FieldImpl : Field
+	internal sealed class InternalField : Field
 	{
 		private readonly AssemblyLoader _loader;
 		private readonly FieldSignature _signature;
 		private bool _valueResolved;
 		private bool _offsetResolved;
 
-		public FieldImpl(AssemblyLoader loader, FieldSignature signature)
+		public InternalField(AssemblyLoader loader, FieldSignature signature)
 		{
 			_loader = loader;
 			_signature = signature;
@@ -66,8 +66,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			if (size > 0)
 			{
 				uint rva = row[Schema.FieldRVA.RVA].Value;
-				var reader = metadata.MoveToVirtualAddress(rva);
-				return reader.ReadBytes(size);
+				return metadata.SliceAtVirtualAddress(rva, size);
 			}
 
 			throw new InvalidOperationException();

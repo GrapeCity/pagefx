@@ -123,6 +123,12 @@ namespace DataDynamics.PageFX.Common.IO
             return ReadUInt8();
         }
 
+		public byte[] ToArray()
+		{
+			Seek(0, SeekOrigin.Begin);
+			return ReadBytes((int)Length);
+		}
+
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException();

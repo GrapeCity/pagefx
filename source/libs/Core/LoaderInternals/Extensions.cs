@@ -1,4 +1,3 @@
-using System.IO;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Core.Metadata;
@@ -20,11 +19,5 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
             int len = reader.ReadPackedInt(b0);
             return reader.ReadUtf8(len);
         }
-
-		public static byte[] ToArray(this BufferedBinaryReader reader)
-		{
-			reader.Seek(0, SeekOrigin.Begin);
-			return reader.ReadBytes((int)reader.Length);
-		}
     }
 }

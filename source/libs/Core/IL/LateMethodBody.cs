@@ -74,11 +74,7 @@ namespace DataDynamics.PageFX.Core.IL
             return Impl.GetCalls();
         }
 
-        public int[] GetReferencedMetadataTokens()
-        {
-            return Impl.GetReferencedMetadataTokens();
-        }
-        #endregion
+	    #endregion
 
         public override string ToString()
         {

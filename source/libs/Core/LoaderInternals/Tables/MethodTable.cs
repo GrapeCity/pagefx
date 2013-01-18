@@ -28,7 +28,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			var sigBlob = row[Schema.MethodDef.Signature].Blob;
 			var signature = MethodSignature.Decode(sigBlob);
 
-			var method = new MethodImpl(Loader, signature)
+			var method = new InternalMethod(Loader, signature)
 				{
 					MetadataToken = token,
 					Name = row[Schema.MethodDef.Name].String,

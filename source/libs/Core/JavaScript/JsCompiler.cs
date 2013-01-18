@@ -846,7 +846,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 				if (field.IsArrayInitializer())
 				{
 					var blob = field.GetBlob();
-					var arr = new JsArray(blob.Select(x => (object)x));
+					var arr = new JsArray(blob.ToArray().Select(x => (object)x));
 					return context.Vars.Add(key, arr);
 				}
 
