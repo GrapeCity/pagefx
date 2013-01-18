@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			var sigBlob = row[Schema.Field.Signature].Blob;
 			var signature = FieldSignature.Decode(sigBlob);
 
-			var field = new FieldImpl(Loader, signature)
+			var field = new InternalField(Loader, signature)
 				{
 					MetadataToken = token,
 					Visibility = ToVisibility(flags),
