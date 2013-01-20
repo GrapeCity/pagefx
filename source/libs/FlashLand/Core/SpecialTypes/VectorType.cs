@@ -6,22 +6,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
     internal sealed class VectorType : IVectorType
     {
-        public VectorType(IType type, IType param)
+        public VectorType(IType type, IType parameter)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            if (param == null)
-                throw new ArgumentNullException("param");
+            if (parameter == null)
+                throw new ArgumentNullException("parameter");
 
             Type = type;
-            Param = param;
+            Parameter = parameter;
         }
 
 	    public AbcFile Abc { get; set; }
 
 	    public IType Type { get; private set; }
 
-	    public IType Param { get; private set; }
+	    public IType Parameter { get; private set; }
 
 	    public AbcMultiname Name
         {
@@ -29,8 +29,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
             {
                 if (_name == null)
                 {
-					Abc.Generator.TypeBuilder.Build(Param);
-                    var paramType = Param.GetMultiname();
+					Abc.Generator.TypeBuilder.Build(Parameter);
+                    var paramType = Parameter.GetMultiname();
                     _name = Abc.DefineVectorTypeName(paramType);
                 }
                 return _name;
@@ -40,7 +40,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
         public override string ToString()
         {
-            return Type + ".<" + Param + ">";
+            return Type + ".<" + Parameter + ">";
         }
 
         public static string GetVectorParam(IType type)

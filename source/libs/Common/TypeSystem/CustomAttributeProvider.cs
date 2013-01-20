@@ -19,6 +19,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	public static class CustomAttributeProviderExtensions
 	{
+		//TODO: make this is a part of ICustomAttributeCollection to make this search faster
 		public static ICustomAttribute FindAttribute(this ICustomAttributeProvider p, string fullname)
 		{
 			return p.CustomAttributes.FirstOrDefault(attr => attr.TypeName == fullname);

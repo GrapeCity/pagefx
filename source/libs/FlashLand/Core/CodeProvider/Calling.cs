@@ -82,17 +82,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (tag == null) return false;
 
             //NOTE: Inline code!!!
-            if (tag is AbcCode)
-                return HasGlobalReceiver(method);
+	        if (tag is InlineCall)
+	        {
+		        return HasGlobalReceiver(method);
+	        }
 
-            return true;
+	        return true;
         }
 
         public IInstruction[] LoadReceiver(IMethod method, bool newobj)
         {
             EnsureMethod(method);
 
-            if (!HasReceiver(method, newobj)) return null;
+            if (!HasReceiver(method, newobj))
+				return null;
 
             var code = new AbcCode(_abc);
             CallStaticCtor(code, method);
@@ -120,11 +123,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             if (method.IsStaticCall())
             {
-                var mn = tag as AbcMemberName;
-                if (mn != null)
-                    code.Getlex(mn.Type);
-                else
-                    LoadStaticInstance(code, type);
+                LoadStaticInstance(code, type);
                 return code.ToArray();
             }
 
@@ -154,7 +153,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             var vec = typeTag as IVectorType;
             if (vec != null)
             {
-                EnsureType(vec.Param);
+                EnsureType(vec.Parameter);
                 if (method.IsStatic)
                 {
                     code.LoadGenericClass(vec.Name);
@@ -231,14 +230,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
 
             //NOTE: Check inline code
-            var code = tag as AbcCode;
-            if (code != null)
+            var inlineCall = tag as InlineCall;
+			if (inlineCall != null)
             {
-				//NOTE: We need to clone instructions since inline code could be shared and reusable
-                return code.Clone().ToArray();
+				//NOTE: We need to clone instructions since inline code should be shared and reusable
+                return inlineCall.InlineCode.Clone().ToArray();
             }
 
-            code = new AbcCode(_abc);
+            var code = new AbcCode(_abc);
 
             if ((flags & CallFlags.Newobj) != 0)
             {
@@ -255,10 +254,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 return code.ToArray();
             }
 
-            var prop = GetCallName(tag);
-            if (prop != null)
+	        var name = GetMethodName(method);
+            if (name != null)
             {
-                Call(code, method, prop, flags);
+                Call(code, method, name, flags);
                 return code.ToArray();
             }
 
@@ -280,7 +279,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var instance = DefineAbcInstance(receiverType);
 
-            var mname = GetCallName(method.Data);
+            var mname = GetMethodName(method);
             string prefix = "$C" + instance.Index;
             prefix += GetBaseCallPrefix(method);
 
@@ -595,22 +594,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             get { return _declType.Is(SystemTypeCode.String); }
         }
 
-        private static AbcMultiname GetCallName(object tag)
-        {
-            var prop = tag as AbcMultiname;
-            if (prop != null)
-                return prop;
-
-            var mn = tag as AbcMemberName;
-            if (mn != null)
-                return mn.Name;
-
-            var m = tag as AbcMethod;
-            if (m != null)
-                return m.TraitName;
-
-            return null;
-        }
         #endregion
     }
 }

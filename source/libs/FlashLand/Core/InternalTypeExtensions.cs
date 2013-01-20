@@ -75,20 +75,17 @@ namespace DataDynamics.PageFX.FlashLand.Core
             return instance.FullName == fullname;
         }
 
-        public static AbcMultiname ToMultiname(this object typeTag)
-        {
-            if (typeTag == null) return null;
-            var instance = typeTag as AbcInstance;
-            if (instance != null) return instance.Name;
-            var vec = typeTag as IVectorType;
-            if (vec != null) return vec.Name;
-            return typeTag as AbcMultiname;
-        }
-
-        public static AbcMultiname GetMultiname(this IType type)
+	    public static AbcMultiname GetMultiname(this IType type)
         {
             if (type == null) throw new ArgumentNullException("type");
-            return type.Data.ToMultiname();
+
+	        object data = type.Data;
+	        if (data == null) return null;
+
+	        var agent = data as ITypeData;
+			if (agent != null) return agent.Name;
+
+	        return data as AbcMultiname;
         }
 
         public static bool IsStringInterface(this IType type)

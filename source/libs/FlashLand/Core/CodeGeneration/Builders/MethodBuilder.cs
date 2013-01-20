@@ -164,6 +164,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             var tag = method.Data;
             if (tag == null) return null;
+
             var m = tag as AbcMethod;
             if (m != null)
             {
@@ -171,6 +172,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 BuildOverrideMethods(method, tag as AbcMethod);
                 return tag;
             }
+
             throw new InvalidOperationException();
         }
         #endregion
@@ -633,7 +635,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (abcMethod == null)
                 throw new ArgumentNullException();
 
-            var method = abcMethod.SourceMethod;
+            var method = abcMethod.Method;
             if (method == null) return;
             if (method.Body == null) return;
 

@@ -55,7 +55,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 	/// <summary>
     /// Contains traits for non-static members of user defined type.
     /// </summary>
-    public sealed class AbcInstance : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider
+    public sealed class AbcInstance : ISupportXmlDump, ISwfIndexedAtom, IAbcTraitProvider, ITypeData
     {
 		public AbcInstance()
         {
@@ -538,7 +538,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
 			var method = new AbcMethod
 				{
-					SourceMethod = sig.Source
+					Method = sig.Source
 				};
 
 			var generator = Abc.Generator;

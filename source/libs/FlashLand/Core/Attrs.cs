@@ -8,6 +8,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
         const string NsPrefix = PfxNamespace + ".";
 
         //pfc attrs
+		public const string Native = NsPrefix + "NativeAttribute";
         public const string ABC = NsPrefix + "ABCAttribute";
         public const string QName = NsPrefix + "QNameAttribute";
         public const string GlobalFunctions = NsPrefix + "GlobalFunctionsAttribute";

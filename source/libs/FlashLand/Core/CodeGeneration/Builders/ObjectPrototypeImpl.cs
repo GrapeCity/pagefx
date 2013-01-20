@@ -51,7 +51,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         #region DefinePrototype
         void DefinePrototype(AvmTypeCode type, AbcMethod sig)
         {
-            var srcmethod = sig.SourceMethod;
+            var srcmethod = sig.Method;
             if (srcmethod == null) return;
 
             string key = GetKey(type, srcmethod.Name);

@@ -19,12 +19,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
                 throw new ArgumentException("Invalid vector instance");
 
             Type = instance;
-            Param = instance.GenericArguments[0];
+            Parameter = instance.GenericArguments[0];
         }
 
 	    public IGenericInstance Type { get; private set; }
 
-	    public IType Param { get; private set; }
+	    IType ITypeData.Type
+	    {
+			get { return Type; }
+	    }
+
+	    public IType Parameter { get; private set; }
 
 	    public AbcFile Abc { get; set; }
 
@@ -36,7 +41,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
                 //TODO: Process builtin vector types (Vector$double, Vector$int, Vector$uint)
 
-                var param = Abc.GetTypeName(Param, true);
+                var param = Abc.GetTypeName(Parameter, true);
                 _name = Abc.DefineVectorTypeName(param);
 
                 return _name;

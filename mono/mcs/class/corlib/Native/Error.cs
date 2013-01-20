@@ -1,7 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
+using PageFX;
 
 namespace Native
 {
+	[Native]
+	[QName("Error")]
 	internal class Error
 	{
 		public extern int errorID
@@ -20,6 +23,8 @@ namespace Native
 		public extern string getStackTrace();
 	}
 
+	[Native]
+	[QName("RangeError")]
 	internal class RangeError : Error
 	{
 	}

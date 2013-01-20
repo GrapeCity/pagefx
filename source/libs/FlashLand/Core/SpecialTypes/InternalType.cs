@@ -1,8 +1,9 @@
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.FlashLand.Abc;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
-    internal class InternalType : ISpecialType
+    internal sealed class InternalType : ITypeData, ISpecialType
     {
         public InternalType(IType type)
         {
@@ -10,6 +11,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
         }
 
 	    public IType Type { get; private set; }
+
+	    public AbcMultiname Name
+	    {
+			get { return null; }
+	    }
 
 	    public override string ToString()
         {

@@ -221,11 +221,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 			{
 				LinkTypeCore(type);
 			}
+			else
+			{
+				LinkNativeType(type);
+			}
 
 			FireTypeLinked(type);
 		}
 
-        private void LinkTypeCore(IType type)
+	    private void LinkTypeCore(IType type)
         {
             if (LinkInternalType(type)) return;
 
@@ -273,12 +277,26 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
+		private void LinkNativeType(IType type)
+		{
+			if (!type.HasAttribute(Attrs.Native))
+			{
+				return;
+			}
+
+			var qname = type.FindAttribute(Attrs.QName);
+			if (qname == null)
+				throw new InvalidOperationException();
+
+			// TODO: reuse code from MemberKey
+		}
+
         private void LinkType(IType type, AbcInstance instance)
         {
             type.Data = instance;
             instance.Type = type;
 
-            if (IsCorLib)
+            if (IsCorLib) // TODO: this is now valid for flash API assemblies only
             {
                 if (instance.IsGlobal)
                 {
@@ -328,7 +346,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             if (instance != null && method.IsConstructor && !isGlobal)
             {
                 method.Data = instance.Initializer;
-                instance.Initializer.SourceMethod = method;
+                instance.Initializer.Method = method;
                 return;
             }
 
@@ -361,7 +379,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             //Prevent to link overload methods
             if (method.Parameters.Count == abcMethod.ActualParamCount)
-                abcMethod.SourceMethod = method;
+                abcMethod.Method = method;
 
             //var instance = abcMethod.Instance;
             //if (instance != null && !instance.IsNative && abcMethod.IsNative)

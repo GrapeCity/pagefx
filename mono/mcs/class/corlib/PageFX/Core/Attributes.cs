@@ -4,6 +4,13 @@ using System;
 namespace PageFX
 {
 	/// <summary>
+	/// Attribute to mark native members.
+	/// </summary>
+	public sealed class NativeAttribute : Attribute
+	{
+	}
+
+	/// <summary>
     /// Defines that member is defined within ABC.
     /// </summary>
     public sealed class ABCAttribute : Attribute

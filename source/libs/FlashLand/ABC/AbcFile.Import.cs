@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CompilerServices;
+using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.IL;
 
@@ -338,17 +339,19 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                             Flags = method.Flags,
                             IsInitializer = method.IsInitializer,
                             OriginalMethod = method,                            
-                            SourceMethod = method.SourceMethod,
+                            Method = method.Method,
                             ReturnType = ImportType(method.ReturnType)
                         };
 
             method.ImportedMethod = m;
             method.IsImported = true;
 
-            if (m.SourceMethod != null)
-                m.SourceMethod.Data = m;
+	        if (m.Method != null)
+	        {
+		        SetData(m.Method, m);
+	        }
 
-            ImportParams(method, m);
+	        ImportParams(method, m);
 
             Methods.Add(m);
 
@@ -360,6 +363,20 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
             return m;
         }
+
+		private object SetData(ITypeMember member, object data)
+		{
+			if (ReferenceEquals(member.Data, data)) return data;
+
+			if (Generator != null)
+			{
+				return Generator.SetData(member, data);
+			}
+
+			member.Data = data;
+
+			return data;
+		}
 
         private void ImportParams(AbcMethod from, AbcMethod to)
         {
@@ -614,10 +631,13 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             instance.Flags = from.Flags;
             instance.ProtectedNamespace = ImportConst(from.ProtectedNamespace);
             instance.Type = from.Type;
-            if (instance.Type != null)
-                instance.Type.Data = instance;
 
-            foreach (var iname in from.Interfaces)
+	        if (instance.Type != null)
+	        {
+		        SetData(instance.Type, instance);
+	        }
+
+	        foreach (var iname in from.Interfaces)
             {
                 AbcInstance ifaceInstance;
                 var mn = ImportType(iname, out ifaceInstance);

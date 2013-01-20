@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
     /// <summary>
     /// Describes method signature.
     /// </summary>
-    public sealed class AbcMethod : ISupportXmlDump, ISwfIndexedAtom
+    public sealed class AbcMethod : ISupportXmlDump, ISwfIndexedAtom, IMethodCall
     {
 	    public AbcMethod()
         {
@@ -25,7 +25,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             if (method == null)
                 throw new ArgumentNullException();
-            SourceMethod = method;
+            Method = method;
         }
 
 	    /// <summary>
@@ -56,9 +56,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (_trait != null)
                     return _trait.Name.ToString();
-                if (_name != null)
-                    return _name.Value;
-                return string.Empty;
+                return _name != null ? _name.Value : string.Empty;
             }
         }
 
@@ -68,9 +66,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             {
                 if (_trait != null)
                     return _trait.Name.FullName;
-                if (_name != null)
-                    return _name.Value;
-                return string.Empty;
+                return _name != null ? _name.Value : string.Empty;
             }
         }
 
@@ -110,9 +106,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                if (SourceMethod != null)
+                if (Method != null)
                 {
-                    return SourceMethod.ReturnsVoid();
+                    return Method.ReturnsVoid();
                 }
                 if (ReturnType == null) //any
                     return false;
@@ -199,8 +195,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             get
             {
-                if (SourceMethod != null)
-                    return SourceMethod.IsEntryPoint;
+                if (Method != null)
+                    return Method.IsEntryPoint;
                 return false;
             }
         }
@@ -234,6 +230,11 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 return null;
             }
         }
+
+		AbcMultiname IMethodCall.Name 
+		{
+			get { return TraitName; }
+		}
 
         public bool IsAbstract
         {
@@ -319,7 +320,10 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             }
         }
 
-        public IMethod SourceMethod { get; set; }
+		/// <summary>
+		/// Gets source method.
+		/// </summary>
+        public IMethod Method { get; set; }
 
         internal AbcMethod ImportedMethod { get; set; }
 
@@ -331,7 +335,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 	    {
 		    get
 		    {
-				if (SourceMethod != null)
+				if (Method != null)
 					return false;
 				if (Instance != null)
 				{

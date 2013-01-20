@@ -3,10 +3,8 @@ using DataDynamics.PageFX.FlashLand.Abc;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
-    internal interface IVectorType : ISpecialType, IAbcFileSubject
+    internal interface IVectorType : ITypeData, ISpecialType, IAbcFileSubject
     {
-        IType Param { get; }
-
-        AbcMultiname Name { get; }
+        IType Parameter { get; }
     }
 }

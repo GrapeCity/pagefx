@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             _generator = gen;
             _abc = gen.Abc;
-            _method = abcMethod.SourceMethod;
+            _method = abcMethod.Method;
             _body = abcMethod.Body;
             _declType = _method.DeclaringType;
 
@@ -147,21 +147,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #endregion
 
         #region Delegates
-        AbcMultiname GetMethodName(IMethod method)
+        private AbcMultiname GetMethodName(IMethod method)
         {
-            var name = method.Data as AbcMultiname;
-            if (name != null)
-                return _abc.ImportConst(name);
-
-            var mn = method.Data as AbcMemberName;
-            if (mn != null)
-                return _abc.ImportConst(mn.Name);
-
-            var abcMethod = method.AbcMethod();
-            if (abcMethod != null)
-                return _abc.ImportConst(abcMethod.TraitName);
-
-            return null;
+            var name = method.CallName();
+            return name != null ? _abc.ImportConst(name) : null;
         }
 
         public IInstruction[] LoadFunction(IMethod method)

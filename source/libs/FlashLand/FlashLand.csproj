@@ -90,7 +90,6 @@
     <Compile Include="Abc\AbcFile.Test.cs" />
     <Compile Include="Abc\AbcInstanceCollection.cs" />
     <Compile Include="Abc\AbcInstanceExtensions.cs" />
-    <Compile Include="Abc\AbcMemberName.cs" />
     <Compile Include="Abc\AbcMetaEntry.cs" />
     <Compile Include="Abc\AbcMethodBodyCollection.cs" />
     <Compile Include="Abc\AbcMethodCollection.cs" />
@@ -194,6 +193,7 @@
     <Compile Include="Core\FieldExtensions.cs" />
     <Compile Include="Core\Function.cs" />
     <Compile Include="Core\HashExtensions.cs" />
+    <Compile Include="Core\IMethodCall.cs" />
     <Compile Include="Core\Inlining\Avm.Array.cs" />
     <Compile Include="Core\Inlining\Avm.Class.cs" />
     <Compile Include="Core\Inlining\Avm.cs" />
@@ -210,6 +210,7 @@
     <Compile Include="Core\InternalAssemblyExtensions.cs" />
     <Compile Include="Core\InternalMethodExtensions.cs" />
     <Compile Include="Core\InternalTypeExtensions.cs" />
+    <Compile Include="Core\ITypeData.cs" />
     <Compile Include="Core\LocaleExtensions.cs" />
     <Compile Include="Core\MetadataTags.cs" />
     <Compile Include="Core\MimeTypes.cs" />
