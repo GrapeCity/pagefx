@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace DataDynamics.PageFX.Common.IO
@@ -338,125 +339,66 @@ namespace DataDynamics.PageFX.Common.IO
         ///	And the conversion between hexadecimal and decimal? Come on, this is not a math tutorial! In case you don't know, use a calculator.
         /// </summary>
         /// <returns></returns>
-		public string ReadUtf8(int bytesToRead) // bytesToRead==-1 reads string till \0
+		public string ReadUtf8(int bytesToRead)
         {
-            long bufferPos = _pos;
-
-            // calc string length and allocate char _buffer
-            int count = 0;
-            int byteCount = 0;
+            var chars = bytesToRead > 0 ? new List<char>(bytesToRead) : new List<char>();
+            var byteCount = 0;
             while (bytesToRead == -1 || byteCount < bytesToRead)
             {
-                byte ch0 = _buffer[bufferPos++];
+                byte b0 = _buffer[_pos++];
                 byteCount++;
-                if (ch0 == 0) // end of string
-                    break;
+                if (b0 == 0) break;
 
-                if ((ch0 & 0x80) == 0) // check for lead byte
+                if ((b0 & 0x80) == 0)
                 {
-                    count++; // single byte character
+                    chars.Add((char)b0);
                     continue;
                 }
 
-                byte ch1 = _buffer[bufferPos++]; // trail
-                byteCount++;
-
-                if (ch1 == 0)
-                    break;
-                if ((ch0 & 0x20) != 0)
-                {
-                    byte ch2 = _buffer[bufferPos++];
-                    byteCount++;
-
-                    if (ch2 == 0)
-                        break;
-                    uint ch32;
-                    if ((ch0 & 0x10) == 0)
-                    {
-                        ch32 = (uint)(((ch0 & 0x0F) << 12)
-                                      | ((ch1 & 0x3F) << 6)
-                                      | (ch2 & 0x3F));
-                    }
-                    else
-                    {
-                        byte ch3 = _buffer[bufferPos++];
-                        byteCount++;
-
-                        if (ch3 == 0)
-                        {
-                            count++;
-                            break;
-                        }
-                        ch32 = (uint)(((ch0 & 0x07) << 18)
-                                      | ((ch1 & 0x3F) << 12)
-                                      | ((ch2 & 0x3F) << 6)
-                                      | (ch3 & 0x3F));
-                    }
-
-                    if ((ch32 & 0xFFFF0000) != 0)
-                        count++;
-                }
-                count++;
-            }
-
-            // Copy _buffer
-            int index = 0;
-            var result = new char[count];
-            byteCount = 0;
-            while (bytesToRead == -1 || byteCount < bytesToRead)
-            {
-                byte ch0 = _buffer[_pos++];
-                byteCount++;
-                if (ch0 == 0)
-                    break;
-                if ((ch0 & 0x80) == 0)
-                {
-                    result[index++] = (char)ch0;
-                    continue;
-                }
                 char ch;
-                byte ch1 = _buffer[_pos++];
+                byte b1 = _buffer[_pos++];
                 byteCount++;
-                if (ch1 == 0)
+                if (b1 == 0)
                 {
                     //Dangling lead byte, do not decompose
-                    result[index++] = (char)ch0;
+                    chars.Add((char)b0);
                     break;
                 }
-                if ((ch0 & 0x20) == 0)
+
+                if ((b0 & 0x20) == 0)
                 {
-                    ch = (char)(((ch0 & 0x1F) << 6) | (ch1 & 0x3F));
+                    ch = (char)(((b0 & 0x1F) << 6) | (b1 & 0x3F));
                 }
                 else
                 {
-                    byte ch2 = _buffer[_pos++];
+                    byte b2 = _buffer[_pos++];
                     byteCount++;
-                    if (ch2 == 0)
+                    if (b2 == 0)
                     {
                         //Dangling lead bytes, do not decompose
-                        result[index++] = (char)((ch0 << 8) | ch1);
+                        chars.Add((char)((b0 << 8) | b1));
                         break;
                     }
 
                     uint ch32;
-                    if ((ch0 & 0x10) == 0)
-                        ch32 = (uint)(((ch0 & 0x0F) << 12)
-                                      | ((ch1 & 0x3F) << 6)
-                                      | (ch2 & 0x3F));
+                    if ((b0 & 0x10) == 0)
+                        ch32 = (uint)(((b0 & 0x0F) << 12)
+                                      | ((b1 & 0x3F) << 6)
+                                      | (b2 & 0x3F));
                     else
                     {
-                        byte ch3 = _buffer[_pos++];
+                        byte b3 = _buffer[_pos++];
                         byteCount++;
-                        if (ch3 == 0)
+                        if (b3 == 0)
                         {
-                            result[index++] = (char)((ch0 << 8) | ch1);
-                            result[index++] = (char)ch2;
+                            chars.Add((char)((b0 << 8) | b1));
+                            chars.Add((char)b2);
                             break;
                         }
-                        ch32 = (uint)(((ch0 & 0x07) << 0x18) // combine 6 bit parts
-                                      | ((ch1 & 0x3F) << 12)
-                                      | ((ch2 & 0x3F) << 6)
-                                      | (ch3 & 0x3F));
+                        ch32 = (uint)(((b0 & 0x07) << 0x18) // combine 6 bit parts
+                                      | ((b1 & 0x3F) << 12)
+                                      | ((b2 & 0x3F) << 6)
+                                      | (b3 & 0x3F));
                     }
 
                     if ((ch32 & 0xFFFF0000) == 0)
@@ -466,15 +408,15 @@ namespace DataDynamics.PageFX.Common.IO
                     else
                     {
                         //break up into UTF16 surrogate pair
-                        result[index++] = (char)((ch32 >> 10) | 0xD800);
+                        chars.Add((char)((ch32 >> 10) | 0xD800));
                         ch = (char)((ch32 & 0x3FF) | 0xDC00);
                     }
                 }
 
-                result[index++] = ch;
+                chars.Add(ch);
             }
 
-            return new string(result);
+            return new string(chars.ToArray());
         }
 
 		public string ReadZeroTerminatedString(int length)
