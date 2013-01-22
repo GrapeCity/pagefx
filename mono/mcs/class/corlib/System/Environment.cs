@@ -233,7 +233,7 @@ namespace System
             get
             {
                 if (avm.IsFlashPlayer)
-                    return avm.getTimer();
+                    return Native.Global.getTimer();
                 return 0;
             }
         }

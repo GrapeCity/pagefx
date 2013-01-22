@@ -487,7 +487,7 @@ namespace System
             double retVal;
             try
             {
-                retVal = avm.parseFloat(numstr);
+                retVal = Native.Global.parseFloat(numstr);
             }
             catch
             {

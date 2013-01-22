@@ -16,9 +16,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				    {"System.String", new StringInlines()},
 				    {"System.Diagnostics.Debugger", new DebuggerInlines()},
 				    {"avm", new AvmInlines()},
+					{"Native.NativeArray", new AvmArrayInlines()},
+					{"Native.ByteArray", new FlashByteArrayInlines()},
 			    };
 
-		private static readonly Dictionary<string, InlineCodeProvider> NativeInlines =
+		private static readonly Dictionary<string, InlineCodeProvider> AvmInlines =
 			new Dictionary<string, InlineCodeProvider>
 			    {
 				    {"Object", new AvmObjectInlines()},
@@ -28,7 +30,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				    {"XMLList", new AvmXmlInlines()},
 			    };
 
-	    public static AbcCode Build(AbcFile abc, AbcInstance instance, IMethod method)
+		public static AbcCode Build(AbcFile abc, AbcInstance instance, IMethod method)
 	    {
 		    if (instance != null && instance.IsNative)
             {
@@ -36,7 +38,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				string name = mn.FullName;
 
 				InlineCodeProvider provider;
-				if (NativeInlines.TryGetValue(name, out provider))
+				if (AvmInlines.TryGetValue(name, out provider))
 				{
 					return provider.GetImplementation(abc, method);
 				}

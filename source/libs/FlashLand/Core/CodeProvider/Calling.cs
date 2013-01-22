@@ -178,6 +178,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 return;
             }
 
+	        var nativeType = declType.Data as NativeType;
+			if (nativeType != null)
+			{
+				code.Getlex(nativeType.Name);
+				return;
+			}
+
             var abcMethod = method.AbcMethod();
             if (abcMethod == null)
                 throw new ArgumentException("Invalid method tag");

@@ -108,7 +108,6 @@
     <Compile Include="Abc\AbcFile.Import.cs" />
     <Compile Include="Abc\AbcTryBlock.cs" />
     <Compile Include="Abc\IAbcConstPool.cs" />
-    <Compile Include="Abc\IAbcFileSubject.cs" />
     <Compile Include="Abc\IAbcTraitProvider.cs" />
     <Compile Include="Abc\IImportable.cs" />
     <Compile Include="Abc\IOExtensions.cs" />
@@ -200,6 +199,7 @@
     <Compile Include="Core\Inlining\Avm.Object.cs" />
     <Compile Include="Core\Inlining\Avm.Vector.cs" />
     <Compile Include="Core\Inlining\Avm.XML.cs" />
+    <Compile Include="Core\Inlining\flash.utils.ByteArray.cs" />
     <Compile Include="Core\Inlining\InlineCodeGenerator.cs" />
     <Compile Include="Core\Inlining\InlineCodeProvider.cs" />
     <Compile Include="Core\Inlining\InlineMethodExtensions.cs" />
@@ -223,6 +223,7 @@
     <Compile Include="Core\SpecialTypes\InternalType.cs" />
     <Compile Include="Core\SpecialTypes\ISpecialType.cs" />
     <Compile Include="Core\SpecialTypes\IVectorType.cs" />
+    <Compile Include="Core\SpecialTypes\NativeType.cs" />
     <Compile Include="Core\SpecialTypes\VectorInstance.cs" />
     <Compile Include="Core\SpecialTypes\VectorType.cs" />
     <Compile Include="Core\SwfGeneration\AssetCompiler.cs" />

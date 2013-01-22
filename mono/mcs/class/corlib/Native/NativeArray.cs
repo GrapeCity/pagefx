@@ -13,6 +13,8 @@ namespace Native
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public extern NativeArray(int n);
 
+		[AS3]
+		[InlineFunction("slice")]
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public extern NativeArray Copy();
 
@@ -22,7 +24,8 @@ namespace Native
 			get;
 		}
 
-		[QName("push", "http://adobe.com/AS3/2006/builtin", "public")]
+		[AS3]
+		[InlineFunction("push")]
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public extern void push(object value);
 
@@ -37,7 +40,8 @@ namespace Native
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public extern int GetInt32(int index);
 
-		[QName("reverse", "http://adobe.com/AS3/2006/builtin", "public")]
+		[AS3]
+		[InlineFunction("reverse")]
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public extern NativeArray reverse();
 	}

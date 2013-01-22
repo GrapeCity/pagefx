@@ -94,12 +94,25 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var tag = type.Data;
             if (tag == null) return false;
             if (tag is ISpecialType) return true;
+
             var instance = tag as AbcInstance;
-            if (instance != null)
-                return IsDefined(instance);
-            var mname = tag as AbcMultiname;
+	        if (instance != null)
+	        {
+		        return IsDefined(instance);
+	        }
+
+	        var data = tag as ITypeData;
+			if (data != null)
+			{
+				return data.IsDefined(this);
+			}
+
+			var mname = tag as AbcMultiname;
             if (mname != null)
-                return IsDefined(mname);
+            {
+				return IsDefined(mname);
+            }
+                
             return false;
         }
 

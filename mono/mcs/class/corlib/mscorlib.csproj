@@ -78,6 +78,7 @@
     <Compile Include="Assembly\AssemblyInfo.cs" />
     <Compile Include="Native\ByteArray.cs" />
     <Compile Include="Native\Error.cs" />
+    <Compile Include="Native\Global.cs" />
     <Compile Include="Native\NativeArray.cs" />
     <Compile Include="Mono.Security\BitConverterLE.cs" />
     <Compile Include="PageFX\Core\Attributes.cs" />

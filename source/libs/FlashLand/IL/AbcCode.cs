@@ -2981,20 +2981,38 @@ namespace DataDynamics.PageFX.FlashLand.IL
             klass.Initialized = true;
         }
 
-        AbcMultiname[] GetClassInitScope(AbcInstance instance)
+        private AbcMultiname[] GetClassInitScope(AbcInstance instance)
         {
             var list = new List<AbcMultiname>();
 
-            var super = instance.BaseInstance;
-            while (super != null)
-            {
-                if (super.IsObject) break;
-                list.Insert(0, super.Name);
-                if (super.IsError) break;
-                super = super.BaseInstance;
-            }
+			// System.Exception actually inherits from avm Error
+	        if (instance.Type.Is(SystemTypeCode.Exception))
+	        {
+		        list.Add(Abc.BuiltinTypes.Error);
+	        }
+	        else
+	        {
+		        var super = instance.BaseInstance;
+		        while (super != null)
+		        {
+			        if (super.IsObject) break;
 
-            //TODO: check type hierarchy
+			        list.Insert(0, super.Name);
+
+			        if (super.IsError) break;
+
+			        // System.Exception actually inherits from avm Error
+			        if (super.Type.Is(SystemTypeCode.Exception))
+			        {
+				        list.Insert(0, Abc.BuiltinTypes.Error);
+				        break;
+			        }
+
+			        super = super.BaseInstance;
+		        }
+	        }
+
+	        //TODO: check type hierarchy
 
             list.Insert(0, Abc.BuiltinTypes.Object);
 

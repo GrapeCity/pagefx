@@ -1,4 +1,5 @@
 using System;
+using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.FlashLand.Abc
 {
@@ -8,16 +9,16 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		Public,
 		Protected,
 		Private,
+		Internal,
+		Explicit,
+		StaticProtected
 	}
 
 	internal sealed class Namespace
 	{
 		public Namespace(string name, NamespaceKind kind)
 		{
-			if (string.IsNullOrEmpty(name))
-				throw new ArgumentNullException("name");
-
-			Name = name;
+			Name = name ?? "";
 			Kind = kind;
 		}
 
@@ -42,6 +43,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 					return AbcConstKind.ProtectedNamespace;
 				case NamespaceKind.Private:
 					return AbcConstKind.PrivateNamespace;
+				case NamespaceKind.Internal:
+					return AbcConstKind.InternalNamespace;
+				case NamespaceKind.Explicit:
+					return AbcConstKind.ExplicitNamespace;
+				case NamespaceKind.StaticProtected:
+					return AbcConstKind.StaticProtectedNamespace;
 				default:
 					throw new ArgumentOutOfRangeException("value");
 			}
@@ -96,6 +103,48 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			if (string.IsNullOrEmpty(name))
 				throw new ArgumentNullException("name");
 			return new QName(name, new Namespace(ns, NamespaceKind.Public));
+		}
+
+		public static QName FromAttribute(ICustomAttribute attribute)
+		{
+			int n = attribute.Arguments.Count;
+			if (n == 0)
+				throw new InvalidOperationException("Invalid qname attribute");
+
+			var name = (string)attribute.Arguments[0].Value;
+			string ns = "";
+			var nskind = NamespaceKind.Package;
+			if (n > 1)
+			{
+				ns = (string)attribute.Arguments[1].Value;
+				string kind = (string)attribute.Arguments[2].Value;
+				nskind = ParseNsKind(kind);
+			}
+
+			return new QName(name, new Namespace(ns, nskind));
+		}
+
+		private static NamespaceKind ParseNsKind(string kind)
+		{
+			switch (kind)
+			{
+				case "private":
+					return NamespaceKind.Private;
+				case "public":
+					return NamespaceKind.Public;
+				case "package":
+					return NamespaceKind.Package;
+				case "internal":
+					return NamespaceKind.Internal;
+				case "protected":
+					return NamespaceKind.Protected;
+				case "explicit":
+					return NamespaceKind.Explicit;
+				case "static protected":
+					return NamespaceKind.StaticProtected;
+				default:
+					throw new ArgumentOutOfRangeException("kind");
+			}
 		}
 
 	    private readonly KnownNamespace _knownNamespace;

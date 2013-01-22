@@ -9,16 +9,19 @@ namespace Native
 	{
 		public extern int errorID
 		{
+			[InlineProperty("errorID")]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			get;
 		}
 
 		public extern string message
 		{
+			[InlineProperty("message")]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			get;
 		}
 
+		[InlineFunction]
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public extern string getStackTrace();
 	}

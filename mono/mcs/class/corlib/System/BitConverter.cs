@@ -184,21 +184,21 @@ namespace System
 
         public static byte[] GetBytes(float value)
         {
-            ByteArray arr = new ByteArray(IsLittleEndian);
+            ByteArray arr = ByteArrayFactory.Create(IsLittleEndian);
 			arr.WriteFloat(value);
 	        return ReadBytes(arr, 4);
         }
 
         public static byte[] GetBytes(double value)
         {
-            ByteArray arr = new ByteArray(IsLittleEndian);
+			ByteArray arr = ByteArrayFactory.Create(IsLittleEndian);
 			arr.WriteDouble(value);
 	        return ReadBytes(arr, 8);
         }
 
 		private static byte[] ReadBytes(ByteArray byteArray, int n)
 		{
-			byteArray.Seek(0);
+			byteArray.position = 0;
 			byte[] res = new byte[n];
 			for (int i = 0; i < n; ++i)
 				res[i] = (byte)byteArray.ReadByte();
@@ -332,26 +332,17 @@ namespace System
             return v;
         }
 
-		private static ByteArray CreateByteArray(byte[] value, int startIndex)
-		{
-			ByteArray arr = new ByteArray(IsLittleEndian);
-			while (startIndex < value.Length)
-				arr.WriteByte(value[startIndex++]);
-			arr.Seek(0);
-			return arr;
-		}
-
-        public static float ToSingle(byte[] value, int startIndex)
+	    public static float ToSingle(byte[] value, int startIndex)
         {
             Check(value, startIndex, 4);
-            ByteArray arr = CreateByteArray(value, startIndex);
+            ByteArray arr = ByteArrayFactory.Create(IsLittleEndian, value, startIndex);
             return arr.ReadFloat();
         }
 
         public static double ToDouble(byte[] value, int startIndex)
         {
             Check(value, startIndex, 8);
-            ByteArray arr = CreateByteArray(value, startIndex);
+            ByteArray arr = ByteArrayFactory.Create(IsLittleEndian, value, startIndex);
             return arr.ReadDouble();
         }
 
@@ -360,7 +351,7 @@ namespace System
             if (SwappedWordsInDouble)
             {
                 Check(value, startIndex, 8);
-                ByteArray arr = new ByteArray(IsLittleEndian);
+				ByteArray arr = ByteArrayFactory.Create(IsLittleEndian);
                 arr.WriteByte(value[startIndex + 4]);
                 arr.WriteByte(value[startIndex + 5]);
                 arr.WriteByte(value[startIndex + 6]);
@@ -369,7 +360,7 @@ namespace System
                 arr.WriteByte(value[startIndex + 1]);
                 arr.WriteByte(value[startIndex + 2]);
                 arr.WriteByte(value[startIndex + 3]);
-	            arr.Seek(0);
+	            arr.position = 0;
                 return arr.ReadDouble();
             }
 

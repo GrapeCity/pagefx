@@ -1,9 +1,8 @@
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
-    internal interface IVectorType : ITypeData, ISpecialType, IAbcFileSubject
+    internal interface IVectorType : ITypeData
     {
         IType Parameter { get; }
     }

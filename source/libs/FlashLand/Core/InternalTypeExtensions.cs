@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -79,13 +80,16 @@ namespace DataDynamics.PageFX.FlashLand.Core
         {
             if (type == null) throw new ArgumentNullException("type");
 
-	        object data = type.Data;
-	        if (data == null) return null;
+	        object tag = type.Data;
+	        if (tag == null) return null;
 
-	        var agent = data as ITypeData;
-			if (agent != null) return agent.Name;
+	        var data = tag as ITypeData;
+			if (data != null)
+			{
+				return data.Name;
+			}
 
-	        return data as AbcMultiname;
+	        return tag as AbcMultiname;
         }
 
         public static bool IsStringInterface(this IType type)

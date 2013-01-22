@@ -8,5 +8,9 @@ namespace DataDynamics.PageFX.FlashLand.Core
 		IType Type { get; }
 
 		AbcMultiname Name { get; }
+
+		bool IsDefined(AbcFile abc);
+
+		ITypeData Import(AbcFile abc);
 	}
 }

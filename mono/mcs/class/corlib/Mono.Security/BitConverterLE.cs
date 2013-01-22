@@ -113,28 +113,23 @@ namespace Mono.Security
             return new byte[] { b0, b1, b2, b3, b4, b5, b6, b7 };
         }
 
-        private static ByteArray CreateByteArray()
+	    internal static byte[] GetBytes(float value)
         {
-	        return new ByteArray(true);
-        }
-
-        internal static byte[] GetBytes(float value)
-        {
-			ByteArray arr = CreateByteArray();
+			ByteArray arr = ByteArrayFactory.Create(true);
 			arr.WriteFloat(value);
 	        return ReadBytes(arr, 4);
         }
 
         internal static byte[] GetBytes(double value)
         {
-            ByteArray arr = CreateByteArray();
+            ByteArray arr = ByteArrayFactory.Create(true);
 			arr.WriteDouble(value);
 	        return ReadBytes(arr, 8);
         }
 
 		private static byte[] ReadBytes(ByteArray byteArray, int n)
 		{
-			byteArray.Seek(0);
+			byteArray.position = 0;
 			byte[] res = new byte[n];
 			for (int i = 0; i < n; ++i)
 				res[i] = (byte)byteArray.ReadByte();
@@ -193,24 +188,15 @@ namespace Mono.Security
                            | ((ulong)value[startIndex + 7] << 56));
         }
 
-		private static ByteArray CreateByteArray(byte[] value, int startIndex)
-		{
-			ByteArray arr = CreateByteArray();
-			while (startIndex < value.Length)
-				arr.WriteByte(value[startIndex++]);
-			arr.Seek(0);
-			return arr;
-		}
-
-        internal static float ToSingle(byte[] value, int startIndex)
+	    internal static float ToSingle(byte[] value, int startIndex)
         {
-            ByteArray arr = CreateByteArray(value, startIndex);
+            ByteArray arr = ByteArrayFactory.Create(true, value, startIndex);
             return arr.ReadFloat();
         }
 
         internal static double ToDouble(byte[] value, int startIndex)
         {
-			ByteArray arr = CreateByteArray(value, startIndex);
+			ByteArray arr = ByteArrayFactory.Create(true, value, startIndex);
             return arr.ReadDouble();
         }
     }

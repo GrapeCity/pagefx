@@ -79,7 +79,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// </summary>
         public AbcMultiname Name { get; set; }
 
-        /// <summary>
+		public bool IsDefined(AbcFile abc)
+		{
+			return abc.IsDefined(this);
+		}
+
+		ITypeData ITypeData.Import(AbcFile abc)
+		{
+			return abc.ImportInstance(this);
+		}
+
+		/// <summary>
         /// Gets namespace name
         /// </summary>
         public string NamespaceString
@@ -139,7 +149,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     {
 						if (IsError)
 						{
-							return _baseInstance = type.Assembly.Corlib().CustomData().ObjectInstance;
+							// TODO: use Native.Object
+							return null;
 						}
 
                         var baseType = type.BaseType;

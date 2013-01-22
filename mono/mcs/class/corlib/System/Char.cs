@@ -757,7 +757,7 @@ namespace System
             // LAMESPEC: ECMA draft lists this as returning ToString (null), 
             // However it doesn't list another ToString() method.
             //return new String(m_value, 1);
-            return avm.fromCharCode(m_value);
+            return String.fromCharCode(m_value);
         }
 
         public static string ToString(char c)

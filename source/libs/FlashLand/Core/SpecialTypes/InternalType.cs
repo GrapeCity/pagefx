@@ -17,6 +17,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 			get { return null; }
 	    }
 
+	    public bool IsDefined(AbcFile abc)
+	    {
+		    return true;
+	    }
+
+	    public ITypeData Import(AbcFile abc)
+	    {
+		    return this;
+	    }
+
 	    public override string ToString()
         {
             return Type.ToString();

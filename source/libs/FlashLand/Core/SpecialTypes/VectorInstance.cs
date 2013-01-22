@@ -31,25 +31,27 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
 	    public IType Parameter { get; private set; }
 
-	    public AbcFile Abc { get; set; }
+	    public AbcMultiname Name { get; private set; }
 
-	    public AbcMultiname Name
-        {
-            get
-            {
-                if (_name != null) return _name;
+	    private AbcMultiname DefineName(AbcFile abc)
+		{
+			//TODO: Process builtin vector types (Vector$double, Vector$int, Vector$uint)
+			var param = abc.GetTypeName(Parameter, true);
+			return abc.DefineVectorTypeName(param);
+		}
 
-                //TODO: Process builtin vector types (Vector$double, Vector$int, Vector$uint)
+	    public bool IsDefined(AbcFile abc)
+	    {
+		    return abc.IsDefined(Name);
+	    }
 
-                var param = Abc.GetTypeName(Parameter, true);
-                _name = Abc.DefineVectorTypeName(param);
+	    public ITypeData Import(AbcFile abc)
+	    {
+		    var name = Name ?? DefineName(abc);
+		    return new VectorInstance(Type) {Name = name};
+	    }
 
-                return _name;
-            }
-        }
-        private AbcMultiname _name;
-
-        public override string ToString()
+	    public override string ToString()
         {
             return Type.ToString();
         }

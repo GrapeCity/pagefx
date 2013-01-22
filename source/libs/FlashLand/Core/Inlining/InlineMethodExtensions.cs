@@ -10,9 +10,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 
 		public static InlineMethodInfo GetInlineInfo(this IMethod method)
 		{
+			QName qname = null;
 			string name = null;
-			string ns = null;
-
 			var kns = KnownNamespace.Global;
 			var kind = InlineKind.Function;
 
@@ -37,13 +36,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 					case Attrs.AS3:
 						kns = KnownNamespace.AS3;
 						break;
+
+					case Attrs.QName:
+						qname = QName.FromAttribute(attr);
+						break;
 				}
 			}
 
-			if (name == null)
+			if (name == null && qname == null)
+			{
 				return null;
+			}
 
-			var qname = ns != null ? new QName(name, ns) : new QName(name, kns);
+			if (qname == null)
+			{
+				qname = new QName(name, kns);
+			}
+
 			return new InlineMethodInfo(qname, kind);
 		}
 	}

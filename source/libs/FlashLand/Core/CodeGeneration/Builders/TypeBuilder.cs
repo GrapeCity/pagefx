@@ -71,19 +71,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				return type.Data;
 			}
 
-			BuildType(type);
-
-            var abcSubject = type.Data as IAbcFileSubject;
-            if (abcSubject != null)
-            {
-	            abcSubject.Abc = Abc;
-            }
-
-            return type.Data;
-        }
-
-		private void BuildType(IType type)
-		{
 			var tag = ImportType(type);
 
 			bool isImported = false;
@@ -107,7 +94,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				if (!isImported)
 					BuildMembers(type);
 			}
-		}
+
+			return type.Data;
+        }
 
 		#region RegisterType
         private void RegisterType(IType type)
@@ -173,10 +162,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 		        return Abc.ImportInstance(instance);
 	        }
 
+	        var data = tag as ITypeData;
+			if (data != null)
+			{
+				return data.Import(Abc);
+			}
+			
 	        //TODO: avoid direct usage of AbcMultiname as tag for types, wrap to ITypeAgent impl always
 	        var name = tag as AbcMultiname;
 	        if (name != null)
+	        {
 		        return Abc.ImportConst(name);
+	        }
 
 	        return null;
         }
@@ -329,7 +326,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             if (type.Is(SystemTypeCode.Exception))
             {
-                superType = type.Assembly.Corlib().CustomData().ErrorInstance;
+				// TODO: use Native.Error
+                // superType = typeof(Error);
                 superName = Abc.BuiltinTypes.Error;
                 return;
             }

@@ -36,13 +36,7 @@ public static class avm
 
     [MethodImpl(MethodImplOptions.InternalCall)]
     public static extern string ToString(object value);
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	public static extern string fromCharCode(char value);
-    #endregion
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	internal static extern double parseFloat(string s); // Avm.Global.parseFloat
+	#endregion
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
     internal static extern void Console_Write(string s);
@@ -52,9 +46,6 @@ public static class avm
 
     [MethodImpl(MethodImplOptions.InternalCall)]
     public static extern void trace(string s);
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	public static extern int getTimer(); // flash.utils.Global.getTimer();
 
 	public static extern bool IsFlashPlayer
     {
@@ -78,17 +69,13 @@ public static class avm
 	internal static extern object Construct(object receiver, object ns, string name);
 
     #region GetProperty
-    [MethodImpl(MethodImplOptions.InternalCall)]
-	public static extern object GetProperty(object ns, string name);
-
+    
     [MethodImpl(MethodImplOptions.InternalCall)]
 	public static extern object GetProperty(object obj, object ns, string name);
 
     [MethodImpl(MethodImplOptions.InternalCall)]
 	public static extern void SetProperty(object obj, object ns, string name, object value);
 
-    [MethodImpl(MethodImplOptions.InternalCall)]
-	public static extern void SetProperty(object ns, string name, object value);
     #endregion
 
     [MethodImpl(MethodImplOptions.InternalCall)]

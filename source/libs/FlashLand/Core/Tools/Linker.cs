@@ -284,11 +284,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 				return;
 			}
 
-			var qname = type.FindAttribute(Attrs.QName);
-			if (qname == null)
+			var qnameAttr = type.FindAttribute(Attrs.QName);
+			if (qnameAttr == null)
 				throw new InvalidOperationException();
 
-			// TODO: reuse code from MemberKey
+			var qname = QName.FromAttribute(qnameAttr);
+			type.Data = new NativeType(type, qname);
 		}
 
         private void LinkType(IType type, AbcInstance instance)
@@ -298,19 +299,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             if (IsCorLib) // TODO: this is now valid for flash API assemblies only
             {
-                if (instance.IsGlobal)
-                {
-                    switch (instance.NameString)
-                    {
-                        case Const.AvmGlobalTypes.Object:
-                            Assembly.CustomData().ObjectInstance = instance;
-                            break;
-
-                        case Const.AvmGlobalTypes.Error:
-                            Assembly.CustomData().ErrorInstance = instance;
-                            break;
-                    }
-                }
                 instance.IsNative = true;
             }
 
