@@ -719,11 +719,12 @@ namespace System
             return ToLower(c, CultureInfo.CurrentCulture);
         }
 
-	    [MethodImpl(MethodImplOptions.InternalCall)]
-	    public static extern char ToLowerInvariant(char c);
-		// return (char)Avm.String.fromCharCode(c).toLowerCase().charCodeAt(0);
-        
-        public static char ToLower(char c, CultureInfo culture)
+	    public static char ToLowerInvariant(char c)
+	    {
+		    return string.fromCharCode(c).toLowerCase().GetChar(0);
+	    }
+
+	    public static char ToLower(char c, CultureInfo culture)
         {
             if (culture == null)
                 throw new ArgumentNullException("culture");

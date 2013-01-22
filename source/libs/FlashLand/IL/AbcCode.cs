@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.CompilerServices;
@@ -2960,18 +2961,17 @@ namespace DataDynamics.PageFX.FlashLand.IL
             FindPropertyStrict(name);
             
             var scope = GetClassInitScope(instance);
-            int n = scope.Length;
-            for (int i = 0; i < n; ++i)
-            {
-                Getlex(scope[i]);
-                PushScope();
-            }
+	        foreach (var scopeName in scope)
+	        {
+		        Getlex(scopeName);
+		        PushScope();
+	        }
 
-            //Push base type on the stack
+			//Push base type on the stack
             Getlex(instance.BaseTypeName);
             Add(InstructionCode.Newclass, klass);
 
-            for (int i = 0; i < n; ++i)
+            for (int i = 0; i < scope.Length; ++i)
                 PopScope();
 
             InitProperty(name);
