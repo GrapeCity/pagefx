@@ -68,33 +68,32 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			var name = trait.Name;
 
-			//TODO:
-			var FiledInfoInstance = _generator.Corlib.GetInstance(CorlibTypeId.FieldInfo);
-			code.CreateInstance(FiledInfoInstance);
+			var fieldInfo = _generator.Corlib.GetInstance(CorlibTypeId.FieldInfo);
+			code.CreateInstance(fieldInfo);
 			code.SetLocal(varField);
 
 			var ns = name.Namespace;
 			code.GetLocal(varField);
 			code.PushNamespace(ns);
-			code.SetProperty("ns");
+			code.SetField(FieldId.FieldInfo_Namespace);
 
 			code.GetLocal(varField);
 			code.PushString(field.Name);
-			code.SetProperty("name");
+			code.SetField(FieldId.FieldInfo_Name);
 
 			int typeIndex = GetTypeId(field.Type);
 			code.GetLocal(varField);
 			code.PushInt(typeIndex);
-			code.SetProperty("type");
+			code.SetField(FieldId.FieldInfo_Type);
 
 			typeIndex = GetTypeId(field.DeclaringType);
 			code.GetLocal(varField);
 			code.PushInt(typeIndex);
-			code.SetProperty("declaringType");
+			code.SetField(FieldId.FieldInfo_DeclType);
 
 			code.GetLocal(varField);
 			code.PushBool(field.IsStatic);
-			code.SetProperty("isStatic");
+			code.SetField(FieldId.FieldInfo_IsStatic);
 
 			if (GlobalSettings.ReflectionSupport)
 			{

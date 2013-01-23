@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Native;
 using PageFX;
 
 //Contains:
@@ -56,25 +57,25 @@ public static class avm
     /// <summary>
     /// Returns global package namespace
     /// </summary>
-    internal static extern object GlobalPackage
+    internal static extern Namespace GlobalPackage
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         get;
     }
 
     [MethodImpl(MethodImplOptions.InternalCall)]
-    internal static extern object Findpropstrict(object ns, string name);
+    internal static extern object Findpropstrict(Namespace ns, string name);
 
     [MethodImpl(MethodImplOptions.InternalCall)]
-	internal static extern object Construct(object receiver, object ns, string name);
+	internal static extern object Construct(object receiver, Namespace ns, string name);
 
     #region GetProperty
     
     [MethodImpl(MethodImplOptions.InternalCall)]
-	public static extern object GetProperty(object obj, object ns, string name);
+	internal static extern object GetProperty(object obj, Namespace ns, string name);
 
     [MethodImpl(MethodImplOptions.InternalCall)]
-	public static extern void SetProperty(object obj, object ns, string name, object value);
+	internal static extern void SetProperty(object obj, Namespace ns, string name, object value);
 
     #endregion
 

@@ -37,6 +37,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Native;
 
 namespace System
 {
@@ -65,13 +66,13 @@ namespace System
             Type type2 = o2.GetType();
             if (type1 != type2) return false;
 
-            object[] vals1 = type1.GetFieldValues(o1);
-			object[] vals2 = type2.GetFieldValues(o2);
+			NativeArray vals1 = type1.GetFieldValues(o1);
+			NativeArray vals2 = type2.GetFieldValues(o2);
             if (vals1 == null) return vals2 == null;
             if (vals2 == null) return false;
 
-            int n = vals1.Length;
-            if (n != vals2.Length) return false;
+            uint n = vals1.length;
+            if (n != vals2.length) return false;
             for (int i = 0; i < n; ++i)
             {
                 if (!Equals(vals1[i], vals2[i]))
@@ -80,7 +81,7 @@ namespace System
             return true;
         }
 
-		internal object[] GetFieldValues()
+        internal NativeArray GetFieldValues()
         {
             return GetType().GetFieldValues(this);
         }
@@ -101,10 +102,10 @@ namespace System
         public override int GetHashCode()
         {
             int h = 0;
-			object[] vals = GetFieldValues();
+			NativeArray vals = GetFieldValues();
             if (vals != null)
             {
-                int n = vals.Length;
+                uint n = vals.length;
                 for (int i = 0; i < n; ++i)
                 {
                     object v = vals[i];

@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 		public static AbcMultiname CallName(this IMethod method)
 		{
 			var call = method.Data as IMethodCall;
-			return call != null ? call.Name : null;
+			return call != null ? call.Name : method.Data as AbcMultiname;
 		}
 
 		public static bool IsInitializer(this IMethod method)

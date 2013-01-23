@@ -30,7 +30,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				    {"XMLList", new AvmXmlInlines()},
 			    };
 
-		public static AbcCode Build(AbcFile abc, AbcInstance instance, IMethod method)
+		public static InlineCall Build(AbcFile abc, AbcInstance instance, IMethod method)
 	    {
 		    if (instance != null && instance.IsNative)
             {
@@ -58,7 +58,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		    return GetImpl(abc, type, method);
         }
 
-	    private static AbcCode GetImpl(AbcFile abc, IType type, IMethod method)
+	    private static InlineCall GetImpl(AbcFile abc, IType type, IMethod method)
         {
 			var info = method.GetInlineInfo();
 			if (info != null)
@@ -75,7 +75,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		    return null;
         }
 
-	    private static AbcCode Call(AbcFile abc, IMethod method, InlineMethodInfo info)
+	    private static InlineCall Call(AbcFile abc, IMethod method, InlineMethodInfo info)
 	    {
 		    var code = new AbcCode(abc);
 		    var name = info.Name.Define(abc);
@@ -121,7 +121,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				    break;
 		    }
 
-		    return code;
+		    return new InlineCall(method, name, code);
 	    }
     }
 }

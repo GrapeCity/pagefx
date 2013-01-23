@@ -155,8 +155,10 @@ namespace System
             return (d == PositiveInfinity || d == NegativeInfinity);
         }
 
-	    [MethodImpl(MethodImplOptions.InternalCall)]
-	    public static extern bool IsNaN(double d); // Avm.Global.isNaN(d)
+	    public static bool IsNaN(double d)
+	    {
+		    return Native.Global.isNaN(d);
+	    }
         
         public static bool IsNegativeInfinity(double d)
         {

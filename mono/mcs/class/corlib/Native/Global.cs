@@ -6,7 +6,11 @@ namespace Native
 	[GlobalFunctions]
 	internal static class Global
 	{
-		[InlineFunction("parseFloat")]
+		[InlineFunction]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public extern static bool isNaN(double n);
+
+		[InlineFunction]
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public extern static double parseFloat(string str);
 

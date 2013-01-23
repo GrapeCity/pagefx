@@ -41,7 +41,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
 	internal sealed class InlineCall : IMethodCall
 	{
-		public InlineCall(IMethod method, AbcCode inlineCode)
+		public InlineCall(IMethod method, AbcMultiname name, AbcCode inlineCode)
 		{
 			if (method == null)
 				throw new ArgumentNullException("method");
@@ -49,15 +49,13 @@ namespace DataDynamics.PageFX.FlashLand.Core
 				throw new ArgumentNullException("inlineCode");
 
 			Method = method;
+			Name = name;
 			InlineCode = inlineCode;
 		}
 
 		public IMethod Method { get; private set; }
 
-		public AbcMultiname Name
-		{
-			get { return null; }
-		}
+		public AbcMultiname Name { get; private set; }
 
 		public AbcCode InlineCode { get; private set; }
 	}

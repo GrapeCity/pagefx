@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using Native;
 
 namespace System.Reflection
 {
@@ -163,7 +164,7 @@ namespace System.Reflection
 		}
 
 
-	    internal object m_getValue;
+	    internal Function m_getValue;
 
 		[DebuggerHidden]
 		[DebuggerStepThrough]

@@ -43,10 +43,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return SetData(method, call);
             }
 
-            var inlineCode = InlineCodeGenerator.Build(Abc, null, method);
-			if (inlineCode != null)
+            var inlineCall = InlineCodeGenerator.Build(Abc, null, method);
+			if (inlineCall != null)
             {
-				return SetData(method, new InlineCall(method, inlineCode));
+				return SetData(method, inlineCall);
             }
 
             var instance = type.AbcInstance();
@@ -74,10 +74,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private IMethodCall Resolve(IMethod method, AbcInstance instance)
         {
-            var inlineCode = InlineCodeGenerator.Build(Abc, instance, method);
-			if (inlineCode != null)
+            var inlineCall = InlineCodeGenerator.Build(Abc, instance, method);
+			if (inlineCall != null)
 			{
-				return new InlineCall(method, inlineCode);
+				return inlineCall;
 			}
 
 	        if (method.CodeType == MethodCodeType.Native)
@@ -110,10 +110,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private IMethodCall ResolveInternalCall(IMethod method, AbcInstance instance)
         {
-            var inlineCode = InlineCodeGenerator.Build(Abc, instance, method);
-            if (inlineCode != null)
+            var inlineCall = InlineCodeGenerator.Build(Abc, instance, method);
+            if (inlineCall != null)
             {
-	            return new InlineCall(method, inlineCode);
+	            return inlineCall;
             }
 
             //special methods

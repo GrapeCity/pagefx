@@ -279,17 +279,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 		private void LinkNativeType(IType type)
 		{
-			if (!type.HasAttribute(Attrs.Native))
+			if (!IsCorLib) return;
+
+			if (type.HasAttribute(Attrs.Native))
 			{
+				var qnameAttr = type.FindAttribute(Attrs.QName);
+				if (qnameAttr == null)
+					throw new InvalidOperationException();
+
+				var qname = QName.FromAttribute(qnameAttr);
+				type.Data = new NativeType(type, qname);
 				return;
 			}
 
-			var qnameAttr = type.FindAttribute(Attrs.QName);
-			if (qnameAttr == null)
-				throw new InvalidOperationException();
-
-			var qname = QName.FromAttribute(qnameAttr);
-			type.Data = new NativeType(type, qname);
+			if (type.HasAttribute(Attrs.GlobalFunctions))
+			{
+				type.Data = new GlobalFunctionsContainer(type);
+			}
 		}
 
         private void LinkType(IType type, AbcInstance instance)

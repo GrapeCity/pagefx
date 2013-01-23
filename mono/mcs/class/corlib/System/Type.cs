@@ -48,9 +48,9 @@ namespace System
         #region Fields
         internal int index;
         internal string ns;
-		internal string name;
-        internal object nsobj;
-        
+        internal Namespace nsobj;
+        internal string name;
+
         int flags;
         internal int kind;
 
@@ -60,13 +60,13 @@ namespace System
         internal int rank = -1;
 
         FieldInfo[] m_myfields;
-		internal Function m_myfieldsInit;
+        internal Function m_myfieldsInit;
         
-        int[] ifaces;
+        NativeArray ifaces;
         internal Function m_box;
         internal Function m_unbox;
-		internal Function m_copy;
-		internal Function m_create;
+        internal Function m_copy;
+        internal Function m_create;
         #endregion
 
         #region Const
@@ -89,7 +89,7 @@ namespace System
                 if (kind != KIND_ENUM)
                     return null;
                 if (enumInfo == null)
-					enumInfo = (EnumInfo)m_enumInfoInit.call(null);
+                    enumInfo = (EnumInfo)m_enumInfoInit.call(null);
                 return enumInfo;
             }
         }
@@ -103,7 +103,7 @@ namespace System
                 if (m_myfields == null)
                 {
                     if (m_myfieldsInit != null)
-						m_myfields = (FieldInfo[])m_myfieldsInit.call(null);
+                        m_myfields = (FieldInfo[])m_myfieldsInit.call(null);
                     else
                         m_myfields = new FieldInfo[0];
                 }
@@ -128,7 +128,7 @@ namespace System
         {
             get
             {
-                if (ns == null || ns.Length == 0)
+                if (string.IsNullOrEmpty(ns))
                     return name;
                 return ns + Delimiter + name;
             }
@@ -158,16 +158,16 @@ namespace System
         internal object Unbox(object obj)
         {
             if (m_unbox != null)
-				return m_unbox.call(null, obj);
+                return m_unbox.call(null, obj);
             if (m_copy != null)
-				return m_copy.call(null, obj);
+                return m_copy.call(null, obj);
             return obj;
         }
 
         public object CreateInstance()
         {
             if (m_create != null)
-				return m_create.call(null);
+                return m_create.call(null);
             return CreateInstanceDefault();
         }
 
@@ -177,32 +177,32 @@ namespace System
             return avm.Construct(global, nsobj, name);
         }
 
-        internal object GetFieldValue(object fns, string fname)
+        internal object GetFieldValue(Namespace fns, string fname)
         {
             object global = avm.Findpropstrict(nsobj, name);
             object klass = avm.GetProperty(global, nsobj, name);
             return avm.GetProperty(klass, fns, fname);
         }
 
-        internal void SetFieldValue(object fns, string fname, object value)
+		internal void SetFieldValue(Namespace fns, string fname, object value)
         {
             object global = avm.Findpropstrict(nsobj, name);
             object klass = avm.GetProperty(global, nsobj, name);
             avm.SetProperty(klass, fns, fname, value);
         }
 
-	    internal object[] GetFieldValues(object obj)
-	    {
-		    FieldInfo[] fields = MyFields;
-		    if (fields == null) return null;
-		    int n = fields.Length;
-		    object[] arr = new object[n];
-		    for (int i = 0; i < n; ++i)
-			    arr[i] = fields[i].GetValue(obj);
-		    return arr;
-	    }
+		internal NativeArray GetFieldValues(object obj)
+        {
+            FieldInfo[] fields = MyFields;
+            if (fields == null) return null;
+            int n = fields.Length;
+			NativeArray arr = new NativeArray(n);
+            for (int i = 0; i < n; ++i)
+                arr[i] = fields[i].GetValue(obj);
+            return arr;
+        }
 
-	    internal void CopyFields(object from, object to)
+        internal void CopyFields(object from, object to)
         {
             FieldInfo[] arr = MyFields;
             if (arr == null) return;
@@ -880,11 +880,11 @@ namespace System
             if (ifaces == null)
                 return new Type[0];
 
-            int n = ifaces.Length;
+            uint n = ifaces.length;
             Type[] arr = new Type[n];
             for (int i = 0; i < n; ++i)
             {
-                int id = ifaces[i];
+                int id = ifaces.GetInt32(i);
                 arr[i] = Assembly.GetType(id);
             }
 
@@ -1127,7 +1127,7 @@ namespace System
             {
                 if (m_methods == null)
                 {
-					object mm = m_methodsInit.call(null);
+                    object mm = m_methodsInit.call(null);
                     if (mm is MethodInfo[])
                     {
                         m_methods = (MethodInfo[]) mm;
@@ -1159,7 +1159,7 @@ namespace System
                 }
                 if (m_constructors  == null)
                 {
-					m_constructors = (ConstructorInfo[])m_constructorsInit.call(null);
+                    m_constructors = (ConstructorInfo[])m_constructorsInit.call(null);
                     if (m_constructors == null)
                     {
                         Console.WriteLine("Constructors is null");
@@ -1184,7 +1184,6 @@ namespace System
 
         internal Function m_methodsInit;
         internal Function m_constructorsInit;
-        
 
         private bool CheckSig(bool isCtor, MethodBase method, string name, BindingFlags bindingAttr, CallingConventions callingConvention, Type[] types, ParameterModifier[] modifiers)
         {
@@ -1329,8 +1328,8 @@ namespace System
 
             if (m_properties == null)
             {
-
-				m_properties = (PropertyInfo[])m_propertiesInit.call(null);
+                
+                m_properties = (PropertyInfo[])m_propertiesInit.call(null);
                 if (m_properties == null)
                 {
                     Console.WriteLine("m_properties is null");

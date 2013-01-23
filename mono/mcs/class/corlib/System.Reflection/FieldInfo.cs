@@ -41,12 +41,12 @@ namespace System.Reflection
     [Serializable]
     public class FieldInfo : MemberInfo
     {
-        public int type;
-        public object ns;
-        public string name;
-        public int declaringType;
-        public int flags;
-        public bool isStatic;
+        internal int type;
+		internal Namespace ns;
+		internal string name;
+		internal int declaringType;
+		internal int flags;
+		internal bool isStatic;
 
         public virtual FieldAttributes Attributes
         {
@@ -191,7 +191,7 @@ namespace System.Reflection
                 v = avm.GetProperty(obj, ns, name);
             Function box = ft.m_box;
             if (box != null)
-				v = box.call(null, v);
+                v = box.call(null, v);
             return v;
         }
 
@@ -201,7 +201,7 @@ namespace System.Reflection
             Function unbox = ft.m_unbox;
             if (unbox != null)
             {
-				value = unbox.call(null, value);
+                value = unbox.call(null, value);
             }
             if (isStatic)
                 ft.SetFieldValue(ns, name, value);

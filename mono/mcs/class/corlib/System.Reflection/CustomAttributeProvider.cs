@@ -31,6 +31,7 @@
 //
 
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Native;
 
 namespace System.Reflection
@@ -40,14 +41,14 @@ namespace System.Reflection
     {
         internal object[] m_customAttrs;
 
-        internal Function m_customAttrsInit;
+        public Function m_customAttrsInit;
 
         internal object[] CustomAttrs
         {
             get
             {
                 if (m_customAttrs == null)
-					m_customAttrs = (object[])m_customAttrsInit.call(null);
+                    m_customAttrs = (object[])m_customAttrsInit.call(null);
                 return m_customAttrs;
             }
         }

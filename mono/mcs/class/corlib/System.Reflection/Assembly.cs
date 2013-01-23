@@ -29,8 +29,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Collections.Generic;
+using System.IO;
+using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Collections;
+using System.Security.Permissions;
 using Native;
 
 #if NOT_PFX
@@ -217,8 +220,8 @@ public virtual FileStream GetFile(string name)
         #endregion
 
         #region PageFX ReflectionInfo
-		internal static List<Type> Types;
-        private static List<Type> ArrayTypes;
+        internal static NativeArray Types;
+        internal static NativeArray ArrayTypes;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private static extern int GetTypeNum();
@@ -227,8 +230,8 @@ public virtual FileStream GetFile(string name)
         {
             Assembly asm = Instance;
             string name = avm.Concat("__inittype__", index);
-			Function f = (Function)avm.GetProperty(asm, avm.GlobalPackage, name);
-            f.call(null, type);
+            object v = avm.GetProperty(asm, avm.GlobalPackage, name);
+            ((Function)v).call(null, type);
         }
         
         internal static Type GetType(int index)
@@ -238,12 +241,10 @@ public virtual FileStream GetFile(string name)
             {
                 int n = GetTypeNum();
                 if (n <= 0) return null;
-				Types = new List<Type>(n);
-	            for (int i = 0; i < n; i++)
-		            Types.Add(null);
-	            ArrayTypes = new List<Type>();
+                Types = new NativeArray(n);
+                ArrayTypes = new NativeArray();
             }
-            Type type = Types[index];
+            Type type = (Type)Types[index];
             if (type == null)
             {
                 type = new Type();
@@ -251,7 +252,7 @@ public virtual FileStream GetFile(string name)
                 type.index = index;
                 Types[index] = type;
                 if (type.IsArray)
-                    ArrayTypes.Add(type);
+                    ArrayTypes.push(type);
             }
             return type;
         }
@@ -271,7 +272,7 @@ public virtual FileStream GetFile(string name)
                 throw new ArgumentNullException("elementType");
 
             Type type;
-            int n = ArrayTypes.Count;
+            uint n = ArrayTypes.length;
             for (int i = 0; i < n; ++i)
             {
                 type = (Type)ArrayTypes[i];
@@ -282,7 +283,7 @@ public virtual FileStream GetFile(string name)
                 }
             }
 
-            n = Types.Count;
+            n = Types.length;
 
             type = new Type();
             type.index = (int)n;
@@ -291,8 +292,8 @@ public virtual FileStream GetFile(string name)
             type.ns = elementType.ns;
             type.name = GetArrayTypeName(elementType, lengths, bounds);
             type.kind = Type.KIND_ARRAY;
-            Types.Add(type);
-            ArrayTypes.Add(type);
+            Types.push(type);
+            ArrayTypes.push(type);
             return type;
         }
         #endregion
@@ -311,7 +312,7 @@ public virtual FileStream GetFile(string name)
         private static Type[] GetTypes(bool exportedOnly)
         {
             if (!InitTypes()) return null;
-            int n = Types.Count;
+            uint n = Types.length;
             Type[] types = new Type[n];
             for (int i = 0; i < n; ++i)
                 types[i] = GetType(i);
@@ -341,7 +342,7 @@ public virtual FileStream GetFile(string name)
         internal static Type InternalGetType(String name, bool throwOnError, bool ignoreCase)
         {
             if (!InitTypes()) return null;
-            int n = Types.Count;
+            uint n = Types.length;
             for (int i = 0; i < n; ++i)
             {
                 Type type = GetType(i);

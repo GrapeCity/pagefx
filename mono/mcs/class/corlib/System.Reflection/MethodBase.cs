@@ -126,7 +126,7 @@ namespace System.Reflection
                     throw new TargetParameterCountException("Parameter count mismatch.");
             }
 
-			return m_function.apply(null, arr);
+            return m_function.apply(null, arr);
         }
 
         
@@ -142,6 +142,18 @@ namespace System.Reflection
 
             return pi.Length;
         }
+
+#if NOT_PFX
+        [DebuggerHidden]
+        [DebuggerStepThrough]
+#if NET_2_0 || BOOTSTRAP_NET_2_0
+		virtual
+#endif
+        public Object Invoke(Object obj, Object[] parameters)
+        {
+            return Invoke(obj, 0, null, parameters, null);
+        }
+#endif
 
 #if NOT_PFX
 #if NET_2_0 || BOOTSTRAP_NET_2_0

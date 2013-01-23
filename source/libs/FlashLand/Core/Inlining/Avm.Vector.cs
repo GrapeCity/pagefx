@@ -10,17 +10,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 	{
 		public static readonly InlineCodeProvider Instance = new AvmVectorInlines();
 
-		public static AbcCode Get(AbcFile abc, IMethod method)
+		public static InlineCall Get(AbcFile abc, IMethod method)
 		{
-			var code = Instance.GetImplementation(abc, method);
-			if (code != null)
+			var call = Instance.GetImplementation(abc, method);
+			if (call != null)
 			{
-				return code;
+				return call;
 			}
 
-			code = new AbcCode(abc);
+			var code = new AbcCode(abc);
 			code.CallAS3(method.Name, method.Parameters.Count);
-			return code;
+			return new InlineCall(method, null, code);
 		}
 
 		[InlineImpl(Name = ".ctor", Attrs = MethodAttrs.Constructor)]

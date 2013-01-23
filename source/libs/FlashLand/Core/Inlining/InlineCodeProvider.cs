@@ -73,7 +73,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 			}
 		}
 
-		public AbcCode GetImplementation(AbcFile abc, IMethod method)
+		public InlineCall GetImplementation(AbcFile abc, IMethod method)
 		{
 			IList<KeyValuePair<Func<IMethod, bool>, Action<IMethod, AbcCode>>> list;
 			if (!_impls.TryGetValue(method.Name, out list))
@@ -90,7 +90,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				{
 					var code = new AbcCode(abc);
 					pair.Value(method, code);
-					return code;
+					return new InlineCall(method, null, code);
 				}
 			}
 
