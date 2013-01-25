@@ -220,5 +220,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		CompilerGenerated = 0x40000,
 		ExplicitImplementation = 0x80000,
 		PInvoke = 0x100000,
+		Partial = 0x200000,
 	}
 }

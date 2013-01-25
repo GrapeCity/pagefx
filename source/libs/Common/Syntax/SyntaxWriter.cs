@@ -239,14 +239,19 @@ namespace DataDynamics.PageFX.Common.Syntax
         public bool WriteKeyword<T>(T value, bool space) where T:struct 
         {
             string s = FormatEnum(value);
-            if (!string.IsNullOrEmpty(s))
-            {
-                Write(s);
-                if (space) Write(" ");
-                return true;
-            }
-            return false;
+	        return WriteKeyword(s, space);
         }
+
+		public bool WriteKeyword(string keyword, bool space)
+		{
+			if (!string.IsNullOrEmpty(keyword))
+			{
+				Write(keyword);
+				if (space) Write(" ");
+				return true;
+			}
+			return false; 
+		}
 
         public bool WriteKeyword<T>(T value) where T:struct 
         {
@@ -675,6 +680,11 @@ namespace DataDynamics.PageFX.Common.Syntax
             //declaration
             WriteTab();
             WriteKeyword(type.Visibility);
+
+			if (type.IsPartial)
+			{
+				WriteKeyword("partial", true);
+			}
 
             var invoke = IsDelegate(type);
             if (invoke != null)

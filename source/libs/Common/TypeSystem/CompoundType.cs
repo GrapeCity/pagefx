@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.Services;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -65,7 +64,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
         }
 
-        public bool IsBeforeFieldInit
+	    public bool IsPartial
+	    {
+			get { return false; }
+		    set { throw new NotSupportedException(); }
+	    }
+
+	    public bool IsBeforeFieldInit
         {
             get { return ElementType != null && ElementType.IsBeforeFieldInit; }
         	set

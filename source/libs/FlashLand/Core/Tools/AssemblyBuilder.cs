@@ -359,7 +359,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 }
             }
             //auto detection of corlib dependency
-            if (!IsCoreApi && !HasCorlibRef)
+            if (!HasCorlibRef)
             {
                 string corlib = GlobalSettings.GetCorlibPath(true);
                 //string dir = Path.GetDirectoryName(path);
@@ -374,9 +374,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         private void LoadReference(string refPath)
         {
             var assembly = LanguageInfrastructure.CLI.Deserialize(refPath, null);
-            if (!Linker.Run(assembly))
-                throw new InvalidOperationException();
+	        Linker.Run(assembly);
+
             _refs.Add(assembly);
+
 			if (assembly.IsCorlib)
 			{
 				_corlib = assembly;
@@ -707,14 +708,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         {
             if (_genericVector != null) return _genericVector;
 
-            string src = GetType().GetTextResource("Resources.Vector.cs");
-
-            var type = new GenericType
-                           {
-                               Namespace = "Avm",
-                               Name = "Vector",
-                               SourceCode = src
-                           };
+	        var type = new GenericType
+		        {
+			        Namespace = "Avm",
+			        Name = "Vector"
+		        };
 
             var T = new GenericParameter
                         {
@@ -726,10 +724,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             _genericVector = type;
 
-			if (IsCoreApi)
-			{
-				RegisterType(type);
-			}
+//			if (IsCoreApi)
+//			{
+//				RegisterType(type);
+//			}
 
         	return _genericVector;
         }
@@ -805,6 +803,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             var type = new TypeImpl();
             bool isInterface = instance.IsInterface;
             type.TypeKind = isInterface ? TypeKind.Interface : TypeKind.Class;
+
+			if (!isInterface)
+			{
+				type.IsPartial = true;
+			}
 
             string ns = instance.NamespaceString;
             if (string.IsNullOrEmpty(ns))
