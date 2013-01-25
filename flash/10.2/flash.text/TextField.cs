@@ -14,7 +14,7 @@ namespace flash.text
     [PageFX.AbcInstance(218)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextField : flash.display.InteractiveObject
+    public partial class TextField : flash.display.InteractiveObject
     {
         /// <summary>
         /// When set to true and the text field is not in focus, Flash Player highlights the

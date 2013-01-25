@@ -10,7 +10,7 @@ namespace flash.events
     [PageFX.AbcInstance(71)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Event : Avm.Object
+    public partial class Event : Avm.Object
     {
         /// <summary>
         /// Defines the value of the type property of an activate event object.

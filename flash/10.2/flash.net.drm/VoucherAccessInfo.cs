@@ -6,7 +6,7 @@ namespace flash.net.drm
     [PageFX.AbcInstance(372)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class VoucherAccessInfo : Avm.Object
+    public partial class VoucherAccessInfo : Avm.Object
     {
         public extern virtual Avm.String displayName
         {

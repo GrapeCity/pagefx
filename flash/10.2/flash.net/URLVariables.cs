@@ -15,7 +15,7 @@ namespace flash.net
     [PageFX.AbcInstance(336)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class URLVariables : Avm.Object
+    public partial class URLVariables : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern URLVariables(Avm.String source);

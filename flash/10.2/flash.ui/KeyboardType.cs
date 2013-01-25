@@ -6,7 +6,7 @@ namespace flash.ui
     [PageFX.AbcInstance(352)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class KeyboardType : Avm.Object
+    public partial class KeyboardType : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

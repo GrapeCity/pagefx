@@ -18,7 +18,7 @@ namespace flash.net
     [PageFX.AbcInstance(229)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class XMLSocket : flash.events.EventDispatcher
+    public partial class XMLSocket : flash.events.EventDispatcher
     {
         public extern virtual int timeout
         {

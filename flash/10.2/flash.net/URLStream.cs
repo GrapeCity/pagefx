@@ -15,7 +15,7 @@ namespace flash.net
     [PageFX.AbcInstance(332)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class URLStream : flash.events.EventDispatcher, flash.utils.IDataInput
+    public partial class URLStream : flash.events.EventDispatcher, flash.utils.IDataInput
     {
         /// <summary>
         /// Indicates whether this URLStream object is

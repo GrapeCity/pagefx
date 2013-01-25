@@ -13,7 +13,7 @@ namespace flash.xml
     [PageFX.AbcInstance(240)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class XMLNodeType : Avm.Object
+    public partial class XMLNodeType : Avm.Object
     {
         /// <summary>
         /// Specifies that the node is an element.

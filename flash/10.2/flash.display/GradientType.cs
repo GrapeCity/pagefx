@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(334)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class GradientType : Avm.Object
+    public partial class GradientType : Avm.Object
     {
         /// <summary>Value used to specify a linear gradient fill.</summary>
         [PageFX.AbcClassTrait(0)]

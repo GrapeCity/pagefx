@@ -14,7 +14,7 @@ namespace flash.net
     [PageFX.AbcInstance(185)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SharedObject : flash.events.EventDispatcher
+    public partial class SharedObject : flash.events.EventDispatcher
     {
         /// <summary>
         /// The collection of attributes assigned to the data property of the object; these attributes can

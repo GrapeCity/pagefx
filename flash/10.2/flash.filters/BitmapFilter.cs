@@ -7,7 +7,7 @@ namespace flash.filters
     [PageFX.AbcInstance(113)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class BitmapFilter : Avm.Object
+    public partial class BitmapFilter : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern BitmapFilter();

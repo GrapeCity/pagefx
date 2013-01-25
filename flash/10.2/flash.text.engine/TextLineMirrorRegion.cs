@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(202)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TextLineMirrorRegion : Avm.Object
+    public partial class TextLineMirrorRegion : Avm.Object
     {
         public extern virtual flash.text.engine.TextLine textLine
         {

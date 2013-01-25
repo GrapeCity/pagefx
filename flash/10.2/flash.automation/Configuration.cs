@@ -6,7 +6,7 @@ namespace flash.automation
     [PageFX.AbcInstance(350)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Configuration : Avm.Object
+    public partial class Configuration : Avm.Object
     {
         public extern static Avm.String testAutomationConfiguration
         {

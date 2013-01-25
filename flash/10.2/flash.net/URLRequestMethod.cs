@@ -10,7 +10,7 @@ namespace flash.net
     [PageFX.AbcInstance(201)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class URLRequestMethod : Avm.Object
+    public partial class URLRequestMethod : Avm.Object
     {
         /// <summary>Specifies that the URLRequest object is a POST.</summary>
         [PageFX.AbcClassTrait(0)]

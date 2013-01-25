@@ -6,7 +6,7 @@ namespace flash.globalization
     [PageFX.AbcInstance(275)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class LocaleID : Avm.Object
+    public partial class LocaleID : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

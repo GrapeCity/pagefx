@@ -13,7 +13,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("String")]
     [PageFX.FP9]
-    public class String : Avm.Object
+    public partial class String : Avm.Object
     {
         /// <summary>
         /// An integer specifying the number of characters in the specified String object.
@@ -842,32 +842,5 @@ namespace Avm
         [PageFX.FP9]
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern static Avm.String fromCharCode(object rest0, object rest1, object rest2, object rest3, object rest4, object rest5, object rest6, object rest7, object rest8, object rest9);
-
-        #region Custom Members
-        public extern char this[int index]
-        {
-            [PageFX.ABC]
-            [PageFX.QName("charCodeAt", "http://adobe.com/AS3/2006/builtin", "public")]
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
-        
-        //To optimze CIL code
-        [PageFX.ABC]
-        [PageFX.QName("fromCharCode", "http://adobe.com/AS3/2006/builtin", "public")]
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern static String fromCharCode(char ch);
-        
-        [PageFX.ABC]
-        [PageFX.QName("fromCharCode", "http://adobe.com/AS3/2006/builtin", "public")]
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern static String fromCharCode(uint ch);
-
-		[MethodImpl(MethodImplOptions.InternalCall)]
-	    public static extern implicit operator System.String(Avm.String s);
-
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		public static extern implicit operator Avm.String(System.String s);
-	    #endregion
     }
 }

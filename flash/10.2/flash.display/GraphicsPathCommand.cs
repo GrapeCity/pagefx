@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(362)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GraphicsPathCommand : Avm.Object
+    public partial class GraphicsPathCommand : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

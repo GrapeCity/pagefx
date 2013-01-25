@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(368)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GeolocationEvent : flash.events.Event
+    public partial class GeolocationEvent : flash.events.Event
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

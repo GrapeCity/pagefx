@@ -15,7 +15,7 @@ namespace flash.media
     [PageFX.AbcInstance(331)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Sound : flash.events.EventDispatcher
+    public partial class Sound : flash.events.EventDispatcher
     {
         /// <summary>
         /// The URL from which this sound was loaded. This property is applicable only to Sound

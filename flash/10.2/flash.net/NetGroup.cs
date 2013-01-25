@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(154)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NetGroup : flash.events.EventDispatcher
+    public partial class NetGroup : flash.events.EventDispatcher
     {
         public extern virtual Avm.String replicationStrategy
         {

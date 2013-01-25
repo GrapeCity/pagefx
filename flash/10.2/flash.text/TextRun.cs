@@ -6,7 +6,7 @@ namespace flash.text
     [PageFX.AbcInstance(228)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextRun : Avm.Object
+    public partial class TextRun : Avm.Object
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

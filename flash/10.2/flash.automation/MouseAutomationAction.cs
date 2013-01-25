@@ -6,7 +6,7 @@ namespace flash.automation
     [PageFX.AbcInstance(278)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class MouseAutomationAction : flash.automation.AutomationAction
+    public partial class MouseAutomationAction : flash.automation.AutomationAction
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

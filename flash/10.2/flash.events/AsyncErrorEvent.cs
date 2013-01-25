@@ -12,7 +12,7 @@ namespace flash.events
     [PageFX.AbcInstance(167)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class AsyncErrorEvent : flash.events.ErrorEvent
+    public partial class AsyncErrorEvent : flash.events.ErrorEvent
     {
         /// <summary>The exception that was thrown.</summary>
         [PageFX.AbcInstanceTrait(0)]

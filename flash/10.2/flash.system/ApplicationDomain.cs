@@ -12,7 +12,7 @@ namespace flash.system
     [PageFX.AbcInstance(264)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ApplicationDomain : Avm.Object
+    public partial class ApplicationDomain : Avm.Object
     {
         /// <summary>Gets the parent domain of this application domain.</summary>
         public extern virtual flash.system.ApplicationDomain parentDomain

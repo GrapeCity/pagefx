@@ -10,7 +10,7 @@ namespace flash.utils
     [PageFX.AbcInstance(268)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Proxy : Avm.Object
+    public partial class Proxy : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern Proxy();

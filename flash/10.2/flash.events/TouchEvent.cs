@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(306)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TouchEvent : flash.events.Event
+    public partial class TouchEvent : flash.events.Event
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

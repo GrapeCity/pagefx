@@ -12,7 +12,7 @@ namespace flash.ui
     [PageFX.AbcInstance(367)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Keyboard : Avm.Object
+    public partial class Keyboard : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

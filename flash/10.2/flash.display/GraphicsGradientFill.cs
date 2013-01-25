@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(203)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GraphicsGradientFill : Avm.Object, flash.display.IGraphicsFill, flash.display.IGraphicsData
+    public partial class GraphicsGradientFill : Avm.Object, flash.display.IGraphicsFill, flash.display.IGraphicsData
     {
         [PageFX.AbcInstanceTrait(3)]
         [PageFX.ABC]

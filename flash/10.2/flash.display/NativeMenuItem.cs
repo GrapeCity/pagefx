@@ -7,7 +7,7 @@ namespace flash.display
     [PageFX.AbcInstance(179)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NativeMenuItem : flash.events.EventDispatcher
+    public partial class NativeMenuItem : flash.events.EventDispatcher
     {
         /// <summary>Describes whether the item is selectable.</summary>
         public extern virtual bool enabled

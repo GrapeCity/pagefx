@@ -13,7 +13,7 @@ namespace flash.net
     [PageFX.AbcInstance(247)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class FileReferenceList : flash.events.EventDispatcher
+    public partial class FileReferenceList : flash.events.EventDispatcher
     {
         /// <summary>
         /// An array of FileReference objects.

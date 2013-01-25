@@ -13,7 +13,7 @@ namespace flash.filters
     [PageFX.AbcInstance(114)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class DropShadowFilter : flash.filters.BitmapFilter
+    public partial class DropShadowFilter : flash.filters.BitmapFilter
     {
         /// <summary>
         /// The offset distance for the shadow, in pixels. The default

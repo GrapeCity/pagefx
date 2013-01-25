@@ -6,7 +6,7 @@ namespace flash.sensors
     [PageFX.AbcInstance(82)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Accelerometer : flash.events.EventDispatcher
+    public partial class Accelerometer : flash.events.EventDispatcher
     {
         public extern virtual bool muted
         {

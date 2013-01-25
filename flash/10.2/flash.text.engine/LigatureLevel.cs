@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(349)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class LigatureLevel : Avm.Object
+    public partial class LigatureLevel : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

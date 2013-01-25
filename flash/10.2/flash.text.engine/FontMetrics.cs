@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(305)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class FontMetrics : Avm.Object
+    public partial class FontMetrics : Avm.Object
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

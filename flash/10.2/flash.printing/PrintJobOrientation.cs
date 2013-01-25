@@ -7,7 +7,7 @@ namespace flash.printing
     [PageFX.AbcInstance(337)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class PrintJobOrientation : Avm.Object
+    public partial class PrintJobOrientation : Avm.Object
     {
         /// <summary>
         /// The landscape (horizontal) image orientation for printing.

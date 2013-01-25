@@ -15,7 +15,7 @@ namespace flash.text
     [PageFX.AbcInstance(323)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class StyleSheet : flash.events.EventDispatcher
+    public partial class StyleSheet : flash.events.EventDispatcher
     {
         /// <summary>
         /// An array that contains the names (as strings) of all of the styles registered

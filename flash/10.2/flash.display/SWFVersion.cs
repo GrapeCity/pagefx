@@ -12,7 +12,7 @@ namespace flash.display
     [PageFX.AbcInstance(149)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SWFVersion : Avm.Object
+    public partial class SWFVersion : Avm.Object
     {
         /// <summary>SWF file format version 1.0.</summary>
         [PageFX.AbcClassTrait(0)]

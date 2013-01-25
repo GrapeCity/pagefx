@@ -10,7 +10,7 @@ namespace flash.text
     [PageFX.AbcInstance(231)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextFieldAutoSize : Avm.Object
+    public partial class TextFieldAutoSize : Avm.Object
     {
         /// <summary>Specifies that no resizing is to occur.</summary>
         [PageFX.AbcClassTrait(0)]

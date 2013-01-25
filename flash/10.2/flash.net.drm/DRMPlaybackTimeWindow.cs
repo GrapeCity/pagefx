@@ -6,7 +6,7 @@ namespace flash.net.drm
     [PageFX.AbcInstance(56)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DRMPlaybackTimeWindow : Avm.Object
+    public partial class DRMPlaybackTimeWindow : Avm.Object
     {
         public extern virtual uint period
         {

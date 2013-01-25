@@ -13,7 +13,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("URIError")]
     [PageFX.FP9]
-    public class URIError : Avm.Error
+    public partial class URIError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern URIError(Avm.String message, int id);

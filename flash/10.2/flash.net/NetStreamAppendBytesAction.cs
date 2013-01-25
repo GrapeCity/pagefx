@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(163)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NetStreamAppendBytesAction : Avm.Object
+    public partial class NetStreamAppendBytesAction : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

@@ -13,7 +13,7 @@ namespace flash.filters
     [PageFX.AbcInstance(237)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class DisplacementMapFilter : flash.filters.BitmapFilter
+    public partial class DisplacementMapFilter : flash.filters.BitmapFilter
     {
         /// <summary>A BitmapData object containing the displacement map data.</summary>
         public extern virtual flash.display.BitmapData mapBitmap

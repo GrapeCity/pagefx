@@ -12,7 +12,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("int")]
     [PageFX.FP9]
-    public class Int : Avm.Object
+    public partial class Int : Avm.Object
     {
         /// <summary>The smallest representable 32-bit signed integer, which is -2,147,483,648.</summary>
         [PageFX.AbcClassTrait(0)]

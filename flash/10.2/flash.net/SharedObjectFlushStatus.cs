@@ -7,7 +7,7 @@ namespace flash.net
     [PageFX.AbcInstance(255)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SharedObjectFlushStatus : Avm.Object
+    public partial class SharedObjectFlushStatus : Avm.Object
     {
         /// <summary>Indicates that the flush completed successfully.</summary>
         [PageFX.AbcClassTrait(0)]

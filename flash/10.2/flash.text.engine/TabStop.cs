@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(355)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TabStop : Avm.Object
+    public partial class TabStop : Avm.Object
     {
         public extern virtual Avm.String alignment
         {

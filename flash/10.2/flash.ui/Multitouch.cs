@@ -6,7 +6,7 @@ namespace flash.ui
     [PageFX.AbcInstance(145)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Multitouch : Avm.Object
+    public partial class Multitouch : Avm.Object
     {
         public extern static Avm.String inputMode
         {

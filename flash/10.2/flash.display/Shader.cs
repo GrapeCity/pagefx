@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(200)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Shader : Avm.Object
+    public partial class Shader : Avm.Object
     {
         public extern virtual flash.utils.ByteArray byteCode
         {

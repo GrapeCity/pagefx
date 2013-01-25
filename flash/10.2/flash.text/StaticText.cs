@@ -12,7 +12,7 @@ namespace flash.text
     [PageFX.AbcInstance(253)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class StaticText : flash.display.DisplayObject
+    public partial class StaticText : flash.display.DisplayObject
     {
         /// <summary>
         /// Returns the current text of the static text field. The authoring tool may export multiple text field

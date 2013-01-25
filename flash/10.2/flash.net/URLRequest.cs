@@ -12,7 +12,7 @@ namespace flash.net
     [PageFX.AbcInstance(313)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class URLRequest : Avm.Object
+    public partial class URLRequest : Avm.Object
     {
         /// <summary>
         /// The URL to be requested.

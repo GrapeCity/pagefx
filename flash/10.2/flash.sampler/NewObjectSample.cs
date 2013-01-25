@@ -6,7 +6,7 @@ namespace flash.sampler
     [PageFX.AbcInstance(20)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class NewObjectSample : flash.sampler.Sample
+    public partial class NewObjectSample : flash.sampler.Sample
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

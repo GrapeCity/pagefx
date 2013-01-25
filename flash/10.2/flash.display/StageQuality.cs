@@ -7,7 +7,7 @@ namespace flash.display
     [PageFX.AbcInstance(110)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class StageQuality : Avm.Object
+    public partial class StageQuality : Avm.Object
     {
         /// <summary>Specifies low rendering quality: graphics are not anti-aliased, and bitmaps are not smoothed.</summary>
         [PageFX.AbcClassTrait(0)]

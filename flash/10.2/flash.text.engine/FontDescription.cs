@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(344)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class FontDescription : Avm.Object
+    public partial class FontDescription : Avm.Object
     {
         public extern virtual Avm.String renderingMode
         {

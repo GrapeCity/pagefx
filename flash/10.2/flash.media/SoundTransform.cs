@@ -12,7 +12,7 @@ namespace flash.media
     [PageFX.AbcInstance(122)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SoundTransform : Avm.Object
+    public partial class SoundTransform : Avm.Object
     {
         /// <summary>The volume, ranging from 0 (silent) to 1 (full volume).</summary>
         public extern virtual double volume

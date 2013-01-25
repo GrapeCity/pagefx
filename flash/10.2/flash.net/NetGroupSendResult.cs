@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(165)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NetGroupSendResult : Avm.Object
+    public partial class NetGroupSendResult : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

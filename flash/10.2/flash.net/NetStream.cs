@@ -17,7 +17,7 @@ namespace flash.net
     [PageFX.AbcInstance(107)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class NetStream : flash.events.EventDispatcher
+    public partial class NetStream : flash.events.EventDispatcher
     {
         [PageFX.AbcClassTrait(36)]
         [PageFX.ABC]

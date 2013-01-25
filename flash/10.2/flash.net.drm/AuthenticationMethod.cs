@@ -6,7 +6,7 @@ namespace flash.net.drm
     [PageFX.AbcInstance(155)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class AuthenticationMethod : Avm.Object
+    public partial class AuthenticationMethod : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

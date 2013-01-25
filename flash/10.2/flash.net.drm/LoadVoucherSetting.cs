@@ -6,7 +6,7 @@ namespace flash.net.drm
     [PageFX.AbcInstance(156)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class LoadVoucherSetting : Avm.Object
+    public partial class LoadVoucherSetting : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

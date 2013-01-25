@@ -12,7 +12,7 @@ namespace adobe.utils
     [PageFX.AbcInstance(98)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class CustomActions : Avm.Object
+    public partial class CustomActions : Avm.Object
     {
         /// <summary>
         /// Returns an Array object containing the names of all the custom actions that are registered

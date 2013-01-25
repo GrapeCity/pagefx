@@ -6,7 +6,7 @@ namespace flash.net.drm
     [PageFX.AbcInstance(60)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DRMManager : flash.events.EventDispatcher
+    public partial class DRMManager : flash.events.EventDispatcher
     {
         public extern static bool isSupported
         {

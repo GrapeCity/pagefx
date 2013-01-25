@@ -11,7 +11,7 @@ namespace flash.media
     [PageFX.AbcInstance(186)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SoundLoaderContext : Avm.Object
+    public partial class SoundLoaderContext : Avm.Object
     {
         /// <summary>
         /// The number of seconds to preload a streaming sound into a buffer

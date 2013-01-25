@@ -11,7 +11,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("RegExp")]
     [PageFX.FP9]
-    public class RegExp : Avm.Object
+    public partial class RegExp : Avm.Object
     {
         /// <summary>Specifies the pattern portion of the regular expression.</summary>
         public extern virtual Avm.String source

@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(365)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DigitCase : Avm.Object
+    public partial class DigitCase : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

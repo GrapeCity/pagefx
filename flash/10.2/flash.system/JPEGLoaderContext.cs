@@ -6,7 +6,7 @@ namespace flash.system
     [PageFX.AbcInstance(144)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class JPEGLoaderContext : flash.system.LoaderContext
+    public partial class JPEGLoaderContext : flash.system.LoaderContext
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(219)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GestureEvent : flash.events.Event
+    public partial class GestureEvent : flash.events.Event
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

@@ -12,7 +12,7 @@ namespace flash.display
     [PageFX.AbcInstance(291)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ActionScriptVersion : Avm.Object
+    public partial class ActionScriptVersion : Avm.Object
     {
         /// <summary>ActionScript language version 2.0 and earlier.</summary>
         [PageFX.AbcClassTrait(0)]

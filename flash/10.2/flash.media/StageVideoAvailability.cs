@@ -6,7 +6,7 @@ namespace flash.media
     [PageFX.AbcInstance(263)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class StageVideoAvailability : Avm.Object
+    public partial class StageVideoAvailability : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

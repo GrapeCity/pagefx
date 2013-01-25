@@ -11,7 +11,7 @@ namespace flash.system
     [PageFX.AbcInstance(261)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class System : Avm.Object
+    public partial class System : Avm.Object
     {
         /// <summary>
         /// The currently installed system IME.

@@ -13,7 +13,7 @@ namespace flash.utils
     [PageFX.AbcInstance(230)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Dictionary : Avm.Object
+    public partial class Dictionary : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern Dictionary(bool weakKeys);

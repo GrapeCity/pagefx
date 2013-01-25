@@ -6,7 +6,7 @@ namespace flash.automation
     [PageFX.AbcInstance(193)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ActionGenerator : Avm.Object
+    public partial class ActionGenerator : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern ActionGenerator();

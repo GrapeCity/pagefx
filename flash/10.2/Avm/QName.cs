@@ -15,7 +15,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("QName")]
     [PageFX.FP9]
-    public class QName : Avm.Object
+    public partial class QName : Avm.Object
     {
         /// <summary>The local name of the QName object.</summary>
         public extern virtual Avm.String localName

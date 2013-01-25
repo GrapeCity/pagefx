@@ -7,7 +7,7 @@ namespace flash.events
     [PageFX.AbcInstance(30)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class EventPhase : Avm.Object
+    public partial class EventPhase : Avm.Object
     {
         /// <summary>The capturing phase, which is the first phase of the event flow.</summary>
         [PageFX.AbcClassTrait(0)]

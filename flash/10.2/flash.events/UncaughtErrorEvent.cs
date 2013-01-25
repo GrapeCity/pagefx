@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(364)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class UncaughtErrorEvent : flash.events.ErrorEvent
+    public partial class UncaughtErrorEvent : flash.events.ErrorEvent
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

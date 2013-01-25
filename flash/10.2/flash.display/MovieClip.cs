@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(370)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class MovieClip : flash.display.Sprite
+    public partial class MovieClip : flash.display.Sprite
     {
         /// <summary>
         /// Specifies the number of the frame in which the playhead is located in the timeline of

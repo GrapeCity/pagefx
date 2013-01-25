@@ -15,7 +15,7 @@ namespace flash.printing
     [PageFX.AbcInstance(239)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class PrintJob : flash.events.EventDispatcher
+    public partial class PrintJob : flash.events.EventDispatcher
     {
         /// <summary>
         /// The overall paper height, in points. This property is available only

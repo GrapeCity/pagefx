@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(166)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class LineScaleMode : Avm.Object
+    public partial class LineScaleMode : Avm.Object
     {
         /// <summary>
         /// With this setting used as the scaleMode parameter of the lineStyle()

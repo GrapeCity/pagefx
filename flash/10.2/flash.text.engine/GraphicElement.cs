@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(303)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GraphicElement : flash.text.engine.ContentElement
+    public partial class GraphicElement : flash.text.engine.ContentElement
     {
         public extern virtual flash.display.DisplayObject graphic
         {

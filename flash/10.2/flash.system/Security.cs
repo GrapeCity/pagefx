@@ -10,7 +10,7 @@ namespace flash.system
     [PageFX.AbcInstance(70)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Security : Avm.Object
+    public partial class Security : Avm.Object
     {
         /// <summary>The SWF file is from an Internet URL and operates under domain-based sandbox rules.</summary>
         [PageFX.AbcClassTrait(12)]

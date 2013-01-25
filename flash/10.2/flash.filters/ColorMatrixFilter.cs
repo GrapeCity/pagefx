@@ -13,7 +13,7 @@ namespace flash.filters
     [PageFX.AbcInstance(288)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ColorMatrixFilter : flash.filters.BitmapFilter
+    public partial class ColorMatrixFilter : flash.filters.BitmapFilter
     {
         /// <summary>
         /// An array of 20 items for 4 x 5 color transform. The matrix property cannot

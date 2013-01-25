@@ -15,7 +15,7 @@ namespace flash.display
     [PageFX.AbcInstance(210)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Scene : Avm.Object
+    public partial class Scene : Avm.Object
     {
         /// <summary>The name of the scene.</summary>
         public extern virtual Avm.String name

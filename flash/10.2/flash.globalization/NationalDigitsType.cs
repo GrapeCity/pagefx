@@ -6,7 +6,7 @@ namespace flash.globalization
     [PageFX.AbcInstance(300)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NationalDigitsType : Avm.Object
+    public partial class NationalDigitsType : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

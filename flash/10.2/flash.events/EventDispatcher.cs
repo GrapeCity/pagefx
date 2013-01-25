@@ -13,7 +13,7 @@ namespace flash.events
     [PageFX.AbcInstance(24)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class EventDispatcher : Avm.Object, flash.events.IEventDispatcher
+    public partial class EventDispatcher : Avm.Object, flash.events.IEventDispatcher
     {
         [PageFX.Event("deactivate")]
         public event flash.events.EventHandler deactivate

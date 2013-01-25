@@ -11,7 +11,7 @@ namespace flash.net
     [PageFX.AbcInstance(27)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Responder : Avm.Object
+    public partial class Responder : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern Responder(Avm.Function result, Avm.Function status);

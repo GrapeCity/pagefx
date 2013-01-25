@@ -6,7 +6,7 @@ namespace flash.globalization
     [PageFX.AbcInstance(244)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Collator : Avm.Object
+    public partial class Collator : Avm.Object
     {
         public extern virtual bool ignoreCase
         {

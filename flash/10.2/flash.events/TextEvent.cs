@@ -11,7 +11,7 @@ namespace flash.events
     [PageFX.AbcInstance(127)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextEvent : flash.events.Event
+    public partial class TextEvent : flash.events.Event
     {
         /// <summary>
         /// Defines the value of the type property of a link event object.

@@ -11,7 +11,7 @@ namespace flash.events
     [PageFX.AbcInstance(341)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class FullScreenEvent : flash.events.ActivityEvent
+    public partial class FullScreenEvent : flash.events.ActivityEvent
     {
         /// <summary>
         /// The FullScreenEvent.FULL_SCREEN constant defines the value of the

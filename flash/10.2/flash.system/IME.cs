@@ -13,7 +13,7 @@ namespace flash.system
     [PageFX.AbcInstance(304)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class IME : flash.events.EventDispatcher
+    public partial class IME : flash.events.EventDispatcher
     {
         public extern static bool constructOK
         {

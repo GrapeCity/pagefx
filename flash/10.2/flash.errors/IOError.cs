@@ -11,7 +11,7 @@ namespace flash.errors
     [PageFX.AbcInstance(47)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class IOError : Avm.Error
+    public partial class IOError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern IOError(Avm.String message, int id);

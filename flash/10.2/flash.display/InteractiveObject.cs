@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(87)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class InteractiveObject : flash.display.DisplayObject
+    public partial class InteractiveObject : flash.display.DisplayObject
     {
         /// <summary>
         /// Specifies whether this object is in the tab order. If this object is in the tab order,

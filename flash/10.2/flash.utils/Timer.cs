@@ -11,7 +11,7 @@ namespace flash.utils
     [PageFX.AbcInstance(78)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Timer : flash.events.EventDispatcher
+    public partial class Timer : flash.events.EventDispatcher
     {
         /// <summary>
         /// The delay, in milliseconds, between timer

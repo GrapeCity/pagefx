@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(106)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GraphicsShaderFill : Avm.Object, flash.display.IGraphicsFill, flash.display.IGraphicsData
+    public partial class GraphicsShaderFill : Avm.Object, flash.display.IGraphicsFill, flash.display.IGraphicsData
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

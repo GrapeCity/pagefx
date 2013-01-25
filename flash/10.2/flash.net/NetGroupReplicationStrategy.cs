@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(272)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NetGroupReplicationStrategy : Avm.Object
+    public partial class NetGroupReplicationStrategy : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

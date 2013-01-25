@@ -11,7 +11,7 @@ namespace flash.geom
     [PageFX.AbcInstance(77)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Rectangle : Avm.Object
+    public partial class Rectangle : Avm.Object
     {
         /// <summary>
         /// The x coordinate of the top-left corner of the rectangle. Changing

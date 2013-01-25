@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace flash.profiler
 {
     [PageFX.GlobalFunctions]
-    public class Global
+    public partial class Global
     {
         [PageFX.AbcScript(127)]
         [PageFX.AbcScriptTrait(0)]

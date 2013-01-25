@@ -11,7 +11,7 @@ namespace flash.net
     [PageFX.AbcInstance(125)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class LocalConnection : flash.events.EventDispatcher
+    public partial class LocalConnection : flash.events.EventDispatcher
     {
         /// <summary>
         /// A string representing the domain of the location of the current file.

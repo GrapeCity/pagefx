@@ -10,7 +10,7 @@ namespace adobe.utils
     [PageFX.AbcInstance(347)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class XMLUI : Avm.Object
+    public partial class XMLUI : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern XMLUI();

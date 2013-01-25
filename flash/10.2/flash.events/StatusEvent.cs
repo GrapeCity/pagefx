@@ -11,7 +11,7 @@ namespace flash.events
     [PageFX.AbcInstance(141)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class StatusEvent : flash.events.Event
+    public partial class StatusEvent : flash.events.Event
     {
         /// <summary>
         /// Defines the value of the type property of a status event

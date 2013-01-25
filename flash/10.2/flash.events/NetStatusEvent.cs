@@ -10,7 +10,7 @@ namespace flash.events
     [PageFX.AbcInstance(195)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class NetStatusEvent : flash.events.Event
+    public partial class NetStatusEvent : flash.events.Event
     {
         /// <summary>
         /// Defines the value of the type property of a netStatus event object.

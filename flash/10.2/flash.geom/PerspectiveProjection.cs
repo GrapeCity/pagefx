@@ -6,7 +6,7 @@ namespace flash.geom
     [PageFX.AbcInstance(33)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class PerspectiveProjection : Avm.Object
+    public partial class PerspectiveProjection : Avm.Object
     {
         public extern virtual double fieldOfView
         {

@@ -11,7 +11,7 @@ namespace flash.events
     [PageFX.AbcInstance(72)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class KeyboardEvent : flash.events.Event
+    public partial class KeyboardEvent : flash.events.Event
     {
         /// <summary>
         /// Defines the value of the type property of a keyDown event object.

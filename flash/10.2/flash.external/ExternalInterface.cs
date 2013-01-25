@@ -13,7 +13,7 @@ namespace flash.external
     [PageFX.AbcInstance(69)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ExternalInterface : Avm.Object
+    public partial class ExternalInterface : Avm.Object
     {
         [PageFX.AbcClassTrait(1)]
         [PageFX.ABC]

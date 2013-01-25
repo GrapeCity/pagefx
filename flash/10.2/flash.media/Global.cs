@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace flash.media
 {
     [PageFX.GlobalFunctions]
-    public class Global
+    public partial class Global
     {
         [PageFX.AbcScript(108)]
         [PageFX.AbcScriptTrait(0)]

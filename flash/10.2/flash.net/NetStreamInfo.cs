@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(17)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NetStreamInfo : Avm.Object
+    public partial class NetStreamInfo : Avm.Object
     {
         public extern virtual double currentBytesPerSecond
         {

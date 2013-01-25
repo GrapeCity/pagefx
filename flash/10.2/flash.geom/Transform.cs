@@ -12,7 +12,7 @@ namespace flash.geom
     [PageFX.AbcInstance(111)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Transform : Avm.Object
+    public partial class Transform : Avm.Object
     {
         /// <summary>
         /// A Matrix object containing values that affect the scaling, rotation,

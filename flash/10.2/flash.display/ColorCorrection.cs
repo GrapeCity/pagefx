@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(348)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ColorCorrection : Avm.Object
+    public partial class ColorCorrection : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

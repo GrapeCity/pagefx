@@ -7,7 +7,7 @@ namespace flash.events
     [PageFX.AbcInstance(158)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class IOErrorEvent : flash.events.ErrorEvent
+    public partial class IOErrorEvent : flash.events.ErrorEvent
     {
         /// <summary>
         /// Defines the value of the type property of an ioError event object.

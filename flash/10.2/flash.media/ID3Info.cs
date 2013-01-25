@@ -13,7 +13,7 @@ namespace flash.media
     [PageFX.AbcInstance(327)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ID3Info : Avm.Object
+    public partial class ID3Info : Avm.Object
     {
         /// <summary>The name of the song; corresponds to the ID3 2.0 tag TIT2.</summary>
         [PageFX.AbcInstanceTrait(0)]

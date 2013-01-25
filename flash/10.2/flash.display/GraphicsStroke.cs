@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(269)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GraphicsStroke : Avm.Object, flash.display.IGraphicsStroke, flash.display.IGraphicsData
+    public partial class GraphicsStroke : Avm.Object, flash.display.IGraphicsStroke, flash.display.IGraphicsData
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

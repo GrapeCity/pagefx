@@ -13,7 +13,7 @@ namespace flash.display
     [PageFX.AbcInstance(317)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class JointStyle : Avm.Object
+    public partial class JointStyle : Avm.Object
     {
         /// <summary>
         /// Specifies round joints in the joints parameter of the flash.display.Graphics.lineStyle()

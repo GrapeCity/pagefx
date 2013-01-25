@@ -6,7 +6,7 @@ namespace flash.media
     [PageFX.AbcInstance(190)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class SoundCodec : Avm.Object
+    public partial class SoundCodec : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

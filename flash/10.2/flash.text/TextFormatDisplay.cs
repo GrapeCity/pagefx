@@ -6,7 +6,7 @@ namespace flash.text
     [PageFX.AbcInstance(286)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextFormatDisplay : Avm.Object
+    public partial class TextFormatDisplay : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

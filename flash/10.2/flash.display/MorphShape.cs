@@ -11,7 +11,7 @@ namespace flash.display
     [PageFX.AbcInstance(124)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class MorphShape : flash.display.DisplayObject
+    public partial class MorphShape : flash.display.DisplayObject
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern MorphShape();

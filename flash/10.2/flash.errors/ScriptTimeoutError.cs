@@ -10,7 +10,7 @@ namespace flash.errors
     [PageFX.AbcInstance(85)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ScriptTimeoutError : Avm.Error
+    public partial class ScriptTimeoutError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern ScriptTimeoutError(Avm.String message, int id);

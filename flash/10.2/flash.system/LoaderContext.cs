@@ -11,7 +11,7 @@ namespace flash.system
     [PageFX.AbcInstance(143)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class LoaderContext : Avm.Object
+    public partial class LoaderContext : Avm.Object
     {
         /// <summary>
         /// Specifies whether Flash Player should attempt to download a cross-domain policy file from the

@@ -12,7 +12,7 @@ namespace flash.net
     [PageFX.AbcInstance(148)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Socket : flash.events.EventDispatcher, flash.utils.IDataInput, flash.utils.IDataOutput
+    public partial class Socket : flash.events.EventDispatcher, flash.utils.IDataInput, flash.utils.IDataOutput
     {
         public extern virtual uint timeout
         {

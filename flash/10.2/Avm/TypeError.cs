@@ -11,7 +11,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("TypeError")]
     [PageFX.FP9]
-    public class TypeError : Avm.Error
+    public partial class TypeError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern TypeError(Avm.String message, int id);

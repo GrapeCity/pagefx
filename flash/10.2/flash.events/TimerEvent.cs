@@ -10,7 +10,7 @@ namespace flash.events
     [PageFX.AbcInstance(172)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TimerEvent : flash.events.Event
+    public partial class TimerEvent : flash.events.Event
     {
         /// <summary>
         /// Defines the value of the type property of a timer event object.

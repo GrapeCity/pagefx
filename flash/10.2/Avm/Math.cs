@@ -11,7 +11,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("Math")]
     [PageFX.FP9]
-    public class Math : Avm.Object
+    public partial class Math : Avm.Object
     {
         /// <summary>
         /// A mathematical constant for the base of natural logarithms, expressed as e.

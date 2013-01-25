@@ -11,7 +11,7 @@ namespace flash.net
     [PageFX.AbcInstance(128)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class URLRequestHeader : Avm.Object
+    public partial class URLRequestHeader : Avm.Object
     {
         /// <summary>An HTTP request header name (such as Content-Type or SOAPAction).</summary>
         [PageFX.AbcInstanceTrait(0)]

@@ -7,7 +7,7 @@ namespace flash.text
     [PageFX.AbcInstance(250)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextColorType : Avm.Object
+    public partial class TextColorType : Avm.Object
     {
         /// <summary>
         /// Used in the colorType parameter in the setAdvancedAntiAliasingTable() method.

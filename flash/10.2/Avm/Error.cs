@@ -15,7 +15,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("Error")]
     [PageFX.FP9]
-    public class Error : System.Exception
+    public partial class Error : System.Exception
     {
         /// <summary>
         /// Contains the message associated with the Error object. By default, the value of this property

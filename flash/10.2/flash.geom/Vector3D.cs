@@ -6,7 +6,7 @@ namespace flash.geom
     [PageFX.AbcInstance(274)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Vector3D : Avm.Object
+    public partial class Vector3D : Avm.Object
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

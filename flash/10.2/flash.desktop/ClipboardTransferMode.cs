@@ -6,7 +6,7 @@ namespace flash.desktop
     [PageFX.AbcInstance(294)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ClipboardTransferMode : Avm.Object
+    public partial class ClipboardTransferMode : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

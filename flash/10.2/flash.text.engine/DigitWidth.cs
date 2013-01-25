@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(359)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DigitWidth : Avm.Object
+    public partial class DigitWidth : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

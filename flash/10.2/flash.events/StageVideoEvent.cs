@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(358)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class StageVideoEvent : flash.events.Event
+    public partial class StageVideoEvent : flash.events.Event
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

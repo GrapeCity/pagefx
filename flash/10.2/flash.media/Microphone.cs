@@ -10,7 +10,7 @@ namespace flash.media
     [PageFX.AbcInstance(81)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Microphone : flash.events.EventDispatcher
+    public partial class Microphone : flash.events.EventDispatcher
     {
         /// <summary>
         /// The microphone gain—that is, the amount by which the microphone should multiply the signal before

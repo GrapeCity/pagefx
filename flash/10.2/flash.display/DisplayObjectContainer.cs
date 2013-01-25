@@ -14,7 +14,7 @@ namespace flash.display
     [PageFX.AbcInstance(88)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class DisplayObjectContainer : flash.display.InteractiveObject
+    public partial class DisplayObjectContainer : flash.display.InteractiveObject
     {
         /// <summary>Returns the number of children of this object.</summary>
         public extern virtual int numChildren

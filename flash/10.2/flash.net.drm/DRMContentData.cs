@@ -6,7 +6,7 @@ namespace flash.net.drm
     [PageFX.AbcInstance(225)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DRMContentData : Avm.Object
+    public partial class DRMContentData : Avm.Object
     {
         public extern virtual Avm.String serverURL
         {

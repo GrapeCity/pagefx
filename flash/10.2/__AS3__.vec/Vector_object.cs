@@ -7,7 +7,7 @@ namespace __AS3__.vec
     [PageFX.ABC]
     [PageFX.QName("Vector$object", "__AS3__.vec", "internal")]
     [PageFX.FP("10.2")]
-    public class Vector_object : Avm.Object
+    public partial class Vector_object : Avm.Object
     {
         public extern virtual uint length
         {
@@ -808,24 +808,5 @@ namespace __AS3__.vec
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern int lastIndexOf(object searchElement);
-
-        #region Custom Members
-        public static implicit operator Vector(Vector_object v)
-        {
-            throw new NotImplementedException();
-        }
-        
-        public extern object this[int index]
-        {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            set;
-        }
-        #endregion
-
-
-
     }
 }

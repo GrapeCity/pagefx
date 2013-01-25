@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(235)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NetStreamPlayOptions : flash.events.EventDispatcher
+    public partial class NetStreamPlayOptions : flash.events.EventDispatcher
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

@@ -13,7 +13,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("ReferenceError")]
     [PageFX.FP9]
-    public class ReferenceError : Avm.Error
+    public partial class ReferenceError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern ReferenceError(Avm.String message, int id);

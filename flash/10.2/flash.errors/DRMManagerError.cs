@@ -6,7 +6,7 @@ namespace flash.errors
     [PageFX.AbcInstance(319)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DRMManagerError : Avm.Error
+    public partial class DRMManagerError : Avm.Error
     {
         public extern virtual int subErrorID
         {

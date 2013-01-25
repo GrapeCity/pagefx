@@ -13,7 +13,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("EvalError")]
     [PageFX.FP9]
-    public class EvalError : Avm.Error
+    public partial class EvalError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern EvalError(Avm.String message, int id);

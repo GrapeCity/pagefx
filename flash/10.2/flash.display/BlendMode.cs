@@ -11,7 +11,7 @@ namespace flash.display
     [PageFX.AbcInstance(256)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class BlendMode : Avm.Object
+    public partial class BlendMode : Avm.Object
     {
         /// <summary>
         /// The display object appears in front of the background. Pixel values of the display object

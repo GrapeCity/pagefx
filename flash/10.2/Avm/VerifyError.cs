@@ -11,7 +11,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("VerifyError")]
     [PageFX.FP9]
-    public class VerifyError : Avm.Error
+    public partial class VerifyError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern VerifyError(Avm.String message, int id);

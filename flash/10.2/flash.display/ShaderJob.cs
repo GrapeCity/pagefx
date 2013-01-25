@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(103)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ShaderJob : flash.events.EventDispatcher
+    public partial class ShaderJob : flash.events.EventDispatcher
     {
         public extern virtual flash.display.Shader shader
         {

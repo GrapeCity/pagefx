@@ -10,7 +10,7 @@ namespace flash.text
     [PageFX.AbcInstance(178)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class FontType : Avm.Object
+    public partial class FontType : Avm.Object
     {
         /// <summary>
         /// Indicates that this is an embedded font.

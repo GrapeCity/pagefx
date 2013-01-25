@@ -10,7 +10,7 @@ namespace flash.ui
     [PageFX.AbcInstance(298)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ContextMenuBuiltInItems : Avm.Object
+    public partial class ContextMenuBuiltInItems : Avm.Object
     {
         /// <summary>Lets the user with Shockmachine installed save a SWF file.</summary>
         public extern virtual bool save

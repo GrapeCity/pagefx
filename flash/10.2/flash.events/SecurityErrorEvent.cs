@@ -16,7 +16,7 @@ namespace flash.events
     [PageFX.AbcInstance(330)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SecurityErrorEvent : flash.events.ErrorEvent
+    public partial class SecurityErrorEvent : flash.events.ErrorEvent
     {
         /// <summary>
         /// The SecurityErrorEvent.SECURITY_ERROR constant defines the value of the type property of a securityError event object.

@@ -6,7 +6,7 @@ namespace flash.globalization
     [PageFX.AbcInstance(212)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class LastOperationStatus : Avm.Object
+    public partial class LastOperationStatus : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

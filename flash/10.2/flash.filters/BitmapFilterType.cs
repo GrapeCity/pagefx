@@ -7,7 +7,7 @@ namespace flash.filters
     [PageFX.AbcInstance(215)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class BitmapFilterType : Avm.Object
+    public partial class BitmapFilterType : Avm.Object
     {
         /// <summary>Defines the setting that applies a filter to the inner area of an object.</summary>
         [PageFX.AbcClassTrait(0)]

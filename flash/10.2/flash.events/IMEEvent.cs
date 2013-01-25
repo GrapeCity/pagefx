@@ -12,7 +12,7 @@ namespace flash.events
     [PageFX.AbcInstance(204)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class IMEEvent : flash.events.TextEvent
+    public partial class IMEEvent : flash.events.TextEvent
     {
         /// <summary>
         /// Defines the value of the type property of an imeComposition event object.

@@ -11,7 +11,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("SecurityError")]
     [PageFX.FP9]
-    public class SecurityError : Avm.Error
+    public partial class SecurityError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern SecurityError(Avm.String message, int id);

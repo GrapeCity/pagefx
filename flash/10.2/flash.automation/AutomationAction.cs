@@ -6,7 +6,7 @@ namespace flash.automation
     [PageFX.AbcInstance(233)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class AutomationAction : Avm.Object
+    public partial class AutomationAction : Avm.Object
     {
         public extern virtual Avm.String type
         {

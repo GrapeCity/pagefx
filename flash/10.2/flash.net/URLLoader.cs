@@ -12,7 +12,7 @@ namespace flash.net
     [PageFX.AbcInstance(130)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class URLLoader : flash.events.EventDispatcher
+    public partial class URLLoader : flash.events.EventDispatcher
     {
         /// <summary>
         /// The data received from the load operation. This property

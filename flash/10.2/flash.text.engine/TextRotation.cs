@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(307)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TextRotation : Avm.Object
+    public partial class TextRotation : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

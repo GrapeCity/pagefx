@@ -15,7 +15,7 @@ namespace flash.xml
     [PageFX.AbcInstance(310)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class XMLDocument : flash.xml.XMLNode
+    public partial class XMLDocument : flash.xml.XMLNode
     {
         /// <summary>
         /// A string that specifies information about a document&apos;s XML declaration.

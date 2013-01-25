@@ -11,7 +11,7 @@ namespace flash.events
     [PageFX.AbcInstance(248)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class DataEvent : flash.events.TextEvent
+    public partial class DataEvent : flash.events.TextEvent
     {
         /// <summary>
         /// Defines the value of the type property of a data event object.

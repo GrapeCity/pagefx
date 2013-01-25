@@ -12,7 +12,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("Function")]
     [PageFX.FP9]
-    public class Function : Avm.Object
+    public partial class Function : Avm.Object
     {
         public extern virtual object prototype
         {

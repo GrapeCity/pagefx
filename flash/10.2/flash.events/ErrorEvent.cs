@@ -10,7 +10,7 @@ namespace flash.events
     [PageFX.AbcInstance(157)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ErrorEvent : flash.events.TextEvent
+    public partial class ErrorEvent : flash.events.TextEvent
     {
         /// <summary>
         /// Defines the value of the type property of an error event object.

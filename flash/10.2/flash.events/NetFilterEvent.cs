@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(273)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class NetFilterEvent : flash.events.Event
+    public partial class NetFilterEvent : flash.events.Event
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

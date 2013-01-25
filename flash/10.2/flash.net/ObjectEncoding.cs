@@ -11,7 +11,7 @@ namespace flash.net
     [PageFX.AbcInstance(208)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ObjectEncoding : Avm.Object
+    public partial class ObjectEncoding : Avm.Object
     {
         /// <summary>Specifies that objects are serialized using the Action Message Format for ActionScript 1.0 and 2.0.</summary>
         [PageFX.AbcClassTrait(0)]

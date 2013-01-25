@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Avm
 {
     [PageFX.GlobalFunctions]
-    public class Global
+    public partial class Global
     {
         [PageFX.AbcScript(0)]
         [PageFX.AbcScriptTrait(12)]

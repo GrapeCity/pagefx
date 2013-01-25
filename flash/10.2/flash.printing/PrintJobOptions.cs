@@ -11,7 +11,7 @@ namespace flash.printing
     [PageFX.AbcInstance(108)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class PrintJobOptions : Avm.Object
+    public partial class PrintJobOptions : Avm.Object
     {
         /// <summary>
         /// Specifies whether the content in the print job is printed as a bitmap or as a vector.

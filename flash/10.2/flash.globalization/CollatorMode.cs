@@ -6,7 +6,7 @@ namespace flash.globalization
     [PageFX.AbcInstance(97)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class CollatorMode : Avm.Object
+    public partial class CollatorMode : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

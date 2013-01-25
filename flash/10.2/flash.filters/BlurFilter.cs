@@ -17,7 +17,7 @@ namespace flash.filters
     [PageFX.AbcInstance(262)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class BlurFilter : flash.filters.BitmapFilter
+    public partial class BlurFilter : flash.filters.BitmapFilter
     {
         /// <summary>
         /// The amount of horizontal blur. Valid values are from 0 to 255 (floating point). The

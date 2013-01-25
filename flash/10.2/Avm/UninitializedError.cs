@@ -7,7 +7,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("UninitializedError")]
     [PageFX.FP9]
-    public class UninitializedError : Avm.Error
+    public partial class UninitializedError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern UninitializedError(Avm.String message, int id);

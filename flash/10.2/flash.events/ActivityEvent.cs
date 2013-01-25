@@ -10,7 +10,7 @@ namespace flash.events
     [PageFX.AbcInstance(213)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ActivityEvent : flash.events.Event
+    public partial class ActivityEvent : flash.events.Event
     {
         /// <summary>
         /// The ActivityEvent.ACTIVITY constant defines the value of the type property of an activity event object.

@@ -26,7 +26,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("Namespace")]
     [PageFX.FP9]
-    public class Namespace : Avm.Object
+    public partial class Namespace : Avm.Object
     {
         /// <summary>The prefix of the namespace.</summary>
         public extern virtual object prefix

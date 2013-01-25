@@ -14,7 +14,7 @@ namespace flash.xml
     [PageFX.AbcInstance(283)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class XMLNode : Avm.Object
+    public partial class XMLNode : Avm.Object
     {
         /// <summary>
         /// A nodeType constant value, either XMLNodeType.ELEMENT_NODE for an XML element or

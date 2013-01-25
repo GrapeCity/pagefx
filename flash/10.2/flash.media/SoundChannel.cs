@@ -13,7 +13,7 @@ namespace flash.media
     [PageFX.AbcInstance(221)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SoundChannel : flash.events.EventDispatcher
+    public partial class SoundChannel : flash.events.EventDispatcher
     {
         /// <summary>The current position of the playhead within the sound.</summary>
         public extern virtual double position

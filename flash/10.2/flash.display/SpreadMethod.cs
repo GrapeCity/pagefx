@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(216)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SpreadMethod : Avm.Object
+    public partial class SpreadMethod : Avm.Object
     {
         /// <summary>Specifies that the gradient use the pad spread method.</summary>
         [PageFX.AbcClassTrait(0)]

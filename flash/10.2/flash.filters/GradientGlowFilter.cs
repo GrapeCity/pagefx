@@ -14,7 +14,7 @@ namespace flash.filters
     [PageFX.AbcInstance(118)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class GradientGlowFilter : flash.filters.BitmapFilter
+    public partial class GradientGlowFilter : flash.filters.BitmapFilter
     {
         /// <summary>
         /// The angle, in degrees. Valid values are 0 to 360. The default is 45.

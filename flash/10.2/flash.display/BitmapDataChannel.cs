@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(252)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class BitmapDataChannel : Avm.Object
+    public partial class BitmapDataChannel : Avm.Object
     {
         /// <summary>The red channel.</summary>
         [PageFX.AbcClassTrait(0)]

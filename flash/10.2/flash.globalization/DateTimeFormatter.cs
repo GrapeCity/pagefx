@@ -6,7 +6,7 @@ namespace flash.globalization
     [PageFX.AbcInstance(66)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DateTimeFormatter : Avm.Object
+    public partial class DateTimeFormatter : Avm.Object
     {
         public extern virtual Avm.String lastOperationStatus
         {

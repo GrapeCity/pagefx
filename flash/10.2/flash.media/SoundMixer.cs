@@ -12,7 +12,7 @@ namespace flash.media
     [PageFX.AbcInstance(137)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SoundMixer : Avm.Object
+    public partial class SoundMixer : Avm.Object
     {
         /// <summary>
         /// The number of seconds to preload an embedded streaming sound into a buffer before it starts

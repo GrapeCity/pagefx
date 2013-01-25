@@ -16,7 +16,7 @@ namespace flash.display
     [PageFX.AbcInstance(296)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class AVM1Movie : flash.display.DisplayObject
+    public partial class AVM1Movie : flash.display.DisplayObject
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern AVM1Movie();

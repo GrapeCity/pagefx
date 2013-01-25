@@ -11,7 +11,7 @@ namespace flash.events
     [PageFX.AbcInstance(254)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class FocusEvent : flash.events.Event
+    public partial class FocusEvent : flash.events.Event
     {
         /// <summary>
         /// Defines the value of the type property of a focusIn event object.

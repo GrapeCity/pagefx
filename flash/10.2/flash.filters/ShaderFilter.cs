@@ -6,7 +6,7 @@ namespace flash.filters
     [PageFX.AbcInstance(366)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ShaderFilter : flash.filters.BitmapFilter
+    public partial class ShaderFilter : flash.filters.BitmapFilter
     {
         public extern virtual flash.display.Shader shader
         {

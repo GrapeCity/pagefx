@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(52)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NativeMenu : flash.events.EventDispatcher
+    public partial class NativeMenu : flash.events.EventDispatcher
     {
         [PageFX.Event("preparing")]
         public event flash.events.EventHandler preparing

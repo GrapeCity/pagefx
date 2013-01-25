@@ -6,7 +6,7 @@ namespace flash.sensors
     [PageFX.AbcInstance(34)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Geolocation : flash.events.EventDispatcher
+    public partial class Geolocation : flash.events.EventDispatcher
     {
         public extern virtual bool muted
         {

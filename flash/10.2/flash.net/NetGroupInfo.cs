@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(102)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NetGroupInfo : Avm.Object
+    public partial class NetGroupInfo : Avm.Object
     {
         public extern virtual double postingSendDataBytesPerSecond
         {

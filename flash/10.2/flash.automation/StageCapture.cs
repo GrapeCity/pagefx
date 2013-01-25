@@ -6,7 +6,7 @@ namespace flash.automation
     [PageFX.AbcInstance(314)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class StageCapture : flash.events.EventDispatcher
+    public partial class StageCapture : flash.events.EventDispatcher
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

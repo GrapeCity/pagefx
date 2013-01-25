@@ -13,7 +13,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("XML")]
     [PageFX.FP9]
-    public class XML : Avm.Object
+    public partial class XML : Avm.Object
     {
         /// <summary>
         /// Determines whether XML comments are ignored
@@ -767,34 +767,5 @@ namespace Avm
         [PageFX.FP9]
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern static object defaultSettings();
-
-        #region Custom Members
-        public extern XML this[int index]
-        {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
-        
-        public extern XMLList this[Avm.String name]
-        {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
-        
-        public extern XMLList this[Avm.Namespace ns, Avm.String name]
-        {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
-        
-        public extern XMLList this[Avm.String ns, Avm.String name]
-        {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
-        #endregion
-
-
-
     }
 }

@@ -6,7 +6,7 @@ namespace flash.geom
     [PageFX.AbcInstance(249)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Utils3D : Avm.Object
+    public partial class Utils3D : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern Utils3D();

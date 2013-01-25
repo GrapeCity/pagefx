@@ -12,7 +12,7 @@ namespace flash.text
     [PageFX.AbcInstance(224)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class CSMSettings : Avm.Object
+    public partial class CSMSettings : Avm.Object
     {
         /// <summary>
         /// The size, in pixels, for which the settings apply.

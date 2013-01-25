@@ -21,7 +21,7 @@ namespace flash.system
     [PageFX.AbcInstance(265)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Capabilities : Avm.Object
+    public partial class Capabilities : Avm.Object
     {
         public extern static bool isEmbeddedInAcrobat
         {

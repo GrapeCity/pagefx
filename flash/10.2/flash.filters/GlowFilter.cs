@@ -15,7 +15,7 @@ namespace flash.filters
     [PageFX.AbcInstance(369)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class GlowFilter : flash.filters.BitmapFilter
+    public partial class GlowFilter : flash.filters.BitmapFilter
     {
         /// <summary>
         /// The color of the glow. Valid values are in the hexadecimal format

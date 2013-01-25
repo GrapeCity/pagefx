@@ -6,7 +6,7 @@ namespace flash.text.ime
     [PageFX.AbcInstance(354)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class CompositionAttributeRange : Avm.Object
+    public partial class CompositionAttributeRange : Avm.Object
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

@@ -10,7 +10,7 @@ namespace flash.geom
     [PageFX.AbcInstance(99)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Point : Avm.Object
+    public partial class Point : Avm.Object
     {
         /// <summary>The horizontal coordinate of the point. The default value is 0.</summary>
         [PageFX.AbcInstanceTrait(0)]

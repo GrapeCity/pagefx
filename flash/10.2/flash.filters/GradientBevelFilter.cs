@@ -14,7 +14,7 @@ namespace flash.filters
     [PageFX.AbcInstance(297)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class GradientBevelFilter : flash.filters.BitmapFilter
+    public partial class GradientBevelFilter : flash.filters.BitmapFilter
     {
         /// <summary>The offset distance. Valid values are 0 to 8. The default value is 4.0.</summary>
         public extern virtual double distance

@@ -6,7 +6,7 @@ namespace flash.globalization
     [PageFX.AbcInstance(335)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class CurrencyFormatter : Avm.Object
+    public partial class CurrencyFormatter : Avm.Object
     {
         public extern virtual Avm.String currencyISOCode
         {

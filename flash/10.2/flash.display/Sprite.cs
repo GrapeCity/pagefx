@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(302)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Sprite : flash.display.DisplayObjectContainer
+    public partial class Sprite : flash.display.DisplayObjectContainer
     {
         /// <summary>
         /// Specifies the Graphics object that belongs to this sprite where vector

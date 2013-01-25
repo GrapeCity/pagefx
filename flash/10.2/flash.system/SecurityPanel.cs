@@ -10,7 +10,7 @@ namespace flash.system
     [PageFX.AbcInstance(243)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SecurityPanel : Avm.Object
+    public partial class SecurityPanel : Avm.Object
     {
         /// <summary>
         /// When passed to Security.showSettings(), displays the panel

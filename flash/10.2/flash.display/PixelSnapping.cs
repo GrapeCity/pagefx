@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(135)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class PixelSnapping : Avm.Object
+    public partial class PixelSnapping : Avm.Object
     {
         /// <summary>
         /// A constant value used in the pixelSnapping property of a Bitmap object

@@ -12,7 +12,7 @@ namespace flash.display
     [PageFX.AbcInstance(333)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SimpleButton : flash.display.InteractiveObject
+    public partial class SimpleButton : flash.display.InteractiveObject
     {
         /// <summary>
         /// A Boolean value that, when set to true, indicates whether

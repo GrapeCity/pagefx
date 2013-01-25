@@ -11,7 +11,7 @@ namespace flash.utils
     [PageFX.AbcInstance(183)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Endian : Avm.Object
+    public partial class Endian : Avm.Object
     {
         /// <summary>
         /// Indicates the most significant byte of the multibyte number appears first in the sequence of bytes.

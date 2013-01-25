@@ -16,7 +16,7 @@ namespace flash.net
     [PageFX.AbcInstance(180)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class FileFilter : Avm.Object
+    public partial class FileFilter : Avm.Object
     {
         /// <summary>
         /// The description string for the filter. The description

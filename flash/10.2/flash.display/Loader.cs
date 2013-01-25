@@ -11,7 +11,7 @@ namespace flash.display
     [PageFX.AbcInstance(340)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Loader : flash.display.DisplayObjectContainer
+    public partial class Loader : flash.display.DisplayObjectContainer
     {
         /// <summary>
         /// Contains the root display object of the SWF file or image (JPG, PNG, or GIF)

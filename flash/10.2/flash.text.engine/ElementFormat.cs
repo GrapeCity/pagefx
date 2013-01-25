@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(236)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ElementFormat : Avm.Object
+    public partial class ElementFormat : Avm.Object
     {
         public extern virtual Avm.String alignmentBaseline
         {

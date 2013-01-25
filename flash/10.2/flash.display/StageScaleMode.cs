@@ -7,7 +7,7 @@ namespace flash.display
     [PageFX.AbcInstance(168)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class StageScaleMode : Avm.Object
+    public partial class StageScaleMode : Avm.Object
     {
         /// <summary>
         /// Specifies that the entire Flash application be visible in the specified area without distortion while

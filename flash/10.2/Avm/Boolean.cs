@@ -12,7 +12,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("Boolean")]
     [PageFX.FP9]
-    public class Boolean : Avm.Object
+    public partial class Boolean : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern Boolean(object value);

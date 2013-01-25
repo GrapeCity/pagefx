@@ -12,7 +12,7 @@ namespace flash.ui
     [PageFX.AbcInstance(53)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ContextMenu : flash.display.NativeMenu
+    public partial class ContextMenu : flash.display.NativeMenu
     {
         /// <summary>
         /// An object that has the following properties of the ContextMenuBuiltInItems class: forwardAndBack, loop,

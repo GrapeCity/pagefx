@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace flash.sampler
 {
     [PageFX.GlobalFunctions]
-    public class Global
+    public partial class Global
     {
         [PageFX.AbcScript(3)]
         [PageFX.AbcScriptTrait(4)]

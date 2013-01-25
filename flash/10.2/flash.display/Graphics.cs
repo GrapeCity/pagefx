@@ -14,7 +14,7 @@ namespace flash.display
     [PageFX.AbcInstance(245)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Graphics : Avm.Object
+    public partial class Graphics : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern Graphics();

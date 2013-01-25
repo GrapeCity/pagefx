@@ -7,7 +7,7 @@ namespace flash.events
     [PageFX.AbcInstance(257)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class HTTPStatusEvent : flash.events.Event
+    public partial class HTTPStatusEvent : flash.events.Event
     {
         /// <summary>
         /// The HTTPStatusEvent.HTTP_STATUS constant defines the value of the

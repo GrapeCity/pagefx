@@ -6,7 +6,7 @@ namespace flash.text
     [PageFX.AbcInstance(301)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextExtent : Avm.Object
+    public partial class TextExtent : Avm.Object
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

@@ -11,7 +11,7 @@ namespace flash.geom
     [PageFX.AbcInstance(360)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ColorTransform : Avm.Object
+    public partial class ColorTransform : Avm.Object
     {
         /// <summary>A decimal value that is multiplied with the red channel value.</summary>
         [PageFX.AbcInstanceTrait(0)]

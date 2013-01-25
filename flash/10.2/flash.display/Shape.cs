@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(136)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Shape : flash.display.DisplayObject
+    public partial class Shape : flash.display.DisplayObject
     {
         /// <summary>
         /// Specifies the Graphics object belonging to this Shape object, where vector

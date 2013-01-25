@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(324)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ShaderInput : Avm.Object
+    public partial class ShaderInput : Avm.Object
     {
         public extern virtual object input
         {

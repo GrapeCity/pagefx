@@ -7,7 +7,7 @@ namespace flash.display
     [PageFX.AbcInstance(266)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class StageAlign : Avm.Object
+    public partial class StageAlign : Avm.Object
     {
         /// <summary>Specifies that the Stage is aligned at the top.</summary>
         [PageFX.AbcClassTrait(0)]

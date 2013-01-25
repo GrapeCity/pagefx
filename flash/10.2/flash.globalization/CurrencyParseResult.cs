@@ -6,7 +6,7 @@ namespace flash.globalization
     [PageFX.AbcInstance(238)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class CurrencyParseResult : Avm.Object
+    public partial class CurrencyParseResult : Avm.Object
     {
         public extern virtual double value
         {

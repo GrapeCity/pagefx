@@ -33,6 +33,45 @@
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\api\Avm\Array.cs">
+      <Link>shared\Avm\Array.cs</Link>
+    </Compile>
+    <Compile Include="..\api\Avm\Class.cs">
+      <Link>shared\Avm\Class.cs</Link>
+    </Compile>
+    <Compile Include="..\api\Avm\Date.cs">
+      <Link>shared\Avm\Date.cs</Link>
+    </Compile>
+    <Compile Include="..\api\Avm\Object.cs">
+      <Link>shared\Avm\Object.cs</Link>
+    </Compile>
+    <Compile Include="..\api\Avm\String.cs">
+      <Link>shared\Avm\String.cs</Link>
+    </Compile>
+    <Compile Include="..\api\Avm\Vector.cs">
+      <Link>shared\Avm\Vector.cs</Link>
+    </Compile>
+    <Compile Include="..\api\Avm\XML.cs">
+      <Link>shared\Avm\XML.cs</Link>
+    </Compile>
+    <Compile Include="..\api\Avm\XMLList.cs">
+      <Link>shared\Avm\XMLList.cs</Link>
+    </Compile>
+    <Compile Include="..\api\__AS3__.vec\Vector%24double.cs">
+      <Link>shared\__AS3__.vec\Vector%24double.cs</Link>
+    </Compile>
+    <Compile Include="..\api\__AS3__.vec\Vector%24int.cs">
+      <Link>shared\__AS3__.vec\Vector%24int.cs</Link>
+    </Compile>
+    <Compile Include="..\api\__AS3__.vec\Vector%24object.cs">
+      <Link>shared\__AS3__.vec\Vector%24object.cs</Link>
+    </Compile>
+    <Compile Include="..\api\__AS3__.vec\Vector%24uint.cs">
+      <Link>shared\__AS3__.vec\Vector%24uint.cs</Link>
+    </Compile>
+    <Compile Include="..\api\__AS3__.vec\Vector.cs">
+      <Link>shared\__AS3__.vec\Vector.cs</Link>
+    </Compile>
     <Compile Include="adobe.utils\CustomActions.cs" />
     <Compile Include="adobe.utils\Global.cs" />
     <Compile Include="adobe.utils\ProductManager.cs" />
@@ -64,7 +103,6 @@
     <Compile Include="Avm\UInt.cs" />
     <Compile Include="Avm\UninitializedError.cs" />
     <Compile Include="Avm\URIError.cs" />
-    <Compile Include="Avm\Vector.cs" />
     <Compile Include="Avm\VerifyError.cs" />
     <Compile Include="Avm\XML.cs" />
     <Compile Include="Avm\XMLList.cs" />

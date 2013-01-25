@@ -10,7 +10,7 @@ namespace flash.accessibility
     [PageFX.AbcInstance(112)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class AccessibilityProperties : Avm.Object
+    public partial class AccessibilityProperties : Avm.Object
     {
         /// <summary>
         /// Provides a name for this display object in the accessible presentation.

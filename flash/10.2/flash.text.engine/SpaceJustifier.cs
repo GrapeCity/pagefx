@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(371)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class SpaceJustifier : flash.text.engine.TextJustifier
+    public partial class SpaceJustifier : flash.text.engine.TextJustifier
     {
         public extern virtual bool letterSpacing
         {

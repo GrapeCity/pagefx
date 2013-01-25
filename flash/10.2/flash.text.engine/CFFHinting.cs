@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(22)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class CFFHinting : Avm.Object
+    public partial class CFFHinting : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

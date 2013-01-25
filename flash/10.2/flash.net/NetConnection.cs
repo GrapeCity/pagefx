@@ -12,7 +12,7 @@ namespace flash.net
     [PageFX.AbcInstance(214)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class NetConnection : flash.events.EventDispatcher
+    public partial class NetConnection : flash.events.EventDispatcher
     {
         /// <summary>
         /// Indicates whether Flash Player has connected to a server through

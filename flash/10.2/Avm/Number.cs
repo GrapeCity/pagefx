@@ -12,7 +12,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("Number")]
     [PageFX.FP9]
-    public class Number : Avm.Object
+    public partial class Number : Avm.Object
     {
         /// <summary>The IEEE-754 value representing Not a Number (NaN).</summary>
         [PageFX.AbcClassTrait(1)]

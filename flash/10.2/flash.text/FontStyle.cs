@@ -7,7 +7,7 @@ namespace flash.text
     [PageFX.AbcInstance(104)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class FontStyle : Avm.Object
+    public partial class FontStyle : Avm.Object
     {
         /// <summary>Defines the plain style of a font for the fontStyle parameter in the setAdvancedAntiAliasingTable() method. Use the syntax FontStyle.REGULAR.</summary>
         [PageFX.AbcClassTrait(0)]

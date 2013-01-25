@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(299)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class BreakOpportunity : Avm.Object
+    public partial class BreakOpportunity : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

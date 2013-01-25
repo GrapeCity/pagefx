@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(205)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TextLine : flash.display.DisplayObjectContainer
+    public partial class TextLine : flash.display.DisplayObjectContainer
     {
         [PageFX.AbcInstanceTrait(4)]
         [PageFX.ABC]

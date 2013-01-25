@@ -6,7 +6,7 @@ namespace flash.ui
     [PageFX.AbcInstance(279)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class MouseCursorData : Avm.Object
+    public partial class MouseCursorData : Avm.Object
     {
         public extern virtual Avm.Vector<Avm.String> data
         {

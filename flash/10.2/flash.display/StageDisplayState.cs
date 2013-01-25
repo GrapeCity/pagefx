@@ -7,7 +7,7 @@ namespace flash.display
     [PageFX.AbcInstance(280)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class StageDisplayState : Avm.Object
+    public partial class StageDisplayState : Avm.Object
     {
         /// <summary>Specifies that the Stage is in full-screen mode.</summary>
         [PageFX.AbcClassTrait(0)]

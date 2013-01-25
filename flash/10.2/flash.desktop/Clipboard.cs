@@ -6,7 +6,7 @@ namespace flash.desktop
     [PageFX.AbcInstance(295)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Clipboard : Avm.Object
+    public partial class Clipboard : Avm.Object
     {
         public extern virtual Avm.Array formats
         {

@@ -11,7 +11,7 @@ namespace flash.text
     [PageFX.AbcInstance(339)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextSnapshot : Avm.Object
+    public partial class TextSnapshot : Avm.Object
     {
         /// <summary>The number of characters in a TextSnapshot object.</summary>
         public extern virtual int charCount

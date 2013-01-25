@@ -7,7 +7,7 @@ namespace flash.media
     [PageFX.AbcInstance(151)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Camera : flash.events.EventDispatcher
+    public partial class Camera : flash.events.EventDispatcher
     {
         /// <summary>
         /// A numeric value that specifies the amount of motion the camera is detecting. Values range from 0 (no motion is being detected) to

@@ -12,7 +12,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("XMLList")]
     [PageFX.FP9]
-    public class XMLList : Avm.Object
+    public partial class XMLList : Avm.Object
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern XMLList(object value);
@@ -453,34 +453,5 @@ namespace Avm
         [PageFX.FP9]
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern virtual void setNamespace(object ns);
-
-        #region Custom Members
-        public extern XML this[int index]
-        {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
-        
-        public extern XMLList this[Avm.String name]
-        {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
-        
-        public extern XMLList this[Avm.Namespace ns, Avm.String name]
-        {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
-        
-        public extern XMLList this[Avm.String ns, Avm.String name]
-        {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
-        #endregion
-
-
-
     }
 }

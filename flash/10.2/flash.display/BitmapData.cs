@@ -12,7 +12,7 @@ namespace flash.display
     [PageFX.AbcInstance(170)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class BitmapData : Avm.Object, flash.display.IBitmapDrawable
+    public partial class BitmapData : Avm.Object, flash.display.IBitmapDrawable
     {
         /// <summary>The width of the bitmap image in pixels.</summary>
         public extern virtual int width

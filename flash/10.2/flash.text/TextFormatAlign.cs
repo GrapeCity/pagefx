@@ -7,7 +7,7 @@ namespace flash.text
     [PageFX.AbcInstance(161)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextFormatAlign : Avm.Object
+    public partial class TextFormatAlign : Avm.Object
     {
         /// <summary>
         /// Constant; aligns text to the left within the text field.

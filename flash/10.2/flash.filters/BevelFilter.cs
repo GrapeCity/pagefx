@@ -16,7 +16,7 @@ namespace flash.filters
     [PageFX.AbcInstance(184)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class BevelFilter : flash.filters.BitmapFilter
+    public partial class BevelFilter : flash.filters.BitmapFilter
     {
         /// <summary>The offset distance of the bevel. Valid values are in pixels (floating point). The default is 4.</summary>
         public extern virtual double distance

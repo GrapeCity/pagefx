@@ -10,7 +10,7 @@ namespace flash.filters
     [PageFX.AbcInstance(76)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class DisplacementMapFilterMode : Avm.Object
+    public partial class DisplacementMapFilterMode : Avm.Object
     {
         /// <summary>
         /// Wraps the displacement value to the other side of the source image.

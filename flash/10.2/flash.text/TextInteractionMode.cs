@@ -6,7 +6,7 @@ namespace flash.text
     [PageFX.AbcInstance(75)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TextInteractionMode : Avm.Object
+    public partial class TextInteractionMode : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

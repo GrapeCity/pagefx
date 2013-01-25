@@ -13,7 +13,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("DefinitionError")]
     [PageFX.FP9]
-    public class DefinitionError : Avm.Error
+    public partial class DefinitionError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern DefinitionError(Avm.String message, int id);

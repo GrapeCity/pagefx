@@ -7,7 +7,7 @@ namespace flash.filters
     [PageFX.AbcInstance(169)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class BitmapFilterQuality : Avm.Object
+    public partial class BitmapFilterQuality : Avm.Object
     {
         /// <summary>Defines the low quality filter setting.</summary>
         [PageFX.AbcClassTrait(0)]

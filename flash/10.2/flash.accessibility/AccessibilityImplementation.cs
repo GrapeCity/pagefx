@@ -6,7 +6,7 @@ namespace flash.accessibility
     [PageFX.AbcInstance(223)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class AccessibilityImplementation : Avm.Object
+    public partial class AccessibilityImplementation : Avm.Object
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

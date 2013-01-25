@@ -12,7 +12,7 @@ namespace flash.display
     [PageFX.AbcInstance(326)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class InterpolationMethod : Avm.Object
+    public partial class InterpolationMethod : Avm.Object
     {
         /// <summary>
         /// Specifies that the RGB interpolation method should be used. This means that

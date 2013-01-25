@@ -13,7 +13,7 @@ namespace flash.system
     [PageFX.AbcInstance(285)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class IMEConversionMode : Avm.Object
+    public partial class IMEConversionMode : Avm.Object
     {
         /// <summary>
         /// The string &quot;ALPHANUMERIC_FULL&quot;, for use with the

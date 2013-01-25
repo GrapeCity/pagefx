@@ -6,7 +6,7 @@ namespace flash.system
     [PageFX.AbcInstance(328)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TouchscreenType : Avm.Object
+    public partial class TouchscreenType : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

@@ -13,7 +13,7 @@ namespace flash.display
     [PageFX.AbcInstance(198)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class LoaderInfo : flash.events.EventDispatcher
+    public partial class LoaderInfo : flash.events.EventDispatcher
     {
         /// <summary>
         /// The URL of the SWF file that initiated the loading of the media

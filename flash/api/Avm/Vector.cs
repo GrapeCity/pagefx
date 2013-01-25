@@ -6,7 +6,7 @@ namespace Avm
 {
     [PageFX.FP("10")]
     [PageFX.GenericVector]
-    public class Vector<T> : Object
+    public partial class Vector<T> : Object
     {
         #region ctors
         /// <summary>

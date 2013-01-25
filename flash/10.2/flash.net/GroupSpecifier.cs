@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(242)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GroupSpecifier : Avm.Object
+    public partial class GroupSpecifier : Avm.Object
     {
         public extern virtual bool routingEnabled
         {

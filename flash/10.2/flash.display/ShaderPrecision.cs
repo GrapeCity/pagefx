@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(320)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ShaderPrecision : Avm.Object
+    public partial class ShaderPrecision : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

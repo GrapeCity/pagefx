@@ -14,7 +14,7 @@ namespace flash.filters
     [PageFX.AbcInstance(139)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ConvolutionFilter : flash.filters.BitmapFilter
+    public partial class ConvolutionFilter : flash.filters.BitmapFilter
     {
         /// <summary>
         /// An array of values used for matrix transformation. The number of items

@@ -6,7 +6,7 @@ namespace flash.geom
     [PageFX.AbcInstance(259)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Orientation3D : Avm.Object
+    public partial class Orientation3D : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

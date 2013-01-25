@@ -12,7 +12,7 @@ namespace flash.display
     [PageFX.AbcInstance(206)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class FrameLabel : Avm.Object
+    public partial class FrameLabel : Avm.Object
     {
         /// <summary>The name of the label.</summary>
         public extern virtual Avm.String name

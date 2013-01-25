@@ -12,7 +12,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("uint")]
     [PageFX.FP9]
-    public class UInt : Avm.Object
+    public partial class UInt : Avm.Object
     {
         /// <summary>The smallest representable unsigned integer, which is 0.</summary>
         [PageFX.AbcClassTrait(0)]

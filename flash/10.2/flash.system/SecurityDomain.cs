@@ -11,7 +11,7 @@ namespace flash.system
     [PageFX.AbcInstance(119)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class SecurityDomain : Avm.Object
+    public partial class SecurityDomain : Avm.Object
     {
         /// <summary>Gets the current security domain.</summary>
         public extern static flash.system.SecurityDomain currentDomain

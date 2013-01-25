@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(117)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ShaderParameterType : Avm.Object
+    public partial class ShaderParameterType : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

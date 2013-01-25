@@ -6,7 +6,7 @@ namespace flash.trace
     [PageFX.AbcInstance(284)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Trace : Avm.Object
+    public partial class Trace : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

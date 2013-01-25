@@ -6,7 +6,7 @@ namespace flash.media
     [PageFX.AbcInstance(315)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class StageVideo : flash.events.EventDispatcher
+    public partial class StageVideo : flash.events.EventDispatcher
     {
         public extern virtual flash.geom.Rectangle viewPort
         {

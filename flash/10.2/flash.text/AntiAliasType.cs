@@ -7,7 +7,7 @@ namespace flash.text
     [PageFX.AbcInstance(153)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class AntiAliasType : Avm.Object
+    public partial class AntiAliasType : Avm.Object
     {
         /// <summary>
         /// Sets anti-aliasing to the anti-aliasing that is used in Flash Player 7 and earlier.

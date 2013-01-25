@@ -6,7 +6,7 @@ namespace flash.geom
     [PageFX.AbcInstance(209)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Matrix3D : Avm.Object
+    public partial class Matrix3D : Avm.Object
     {
         public extern virtual Avm.Vector<Avm.String> rawData
         {

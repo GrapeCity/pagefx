@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace flash.debugger
 {
     [PageFX.GlobalFunctions]
-    public class Global
+    public partial class Global
     {
         [PageFX.AbcScript(101)]
         [PageFX.AbcScriptTrait(0)]

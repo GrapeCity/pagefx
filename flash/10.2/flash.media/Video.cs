@@ -13,7 +13,7 @@ namespace flash.media
     [PageFX.AbcInstance(292)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Video : flash.display.DisplayObject
+    public partial class Video : flash.display.DisplayObject
     {
         /// <summary>
         /// Indicates the type of filter applied to decoded video as part of post-processing.

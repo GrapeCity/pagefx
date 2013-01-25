@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(138)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NetGroupReceiveMode : Avm.Object
+    public partial class NetGroupReceiveMode : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

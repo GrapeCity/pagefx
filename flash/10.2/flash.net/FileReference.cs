@@ -15,7 +15,7 @@ namespace flash.net
     [PageFX.AbcInstance(109)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class FileReference : flash.events.EventDispatcher
+    public partial class FileReference : flash.events.EventDispatcher
     {
         /// <summary>
         /// The creation date of the file on the local disk. If the object is

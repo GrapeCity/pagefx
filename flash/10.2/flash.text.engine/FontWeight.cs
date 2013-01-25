@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(356)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class FontWeight : Avm.Object
+    public partial class FontWeight : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

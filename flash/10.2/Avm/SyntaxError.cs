@@ -13,7 +13,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("SyntaxError")]
     [PageFX.FP9]
-    public class SyntaxError : Avm.Error
+    public partial class SyntaxError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern SyntaxError(Avm.String message, int id);

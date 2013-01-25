@@ -6,7 +6,7 @@ namespace flash.net.drm
     [PageFX.AbcInstance(57)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DRMVoucher : Avm.Object
+    public partial class DRMVoucher : Avm.Object
     {
         public extern virtual Avm.Date voucherStartDate
         {

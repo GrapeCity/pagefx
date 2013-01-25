@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(222)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class EastAsianJustifier : flash.text.engine.TextJustifier
+    public partial class EastAsianJustifier : flash.text.engine.TextJustifier
     {
         public extern virtual Avm.String justificationStyle
         {

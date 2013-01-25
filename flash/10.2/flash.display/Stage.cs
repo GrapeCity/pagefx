@@ -10,7 +10,7 @@ namespace flash.display
     [PageFX.AbcInstance(90)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Stage : flash.display.DisplayObjectContainer
+    public partial class Stage : flash.display.DisplayObjectContainer
     {
         /// <summary>
         /// Gets and sets the frame rate of the stage. The frame rate is defined as frames per second.

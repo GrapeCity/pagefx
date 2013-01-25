@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(171)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ShaderEvent : flash.events.Event
+    public partial class ShaderEvent : flash.events.Event
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

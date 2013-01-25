@@ -6,7 +6,7 @@ namespace flash.sampler
     [PageFX.AbcInstance(18)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class StackFrame : Avm.Object
+    public partial class StackFrame : Avm.Object
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

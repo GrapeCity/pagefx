@@ -14,7 +14,7 @@ namespace flash.text
     [PageFX.AbcInstance(194)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextFormat : Avm.Object
+    public partial class TextFormat : Avm.Object
     {
         /// <summary>Indicates the alignment of the paragraph. Valid values are TextFormatAlign constants.</summary>
         public extern virtual Avm.String align

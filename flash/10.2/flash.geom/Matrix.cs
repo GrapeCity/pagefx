@@ -15,7 +15,7 @@ namespace flash.geom
     [PageFX.AbcInstance(74)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Matrix : Avm.Object
+    public partial class Matrix : Avm.Object
     {
         /// <summary>
         /// The value in the first row and first column of the Matrix object, which affects the positioning of pixels

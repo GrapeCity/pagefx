@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(311)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class RenderingMode : Avm.Object
+    public partial class RenderingMode : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

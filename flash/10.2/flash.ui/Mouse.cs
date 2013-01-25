@@ -12,7 +12,7 @@ namespace flash.ui
     [PageFX.AbcInstance(100)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Mouse : Avm.Object
+    public partial class Mouse : Avm.Object
     {
         public extern static bool supportsCursor
         {

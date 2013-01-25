@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(51)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TextElement : flash.text.engine.ContentElement
+    public partial class TextElement : flash.text.engine.ContentElement
     {
         public extern virtual Avm.String text
         {

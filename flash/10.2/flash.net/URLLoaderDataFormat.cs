@@ -7,7 +7,7 @@ namespace flash.net
     [PageFX.AbcInstance(31)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class URLLoaderDataFormat : Avm.Object
+    public partial class URLLoaderDataFormat : Avm.Object
     {
         /// <summary>Specifies that downloaded data is received as text.</summary>
         [PageFX.AbcClassTrait(0)]

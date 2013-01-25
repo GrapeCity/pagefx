@@ -12,7 +12,7 @@ namespace flash.ui
     [PageFX.AbcInstance(246)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ContextMenuItem : flash.display.NativeMenuItem
+    public partial class ContextMenuItem : flash.display.NativeMenuItem
     {
         /// <summary>
         /// Specifies the menu item caption (text) displayed in the context menu.

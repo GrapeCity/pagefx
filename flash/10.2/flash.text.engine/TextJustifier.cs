@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(80)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TextJustifier : Avm.Object
+    public partial class TextJustifier : Avm.Object
     {
         public extern virtual Avm.String locale
         {

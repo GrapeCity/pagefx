@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(260)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TextBlock : Avm.Object
+    public partial class TextBlock : Avm.Object
     {
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]

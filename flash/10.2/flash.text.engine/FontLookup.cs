@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(123)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class FontLookup : Avm.Object
+    public partial class FontLookup : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

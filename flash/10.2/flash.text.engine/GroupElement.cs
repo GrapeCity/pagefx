@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(232)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GroupElement : flash.text.engine.ContentElement
+    public partial class GroupElement : flash.text.engine.ContentElement
     {
         public extern virtual int elementCount
         {

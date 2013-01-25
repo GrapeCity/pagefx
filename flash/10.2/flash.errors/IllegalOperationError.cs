@@ -10,7 +10,7 @@ namespace flash.errors
     [PageFX.AbcInstance(83)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class IllegalOperationError : Avm.Error
+    public partial class IllegalOperationError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern IllegalOperationError(Avm.String message, int id);

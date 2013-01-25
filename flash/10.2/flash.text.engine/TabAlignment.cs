@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(363)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TabAlignment : Avm.Object
+    public partial class TabAlignment : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(162)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class Kerning : Avm.Object
+    public partial class Kerning : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(276)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class GesturePhase : Avm.Object
+    public partial class GesturePhase : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

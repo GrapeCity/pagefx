@@ -12,7 +12,7 @@ namespace flash.accessibility
     [PageFX.AbcInstance(95)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Accessibility : Avm.Object
+    public partial class Accessibility : Avm.Object
     {
         /// <summary>
         /// Indicates whether a screen reader is currently active and the player is

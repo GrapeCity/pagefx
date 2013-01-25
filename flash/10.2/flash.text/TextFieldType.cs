@@ -10,7 +10,7 @@ namespace flash.text
     [PageFX.AbcInstance(267)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextFieldType : Avm.Object
+    public partial class TextFieldType : Avm.Object
     {
         /// <summary>Used to specify an input TextField.</summary>
         [PageFX.AbcClassTrait(0)]

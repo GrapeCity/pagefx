@@ -6,7 +6,7 @@ namespace adobe.utils
     [PageFX.AbcInstance(207)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ProductManager : flash.events.EventDispatcher
+    public partial class ProductManager : flash.events.EventDispatcher
     {
         public extern virtual bool running
         {

@@ -7,7 +7,7 @@ namespace flash.text
     [PageFX.AbcInstance(199)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextDisplayMode : Avm.Object
+    public partial class TextDisplayMode : Avm.Object
     {
         /// <summary>
         /// Forces Flash Player to use LCD subpixel anti-aliasing. Depending on the font and

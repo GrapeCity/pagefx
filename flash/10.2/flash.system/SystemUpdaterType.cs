@@ -6,7 +6,7 @@ namespace flash.system
     [PageFX.AbcInstance(290)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class SystemUpdaterType : Avm.Object
+    public partial class SystemUpdaterType : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

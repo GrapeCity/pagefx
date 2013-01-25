@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(220)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class PressAndTapGestureEvent : flash.events.GestureEvent
+    public partial class PressAndTapGestureEvent : flash.events.GestureEvent
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

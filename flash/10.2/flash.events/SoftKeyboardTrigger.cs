@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(73)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class SoftKeyboardTrigger : Avm.Object
+    public partial class SoftKeyboardTrigger : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

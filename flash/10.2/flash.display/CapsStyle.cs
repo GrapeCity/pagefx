@@ -11,7 +11,7 @@ namespace flash.display
     [PageFX.AbcInstance(353)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class CapsStyle : Avm.Object
+    public partial class CapsStyle : Avm.Object
     {
         /// <summary>
         /// Used to specify round caps in the caps parameter of the

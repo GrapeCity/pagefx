@@ -6,7 +6,7 @@ namespace flash.events
     [PageFX.AbcInstance(177)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DRMAuthenticateEvent : flash.events.Event
+    public partial class DRMAuthenticateEvent : flash.events.Event
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

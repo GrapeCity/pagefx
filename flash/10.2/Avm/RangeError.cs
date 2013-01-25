@@ -15,7 +15,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("RangeError")]
     [PageFX.FP9]
-    public class RangeError : Avm.Error
+    public partial class RangeError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern RangeError(Avm.String message, int id);

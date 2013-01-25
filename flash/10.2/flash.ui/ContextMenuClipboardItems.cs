@@ -6,7 +6,7 @@ namespace flash.ui
     [PageFX.AbcInstance(189)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class ContextMenuClipboardItems : Avm.Object
+    public partial class ContextMenuClipboardItems : Avm.Object
     {
         public extern virtual bool cut
         {

@@ -7,7 +7,7 @@ namespace flash.text
     [PageFX.AbcInstance(96)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class GridFitType : Avm.Object
+    public partial class GridFitType : Avm.Object
     {
         /// <summary>
         /// Doesn&apos;t set grid fitting. Horizontal and vertical lines

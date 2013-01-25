@@ -11,7 +11,7 @@ namespace flash.events
     [PageFX.AbcInstance(309)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class MouseEvent : flash.events.Event
+    public partial class MouseEvent : flash.events.Event
     {
         /// <summary>
         /// Defines the value of the type property of a click event object.

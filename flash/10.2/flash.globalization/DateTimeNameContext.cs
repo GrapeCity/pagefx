@@ -6,7 +6,7 @@ namespace flash.globalization
     [PageFX.AbcInstance(115)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class DateTimeNameContext : Avm.Object
+    public partial class DateTimeNameContext : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

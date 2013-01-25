@@ -6,7 +6,7 @@ namespace flash.system
     [PageFX.AbcInstance(289)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class SystemUpdater : flash.events.EventDispatcher
+    public partial class SystemUpdater : flash.events.EventDispatcher
     {
         [PageFX.Event("cancel")]
         public event flash.events.EventHandler OnCancel

@@ -11,7 +11,7 @@ namespace flash.display
     [PageFX.AbcInstance(65)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Bitmap : flash.display.DisplayObject
+    public partial class Bitmap : flash.display.DisplayObject
     {
         /// <summary>
         /// Controls whether or not the Bitmap object is snapped to the nearest pixel. The PixelSnapping

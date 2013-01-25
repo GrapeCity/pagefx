@@ -13,7 +13,7 @@ namespace flash.events
     [PageFX.AbcInstance(373)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ContextMenuEvent : flash.events.Event
+    public partial class ContextMenuEvent : flash.events.Event
     {
         /// <summary>
         /// Defines the value of the type property of a menuItemSelect event object.

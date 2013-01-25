@@ -13,7 +13,7 @@ namespace Avm
     [PageFX.ABC]
     [PageFX.QName("ArgumentError")]
     [PageFX.FP9]
-    public class ArgumentError : Avm.Error
+    public partial class ArgumentError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern ArgumentError(Avm.String message, int id);

@@ -11,7 +11,7 @@ namespace flash.text
     [PageFX.AbcInstance(374)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextLineMetrics : Avm.Object
+    public partial class TextLineMetrics : Avm.Object
     {
         /// <summary>
         /// The x value is the left position of the first character in pixels. This value includes the margin,

@@ -14,7 +14,7 @@ namespace flash.text
     [PageFX.AbcInstance(181)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class Font : Avm.Object
+    public partial class Font : Avm.Object
     {
         /// <summary>The name of an embedded font.</summary>
         public extern virtual Avm.String fontName

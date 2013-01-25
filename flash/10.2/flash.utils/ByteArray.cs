@@ -10,7 +10,7 @@ namespace flash.utils
     [PageFX.AbcInstance(312)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class ByteArray : Avm.Object, flash.utils.IDataInput, flash.utils.IDataOutput
+    public partial class ByteArray : Avm.Object, flash.utils.IDataInput, flash.utils.IDataOutput
     {
         /// <summary>
         /// The length of the ByteArray object, in bytes.

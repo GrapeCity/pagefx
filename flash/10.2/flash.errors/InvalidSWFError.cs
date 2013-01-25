@@ -6,7 +6,7 @@ namespace flash.errors
     [PageFX.AbcInstance(86)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class InvalidSWFError : Avm.Error
+    public partial class InvalidSWFError : Avm.Error
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern InvalidSWFError(Avm.String message, int id);

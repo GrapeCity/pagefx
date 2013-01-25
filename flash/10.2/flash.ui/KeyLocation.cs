@@ -10,7 +10,7 @@ namespace flash.ui
     [PageFX.AbcInstance(251)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class KeyLocation : Avm.Object
+    public partial class KeyLocation : Avm.Object
     {
         /// <summary>
         /// Indicates the key activation is not distinguished as the left or right version of the key,

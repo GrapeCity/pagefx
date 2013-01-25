@@ -13,7 +13,7 @@ namespace flash.text
     [PageFX.AbcInstance(357)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class TextRenderer : Avm.Object
+    public partial class TextRenderer : Avm.Object
     {
         public extern static Avm.String antiAliasType
         {

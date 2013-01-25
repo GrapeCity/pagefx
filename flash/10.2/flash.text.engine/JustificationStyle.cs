@@ -6,7 +6,7 @@ namespace flash.text.engine
     [PageFX.AbcInstance(351)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class JustificationStyle : Avm.Object
+    public partial class JustificationStyle : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

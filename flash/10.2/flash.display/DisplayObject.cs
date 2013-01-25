@@ -14,7 +14,7 @@ namespace flash.display
     [PageFX.AbcInstance(64)]
     [PageFX.ABC]
     [PageFX.FP9]
-    public class DisplayObject : flash.events.EventDispatcher, flash.display.IBitmapDrawable
+    public partial class DisplayObject : flash.events.EventDispatcher, flash.display.IBitmapDrawable
     {
         /// <summary>
         /// For a display object in a loaded SWF file, the root property is the

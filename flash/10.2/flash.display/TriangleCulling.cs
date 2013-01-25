@@ -6,7 +6,7 @@ namespace flash.display
     [PageFX.AbcInstance(129)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class TriangleCulling : Avm.Object
+    public partial class TriangleCulling : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]

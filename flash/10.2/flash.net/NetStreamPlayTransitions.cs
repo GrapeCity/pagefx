@@ -6,7 +6,7 @@ namespace flash.net
     [PageFX.AbcInstance(325)]
     [PageFX.ABC]
     [PageFX.FP("10.2")]
-    public class NetStreamPlayTransitions : Avm.Object
+    public partial class NetStreamPlayTransitions : Avm.Object
     {
         [PageFX.AbcClassTrait(0)]
         [PageFX.ABC]
