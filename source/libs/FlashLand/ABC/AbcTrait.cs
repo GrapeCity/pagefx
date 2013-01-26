@@ -402,7 +402,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
         }
-        AbcTraitKind _kind;
+        private AbcTraitKind _kind;
 
         public bool IsSlot
         {

@@ -70,10 +70,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private TypeFactory ResolveTypeFactory()
 	    {
-		    if (_refs.Count > 0)
-			    return _refs[0].TypeFactory;
-			return new TypeFactory();
+		    return _refs.Count > 0 ? _refs[0].TypeFactory : new TypeFactory();
 	    }
+
+	    private SystemTypes SystemTypes
+		{
+			get { return _corlib != null ? _corlib.SystemTypes : _assembly.SystemTypes; }
+		}
 
 	    private static Stream Unzip(string path)
         {
@@ -122,11 +125,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 LoadFP9();
             }
         }
-
-	    private SystemTypes SystemTypes
-	    {
-			get { return _corlib != null ? _corlib.SystemTypes : _assembly.SystemTypes; }
-	    }
 
 	    #region LoadDocFile
         private bool LoadDocFile(string docpath)
@@ -469,7 +467,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         	           	{
         	           		Namespace = ns,
         	           		Name = name,
-        	           		Visibility = Visibility.Public
+        	           		Visibility = Visibility.Public,
+							IsPartial = true
         	           	};
 
         	type.Data = new GlobalFunctionsContainer(type);
@@ -1655,7 +1654,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             if (trait.IsAccessor)
             {
-                BuildProperty(method, trait, summary);
+                BuildProperty(declType, method, trait, summary);
                 AddMethod(declType, method);
             }
             else
@@ -1668,7 +1667,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
 
         #region BuildOverloads
-        void BuildOverloads(IType declType, IMethod method, AbcMethod abcMethod)
+        private void BuildOverloads(IType declType, IMethod method, AbcMethod abcMethod)
         {
             if (declType.IsInterface)
             {
@@ -1733,7 +1732,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return getter ? "get_" : "set_";
         }
 
-        static void BuildProperty(IMethod method, AbcTrait trait, string summary)
+        static void BuildProperty(IType declType, IMethod method, AbcTrait trait, string summary)
         {
             string name = method.Name;
             method.Name = GetAccessorPrefix(trait.IsGetter) + name;
@@ -1743,9 +1742,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 prop = new Property
                            {
                                Documentation = summary,
-                               Name = name
+                               Name = name,
+							   DeclaringType = declType
                            };
                 trait.Property = prop;
+				declType.Properties.Add(prop);
             }
             if (trait.IsGetter) prop.Getter = method;
             else prop.Setter = method;
