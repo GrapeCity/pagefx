@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="Builds Flex API assemblies" default="rebuild">
+
+	<!-- input properties -->
+	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
+	<property name="debug" value="true" unless="${property::exists('debug')}"/>
+	<property name="outdir" value="c:/pfx/framework" unless="${property::exists('outdir')}"/>
+
+	<property name="nant.settings.currentframework" value="net-3.5" />
+	<if test="${runtime == 'mono'}">
+		<property name="nant.settings.currentframework" value="mono-3.5" />
+	</if>
+
+	<property name="fxdir" value="c:/pfx/framework"/>
+	<property name="curdir" value="${project::get-base-directory()}"/>
+
+	<target name="build">
+		<!-- flex 3.3.0 -->
+		<property name="ref1" value=""/>
+		<property name="ref2" value=""/>
+
+		<property name="ver" value="3.3.0"/>
+		<property name="fp" value="10.0"/>
+		<echo message="Building assemblies for flex v${ver} with linkage to flash player v${fp} API."/>
+		
+		<property name="file" value="framework"/>
+		<property name="refs" value="/r:${fxdir}/flash.v${fp}.dll"/>
+		<call target="__process_swc__"/>
+
+		<property name="file" value="rpc"/>
+		<property name="refs" value="/r:${fxdir}/flash.v${fp}.dll /r:${fxdir}/flex.framework.v${ver}.dll"/>
+		<property name="ref1" value="flex.framework.v${ver}.dll"/>
+		<call target="__process_swc__"/>
+
+		<!-- flex 4.5.0 -->
+		<property name="ref1" value=""/>
+		<property name="ref2" value=""/>
+
+		<property name="ver" value="4.5.0"/>
+		<property name="fp" value="10.2"/>
+		<echo message="Building assemblies for flex v${ver} with linkage to flash player v${fp} API."/>
+
+		<property name="file" value="framework"/>
+		<property name="refs" value="/r:${fxdir}/flash.v${fp}.dll"/>
+		<call target="__process_swc__"/>
+
+		<property name="file" value="mx"/>
+		<property name="refs" value="/r:${fxdir}/flash.v${fp}.dll /r:${fxdir}/flex.framework.v${ver}.dll"/>
+		<property name="ref1" value="flex.framework.v${ver}.dll"/>
+		<call target="__process_swc__"/>
+	</target>
+	
+	<target name="__process_swc__">
+		<echo message="Building managed wrapper for ${file}.swc file"/>
+		<property name="dir" value="${curdir}/${ver}"/>
+
+		<!-- generate c# files -->
+		<exec program="c:/pfx/bin/pfc.exe" workingdir="${dir}">
+			<arg value="/wrap"/>
+			<arg value="${refs}"/>
+			<arg value="/nocsc"/>
+			<arg value="/dir:${file}_src"/>
+			<arg value="/FP:${fp}"/>
+			<arg value="${file}.swc"/>
+		</exec>
+
+		<!-- generated assemblyinfo.cs -->
+		<property name="srcdir" value="${dir}/${file}_src"/>
+		<asminfo language="CSharp" output="${srcdir}/AssemblyInfo.cs">
+			<imports>
+				<import namespace="System" />
+				<import namespace="System.Reflection" />
+			</imports>
+			<attributes>
+				<attribute type="AssemblyTitleAttribute" value="Flex ${ver}. Managed wrapper for ${file}.swc."/>
+				<attribute type="AssemblyCompanyAttribute" value="Data Dynamics"/>
+				<attribute type="AssemblyProductAttribute" value="PageFX"/>
+				<attribute type="AssemblyCopyrightAttribute" value="Copyright © Data Dynamics 2013"/>
+				<attribute type="AssemblyTrademarkAttribute" value=""/>
+				<attribute type="AssemblyCultureAttribute" value=""/>
+				<attribute type="AssemblyVersionAttribute" value="1.0.0.0"/>
+				<attribute type="AssemblyFileVersionAttribute" value="1.0.0.0"/>
+			</attributes>
+		</asminfo>
+
+		<!-- compile assembly -->
+		<property name="assembly" value="flex.${file}.v${ver}"/>
+		<csc target="library" output="${outdir}/${assembly}.dll"
+			 debug="true" unsafe="false" nostdlib="true"
+			 keyfile="${curdir}/../source/pfx.snk">
+			<references>
+				<include name="${fxdir}/mscorlib.dll"/>
+				<include name="${fxdir}/flash.v${fp}.dll"/>
+				<include name="${fxdir}/${ref1}" if="${ref1 != ''}"/>
+				<include name="${fxdir}/${ref2}" if="${ref2 != ''}"/>
+			</references>
+			<sources basedir="${srcdir}">
+				<include name="**/*.cs"/>
+			</sources>
+			<resources basedir="${dir}" prefix="" dynamicprefix="false" failonempty="true">
+				<include name="${file}.swc"/>
+				<include name="${file}.swcdep"/>
+			</resources>
+		</csc>
+
+		<property name="docfile" value="${dir}/${file}.xml"/>
+		<if test="${file::exists(docfile)}">
+			<copy file="${docfile}" tofile="${outdir}/${assembly}.xml"/>
+		</if>
+
+		<!-- cleanup -->
+		<delete dir="${srcdir}" includeemptydirs="true" failonerror="false"/>
+		<delete file="${dir}/${file}.swcdep" failonerror="false"/>
+	</target>
+
+	<target name="clean">
+		<delete>
+			<fileset basedir="${outdir}">
+				<include name="flex.*.v*.dll"/>
+				<include name="flex.*.v*.pdb"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="rebuild" depends="clean, build"/>
+
+</project>

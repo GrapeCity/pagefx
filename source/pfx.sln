@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scri
 		..\build-scripts\core.build = ..\build-scripts\core.build
 		..\flash\flash.build = ..\flash\flash.build
 		..\build-scripts\flashland.build = ..\build-scripts\flashland.build
+		..\flex\flex.build = ..\flex\flex.build
 		..\build-scripts\main.build = ..\build-scripts\main.build
 		..\build-scripts\nant.xsd = ..\build-scripts\nant.xsd
 		..\build-scripts\pfc.build = ..\build-scripts\pfc.build

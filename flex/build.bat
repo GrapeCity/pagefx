@@ -1,0 +1,1 @@
+nant -buildfile:flex.build -logfile:build.log
