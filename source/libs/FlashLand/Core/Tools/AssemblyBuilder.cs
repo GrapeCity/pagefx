@@ -380,6 +380,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 			{
 				_corlib = assembly;
 			}
+
+			// load types to link them
+	        var count = assembly.Types.Count();
         }
         #endregion
 
@@ -584,13 +587,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private IType BuildTypeByName(AbcMultiname name)
         {
-            if (IsAnyType(name))
-                return SystemTypes.Object;
+	        if (IsAnyType(name))
+	        {
+		        return SystemTypes.Object;
+	        }
 
-            if (IsVoid(name))
-                return SystemTypes.Void;
+	        if (IsVoid(name))
+	        {
+		        return SystemTypes.Void;
+	        }
 
-            if (name.IsParameterizedType)
+	        if (name.IsParameterizedType)
             {
                 if (IsVector(name.Type))
                 {
@@ -602,24 +609,30 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
 
             var instance = FindInstance(name);
-            if (instance != null)
-                return BuildType(instance);
+	        if (instance != null)
+	        {
+		        return BuildType(instance);
+	        }
 
-            if (_refs != null)
+	        if (_refs != null)
             {
                 foreach (var asm in _refs)
                 {
-                    var abc = asm.CustomData().ABC;
+					var abc = asm.CustomData().ABC;
                     if (abc != null)
                     {
                         instance = FindInstance(abc, name);
-                        if (instance != null)
-                            return BuildType(instance);
+	                    if (instance != null)
+	                    {
+		                    return BuildType(instance);
+	                    }
                     }
 
-                    var type = AssemblyIndex.FindType(asm, name);
-                    if (type != null)
-                        return type;
+					var type = AssemblyIndex.FindType(asm, name);
+					if (type != null)
+					{
+						return type;
+					}
                 }
             }
 
@@ -1350,27 +1363,27 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             //}
         }
 
-        static bool IsFunctionCall(AbcMethod method)
+		private static bool IsFunctionCall(AbcMethod method)
         {
             return method.FullName == "Function.call";
         }
 
-        static bool IsFunctionApply(AbcMethod method)
+		private static bool IsFunctionApply(AbcMethod method)
         {
             return method.FullName == "Function.apply";
         }
 
-        static bool HasThisObjectArgument(AbcMethod method)
+		private static bool HasThisObjectArgument(AbcMethod method)
         {
             return IsFunctionCall(method) || IsFunctionApply(method);
         }
 
-        static bool IsExternalInterfaceCall(AbcMethod method)
+		private static bool IsExternalInterfaceCall(AbcMethod method)
         {
             return method.FullName == "flash.external.ExternalInterface.call";
         }
 
-        Parameter BuildParam(AbcMethod method, int i, IEnumerable<ParamFix> fix, XmlNode methodElem)
+        private Parameter BuildParam(AbcMethod method, int i, IEnumerable<ParamFix> fix, XmlNode methodElem)
         {
             var pe = GetParamElement(methodElem, i);
 

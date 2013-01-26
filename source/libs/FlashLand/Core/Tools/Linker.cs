@@ -206,16 +206,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
 
 	    private static bool IsLinked(IType type)
-        {
-		    return type.AbcInstance() != null;
-        }
+	    {
+		    return type.Data is NativeType
+		           || type.AbcInstance() != null;
+	    }
 
-        private bool IsCorLib
-        {
-            get { return Assembly.IsCorlib; }
-        }
-
-		private void LinkType(IType type)
+	    private void LinkType(IType type)
 		{
 			if (_cache != null)
 			{
@@ -279,7 +275,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 		private void LinkNativeType(IType type)
 		{
-			if (!IsCorLib) return;
+			if (!Assembly.IsCorlib) return;
 
 			if (type.HasAttribute(Attrs.Native))
 			{
@@ -303,7 +299,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             type.Data = instance;
             instance.Type = type;
 
-            if (IsCorLib) // TODO: this is now valid for flash API assemblies only
+            if (IsFlashApi)
             {
                 instance.IsNative = true;
             }
@@ -311,6 +307,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             LinkMethods(type, instance, false);
             LinkFields(type, instance);
         }
+
+	    private bool IsFlashApi
+	    {
+		    get
+		    {
+				//TODO: determine by abc/swc resource
+			    return Assembly.Name.StartsWith("flash.v", StringComparison.OrdinalIgnoreCase);
+		    }
+	    }
 
 	    private void LinkMethods(IType type, IAbcTraitProvider owner, bool isGlobal)
         {
