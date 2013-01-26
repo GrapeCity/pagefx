@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="Builds Flash Player API assemblies" default="rebuild">
+
+	<!-- input properties -->
+	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
+	<property name="debug" value="true" unless="${property::exists('debug')}"/>
+	<property name="outdir" value="c:/pfx/framework" unless="${property::exists('outdir')}"/>
+
+	<property name="nant.settings.currentframework" value="net-3.5" />
+	<if test="${runtime == 'mono'}">
+		<property name="nant.settings.currentframework" value="mono-3.5" />
+	</if>
+
+	<property name="curdir" value="${project::get-base-directory()}"/>
+
+	<target name="build">
+
+		<foreach item="String" in="9.0;10.0;10.2" delim=";" property="ver">
+			<echo message="Building assembly for Flash Player ${ver} API"/>
+
+			<!-- convert playerglobal.swc to flash.abc -->
+			<property name="workingdir" value="${curdir}/${ver}"/>
+			<exec program="c:/pfx/tools/abc.exe" workingdir="${workingdir}">
+				<arg value="/merge"/>
+				<arg value="/out:flash.abc"/>
+				<arg value="playerglobal.swc"/>
+			</exec>
+
+			<!-- generate c# files -->
+			<exec program="c:/pfx/bin/pfc.exe" workingdir="${workingdir}">
+				<arg value="/wrap"/>
+				<arg value="/nocsc"/>
+				<arg value="/dir:src"/>
+				<arg value="/FP:${ver}"/>
+				<arg value="flash.abc"/>
+			</exec>
+
+			<!-- generated assemblyinfo.cs -->
+			<property name="srcdir" value="${workingdir}/src"/>
+			<asminfo language="CSharp" output="${srcdir}/AssemblyInfo.cs">
+				<imports>
+					<import namespace="System" />
+					<import namespace="System.Reflection" />
+				</imports>
+				<attributes>
+					<attribute type="AssemblyTitleAttribute" value="Flash Player ${ver} API"/>
+					<attribute type="AssemblyCompanyAttribute" value="Data Dynamics"/>
+					<attribute type="AssemblyProductAttribute" value="PageFX"/>
+					<attribute type="AssemblyCopyrightAttribute" value="Copyright © Data Dynamics 2013"/>
+					<attribute type="AssemblyTrademarkAttribute" value=""/>
+					<attribute type="AssemblyCultureAttribute" value=""/>
+					<attribute type="AssemblyVersionAttribute" value="1.0.0.0"/>
+					<attribute type="AssemblyFileVersionAttribute" value="1.0.0.0"/>
+				</attributes>
+			</asminfo>
+
+			<!-- compile assembly -->
+			<csc target="library" output="${outdir}/flash.v${ver}.dll"
+				 debug="true" unsafe="false" nostdlib="true"
+				 keyfile="${curdir}/../mono/mcs/class/msfinal.pub" delaysign="true">
+				<references>
+					<include name="c:/pfx/framework/mscorlib.dll"/>
+				</references>
+				<sources basedir="${srcdir}">
+					<include name="**/*.cs"/>
+					<include name="${curdir}/api/**/*.cs"/>
+				</sources>
+				<resources basedir="${workingdir}" prefix="" dynamicprefix="false" failonempty="true">
+					<include name="flash.abc"/>
+				</resources>
+			</csc>
+
+			<!-- cleanup -->
+			<delete dir="${srcdir}" includeemptydirs="true"/>
+			<delete>
+				<fileset basedir="${workingdir}">
+					<include name="flash.abc"/>
+				</fileset>
+			</delete>
+
+		</foreach>
+	</target>
+
+	<target name="clean">
+		<delete>
+			<fileset basedir="${outdir}">
+				<include name="flash.v*.dll"/>
+				<include name="flash.v*.pdb"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="rebuild" depends="clean, build"/>
+
+</project>

@@ -1,0 +1,1 @@
+nant -buildfile:flash.build -logfile:build.log
