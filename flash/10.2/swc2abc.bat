@@ -1,1 +1,1 @@
-abc /merge flash.swc
+abc /merge /out:flash.abc playerglobal.swc

@@ -86,7 +86,8 @@ namespace DataDynamics.PageFX
 
             if (cl.HasOption("m", "merge"))
             {
-                AbcMerger.Merge(cl.GetInputFiles(), null);
+	            var output = cl.GetOption(null, "o", "out", "output");
+                AbcMerger.Merge(cl.GetInputFiles(), output);
                 return;
             }
 
