@@ -1,1 +1,0 @@
-nant -buildfile:clean.nant -v
