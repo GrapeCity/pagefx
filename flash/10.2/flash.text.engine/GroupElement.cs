@@ -18,16 +18,16 @@ namespace flash.text.engine
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GroupElement(Avm.Vector<Avm.String> elements, flash.text.engine.ElementFormat elementFormat, flash.events.EventDispatcher eventMirror, Avm.String textRotation);
+        public extern GroupElement(Avm.Vector<flash.text.engine.ContentElement> elements, flash.text.engine.ElementFormat elementFormat, flash.events.EventDispatcher eventMirror, Avm.String textRotation);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GroupElement(Avm.Vector<Avm.String> elements, flash.text.engine.ElementFormat elementFormat, flash.events.EventDispatcher eventMirror);
+        public extern GroupElement(Avm.Vector<flash.text.engine.ContentElement> elements, flash.text.engine.ElementFormat elementFormat, flash.events.EventDispatcher eventMirror);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GroupElement(Avm.Vector<Avm.String> elements, flash.text.engine.ElementFormat elementFormat);
+        public extern GroupElement(Avm.Vector<flash.text.engine.ContentElement> elements, flash.text.engine.ElementFormat elementFormat);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GroupElement(Avm.Vector<Avm.String> elements);
+        public extern GroupElement(Avm.Vector<flash.text.engine.ContentElement> elements);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern GroupElement();
@@ -42,7 +42,7 @@ namespace flash.text.engine
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual void setElements(Avm.Vector<Avm.String> value);
+        public extern virtual void setElements(Avm.Vector<flash.text.engine.ContentElement> value);
 
         [PageFX.AbcInstanceTrait(3)]
         [PageFX.ABC]
@@ -72,7 +72,7 @@ namespace flash.text.engine
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual Avm.Vector<Avm.String> replaceElements(int beginIndex, int endIndex, Avm.Vector<Avm.String> newElements);
+        public extern virtual Avm.Vector<flash.text.engine.ContentElement> replaceElements(int beginIndex, int endIndex, Avm.Vector<flash.text.engine.ContentElement> newElements);
 
         [PageFX.AbcInstanceTrait(8)]
         [PageFX.ABC]

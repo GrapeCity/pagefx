@@ -703,42 +703,42 @@ namespace flash.display
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual void drawPath(Avm.Vector<Avm.String> commands, Avm.Vector<Avm.String> data, Avm.String winding);
+        public extern virtual void drawPath(Avm.Vector<int> commands, Avm.Vector<double> data, Avm.String winding);
 
         [PageFX.AbcInstanceTrait(19)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void drawPath(Avm.Vector<Avm.String> commands, Avm.Vector<Avm.String> data);
+        public extern void drawPath(Avm.Vector<int> commands, Avm.Vector<double> data);
 
         [PageFX.AbcInstanceTrait(20)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual void drawTriangles(Avm.Vector<Avm.String> vertices, Avm.Vector<Avm.String> indices, Avm.Vector<Avm.String> uvtData, Avm.String culling);
+        public extern virtual void drawTriangles(Avm.Vector<double> vertices, Avm.Vector<int> indices, Avm.Vector<double> uvtData, Avm.String culling);
 
         [PageFX.AbcInstanceTrait(20)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void drawTriangles(Avm.Vector<Avm.String> vertices, Avm.Vector<Avm.String> indices, Avm.Vector<Avm.String> uvtData);
+        public extern void drawTriangles(Avm.Vector<double> vertices, Avm.Vector<int> indices, Avm.Vector<double> uvtData);
 
         [PageFX.AbcInstanceTrait(20)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void drawTriangles(Avm.Vector<Avm.String> vertices, Avm.Vector<Avm.String> indices);
+        public extern void drawTriangles(Avm.Vector<double> vertices, Avm.Vector<int> indices);
 
         [PageFX.AbcInstanceTrait(20)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void drawTriangles(Avm.Vector<Avm.String> vertices);
+        public extern void drawTriangles(Avm.Vector<double> vertices);
 
         [PageFX.AbcInstanceTrait(24)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-		public extern virtual void drawGraphicsData(Avm.Vector<IGraphicsData> graphicsData);
+        public extern virtual void drawGraphicsData(Avm.Vector<flash.display.IGraphicsData> graphicsData);
     }
 }

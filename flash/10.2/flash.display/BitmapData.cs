@@ -618,7 +618,7 @@ namespace flash.display
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual Avm.Vector<Avm.String> getVector(flash.geom.Rectangle rect);
+        public extern virtual Avm.Vector<uint> getVector(flash.geom.Rectangle rect);
 
         /// <summary>
         /// Performs pixel-level hit detection between one bitmap image
@@ -986,7 +986,7 @@ namespace flash.display
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual void setVector(flash.geom.Rectangle rect, Avm.Vector<Avm.String> inputVector);
+        public extern virtual void setVector(flash.geom.Rectangle rect, Avm.Vector<uint> inputVector);
 
         /// <summary>
         /// Tests pixel values in an image against a specified threshold and sets pixels that pass the test to new color values.
@@ -1084,12 +1084,12 @@ namespace flash.display
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual Avm.Vector<Avm.String> histogram(flash.geom.Rectangle hRect);
+        public extern virtual Avm.Vector<Avm.Vector<double>> histogram(flash.geom.Rectangle hRect);
 
         [PageFX.AbcInstanceTrait(37)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern Avm.Vector<Avm.String> histogram();
+        public extern Avm.Vector<Avm.Vector<double>> histogram();
     }
 }

@@ -21,7 +21,7 @@ namespace flash.geom
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern static void projectVectors(flash.geom.Matrix3D m, Avm.Vector<Avm.String> verts, Avm.Vector<Avm.String> projectedVerts, Avm.Vector<Avm.String> uvts);
+        public extern static void projectVectors(flash.geom.Matrix3D m, Avm.Vector<double> verts, Avm.Vector<double> projectedVerts, Avm.Vector<double> uvts);
 
         [PageFX.AbcClassTrait(2)]
         [PageFX.ABC]

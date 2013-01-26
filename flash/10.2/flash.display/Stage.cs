@@ -293,7 +293,7 @@ namespace flash.display
             set;
         }
 
-        public extern virtual Avm.Vector<Avm.String> stageVideos
+        public extern virtual Avm.Vector<flash.media.StageVideo> stageVideos
         {
             [PageFX.AbcInstanceTrait(32)]
             [PageFX.ABC]

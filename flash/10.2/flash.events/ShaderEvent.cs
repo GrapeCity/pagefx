@@ -41,7 +41,7 @@ namespace flash.events
             set;
         }
 
-        public extern virtual Avm.Vector<Avm.String> vector
+        public extern virtual Avm.Vector<double> vector
         {
             [PageFX.AbcInstanceTrait(6)]
             [PageFX.ABC]
@@ -56,7 +56,7 @@ namespace flash.events
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern ShaderEvent(Avm.String type, bool bubbles, bool cancelable, flash.display.BitmapData bitmap, flash.utils.ByteArray array, Avm.Vector<Avm.String> vector);
+        public extern ShaderEvent(Avm.String type, bool bubbles, bool cancelable, flash.display.BitmapData bitmap, flash.utils.ByteArray array, Avm.Vector<double> vector);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern ShaderEvent(Avm.String type, bool bubbles, bool cancelable, flash.display.BitmapData bitmap, flash.utils.ByteArray array);

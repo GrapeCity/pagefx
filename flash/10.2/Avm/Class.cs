@@ -25,5 +25,7 @@ namespace Avm
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern Class();
+
+
     }
 }

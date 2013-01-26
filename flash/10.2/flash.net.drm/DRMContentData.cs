@@ -54,6 +54,6 @@ namespace flash.net.drm
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual Avm.Vector<Avm.String> getVoucherAccessInfo();
+        public extern virtual Avm.Vector<flash.net.drm.VoucherAccessInfo> getVoucherAccessInfo();
     }
 }

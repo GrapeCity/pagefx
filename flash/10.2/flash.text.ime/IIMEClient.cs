@@ -63,7 +63,7 @@ namespace flash.text.ime
         [PageFX.ABC]
         [PageFX.QName("updateComposition", "flash.text.ime:IIMEClient", "public")]
         [PageFX.FP("10.2")]
-        void updateComposition(Avm.String text, Avm.Vector<Avm.String> attributes, int compositionStartIndex, int compositionEndIndex);
+        void updateComposition(Avm.String text, Avm.Vector<flash.text.ime.CompositionAttributeRange> attributes, int compositionStartIndex, int compositionEndIndex);
 
         [PageFX.AbcInstanceTrait(1)]
         [PageFX.ABC]

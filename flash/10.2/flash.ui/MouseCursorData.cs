@@ -8,7 +8,7 @@ namespace flash.ui
     [PageFX.FP("10.2")]
     public partial class MouseCursorData : Avm.Object
     {
-        public extern virtual Avm.Vector<Avm.String> data
+        public extern virtual Avm.Vector<flash.display.BitmapData> data
         {
             [PageFX.AbcInstanceTrait(0)]
             [PageFX.ABC]

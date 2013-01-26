@@ -8,7 +8,7 @@ namespace flash.geom
     [PageFX.FP("10.2")]
     public partial class Matrix3D : Avm.Object
     {
-        public extern virtual Avm.Vector<Avm.String> rawData
+        public extern virtual Avm.Vector<double> rawData
         {
             [PageFX.AbcInstanceTrait(2)]
             [PageFX.ABC]
@@ -46,7 +46,7 @@ namespace flash.geom
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern Matrix3D(Avm.Vector<Avm.String> v);
+        public extern Matrix3D(Avm.Vector<double> v);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern Matrix3D();
@@ -85,25 +85,25 @@ namespace flash.geom
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual Avm.Vector<Avm.String> decompose(Avm.String orientationStyle);
+        public extern virtual Avm.Vector<flash.geom.Vector3D> decompose(Avm.String orientationStyle);
 
         [PageFX.AbcInstanceTrait(8)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern Avm.Vector<Avm.String> decompose();
+        public extern Avm.Vector<flash.geom.Vector3D> decompose();
 
         [PageFX.AbcInstanceTrait(9)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual bool recompose(Avm.Vector<Avm.String> components, Avm.String orientationStyle);
+        public extern virtual bool recompose(Avm.Vector<flash.geom.Vector3D> components, Avm.String orientationStyle);
 
         [PageFX.AbcInstanceTrait(9)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern bool recompose(Avm.Vector<Avm.String> components);
+        public extern bool recompose(Avm.Vector<flash.geom.Vector3D> components);
 
         [PageFX.AbcInstanceTrait(12)]
         [PageFX.ABC]
@@ -169,7 +169,7 @@ namespace flash.geom
         [PageFX.ABC]
         [PageFX.FP("10.2")]
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern virtual void transformVectors(Avm.Vector<Avm.String> vin, Avm.Vector<Avm.String> vout);
+        public extern virtual void transformVectors(Avm.Vector<double> vin, Avm.Vector<double> vout);
 
         [PageFX.AbcInstanceTrait(22)]
         [PageFX.ABC]

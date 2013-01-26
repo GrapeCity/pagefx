@@ -11,17 +11,17 @@ namespace flash.display
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
-        public Avm.Vector<Avm.String> indices;
+        public Avm.Vector<int> indices;
 
         [PageFX.AbcInstanceTrait(1)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
-        public Avm.Vector<Avm.String> vertices;
+        public Avm.Vector<double> vertices;
 
         [PageFX.AbcInstanceTrait(2)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
-        public Avm.Vector<Avm.String> uvtData;
+        public Avm.Vector<double> uvtData;
 
         public extern virtual Avm.String culling
         {
@@ -38,16 +38,16 @@ namespace flash.display
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GraphicsTrianglePath(Avm.Vector<Avm.String> vertices, Avm.Vector<Avm.String> indices, Avm.Vector<Avm.String> uvtData, Avm.String culling);
+        public extern GraphicsTrianglePath(Avm.Vector<double> vertices, Avm.Vector<int> indices, Avm.Vector<double> uvtData, Avm.String culling);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GraphicsTrianglePath(Avm.Vector<Avm.String> vertices, Avm.Vector<Avm.String> indices, Avm.Vector<Avm.String> uvtData);
+        public extern GraphicsTrianglePath(Avm.Vector<double> vertices, Avm.Vector<int> indices, Avm.Vector<double> uvtData);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GraphicsTrianglePath(Avm.Vector<Avm.String> vertices, Avm.Vector<Avm.String> indices);
+        public extern GraphicsTrianglePath(Avm.Vector<double> vertices, Avm.Vector<int> indices);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GraphicsTrianglePath(Avm.Vector<Avm.String> vertices);
+        public extern GraphicsTrianglePath(Avm.Vector<double> vertices);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern GraphicsTrianglePath();

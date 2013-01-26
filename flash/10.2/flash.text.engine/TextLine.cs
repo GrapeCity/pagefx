@@ -221,7 +221,7 @@ namespace flash.text.engine
             get;
         }
 
-        public extern virtual Avm.Vector<Avm.String> mirrorRegions
+        public extern virtual Avm.Vector<flash.text.engine.TextLineMirrorRegion> mirrorRegions
         {
             [PageFX.AbcInstanceTrait(24)]
             [PageFX.ABC]

@@ -161,7 +161,7 @@ namespace flash.text.engine
             set;
         }
 
-		public extern virtual Avm.Vector<TabStop> tabStops
+        public extern virtual Avm.Vector<flash.text.engine.TabStop> tabStops
         {
             [PageFX.AbcInstanceTrait(23)]
             [PageFX.ABC]
@@ -176,28 +176,28 @@ namespace flash.text.engine
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero, int bidiLevel, bool applyNonLinearFontScaling, flash.text.engine.FontDescription baselineFontDescription, double baselineFontSize);
+        public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<flash.text.engine.TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero, int bidiLevel, bool applyNonLinearFontScaling, flash.text.engine.FontDescription baselineFontDescription, double baselineFontSize);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-		public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero, int bidiLevel, bool applyNonLinearFontScaling, flash.text.engine.FontDescription baselineFontDescription);
+        public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<flash.text.engine.TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero, int bidiLevel, bool applyNonLinearFontScaling, flash.text.engine.FontDescription baselineFontDescription);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-		public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero, int bidiLevel, bool applyNonLinearFontScaling);
+        public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<flash.text.engine.TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero, int bidiLevel, bool applyNonLinearFontScaling);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-		public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero, int bidiLevel);
+        public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<flash.text.engine.TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero, int bidiLevel);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-		public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero);
+        public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<flash.text.engine.TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation, Avm.String baselineZero);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-		public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation);
+        public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<flash.text.engine.TabStop> tabStops, flash.text.engine.TextJustifier textJustifier, Avm.String lineRotation);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-		public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<TabStop> tabStops, flash.text.engine.TextJustifier textJustifier);
+        public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<flash.text.engine.TabStop> tabStops, flash.text.engine.TextJustifier textJustifier);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-		public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<TabStop> tabStops);
+        public extern TextBlock(flash.text.engine.ContentElement content, Avm.Vector<flash.text.engine.TabStop> tabStops);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern TextBlock(flash.text.engine.ContentElement content);

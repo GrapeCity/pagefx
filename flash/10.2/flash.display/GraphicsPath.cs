@@ -11,12 +11,12 @@ namespace flash.display
         [PageFX.AbcInstanceTrait(0)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
-        public Avm.Vector<Avm.String> commands;
+        public Avm.Vector<int> commands;
 
         [PageFX.AbcInstanceTrait(1)]
         [PageFX.ABC]
         [PageFX.FP("10.2")]
-        public Avm.Vector<Avm.String> data;
+        public Avm.Vector<double> data;
 
         public extern virtual Avm.String winding
         {
@@ -33,13 +33,13 @@ namespace flash.display
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GraphicsPath(Avm.Vector<Avm.String> commands, Avm.Vector<Avm.String> data, Avm.String winding);
+        public extern GraphicsPath(Avm.Vector<int> commands, Avm.Vector<double> data, Avm.String winding);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GraphicsPath(Avm.Vector<Avm.String> commands, Avm.Vector<Avm.String> data);
+        public extern GraphicsPath(Avm.Vector<int> commands, Avm.Vector<double> data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern GraphicsPath(Avm.Vector<Avm.String> commands);
+        public extern GraphicsPath(Avm.Vector<int> commands);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern GraphicsPath();
