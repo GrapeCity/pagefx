@@ -531,10 +531,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             if (instance == null) return null;
 
-            if (instance.IsNative)
-                return instance;
+	        if (instance.IsNative)
+	        {
+		        return instance;
+	        }
 
-            if (instance.UseExternalLinking)
+	        if (instance.UseExternalLinking)
             {
                 if (instance.IsLinkedExternally)
                     return instance;
@@ -559,10 +561,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
 
-            if (IsDefined(instance))
-                return instance;
+	        if (IsDefined(instance))
+	        {
+		        return instance;
+	        }
 
-            if (instance.ImportedInstance != null)
+	        if (instance.ImportedInstance != null)
                 return instance.ImportedInstance;
 
             if (instance.InSwc)
@@ -575,10 +579,12 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
 
-            if (instance.ImportedInstance != null)
-                return instance.ImportedInstance;
+	        if (instance.ImportedInstance != null)
+	        {
+		        return instance.ImportedInstance;
+	        }
 
-            if (!IsImportTypeExternally)
+	        if (!IsImportTypeExternally)
             {
                 var superType = instance.BaseInstance;
                 if (superType != null)
@@ -611,33 +617,33 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         internal bool IsSwcScript;
 
-        private AbcInstance ImportInstanceCore(AbcInstance from, ref AbcMethod importMethod)
+        private AbcInstance ImportInstanceCore(AbcInstance source, ref AbcMethod importMethod)
         {
             var instance = new AbcInstance
                                {
-                                   Name = ImportConst(from.Name),
-                                   IsMixin = from.IsMixin,
-                                   IsStyleMixin = from.IsStyleMixin,
-                                   ImportedFrom = from
+                                   Name = ImportConst(source.Name),
+                                   IsMixin = source.IsMixin,
+                                   IsStyleMixin = source.IsStyleMixin,
+                                   ImportedFrom = source
                                };
-            from.ImportedInstance = instance;
+            source.ImportedInstance = instance;
 
             var klass = new AbcClass(instance);
             AddInstance(instance);
             
             AbcInstance superType;
-            instance.BaseTypeName = ImportType(from.BaseTypeName, out superType);
+            instance.BaseTypeName = ImportType(source.BaseTypeName, out superType);
             instance.BaseInstance = superType;
-            instance.Flags = from.Flags;
-            instance.ProtectedNamespace = ImportConst(from.ProtectedNamespace);
-            instance.Type = from.Type;
+            instance.Flags = source.Flags;
+            instance.ProtectedNamespace = ImportConst(source.ProtectedNamespace);
+            instance.Type = source.Type;
 
 	        if (instance.Type != null)
 	        {
 		        SetData(instance.Type, instance);
 	        }
 
-	        foreach (var iname in from.Interfaces)
+	        foreach (var iname in source.Interfaces)
             {
                 AbcInstance ifaceInstance;
                 var mn = ImportType(iname, out ifaceInstance);
@@ -656,17 +662,17 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                 }
             }
 
-            instance.Initializer = ImportMethod(from.Initializer);
-            klass.Initializer = ImportMethod(from.Class.Initializer);
+            instance.Initializer = ImportMethod(source.Initializer);
+            klass.Initializer = ImportMethod(source.Class.Initializer);
 
-            if (importMethod == from.Initializer)
+            if (importMethod == source.Initializer)
                 importMethod = instance.Initializer;
 
-            if (importMethod == from.Class.Initializer)
+            if (importMethod == source.Class.Initializer)
                 importMethod = klass.Initializer;
 
-            ImportTraits(from, instance, ref importMethod);
-            ImportTraits(from.Class, klass, ref importMethod);
+            ImportTraits(source, instance, ref importMethod);
+            ImportTraits(source.Class, klass, ref importMethod);
 
             return instance;
         }
@@ -864,7 +870,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		        return ImportConst(name);
 	        }
 
-	        if (name.IsRuntime) return ImportConst(name);
+	        if (name.IsRuntime)
+				return ImportConst(name);
 
             type = ImportInstance(name);
             
