@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 
@@ -10,6 +11,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		{
 			AbcInstance Find(IType type);
 			AbcInstance Find(string fullname);
+			AbcInstance Find(AbcMultiname multiname);
 		}
 
 		internal interface INamespaceCache
@@ -41,6 +43,23 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			{
 				AbcInstance instance;
 				return _cache.TryGetValue(fullname, out instance) ? instance : null;
+			}
+
+			public AbcInstance Find(AbcMultiname multiname)
+			{
+				if (multiname == null)
+					throw new ArgumentNullException("multiname");
+
+				if (multiname.IsAny || multiname.IsRuntime)
+					return null;
+
+				string name = multiname.NameString;
+				if (string.IsNullOrEmpty(name))
+					return null;
+
+				return multiname.GetFullNames()
+				                .Select(fullName => Find(fullName))
+				                .FirstOrDefault(x => x != null);
 			}
 		}
 
@@ -82,14 +101,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 		private readonly InstanceCache _instances = new InstanceCache();
 		private readonly NamespaceCache _namespaces = new NamespaceCache();
 		private readonly FunctionCache _functions = new FunctionCache();
-		private readonly bool _detectCoreApi;
 
-		public AbcCache(bool detectCoreApi)
-		{
-			_detectCoreApi = detectCoreApi;
-		}
-
-        public IList<AbcInstance> Mixins
+		public IList<AbcInstance> Mixins
         {
             get { return _mixins; }
         }
@@ -115,10 +128,14 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
 	        foreach (var instance in abc.Instances)
 	        {
-		        string fn = instance.FullName;
 		        _instances.Add(instance);
-		        if (_detectCoreApi && !IsCoreApi && fn == "Object")
-			        abc.IsCore = IsCoreApi = true;
+
+		        if (!IsCoreApi)
+		        {
+			        string fullName = instance.FullName;
+			        if (fullName == "Object")
+				        abc.IsCore = IsCoreApi = true;
+		        }
 	        }
 
 	        foreach (var trait in abc.Scripts.SelectMany(x => x.Traits))

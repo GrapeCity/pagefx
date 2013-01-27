@@ -920,19 +920,19 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             return Instances.FirstOrDefault(predicate);
         }
 
-        public AbcInstance FindInstance(string name)
+        public AbcInstance FindInstance(string fullname)
         {
-            return FindInstance(i => i.FullName == name);
+            return Instances.Find(fullname);
         }
 
-        public static AbcInstance FindInstance(IEnumerable<AbcFile> files, Func<AbcInstance,bool> predicate)
-        {
-        	return files.Select(abc => abc.FindInstance(predicate)).FirstOrDefault(instance => instance != null);
-        }
+		public AbcInstance FindInstance(AbcMultiname multiname)
+		{
+			return Instances.Find(multiname);
+		}
 
-    	public static AbcInstance FindInstance(IEnumerable<AbcFile> files, string name)
+		public static AbcInstance FindInstance(IEnumerable<AbcFile> files, string fullname)
     	{
-    		return files.Select(abc => abc.FindInstance(name)).FirstOrDefault(instance => instance != null);
+    		return files.Select(abc => abc.FindInstance(fullname)).FirstOrDefault(instance => instance != null);
     	}
 
     	#endregion

@@ -301,7 +301,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
         private ISwcLinker _linker;
         private readonly Hashtable _defCache = new Hashtable();
         private readonly Hashtable _externalRefs = new Hashtable();
-        internal readonly AbcCache AbcCache = new AbcCache(false);
+        internal readonly AbcCache AbcCache = new AbcCache();
         private SwcDepFile _deps;
 
         public void ResolveDependencies(ISwcLinker linker, SwcDepFile deps)

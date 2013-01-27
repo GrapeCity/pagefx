@@ -12,9 +12,6 @@ namespace DataDynamics.PageFX.FlashLand.Core
     /// </summary>
     internal sealed class AssemblyCustomData
     {
-		private AbcInstance _objectInstance;
-		private AbcInstance _errorInstance;
-
         public static AssemblyCustomData GetInstance(IAssembly assembly)
         {
 			if (assembly == null) return null;
@@ -45,7 +42,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
         /// <summary>
         /// ABC file assotiated with assembly.
         /// </summary>
-        public AbcFile ABC
+        public AbcFile Abc
         {
             get
             {

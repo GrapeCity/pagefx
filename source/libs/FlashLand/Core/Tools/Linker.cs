@@ -49,8 +49,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 				if (resource.Name.EndsWith(".abc", StringComparison.OrdinalIgnoreCase))
 				{
 					_abc = new AbcFile(resource.Data) { Assembly = Assembly };
-					data.ABC = _abc;
-					_cache = new AbcCache(true);
+					data.Abc = _abc;
+					_cache = new AbcCache();
 					_cache.Add(_abc);
 				}
 				else if (resource.Name.EndsWith(".swc", StringComparison.OrdinalIgnoreCase))

@@ -32,32 +32,25 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			_cache.Clear();
 		}
 
-		private AbcInstance Find(string fullname)
+		public AbcInstance Find(string fullname)
 		{
 			AbcInstance instance;
 			return _cache.TryGetValue(fullname, out instance) ? instance : null;
 		}
 
-		public AbcInstance Find(AbcMultiname mname)
+		public AbcInstance Find(AbcMultiname multiname)
 		{
-			if (mname == null)
-				throw new ArgumentNullException("mname");
-			if (mname.IsRuntime)
+			if (multiname == null)
+				throw new ArgumentNullException("multiname");
+			if (multiname.IsAny || multiname.IsRuntime)
 				return null;
-
-			string name = mname.NameString;
+			string name = multiname.NameString;
 			if (string.IsNullOrEmpty(name))
 				return null;
 
-			if (mname.NamespaceSet != null)
-			{
-				return mname.NamespaceSet
-				            .Select(ns => ns.NameString.MakeFullName(name))
-				            .Select(fullname => Find(fullname))
-				            .FirstOrDefault(instance => instance != null);
-			}
-
-			return Find(mname.FullName);
+			return multiname.GetFullNames()
+			                .Select(fullName => Find(fullName))
+			                .FirstOrDefault(x => x != null);
 		}
 
 		public AbcInstance FindStrict(AbcMultiname name)
