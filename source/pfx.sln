@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pfc", "pfc\pfc.csproj", "{2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pfx-nunit-console", "tools\pfx-nunit-console\pfx-nunit-console.csproj", "{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "abc", "tools\fli\abc\abc.csproj", "{19D836C7-4C04-406A-A820-155AB14A797D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "abc", "tools\abc\abc.csproj", "{19D836C7-4C04-406A-A820-155AB14A797D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vm", "vm\vm.csproj", "{30A997F3-4D6A-4960-803A-B06B6A0DCBC0}"
 EndProject
