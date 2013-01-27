@@ -43,13 +43,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
                 return SetData(method, call);
             }
 
-            var inlineCall = InlineCodeGenerator.Build(Abc, null, method);
+			var instance = type.AbcInstance();
+			var inlineCall = InlineCodeGenerator.Build(Abc, instance, method);
 			if (inlineCall != null)
             {
 				return SetData(method, inlineCall);
             }
 
-            var instance = type.AbcInstance();
             if (instance != null)
             {
                 call = Resolve(method, instance);

@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
     internal sealed class VectorInstance : IVectorType
     {
-	    public VectorInstance(IType type)
+	    public VectorInstance(AbcFile abc, IType type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -20,6 +20,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
             Type = instance;
             Parameter = instance.GenericArguments[0];
+		    Name = DefineName(abc);
         }
 
 	    public IGenericInstance Type { get; private set; }
@@ -47,8 +48,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
 	    public ITypeData Import(AbcFile abc)
 	    {
-		    var name = Name ?? DefineName(abc);
-		    return new VectorInstance(Type) {Name = name};
+		    return new VectorInstance(abc, Type);
 	    }
 
 	    public override string ToString()

@@ -705,7 +705,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             BuildRange(instance.GenericArguments);
 
-            _generator.SetData(type, new VectorInstance(type));
+            _generator.SetData(type, new VectorInstance(Abc, type));
 
             return true;
         }

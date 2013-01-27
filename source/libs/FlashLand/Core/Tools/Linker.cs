@@ -344,12 +344,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             if (instance != null && method.IsConstructor && !isGlobal)
             {
-                method.Data = instance.Initializer;
-                instance.Initializer.Method = method;
-                return;
+	            LinkCtor(method, instance);
+	            return;
             }
 
-            if (!isGlobal)
+	        if (!isGlobal)
             {
                 if (LinkEvent(method, instance))
                     return;
@@ -369,7 +368,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             LinkMethod(method, abcMethod);
         }
 
-        private static void LinkMethod(IMethod method, AbcMethod abcMethod)
+	    private static void LinkCtor(IMethod method, AbcInstance instance)
+	    {
+			if (method.HasAttribute(Attrs.InlineFunction)) return;
+
+		    method.Data = instance.Initializer;
+		    instance.Initializer.Method = method;
+	    }
+
+	    private static void LinkMethod(IMethod method, AbcMethod abcMethod)
         {
             if (abcMethod == null)
                 throw new InvalidOperationException("Unable to find method " + method);

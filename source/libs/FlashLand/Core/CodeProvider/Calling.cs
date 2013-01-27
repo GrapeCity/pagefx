@@ -76,10 +76,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private static bool HasReceiver(IMethod method, bool newobj)
         {
-            if (newobj) return true;
+            if (newobj)
+            {
+				var type = method.DeclaringType;
+				if (type.IsNativeType("Object"))
+				{
+					return false;
+				}
+				return true;
+            }
             
             var tag = method.Data;
-            if (tag == null) return false;
+            if (tag == null)
+            {
+	            return false;
+            }
 
             //NOTE: Inline code!!!
 	        if (tag is InlineCall)
@@ -139,7 +150,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return code.ToArray();
         }
 
-        bool LoadSpecReceiver(IMethod method, AbcCode code)
+        private bool LoadSpecReceiver(IMethod method, AbcCode code)
         {
             if (HasGlobalReceiver(method))
             {
@@ -164,7 +175,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return false;
         }
 
-        void LoadCtorReceiver(AbcCode code, IMethod method)
+		private void LoadCtorReceiver(AbcCode code, IMethod method)
         {
             if (!method.IsConstructor)
                 throw new ArgumentException("method is not ctor", "method");

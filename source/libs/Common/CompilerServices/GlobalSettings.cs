@@ -97,10 +97,7 @@ namespace DataDynamics.PageFX.Common.CompilerServices
         {
             get
             {
-                string dir = GetEnvDir("PFXLIB");
-                if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
-                    return dir;
-                dir = Path.Combine(HomeDirectory, "framework");
+                var dir = Path.Combine(HomeDirectory, "framework");
                 if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
                     return dir;
                 dir = Path.Combine(HomeDirectory, "libs");
@@ -225,8 +222,6 @@ namespace DataDynamics.PageFX.Common.CompilerServices
         {
             return Path.Combine(LibsDirectory, name);
         }
-
-        
 
         public static void AddCommonReferences(CompilerOptions options)
         {

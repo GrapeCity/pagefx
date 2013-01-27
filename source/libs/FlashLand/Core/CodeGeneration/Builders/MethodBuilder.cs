@@ -208,16 +208,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             if (method == null) return null;
 
-			if (method.IsGeneric)
-                throw new InvalidOperationException();
-
-            var tag = IsDefined(method);
-            if (tag != null) return tag;
+	        if (method.IsGeneric)
+	        {
+		        throw new InvalidOperationException("Call of generic method.");
+	        }
 
 			var type = method.DeclaringType;
 			_generator.TypeBuilder.Build(type);
 
-            tag = IsDefined(method);
+			var tag = IsDefined(method);
             if (tag != null) return tag;
 
 			_generator.CheckApiCompatibility(method);

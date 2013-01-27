@@ -81,6 +81,9 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 			if (tc.VM == VM.AVM)
 			{
 				GlobalSettings.AddCommonReferences(options);
+
+				options.AddRef(Path.Combine(GlobalSettings.LibsDirectory, "flash.v10.2.dll"));
+
 				options.NoConfig = true;
 				options.NoStdlib = true;
 
