@@ -5,6 +5,9 @@ namespace Avm
 {
 	public partial class Array : Avm.Object
 	{
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public extern Array(int length);
+
 		[PageFX.ABC]
 		[PageFX.QName("push", "http://adobe.com/AS3/2006/builtin", "public")]
 		[MethodImpl(MethodImplOptions.InternalCall)]

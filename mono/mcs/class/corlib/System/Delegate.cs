@@ -45,6 +45,11 @@ namespace System
         internal Function m_function;
     	private MethodInfo _method;
 
+	    public object Function
+	    {
+			get { return m_function; }
+	    }
+
         public MethodInfo Method
         {
             get { return _method ?? (_method = new MethodInfo {m_function = m_function}); }

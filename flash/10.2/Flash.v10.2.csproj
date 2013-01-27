@@ -42,6 +42,9 @@
     <Compile Include="..\api\Avm\Date.cs">
       <Link>shared\Avm\Date.cs</Link>
     </Compile>
+    <Compile Include="..\api\Avm\Function.cs">
+      <Link>shared\Avm\Function.cs</Link>
+    </Compile>
     <Compile Include="..\api\Avm\Object.cs">
       <Link>shared\Avm\Object.cs</Link>
     </Compile>
