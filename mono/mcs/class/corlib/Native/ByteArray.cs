@@ -31,20 +31,20 @@ namespace Native
 
 		public extern string endian
 		{
-			[InlineProperty("endian")]
+			[InlineProperty]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			get;
-			[InlineProperty("endian")]
+			[InlineProperty]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			set;
 		}
 
 		public extern uint position
 		{
-			[InlineProperty("position")]
+			[InlineProperty]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			get;
-			[InlineProperty("position")]
+			[InlineProperty]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			set;
 		}

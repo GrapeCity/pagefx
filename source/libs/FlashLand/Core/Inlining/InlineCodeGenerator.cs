@@ -17,6 +17,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				    {"System.String", new StringInlines()},
 				    {"System.Diagnostics.Debugger", new DebuggerInlines()},
 				    {"avm", new AvmInlines()},
+					{"Native.Date", new DateInlines()},
 					{"Native.NativeArray", new AvmArrayInlines()},
 					{"Native.ByteArray", new FlashByteArrayInlines()},
 			    };

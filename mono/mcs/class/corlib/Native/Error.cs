@@ -9,14 +9,14 @@ namespace Native
 	{
 		public extern int errorID
 		{
-			[InlineProperty("errorID")]
+			[InlineProperty]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			get;
 		}
 
 		public extern string message
 		{
-			[InlineProperty("message")]
+			[InlineProperty]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			get;
 		}

@@ -42,6 +42,10 @@ namespace PageFX
 	{
 		public string Name;
 
+		public InlinePropertyAttribute()
+		{
+		}
+
 		public InlinePropertyAttribute(string name)
 		{
 			Name = name;

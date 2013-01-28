@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 						break;
 
 					case Attrs.InlineProperty:
-						name = attr.Arguments.Count == 0 ? method.Name : (string)attr.Arguments[0].Value;
+						name = attr.Arguments.Count == 0 ? method.Association.Name : (string)attr.Arguments[0].Value;
 						kind = InlineKind.Property;
 						break;
 

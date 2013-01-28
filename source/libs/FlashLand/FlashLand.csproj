@@ -199,6 +199,7 @@
     <Compile Include="Core\Inlining\Avm.Object.cs" />
     <Compile Include="Core\Inlining\Avm.Vector.cs" />
     <Compile Include="Core\Inlining\Avm.XML.cs" />
+    <Compile Include="Core\Inlining\DateInlines.cs" />
     <Compile Include="Core\Inlining\flash.utils.ByteArray.cs" />
     <Compile Include="Core\Inlining\InlineCodeGenerator.cs" />
     <Compile Include="Core\Inlining\InlineCodeProvider.cs" />

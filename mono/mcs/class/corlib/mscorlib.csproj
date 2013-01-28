@@ -77,6 +77,7 @@
     </Compile>
     <Compile Include="Assembly\AssemblyInfo.cs" />
     <Compile Include="Native\ByteArray.cs" />
+    <Compile Include="Native\Date.cs" />
     <Compile Include="Native\Error.cs" />
     <Compile Include="Native\Global.cs" />
     <Compile Include="Native\Namespace.cs" />

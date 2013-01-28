@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using PageFX;
 
 namespace Avm
 {
@@ -38,13 +39,11 @@ namespace Avm
 
 		public extern virtual int DayOfMonth
 		{
-			[PageFX.ABC]
-			[PageFX.QName("date")]
+			[InlineProperty("date")]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			get;
 
-			[PageFX.ABC]
-			[PageFX.QName("date")]
+			[InlineProperty("date")]
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			set;
 		}
