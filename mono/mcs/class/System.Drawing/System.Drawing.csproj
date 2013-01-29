@@ -179,10 +179,6 @@
     <Compile Include="System.Drawing\ToolboxBitmapAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\flash\10.2\Flash.v10.2.csproj">
-      <Project>{272baae0-0d67-4765-a1a9-8239ad3ab8b2}</Project>
-      <Name>Flash.v10.2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\corlib\mscorlib.csproj">
       <Project>{C9A6CF06-1E1F-4196-8339-B060F0B5714C}</Project>
       <Name>mscorlib</Name>
@@ -213,5 +209,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="flash.v10.2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>c:\pfx\framework\flash.v10.2.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
