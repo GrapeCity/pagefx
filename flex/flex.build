@@ -13,43 +13,63 @@
 
 	<property name="fxdir" value="c:/pfx/framework"/>
 	<property name="curdir" value="${project::get-base-directory()}"/>
+	<property name="ref1" value=""/>
+	<property name="ref2" value=""/>
+	<property name="ref3" value=""/>
 
 	<target name="build">
-		<!-- flex 3.3.0 -->
+		<call target="build.v3.0.0"/>
+		<call target="build.v4.5.1"/>
+	</target>
+	
+	<!-- flex 3.3.0 -->
+	<target name="build.v3.0.0">
 		<property name="ref1" value=""/>
 		<property name="ref2" value=""/>
-
+		<property name="ref3" value=""/>
+		
 		<property name="ver" value="3.3.0"/>
 		<property name="fp" value="10.0"/>
 		<echo message="Building assemblies for flex v${ver} with linkage to flash player v${fp} API."/>
-		
+
 		<property name="file" value="framework"/>
-		<property name="refs" value="/r:${fxdir}/flash.v${fp}.dll"/>
 		<call target="__process_swc__"/>
 
 		<property name="file" value="rpc"/>
-		<property name="refs" value="/r:${fxdir}/flash.v${fp}.dll /r:${fxdir}/flex.framework.v${ver}.dll"/>
-		<property name="ref1" value="flex.framework.v${ver}.dll"/>
-		<call target="__process_swc__"/>
-
-		<!-- flex 4.5.0 -->
-		<property name="ref1" value=""/>
-		<property name="ref2" value=""/>
-
-		<property name="ver" value="4.5.0"/>
-		<property name="fp" value="10.2"/>
-		<echo message="Building assemblies for flex v${ver} with linkage to flash player v${fp} API."/>
-
-		<property name="file" value="framework"/>
-		<property name="refs" value="/r:${fxdir}/flash.v${fp}.dll"/>
-		<call target="__process_swc__"/>
-
-		<property name="file" value="mx"/>
-		<property name="refs" value="/r:${fxdir}/flash.v${fp}.dll /r:${fxdir}/flex.framework.v${ver}.dll"/>
-		<property name="ref1" value="flex.framework.v${ver}.dll"/>
+		<property name="ref1" value="framework"/>
 		<call target="__process_swc__"/>
 	</target>
 	
+	<!-- flex 4.5.1 -->
+	<target name="build.v4.5.1">
+		<property name="ref1" value=""/>
+		<property name="ref2" value=""/>
+		<property name="ref3" value=""/>
+
+		<property name="ver" value="4.5.1"/>
+		<property name="fp" value="10.2"/>
+		<echo message="Building assemblies for flex v${ver} with linkage to flash player v${fp} API."/>
+
+		<!-- TODO: fix compilation of TLF -->
+		<!--<property name="file" value="textLayout"/>
+		<call target="__process_swc__"/>-->
+		
+		<property name="file" value="core"/>
+		<call target="__process_swc__"/>
+
+		<property name="file" value="framework"/>
+		<property name="ref1" value="core"/>
+		<call target="__process_swc__"/>
+
+		<property name="file" value="mx"/>
+		<property name="ref1" value="framework"/>
+		<call target="__process_swc__"/>
+
+		<property name="file" value="rpc"/>
+		<property name="ref1" value="framework"/>
+		<call target="__process_swc__"/>
+	</target>
+
 	<target name="__process_swc__">
 		<echo message="Building managed wrapper for ${file}.swc file"/>
 		<property name="dir" value="${curdir}/${ver}"/>
@@ -57,10 +77,13 @@
 		<!-- generate c# files -->
 		<exec program="c:/pfx/bin/pfc.exe" workingdir="${dir}">
 			<arg value="/wrap"/>
-			<arg value="${refs}"/>
+			<arg value="/FP:${fp}"/>
+			<arg value="/r:${fxdir}/flash.v${fp}.dll"/>
+			<arg value="/r:${fxdir}/flex.${ref1}.v${ver}.dll" if="${ref1 != ''}"/>
+			<arg value="/r:${fxdir}/flex.${ref2}.v${ver}.dll" if="${ref2 != ''}"/>
+			<arg value="/r:${fxdir}/flex.${ref3}.v${ver}.dll" if="${ref3 != ''}"/>
 			<arg value="/nocsc"/>
 			<arg value="/dir:${file}_src"/>
-			<arg value="/FP:${fp}"/>
 			<arg value="${file}.swc"/>
 		</exec>
 
@@ -91,8 +114,9 @@
 			<references>
 				<include name="${fxdir}/mscorlib.dll"/>
 				<include name="${fxdir}/flash.v${fp}.dll"/>
-				<include name="${fxdir}/${ref1}" if="${ref1 != ''}"/>
-				<include name="${fxdir}/${ref2}" if="${ref2 != ''}"/>
+				<include name="${fxdir}/flex.${ref1}.v${ver}.dll" if="${ref1 != ''}"/>
+				<include name="${fxdir}/flex.${ref2}.v${ver}.dll" if="${ref2 != ''}"/>
+				<include name="${fxdir}/flex.${ref3}.v${ver}.dll" if="${ref3 != ''}"/>
 			</references>
 			<sources basedir="${srcdir}">
 				<include name="**/*.cs"/>
