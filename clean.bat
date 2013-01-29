@@ -1,0 +1,1 @@
+nant -buildfile:clean.build -v clean
