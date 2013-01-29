@@ -27,12 +27,15 @@ namespace DataDynamics.PageFX.FlashLand.Swf
     /// </summary>
     public sealed class SwfMovie
     {
-        #region Constructors
-        /// <summary>
+		private readonly SwfTagList _tags;
+		private readonly HashList<ushort, ISwfDisplayObject> _displayList;
+
+	    /// <summary>
         /// Initializes new instance of <see cref="SwfMovie"/> class.
         /// </summary>
         public SwfMovie()
         {
+			_tags = new SwfTagList(this);
             _displayList = new HashList<ushort, ISwfDisplayObject>(obj => obj.Depth);
         }
 
@@ -67,27 +70,20 @@ namespace DataDynamics.PageFX.FlashLand.Swf
         {
             Load(input, decodeOptions);
         }
-        #endregion
 
-        #region Public Properties
-        /// <summary>
-        /// Gets or sets name which is used when SWF file is in SWC file.
-        /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-        private string _name;
+	    /// <summary>
+	    /// Gets or sets name which is used when SWF file is in SWC file.
+	    /// </summary>
+	    public string Name { get; set; }
 
-        public int Index { get; set; }
+	    public int Index { get; set; }
 
         #region SWC
-        public SwcFile SWC { get; set; }
+        public SwcFile Swc { get; set; }
 
         public bool InSwc
         {
-            get { return SWC != null; }
+            get { return Swc != null; }
         }
 
         public XmlElement SwcElement { get; set; }
@@ -182,8 +178,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
         {
             get { return _tags; }
         }
-        private readonly SwfTagList _tags = new SwfTagList();
-
+        
         public ushort LastID
         {
             get { return CID; }
@@ -194,9 +189,8 @@ namespace DataDynamics.PageFX.FlashLand.Swf
         {
             return ++CID;
         }
-        #endregion
 
-        #region Control Tags
+	    #region Control Tags
         public void SetFileAttributes(SwfFileAttributes attrs)
         {
             Tags.Add(new SwfTagFileAttributes(attrs));
@@ -395,7 +389,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
             return false;
         }
 
-        private readonly HashList<ushort, ISwfDisplayObject> _displayList;
+        
         #endregion
 
         #region Graphics
@@ -639,7 +633,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf
                     if (t == null) continue;
                     var abc = t.ByteCode;
                     abc.Swf = this;
-                    abc.Swc = SWC;
+                    abc.Swc = Swc;
                     if (string.IsNullOrEmpty(abc.Name))
                         abc.Name = "frame" + (_abclist.Count + 1);
                     abc.Index = _abclist.Count;
@@ -701,160 +695,95 @@ namespace DataDynamics.PageFX.FlashLand.Swf
         #endregion
 
         #region Assets
+
         public SwfAsset FindAsset(string name)
         {
             if (string.IsNullOrEmpty(name))
                 return null;
-            LoadAssetCache();
+
+            CacheAssets();
+
             SwfAsset asset;
-            if (_assetCache.TryGetValue(name, out asset))
-                return asset;
-            return null;
+            return _assetCache.TryGetValue(name, out asset) ? asset : null;
         }
 
-        private void LoadAssetCache()
+        private void CacheAssets()
         {
             if (_assetCache != null) return;
 
-            _assetCache = new Dictionary<string, SwfAsset>();
-
-            foreach (var tag in _tags)
-            {
-                var symTable = tag as SwfTagSymbolClass;
-                if (symTable != null)
-                {
-                    CacheAssets(symTable.Symbols, false);
-                    continue;
-                }
-
-                var export = tag as SwfTagExportAssets;
-                if (export != null)
-                {
-                    CacheAssets(export.Assets, true);
-                }
-            }
+	        _assetCache =
+		        (from tag in _tags.OfType<ISwfAssetContainer>()
+		         where !(tag is SwfTagImportAssets)
+		         from asset in tag.Assets
+		         let character = asset.Character ?? GetCharacter(asset.Id)
+		         where character != null
+		         select Link(asset, character, tag is SwfTagExportAssets))
+			        .ToDictionary(a => a.Name, a => a);
         }
 
-        private void CacheAssets(IEnumerable<SwfAsset> assets, bool export)
+	    private static SwfAsset Link(SwfAsset asset, ISwfCharacter character, bool isExport)
+	    {
+		    asset.Character = character;
+
+		    if (isExport)
+		    {
+			    character.Name = asset.Name;
+		    }
+
+		    return asset;
+	    }
+
+	    private Dictionary<string, SwfAsset> _assetCache;
+
+	    public IEnumerable<SwfAsset> GetImportAssets()
+	    {
+		    return GetAssets<SwfTagImportAssets>();
+        }
+
+	    public IEnumerable<SwfAsset> GetExportAssets()
         {
-            foreach (var asset in assets)
-            {
-                var ch = GetCharacter(asset.Id);
-                if (ch != null)
-                {
-                    asset.Character = ch;
-                    _assetCache[asset.Name] = asset;
-                    if (export)
-                        ch.Name = asset.Name;
-                }
-            }
+	        return GetAssets<SwfTagExportAssets>();
         }
 
-        private Dictionary<string, SwfAsset> _assetCache;
-
-        private void LinkAsset(SwfAsset a)
+	    public IEnumerable<SwfAsset> GetSymbolAssets()
         {
-            if (a.Character == null)
-            {
-                var ch = GetCharacter(a.Id);
-                if (ch != null)
-                {
-                    a.Character = ch;
-                    if (a.IsExported)
-                    {
-                        ch.Name = a.Name;
-                    }
-                    else if (a.IsSymbol)
-                    {
-                        if (string.IsNullOrEmpty(ch.Name))
-                            ch.Name = a.Name;
-                    }
-                }
-            }
+	        return GetAssets<SwfTagSymbolClass>();
         }
 
-        private void LinkAssets(IEnumerable<SwfAsset> set)
-        {
-            foreach (var asset in set)
-                LinkAsset(asset);
-        }
+	    public void LinkAssets()
+	    {
+		    int count = GetAssets<ISwfAssetContainer>().Count();
+			Trace.WriteLine(string.Format("Number of linked assets {0}.", count));
+	    }
 
-        public IEnumerable<SwfAsset> GetImportAssets()
-        {
-            foreach (var tag in _tags)
-            {
-                var import = tag as SwfTagImportAssets;
-                if (import != null)
-                {
-                    foreach (var a in import.Assets)
-                    {
-                        LinkAsset(a);
-                        yield return a;
-                    }
-                }
-            }
-        }
+	    private IEnumerable<SwfAsset> GetAssets<T>()
+		    where T : ISwfAssetContainer
+	    {
+		    return from tag in _tags.OfType<T>()
+		           from asset in tag.Assets
+		           let character = asset.Character ?? GetCharacter(asset.Id)
+		           where character != null
+		           select Link(asset, character);
+	    }
 
-        public IEnumerable<SwfAsset> GetExportAssets()
-        {
-            foreach (var tag in _tags)
-            {
-                var export = tag as SwfTagExportAssets;
-                if (export != null)
-                {
-                    foreach (var a in export.Assets)
-                    {
-                        LinkAsset(a);
-                        yield return a;
-                    }
-                }
-            }
-        }
+	    private static SwfAsset Link(SwfAsset asset, ISwfCharacter character)
+		{
+			asset.Character = character;
 
-        public IEnumerable<SwfAsset> GetSymbolAssets()
-        {
-            foreach (var tag in _tags)
-            {
-                var symbolTable = tag as SwfTagSymbolClass;
-                if (symbolTable != null)
-                {
-                    foreach (var a in symbolTable.Symbols)
-                    {
-                        LinkAsset(a);
-                        yield return a;
-                    }
-                }
-            }
-        }
+			if (asset.IsExported)
+			{
+				character.Name = asset.Name;
+			}
+			else if (asset.IsSymbol)
+			{
+				if (string.IsNullOrEmpty(character.Name))
+					character.Name = asset.Name;
+			}
 
-        public void LinkAssets()
-        {
-            foreach (var tag in _tags)
-            {
-                tag.Swf = this;
+			return asset;
+		}
 
-                var export = tag as SwfTagExportAssets;
-                if (export != null)
-                {
-                    LinkAssets(export.Assets);
-                    continue;
-                }
-
-                var symbolTable = tag as SwfTagSymbolClass;
-                if (symbolTable != null)
-                {
-                    LinkAssets(symbolTable.Symbols);
-                    continue;
-                }
-
-                var import = tag as SwfTagImportAssets;
-                if (import != null)
-                {
-                    LinkAssets(import.Assets);
-                }
-            }
-        }
-        #endregion
+	    #endregion
 
         #region Import
         //private readonly Hashtable _importMap = new Hashtable();
@@ -957,11 +886,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf
         }
         #endregion
 
-        #region Object Overrides
-        public override string ToString()
+	    public override string ToString()
         {
-            return _name;
+            return Name;
         }
-        #endregion
     }
 }

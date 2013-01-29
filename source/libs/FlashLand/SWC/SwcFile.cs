@@ -103,7 +103,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
             lib.Load(stream, _tagDecodeOptions);
             lib.Index = _libs.Count;
             lib.Name = name;
-            lib.SWC = this;
+            lib.Swc = this;
             lib.SwcElement = libElem;
             _libs.Add(lib);
 

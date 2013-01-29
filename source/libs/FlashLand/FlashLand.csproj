@@ -280,6 +280,7 @@
     <Compile Include="Swf\SwfFocalGradient.cs" />
     <Compile Include="Swf\Tags\Bitmaps\SwfTagDefineBitsLossless2.cs" />
     <Compile Include="Swf\Tags\Buttons\SwfButtonList.cs" />
+    <Compile Include="Swf\Tags\Control\ISwfAssetContainer.cs" />
     <Compile Include="Swf\Tags\Control\SwfAssetCollection.cs" />
     <Compile Include="Tests\ABCDefineTest.cs" />
     <Compile Include="Tests\AbcFileTest.cs" />
