@@ -26,6 +26,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 			new Dictionary<string, InlineCodeProvider>
 			    {
 				    {"Object", new AvmObjectInlines()},
+				    {"String", new AvmStringInlines()},
 				    {"Class", new AvmClassInlines()},
 				    {"Array", new AvmArrayInlines()},
 				    {"XML", new AvmXmlInlines()},

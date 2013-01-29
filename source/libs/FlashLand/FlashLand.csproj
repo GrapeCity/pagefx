@@ -197,6 +197,7 @@
     <Compile Include="Core\Inlining\Avm.Class.cs" />
     <Compile Include="Core\Inlining\Avm.cs" />
     <Compile Include="Core\Inlining\Avm.Object.cs" />
+    <Compile Include="Core\Inlining\Avm.String.cs" />
     <Compile Include="Core\Inlining\Avm.Vector.cs" />
     <Compile Include="Core\Inlining\Avm.XML.cs" />
     <Compile Include="Core\Inlining\DateInlines.cs" />

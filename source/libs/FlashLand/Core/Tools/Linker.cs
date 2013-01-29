@@ -411,7 +411,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 code.Swap();
                 code.PushString(eventName);
                 code.CallVoid(GetDelegateMethodName(true), 2);
-                method.Data = code;
+                method.Data = new InlineCall(method, null, code);
                 return true;
             }
 
@@ -422,9 +422,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 code.Swap();
                 code.PushString(eventName);
                 code.CallVoid(GetDelegateMethodName(false), 2);
-                method.Data = code;
+                method.Data = new InlineCall(method, null, code);
                 return true;
             }
+
             throw new NotImplementedException();
         }
 

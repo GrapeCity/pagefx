@@ -164,6 +164,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             var tag = method.Data;
             if (tag == null) return null;
+	        if (tag is InlineCall) return tag;
 
             var m = tag as AbcMethod;
             if (m != null)
@@ -179,8 +180,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		#region Build
 		private object IsDefined(IMethod method)
-        {
-            if (Abc.IsDefined(method))
+		{
+			if (method.Data is InlineCall || Abc.IsDefined(method))
             {
                 return method.Data;
             }
