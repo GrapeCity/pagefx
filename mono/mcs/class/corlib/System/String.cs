@@ -138,6 +138,11 @@ namespace System
 		extern internal String toLowerCase();
 
 		[AS3]
+		[InlineFunction]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		extern internal String toUpperCase();
+
+		[AS3]
 		[InlineFunction("charCodeAt")]
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal extern char GetChar(int index);

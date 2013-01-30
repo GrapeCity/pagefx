@@ -353,10 +353,10 @@ namespace System
         }
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void AddEventListener(object dispatcher, string eventName, object f);
+		internal static extern void AddEventListener(object dispatcher, string eventName, Function f);
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		internal static extern void RemoveEventListener(object dispatcher, string eventName, object f);
+		internal static extern void RemoveEventListener(object dispatcher, string eventName, Function f);
 		
         public virtual void AddEventListeners(object dispatcher, string eventName)
         {

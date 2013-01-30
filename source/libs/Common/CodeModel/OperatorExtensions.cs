@@ -147,7 +147,12 @@ namespace DataDynamics.PageFX.Common.CodeModel
 
 		private static readonly string[] CastOpNames = { OpNames.Implicit, OpNames.Explicit, OpNames.True, OpNames.False };
 
-        private static IEnumerable<IMethod> GetCastOperators(this IType type)
+		public static bool IsCastOperator(this IMethod method)
+		{
+			return CastOpNames.Contains(method.Name);
+		}
+
+		private static IEnumerable<IMethod> GetCastOperators(this IType type)
         {
         	return CastOpNames.SelectMany(name => type.Methods.Find(name));
         }

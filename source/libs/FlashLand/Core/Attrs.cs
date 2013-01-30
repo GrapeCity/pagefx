@@ -20,6 +20,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 	    public const string InlineFunction = NsPrefix + "InlineFunctionAttribute";
 	    public const string InlineProperty = NsPrefix + "InlinePropertyAttribute";
 	    public const string InlineOperator = NsPrefix + "InlineOperatorAttribute";
+	    public const string InlineTarget = NsPrefix + "InlineTargetAttribute";
 
         public const string FP = NsPrefix + "FPAttribute";
         public const string FP9 = NsPrefix + "FP9Attribute";

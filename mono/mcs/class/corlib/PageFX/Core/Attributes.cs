@@ -24,6 +24,28 @@ namespace PageFX
 	{
 	}
 
+	/// <summary>
+	/// Used to specify full name of inline call target. This allows to call native static methods without declaring native type wrappers.
+	/// </summary>
+	public sealed class InlineTargetAttribute : Attribute
+	{
+		public string Name;
+		public string Namespace; //default is global package
+		public string NamespaceKind;
+
+		public InlineTargetAttribute(string name)
+		{
+			Name = name;
+		}
+
+		public InlineTargetAttribute(string name, string ns, string nskind)
+		{
+			Name = name;
+			Namespace = ns;
+			NamespaceKind = nskind;
+		}
+	}
+
 	public sealed class InlineFunctionAttribute : Attribute
 	{
 		public string Name;

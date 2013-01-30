@@ -110,12 +110,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
         private IMethodCall ResolveInternalCall(IMethod method, AbcInstance instance)
         {
-            var inlineCall = InlineCodeGenerator.Build(Abc, instance, method);
-            if (inlineCall != null)
-            {
-	            return inlineCall;
-            }
-
             //special methods
             var m = ResolveSpecCall(method, instance);
             if (m != null) return m;

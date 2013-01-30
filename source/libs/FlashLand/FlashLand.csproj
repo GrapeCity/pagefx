@@ -193,6 +193,7 @@
     <Compile Include="Core\Function.cs" />
     <Compile Include="Core\HashExtensions.cs" />
     <Compile Include="Core\IMethodCall.cs" />
+    <Compile Include="Core\InlineCall.cs" />
     <Compile Include="Core\Inlining\Avm.Array.cs" />
     <Compile Include="Core\Inlining\Avm.Class.cs" />
     <Compile Include="Core\Inlining\Avm.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Core\Inlining\Avm.String.cs" />
     <Compile Include="Core\Inlining\Avm.Vector.cs" />
     <Compile Include="Core\Inlining\Avm.XML.cs" />
+    <Compile Include="Core\Inlining\System.Delegate.cs" />
     <Compile Include="Core\Inlining\DateInlines.cs" />
     <Compile Include="Core\Inlining\flash.utils.ByteArray.cs" />
     <Compile Include="Core\Inlining\InlineCodeGenerator.cs" />

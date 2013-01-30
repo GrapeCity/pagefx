@@ -404,25 +404,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             if (string.IsNullOrEmpty(eventName))
                 throw new InvalidOperationException();
 
-            if (e.Adder == method)
+            if (e.Adder == method || e.Remover == method)
             {
                 //stack transition: dispatcher, delegate -> ...
                 var code = new AbcCode(instance.Abc);
                 code.Swap();
                 code.PushString(eventName);
-                code.CallVoid(GetDelegateMethodName(true), 2);
-                method.Data = new InlineCall(method, null, code);
-                return true;
-            }
-
-            if (e.Remover == method)
-            {
-                //stack transition: delegate -> ...
-                var code = new AbcCode(instance.Abc);
-                code.Swap();
-                code.PushString(eventName);
-                code.CallVoid(GetDelegateMethodName(false), 2);
-                method.Data = new InlineCall(method, null, code);
+                code.CallVoid(GetDelegateMethodName(e.Adder == method), 2);
+                method.Data = new InlineCall(method, null, null, code);
                 return true;
             }
 

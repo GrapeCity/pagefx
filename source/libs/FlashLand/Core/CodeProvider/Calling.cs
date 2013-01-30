@@ -93,9 +93,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
 
             //NOTE: Inline code!!!
-	        if (tag is InlineCall)
+	        var inlineCall = tag as InlineCall;
+	        if (inlineCall != null)
 	        {
-		        return HasGlobalReceiver(method);
+		        return inlineCall.TargetType != null || HasGlobalReceiver(method);
 	        }
 
 	        return true;
@@ -105,10 +106,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             EnsureMethod(method);
 
-            if (!HasReceiver(method, newobj))
-				return null;
+	        if (!HasReceiver(method, newobj))
+	        {
+		        return null;
+	        }
 
-            var code = new AbcCode(_abc);
+	        var code = new AbcCode(_abc);
             CallStaticCtor(code, method);
 
             if (newobj)
@@ -117,26 +120,31 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 return code.ToArray();
             }
 
-            var type = method.DeclaringType;
-            EnsureType(type);
+	        if (LoadSpecReceiver(method, code))
+	        {
+		        return code.ToArray();
+	        }
 
-            if (LoadSpecReceiver(method, code))
-                return code.ToArray();
+	        var inlineCall = method.Data as InlineCall;
+			if (inlineCall != null && inlineCall.TargetType != null)
+			{
+				code.Getlex(inlineCall.TargetType);
+				return code.ToArray();
+			}
 
-            var tag = method.Data;
-            
-            var mname = tag as AbcMultiname;
-            if (mname != null)
+	        if (method.IsStaticCall())
             {
-                code.FindPropertyStrict(mname);
+                LoadStaticInstance(code, method.DeclaringType);
                 return code.ToArray();
             }
 
-            if (method.IsStaticCall())
-            {
-                LoadStaticInstance(code, type);
-                return code.ToArray();
-            }
+			// TODO: check that code below is not needed now and remove it
+	        var mname = method.Data as AbcMultiname;
+			if (mname != null)
+			{
+				code.FindPropertyStrict(mname);
+				return code.ToArray();
+			}
 
             //NOTE:
             //Primitive types should be boxed before calling of any instance method

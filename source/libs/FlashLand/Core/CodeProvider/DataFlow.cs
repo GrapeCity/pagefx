@@ -225,6 +225,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         private void LoadStaticInstance(AbcCode code, IType type)
         {
             EnsureType(type);
+
             var instance = type.AbcInstance();
             if (instance != null)
             {
@@ -239,6 +240,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     code.Getlex(instance.Name);
                 return;
             }
+
             throw new InvalidOperationException();
         }
         #endregion

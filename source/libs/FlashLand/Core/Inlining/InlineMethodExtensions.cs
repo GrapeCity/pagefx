@@ -1,3 +1,4 @@
+using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 
@@ -10,6 +11,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 
 		public static InlineMethodInfo GetInlineInfo(this IMethod method)
 		{
+			QName targetType = null;
 			QName qname = null;
 			string name = null;
 			var kns = KnownNamespace.Global;
@@ -40,6 +42,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 					case Attrs.QName:
 						qname = QName.FromAttribute(attr);
 						break;
+
+					case Attrs.InlineTarget:
+						if (!method.IsStatic)
+							throw new InvalidOperationException("Inline target is valid only for static inline calls.");
+						targetType = QName.FromAttribute(attr);
+						break;
 				}
 			}
 
@@ -53,7 +61,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				qname = new QName(name, kns);
 			}
 
-			return new InlineMethodInfo(qname, kind);
+			if (targetType == null)
+			{
+				var attr = method.DeclaringType.FindAttribute(Attrs.InlineTarget);
+				if (attr != null)
+				{
+					if (!method.IsStatic)
+						throw new InvalidOperationException("Inline target is valid only for static inline calls.");
+					targetType = QName.FromAttribute(attr);
+				}
+			}
+
+			return new InlineMethodInfo(targetType, qname, kind);
 		}
 	}
 }

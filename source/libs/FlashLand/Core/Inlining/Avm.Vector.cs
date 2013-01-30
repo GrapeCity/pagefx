@@ -20,7 +20,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 
 			var code = new AbcCode(abc);
 			code.CallAS3(method.Name, method.Parameters.Count);
-			return new InlineCall(method, null, code);
+			return new InlineCall(method, null, null, code);
 		}
 
 		[InlineImpl(Name = ".ctor", Attrs = MethodAttrs.Constructor)]

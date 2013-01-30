@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -215,7 +216,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	        }
 
 			var type = method.DeclaringType;
-			_generator.TypeBuilder.Build(type);
+			EnsureType(type);
 
 			var tag = IsDefined(method);
             if (tag != null) return tag;
@@ -231,9 +232,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             BuildBaseMethods(method);
 
             //Define method signature types.
-			_generator.TypeBuilder.Build(method.Type);
+			EnsureType(method.Type);
             foreach (var p in method.Parameters)
-				_generator.TypeBuilder.Build(p.Type);
+				EnsureType(p.Type);
 
             tag = IsDefined(method);
             if (tag != null) return tag;
@@ -250,6 +251,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 #endif
             return abcMethod;
         }
+
+		private void EnsureType(IType type)
+		{
+			_generator.TypeBuilder.Build(type);
+		}
+
         #endregion
 
 		#region BuildCore
@@ -268,7 +275,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             var declType = method.DeclaringType;
             var instance = declType.AbcInstance();
             if (instance == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("No instance context for method declaration.");
 
 			bool isMxAppCtor = false;
 			if (AbcGenConfig.FlexAppCtorAsHandler)
@@ -304,10 +311,26 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				sig.Args = new object[] {typeFlexEvent.Name, "e"};
 			}
 
+			instance = ResolveDeclInstance(instance, method);
+			
 	        return instance.DefineMethod(
 		        sig, null,
 		        abcMethod => CompleteMethod(instance, method, abcMethod));
         }
+
+		private static AbcInstance ResolveDeclInstance(AbcInstance instance, IMethod method)
+		{
+			if (!instance.IsNative)
+				return instance;
+			if (!method.IsStatic)
+				throw new InvalidOperationException("Instance methods should not be explicitly declared in native types.");
+
+			var candidate = method.Parameters.Select(x => x.Type.AbcInstance()).FirstOrDefault(x => x != null);
+			if (candidate == null)
+				throw new InvalidOperationException("Unable to resolve instance where to declare method.");
+
+			return candidate;
+		}
 
 		private void CompleteMethod(AbcInstance instance, IMethod method, AbcMethod abcMethod)
 		{

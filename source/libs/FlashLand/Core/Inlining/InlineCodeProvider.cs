@@ -91,7 +91,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				{
 					var code = new AbcCode(abc);
 					pair.Value(method, code);
-					return new InlineCall(method, null, code);
+					return new InlineCall(method, null, null, code);
 				}
 			}
 

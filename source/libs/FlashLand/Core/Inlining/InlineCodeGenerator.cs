@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
-using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 {
@@ -15,6 +12,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 			    {
 				    {"System.Object", new SystemObjectInlines()},
 				    {"System.String", new StringInlines()},
+				    {"System.Delegate", new DelegateInlines()},
 				    {"System.Diagnostics.Debugger", new DebuggerInlines()},
 				    {"avm", new AvmInlines()},
 					{"Native.Date", new DateInlines()},
@@ -66,7 +64,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 			var info = method.GetInlineInfo();
 			if (info != null)
 			{
-				return Call(abc, method, info);
+				return InlineCall.Create(abc, method, info);
 			}
 
 		    InlineCodeProvider provider;
@@ -77,54 +75,5 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 
 		    return null;
         }
-
-	    private static InlineCall Call(AbcFile abc, IMethod method, InlineMethodInfo info)
-	    {
-		    var code = new AbcCode(abc);
-		    var name = info.Name.Define(abc);
-
-		    switch (info.Kind)
-		    {
-			    case InlineKind.Property:
-				    if (method.IsSetter())
-				    {
-					    code.SetProperty(name);
-				    }
-				    else
-				    {
-					    code.GetProperty(name);
-					    code.Coerce(method.Type, true);
-				    }
-				    break;
-
-			    case InlineKind.Operator:
-				    {
-					    int n = method.Parameters.Count;
-					    if (n <= 1)
-						    throw new InvalidOperationException();
-					    var op = info.Op;
-					    for (int i = 1; i < n; ++i)
-					    {
-						    code.Add(op);
-					    }
-					    code.Coerce(method.Type, true);
-				    }
-				    break;
-
-			    default:
-				    if (method.IsVoid())
-				    {
-					    code.CallVoid(name, method.Parameters.Count);
-				    }
-				    else
-				    {
-					    code.Call(name, method.Parameters.Count);
-					    code.Coerce(method.Type, true);
-				    }
-				    break;
-		    }
-
-		    return new InlineCall(method, name, code);
-	    }
     }
 }

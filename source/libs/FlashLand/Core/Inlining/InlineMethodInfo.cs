@@ -6,11 +6,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 {
 	internal sealed class InlineMethodInfo
 	{
+		/// <summary>
+		/// Specifies qname of type for inline static calls. This allows to call native static methods without declaring native type wrappers.
+		/// </summary>
+		public readonly QName TargetType;
 		public readonly QName Name;
 		public readonly InlineKind Kind;
 
-		public InlineMethodInfo(QName name, InlineKind kind)
+		public InlineMethodInfo(QName targetType, QName name, InlineKind kind)
 		{
+			TargetType = targetType;
 			Name = name;
 			Kind = kind;
 		}

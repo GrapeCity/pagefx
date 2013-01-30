@@ -739,9 +739,10 @@ namespace System
             return ToUpper(c, CultureInfo.CurrentCulture);
         }
 
-	    [MethodImpl(MethodImplOptions.InternalCall)]
-	    public static extern char ToUpperInvariant(char c);
-		// return (char)Avm.String.fromCharCode(c).toUpperCase().charCodeAt(0);
+	    public static char ToUpperInvariant(char c)
+	    {
+		    return string.fromCharCode(c).toUpperCase().GetChar(0);
+	    }
         
         public static char ToUpper(char c, CultureInfo culture)
         {

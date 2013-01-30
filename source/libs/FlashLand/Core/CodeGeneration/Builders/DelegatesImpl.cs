@@ -15,7 +15,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			_generator = generator;
 		}
 
-		private void EnshureMethods(IType type)
+		private void EnsureMethods(IType type)
 		{
 			var m = type.Methods.Find(Const.Delegate.AddEventListeners, 2);
 			if (m == null)
@@ -28,12 +28,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			_generator.MethodBuilder.BuildAbcMethod(m);
 		}
 
-		private void EnshureMethods()
+		private void EnsureMethods()
 		{
 			if (_enshureDelegateMethods) return;
 			_enshureDelegateMethods = true;
-			EnshureMethods(_generator.SystemTypes.Delegate);
-			EnshureMethods(_generator.SystemTypes.MulticastDelegate);
+			EnsureMethods(_generator.SystemTypes.Delegate);
+			EnsureMethods(_generator.SystemTypes.MulticastDelegate);
 		}
 
 		private bool _enshureDelegateMethods;
@@ -51,7 +51,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		private AbcMethod BuildCtor(IMethod method, AbcInstance instance)
 		{
-			EnshureMethods();
+			EnsureMethods();
 
 			if (method.Parameters.Count != 2)
 				throw new InvalidOperationException();
@@ -88,7 +88,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 		private AbcMethod InvokeImpl(IMethod method, AbcInstance instance)
 		{
-			EnshureMethods();
+			EnsureMethods();
 			//TODO: Check m_function on "not null"
 
 			var sig = _generator.MethodBuilder.SigOf(method);
