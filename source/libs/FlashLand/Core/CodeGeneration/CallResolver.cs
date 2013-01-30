@@ -150,6 +150,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			return _generator.ArrayImpl.BuildSpecMethod(method, instance);
         }
 
+		//TODO: revise MethodDefiners, allow to define methods that will be finished on ABC flushing phase
+
 	    private delegate AbcMethod MethodDefiner(IMethod method, AbcInstance instance);
 
         private Hashtable _definers;

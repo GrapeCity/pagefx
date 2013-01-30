@@ -229,21 +229,28 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             var instance = type.AbcInstance();
             if (instance != null)
             {
-                if (instance.IsNative)
-                {
-                    code.Getlex(instance.Name);
-                    return;
-                }
-                if (UseThisForStaticReceiver(type))
-                    code.LoadThis();
-                else
-                    code.Getlex(instance.Name);
-                return;
+	            LoadStaticInstance(code, type, instance);
+	            return;
             }
 
-            throw new InvalidOperationException();
+	        throw new InvalidOperationException();
         }
-        #endregion
+
+	    private void LoadStaticInstance(AbcCode code, IType type, AbcInstance instance)
+	    {
+		    if (instance.IsNative)
+		    {
+			    code.Getlex(instance.Name);
+			    return;
+		    }
+
+		    if (UseThisForStaticReceiver(type))
+			    code.LoadThis();
+		    else
+			    code.Getlex(instance.Name);
+	    }
+
+	    #endregion
 
         private IInstruction[] LoadLocal(int index)
         {

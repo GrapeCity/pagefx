@@ -4,6 +4,7 @@ using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Avm;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.IL;
 
@@ -133,12 +134,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 			}
 
 	        if (method.IsStaticCall())
-            {
-                LoadStaticInstance(code, method.DeclaringType);
-                return code.ToArray();
-            }
+	        {
+		        LoadStaticInstance(code, method.DeclaringType);
+		        return code.ToArray();
+	        }
 
-			// TODO: check that code below is not needed now and remove it
+	        // TODO: check that code below is not needed now and remove it
 	        var mname = method.Data as AbcMultiname;
 			if (mname != null)
 			{

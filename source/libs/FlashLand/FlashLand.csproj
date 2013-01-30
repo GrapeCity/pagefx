@@ -201,6 +201,7 @@
     <Compile Include="Core\Inlining\Avm.String.cs" />
     <Compile Include="Core\Inlining\Avm.Vector.cs" />
     <Compile Include="Core\Inlining\Avm.XML.cs" />
+    <Compile Include="Core\Inlining\Avm.Function.cs" />
     <Compile Include="Core\Inlining\System.Delegate.cs" />
     <Compile Include="Core\Inlining\DateInlines.cs" />
     <Compile Include="Core\Inlining\flash.utils.ByteArray.cs" />
