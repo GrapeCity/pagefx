@@ -29,7 +29,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 				if (method.Name == "fromCharCode")
 					return true;
 			}
-            if (type.IsNativeType("Class"))
+            if (type.Is(AvmTypeCode.Class))
             {
                 if (method.Name == "Find")
                     return true;
@@ -62,7 +62,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 				return;
 			}
 
-            if (type.IsNativeType("Class"))
+            if (type.Is(AvmTypeCode.Class))
             {
                 if (method.Name == "Find")
                 {
@@ -80,8 +80,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (newobj)
             {
 				var type = method.DeclaringType;
-				if (type.IsNativeType("Object"))
+				if (type.Is(AvmTypeCode.Object))
 				{
+					// all avm object ctors should be implemented via newobject instruction
 					return false;
 				}
 				return true;
@@ -531,8 +532,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             {
                 if (abcMethod.IsInitializer) //default ctor!
                 {
-                    code.Construct(method.Parameters.Count);
-                    return;
+	                if (type.Is(AvmTypeCode.Object))
+	                {
+		                code.NewObject(0);
+	                }
+	                else
+	                {
+		                code.Construct(method.Parameters.Count);
+	                }
+	                return;
                 }
 
                 if (type.Is(SystemTypeCode.String))

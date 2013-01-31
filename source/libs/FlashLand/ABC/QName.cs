@@ -178,11 +178,25 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
 	    public string Name { get; private set; }
 
+	    public string FullName
+	    {
+		    get
+		    {
+			    var ns = Ns;
+			    return string.IsNullOrEmpty(ns) ? Name : ns + "." + Name;
+		    }
+	    }
+
 	    public AbcMultiname Define(AbcFile abc)
         {
 			var ns = _namespace != null ? _namespace.Define(abc) : abc.KnownNamespaces.Get(_knownNamespace);
             return abc.DefineQName(ns, Name);
         }
+
+	    private string Ns
+	    {
+		    get { return _namespace != null ? _namespace.Name : KnownNamespaces.GetName(_knownNamespace); }
+	    }
     }
 
 	internal sealed class QNameAttribute : Attribute

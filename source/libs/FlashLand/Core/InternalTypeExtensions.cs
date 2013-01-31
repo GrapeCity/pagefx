@@ -4,6 +4,7 @@ using System.Linq;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 
 namespace DataDynamics.PageFX.FlashLand.Core
@@ -67,13 +68,13 @@ namespace DataDynamics.PageFX.FlashLand.Core
 	               || type.IsGenericArrayInterface();
         }
 
-	    public static bool IsNativeType(this IType type, string fullname)
+	    public static bool Is(this IType type, AvmTypeCode typeCode)
         {
             if (type == null) return false;
             var instance = type.AbcInstance();
             if (instance == null) return false;
             if (!instance.IsNative) return false;
-            return instance.FullName == fullname;
+            return instance.FullName == typeCode.FullName();
         }
 
 	    public static AbcMultiname GetMultiname(this IType type)

@@ -120,6 +120,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 			{
 				return false;
 			}
+			if ((attrs & MethodAttrs.WithArgs) != 0 && method.Parameters.Count == 0)
+			{
+				return false;
+			}
 			return true;
 		}
 	}
@@ -155,6 +159,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		Getter = 0x02,
 		Setter = 0x04,
 		Static = 0x08,
-		Operator = 0x10
+		Operator = 0x10,
+		WithArgs = 0x20
 	}
 }

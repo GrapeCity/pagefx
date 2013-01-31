@@ -592,7 +592,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         #region Builtin Types
 
-	    public BuiltinTypes BuiltinTypes
+	    internal BuiltinTypes BuiltinTypes
         {
             get { return _builtinTypes ?? (_builtinTypes = new BuiltinTypes(this)); }
         }
