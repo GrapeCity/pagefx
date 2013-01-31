@@ -711,14 +711,20 @@ namespace DataDynamics.PageFX.FlashLand.Swf
         {
             if (_assetCache != null) return;
 
-	        _assetCache =
-		        (from tag in _tags.OfType<ISwfAssetContainer>()
-		         where !(tag is SwfTagImportAssets)
-		         from asset in tag.Assets
-		         let character = asset.Character ?? GetCharacter(asset.Id)
-		         where character != null
-		         select Link(asset, character, tag is SwfTagExportAssets))
-			        .ToDictionary(a => a.Name, a => a);
+	        var assets = (from tag in _tags.OfType<ISwfAssetContainer>()
+	                     where !(tag is SwfTagImportAssets)
+	                     from asset in tag.Assets
+	                     let character = asset.Character ?? GetCharacter(asset.Id)
+	                     where character != null
+	                     select Link(asset, character, tag is SwfTagExportAssets))
+						 .ToArray();
+
+			_assetCache = new Dictionary<string, SwfAsset>();
+
+	        foreach (var asset in assets.Where(x => !_assetCache.ContainsKey(x.Name)))
+	        {
+		        _assetCache.Add(asset.Name, asset);
+	        }
         }
 
 	    private static SwfAsset Link(SwfAsset asset, ISwfCharacter character, bool isExport)
