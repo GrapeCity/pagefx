@@ -613,12 +613,12 @@ namespace DataDynamics.PageFX.Common.CodeModel
 
         bool MustPreventBoxing(IMethod method, IParameter arg);
 
-        /// <summary>
-        /// Performs local optimization.
-        /// </summary>
-        /// <param name="code">instruction set to optimize</param>
-        /// <returns>optimized instruction set</returns>
-        IInstruction[] OptimizeBasicBlock(IInstruction[] code);
+	    /// <summary>
+	    /// Performs local optimization.
+	    /// </summary>
+	    /// <param name="code">instruction set to optimize</param>
+	    /// <returns>optimized instruction set</returns>
+	    IEnumerable<IInstruction> OptimizeBasicBlock(IInstruction[] code);
 
         void CompileMethod(IMethod method);
     }

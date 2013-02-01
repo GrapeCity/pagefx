@@ -301,12 +301,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             EnsureMethod(method);
         }
 
-		/// <summary>
-		/// Performs local optimization.
-		/// </summary>
-		/// <param name="code">instruction set to optimize</param>
-		/// <returns>optimized instruction set</returns>
-		public IInstruction[] OptimizeBasicBlock(IInstruction[] code)
+	    /// <summary>
+	    /// Performs local optimization.
+	    /// </summary>
+	    /// <param name="code">instruction set to optimize</param>
+	    /// <returns>optimized instruction set</returns>
+	    public IEnumerable<IInstruction> OptimizeBasicBlock(IInstruction[] code)
 		{
 			return LocalOptimizer.OptimizeBasicBlock(_abc, code);
 		}

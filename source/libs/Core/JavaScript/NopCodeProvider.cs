@@ -465,7 +465,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			return false;
 		}
 
-		public IInstruction[] OptimizeBasicBlock(IInstruction[] code)
+		public IEnumerable<IInstruction> OptimizeBasicBlock(IInstruction[] code)
 		{
 			return code;
 		}
