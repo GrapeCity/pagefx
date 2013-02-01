@@ -1,4 +1,5 @@
-﻿using DataDynamics.PageFX.Common.CodeModel;
+﻿using System.Collections.Generic;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.IL;
@@ -16,14 +17,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return file;
         }
 
-        public IInstruction[] DebuggerBreak()
+        public IEnumerable<IInstruction> DebuggerBreak()
         {
             var code = new AbcCode(_abc);
             code.DebuggerBreak();
-            return code.ToArray();
+            return code;
         }
 
-        public IInstruction[] DebugFile(string file)
+        public IEnumerable<IInstruction> DebugFile(string file)
         {
             _hasDebugFile = true;
             var code = new AbcCode(_abc);
@@ -33,16 +34,16 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             string s = FormatDebugFile(file);
             code.DebugFile(s);
-            return code.ToArray();
+            return code;
         }
 
         public int DebugFirstLine { get; set; }
 
-        public IInstruction[] DebugLine(int line)
+        public IEnumerable<IInstruction> DebugLine(int line)
         {
             var code = new AbcCode(_abc);
             code.DebugLine(line);
-            return code.ToArray();
+            return code;
         }
 
         bool IsEmitDebugInfo

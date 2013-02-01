@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -91,11 +92,13 @@ namespace DataDynamics.PageFX.Core.Translation
 
 		public static Code Op(this Code code, BinaryOperator op, IType left, IType right, IType result, bool checkOverflow)
 		{
-			var il = code.Provider.Op(op, left, right, result, checkOverflow);
-			if (il == null || il.Length == 0)
+			var il = (code.Provider.Op(op, left, right, result, checkOverflow) ?? Enumerable.Empty<IInstruction>()).ToArray();
+
+			if (il.Length == 0)
 				throw new ILTranslatorException("No context for given binary operation");
 
 			code.AddRange(il);
+
 			return code;
 		}
 
@@ -327,9 +330,9 @@ namespace DataDynamics.PageFX.Core.Translation
 
 		public static bool LoadReceiver(this Code code, IMethod method, bool newobj)
 		{
-			var il = code.Provider.LoadReceiver(method, newobj);
+			var il = (code.Provider.LoadReceiver(method, newobj) ?? Enumerable.Empty<IInstruction>()).ToArray();
 
-			if (il != null && il.Length > 0)
+			if (il.Length > 0)
 			{
 				code.AddRange(il);
 				return true;

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Core.IL;
 using DataDynamics.PageFX.Core.Translation.ControlFlow;
@@ -58,8 +60,8 @@ namespace DataDynamics.PageFX.Core.Translation
 
 			Checks.CheckValidCast(source, target);
 
-			var cast = context.Provider.Cast(source, target, false);
-			if (cast != null && cast.Length > 0)
+			var cast = (context.Provider.Cast(source, target, false) ?? Enumerable.Empty<IInstruction>()).ToArray();
+			if (cast.Length > 0)
 			{
 				var block = context.Block;
 				var stack = block.Stack;

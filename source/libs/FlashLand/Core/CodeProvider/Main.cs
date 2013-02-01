@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -87,7 +88,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
         }
 
-        public IInstruction[] Begin()
+        public IEnumerable<IInstruction> Begin()
         {
             var code = new AbcCode(_abc);
 
@@ -103,10 +104,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             InitPointers(code);
 
-            return code.ToArray();
+            return code;
         }
 
-        public IInstruction[] End()
+        public IEnumerable<IInstruction> End()
         {
             return null;
         }
@@ -153,17 +154,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return name != null ? _abc.ImportConst(name) : null;
         }
 
-        public IInstruction[] LoadFunction(IMethod method)
+        public IEnumerable<IInstruction> LoadFunction(IMethod method)
         {
             EnsureMethod(method);
             var code = new AbcCode(_abc);
             var name = GetMethodName(method);
             code.GetProperty(name);
             code.CoerceFunction();
-            return code.ToArray();
+            return code;
         }
 
-	    public IInstruction[] InvokeDelegate(IMethod method)
+	    public IEnumerable<IInstruction> InvokeDelegate(IMethod method)
 	    {
 		    var code = new AbcCode(_abc)
 			    {
@@ -173,7 +174,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 		    {
 			    code.Add(InstructionCode.Pop);
 		    }
-		    return code.ToArray();
+		    return code;
 	    }
 
 	    #endregion

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -104,7 +105,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 	        return true;
         }
 
-        public IInstruction[] LoadReceiver(IMethod method, bool newobj)
+        public IEnumerable<IInstruction> LoadReceiver(IMethod method, bool newobj)
         {
             EnsureMethod(method);
 
@@ -119,25 +120,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (newobj)
             {
                 LoadCtorReceiver(code, method);
-                return code.ToArray();
+                return code;
             }
 
 	        if (LoadSpecReceiver(method, code))
 	        {
-		        return code.ToArray();
+		        return code;
 	        }
 
 	        var inlineCall = method.Data as InlineCall;
 			if (inlineCall != null && inlineCall.TargetType != null)
 			{
 				code.Getlex(inlineCall.TargetType);
-				return code.ToArray();
+				return code;
 			}
 
 	        if (method.IsStaticCall())
 	        {
 		        LoadStaticInstance(code, method.DeclaringType);
-		        return code.ToArray();
+		        return code;
 	        }
 
 	        // TODO: check that code below is not needed now and remove it
@@ -145,7 +146,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 			if (mname != null)
 			{
 				code.FindPropertyStrict(mname);
-				return code.ToArray();
+				return code;
 			}
 
             //NOTE:
@@ -157,7 +158,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             //    BoxPrimitive(code, type, false);
             //}
 
-            return code.ToArray();
+            return code;
         }
 
         private bool LoadSpecReceiver(IMethod method, AbcCode code)
@@ -225,13 +226,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #endregion
 
         #region BeginCall/EndCall
-        public IInstruction[] BeginCall(IMethod method)
+        public IEnumerable<IInstruction> BeginCall(IMethod method)
         {
             EnsureMethod(method);
             return null;
         }
 
-        public IInstruction[] EndCall(IMethod method)
+        public IEnumerable<IInstruction> EndCall(IMethod method)
         {
             var code = new AbcCode(_abc);
 
@@ -240,12 +241,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 _generator.FlexAppBuilder.CtorAfterSuperCall(code);
             }
 
-            return code.ToArray();
+            return code;
         }
         #endregion
 
         #region CallMethod
-        public IInstruction[] CallMethod(IType receiverType, IMethod method, CallFlags flags)
+        public IEnumerable<IInstruction> CallMethod(IType receiverType, IMethod method, CallFlags flags)
         {
             EnsureMethod(method);
 
@@ -270,23 +271,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if ((flags & CallFlags.Newobj) != 0)
             {
                 NewObject(code, method);
-                return code.ToArray();
+                return code;
             }
 
             if (SuperCall(code, method))
-                return code.ToArray();
+                return code;
 
             if ((flags & CallFlags.Basecall) != 0)
             {
                 BaseCall(code, receiverType, method);
-                return code.ToArray();
+                return code;
             }
 
 	        var name = GetMethodName(method);
             if (name != null)
             {
                 Call(code, method, name, flags);
-                return code.ToArray();
+                return code;
             }
 
             throw new NotImplementedException();

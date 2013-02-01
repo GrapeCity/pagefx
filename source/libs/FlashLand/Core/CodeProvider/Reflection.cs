@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.IL;
@@ -6,19 +7,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 {
     internal partial class CodeProviderImpl
     {
-        public IInstruction[] TypeOf(IType type)
+        public IEnumerable<IInstruction> TypeOf(IType type)
         {
             var code = new AbcCode(_abc);
             code.TypeOf(type);
-            return code.ToArray();
+            return code;
         }
 
-        public IInstruction[] SizeOf(IType type)
+        public IEnumerable<IInstruction> SizeOf(IType type)
         {
             EnsureType(type);
             var code = new AbcCode(_abc);
             //TODO:
-            return code.ToArray();
+            return code;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection.Emit;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
@@ -42,12 +43,12 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			return OpNop;
 		}
 
-		public IInstruction[] Begin()
+		public IEnumerable<IInstruction> Begin()
 		{
 			return Empty;
 		}
 
-		public IInstruction[] End()
+		public IEnumerable<IInstruction> End()
 		{
 			return Empty;
 		}
@@ -62,99 +63,99 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			return index;
 		}
 
-		public IInstruction[] DeclareVariable(IVariable v)
+		public IEnumerable<IInstruction> DeclareVariable(IVariable v)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadConstant(object value)
+		public IEnumerable<IInstruction> LoadConstant(object value)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadVariable(IVariable v)
+		public IEnumerable<IInstruction> LoadVariable(IVariable v)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadArgument(IParameter p)
+		public IEnumerable<IInstruction> LoadArgument(IParameter p)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadField(IField field)
+		public IEnumerable<IInstruction> LoadField(IField field)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] StoreThis()
+		public IEnumerable<IInstruction> StoreThis()
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadThis()
+		public IEnumerable<IInstruction> LoadThis()
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadBase()
+		public IEnumerable<IInstruction> LoadBase()
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadStaticInstance(IType type)
+		public IEnumerable<IInstruction> LoadStaticInstance(IType type)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] StoreVariable(IVariable v)
+		public IEnumerable<IInstruction> StoreVariable(IVariable v)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] StoreArgument(IParameter p)
+		public IEnumerable<IInstruction> StoreArgument(IParameter p)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] StoreField(IField field)
+		public IEnumerable<IInstruction> StoreField(IField field)
 		{
 			return NopArray;
 		}
 
 		public bool IsThisAddressed { get; set; }
 
-		public IInstruction[] GetThisPtr()
+		public IEnumerable<IInstruction> GetThisPtr()
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] GetVarPtr(IVariable v)
+		public IEnumerable<IInstruction> GetVarPtr(IVariable v)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] GetArgPtr(IParameter p)
+		public IEnumerable<IInstruction> GetArgPtr(IParameter p)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] GetFieldPtr(IField field)
+		public IEnumerable<IInstruction> GetFieldPtr(IField field)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] GetElemPtr(IType elemType)
+		public IEnumerable<IInstruction> GetElemPtr(IType elemType)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadIndirect(IType valueType)
+		public IEnumerable<IInstruction> LoadIndirect(IType valueType)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] StoreIndirect(IType valueType)
+		public IEnumerable<IInstruction> StoreIndirect(IType valueType)
 		{
 			return NopArray;
 		}
@@ -164,18 +165,18 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			get { return false; }
 		}
 
-		public IInstruction[] SetTempVar(out int var, bool keepStackState)
+		public IEnumerable<IInstruction> SetTempVar(out int var, bool keepStackState)
 		{
 			var = 100;
 			return NopArray;
 		}
 
-		public IInstruction[] GetTempVar(int var)
+		public IEnumerable<IInstruction> GetTempVar(int var)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] KillTempVar(int var)
+		public IEnumerable<IInstruction> KillTempVar(int var)
 		{
 			return NopArray;
 		}
@@ -185,7 +186,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			return true;
 		}
 
-		public IInstruction[] Branch(BranchOperator op, IType left, IType right)
+		public IEnumerable<IInstruction> Branch(BranchOperator op, IType left, IType right)
 		{
 			return NopArray;
 		}
@@ -204,7 +205,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 		{
 		}
 
-		public IInstruction[] Return(bool isvoid)
+		public IEnumerable<IInstruction> Return(bool isvoid)
 		{
 			return NopArray;
 		}
@@ -235,69 +236,69 @@ namespace DataDynamics.PageFX.Core.JavaScript
 
 		public bool PopException { get; set; }
 
-		public IInstruction[] BeginTry()
+		public IEnumerable<IInstruction> BeginTry()
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] EndTry(bool generateExit, out IInstruction jump)
-		{
-			jump = OpNop;
-			return NopArray;
-		}
-
-		public IInstruction[] BeginCatch(ISehHandlerBlock handlerBlock)
-		{
-			return NopArray;
-		}
-
-		public IInstruction[] EndCatch(ISehHandlerBlock block, bool isLast, bool generateExit, out IInstruction jump)
+		public IEnumerable<IInstruction> EndTry(bool generateExit, out IInstruction jump)
 		{
 			jump = OpNop;
 			return NopArray;
 		}
 
-		public IInstruction[] BeginFinally(ISehHandlerBlock block)
+		public IEnumerable<IInstruction> BeginCatch(ISehHandlerBlock handlerBlock)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] EndFinally(ISehHandlerBlock block)
+		public IEnumerable<IInstruction> EndCatch(ISehHandlerBlock block, bool isLast, bool generateExit, out IInstruction jump)
+		{
+			jump = OpNop;
+			return NopArray;
+		}
+
+		public IEnumerable<IInstruction> BeginFinally(ISehHandlerBlock block)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] BeginFault(ISehHandlerBlock block)
+		public IEnumerable<IInstruction> EndFinally(ISehHandlerBlock block)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] EndFault(ISehHandlerBlock block)
+		public IEnumerable<IInstruction> BeginFault(ISehHandlerBlock block)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] Throw()
+		public IEnumerable<IInstruction> EndFault(ISehHandlerBlock block)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] Rethrow(ISehBlock block)
+		public IEnumerable<IInstruction> Throw()
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] ThrowTypeLoadException(string message)
+		public IEnumerable<IInstruction> Rethrow(ISehBlock block)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] Op(BinaryOperator op, IType left, IType right, IType result, bool checkOverflow)
+		public IEnumerable<IInstruction> ThrowTypeLoadException(string message)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] Op(UnaryOperator op, IType type, bool checkOverflow)
+		public IEnumerable<IInstruction> Op(BinaryOperator op, IType left, IType right, IType result, bool checkOverflow)
+		{
+			return NopArray;
+		}
+
+		public IEnumerable<IInstruction> Op(UnaryOperator op, IType type, bool checkOverflow)
 		{
 			return NopArray;
 		}
@@ -317,67 +318,67 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			return OpNop;
 		}
 
-		public IInstruction[] BeginCall(IMethod method)
+		public IEnumerable<IInstruction> BeginCall(IMethod method)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] EndCall(IMethod method)
+		public IEnumerable<IInstruction> EndCall(IMethod method)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadReceiver(IMethod method, bool newobj)
+		public IEnumerable<IInstruction> LoadReceiver(IMethod method, bool newobj)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] CallMethod(IType receiverType, IMethod method, CallFlags flags)
+		public IEnumerable<IInstruction> CallMethod(IType receiverType, IMethod method, CallFlags flags)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] InitObject(IType type)
+		public IEnumerable<IInstruction> InitObject(IType type)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] CopyValue(IType type)
+		public IEnumerable<IInstruction> CopyValue(IType type)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] LoadFunction(IMethod method)
+		public IEnumerable<IInstruction> LoadFunction(IMethod method)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] InvokeDelegate(IMethod method)
+		public IEnumerable<IInstruction> InvokeDelegate(IMethod method)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] As(IType type)
+		public IEnumerable<IInstruction> As(IType type)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] Cast(IType source, IType target, bool checkOverflow)
+		public IEnumerable<IInstruction> Cast(IType source, IType target, bool checkOverflow)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] BoxPrimitive(IType type)
+		public IEnumerable<IInstruction> BoxPrimitive(IType type)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] Box(IType type)
+		public IEnumerable<IInstruction> Box(IType type)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] Unbox(IType type)
+		public IEnumerable<IInstruction> Unbox(IType type)
 		{
 			return NopArray;
 		}
@@ -397,49 +398,49 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			return OpNop;
 		}
 
-		public IInstruction[] NewArray(IType elemType)
+		public IEnumerable<IInstruction> NewArray(IType elemType)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] SetArrayElem(IType elemType)
+		public IEnumerable<IInstruction> SetArrayElem(IType elemType)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] GetArrayElem(IType elemType)
+		public IEnumerable<IInstruction> GetArrayElem(IType elemType)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] GetArrayLength()
+		public IEnumerable<IInstruction> GetArrayLength()
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] DebuggerBreak()
+		public IEnumerable<IInstruction> DebuggerBreak()
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] DebugFile(string file)
+		public IEnumerable<IInstruction> DebugFile(string file)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] DebugLine(int line)
+		public IEnumerable<IInstruction> DebugLine(int line)
 		{
 			return NopArray;
 		}
 
 		public int DebugFirstLine { get; set; }
 
-		public IInstruction[] TypeOf(IType type)
+		public IEnumerable<IInstruction> TypeOf(IType type)
 		{
 			return NopArray;
 		}
 
-		public IInstruction[] SizeOf(IType type)
+		public IEnumerable<IInstruction> SizeOf(IType type)
 		{
 			return NopArray;
 		}
@@ -454,7 +455,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			return true;
 		}
 
-		public IInstruction[] CopyToThis(IType valueType)
+		public IEnumerable<IInstruction> CopyToThis(IType valueType)
 		{
 			return NopArray;
 		}

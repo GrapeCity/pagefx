@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private static readonly IInstruction[] EmptyCode = new IInstruction[0];
 
-        public IInstruction[] DeclareVariable(IVariable v)
+        public IEnumerable<IInstruction> DeclareVariable(IVariable v)
         {
             var type = v.Type;
             EnsureType(type);
@@ -54,7 +54,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     GetActivation(code);
                     code.InitObject(type);
                     code.SetSlot(slot);
-                    return code.ToArray();
+                    return code;
                 }
                 return EmptyCode;
             }
@@ -80,12 +80,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 	        return null;
         }
 
-		private IInstruction[] DeclateSystemTypeVar(IType type, IVariable var)
+		private IEnumerable<IInstruction> DeclateSystemTypeVar(IType type, IVariable var)
 		{
 			return DeclateSystemTypeVar(type, type.SystemType(), var);
 		}
 
-        private IInstruction[] DeclateSystemTypeVar(IType type, SystemType sysType, IVariable var)
+        private IEnumerable<IInstruction> DeclateSystemTypeVar(IType type, SystemType sysType, IVariable var)
         {
             if (sysType == null)
                 throw new ArgumentNullException("sysType");
@@ -144,77 +144,78 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
         }
 
-        private IInstruction[] SetValueType(IType type, IVariable var)
+        private IEnumerable<IInstruction> SetValueType(IType type, IVariable var)
         {
             var code = new AbcCode(_abc);
             code.InitObject(type);
             if (code.Count == 0)
                 throw new InvalidOperationException("Unable to InitObject");
             code.AddRange(StoreVariable(var));
-            return code.ToArray();
+            return code;
         }
 
-        private IInstruction[] SetFalse(IVariable var)
+        private IEnumerable<IInstruction> SetFalse(IVariable var)
         {
             var code = new AbcCode(_abc);
             code.PushBool(false);
             code.AddRange(StoreVariable(var));
-            return code.ToArray();
+            return code;
         }
 
-        private IInstruction[] SetIntZero(IVariable var)
+        private IEnumerable<IInstruction> SetIntZero(IVariable var)
         {
             var code = new AbcCode(_abc);
             code.PushInt(0);
             code.AddRange(StoreVariable(var));
-            return code.ToArray();
+            return code;
         }
 
-        private IInstruction[] SetUIntZero(IVariable var)
+        private IEnumerable<IInstruction> SetUIntZero(IVariable var)
         {
             var code = new AbcCode(_abc);
             code.PushUInt(0);
             code.AddRange(StoreVariable(var));
-            return code.ToArray();
+            return code;
         }
 
-        private IInstruction[] SetDoubleZero(IVariable var)
+        private IEnumerable<IInstruction> SetDoubleZero(IVariable var)
         {
             var code = new AbcCode(_abc);
             code.PushDouble(0);
             code.AddRange(StoreVariable(var));
-            return code.ToArray();
+            return code;
         }
 
-        private IInstruction[] SetNull(IType type, IVariable var)
+        private IEnumerable<IInstruction> SetNull(IType type, IVariable var)
         {
             EnsureType(type);
             var code = new AbcCode(_abc);
             code.PushNull();
             code.Coerce(type, true);
             code.AddRange(StoreVariable(var));
-            return code.ToArray();
+            return code;
         }
         #endregion
 
-	    public IInstruction[] LoadConstant(object value)
+	    public IEnumerable<IInstruction> LoadConstant(object value)
         {
             var code = new AbcCode(_abc);
             code.LoadConstant(value);
-            return code.ToArray();
+            return code;
         }
 
 	    #region LoadStaticInstance
-        /// <summary>
-        /// Pushes onto the stack static instance of the class to call static functions
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public IInstruction[] LoadStaticInstance(IType type)
+
+	    /// <summary>
+	    /// Pushes onto the stack static instance of the class to call static functions
+	    /// </summary>
+	    /// <param name="type"></param>
+	    /// <returns></returns>
+	    public IEnumerable<IInstruction> LoadStaticInstance(IType type)
         {
             var code = new AbcCode(_abc);
             LoadStaticInstance(code, type);
-            return code.ToArray();
+            return code;
         }
 
         private bool UseThisForStaticReceiver(IType type)
@@ -252,27 +253,27 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
 	    #endregion
 
-        private IInstruction[] LoadLocal(int index)
+        private IEnumerable<IInstruction> LoadLocal(int index)
         {
             var code = new AbcCode(_abc);
             code.GetLocal(index);
-            return code.ToArray();
+            return code;
         }
 
         #region LoadArgument, StoreArgument
-        int GetArgIndex(int index)
+        private int GetArgIndex(int index)
         {
             return HasPseudoThis ? index + 2 : index + 1;
         }
 
-        int GetArgIndex(IParameter p)
+        private int GetArgIndex(IParameter p)
         {
             int index = p.Index - 1;
             Debug.Assert(index >= 0);
             return GetArgIndex(index);
         }
 
-        public IInstruction[] LoadArgument(IParameter p)
+        public IEnumerable<IInstruction> LoadArgument(IParameter p)
         {
             if (p == null)
                 throw new ArgumentNullException("p");
@@ -282,7 +283,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return LoadLocal(GetArgIndex(p));
         }
 
-        public IInstruction[] StoreArgument(IParameter p)
+        public IEnumerable<IInstruction> StoreArgument(IParameter p)
         {
             if (p == null)
                 throw new ArgumentNullException("p");
@@ -304,12 +305,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #endregion
 
         #region LoadThis, LoadBase
-        int GetThisIndex()
+        private int GetThisIndex()
         {
             return HasPseudoThis ? 1 : 0;
         }
 
-        public IInstruction[] StoreThis()
+        public IEnumerable<IInstruction> StoreThis()
         {
             if (_thisPtr != null)
             {
@@ -318,7 +319,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return new[] { (IInstruction)Instruction.SetLocal(GetThisIndex()) };
         }
 
-        public IInstruction[] LoadThis()
+        public IEnumerable<IInstruction> LoadThis()
         {
             if (_thisPtr != null)
             {
@@ -327,7 +328,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return LoadLocal(GetThisIndex());
         }
 
-        public IInstruction[] LoadBase()
+        public IEnumerable<IInstruction> LoadBase()
         {
             if (_thisPtr != null)
             {
@@ -358,7 +359,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return GetVarIndex(index, true);
         }
 
-        public IInstruction[] LoadVariable(IVariable v)
+        public IEnumerable<IInstruction> LoadVariable(IVariable v)
         {
             var ptr = v.Data as VarPtr;
             if (ptr != null)
@@ -367,7 +368,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return LoadLocal(GetVarIndex(v.Index));
         }
 
-        public IInstruction[] StoreVariable(IVariable v)
+        public IEnumerable<IInstruction> StoreVariable(IVariable v)
         {
             if (v == null)
                 throw new ArgumentNullException("v");
@@ -412,18 +413,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         public bool LoadStaticFieldTarget = true;
 
-        public IInstruction[] LoadField(IField field)
+        public IEnumerable<IInstruction> LoadField(IField field)
         {
             var prop = GetFieldName(field);
+
             var code = new AbcCode(_abc);
+
             CallStaticCtor(code, field);
+
             if (LoadStaticFieldTarget && field.IsStatic)
                 LoadStaticInstance(code, field.DeclaringType);
+
             code.GetProperty(prop);
-            return code.ToArray();
+
+            return code;
         }
 
-        public IInstruction[] StoreField(IField field)
+        public IEnumerable<IInstruction> StoreField(IField field)
         {
             var code = new AbcCode(_abc);
             if (field.HasEmbedAttribute())
@@ -442,7 +448,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 }
                 code.SetProperty(prop);
             }
-            return code.ToArray();
+            return code;
         }
         #endregion
 
@@ -452,17 +458,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             get { return true; }
         }
 
-        /// <summary>
-        /// Saves value onto the stack in temporary variable (stack must not be changed)
-        /// </summary>
-        /// <param name="var"></param>
-        /// <param name="keepStackState">true to keep stack state</param>
-        /// <returns></returns>
-        public IInstruction[] SetTempVar(out int var, bool keepStackState)
+	    /// <summary>
+	    /// Saves value onto the stack in temporary variable (stack must not be changed)
+	    /// </summary>
+	    /// <param name="var"></param>
+	    /// <param name="keepStackState">true to keep stack state</param>
+	    /// <returns></returns>
+	    public IEnumerable<IInstruction> SetTempVar(out int var, bool keepStackState)
         {
             var code = new AbcCode(_abc);
             var = SetTempVar(code, keepStackState);
-            return code.ToArray();
+            return code;
         }
 
         private int SetTempVar(AbcCode code, bool keepStackState)
@@ -470,44 +476,47 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             //NOTE: we duplicate value onto the stack to keep stack unchanged after this operation
             if (keepStackState)
                 code.Add(InstructionCode.Dup);
+
             int var = NewTempVar(false);
+
             code.SetLocal(var);
+
             return var;
         }
 
-        /// <summary>
-        /// Loads value from temporary variable onto the stack
-        /// </summary>
-        /// <param name="var"></param>
-        /// <returns></returns>
-        public IInstruction[] GetTempVar(int var)
+	    /// <summary>
+	    /// Loads value from temporary variable onto the stack
+	    /// </summary>
+	    /// <param name="var"></param>
+	    /// <returns></returns>
+	    public IEnumerable<IInstruction> GetTempVar(int var)
         {
             if (var >= 0)
             {
                 var code = new AbcCode(_abc);
                 code.GetLocal(var);
-                return code.ToArray();
+                return code;
             }
             return null;
         }
 
-        /// <summary>
-        /// Free temporary variable
-        /// </summary>
-        /// <param name="var"></param>
-        /// <returns></returns>
-        public IInstruction[] KillTempVar(int var)
+	    /// <summary>
+	    /// Free temporary variable
+	    /// </summary>
+	    /// <param name="var"></param>
+	    /// <returns></returns>
+	    public IEnumerable<IInstruction> KillTempVar(int var)
         {
             if (var >= 0)
             {
                 var code = new AbcCode(_abc);
                 KillTempVar(code, var);
-                return code.ToArray();
+                return code;
             }
             return null;
         }
 
-        private void KillTempVar(AbcCode code, int var)
+        private void KillTempVar(ICollection<IInstruction> code, int var)
         {
             var instr = KillTempVarCore(var);
             if (instr != null)
