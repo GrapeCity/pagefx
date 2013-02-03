@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.CodeModel.Expressions;
 using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -48,13 +47,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { throw new NotSupportedException(); }
         }
 
-        public IExpression Initializer
-        {
-            get { return _field.Initializer; }
-            set { throw new NotSupportedException(); }
-        }
-
-        public IField ProxyOf
+	    public IField ProxyOf
         {
             get { return _field; }
         }

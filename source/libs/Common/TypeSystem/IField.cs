@@ -1,5 +1,4 @@
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.CodeModel.Expressions;
 using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -9,19 +8,18 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public interface IField : ITypeMember, IConstantProvider
     {
-        int Offset { get; set; }
+        int Offset { get; }
 
         /// <summary>
-        /// Gets or sets flag indicating whether the field is compile time constant.
+        /// Gets a flag indicating whether the field is compile time constant.
         /// </summary>
-        bool IsConstant { get; set; }
+        bool IsConstant { get; }
 
-        bool IsReadOnly { get; set; }
+        bool IsReadOnly { get; }
 
-        IExpression Initializer { get; set; }
+	    IField ProxyOf { get; }
 
-        IField ProxyOf { get; }
-
+		//TODO: move to runtime field data
 		int Slot { get; set; }
     }
 

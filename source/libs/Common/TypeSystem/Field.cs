@@ -1,5 +1,4 @@
 using System;
-using DataDynamics.PageFX.Common.CodeModel.Expressions;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -35,9 +34,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		    set { _value = value; }
 	    }
 
-    	public IExpression Initializer { get; set; }
-
-    	public bool IsConstant
+	    public bool IsConstant
         {
             get { return GetModifier(Modifiers.Const); }
             set { SetModifier(value, Modifiers.Const); }

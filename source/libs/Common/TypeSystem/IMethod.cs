@@ -31,8 +31,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    /// <param name="runtime"> </param>
 	    string GetSigName(Runtime runtime);
 
-	    #region Flags
-        /// <summary>
+	    /// <summary>
         /// Gets the flag specifying whether the method is entry point.
         /// </summary>
         bool IsEntryPoint { get; }
@@ -43,50 +42,46 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         bool IsConstructor { get; }
 
         /// <summary>
-        /// Gets or sets flag indicating the method implementation is forwarded through PInvoke (Platform Invocation Services).
+        /// Gets a flag indicating the method implementation is forwarded through PInvoke (Platform Invocation Services).
         /// </summary>
-        bool PInvoke { get; set; }
+        bool PInvoke { get; }
 
-	    #endregion
-
-        #region Impl Flags
-        /// <summary>
-        /// Gets or sets value indicating what kind of implementation is provided for this method.
+	    /// <summary>
+        /// Gets value indicating what kind of implementation is provided for this method.
         /// </summary>
-        MethodCodeType CodeType { get; set; }
+        MethodCodeType CodeType { get; }
 
         /// <summary>
-        /// Gets or sets flag indicating whether the method is managed.
+        /// Gets flag indicating whether the method is managed.
         /// </summary>
-        bool IsManaged { get; set; }
+        bool IsManaged { get; }
 
         /// <summary>
-        /// Gets or sets flag indicating that the method is declared, but its implementation is provided elsewhere.
+        /// Gets flag indicating that the method is declared, but its implementation is provided elsewhere.
         /// </summary>
-        bool IsForwardRef { get; set; }
+        bool IsForwardRef { get; }
 
         /// <summary>
-        /// Gets or sets flag indicating that the method signature is exported exactly as declared.
+        /// Gets flag indicating that the method signature is exported exactly as declared.
         /// </summary>
-        bool IsPreserveSig { get; set; }
+        bool IsPreserveSig { get; }
 
         /// <summary>
-        /// Gets or sets flag indicating that the method implemented within the common language runtime itself.
+        /// Gets flag indicating that the method implemented within the common language runtime itself.
         /// </summary>
-        bool IsInternalCall { get; set; }
+        bool IsInternalCall { get; }
 
         /// <summary>
-        /// Gets or sets flag indicating that the method can be executed by only one thread at a time.
+        /// Gets flag indicating that the method can be executed by only one thread at a time.
         /// </summary>
-        bool IsSynchronized { get; set; }
+        bool IsSynchronized { get; }
 
         /// <summary>
-        /// Gets or sets flag indicating that the method can not be inlined.
+        /// Gets flag indicating that the method can not be inlined.
         /// </summary>
-        bool NoInlining { get; set; }
-        #endregion
+        bool NoInlining { get; }
 
-        IGenericParameterCollection GenericParameters { get; }
+	    IGenericParameterCollection GenericParameters { get; }
 
         IType[] GenericArguments { get; }
 
