@@ -589,25 +589,51 @@ namespace DataDynamics.PageFX.FlashLand.Swc
 
 				if (trait.Kind == AbcTraitKind.Class && trait.Embed == null)
 				{
-					var traitInstance = trait.Class.Instance;
-					var superName = traitInstance.BaseTypeName.FullName;
-					if (superName.EndsWith("Asset"))
-					{
-						string className = traitInstance.FullName;
-						var asset = lib.FindAsset(className);
-						if (asset == null)
-						{
-							CompilerReport.Add(Warnings.UnableFindSwfAsset, className);
-							continue;
-						}
-
-						Embed.Apply(trait, asset, lib);
-					}
+					ResolveEmbed(lib, trait.Class.Instance, trait);
 				}
             }
         }
 
-    	private void ProcessMeta(SwfMovie lib, AbcTrait trait, AbcMetaEntry e)
+	    private static void ResolveEmbed(SwfMovie lib, AbcInstance instance, AbcTrait trait)
+	    {
+			if (instance.IsInterface) return;
+
+		    var superName = instance.BaseTypeName.FullName;
+		    if (!superName.EndsWith("Asset") || IsAssetClass(instance)) return;
+
+			string className = instance.FullName;
+		    var asset = lib.FindAsset(className);
+		    if (asset == null)
+		    {
+			    CompilerReport.Add(Warnings.UnableFindSwfAsset, className);
+			    return;
+		    }
+
+		    Embed.Apply(trait, asset, lib);
+	    }
+
+		//TODO: move this to external file
+		private static readonly HashSet<string> AssetClasses = new HashSet<string>(
+			new[]
+				{
+					"mx.core.BitmapAsset",
+					"mx.core.ButtonAsset",
+					"mx.core.ByteArrayAsset",
+					"mx.core.FontAsset",
+					"mx.core.MovieClipAsset",
+					"mx.core.MovieClipLoaderAsset",
+					"mx.core.SoundAsset",
+					"mx.core.SpriteAsset",
+					"mx.core.TextFieldAsset",
+					"mx.skins.halo.DefaultDragImage"
+				});
+
+	    private static bool IsAssetClass(AbcInstance instance)
+	    {
+		    return AssetClasses.Contains(instance.FullName);
+	    }
+
+	    private void ProcessMeta(SwfMovie lib, AbcTrait trait, AbcMetaEntry e)
         {
             string name = e.NameString;
             if (name == MetadataTags.Embed)
