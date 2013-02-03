@@ -48,7 +48,7 @@ namespace DataDynamics.PageFX.Core.Translation
 				bb.TranslatedExitIndex = output.Count - 1;
 			}
 
-			var end = provider.End();
+			var end = (provider.End() ?? Enumerable.Empty<IInstruction>()).ToArray();
 			output.Emit(end);
 
 #if DEBUG

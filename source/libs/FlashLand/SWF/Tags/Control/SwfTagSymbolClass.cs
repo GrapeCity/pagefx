@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
     /// The SymbolClass tag creates associations between symbols in the SWF file and ActionScript 3.0 classes.
     /// </summary>
     [SwfTag(SwfTagCode.SymbolClass)]
-    public sealed class SwfTagSymbolClass : SwfTag
+    public sealed class SwfTagSymbolClass : SwfTag, ISwfAssetContainer
     {
 	    public SwfTagSymbolClass()
         {
@@ -39,7 +39,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
         }
         private readonly SwfAssetCollection _symbols = new SwfAssetCollection();
 
-        public void AddSymbol(ushort id, string name)
+	    SwfAssetCollection ISwfAssetContainer.Assets
+	    {
+		    get { return Symbols; }
+	    }
+
+	    public void AddSymbol(ushort id, string name)
         {
         	Symbols.Add(new SwfAsset(id, name)
         	            	{
@@ -48,7 +53,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
         	            	});
         }
 
-        public void AddSymbol(ISwfCharacter obj, string name)
+	    public void AddSymbol(ISwfCharacter obj, string name)
         {
         	Symbols.Add(new SwfAsset(obj, name)
         	            	{
@@ -62,12 +67,12 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
             get { return SwfTagCode.SymbolClass; }
         }
 
-        public override void ReadTagData(SwfReader reader)
+	    public override void ReadTagData(SwfReader reader)
         {
             _symbols.Read(reader, SwfAssetFlags.Symbol);
         }
 
-        public override void WriteTagData(SwfWriter writer)
+	    public override void WriteTagData(SwfWriter writer)
         {
             _symbols.Write(writer);
         }

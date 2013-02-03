@@ -210,4 +210,10 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="flash.v10.2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>c:\pfx\framework\flash.v10.2.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

@@ -6,26 +6,35 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
     /// Represents SWF sprite.
     /// </summary>
     [SwfTag(SwfTagCode.DefineSprite)]
-    public class SwfSprite : SwfCharacter
+    public sealed class SwfSprite : SwfCharacter
     {
-        /// <summary>
-        /// Gets or sets number of frames in sprite
-        /// </summary>
-        public int FrameCount
-        {
-            get { return _frameCount; }
-            set { _frameCount = value; }
-        }
-        private int _frameCount;
+		public override SwfMovie Swf
+		{
+			get
+			{
+				return base.Swf;
+			}
+			set
+			{
+				base.Swf = value;
 
-        /// <summary>
+				_tags.Swf = value;
+			}
+		}
+
+	    /// <summary>
+	    /// Gets or sets number of frames in sprite
+	    /// </summary>
+	    public int FrameCount { get; set; }
+
+	    /// <summary>
         /// Gets the list of tags contained in this sprite.
         /// </summary>
         public SwfTagList Tags
         {
             get { return _tags; }
         }
-        private readonly SwfTagList _tags = new SwfTagList();
+        private readonly SwfTagList _tags = new SwfTagList(null);
 
         public override SwfTagCode TagCode
         {
@@ -34,27 +43,27 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 
         protected override void ReadBody(SwfReader reader)
         {
-            _frameCount = reader.ReadUInt16();
+            FrameCount = reader.ReadUInt16();
             _tags.Read(reader);
         }
 
         protected override void WriteBody(SwfWriter writer)
         {
-            writer.WriteUInt16((ushort)_frameCount);
+            writer.WriteUInt16((ushort)FrameCount);
             _tags.Write(writer);
         }
 
         public override void DumpBody(XmlWriter writer)
         {
             base.DumpBody(writer);
-            writer.WriteElementString("frame-count", _frameCount.ToString());
+            writer.WriteElementString("frame-count", FrameCount.ToString());
             _tags.DumpXml(writer);
         }
 
         public override void DumpShortBody(XmlWriter writer)
         {
             base.DumpShortBody(writer);
-            writer.WriteElementString("frame-count", _frameCount.ToString());
+            writer.WriteElementString("frame-count", FrameCount.ToString());
         }
 
         public override void ImportDependencies(SwfMovie from, SwfMovie to)

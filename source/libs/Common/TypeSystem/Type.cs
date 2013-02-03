@@ -66,6 +66,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { SetModifier(value, Modifiers.Sealed); }
         }
 
+		public bool IsPartial
+		{
+			get { return GetModifier(Modifiers.Partial); }
+			set { SetModifier(value, Modifiers.Partial); }
+		}
+
         /// <summary>
         /// Returns true if CLR must initialize the class before first static field access.
         /// </summary>

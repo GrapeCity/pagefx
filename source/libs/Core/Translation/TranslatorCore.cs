@@ -382,7 +382,7 @@ namespace DataDynamics.PageFX.Core.Translation
 	                context.Emit(c);
                 }
 
-                code = context.Provider.BoxPrimitive(type);
+                code = (context.Provider.BoxPrimitive(type) ?? Enumerable.Empty<IInstruction>()).ToArray();
 	            return;
             }
             if (ptr != null)
@@ -540,17 +540,16 @@ namespace DataDynamics.PageFX.Core.Translation
 
 	    private static void BeginCall(TranslationContext context, CallInstructionInfo call)
         {
-            var code = context.Provider.LoadReceiver(call.Method, call.IsNewobj);
+            var code = (context.Provider.LoadReceiver(call.Method, call.IsNewobj) ?? Enumerable.Empty<IInstruction>()).ToArray();
 
             bool canSwap = false;
-            if (code != null && code.Length > 0)
+			if (code.Length > 0)
             {
                 canSwap = true;
-	            context.Emit(code);
+				context.Emit(code);
             }
 
-            code = context.Provider.BeginCall(call.Method);
-			context.Emit(code);
+			context.Emit(context.Provider.BeginCall(call.Method));
 
 			if (canSwap && call.SwapAfter)
 			{

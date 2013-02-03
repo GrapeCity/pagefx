@@ -1,12 +1,13 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.FlashLand.Abc;
 
 namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
     /// <summary>
     /// Tag for types with global ABC functions.
     /// </summary>
-    internal sealed class GlobalFunctionsContainer : ISpecialType
+    internal sealed class GlobalFunctionsContainer : ITypeData, ISpecialType
     {
         public GlobalFunctionsContainer(IType type)
         {
@@ -17,7 +18,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 
     	public IType Type { get; private set; }
 
-    	public override string ToString()
+	    public AbcMultiname Name
+	    {
+			get { return null; }
+	    }
+
+	    public bool IsDefined(AbcFile abc)
+	    {
+		    return true;
+	    }
+
+	    public ITypeData Import(AbcFile abc)
+	    {
+		    return this;
+	    }
+
+	    public override string ToString()
         {
             return Type.ToString();
         }

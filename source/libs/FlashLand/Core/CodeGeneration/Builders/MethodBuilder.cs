@@ -164,6 +164,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             var tag = method.Data;
             if (tag == null) return null;
+	        if (tag is InlineCall) return tag;
+
             var m = tag as AbcMethod;
             if (m != null)
             {
@@ -171,14 +173,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 BuildOverrideMethods(method, tag as AbcMethod);
                 return tag;
             }
+
             throw new InvalidOperationException();
         }
         #endregion
 
 		#region Build
 		private object IsDefined(IMethod method)
-        {
-            if (Abc.IsDefined(method))
+		{
+			if (method.Data is InlineCall || Abc.IsDefined(method))
             {
                 return method.Data;
             }
@@ -206,16 +209,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             if (method == null) return null;
 
-			if (method.IsGeneric)
-                throw new InvalidOperationException();
-
-            var tag = IsDefined(method);
-            if (tag != null) return tag;
+	        if (method.IsGeneric)
+	        {
+		        throw new InvalidOperationException("Call of generic method.");
+	        }
 
 			var type = method.DeclaringType;
-			_generator.TypeBuilder.Build(type);
+			EnsureType(type);
 
-            tag = IsDefined(method);
+			var tag = IsDefined(method);
             if (tag != null) return tag;
 
 			_generator.CheckApiCompatibility(method);
@@ -229,9 +231,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             BuildBaseMethods(method);
 
             //Define method signature types.
-			_generator.TypeBuilder.Build(method.Type);
+			EnsureType(method.Type);
             foreach (var p in method.Parameters)
-				_generator.TypeBuilder.Build(p.Type);
+				EnsureType(p.Type);
 
             tag = IsDefined(method);
             if (tag != null) return tag;
@@ -248,6 +250,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 #endif
             return abcMethod;
         }
+
+		private void EnsureType(IType type)
+		{
+			_generator.TypeBuilder.Build(type);
+		}
+
         #endregion
 
 		#region BuildCore
@@ -266,7 +274,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             var declType = method.DeclaringType;
             var instance = declType.AbcInstance();
             if (instance == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("No instance context for method declaration.");
 
 			bool isMxAppCtor = false;
 			if (AbcGenConfig.FlexAppCtorAsHandler)
@@ -633,7 +641,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (abcMethod == null)
                 throw new ArgumentNullException();
 
-            var method = abcMethod.SourceMethod;
+            var method = abcMethod.Method;
             if (method == null) return;
             if (method.Body == null) return;
 

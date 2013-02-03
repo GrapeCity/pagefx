@@ -35,6 +35,8 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using Native;
 
 namespace System
 {
@@ -96,12 +98,7 @@ namespace System
             return IsDaylightSavingTime(time, null);
         }
 
-#if NOT_PFX
-        public
-#else
-        internal 
-#endif
-        static bool IsDaylightSavingTime(DateTime time, DaylightTime daylightTimes)
+	    internal static bool IsDaylightSavingTime(DateTime time, DaylightTime daylightTimes)
         {
             // Another timezone hack. We determine if it daylightsavings time by
             // getting timezone offset for the specified time and for a known 
@@ -110,22 +107,12 @@ namespace System
 
             int noDLS, now;
 
-            Avm.Date dt = new Avm.Date();
-            dt.fullYear = time.Year; // Enter a known standard time
-            dt.month = 1;
-            dt.setDate(1);
-            dt.hours = 12;
-            dt.minutes = 0;
-            dt.seconds = 0;
-            dt.milliseconds = 0;
-            noDLS = dt.timezoneOffset;
+			// Enter a known standard time
+			Date date = new Date(time.Year, 1, 1, 12, 0, 0, 0);
+            noDLS = date.timezoneOffset;
 
-            dt.month = time.Month;
-            dt.setDate(time.Day);
-            dt.hours = time.Hour;
-            dt.minutes = time.Minute;
-            dt.milliseconds = time.Millisecond;
-            now = dt.timezoneOffset;
+			date = new Date(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second, time.Millisecond);
+            now = date.timezoneOffset;
 
             return (now != noDLS); // If they differ it's DSL
         }
@@ -242,7 +229,7 @@ namespace System
         // Constructor
         internal CurrentTimeZone()
         {
-            Avm.Date dt = new Avm.Date();
+            Date dt = new Date();
 
             // How to get daylight savings info: Flash hides daylight savings details
             // from the user so we create two dates one in winter (standard time) and 

@@ -25,33 +25,37 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 	    }
 
 	    //Entry point to resolve spec runtime calls
-        public object Resolve(IMethod method)
+        public IMethodCall Resolve(IMethod method)
         {
             var type = method.DeclaringType;
-            var tag = type.Data;
-            var avmType = tag as InternalType;
-            if (avmType != null)
+
+	        IMethodCall call;
+
+            var internalType = type.Data as InternalType;
+            if (internalType != null)
             {
                 Debug.Assert(method.IsInternalCall);
-                tag = Resolve(method, null);
-                if (tag == null)
+
+                call = Resolve(method, null);
+                if (call == null)
                     throw new InvalidOperationException();
-                return _generator.SetData(method, tag);
+
+                return SetData(method, call);
             }
 
-            tag = InlineCodeGenerator.Build(Abc, null, method);
-            if (tag != null)
+			var instance = type.AbcInstance();
+			var inlineCall = InlineCodeGenerator.Build(Abc, instance, method);
+			if (inlineCall != null)
             {
-				return _generator.SetData(method, tag);
+				return SetData(method, inlineCall);
             }
 
-            var instance = type.AbcInstance();
             if (instance != null)
             {
-                tag = Resolve(method, instance);
-                if (tag != null)
+                call = Resolve(method, instance);
+                if (call != null)
                 {
-					return _generator.SetData(method, tag);
+					return SetData(method, call);
                 }
             }
 
@@ -63,24 +67,38 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return null;
         }
 
-        private object Resolve(IMethod method, AbcInstance instance)
+		private IMethodCall SetData(IMethod method, IMethodCall call)
+		{
+			return _generator.SetData(method, call) as IMethodCall;
+		}
+
+        private IMethodCall Resolve(IMethod method, AbcInstance instance)
         {
-            object tag = InlineCodeGenerator.Build(Abc, instance, method);
-            if (tag != null) return tag;
+            var inlineCall = InlineCodeGenerator.Build(Abc, instance, method);
+			if (inlineCall != null)
+			{
+				return inlineCall;
+			}
 
-            if (method.CodeType == MethodCodeType.Native)
-                return ThrowOrDefineNotImplCall(method, instance);
+	        if (method.CodeType == MethodCodeType.Native)
+	        {
+		        return ThrowOrDefineNotImplCall(method, instance);
+	        }
 
-            if (method.IsInternalCall)
-                return ResolveInternalCall(method, instance);
+	        if (method.IsInternalCall)
+	        {
+		        return ResolveInternalCall(method, instance);
+	        }
 
-            if (method.CodeType == MethodCodeType.Runtime)
-                return ResolveRuntimeCode(method, instance);
+	        if (method.CodeType == MethodCodeType.Runtime)
+	        {
+		        return ResolveRuntimeCode(method, instance);
+	        }
 
-            return null;
+	        return null;
         }
 
-        private object ResolveRuntimeCode(IMethod method, AbcInstance instance)
+        private AbcMethod ResolveRuntimeCode(IMethod method, AbcInstance instance)
         {
             var type = method.DeclaringType;
             if (type.TypeKind == TypeKind.Delegate)
@@ -90,11 +108,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return ThrowOrDefineNotImplCall(method, instance);
         }
 
-        private object ResolveInternalCall(IMethod method, AbcInstance instance)
+        private IMethodCall ResolveInternalCall(IMethod method, AbcInstance instance)
         {
-            var code = InlineCodeGenerator.Build(Abc, instance, method);
-            if (code != null) return code;
-
             //special methods
             var m = ResolveSpecCall(method, instance);
             if (m != null) return m;
@@ -134,6 +149,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 			return _generator.ArrayImpl.BuildSpecMethod(method, instance);
         }
+
+		//TODO: revise MethodDefiners, allow to define methods that will be finished on ABC flushing phase
 
 	    private delegate AbcMethod MethodDefiner(IMethod method, AbcInstance instance);
 

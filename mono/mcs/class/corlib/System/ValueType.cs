@@ -37,6 +37,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Native;
 
 namespace System
 {
@@ -65,8 +66,8 @@ namespace System
             Type type2 = o2.GetType();
             if (type1 != type2) return false;
 
-            Avm.Array vals1 = type1.GetFieldValues(o1);
-            Avm.Array vals2 = type2.GetFieldValues(o2);
+			NativeArray vals1 = type1.GetFieldValues(o1);
+			NativeArray vals2 = type2.GetFieldValues(o2);
             if (vals1 == null) return vals2 == null;
             if (vals2 == null) return false;
 
@@ -80,7 +81,7 @@ namespace System
             return true;
         }
 
-        internal Avm.Array GetFieldValues()
+        internal NativeArray GetFieldValues()
         {
             return GetType().GetFieldValues(this);
         }
@@ -101,7 +102,7 @@ namespace System
         public override int GetHashCode()
         {
             int h = 0;
-            Avm.Array vals = GetFieldValues();
+			NativeArray vals = GetFieldValues();
             if (vals != null)
             {
                 uint n = vals.length;

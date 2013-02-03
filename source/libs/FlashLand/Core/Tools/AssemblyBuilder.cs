@@ -13,6 +13,7 @@ using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.Swc;
 using DataDynamics.PageFX.FlashLand.Swf;
@@ -41,17 +42,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private List<string> _references = new List<string>();
 		private readonly List<IAssembly> _refs = new List<IAssembly>();
-		private List<AbcFile> _abcFiles = new List<AbcFile>();
 		private readonly IAssembly _assembly;
 		private IAssembly _corlib;
+		private TypeFactory _typeFactory;
+
+		private List<AbcFile> _abcFiles = new List<AbcFile>();
+		private SwcFile _swc;
+	    private AbcCache _abcCache;
+
 		private XmlDocument _doc;
 		private bool _xdoc;
 		private CommandLine _cl;
 		private bool _useFPAttrs;
 		private float _fpVersion;
-		private SwcFile _swc;
-		private TypeFactory _typeFactory;
-
+		
 	    public AssemblyBuilder(CommandLine cl)
         {
             if (cl != null)
@@ -70,10 +74,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private TypeFactory ResolveTypeFactory()
 	    {
-		    if (_refs.Count > 0)
-			    return _refs[0].TypeFactory;
-			return new TypeFactory();
+		    return _refs.Count > 0 ? _refs[0].TypeFactory : new TypeFactory();
 	    }
+
+	    private SystemTypes SystemTypes
+		{
+			get { return _corlib != null ? _corlib.SystemTypes : _assembly.SystemTypes; }
+		}
 
 	    private static Stream Unzip(string path)
         {
@@ -122,11 +129,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 LoadFP9();
             }
         }
-
-	    private SystemTypes SystemTypes
-	    {
-			get { return _corlib != null ? _corlib.SystemTypes : _assembly.SystemTypes; }
-	    }
 
 	    #region LoadDocFile
         private bool LoadDocFile(string docpath)
@@ -359,7 +361,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 }
             }
             //auto detection of corlib dependency
-            if (!IsCoreApi && !HasCorlibRef)
+            if (!HasCorlibRef)
             {
                 string corlib = GlobalSettings.GetCorlibPath(true);
                 //string dir = Path.GetDirectoryName(path);
@@ -374,36 +376,50 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         private void LoadReference(string refPath)
         {
             var assembly = LanguageInfrastructure.CLI.Deserialize(refPath, null);
-            if (!Linker.Run(assembly))
-                throw new InvalidOperationException();
+	        Linker.Run(assembly);
+
             _refs.Add(assembly);
+
 			if (assembly.IsCorlib)
 			{
 				_corlib = assembly;
 			}
+
+			// load types to link them
+	        var count = assembly.Types.Count();
         }
         #endregion
 
         #region Entry Points
         public IAssembly FromFile(string path)
         {
-            var abc = new AbcFile(path);
-            _abcFiles.Add(abc);
-            ResolveRefs(path);
-            _assembly.Location = path;
-            _assembly.Name = Path.GetFileName(path);
-            BuildCore();
-            return _assembly;
+			var abc = new AbcFile(path);
+	        return FromAbcFile(abc, path);
         }
 
         public IAssembly FromStream(Stream input)
         {
             var abc = new AbcFile(input);
-            _abcFiles.Add(abc);
-            ResolveRefs(null);
-            BuildCore();
-            return _assembly;
+	        return FromAbcFile(abc, null);
         }
+
+		private IAssembly FromAbcFile(AbcFile abc, string path)
+		{
+			_abcFiles.Add(abc);
+			_abcCache = new AbcCache();
+			_abcCache.Add(abc);
+
+			if (!string.IsNullOrEmpty(path))
+			{
+				_assembly.Location = path;
+				_assembly.Name = Path.GetFileName(path);
+			}
+
+			ResolveRefs(path);
+			BuildCore();
+
+			return _assembly;
+		}
 
         public IAssembly FromSwc(string path)
         {
@@ -411,18 +427,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             _assembly.Name = Path.GetFileName(path);
 
         	_swc = new SwcFile(path) {AddNsRefs = true};
-
-        	foreach (var abc in _swc.GetAbcFiles())
-				_abcFiles.Add(abc);
-
+			_abcFiles = _swc.GetAbcFiles();
+	        _abcCache = _swc.AbcCache;
+        	
             ResolveRefs(path);
 
             _swc.ResolveDependencies(this, null);
 
             BuildCore();
-
-            //var abl = AblFile.FromSwc(swc);
-            //abl.Save(Path.ChangeExtension(path, ".abl"));
 
             BuildSwcDeps(path);
 
@@ -468,7 +480,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         	           	{
         	           		Namespace = ns,
         	           		Name = name,
-        	           		Visibility = Visibility.Public
+        	           		Visibility = Visibility.Public,
+							IsPartial = true
         	           	};
 
         	type.Data = new GlobalFunctionsContainer(type);
@@ -555,17 +568,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return null;
         }
 
-        private static AbcInstance FindInstance(AbcFile abc, AbcMultiname name)
-        {
-            return abc.FindInstance(instance => Equals(instance.Name, name));
-        }
-
-    	private AbcInstance FindInstance(AbcMultiname name)
-    	{
-    		return _abcFiles.Select(abc => FindInstance(abc, name)).FirstOrDefault(instance => instance != null);
-    	}
-
-		private AbcInstance FindVector(string type)
+	    private AbcInstance FindVector(string type)
         {
             string vtype = "Vector$" + type;
     		return _abcFiles.SelectMany(abc => abc.Instances)
@@ -584,13 +587,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private IType BuildTypeByName(AbcMultiname name)
         {
-            if (IsAnyType(name))
-                return SystemTypes.Object;
+	        if (IsAnyType(name))
+	        {
+		        return SystemTypes.Object;
+	        }
 
-            if (IsVoid(name))
-                return SystemTypes.Void;
+	        if (IsVoid(name))
+	        {
+		        return SystemTypes.Void;
+	        }
 
-            if (name.IsParameterizedType)
+	        if (name.IsParameterizedType)
             {
                 if (IsVector(name.Type))
                 {
@@ -601,25 +608,31 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 return BuildTypeByName(name.Type);
             }
 
-            var instance = FindInstance(name);
-            if (instance != null)
-                return BuildType(instance);
+            var instance = _abcCache.Instances.Find(name);
+	        if (instance != null)
+	        {
+		        return BuildType(instance);
+	        }
 
-            if (_refs != null)
+	        if (_refs != null)
             {
                 foreach (var asm in _refs)
                 {
-                    var abc = asm.CustomData().ABC;
+					var abc = asm.CustomData().Abc;
                     if (abc != null)
                     {
-                        instance = FindInstance(abc, name);
-                        if (instance != null)
-                            return BuildType(instance);
+	                    instance = abc.FindInstance(name);
+	                    if (instance != null)
+	                    {
+		                    return BuildType(instance);
+	                    }
                     }
 
-                    var type = AssemblyIndex.FindType(asm, name);
-                    if (type != null)
-                        return type;
+					var type = AssemblyIndex.FindType(asm, name);
+					if (type != null)
+					{
+						return type;
+					}
                 }
             }
 
@@ -628,34 +641,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         private IType BuildTypeByName(string fullname)
         {
-            if (_swc != null)
-            {
-                var instance = _swc.AbcCache.Instances.Find(fullname);
-                if (instance != null)
-                    return BuildType(instance);
-            }
-            else
-            {
-                foreach (var abc in _abcFiles)
-                {
-                    foreach (var instance in abc.Instances)
-                    {
-                        if (instance.FullName == fullname)
-                            return BuildType(instance);
-                    }
-                }
-            }
+			var instance = _abcCache.Instances.Find(fullname);
+	        if (instance != null)
+	        {
+		        return BuildType(instance);
+	        }
 
-            bool isObj = fullname == "Object";
-
-            foreach (var asm in _refs)
+	        bool isCoreType = CoreTypes.Contains(fullname);
+			foreach (var assembly in _refs)
             {
-                Linker.Run(asm);
-                foreach (var type in asm.Types)
+                Linker.Run(assembly);
+
+                foreach (var type in assembly.Types)
                 {
-                    if (isObj && type.FullName == "Avm.Object")
-                        return type;
-                    if (type.FullName == fullname)
+					if (type.FullName == fullname)
+						return type;
+					if (isCoreType && type.Namespace == CoreTypes.CorlibNamespace && type.Name == fullname)
                         return type;
                 }
             }
@@ -707,14 +708,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         {
             if (_genericVector != null) return _genericVector;
 
-            string src = GetType().GetTextResource("Resources.Vector.cs");
-
-            var type = new GenericType
-                           {
-                               Namespace = "Avm",
-                               Name = "Vector",
-                               SourceCode = src
-                           };
+	        var type = new GenericType
+		        {
+			        Namespace = "Avm",
+			        Name = "Vector"
+		        };
 
             var T = new GenericParameter
                         {
@@ -726,10 +724,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             _genericVector = type;
 
-			if (IsCoreApi)
-			{
-				RegisterType(type);
-			}
+//			if (IsCoreApi)
+//			{
+//				RegisterType(type);
+//			}
 
         	return _genericVector;
         }
@@ -806,6 +804,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             bool isInterface = instance.IsInterface;
             type.TypeKind = isInterface ? TypeKind.Interface : TypeKind.Class;
 
+			if (!isInterface)
+			{
+				type.IsPartial = true;
+			}
+
             string ns = instance.NamespaceString;
             if (string.IsNullOrEmpty(ns))
                 ns = SetNamespacePrefix(ns, NsPrefix);
@@ -866,8 +869,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             type.IsAbstract = isAbstract;
 
             BuildEvents(type, instance);
-
-            DefineCustomMembers(type, instance);
 
             RegisterType(type);
             
@@ -1084,42 +1085,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
         #endregion
 
-        #region CustomMembers
-		private static Hashtable _customMembers;
-
-		private static void LoadCustomMembers()
-        {
-            if (_customMembers != null) return;
-            _customMembers = new Hashtable();
-
-            var asm = typeof(AssemblyBuilder).Assembly;
-            foreach (var resName in asm.GetManifestResourceNames())
-            {
-                int i = resName.IndexOf("API", 0, StringComparison.InvariantCultureIgnoreCase);
-                if (i >= 0)
-                {
-                    var rs = asm.GetManifestResourceStream(resName);
-                    string name = resName.Substring(i + 4).Trim().TrimFileExtension();
-                    string text = rs.ReadAllText();
-                    _customMembers[name] = text;
-                }
-            }
-        }
-
-		private static void DefineCustomMembers(IType type, AbcInstance instance)
-        {
-            LoadCustomMembers();
-
-            string fname = instance.FullName;
-            string text = (string)_customMembers[fname];
-            if (text != null)
-            {
-                type.CustomMembers = text;
-            }
-        }
-        #endregion
-
-        #region BuildMembers
+	    #region BuildMembers
 		private void BuildFields(IType type, IEnumerable<AbcTrait> traits)
         {
             foreach (var trait in traits)
@@ -1348,27 +1314,27 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             //}
         }
 
-        static bool IsFunctionCall(AbcMethod method)
+		private static bool IsFunctionCall(AbcMethod method)
         {
             return method.FullName == "Function.call";
         }
 
-        static bool IsFunctionApply(AbcMethod method)
+		private static bool IsFunctionApply(AbcMethod method)
         {
             return method.FullName == "Function.apply";
         }
 
-        static bool HasThisObjectArgument(AbcMethod method)
+		private static bool HasThisObjectArgument(AbcMethod method)
         {
             return IsFunctionCall(method) || IsFunctionApply(method);
         }
 
-        static bool IsExternalInterfaceCall(AbcMethod method)
+		private static bool IsExternalInterfaceCall(AbcMethod method)
         {
             return method.FullName == "flash.external.ExternalInterface.call";
         }
 
-        Parameter BuildParam(AbcMethod method, int i, IEnumerable<ParamFix> fix, XmlNode methodElem)
+        private Parameter BuildParam(AbcMethod method, int i, IEnumerable<ParamFix> fix, XmlNode methodElem)
         {
             var pe = GetParamElement(methodElem, i);
 
@@ -1621,7 +1587,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 			}
 		}
 
-        void BuildMethod(IType declType, AbcTrait trait)
+        private void BuildMethod(IType declType, AbcTrait trait)
         {
             var abcMethod = trait.Method;
 
@@ -1652,7 +1618,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             if (trait.IsAccessor)
             {
-                BuildProperty(method, trait, summary);
+                BuildProperty(declType, method, trait, summary);
                 AddMethod(declType, method);
             }
             else
@@ -1665,7 +1631,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
 
         #region BuildOverloads
-        void BuildOverloads(IType declType, IMethod method, AbcMethod abcMethod)
+        private void BuildOverloads(IType declType, IMethod method, AbcMethod abcMethod)
         {
             if (declType.IsInterface)
             {
@@ -1724,33 +1690,28 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
         #endregion
 
-        #region BuildProperty
-        static string GetAccessorPrefix(bool getter)
-        {
-            return getter ? "get_" : "set_";
-        }
-
-        static void BuildProperty(IMethod method, AbcTrait trait, string summary)
+	    private static void BuildProperty(IType declType, IMethod method, AbcTrait trait, string summary)
         {
             string name = method.Name;
-            method.Name = GetAccessorPrefix(trait.IsGetter) + name;
+            method.Name = (trait.IsGetter ? "get_" : "set_") + name;
             var prop = FindProperty(trait.Owner.Traits, trait.Name.NameString);
             if (prop == null)
             {
                 prop = new Property
                            {
                                Documentation = summary,
-                               Name = name
+                               Name = name,
+							   DeclaringType = declType
                            };
                 trait.Property = prop;
+				declType.Properties.Add(prop);
             }
             if (trait.IsGetter) prop.Getter = method;
             else prop.Setter = method;
             prop.ResolveTypeAndParameters();
         }
-        #endregion
 
-        private Parameter CreateRestParam(AbcMethod m, int paramNum, int i)
+	    private Parameter CreateRestParam(AbcMethod m, int paramNum, int i)
         {
             string vparam = GetVectorTypeParam(m);
             if (vparam != null)
@@ -1768,7 +1729,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
     	private const int MaxRestCount = 10;
 
-    	static bool UseArg(AbcMethod m)
+    	private static bool UseArg(AbcMethod m)
         {
             if (IsFunctionCall(m)) return true;
             if (IsFunctionApply(m)) return true;
@@ -1776,13 +1737,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return false;
         }
 
-        static string GetRestPrefix(AbcMethod m)
+		private static string GetRestPrefix(AbcMethod m)
         {
             if (UseArg(m)) return "arg";
             return "rest";
         }
 
-        static Method CopyMethod(IMethod m, int paramNum)
+		private static Method CopyMethod(IMethod m, int paramNum)
         {
             var method = new Method
                              {
@@ -1818,7 +1779,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return method;
         }
 
-        static Method CreateOverload(IMethod m, int paramNum)
+		private static Method CreateOverload(IMethod m, int paramNum)
         {
             var m2 = CopyMethod(m, paramNum);
             m2.IsVirtual = false;
@@ -1851,7 +1812,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return BuildMemberType(m.ReturnType);
         }
 
-        static IProperty FindProperty(IEnumerable<AbcTrait> traits, string name)
+		private static IProperty FindProperty(IEnumerable<AbcTrait> traits, string name)
         {
             if (traits == null) return null;
             //can be two traits (getter and setter) with the same property
@@ -2256,10 +2217,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 		private string GetTypeName(AbcTrait trait)
         {
-            if (_xdoc)
-                return GetTypeName(trait.Instance);
+			if (_xdoc)
+			{
+				return GetTypeName(trait.Instance);
+			}
 
-            string typename = trait.OwnerFullName;
+			string typename = trait.OwnerFullName;
             if (!string.IsNullOrEmpty(typename))
                 return typename;
 

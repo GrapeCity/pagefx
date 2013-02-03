@@ -359,7 +359,7 @@ namespace DataDynamics.PageFX.FlashLand.Swc
                     var instance = type.AbcInstance();
                     if (instance != null)
                     {
-                        if (instance.Swc == lib.SWC)
+                        if (instance.Swc == lib.Swc)
                         {
                             int libIndex = instance.Abc.Swf.Index;
                             int abcIndex = instance.Abc.Index;

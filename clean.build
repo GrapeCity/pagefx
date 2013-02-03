@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="Common NAnt Targets" default="msbuild.all">
+
+  <!-- 
+  =================================================================================================================
+      clean: Deletes intermediate files from specified directory
+      Input: dir - directory to clean
+  =================================================================================================================
+  -->
+
+  <target name="clean">
+    <property name="dir" value="${project::get-base-directory()}" unless="${property::exists('dir')}"/>
+    <if test="${directory::exists(dir)}">
+      <echo message=""/>
+      <echo message="=================================================="/>
+      <echo message="Deleting intermediate files from ${dir}..."/>
+      <echo message="=================================================="/>
+      <echo message=""/>
+      <delete>
+        <fileset basedir="${dir}">
+          <include name="**/bin/**"/>
+          <include name="**/obj/**"/>
+          <include name="**/_ReSharper.*/**" />
+          <include name="**/*.suo" />
+          <include name="**/*.user" />
+          <include name="**/*.projdata" />
+          <include name="**/*.ncb" />
+          <include name="**/*.pdb" />
+          <include name="**/*.resharper*" />
+          <exclude name="**/ProjectTemplates/**"/>
+          <exclude name="**/VSIntegration/DataDynamics.PageFX.VisualStudio.Addin/*.user"/>
+        </fileset>
+      </delete>
+    </if>
+  </target>
+
+</project>

@@ -1,3 +1,4 @@
+using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 
@@ -10,9 +11,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 
 		public static InlineMethodInfo GetInlineInfo(this IMethod method)
 		{
+			QName targetType = null;
+			QName qname = null;
 			string name = null;
-			string ns = null;
-
 			var kns = KnownNamespace.Global;
 			var kind = InlineKind.Function;
 
@@ -25,7 +26,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 						break;
 
 					case Attrs.InlineProperty:
-						name = attr.Arguments.Count == 0 ? method.Name : (string)attr.Arguments[0].Value;
+						name = attr.Arguments.Count == 0 ? method.Association.Name : (string)attr.Arguments[0].Value;
 						kind = InlineKind.Property;
 						break;
 
@@ -37,14 +38,41 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 					case Attrs.AS3:
 						kns = KnownNamespace.AS3;
 						break;
+
+					case Attrs.QName:
+						qname = QName.FromAttribute(attr);
+						break;
+
+					case Attrs.InlineTarget:
+						if (!method.IsStatic)
+							throw new InvalidOperationException("Inline target is valid only for static inline calls.");
+						targetType = QName.FromAttribute(attr);
+						break;
 				}
 			}
 
-			if (name == null)
+			if (name == null && qname == null)
+			{
 				return null;
+			}
 
-			var qname = ns != null ? new QName(name, ns) : new QName(name, kns);
-			return new InlineMethodInfo(qname, kind);
+			if (qname == null)
+			{
+				qname = new QName(name, kns);
+			}
+
+			if (targetType == null)
+			{
+				var attr = method.DeclaringType.FindAttribute(Attrs.InlineTarget);
+				if (attr != null)
+				{
+					if (!method.IsStatic)
+						throw new InvalidOperationException("Inline target is valid only for static inline calls.");
+					targetType = QName.FromAttribute(attr);
+				}
+			}
+
+			return new InlineMethodInfo(targetType, qname, kind);
 		}
 	}
 }

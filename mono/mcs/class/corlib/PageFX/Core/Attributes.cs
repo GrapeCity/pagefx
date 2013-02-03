@@ -4,6 +4,13 @@ using System;
 namespace PageFX
 {
 	/// <summary>
+	/// Attribute to mark native members.
+	/// </summary>
+	public sealed class NativeAttribute : Attribute
+	{
+	}
+
+	/// <summary>
     /// Defines that member is defined within ABC.
     /// </summary>
     public sealed class ABCAttribute : Attribute
@@ -15,6 +22,28 @@ namespace PageFX
 	/// </summary>
 	public sealed class AS3Attribute : Attribute
 	{
+	}
+
+	/// <summary>
+	/// Used to specify full name of inline call target. This allows to call native static methods without declaring native type wrappers.
+	/// </summary>
+	public sealed class InlineTargetAttribute : Attribute
+	{
+		public string Name;
+		public string Namespace; //default is global package
+		public string NamespaceKind;
+
+		public InlineTargetAttribute(string name)
+		{
+			Name = name;
+		}
+
+		public InlineTargetAttribute(string name, string ns, string nskind)
+		{
+			Name = name;
+			Namespace = ns;
+			NamespaceKind = nskind;
+		}
 	}
 
 	public sealed class InlineFunctionAttribute : Attribute
@@ -34,6 +63,10 @@ namespace PageFX
 	public sealed class InlinePropertyAttribute : Attribute
 	{
 		public string Name;
+
+		public InlinePropertyAttribute()
+		{
+		}
 
 		public InlinePropertyAttribute(string name)
 		{

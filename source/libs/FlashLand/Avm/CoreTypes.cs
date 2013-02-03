@@ -53,9 +53,9 @@ namespace DataDynamics.PageFX.FlashLand.Avm
 				case "void":
 					return "System.Void";
 				case "int":
-					return CorlibNamespace + ".Int";
+					return CorlibNamespace + ".Int32";
 				case "uint":
-					return CorlibNamespace + ".UInt";
+					return CorlibNamespace + ".UInt32";
 				default:
 					return CorlibNamespace + "." + name;
 			}

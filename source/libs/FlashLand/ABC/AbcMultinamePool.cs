@@ -30,7 +30,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     break;
 
                 case AbcConstKind.RTQNameLA:
-                    if (RTQNameLA != null) return RTQNameLA;
+                    if (RTQNameLA != null)
+						return RTQNameLA;
                     break;
 
                 default:
@@ -55,36 +56,41 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 					RTQNameLA = item;
 					break;
 			}
-
-			//if (item.Index != 0)
-			//    item.Check();
 		}
 
 	    public override void Read(SwfReader reader)
         {
             int n = (int)reader.ReadUIntEncoded();
             reader.MultinameCount = n;
+
             List<AbcMultiname> ptypes = null;
             for (int i = 1; i < n; ++i)
             {
-                var mn = new AbcMultiname();
-				mn.Read(reader);
-                Add(mn);
-                if (mn.IsParameterizedType)
+                var item = new AbcMultiname();
+				item.Read(reader);
+                Add(item);
+
+                if (item.IsParameterizedType)
                 {
                     if (ptypes == null)
                         ptypes = new List<AbcMultiname>();
-                    ptypes.Add(mn);
+                    ptypes.Add(item);
                 }
             }
+
             if (ptypes != null)
             {
-                foreach (var mn in ptypes)
+                foreach (var item in ptypes)
                 {
-                    int i = mn.TypeParameter.Index;
+                    int i = item.TypeParameter.Index;
                     if (i == 0 || i >= n)
                         throw new BadImageFormatException("Bad index in multiname cpool");
-                    mn.TypeParameter = this[i];
+
+                    item.TypeParameter = this[i];
+
+					// reset key to reevaluate it
+	                item.Key = null;
+					UpdateIndex(item);
                 }
             }
         }
@@ -97,140 +103,118 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <summary>
         /// Imports given name.
         /// </summary>
-        /// <param name="mname">name to import.</param>
-        /// <returns>imported name.</returns>
-        public override AbcMultiname Import(AbcMultiname mname)
+        /// <param name="item">The name to import.</param>
+        /// <returns>The same or imported name.</returns>
+        public override AbcMultiname Import(AbcMultiname item)
         {
-            if (mname == null) return null;
-            if (IsDefined(mname)) return mname;
-            if (mname.IsAny) return this[0];
+            if (item == null) return null;
+            if (IsDefined(item)) return item;
+            if (item.IsAny) return this[0];
 
-            mname = ImportCore(mname);
+            item = ImportCore(item);
 
-            return mname;
+            return item;
         }
 
-        private AbcMultiname ImportQName(bool attr, AbcNamespace ns, AbcConst<string> name)
+	    private AbcMultiname ImportCore(AbcMultiname item)
         {
-            var kind = attr ? AbcConstKind.QNameA : AbcConstKind.QName;
-            string key = AbcMultiname.KeyOf(kind, ns, name);
+			var kind = item.Kind;
+		    switch (kind)
+		    {
+				    //no data
+			    case AbcConstKind.RTQNameL:
+			    case AbcConstKind.RTQNameLA:
+				    return Define(kind);
+		    }
 
-            var mn = this[key];
-            if (mn != null) return mn;
+		    string key = item.Key;
+			var curItem = this[key];
+		    if (curItem != null)
+		    {
+			    return curItem;
+		    }
 
-            name = _abc.ImportConst(name);
-            ns = _abc.ImportConst(ns);
+		    switch (kind)
+		    {
+				    //U30 ns_index
+				    //U30 name_index
+			    case AbcConstKind.QName:
+			    case AbcConstKind.QNameA:
+				    {
+					    var name = _abc.ImportConst(item.Name);
+					    var ns = _abc.ImportConst(item.Namespace);
+					    var newItem = new AbcMultiname(kind, ns, name) {Key = key};
+					    Add(newItem);
+					    return newItem;
+				    }
 
-            mn = new AbcMultiname(kind, ns, name) {Key = key};
+				    //U30 name_index
+			    case AbcConstKind.RTQName:
+			    case AbcConstKind.RTQNameA:
+				    {
+					    var name = _abc.ImportConst(item.Name);
+					    var newItem = new AbcMultiname(kind, name) {Key = key};
+					    Add(newItem);
+					    return newItem;
+				    }
 
-            Add(mn);
-            return mn;
+				    //U30 name_index
+				    //U30 ns_set_index
+			    case AbcConstKind.Multiname:
+			    case AbcConstKind.MultinameA:
+				    {
+					    if (item.NamespaceSet.Count == 1)
+					    {
+						    return ImportQName(item.NamespaceSet[0], item.Name, kind == AbcConstKind.MultinameA);
+					    }
+
+					    var name = _abc.ImportConst(item.Name);
+					    var nss = _abc.ImportConst(item.NamespaceSet);
+					    var newItem = new AbcMultiname(kind, nss, name) {Key = key};
+					    Add(newItem);
+					    return newItem;
+				    }
+
+				    //U30 ns_set_index
+			    case AbcConstKind.MultinameL:
+			    case AbcConstKind.MultinameLA:
+				    {
+					    var nss = _abc.ImportConst(item.NamespaceSet);
+					    var newItem = new AbcMultiname(kind, nss) {Key = key};
+					    Add(newItem);
+					    return newItem;
+				    }
+
+			    case AbcConstKind.TypeName:
+				    {
+					    var type = Import(item.Type);
+					    var param = Import(item.TypeParameter);
+
+					    var newItem = new AbcMultiname(type, param) {Key = key};
+					    Add(newItem);
+					    return newItem;
+				    }
+
+			    default:
+				    return item;
+		    }
         }
 
-        private AbcMultiname ImportCore(AbcMultiname mname)
-        {
-            var kind = mname.Kind;
-            switch (kind)
-            {
-                    //U30 ns_index
-                    //U30 name_index
-                case AbcConstKind.QName:
-                case AbcConstKind.QNameA:
-                    {
-                        string key = mname.Key;
-                        var mn = this[key];
-                        if (mn != null) return mn;
+	    private AbcMultiname ImportQName(AbcNamespace ns, AbcConst<string> name, bool isAttribute)
+	    {
+		    var kind = isAttribute ? AbcConstKind.QNameA : AbcConstKind.QName;
+		    string key = AbcMultiname.KeyOf(kind, ns, name);
 
-                        var name = _abc.ImportConst(mname.Name);
-                        var ns = _abc.ImportConst(mname.Namespace);
-                        mname = new AbcMultiname(kind, ns, name) {Key = key};
-                        Add(mname);
-                        return mname;
-                    }
-                    
-                    //U30 name_index
-                case AbcConstKind.RTQName:
-                case AbcConstKind.RTQNameA:
-                    {
-                        string key = mname.Key;
-                        var mn = this[key];
-                        if (mn != null) return mn;
+		    var mn = this[key];
+		    if (mn != null) return mn;
 
-                        var name = _abc.ImportConst(mname.Name);
-                        mname = new AbcMultiname(kind, name) {Key = key};
-                        Add(mname);
-                        return mname;
-                    }
+		    name = _abc.ImportConst(name);
+		    ns = _abc.ImportConst(ns);
 
-                    //no data
-                case AbcConstKind.RTQNameL:
-                    {
-                        if (RTQNameL != null)
-                            return RTQNameL;
-                        mname = new AbcMultiname(kind);
-                        Add(mname);
-                        return mname;
-                    }
+		    mn = new AbcMultiname(kind, ns, name) {Key = key};
 
-                case AbcConstKind.RTQNameLA:
-                    {
-                        if (RTQNameLA != null)
-                            return RTQNameLA;
-                        mname = new AbcMultiname(kind);
-                        Add(mname);
-                        return mname;
-                    }
-
-                    //U30 name_index
-                    //U30 ns_set_index
-                case AbcConstKind.Multiname:
-                case AbcConstKind.MultinameA:
-                    {
-                        if (mname.NamespaceSet.Count == 1)
-                        {
-                            return ImportQName(kind == AbcConstKind.MultinameA,
-                                               mname.NamespaceSet[0], mname.Name);
-                        }
-
-                        string key = mname.Key;
-                        var mn = this[key];
-                        if (mn != null) return mn;
-
-                        var name = _abc.ImportConst(mname.Name);
-                        var nss = _abc.ImportConst(mname.NamespaceSet);
-                        mname = new AbcMultiname(kind, nss, name) {Key = key};
-                        Add(mname);
-                        return mname;
-                    }
-
-                    //U30 ns_set_index
-                case AbcConstKind.MultinameL:
-                case AbcConstKind.MultinameLA:
-                    {
-                        string key = mname.Key;
-                        var mn = this[key];
-                        if (mn != null) return mn;
-                        var nss = _abc.ImportConst(mname.NamespaceSet);
-                        mname = new AbcMultiname(kind, nss) {Key = key};
-                        Add(mname);
-                        return mname;
-                    }
-
-                case AbcConstKind.TypeName:
-                    {
-                        string key = mname.Key;
-                        var mn = this[key];
-                        if (mn != null) return mn;
-                        var type = Import(mname.Type);
-                        var param = Import(mname.TypeParameter);
-                        mname = new AbcMultiname(type, param) {Key = key};
-                        Add(mname);
-                        return mname;
-                    }
-
-                default:
-                    return mname;
-            }
-        }
+		    Add(mn);
+		    return mn;
+	    }
     }
 }

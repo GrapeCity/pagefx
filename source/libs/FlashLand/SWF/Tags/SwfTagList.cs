@@ -1,34 +1,65 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 {
-    public sealed class SwfTagList : List<SwfTag>, ISupportXmlDump
+    public sealed class SwfTagList : IReadOnlyList<SwfTag>, ISupportXmlDump
     {
-        #region Properties
-        public SwfMovie Swf
+		private readonly List<SwfTag> _list = new List<SwfTag>();
+	    private SwfMovie _swf;
+
+	    internal SwfTagList(SwfMovie swf)
+		{
+			_swf = swf;
+		}
+
+	    public int Count
+	    {
+			get { return _list.Count; }
+	    }
+
+	    public SwfTag this[int index]
+	    {
+		    get { return _list[index]; }
+	    }
+
+	    public SwfMovie Swf
         {
-            get
-            {
-                if (Count > 0)
-                    return this[0].Swf;
-                return null;
-            }
+            get { return _swf; }
             set
             {
+				if (_swf == value) return;
+
+	            _swf = value;
+
                 foreach (var tag in this)
                     tag.Swf = value;
             }
         }
-        #endregion
 
-        #region Read
-        public new void Add(SwfTag tag)
-        {
-            tag.Index = Count;
-            base.Add(tag);
-        }
+		public void Add(SwfTag tag)
+		{
+			if (_swf != null)
+			{
+				tag.Swf = _swf;
+			}
 
+			tag.Index = Count;
+
+			_list.Add(tag);
+		}
+
+		public void RemoveAt(int index)
+		{
+			//TODO: update SwfTag.Index for each tag
+
+			_list.RemoveAt(index);
+		}
+
+	    #region Read
         public void Read(SwfReader reader)
         {
             while (ReadTag(reader))
@@ -152,6 +183,7 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
         #endregion
 
         #region Public Members
+
         /// <summary>
         /// Adds empty tag with specified code.
         /// </summary>
@@ -171,14 +203,20 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
 
         public ISwfCharacter GetCharacter(int id)
         {
-            return Find(tag =>
-	            {
-		            var c = tag as ISwfCharacter;
-		            if (c == null)
-			            return false;
-		            return c.CharacterId == id;
-	            }) as ISwfCharacter;
+			//TODO: optimize searching characters
+			return _list.OfType<ISwfCharacter>().FirstOrDefault(x => x.CharacterId == id);
         }
+
         #endregion
+
+	    public IEnumerator<SwfTag> GetEnumerator()
+	    {
+		    return _list.GetEnumerator();
+	    }
+
+	    IEnumerator IEnumerable.GetEnumerator()
+	    {
+		    return GetEnumerator();
+	    }
     }
 }

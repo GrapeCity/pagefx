@@ -34,6 +34,8 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Collections;
 using System.Security.Permissions;
+using Native;
+
 #if NOT_PFX
 using System.Security.Policy;
 #endif
@@ -218,8 +220,8 @@ public virtual FileStream GetFile(string name)
         #endregion
 
         #region PageFX ReflectionInfo
-        internal static Avm.Array Types;
-        internal static Avm.Array ArrayTypes;
+        internal static NativeArray Types;
+        internal static NativeArray ArrayTypes;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private static extern int GetTypeNum();
@@ -229,10 +231,7 @@ public virtual FileStream GetFile(string name)
             Assembly asm = Instance;
             string name = avm.Concat("__inittype__", index);
             object v = avm.GetProperty(asm, avm.GlobalPackage, name);
-            Avm.Function f = v as Avm.Function;
-            if (avm.IsNull(f))
-                throw new InvalidOperationException(string.Format("No function to init type with id {0}", index));
-            f.call(null, type);
+            ((Function)v).call(null, type);
         }
         
         internal static Type GetType(int index)
@@ -242,8 +241,8 @@ public virtual FileStream GetFile(string name)
             {
                 int n = GetTypeNum();
                 if (n <= 0) return null;
-                Types = avm.NewArray(n);
-                ArrayTypes = avm.NewArray();
+                Types = new NativeArray(n);
+                ArrayTypes = new NativeArray();
             }
             Type type = (Type)Types[index];
             if (type == null)
@@ -258,7 +257,7 @@ public virtual FileStream GetFile(string name)
             return type;
         }
 
-        internal static Avm.String GetArrayTypeName(Type elementType, int[] lengths, int[] bounds)
+        internal static string GetArrayTypeName(Type elementType, int[] lengths, int[] bounds)
         {
             //TODO:
             string name = elementType.Name;

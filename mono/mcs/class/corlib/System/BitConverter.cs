@@ -29,7 +29,7 @@
 //
 
 using System.Text;
-using flash.utils;
+using Native;
 
 namespace System
 {
@@ -184,29 +184,26 @@ namespace System
 
         public static byte[] GetBytes(float value)
         {
-            ByteArray arr = CreateByteArray();
-            arr.writeFloat(value);
-            arr.position = 0;
-            int n = 4;
-            byte[] res = new byte[n];
-            for (int i = 0; i < n; ++i)
-                res[i] = (byte)arr.readByte();
-            return res;
+            ByteArray arr = ByteArrayFactory.Create(IsLittleEndian);
+			arr.WriteFloat(value);
+	        return ReadBytes(arr, 4);
         }
 
         public static byte[] GetBytes(double value)
         {
-            ByteArray arr = CreateByteArray();
-            arr.writeDouble(value);
-            arr.position = 0;
-            int n = 8;
-            byte[] res = new byte[n];
-            for (int i = 0; i < n; ++i)
-            {
-                res[i] = (byte)arr.readByte();
-            }
-            return res;
+			ByteArray arr = ByteArrayFactory.Create(IsLittleEndian);
+			arr.WriteDouble(value);
+	        return ReadBytes(arr, 8);
         }
+
+		private static byte[] ReadBytes(ByteArray byteArray, int n)
+		{
+			byteArray.position = 0;
+			byte[] res = new byte[n];
+			for (int i = 0; i < n; ++i)
+				res[i] = (byte)byteArray.ReadByte();
+			return res;
+		}
         #endregion
 
         private static void Check(byte[] value, int startIndex, int size)
@@ -335,49 +332,36 @@ namespace System
             return v;
         }
 
-        public static float ToSingle(byte[] value, int startIndex)
+	    public static float ToSingle(byte[] value, int startIndex)
         {
             Check(value, startIndex, 4);
-            ByteArray arr = CreateByteArray();
-            while (startIndex < value.Length)
-                arr.writeByte(value[startIndex++]);
-            arr.position = 0;
-            return (float)arr.readFloat();
+            ByteArray arr = ByteArrayFactory.Create(IsLittleEndian, value, startIndex);
+            return arr.ReadFloat();
         }
 
         public static double ToDouble(byte[] value, int startIndex)
         {
             Check(value, startIndex, 8);
-            ByteArray arr = CreateByteArray();
-            while (startIndex < value.Length)
-                arr.writeByte(value[startIndex++]);
-            arr.position = 0;
-            return arr.readDouble();
+            ByteArray arr = ByteArrayFactory.Create(IsLittleEndian, value, startIndex);
+            return arr.ReadDouble();
         }
 
-        private static ByteArray CreateByteArray()
-        {
-            ByteArray arr = new ByteArray();
-            arr.endian = IsLittleEndian ? Endian.LITTLE_ENDIAN : Endian.BIG_ENDIAN;
-            return arr;
-        }
-
-        internal static double SwappableToDouble(byte[] value, int startIndex)
+	    internal static double SwappableToDouble(byte[] value, int startIndex)
         {
             if (SwappedWordsInDouble)
             {
                 Check(value, startIndex, 8);
-                ByteArray arr = CreateByteArray();
-                arr.writeByte(value[startIndex + 4]);
-                arr.writeByte(value[startIndex + 5]);
-                arr.writeByte(value[startIndex + 6]);
-                arr.writeByte(value[startIndex + 7]);
-                arr.writeByte(value[startIndex + 0]);
-                arr.writeByte(value[startIndex + 1]);
-                arr.writeByte(value[startIndex + 2]);
-                arr.writeByte(value[startIndex + 3]);
-                arr.position = 0;
-                return arr.readDouble();
+				ByteArray arr = ByteArrayFactory.Create(IsLittleEndian);
+                arr.WriteByte(value[startIndex + 4]);
+                arr.WriteByte(value[startIndex + 5]);
+                arr.WriteByte(value[startIndex + 6]);
+                arr.WriteByte(value[startIndex + 7]);
+                arr.WriteByte(value[startIndex + 0]);
+                arr.WriteByte(value[startIndex + 1]);
+                arr.WriteByte(value[startIndex + 2]);
+                arr.WriteByte(value[startIndex + 3]);
+	            arr.position = 0;
+                return arr.ReadDouble();
             }
 
             return ToDouble(value, startIndex);

@@ -6,41 +6,44 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
     internal sealed class VectorType : IVectorType
     {
-        public VectorType(IType type, IType param)
+        public VectorType(IType type, IType parameter)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
-            if (param == null)
-                throw new ArgumentNullException("param");
+            if (parameter == null)
+                throw new ArgumentNullException("parameter");
 
             Type = type;
-            Param = param;
+            Parameter = parameter;
         }
-
-	    public AbcFile Abc { get; set; }
 
 	    public IType Type { get; private set; }
 
-	    public IType Param { get; private set; }
+	    public IType Parameter { get; private set; }
 
-	    public AbcMultiname Name
-        {
-            get 
-            {
-                if (_name == null)
-                {
-					Abc.Generator.TypeBuilder.Build(Param);
-                    var paramType = Param.GetMultiname();
-                    _name = Abc.DefineVectorTypeName(paramType);
-                }
-                return _name;
-            }
-        }
-        private AbcMultiname _name;
+	    public AbcMultiname Name { get; private set; }
+
+	    public bool IsDefined(AbcFile abc)
+	    {
+		    return abc.IsDefined(Name);
+	    }
+
+	    public ITypeData Import(AbcFile abc)
+	    {
+			var name = Name ?? DefineName(abc);
+		    return new VectorType(Type, Parameter) {Name = name};
+	    }
+
+	    private AbcMultiname DefineName(AbcFile abc)
+		{
+			abc.Generator.TypeBuilder.Build(Parameter);
+			var paramType = Parameter.GetMultiname();
+			return abc.DefineVectorTypeName(paramType);
+		}
 
         public override string ToString()
         {
-            return Type + ".<" + Param + ">";
+            return Type + ".<" + Parameter + ">";
         }
 
         public static string GetVectorParam(IType type)

@@ -155,11 +155,11 @@ namespace System
             return (d == PositiveInfinity || d == NegativeInfinity);
         }
 
-        public static bool IsNaN(double d)
-        {
-            return Avm.Global.isNaN(d);
-        }
-
+	    public static bool IsNaN(double d)
+	    {
+		    return Native.Global.isNaN(d);
+	    }
+        
         public static bool IsNegativeInfinity(double d)
         {
             return (d < 0.0d && (d == NegativeInfinity || d == PositiveInfinity));
@@ -489,9 +489,9 @@ namespace System
             double retVal;
             try
             {
-                retVal = Avm.Global.parseFloat(numstr);
+                retVal = Native.Global.parseFloat(numstr);
             }
-            catch (Avm.Error)
+            catch
             {
                 if (!tryParse)
                     exc = IntParser.GetFormatException();

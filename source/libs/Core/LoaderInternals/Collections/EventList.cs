@@ -22,7 +22,16 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 
 		private IReadOnlyList<IEvent> List
 		{
-			get { return _list ?? (_list = _owner.Methods.Select(x => x.Association as IEvent).Where(x => x != null).Memoize()); }
+			get { return _list ?? (_list = Populate().Memoize()); }
+		}
+
+		private IEnumerable<IEvent> Populate()
+		{
+			return _owner
+				.Methods
+				.Select(x => x.Association as IEvent)
+				.Where(x => x != null)
+				.Distinct(new ReferenceEqualityComparer<IEvent>());
 		}
 
 		public int Count
@@ -73,6 +82,20 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		private sealed class ReferenceEqualityComparer<T> : IEqualityComparer<T>
+			where T:class 
+		{
+			public bool Equals(T x, T y)
+			{
+				return ReferenceEquals(x, y);
+			}
+
+			public int GetHashCode(T obj)
+			{
+				return obj.GetHashCode();
+			}
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using DataDynamics.PageFX.Common.Extensions;
@@ -73,7 +74,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 			}
 		}
 
-		public AbcCode GetImplementation(AbcFile abc, IMethod method)
+		public InlineCall GetImplementation(AbcFile abc, IMethod method)
 		{
 			IList<KeyValuePair<Func<IMethod, bool>, Action<IMethod, AbcCode>>> list;
 			if (!_impls.TryGetValue(method.Name, out list))
@@ -90,7 +91,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				{
 					var code = new AbcCode(abc);
 					pair.Value(method, code);
-					return code;
+					return new InlineCall(method, null, null, code);
 				}
 			}
 
@@ -116,6 +117,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 				return false;
 			}
 			if ((attrs & MethodAttrs.Operator) != 0 && !(method.IsStatic && method.Name.StartsWith("op_")))
+			{
+				return false;
+			}
+			if ((attrs & MethodAttrs.WithArgs) != 0 && method.Parameters.Count == 0)
 			{
 				return false;
 			}
@@ -154,6 +159,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 		Getter = 0x02,
 		Setter = 0x04,
 		Static = 0x08,
-		Operator = 0x10
+		Operator = 0x10,
+		WithArgs = 0x20
 	}
 }

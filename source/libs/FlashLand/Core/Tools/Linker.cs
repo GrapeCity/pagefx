@@ -49,8 +49,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 				if (resource.Name.EndsWith(".abc", StringComparison.OrdinalIgnoreCase))
 				{
 					_abc = new AbcFile(resource.Data) { Assembly = Assembly };
-					data.ABC = _abc;
-					_cache = new AbcCache(true);
+					data.Abc = _abc;
+					_cache = new AbcCache();
 					_cache.Add(_abc);
 				}
 				else if (resource.Name.EndsWith(".swc", StringComparison.OrdinalIgnoreCase))
@@ -206,26 +206,26 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
 
 	    private static bool IsLinked(IType type)
-        {
-		    return type.AbcInstance() != null;
-        }
+	    {
+		    return type.Data is NativeType
+		           || type.AbcInstance() != null;
+	    }
 
-        private bool IsCorLib
-        {
-            get { return Assembly.IsCorlib; }
-        }
-
-		private void LinkType(IType type)
+	    private void LinkType(IType type)
 		{
 			if (_cache != null)
 			{
 				LinkTypeCore(type);
 			}
+			else
+			{
+				LinkNativeType(type);
+			}
 
 			FireTypeLinked(type);
 		}
 
-        private void LinkTypeCore(IType type)
+	    private void LinkTypeCore(IType type)
         {
             if (LinkInternalType(type)) return;
 
@@ -273,32 +273,49 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
+		private void LinkNativeType(IType type)
+		{
+			if (!Assembly.IsCorlib) return;
+
+			if (type.HasAttribute(Attrs.Native))
+			{
+				var qnameAttr = type.FindAttribute(Attrs.QName);
+				if (qnameAttr == null)
+					throw new InvalidOperationException();
+
+				var qname = QName.FromAttribute(qnameAttr);
+				type.Data = new NativeType(type, qname);
+				return;
+			}
+
+			if (type.HasAttribute(Attrs.GlobalFunctions))
+			{
+				type.Data = new GlobalFunctionsContainer(type);
+			}
+		}
+
         private void LinkType(IType type, AbcInstance instance)
         {
             type.Data = instance;
             instance.Type = type;
 
-            if (IsCorLib)
+            if (IsFlashApi)
             {
-                if (instance.IsGlobal)
-                {
-                    switch (instance.NameString)
-                    {
-                        case Const.AvmGlobalTypes.Object:
-                            Assembly.CustomData().ObjectInstance = instance;
-                            break;
-
-                        case Const.AvmGlobalTypes.Error:
-                            Assembly.CustomData().ErrorInstance = instance;
-                            break;
-                    }
-                }
                 instance.IsNative = true;
             }
 
             LinkMethods(type, instance, false);
             LinkFields(type, instance);
         }
+
+	    private bool IsFlashApi
+	    {
+		    get
+		    {
+				//TODO: determine by abc/swc resource
+			    return Assembly.Name.StartsWith("flash.v", StringComparison.OrdinalIgnoreCase);
+		    }
+	    }
 
 	    private void LinkMethods(IType type, IAbcTraitProvider owner, bool isGlobal)
         {
@@ -327,12 +344,11 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             if (instance != null && method.IsConstructor && !isGlobal)
             {
-                method.Data = instance.Initializer;
-                instance.Initializer.SourceMethod = method;
-                return;
+	            LinkCtor(method, instance);
+	            return;
             }
 
-            if (!isGlobal)
+	        if (!isGlobal)
             {
                 if (LinkEvent(method, instance))
                     return;
@@ -352,7 +368,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             LinkMethod(method, abcMethod);
         }
 
-        private static void LinkMethod(IMethod method, AbcMethod abcMethod)
+	    private static void LinkCtor(IMethod method, AbcInstance instance)
+	    {
+			if (method.HasAttribute(Attrs.InlineFunction)) return;
+
+		    method.Data = instance.Initializer;
+		    instance.Initializer.Method = method;
+	    }
+
+	    private static void LinkMethod(IMethod method, AbcMethod abcMethod)
         {
             if (abcMethod == null)
                 throw new InvalidOperationException("Unable to find method " + method);
@@ -361,7 +385,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             //Prevent to link overload methods
             if (method.Parameters.Count == abcMethod.ActualParamCount)
-                abcMethod.SourceMethod = method;
+                abcMethod.Method = method;
 
             //var instance = abcMethod.Instance;
             //if (instance != null && !instance.IsNative && abcMethod.IsNative)
@@ -380,27 +404,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             if (string.IsNullOrEmpty(eventName))
                 throw new InvalidOperationException();
 
-            if (e.Adder == method)
+            if (e.Adder == method || e.Remover == method)
             {
                 //stack transition: dispatcher, delegate -> ...
                 var code = new AbcCode(instance.Abc);
                 code.Swap();
                 code.PushString(eventName);
-                code.CallVoid(GetDelegateMethodName(true), 2);
-                method.Data = code;
+                code.CallVoid(GetDelegateMethodName(e.Adder == method), 2);
+                method.Data = new InlineCall(method, null, null, code);
                 return true;
             }
 
-            if (e.Remover == method)
-            {
-                //stack transition: delegate -> ...
-                var code = new AbcCode(instance.Abc);
-                code.Swap();
-                code.PushString(eventName);
-                code.CallVoid(GetDelegateMethodName(false), 2);
-                method.Data = code;
-                return true;
-            }
             throw new NotImplementedException();
         }
 

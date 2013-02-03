@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
@@ -22,22 +23,22 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         }
 		private bool _isThisAddressed;
 
-        /// <summary>
-        /// Provides code to load address of this argument.
-        /// </summary>
-        /// <returns>Array of instructions (code) to perform the operation.</returns>
-        public IInstruction[] GetThisPtr()
+	    /// <summary>
+	    /// Provides code to load address of this argument.
+	    /// </summary>
+	    /// <returns>Array of instructions (code) to perform the operation.</returns>
+	    public IEnumerable<IInstruction> GetThisPtr()
         {
             var ptr = DefineThisPtr();
             return GetSlot(ptr.Ptr);
         }
 
-        /// <summary>
-        /// Provides code to load address of given variable onto the evaluation stack.
-        /// </summary>
-        /// <param name="v">local variable to load address.</param>
-        /// <returns>Array of instructions (code) to perform the operation.</returns>
-        public IInstruction[] GetVarPtr(IVariable v)
+	    /// <summary>
+	    /// Provides code to load address of given variable onto the evaluation stack.
+	    /// </summary>
+	    /// <param name="v">local variable to load address.</param>
+	    /// <returns>Array of instructions (code) to perform the operation.</returns>
+	    public IEnumerable<IInstruction> GetVarPtr(IVariable v)
         {
             var ptr = v.Data as VarPtr;
             if (ptr == null)
@@ -45,12 +46,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return GetSlot(ptr.Ptr);
         }
 
-        /// <summary>
-        /// Provides code to load address of given argument onto the evaluation stack.
-        /// </summary>
-        /// <param name="p">given argument</param>
-        /// <returns>Array of instructions (code) to perform the operation.</returns>
-        public IInstruction[] GetArgPtr(IParameter p)
+	    /// <summary>
+	    /// Provides code to load address of given argument onto the evaluation stack.
+	    /// </summary>
+	    /// <param name="p">given argument</param>
+	    /// <returns>Array of instructions (code) to perform the operation.</returns>
+	    public IEnumerable<IInstruction> GetArgPtr(IParameter p)
         {
             var ptr = p.Data as VarPtr;
             if (ptr == null)
@@ -58,38 +59,38 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return GetSlot(ptr.Ptr);
         }
 
-        /// <summary>
-        /// Provides code to load address of given field onto the evaluation stack.
-        /// </summary>
-        /// <param name="field">field to load address.</param>
-        /// <returns>Array of instructions (code) to perform the operation.</returns>
-        public IInstruction[] GetFieldPtr(IField field)
+	    /// <summary>
+	    /// Provides code to load address of given field onto the evaluation stack.
+	    /// </summary>
+	    /// <param name="field">field to load address.</param>
+	    /// <returns>Array of instructions (code) to perform the operation.</returns>
+	    public IEnumerable<IInstruction> GetFieldPtr(IField field)
         {
             var code = new AbcCode(_abc);
             code.GetFieldPtr(field);
             _body.Flags |= AbcBodyFlags.HasFieldPointers;
-            return code.ToArray();
+            return code;
         }
 
-        /// <summary>
-        /// Provides code to load address of an element of an array onto the evaluation stack.
-        /// </summary>
-        /// <param name="elemType">type of an array element to load address.</param>
-        /// <returns>Array of instructions (code) to perform the operation.</returns>
-        public IInstruction[] GetElemPtr(IType elemType)
+	    /// <summary>
+	    /// Provides code to load address of an element of an array onto the evaluation stack.
+	    /// </summary>
+	    /// <param name="elemType">type of an array element to load address.</param>
+	    /// <returns>Array of instructions (code) to perform the operation.</returns>
+	    public IEnumerable<IInstruction> GetElemPtr(IType elemType)
         {
             var code = new AbcCode(_abc);
             code.GetElemPtr(elemType);
             _body.Flags |= AbcBodyFlags.HasElemPointers;
-            return code.ToArray();
+            return code;
         }
 
-        /// <summary>
-        /// Provides code to load value indirect onto the stack.
-        /// </summary>
-        /// <param name="valueType">type of value to load.</param>
-        /// <returns>Array of instructions (code) to perform the operation.</returns>
-        public IInstruction[] LoadIndirect(IType valueType)
+	    /// <summary>
+	    /// Provides code to load value indirect onto the stack.
+	    /// </summary>
+	    /// <param name="valueType">type of value to load.</param>
+	    /// <returns>Array of instructions (code) to perform the operation.</returns>
+	    public IEnumerable<IInstruction> LoadIndirect(IType valueType)
         {
             //stack transition: ..., addr -> ..., value
             var code = new AbcCode(_abc);
@@ -97,20 +98,20 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 code.ReadPtr();
             else
                 code.ReadPtr(valueType);
-            return code.ToArray();
+            return code;
         }
 
-        /// <summary>
-        /// Provides code to store value indirect from stack.
-        /// </summary>
-        /// <param name="valueType">type of value to store by address onto the stack.</param>
-        /// <returns>Array of instructions (code) to perform the operation.</returns>
-        public IInstruction[] StoreIndirect(IType valueType)
+	    /// <summary>
+	    /// Provides code to store value indirect from stack.
+	    /// </summary>
+	    /// <param name="valueType">type of value to store by address onto the stack.</param>
+	    /// <returns>Array of instructions (code) to perform the operation.</returns>
+	    public IEnumerable<IInstruction> StoreIndirect(IType valueType)
         {
             //stack transition: ..., addr, value -> ...
             var code = new AbcCode(_abc);
             code.WritePtr();
-            return code.ToArray();
+            return code;
         }
 
 	    #region InitActivation
@@ -190,21 +191,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             code.GetSlot(t);
         }
 
-		private IInstruction[] GetSlot(AbcTrait t)
+		private IEnumerable<IInstruction> GetSlot(AbcTrait t)
         {
             var code = new AbcCode(_abc);
             GetSlot(code, t);
             _body.Flags |= AbcBodyFlags.HasSlotPointers;
-            return code.ToArray();
+            return code;
         }
 
-		private IInstruction[] SetSlot(AbcTrait t)
+		private IEnumerable<IInstruction> SetSlot(AbcTrait t)
         {
             var code = new AbcCode(_abc);
             GetActivation(code);
             code.Swap();
             code.SetSlot(t);
-            return code.ToArray();
+            return code;
         }
 
         private void DefineArgPtr(IParameter p)

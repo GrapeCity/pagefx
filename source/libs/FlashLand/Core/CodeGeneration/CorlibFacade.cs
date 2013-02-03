@@ -7,7 +7,6 @@ using TypeImpl = DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib.TypeIm
 
 namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 {
-	//TODO: make as independent part
 	internal sealed class CorlibFacade
 	{
 		private readonly AbcGenerator _generator;
@@ -155,9 +154,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             return Compiler[id];
         }
 
-		#region Fields
-
-        public IField GetField(FieldId id)
+		public IField GetField(FieldId id)
         {
             return LazyFields[(int)id].Value;
         }
@@ -187,10 +184,17 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 
 			            NewLazyField(GetType(CorlibTypeId.ConstructorInfo), Const.ConstructorInfo.CreateFunction),
 
+						// IMPORTANT: always sync with FieldInfo.cs in corlib
+						NewLazyField(GetType(CorlibTypeId.FieldInfo), "ns"),
+						NewLazyField(GetType(CorlibTypeId.FieldInfo), "name"),
+						NewLazyField(GetType(CorlibTypeId.FieldInfo), "type"),
+						NewLazyField(GetType(CorlibTypeId.FieldInfo), "declaringType"),
+						NewLazyField(GetType(CorlibTypeId.FieldInfo), "isStatic"),
+
 			            NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_name"),
 			            NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_propType"),
 			            NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_getMethod"),
-			            NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_setMethod")
+			            NewLazyField(GetType(CorlibTypeId.PropertyInfo), "m_setMethod"),
 		            };
 
                 return _lazyFields;
@@ -202,9 +206,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         {
             return new LazyValue<IField>(() => type.FindField(name, true));
         }
-
-        #endregion
-    }
+	}
 
 	#region enum FieldId
     internal enum FieldId
@@ -223,6 +225,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
         MethodBase_Parameters,
 
         ConstructorInfo_CreateFunction,
+
+        FieldInfo_Namespace,
+        FieldInfo_Name,
+        FieldInfo_Type,
+        FieldInfo_DeclType,
+        FieldInfo_IsStatic,
 
         PropertyInfo_Name,
         PropertyInfo_Type,

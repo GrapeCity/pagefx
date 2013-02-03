@@ -188,10 +188,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                     }
                     return "";
                 }
+
                 string ns = NamespaceString;
-                if (string.IsNullOrEmpty(ns))
-                    return NameString;
-                return ns + "." + NameString;
+	            return string.IsNullOrEmpty(ns) ? NameString : ns + "." + NameString;
             }
         }
 

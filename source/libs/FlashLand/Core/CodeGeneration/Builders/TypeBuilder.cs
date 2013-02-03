@@ -35,8 +35,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 	    public AbcMultiname DefineTypeName(IType type)
         {
             if (type == null) return null;
-            var obj = Build(type);
-            return obj.ToMultiname();
+            Build(type);
+            return type.GetMultiname();
         }
 
 		public AbcMultiname BuildMemberType(IType type)
@@ -57,7 +57,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 			return name;
 		}
 
-		#region Build
 		/// <summary>
         /// Defines given type in generated ABC file
         /// </summary>
@@ -67,49 +66,39 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         {
             if (type == null) return null;
 
-            var abcSubject = type.Data as IAbcFileSubject;
-            if (abcSubject != null)
-            {
-                abcSubject.Abc = Abc;
-                return abcSubject;
-            }
+			if (Abc.IsDefined(type))
+			{
+				return type.Data;
+			}
 
-            if (Abc.IsDefined(type))
-                return type.Data;
+			var tag = ImportType(type);
 
-            var tag = ImportType(type);
+			bool isImported = false;
+			if (tag == null)
+			{
+				if (type.Data != null)
+					throw new InvalidOperationException();
+				tag = BuildCore(type);
+			}
+			else
+			{
+				isImported = true;
+			}
 
-            bool isImported = false;
-            if (tag == null)
-            {
-                if (type.Data != null)
-                    throw new InvalidOperationException();
-                tag = BuildCore(type);
-            }
-            else
-            {
-                isImported = true;
-            }
+			if (tag != null)
+			{
+				_generator.SetData(type, tag);
 
-            if (tag != null)
-            {
-                _generator.SetData(type, tag);
+				RegisterType(type);
 
-                RegisterType(type);
+				if (!isImported)
+					BuildMembers(type);
+			}
 
-                if (!isImported)
-                    BuildMembers(type);
-            }
-
-            abcSubject = type.Data as IAbcFileSubject;
-            if (abcSubject != null)
-                abcSubject.Abc = Abc;
-
-            return type.Data;
+			return type.Data;
         }
-        #endregion
 
-        #region RegisterType
+		#region RegisterType
         private void RegisterType(IType type)
         {
             if (type.IsModuleType())
@@ -163,23 +152,33 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         #region ImportType
         private object ImportType(IType type)
         {
-            var tag = type.Data;
-            if (tag != null)
-            {
-                var instance = tag as AbcInstance;
-                if (instance != null)
-                {
-                    BuildBaseTypes(type);
-                    return Abc.ImportInstance(instance);
-                }
+	        var tag = type.Data;
+	        if (tag == null) return null;
 
-                var name = tag as AbcMultiname;
-                if (name != null)
-                    return Abc.ImportConst(name);
-            }
-            return null;
+	        var instance = tag as AbcInstance;
+	        if (instance != null)
+	        {
+		        BuildBaseTypes(type);
+		        return Abc.ImportInstance(instance);
+	        }
+
+	        var data = tag as ITypeData;
+			if (data != null)
+			{
+				return data.Import(Abc);
+			}
+			
+	        //TODO: avoid direct usage of AbcMultiname as tag for types, wrap to ITypeAgent impl always
+	        var name = tag as AbcMultiname;
+	        if (name != null)
+	        {
+		        return Abc.ImportConst(name);
+	        }
+
+	        return null;
         }
-        #endregion
+
+		#endregion
 
 		#region BuildCore
 		private object BuildCore(IType type)
@@ -194,14 +193,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 case TypeKind.Struct:
                 case TypeKind.Primitive:
                 case TypeKind.Delegate:
-                    return DefineUserType(type);
+                    return BuildUserType(type);
 
                 case TypeKind.GenericParameter:
                     return null;
 
                 case TypeKind.Enum:
                     Build(type.ValueType);
-                    return DefineUserType(type);
+                    return BuildUserType(type);
 
                 case TypeKind.Array:
                     return BuildArrayType((IArrayType)type);
@@ -221,8 +220,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
         }
         #endregion
 
-        #region DefineUserType
-		private object DefineUserType(IType type)
+		#region BuildUserType
+		private object BuildUserType(IType type)
         {
             if (LinkVectorInstance(type))
                 return type.Data;
@@ -327,7 +326,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             if (type.Is(SystemTypeCode.Exception))
             {
-                superType = type.Assembly.Corlib().CustomData().ErrorInstance;
+				// TODO: use Native.Error
+                // superType = typeof(Error);
                 superName = Abc.BuiltinTypes.Error;
                 return;
             }
@@ -636,7 +636,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 if (!trait.IsMethod) continue;
 
                 var abcMethod = trait.Method;
-                var method = abcMethod.SourceMethod;
+                var method = abcMethod.Method;
                 if (method == null) continue;
                 if (method.IsStatic) continue;
                 if (method.IsConstructor) continue;
@@ -705,7 +705,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
             BuildRange(instance.GenericArguments);
 
-            _generator.SetData(type, new VectorInstance(type));
+            _generator.SetData(type, new VectorInstance(Abc, type));
 
             return true;
         }

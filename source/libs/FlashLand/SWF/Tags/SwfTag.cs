@@ -111,21 +111,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
             return new SwfTagAny(tc, data);
         }
 
-        public SwfMovie Swf
-        {
-            get { return _swf; }
-            set
-            {
-                _swf = value;
-                var sprite = this as SwfSprite;
-                if (sprite != null)
-                {
-                    sprite.Tags.Swf = value;
-                }
-            }
-        }
-        private SwfMovie _swf;
-        #endregion
+	    public virtual SwfMovie Swf { get; set; }
+
+	    #endregion
 
         #region IO
         public void ReadTagData(byte[] data, SwfReader parent)
@@ -221,9 +209,9 @@ namespace DataDynamics.PageFX.FlashLand.Swf.Tags
             writer.WriteStartElement("ref");
             writer.WriteAttributeString("id", id.ToString());
 
-            if (_swf != null)
+            if (Swf != null)
             {
-                var rc = _swf.GetCharacter(id);
+                var rc = Swf.GetCharacter(id);
                 if (rc != null)
                 {
                     if (!string.IsNullOrEmpty(rc.Name))

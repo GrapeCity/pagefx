@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -7,18 +8,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 {
     internal partial class CodeProviderImpl
     {
-        public IInstruction[] Op(BinaryOperator op, IType left, IType right, IType result, bool checkOverflow)
+        public IEnumerable<IInstruction> Op(BinaryOperator op, IType left, IType right, IType result, bool checkOverflow)
         {
             var code = new AbcCode(_abc);
             code.Op(op, left, right, result, checkOverflow);
-            return code.ToArray();
+            return code;
         }
         
-        public IInstruction[] Op(UnaryOperator op, IType type, bool checkOverflow)
+        public IEnumerable<IInstruction> Op(UnaryOperator op, IType type, bool checkOverflow)
         {
             var code = new AbcCode(_abc);
             code.Op(op, type, checkOverflow);
-            return code.ToArray();
+            return code;
         }
 
         public bool SupportIncrementOperators

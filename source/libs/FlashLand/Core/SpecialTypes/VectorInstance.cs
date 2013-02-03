@@ -6,7 +6,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
 {
     internal sealed class VectorInstance : IVectorType
     {
-	    public VectorInstance(IType type)
+	    public VectorInstance(AbcFile abc, IType type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -19,32 +19,39 @@ namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
                 throw new ArgumentException("Invalid vector instance");
 
             Type = instance;
-            Param = instance.GenericArguments[0];
+            Parameter = instance.GenericArguments[0];
+		    Name = DefineName(abc);
         }
 
 	    public IGenericInstance Type { get; private set; }
 
-	    public IType Param { get; private set; }
+	    IType ITypeData.Type
+	    {
+			get { return Type; }
+	    }
 
-	    public AbcFile Abc { get; set; }
+	    public IType Parameter { get; private set; }
 
-	    public AbcMultiname Name
-        {
-            get
-            {
-                if (_name != null) return _name;
+	    public AbcMultiname Name { get; private set; }
 
-                //TODO: Process builtin vector types (Vector$double, Vector$int, Vector$uint)
+	    private AbcMultiname DefineName(AbcFile abc)
+		{
+			//TODO: Process builtin vector types (Vector$double, Vector$int, Vector$uint)
+			var param = abc.GetTypeName(Parameter, true);
+			return abc.DefineVectorTypeName(param);
+		}
 
-                var param = Abc.GetTypeName(Param, true);
-                _name = Abc.DefineVectorTypeName(param);
+	    public bool IsDefined(AbcFile abc)
+	    {
+		    return abc.IsDefined(Name);
+	    }
 
-                return _name;
-            }
-        }
-        private AbcMultiname _name;
+	    public ITypeData Import(AbcFile abc)
+	    {
+		    return new VectorInstance(abc, Type);
+	    }
 
-        public override string ToString()
+	    public override string ToString()
         {
             return Type.ToString();
         }

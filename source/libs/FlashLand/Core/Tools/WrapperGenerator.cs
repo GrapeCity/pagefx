@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.IO;
@@ -12,13 +11,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 {
     public static class WrapperGenerator
     {
-        static void EnshureSystemTypes()
-        {
-            //Infrastructure.Deserialize(typeof(int).Assembly.Location, null);
-            LanguageInfrastructure.CLI.Deserialize(GlobalSettings.GetCorlibPath(true), null);
-        }
-
-        public static void Wrap(string path, string outpath, CommandLine cl)
+		public static void Wrap(string path, string outpath, CommandLine cl)
         {
             Wrap(path, outpath, cl.ToString());
         }
@@ -27,7 +20,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         {
             try
             {
-                EnshureSystemTypes();
                 Generate(path, outpath, cls);
             }
             catch (Exception e)
@@ -46,7 +38,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 Wrap(file, outpath, cl);
         }
 
-        static string GetExt(string path)
+		private static string GetExt(string path)
         {
             if (string.IsNullOrEmpty(path)) return "";
             string ext = Path.GetExtension(path);
@@ -56,7 +48,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return ext.ToLower();
         }
 
-        static void CopyResourceFile(string dir, string res, string name)
+		private static void CopyResourceFile(string dir, string res, string name)
         {
             Directory.CreateDirectory(dir);
             var rs = typeof(WrapperGenerator).GetResourceStream(res);
@@ -64,7 +56,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             rs.Save(path);
         }
 
-        static void CopyAbcAttributes(string dir)
+		private static void CopyAbcAttributes(string dir)
         {
             CopyResourceFile(dir, "abc.cs", "abc.cs");
         }
@@ -142,7 +134,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 copts.Output = outpath;
                 copts.Target = CompilerTarget.Library;
 
-                Compile(copts, path);
+	            if (!cl.HasOption("nocsc"))
+	            {
+		            Compile(copts, path);
+	            }
             }
         }
 
@@ -167,7 +162,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return asm;
         }
 
-        static void Compile(CompilerOptions copts, string path)
+        private static void Compile(CompilerOptions copts, string path)
         {
             string olddir = Environment.CurrentDirectory;
             try

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -24,7 +25,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             _generator = gen;
             _abc = gen.Abc;
-            _method = abcMethod.SourceMethod;
+            _method = abcMethod.Method;
             _body = abcMethod.Body;
             _declType = _method.DeclaringType;
 
@@ -87,7 +88,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
         }
 
-        public IInstruction[] Begin()
+        public IEnumerable<IInstruction> Begin()
         {
             var code = new AbcCode(_abc);
 
@@ -103,10 +104,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             InitPointers(code);
 
-            return code.ToArray();
+            return code;
         }
 
-        public IInstruction[] End()
+        public IEnumerable<IInstruction> End()
         {
             return null;
         }
@@ -147,34 +148,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #endregion
 
         #region Delegates
-        AbcMultiname GetMethodName(IMethod method)
+        private AbcMultiname GetMethodName(IMethod method)
         {
-            var name = method.Data as AbcMultiname;
-            if (name != null)
-                return _abc.ImportConst(name);
-
-            var mn = method.Data as AbcMemberName;
-            if (mn != null)
-                return _abc.ImportConst(mn.Name);
-
-            var abcMethod = method.AbcMethod();
-            if (abcMethod != null)
-                return _abc.ImportConst(abcMethod.TraitName);
-
-            return null;
+            var name = method.CallName();
+            return name != null ? _abc.ImportConst(name) : null;
         }
 
-        public IInstruction[] LoadFunction(IMethod method)
+        public IEnumerable<IInstruction> LoadFunction(IMethod method)
         {
             EnsureMethod(method);
             var code = new AbcCode(_abc);
             var name = GetMethodName(method);
             code.GetProperty(name);
             code.CoerceFunction();
-            return code.ToArray();
+            return code;
         }
 
-	    public IInstruction[] InvokeDelegate(IMethod method)
+	    public IEnumerable<IInstruction> InvokeDelegate(IMethod method)
 	    {
 		    var code = new AbcCode(_abc)
 			    {
@@ -184,7 +174,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 		    {
 			    code.Add(InstructionCode.Pop);
 		    }
-		    return code.ToArray();
+		    return code;
 	    }
 
 	    #endregion
@@ -311,12 +301,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             EnsureMethod(method);
         }
 
-		/// <summary>
-		/// Performs local optimization.
-		/// </summary>
-		/// <param name="code">instruction set to optimize</param>
-		/// <returns>optimized instruction set</returns>
-		public IInstruction[] OptimizeBasicBlock(IInstruction[] code)
+	    /// <summary>
+	    /// Performs local optimization.
+	    /// </summary>
+	    /// <param name="code">instruction set to optimize</param>
+	    /// <returns>optimized instruction set</returns>
+	    public IEnumerable<IInstruction> OptimizeBasicBlock(IInstruction[] code)
 		{
 			return LocalOptimizer.OptimizeBasicBlock(_abc, code);
 		}

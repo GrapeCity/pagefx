@@ -1,9 +1,22 @@
-﻿using DataDynamics.PageFX.FlashLand.IL;
+﻿using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Core.Inlining
 {
 	internal sealed class AvmArrayInlines : InlineCodeProvider
 	{
+		[InlineImpl(".ctor")]
+		public static void Ctor(IMethod method, AbcCode code)
+		{
+			code.Construct(method.Parameters.Count);
+		}
+
+		[InlineImpl]
+		public static void get_length(AbcCode code)
+		{
+			code.GetArrayLength();
+		}
+
 		[InlineImpl]
 		public static void get_Item(AbcCode code)
 		{

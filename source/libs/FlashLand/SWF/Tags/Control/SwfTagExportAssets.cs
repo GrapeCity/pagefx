@@ -2,11 +2,11 @@ using System.Xml;
 
 namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
 {
-    /// <summary>
+	/// <summary>
     /// The ExportAssets tag makes portions of a SWF file available for import by other SWF files.
     /// </summary>
     [SwfTag(SwfTagCode.ExportAssets)]
-    public sealed class SwfTagExportAssets : SwfTag
+    public sealed class SwfTagExportAssets : SwfTag, ISwfAssetContainer
     {
         public SwfAssetCollection Assets
         {

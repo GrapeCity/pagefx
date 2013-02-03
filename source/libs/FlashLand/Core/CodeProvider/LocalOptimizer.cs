@@ -549,9 +549,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 		/// <summary>
 		/// Performs local optimization.
 		/// </summary>
+		/// <param name="abc"></param>
 		/// <param name="code">instruction set to optimize</param>
 		/// <returns>optimized instruction set</returns>
-		public static IInstruction[] OptimizeBasicBlock(AbcFile abc, IInstruction[] code)
+		public static IEnumerable<IInstruction> OptimizeBasicBlock(AbcFile abc, IInstruction[] code)
 		{
 			if (code == null)
 				throw new ArgumentNullException("code");
@@ -581,7 +582,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 				}
 			}
 			if (noopt) return code;
-			return list.ToArray();
+			return list;
 		}
 
 #if DUMP_PATOPT

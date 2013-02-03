@@ -45,7 +45,7 @@ namespace System
 	    readonly int [] SeedArray = new int [56];
 
         public Random()
-            : this((int)Avm.Math.random() * 0x7FFFFFFF)
+            : this((int)Math.random() * 0x7FFFFFFF)
         {
         }
 

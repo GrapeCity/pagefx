@@ -38,7 +38,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Globalization;
-using Avm;
+using Native;
 
 namespace System
 {
@@ -47,9 +47,9 @@ namespace System
     {
         #region Fields
         internal int index;
-        internal Avm.String ns;
-        internal Avm.Namespace nsobj;
-        internal Avm.String name;
+        internal string ns;
+        internal Namespace nsobj;
+        internal string name;
 
         int flags;
         internal int kind;
@@ -60,9 +60,9 @@ namespace System
         internal int rank = -1;
 
         FieldInfo[] m_myfields;
-        internal Avm.Function m_myfieldsInit;
+        internal Function m_myfieldsInit;
         
-        Avm.Array ifaces;
+        NativeArray ifaces;
         internal Function m_box;
         internal Function m_unbox;
         internal Function m_copy;
@@ -128,19 +128,19 @@ namespace System
         {
             get
             {
-                if (ns == null || ns.length == 0)
+                if (string.IsNullOrEmpty(ns))
                     return name;
                 return ns + Delimiter + name;
             }
         }
 
-        internal Avm.Class Class
+        internal object Class
         {
             get
             {
                 object global = avm.Findpropstrict(nsobj, name);
                 object klass = avm.GetProperty(global, nsobj, name);
-                return (Avm.Class)klass;
+                return klass;
             }
         }
 
@@ -164,13 +164,6 @@ namespace System
             return obj;
         }
 
-        public static implicit operator Avm.Class(Type type)
-        {
-            if (type == null)
-                throw new ArgumentNullException("type");
-            return type.Class;
-        }
-
         public object CreateInstance()
         {
             if (m_create != null)
@@ -184,26 +177,26 @@ namespace System
             return avm.Construct(global, nsobj, name);
         }
 
-        internal object GetFieldValue(Avm.Namespace fns, Avm.String fname)
+        internal object GetFieldValue(Namespace fns, string fname)
         {
             object global = avm.Findpropstrict(nsobj, name);
             object klass = avm.GetProperty(global, nsobj, name);
             return avm.GetProperty(klass, fns, fname);
         }
 
-        internal void SetFieldValue(Avm.Namespace fns, Avm.String fname, object value)
+		internal void SetFieldValue(Namespace fns, string fname, object value)
         {
             object global = avm.Findpropstrict(nsobj, name);
             object klass = avm.GetProperty(global, nsobj, name);
             avm.SetProperty(klass, fns, fname, value);
         }
 
-        internal Avm.Array GetFieldValues(object obj)
+		internal NativeArray GetFieldValues(object obj)
         {
             FieldInfo[] fields = MyFields;
             if (fields == null) return null;
             int n = fields.Length;
-            Avm.Array arr = avm.NewArray(n);
+			NativeArray arr = new NativeArray(n);
             for (int i = 0; i < n; ++i)
                 arr[i] = fields[i].GetValue(obj);
             return arr;
@@ -1189,9 +1182,8 @@ namespace System
             }
         }
 
-        internal Avm.Function m_methodsInit;
-        internal Avm.Function m_constructorsInit;
-        
+        internal Function m_methodsInit;
+        internal Function m_constructorsInit;
 
         private bool CheckSig(bool isCtor, MethodBase method, string name, BindingFlags bindingAttr, CallingConventions callingConvention, Type[] types, ParameterModifier[] modifiers)
         {
@@ -1328,7 +1320,7 @@ namespace System
             return GetProperties(DefaultBindingFlags);
         }
 
-        internal Avm.Function m_propertiesInit;
+        internal Function m_propertiesInit;
         internal PropertyInfo[] m_properties;
 
         public virtual PropertyInfo[] GetProperties(BindingFlags bindingAttr)

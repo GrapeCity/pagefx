@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
 using DataDynamics.PageFX.FlashLand.Avm;
+using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.IL;
 
@@ -28,7 +30,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 				if (method.Name == "fromCharCode")
 					return true;
 			}
-            if (type.IsNativeType("Class"))
+            if (type.Is(AvmTypeCode.Class))
             {
                 if (method.Name == "Find")
                     return true;
@@ -61,7 +63,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 				return;
 			}
 
-            if (type.IsNativeType("Class"))
+            if (type.Is(AvmTypeCode.Class))
             {
                 if (method.Name == "Find")
                 {
@@ -76,57 +78,76 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         private static bool HasReceiver(IMethod method, bool newobj)
         {
-            if (newobj) return true;
+            if (newobj)
+            {
+				var type = method.DeclaringType;
+				if (type.Is(AvmTypeCode.Object))
+				{
+					// all avm object ctors should be implemented via newobject instruction
+					return false;
+				}
+				return true;
+            }
             
             var tag = method.Data;
-            if (tag == null) return false;
+            if (tag == null)
+            {
+	            return false;
+            }
 
             //NOTE: Inline code!!!
-            if (tag is AbcCode)
-                return HasGlobalReceiver(method);
+	        var inlineCall = tag as InlineCall;
+	        if (inlineCall != null)
+	        {
+		        return inlineCall.TargetType != null || HasGlobalReceiver(method);
+	        }
 
-            return true;
+	        return true;
         }
 
-        public IInstruction[] LoadReceiver(IMethod method, bool newobj)
+        public IEnumerable<IInstruction> LoadReceiver(IMethod method, bool newobj)
         {
             EnsureMethod(method);
 
-            if (!HasReceiver(method, newobj)) return null;
+	        if (!HasReceiver(method, newobj))
+	        {
+		        return null;
+	        }
 
-            var code = new AbcCode(_abc);
+	        var code = new AbcCode(_abc);
             CallStaticCtor(code, method);
 
             if (newobj)
             {
                 LoadCtorReceiver(code, method);
-                return code.ToArray();
+                return code;
             }
 
-            var type = method.DeclaringType;
-            EnsureType(type);
+	        if (LoadSpecReceiver(method, code))
+	        {
+		        return code;
+	        }
 
-            if (LoadSpecReceiver(method, code))
-                return code.ToArray();
+	        var inlineCall = method.Data as InlineCall;
+			if (inlineCall != null && inlineCall.TargetType != null)
+			{
+				code.Getlex(inlineCall.TargetType);
+				return code;
+			}
 
-            var tag = method.Data;
-            
-            var mname = tag as AbcMultiname;
-            if (mname != null)
-            {
-                code.FindPropertyStrict(mname);
-                return code.ToArray();
-            }
+	        if (method.IsStaticCall())
+	        {
+		        LoadStaticInstance(code, method.DeclaringType);
+		        return code;
+	        }
 
-            if (method.IsStaticCall())
-            {
-                var mn = tag as AbcMemberName;
-                if (mn != null)
-                    code.Getlex(mn.Type);
-                else
-                    LoadStaticInstance(code, type);
-                return code.ToArray();
-            }
+	        // TODO: check that code below is not needed now and remove it
+	        var mname = method.Data as AbcMultiname;
+			if (mname != null)
+			{
+				code.FindPropertyStrict(mname);
+				return code;
+			}
 
             //NOTE:
             //Primitive types should be boxed before calling of any instance method
@@ -137,10 +158,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             //    BoxPrimitive(code, type, false);
             //}
 
-            return code.ToArray();
+            return code;
         }
 
-        bool LoadSpecReceiver(IMethod method, AbcCode code)
+        private bool LoadSpecReceiver(IMethod method, AbcCode code)
         {
             if (HasGlobalReceiver(method))
             {
@@ -154,7 +175,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             var vec = typeTag as IVectorType;
             if (vec != null)
             {
-                EnsureType(vec.Param);
+                EnsureType(vec.Parameter);
                 if (method.IsStatic)
                 {
                     code.LoadGenericClass(vec.Name);
@@ -165,7 +186,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return false;
         }
 
-        void LoadCtorReceiver(AbcCode code, IMethod method)
+		private void LoadCtorReceiver(AbcCode code, IMethod method)
         {
             if (!method.IsConstructor)
                 throw new ArgumentException("method is not ctor", "method");
@@ -178,6 +199,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 code.LoadGenericClass(vec.Name);
                 return;
             }
+
+	        var nativeType = declType.Data as NativeType;
+			if (nativeType != null)
+			{
+				code.Getlex(nativeType.Name);
+				return;
+			}
 
             var abcMethod = method.AbcMethod();
             if (abcMethod == null)
@@ -198,13 +226,13 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         #endregion
 
         #region BeginCall/EndCall
-        public IInstruction[] BeginCall(IMethod method)
+        public IEnumerable<IInstruction> BeginCall(IMethod method)
         {
             EnsureMethod(method);
             return null;
         }
 
-        public IInstruction[] EndCall(IMethod method)
+        public IEnumerable<IInstruction> EndCall(IMethod method)
         {
             var code = new AbcCode(_abc);
 
@@ -213,12 +241,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 _generator.FlexAppBuilder.CtorAfterSuperCall(code);
             }
 
-            return code.ToArray();
+            return code;
         }
         #endregion
 
         #region CallMethod
-        public IInstruction[] CallMethod(IType receiverType, IMethod method, CallFlags flags)
+        public IEnumerable<IInstruction> CallMethod(IType receiverType, IMethod method, CallFlags flags)
         {
             EnsureMethod(method);
 
@@ -231,35 +259,35 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
 
             //NOTE: Check inline code
-            var code = tag as AbcCode;
-            if (code != null)
+            var inlineCall = tag as InlineCall;
+			if (inlineCall != null)
             {
-				//NOTE: We need to clone instructions since inline code could be shared and reusable
-                return code.Clone().ToArray();
+				//NOTE: We need to clone instructions since inline code should be shared and reusable
+                return inlineCall.InlineCode.Clone().ToArray();
             }
 
-            code = new AbcCode(_abc);
+            var code = new AbcCode(_abc);
 
             if ((flags & CallFlags.Newobj) != 0)
             {
                 NewObject(code, method);
-                return code.ToArray();
+                return code;
             }
 
             if (SuperCall(code, method))
-                return code.ToArray();
+                return code;
 
             if ((flags & CallFlags.Basecall) != 0)
             {
                 BaseCall(code, receiverType, method);
-                return code.ToArray();
+                return code;
             }
 
-            var prop = GetCallName(tag);
-            if (prop != null)
+	        var name = GetMethodName(method);
+            if (name != null)
             {
-                Call(code, method, prop, flags);
-                return code.ToArray();
+                Call(code, method, name, flags);
+                return code;
             }
 
             throw new NotImplementedException();
@@ -280,7 +308,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         {
             var instance = DefineAbcInstance(receiverType);
 
-            var mname = GetCallName(method.Data);
+            var mname = GetMethodName(method);
             string prefix = "$C" + instance.Index;
             prefix += GetBaseCallPrefix(method);
 
@@ -505,8 +533,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             {
                 if (abcMethod.IsInitializer) //default ctor!
                 {
-                    code.Construct(method.Parameters.Count);
-                    return;
+	                if (type.Is(AvmTypeCode.Object))
+	                {
+		                code.NewObject(0);
+	                }
+	                else
+	                {
+		                code.Construct(method.Parameters.Count);
+	                }
+	                return;
                 }
 
                 if (type.Is(SystemTypeCode.String))
@@ -595,22 +630,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             get { return _declType.Is(SystemTypeCode.String); }
         }
 
-        private static AbcMultiname GetCallName(object tag)
-        {
-            var prop = tag as AbcMultiname;
-            if (prop != null)
-                return prop;
-
-            var mn = tag as AbcMemberName;
-            if (mn != null)
-                return mn.Name;
-
-            var m = tag as AbcMethod;
-            if (m != null)
-                return m.TraitName;
-
-            return null;
-        }
         #endregion
     }
 }

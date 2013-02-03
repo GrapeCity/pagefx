@@ -32,6 +32,7 @@
 
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Native;
 
 namespace System.Reflection
 {
@@ -40,7 +41,7 @@ namespace System.Reflection
     {
         internal object[] m_customAttrs;
 
-        public Avm.Function m_customAttrsInit;
+        public Function m_customAttrsInit;
 
         internal object[] CustomAttrs
         {

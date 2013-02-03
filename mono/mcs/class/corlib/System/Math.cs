@@ -1,5 +1,4 @@
 //CHANGED
-
 //
 // System.Math.cs
 //
@@ -33,8 +32,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Runtime.CompilerServices;
+using PageFX;
+
 namespace System
 {
+	[InlineTargetAttribute("Math")]
 #if NET_2_0
 	public static class Math
 	{
@@ -104,16 +107,10 @@ namespace System
 		}
 #endif
 
-        public static double Ceiling(double a)
-        {
-            return Avm.Math.ceil(a);
-            //double result = Floor(a);
-            //if (result != a) {
-            //    result++;
-            //}
-            //return result;
-        }
-
+		[InlineFunction("ceil")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Ceiling(double a);
+        
         // The following methods are defined in ECMA specs but they are
         // not implemented in MS.NET. However, they are in MS.NET 1.1
 
@@ -136,11 +133,10 @@ namespace System
         }
 #endif
 
-        public static double Floor(double value)
-        {
-            return Avm.Math.floor(value);
-        }
-
+		[InlineFunction("floor")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Floor(double value);
+        
         public static double IEEERemainder(double x, double y)
         {
             double r;
@@ -475,21 +471,18 @@ namespace System
         }
 
         // internal calls
-        public static double Sin(double x)
-        {
-            return Avm.Math.sin(x);
-        }
+		[InlineFunction("sin")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Sin(double x);
 
-        public static double Cos(double x)
-        {
-            return Avm.Math.cos(x);
-        }
+		[InlineFunction("cos")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Cos(double x);
 
-        public static double Tan(double x)
-        {
-            return Avm.Math.tan(x);
-        }
-
+		[InlineFunction("tan")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Tan(double x);
+        
         public static double Sinh(double x)
         {
             return (Pow(E, x) - Pow(E, -x)) / 2;
@@ -511,50 +504,51 @@ namespace System
             return (a - b) / (a + b);
         }
 
-        public static double Acos(double x)
-        {
-            return Avm.Math.acos(x);
-        }
+		[InlineFunction("acos")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Acos(double x);
 
-        public static double Asin(double x)
-        {
-            return Avm.Math.asin(x);
-        }
+		[InlineFunction("asin")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Asin(double x);
 
-        public static double Atan(double x)
-        {
-            return Avm.Math.atan(x);
-        }
+		[InlineFunction("atan")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Atan(double x);
 
-        public static double Atan2(double y, double x)
-        {
-            return Avm.Math.atan2(y, x);
-        }
+		[InlineFunction("atan2")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Atan2(double y, double x);
 
-        public static double Exp(double x)
-        {
-            return Avm.Math.exp(x);
-        }
+		[InlineFunction("exp")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Exp(double x);
 
-        public static double Log(double x)
-        {
-            return Avm.Math.log(x);
-        }
-
+		[InlineFunction("log")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Log(double x);
+        
         public static double Log10(double x)
         {
             return Log(x, 10.0);
         }
 
-        public static double Pow(double x, double y)
+		public static double Pow(double x, double y)
         {
             if (Double.IsNaN(x)) return x;
-            return Avm.Math.pow(x, y);
+            return pow(x, y);
         }
 
-        public static double Sqrt(double x)
-        {
-            return Avm.Math.sqrt(x);
-        }
+		[InlineFunction("pow")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		private static extern double pow(double x, double y);
+
+		[InlineFunction("sqrt")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern double Sqrt(double x);
+
+		[InlineFunction("random")]
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		internal static extern double random();
     }
 }

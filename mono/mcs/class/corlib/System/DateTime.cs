@@ -33,7 +33,7 @@ using System.Collections;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using Avm;
+using Native;
 
 namespace System
 {
@@ -265,7 +265,7 @@ namespace System
 
         #region Constructors
         internal DateTime(Date d)
-            : this(d.fullYear, d.month + 1, d.DayOfMonth,
+            : this(d.fullYear, d.month + 1, d.date,
                    d.hours, d.minutes, d.seconds, d.milliseconds)
         {
         }

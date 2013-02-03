@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
@@ -8,7 +9,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 {
     partial class CodeProviderImpl
     {
-        public IInstruction[] NewArray(IType elemType)
+        public IEnumerable<IInstruction> NewArray(IType elemType)
         {
             //NOTE:
             //array size must be on stack [..., size]
@@ -19,31 +20,31 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             _body.Flags |= AbcBodyFlags.HasNewArrayInstructions;
             
-            return code.ToArray();
+            return code;
         }
 
-        public IInstruction[] SetArrayElem(IType elemType)
+        public IEnumerable<IInstruction> SetArrayElem(IType elemType)
         {
             EnsureType(elemType);
             var code = new AbcCode(_abc);
             code.SetArrayElem(false);
-            return code.ToArray();
+            return code;
         }
 
-        public IInstruction[] GetArrayElem(IType elemType)
+        public IEnumerable<IInstruction> GetArrayElem(IType elemType)
         {
             //stack [arr, index]
             EnsureType(elemType);
             var code = new AbcCode(_abc);
             code.GetArrayElem(elemType, false);
-            return code.ToArray();
+            return code;
         }
 
-        public IInstruction[] GetArrayLength()
+        public IEnumerable<IInstruction> GetArrayLength()
         {
             var code = new AbcCode(_abc);
             code.Call(ArrayMethodId.GetLength);
-            return code.ToArray();
+            return code;
         }
     }
 }

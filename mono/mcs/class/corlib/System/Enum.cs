@@ -36,7 +36,7 @@
 
 using System.Collections;
 using System.Globalization;
-using Avm;
+using Native;
 
 namespace System
 {

@@ -32,18 +32,18 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         #region BeginTry, EndTry
 
-        public IInstruction[] BeginTry()
+        public IEnumerable<IInstruction> BeginTry()
         {
             return new IInstruction[0];
         }
 
-        public IInstruction[] EndTry(bool generateExit, out IInstruction jump)
+        public IEnumerable<IInstruction> EndTry(bool generateExit, out IInstruction jump)
         {
             var code = new AbcCode(_abc);
         	jump = generateExit
 					? code.Goto() //exit from protected region
         	       	: null;
-            return code.ToArray();
+            return code;
         }
 
         #endregion
@@ -140,7 +140,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
         	return block.Owner.Handlers.Any(handler => IsVesException(handler.ExceptionType));
         }
 
-        public IInstruction[] BeginCatch(ISehHandlerBlock handlerBlock)
+        public IEnumerable<IInstruction> BeginCatch(ISehHandlerBlock handlerBlock)
         {
             var tryBlock = handlerBlock.Owner;
             
@@ -170,10 +170,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 _sehsToResolve.Add(tryBlock);
             }
 
-            return code.ToArray();
+            return code;
         }
 
-		public IInstruction[] EndCatch(ISehHandlerBlock handlerBlock, bool isLast, bool generateExit, out IInstruction jump)
+		public IEnumerable<IInstruction> EndCatch(ISehHandlerBlock handlerBlock, bool isLast, bool generateExit, out IInstruction jump)
 		{
 			var ci = handlerBlock.GetCatchInfo();
 			
@@ -189,7 +189,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             if (generateExit && !isLast)
                 jump = code.Goto();
 
-            return code.ToArray();
+            return code;
         }
 
         void RouteException(AbcCode code, ISehHandlerBlock block, int var)
@@ -279,7 +279,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         #region BeginFinally, EndFinally, BeginFault, EndFault
 
-		IInstruction[] BeginFinally(ISehHandlerBlock block, bool fault)
+		private IEnumerable<IInstruction> BeginFinally(ISehHandlerBlock block, bool fault)
         {
             var e = new AbcExceptionHandler();
             _body.Exceptions.Add(e);
@@ -334,10 +334,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
             gotoBody.GotoNext(end);
             
-            return code.ToArray();
+            return code;
         }
 
-		IInstruction[] EndFinally(ISehHandlerBlock block, bool fault)
+		private IEnumerable<IInstruction> EndFinally(ISehHandlerBlock block, bool fault)
         {
         	var handlerInfo = block.GetHandlerInfo();
         	var ci = handlerInfo.CatchInfo;
@@ -368,25 +368,25 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                 br.GotoNext(end);
             }
 
-            return code.ToArray();
+            return code;
         }
 
-		public IInstruction[] BeginFinally(ISehHandlerBlock block)
+		public IEnumerable<IInstruction> BeginFinally(ISehHandlerBlock block)
         {
             return BeginFinally(block, false);
         }
 
-		public IInstruction[] EndFinally(ISehHandlerBlock block)
+		public IEnumerable<IInstruction> EndFinally(ISehHandlerBlock block)
         {
             return EndFinally(block, false);
         }
 
-		public IInstruction[] BeginFault(ISehHandlerBlock block)
+		public IEnumerable<IInstruction> BeginFault(ISehHandlerBlock block)
         {
             return BeginFinally(block, true);
         }
 
-		public IInstruction[] EndFault(ISehHandlerBlock block)
+		public IEnumerable<IInstruction> EndFault(ISehHandlerBlock block)
         {
             return EndFinally(block, true);
         }
@@ -414,31 +414,31 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             }
         }
 
-        public IInstruction[] Throw()
+        public IEnumerable<IInstruction> Throw()
         {
             var code = new AbcCode(_abc);
             InsertExceptionBreak(code);
             code.Throw();
-            return code.ToArray();
+            return code;
         }
 
-		public IInstruction[] Rethrow(ISehBlock block)
+		public IEnumerable<IInstruction> Rethrow(ISehBlock block)
         {
 			var ci = block.GetCatchInfo();
             var code = new AbcCode(_abc);
             code.GetLocal(ci.ExceptionVar);
             KillExceptionVariable(code, ci);
             code.Throw();
-            return code.ToArray();
+            return code;
         }
 
-	    public IInstruction[] ThrowTypeLoadException(string message)
+	    public IEnumerable<IInstruction> ThrowTypeLoadException(string message)
         {
             var code = new AbcCode(_abc);
             InsertExceptionBreak(code);
 			var exceptionType = _generator.Corlib.GetType(CorlibTypeId.TypeLoadException);
             code.ThrowException(exceptionType, message);
-            return code.ToArray();
+            return code;
         }
 
         #endregion

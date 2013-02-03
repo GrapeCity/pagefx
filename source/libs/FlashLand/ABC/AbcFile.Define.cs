@@ -31,7 +31,8 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         /// <param name="name">name to check</param>
         /// <returns></returns>
         public bool IsDefined(AbcMultiname name)
-        {
+    	{
+    		if (name == null) return false;
             int index = name.Index;
             if (index < 0 || index >= Multinames.Count) return false;
             return ReferenceEquals(Multinames[index], name);
@@ -93,12 +94,25 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             var tag = type.Data;
             if (tag == null) return false;
             if (tag is ISpecialType) return true;
+
             var instance = tag as AbcInstance;
-            if (instance != null)
-                return IsDefined(instance);
-            var mname = tag as AbcMultiname;
+	        if (instance != null)
+	        {
+		        return IsDefined(instance);
+	        }
+
+	        var data = tag as ITypeData;
+			if (data != null)
+			{
+				return data.IsDefined(this);
+			}
+
+			var mname = tag as AbcMultiname;
             if (mname != null)
-                return IsDefined(mname);
+            {
+				return IsDefined(mname);
+            }
+                
             return false;
         }
 
@@ -111,31 +125,16 @@ namespace DataDynamics.PageFX.FlashLand.Abc
         {
             var tag = method.Data;
             if (tag == null) return false;
-
-            var code = tag as AbcCode;
-            if (code != null)
-                //return code.abc == this;
-                return true;
+	        if (tag is InlineCall) return true;
 
             var abcMethod = tag as AbcMethod;
-            if (abcMethod != null)
-                return IsDefined(abcMethod);
+	        if (abcMethod != null)
+	        {
+		        return IsDefined(abcMethod);
+	        }
 
-            var name = tag as AbcMultiname;
-            if (name != null)
-                return IsDefined(name);
-
-            var mn = tag as AbcMemberName;
-            if (mn != null)
-            {
-                if (!IsDefined(mn.Type) || !IsDefined(mn.Name))
-                {
-                    method.Data = new AbcMemberName(ImportConst(mn.Type), ImportConst(mn.Name));
-                }
-                return true;
-            }
-
-            return false;
+	        var call = tag as IMethodCall;
+			return call != null ? IsDefined(call.Name) : IsDefined(tag as AbcMultiname);
         }
 
         public bool IsDefined(IField field)
@@ -593,7 +592,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         #region Builtin Types
 
-	    public BuiltinTypes BuiltinTypes
+	    internal BuiltinTypes BuiltinTypes
         {
             get { return _builtinTypes ?? (_builtinTypes = new BuiltinTypes(this)); }
         }
@@ -634,35 +633,25 @@ namespace DataDynamics.PageFX.FlashLand.Abc
                             return BuiltinTypes.RealBoolean;
 
                         case SystemTypeCode.Int8:
-                            if (AvmConfig.SupportSmallIntegers)
-                                return BuiltinTypes.Int8;
-                            return BuiltinTypes.Int32;
+                            return AvmConfig.SupportSmallIntegers ? BuiltinTypes.Int8 : BuiltinTypes.Int32;
 
-                        case SystemTypeCode.Int16:
-                            if (AvmConfig.SupportSmallIntegers)
-                                return BuiltinTypes.Int16;
-                            return BuiltinTypes.Int32;
+	                    case SystemTypeCode.Int16:
+                            return AvmConfig.SupportSmallIntegers ? BuiltinTypes.Int16 : BuiltinTypes.Int32;
 
-                        case SystemTypeCode.Int32:
+	                    case SystemTypeCode.Int32:
                         case SystemTypeCode.IntPtr:
                             return BuiltinTypes.Int32;
 
                         case SystemTypeCode.UInt8:
-                            if (AvmConfig.SupportSmallIntegers)
-                                return BuiltinTypes.UInt8;
-                            return BuiltinTypes.UInt32;
+                            return AvmConfig.SupportSmallIntegers ? BuiltinTypes.UInt8 : BuiltinTypes.UInt32;
 
-                        case SystemTypeCode.UInt16:
-                            if (AvmConfig.SupportSmallIntegers)
-                                return BuiltinTypes.UInt16;
-                            return BuiltinTypes.UInt32;
+	                    case SystemTypeCode.UInt16:
+                            return AvmConfig.SupportSmallIntegers ? BuiltinTypes.UInt16 : BuiltinTypes.UInt32;
 
-                        case SystemTypeCode.Char:
-                            if (AvmConfig.SupportSmallIntegers)
-                                return BuiltinTypes.UInt16;
-                            return BuiltinTypes.UInt32;
+	                    case SystemTypeCode.Char:
+                            return AvmConfig.SupportSmallIntegers ? BuiltinTypes.UInt16 : BuiltinTypes.UInt32;
 
-                        case SystemTypeCode.UInt32:
+	                    case SystemTypeCode.UInt32:
                         case SystemTypeCode.UIntPtr:
                             return BuiltinTypes.UInt32;
 

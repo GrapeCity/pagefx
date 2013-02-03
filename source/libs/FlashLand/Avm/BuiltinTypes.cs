@@ -6,67 +6,7 @@ using DataDynamics.PageFX.FlashLand.IL;
 
 namespace DataDynamics.PageFX.FlashLand.Avm
 {
-    #region enum AvmTypeCode
-    public enum AvmTypeCode
-    {
-        [QName("void")]
-        Void,
-
-        Boolean,
-
-		[QName("sbyte")]
-        Int8,
-
-		[QName("byte")]
-        UInt8,
-
-		[QName("short")]
-        Int16,
-
-		[QName("ushort")]
-        UInt16,
-
-		[QName("int")]
-        Int32,
-
-		[QName("uint")]
-        UInt32,
-
-		[QName("long")]
-        Int64,
-
-		[QName("ulong")]
-        UInt64,
-
-        Number,
-
-		[QName("float")]
-        Float,
-
-		[QName("double")]
-        Double,
-
-		[QName("decimal")]
-        Decimal,
-
-        String,
-        Object,
-        Error,
-        Array,
-        Function,
-        Class,
-        Namespace,
-        TypeError,
-        XML,
-        XMLList,
-        QName,
-
-		[QName(AS3.Vector.Namespace, AS3.Vector.Name)]
-		Verctor
-    }
-    #endregion
-
-    public sealed class BuiltinTypes
+	internal sealed class BuiltinTypes
     {
         private readonly AbcFile _abc;
         private static readonly QName[] Names;
@@ -87,6 +27,12 @@ namespace DataDynamics.PageFX.FlashLand.Avm
         }
 
         private readonly AbcMultiname[] _types;
+
+		public static string GetFullName(AvmTypeCode typeCode)
+		{
+			int i = (int)typeCode;
+			return Names[i].FullName;
+		}
 
         public BuiltinTypes(AbcFile abc)
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -18,7 +19,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
             return new IInstruction[] {new Instruction(code, 0)};
         }
 
-        public IInstruction[] Branch(BranchOperator op, IType left, IType right)
+        public IEnumerable<IInstruction> Branch(BranchOperator op, IType left, IType right)
         {
             if (op.IsUnary())
             {
@@ -30,7 +31,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     //code.Add(InstructionCode.Ifeq);
                     code.IsNull(left, right);
                     code.Add(InstructionCode.Iftrue);
-                    return code.ToArray();
+                    return code;
                 }
 
                 if (op == BranchOperator.NotNull)
@@ -41,7 +42,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     //code.Add(InstructionCode.Ifne);
                     code.IsNull(left, right);
                     code.Add(InstructionCode.Iffalse);
-                    return code.ToArray();
+                    return code;
                 }
 
                 if (left.IsDecimalOrInt64())
@@ -55,7 +56,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     //code.Swap();
                     code.Call(abcOp);
                     code.Add(isTrue ? InstructionCode.Iftrue : InstructionCode.Iffalse);
-                    return code.ToArray();
+                    return code;
                 }
             }
             else if (InternalTypeExtensions.IsDecimalOrInt64(left, right))
@@ -64,7 +65,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 				var opm = _generator.Operators.Build(op, left, right);
                 code.Call(opm);
                 code.Add(InstructionCode.Iftrue);
-                return code.ToArray();
+                return code;
             }
 
             switch (op)
@@ -128,7 +129,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
 
         public bool DonotCopyReturnValue { get; set; }
 
-        public IInstruction[] Return(bool isvoid)
+        public IEnumerable<IInstruction> Return(bool isvoid)
         {
             var code = new AbcCode(_abc);
             if (isvoid)
@@ -142,7 +143,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
                     code.CopyValue(_method.Type);
                 code.ReturnValue();
             }
-            return code.ToArray();
+            return code;
         }
 
         public bool IsSwitchSupported

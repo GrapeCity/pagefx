@@ -12,9 +12,6 @@ namespace DataDynamics.PageFX.FlashLand.Core
     /// </summary>
     internal sealed class AssemblyCustomData
     {
-		private AbcInstance _objectInstance;
-		private AbcInstance _errorInstance;
-
         public static AssemblyCustomData GetInstance(IAssembly assembly)
         {
 			if (assembly == null) return null;
@@ -45,7 +42,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
         /// <summary>
         /// ABC file assotiated with assembly.
         /// </summary>
-        public AbcFile ABC
+        public AbcFile Abc
         {
             get
             {
@@ -89,18 +86,6 @@ namespace DataDynamics.PageFX.FlashLand.Core
             get { return SWC != null; }
         }
 
-	    public AbcInstance ObjectInstance
-	    {
-		    get { return _objectInstance ?? (_objectInstance = ResolveObjectInstance()); }
-		    set { _objectInstance = value; }
-	    }
-
-	    public AbcInstance ErrorInstance
-	    {
-		    get { return _errorInstance ?? (_errorInstance = ResolveErrorInstance()); }
-		    set { _errorInstance = value; }
-	    }
-
 	    public override bool Equals(object obj)
         {
             if (obj == this) return true;
@@ -121,28 +106,6 @@ namespace DataDynamics.PageFX.FlashLand.Core
         {
             return Assembly.ToString();
         }
-
-		private AbcInstance ResolveObjectInstance()
-		{
-			if (!Assembly.IsCorlib)
-				return Assembly.Corlib().CustomData().ObjectInstance;
-			return ResolveInstance("Avm.Object");
-		}
-
-		private AbcInstance ResolveErrorInstance()
-		{
-			if (!Assembly.IsCorlib)
-				return Assembly.Corlib().CustomData().ErrorInstance;
-			return ResolveInstance("Avm.Error");
-		}
-
-		private AbcInstance ResolveInstance(string fullname)
-		{
-			var type = Assembly.FindType(fullname);
-			if (type == null) return null;
-			// type should be linked on type load
-			return type.AbcInstance();
-		}
     }
 
 	[Flags]

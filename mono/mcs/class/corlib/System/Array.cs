@@ -41,6 +41,8 @@ using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 #endif
 
+using Native;
+
 namespace System
 {
     [Serializable]
@@ -49,22 +51,22 @@ namespace System
     public class Array : ICloneable, IList
     {
         #region Fields
-        internal Avm.Array m_value;
+        internal NativeArray m_value;
         private int m_rank;
         private int m_type;
-        private Avm.Function m_box;
-        private Avm.Function m_unbox;
+        private Function m_box;
+        private Function m_unbox;
         
         // only used for multidimensional arrays
-        private Avm.Array m_lbounds;
-        private Avm.Array m_lengths;
-        private Avm.Array m_dims;
+		private NativeArray m_lbounds;
+		private NativeArray m_lengths;
+		private NativeArray m_dims;
         #endregion
 
-        public static implicit operator Avm.Array(Array arr)
-        {
-	        return arr == null ? null : arr.m_value;
-        }
+//        public static implicit operator Avm.Array(Array arr)
+//        {
+//	        return arr == null ? null : arr.m_value;
+//        }
 
 	    internal void Push(object value)
         {
@@ -89,7 +91,7 @@ namespace System
         #region Properties
         public int Length
         {
-            get { return (int)m_value.length; }
+			get { return (int)m_value.length; }
         }
 
 #if NET_1_1
@@ -104,8 +106,8 @@ namespace System
             if (dimension < 0 || dimension >= m_rank)
                 throw new IndexOutOfRangeException();
             if (m_lengths == null)
-                return (int)m_value.length;
-            return m_lengths.GetInt32(dimension);
+				return (int)m_value.length;
+			return m_lengths.GetInt32(dimension);
         }
 
 #if NET_1_1
@@ -127,7 +129,7 @@ namespace System
                 throw new IndexOutOfRangeException("dimension < 0 || dimension >= Rank");
             if (m_lbounds == null)
                 return 0;
-            return m_lbounds.GetInt32(dimension);
+			return m_lbounds.GetInt32(dimension);
         }
 
         public int GetUpperBound(int dimension)
@@ -145,21 +147,22 @@ namespace System
 
         internal object GetElem(int index)
         {
-            if (unchecked((uint)index) >= m_value.length)
+			if (unchecked((uint)index) >= m_value.length)
                 throw new IndexOutOfRangeException();
-            return m_value[index];
+			return m_value[index];
         }
 
+		//TODO: inline this calls by compiler
         internal object GetElemFast(int index)
         {
-            return m_value[index];
+			return m_value[index];
         }
 
         internal object GetItem(int index)
         {
-            if (unchecked((uint)index) >= m_value.length)
+			if (unchecked((uint)index) >= m_value.length)
                 throw new ArgumentOutOfRangeException("index");
-            return m_value[index];
+			return m_value[index];
         }
 
         internal T GetElemT<T>(int index)
@@ -167,12 +170,12 @@ namespace System
             //NOTE: it is used only in Enumerator<T>
             //if (unchecked((uint)index) >= m_value.length)
             //    throw new IndexOutOfRangeException();
-            return (T)m_value[index];
+			return (T)m_value[index];
         }
 
         internal void SetElem(int index, object value)
         {
-            if (unchecked((uint)index) >= m_value.length)
+			if (unchecked((uint)index) >= m_value.length)
                 throw new IndexOutOfRangeException();
             m_value[index] = value;
         }
@@ -184,9 +187,9 @@ namespace System
 
         internal void SetItem(int index, object value)
         {
-            if (unchecked((uint)index) >= m_value.length)
+			if (unchecked((uint)index) >= m_value.length)
                 throw new ArgumentOutOfRangeException();
-            m_value[index] = value;
+			m_value[index] = value;
         }
         #endregion
 
@@ -382,13 +385,13 @@ namespace System
         {
             get
             {
-                if (index < 0 || index >= m_value.length)
+				if (index < 0 || index >= m_value.length)
                     throw new ArgumentOutOfRangeException("index");
                 return GetValueImpl(index);
             }
             set
             {
-                if (index < 0 || index >= m_value.length)
+				if (index < 0 || index >= m_value.length)
                     throw new ArgumentOutOfRangeException("index");
                 SetValueImpl(value, index);
             }
@@ -536,26 +539,26 @@ namespace System
         #endregion
 
         #region GetValue, SetValue
-        private int ToFlatIndex(Avm.Array indices)
+        private int ToFlatIndex(NativeArray indices)
         {
             if (indices == null)
                 throw new ArgumentNullException("indices");
-            if (m_rank != indices.Length)
+			if (m_rank != indices.length)
                 throw new RankException();
             int flatIndex = 0;
             int i, index, lb;
             for (i = 0; i < m_rank - 1; ++i)
             {
-                index = indices.GetInt32(i);
+				index = indices.GetInt32(i);
                 lb = GetLowerBound(i);
                 if (index < lb || index > GetUpperBound(i))
                     throw new IndexOutOfRangeException(
                         Locale.GetText("Index has to be between upper and lower bound of the array."));
-                flatIndex += (index - lb) * m_dims.GetInt32(i);
+				flatIndex += (index - lb) * m_dims.GetInt32(i);
             }
 
             i = m_rank - 1;
-            index = indices.GetInt32(i);
+			index = indices.GetInt32(i);
             lb = GetLowerBound(i);
             if (index < lb || index > GetUpperBound(i))
                 throw new IndexOutOfRangeException(
@@ -610,8 +613,8 @@ namespace System
                 throw new IndexOutOfRangeException(
                     Locale.GetText("Index has to be between upper and lower bound of the array."));
 
-            return (i0 - lb0) * m_dims.GetInt32(0)
-                   + (i1 - lb1) * m_dims.GetInt32(1)
+			return (i0 - lb0) * m_dims.GetInt32(0)
+				   + (i1 - lb1) * m_dims.GetInt32(1)
                    + (i2 - lb2);
         }
 
@@ -630,10 +633,10 @@ namespace System
         // CAUTION! No bounds checking!
         internal object GetValueImpl(int pos)
         {
-            object v = m_value[pos];
+			object v = m_value[pos];
             if (m_box != null)
             {
-                return m_box.call(null, v);
+				return m_box.call(null, v);
             }
             return v;
         }
@@ -647,11 +650,11 @@ namespace System
                 {
                     if (value == null)
                         throw new ArgumentNullException("value");
-                    value = m_unbox.call(null, value);
+					value = m_unbox.call(null, value);
                 }
-                m_value[pos] = value;
+				m_value[pos] = value;
             }
-            catch (Avm.Error)
+            catch
             {
                 throw new InvalidCastException();
             }
@@ -799,15 +802,15 @@ namespace System
             int n = lengths.Length;
             arr.m_rank = n;
 
-            arr.m_lengths = avm.CopyArray(lengths.m_value);
+			arr.m_lengths = lengths.m_value.Copy();
             if (bounds != null)
-                arr.m_lbounds = avm.CopyArray(bounds.m_value);
+				arr.m_lbounds = bounds.m_value.Copy();
 
             int len = 1;
             for (int i = 0; i < n; ++i)
                 len *= lengths[i];
 
-            arr.m_value = avm.NewArray(len);
+            arr.m_value = new NativeArray(len);
 
             arr.m_box = elementType.m_box;
             arr.m_unbox = elementType.m_unbox;
@@ -1126,7 +1129,7 @@ namespace System
         public object Clone()
         {
             Array arr = new Array();
-            arr.m_value = avm.CopyArray(m_value);
+			arr.m_value = m_value.Copy();
             arr.m_rank = m_rank;
             arr.m_type = m_type;
             arr.m_lbounds = m_lbounds;
@@ -1466,7 +1469,7 @@ namespace System
                 throw new ArgumentNullException("array");
             if (array.Rank > 1)
                 throw new RankException(Locale.GetText("Only single dimension arrays are supported."));
-            array.m_value = array.m_value.reverse();
+			array.m_value = array.m_value.reverse();
         }
 
         public static void Reverse(Array array, int index, int length)
@@ -1630,17 +1633,17 @@ namespace System
                 qsort(keys, items, low, high0, comparer);
         }
 
-        [AnyVars]
-        private void SwapElems(int index1, int index2)
-        {
-            //object temp = GetValueImpl(index1);
-            //SetValueImpl(GetValueImpl(index2), index1);
-            //SetValueImpl(temp, index2);
-            Avm.Array arr = m_value;
-            object temp = m_value[index1];
-            m_value[index1] = m_value[index2];
-            m_value[index2] = temp;
-        }
+	    [MethodImpl(MethodImplOptions.InternalCall)]
+	    private extern void SwapElems(int index1, int index2);
+//        {
+//            //object temp = GetValueImpl(index1);
+//            //SetValueImpl(GetValueImpl(index2), index1);
+//            //SetValueImpl(temp, index2);
+//            Avm.Array arr = m_value;
+//            object temp = m_value[index1];
+//            m_value[index1] = m_value[index2];
+//            m_value[index2] = temp;
+//        }
 
         private static int compare(object value1, object value2, IComparer comparer)
         {

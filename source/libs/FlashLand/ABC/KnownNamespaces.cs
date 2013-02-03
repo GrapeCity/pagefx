@@ -27,6 +27,27 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			return _cache[i] ?? (_cache[i] = Create(id));
 		}
 
+		public static string GetName(KnownNamespace id)
+		{
+			switch (id)
+			{
+				case KnownNamespace.Global:
+				case KnownNamespace.Internal:
+				case KnownNamespace.BodyTrait:
+					return "";
+				case KnownNamespace.AS3:
+					return AS3.NS2006;
+				case KnownNamespace.MxInternal:
+					return MX.NamespaceInternal2006;
+				case KnownNamespace.PfxPackage:
+					return Const.Namespaces.PFX;
+				case KnownNamespace.PfxPublic:
+					return Const.Namespaces.PFX;
+				default:
+					throw new ArgumentOutOfRangeException("id");
+			}
+		}
+
 		private AbcNamespace Create(KnownNamespace id)
 		{
 			switch (id)

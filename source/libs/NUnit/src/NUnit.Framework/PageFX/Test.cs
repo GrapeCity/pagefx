@@ -103,7 +103,7 @@ namespace DataDynamics.PageFX.NUnit
         }
 
 #if AVM
-        internal Avm.Function Func;
+        internal Native.Function Func;
 #endif
 
         public void Run()

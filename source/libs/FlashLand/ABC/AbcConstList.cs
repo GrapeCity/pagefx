@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.FlashLand.Swf;
@@ -45,6 +44,11 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			OnAdded(item);
         }
 
+		protected void UpdateIndex(T item)
+		{
+			_index[item.Key] = item.Index;
+		}
+
 		protected virtual void OnAdded(T item)
 		{
 		}
@@ -61,7 +65,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             if (item == null) return false;
             int i = item.Index;
             if (i < 0 || i >= _list.Count) return false;
-            return _list[i] == item;
+            return ReferenceEquals(_list[i], item);
         }
 
 		public virtual void Read(SwfReader reader)

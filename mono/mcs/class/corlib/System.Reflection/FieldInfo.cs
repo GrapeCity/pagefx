@@ -34,18 +34,19 @@ using System.Globalization;
 using System.Reflection.Emit;
 #endif
 using System.Runtime.CompilerServices;
+using Native;
 
 namespace System.Reflection
 {
     [Serializable]
     public class FieldInfo : MemberInfo
     {
-        public int type;
-        public Avm.Namespace ns;
-        public Avm.String name;
-        public int declaringType;
-        public int flags;
-        public bool isStatic;
+        internal int type;
+		internal Namespace ns;
+		internal string name;
+		internal int declaringType;
+		internal int flags;
+		internal bool isStatic;
 
         public virtual FieldAttributes Attributes
         {
@@ -188,7 +189,7 @@ namespace System.Reflection
                 v = ft.GetFieldValue(ns, name);
             else
                 v = avm.GetProperty(obj, ns, name);
-            Avm.Function box = ft.m_box;
+            Function box = ft.m_box;
             if (box != null)
                 v = box.call(null, v);
             return v;
@@ -197,7 +198,7 @@ namespace System.Reflection
         public virtual void SetValue(object obj, object value)
         {
             Type ft = FieldType;
-            Avm.Function unbox = ft.m_unbox;
+            Function unbox = ft.m_unbox;
             if (unbox != null)
             {
                 value = unbox.call(null, value);

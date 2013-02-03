@@ -29,6 +29,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         bool IsSealed { get; set; }
 
+		bool IsPartial { get; set; }
+
         bool IsBeforeFieldInit { get; set; }
 
         /// <summary>
