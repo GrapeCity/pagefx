@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Core.LoaderInternals.Collections;
 using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 {
-	internal sealed class ModuleTable : MetadataTable<IModule>
+	internal sealed class ModuleTable : MetadataTable<IModule>, IModuleCollection
 	{
 		public ModuleTable(AssemblyLoader loader)
 			: base(loader)
@@ -19,28 +22,36 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 
 		protected override IModule ParseRow(MetadataRow row, int index)
 		{
-			var token = SimpleIndex.MakeToken(TableId.Module, index + 1);
-			var module = new Module
-				{
-					Name = row[Schema.Module.Name].String,
-					Version = row[Schema.Module.Mvid].Guid,
-					Loader = Loader,
-					MetadataToken = token
-				};
-
-			module.CustomAttributes = new CustomAttributes(Loader, module);
-
-			var file = Loader.Files[module.Name];
+			var name = row[Schema.Module.Name].String;
+			var file = Loader.Files[name];
 			if (file != null)
 			{
 				throw new NotImplementedException();
 			}
 
-			module.IsMain = true;
-			module.Resources = Loader.ManifestResources;
-			module.Types = Loader.Types;
-
-			return module;
+			return new InternalModule(Loader, row, index);
 		}
+
+		public IModule this[string name]
+		{
+			get { return this.FirstOrDefault(x => x.Name == name); }
+		}
+
+		public void Add(IModule module)
+		{
+			throw new NotSupportedException("This collection is readonly.");
+		}
+
+		public string ToString(string format, IFormatProvider formatProvider)
+		{
+			return SyntaxFormatter.Format(this, format, formatProvider);
+		}
+
+		public IEnumerable<ICodeNode> ChildNodes
+		{
+			get { return this.Cast<ICodeNode>(); }
+		}
+
+		public object Data { get; set; }
 	}
 }

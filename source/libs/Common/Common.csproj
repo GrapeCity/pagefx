@@ -111,6 +111,7 @@
     <Compile Include="Syntax\Keyword.cs" />
     <Compile Include="Syntax\Punctuator.cs" />
     <Compile Include="TypeSystem\ArgumentCollection.cs" />
+    <Compile Include="TypeSystem\AssemblyTypeCollection.cs" />
     <Compile Include="TypeSystem\ClassSemantics.cs" />
     <Compile Include="TypeSystem\CustomAttributeCollection.cs" />
     <Compile Include="TypeSystem\CustomAttributeProvider.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="TypeSystem\IAssemblyReference.cs" />
     <Compile Include="TypeSystem\MethodAttributes.cs" />
     <Compile Include="TypeSystem\MethodImplAttributes.cs" />
+    <Compile Include="TypeSystem\ModuleCollection.cs" />
     <Compile Include="TypeSystem\NumericType.cs" />
     <Compile Include="TypeSystem\ParameterExtensions.cs" />
     <Compile Include="TypeSystem\PropertyExtensions.cs" />

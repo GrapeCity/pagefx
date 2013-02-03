@@ -5,8 +5,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
 	public interface IAssemblyLoader : IMetadataTokenResolver
 	{
-		void ResolveAssemblyReferences();
-
 		IMethod ResolveEntryPoint();
 
 		IReadOnlyList<IType> GetExposedTypes();

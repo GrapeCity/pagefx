@@ -6,9 +6,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public interface IMetadataElement
     {
         /// <summary>
-        /// Gets or sets value that identifies a metadata element. 
+        /// Gets value that identifies a metadata element. 
         /// </summary>
-        int MetadataToken { get; set; }
+        int MetadataToken { get; }
     }
 
     public interface IMetadataTokenResolver

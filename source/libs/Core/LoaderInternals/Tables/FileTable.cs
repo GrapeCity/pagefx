@@ -5,7 +5,7 @@ using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 {
-	internal sealed class FileTable : MetadataTable<IManifestFile>
+	internal sealed class FileTable : MetadataTable<IManifestFile>, IManifestFileCollection
 	{
 		public FileTable(AssemblyLoader loader) : base(loader)
 		{

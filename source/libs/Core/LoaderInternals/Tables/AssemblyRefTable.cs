@@ -4,7 +4,7 @@ using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 {
-	internal sealed class AssemblyRefTable : MetadataTable<IAssembly>
+	internal sealed class AssemblyRefTable : MetadataTable<IAssembly>, IAssemblyCollection
 	{
 		public AssemblyRefTable(AssemblyLoader loader) : base(loader)
 		{
@@ -18,7 +18,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 		protected override IAssembly ParseRow(MetadataRow row, int index)
 		{
 			var token = SimpleIndex.MakeToken(TableId.AssemblyRef, index + 1);
-			var asmref = new AssemblyReference
+			var name = new AssemblyReference
 				{
 					Version = GetVersion(row, 0),
 					Flags = ((AssemblyFlags)row[Schema.AssemblyRef.Flags].Value),
@@ -29,21 +29,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 					MetadataToken = token
 				};
 
-			var asm = Loader.ResolveAssembly(asmref);
-			
-			var mod = Loader.Assembly.MainModule as Module;
-			if (mod != null)
-			{
-				mod.Loader = null;
-				mod.References.Add(asm);
-				mod.Loader = Loader;
-			}
-			else
-			{
-				Loader.Assembly.MainModule.References.Add(asm);
-			}
-
-			return asm;
+			return Loader.ResolveAssembly(name);
 		}
 
 		private static Version GetVersion(MetadataRow row, int i)
@@ -52,6 +38,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 							   (int)row[i + 1].Value,
 							   (int)row[i + 2].Value,
 							   (int)row[i + 3].Value);
+		}
+
+		public void Add(IAssembly assembly)
+		{
+			throw new NotSupportedException("This collection is readonly.");
 		}
 	}
 }

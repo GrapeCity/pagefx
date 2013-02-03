@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using DataDynamics.PageFX.Common.CodeModel;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -10,35 +10,35 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public interface IModule : ICustomAttributeProvider, ITypeContainer, ICodeNode
     {
         /// <summary>
-        /// Gets or sets assembly where the module is defined.
+        /// Gets assembly where the module is defined.
         /// </summary>
-        IAssembly Assembly { get; set; }
+        IAssembly Assembly { get; }
 
         /// <summary>
-        /// Gets or sets name of the module.
+        /// Gets name of the module.
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
 
         /// <summary>
-        /// Gets or sets version of the module.
+        /// Gets version of the module.
         /// </summary>
-        Guid Version { get; set; }
+        Guid Version { get; }
 
-        string Location { get; set; }
-
-        bool IsMain { get; set; }
+        bool IsMain { get; }
 
         IAssemblyCollection References { get; }
 
         IManifestFileCollection Files { get; }
 
-		IManifestResourceCollection Resources { get; set; }
+		IManifestResourceCollection Resources { get; }
 
 	    object ResolveMetadataToken(IMethod method, int token);
     }
 
-    public interface IModuleCollection : IList<IModule>, ICodeNode
+    public interface IModuleCollection : IReadOnlyList<IModule>, ICodeNode
     {
         IModule this[string name] { get; }
+
+	    void Add(IModule module);
     }
 }

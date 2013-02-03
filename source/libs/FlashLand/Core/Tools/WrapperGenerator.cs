@@ -141,25 +141,21 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             }
         }
 
-        private static IAssembly BuildAssembly(string path, CommandLine cl)
+		private static AssemblyImpl BuildAssembly(string path, CommandLine cl)
         {
             var builder = new AssemblyBuilder(cl);
-            IAssembly asm;
             string ext = GetExt(path);
             switch (ext)
             {
                 case "abc":
-                    asm = builder.FromFile(path);
-                    break;
+                    return builder.FromFile(path);
 
                 case "swc":
-                    asm = builder.FromSwc(path);
-                    break;
+                    return builder.FromSwc(path);
 
                 default:
                     throw new NotSupportedException();
             }
-            return asm;
         }
 
         private static void Compile(CompilerOptions copts, string path)

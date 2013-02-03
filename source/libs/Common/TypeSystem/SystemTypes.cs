@@ -16,7 +16,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		private readonly IAssembly _assembly;
 		private readonly IType[] _types;
 
-		internal SystemTypes(IAssembly assembly)
+		public SystemTypes(IAssembly assembly)
 		{
 			if (assembly == null)
 				throw new ArgumentNullException("assembly");

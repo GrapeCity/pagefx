@@ -164,6 +164,8 @@
     <Compile Include="LoaderInternals\Collections\PropertyList.cs" />
     <Compile Include="LoaderInternals\Context.cs" />
     <Compile Include="LoaderInternals\Extensions.cs" />
+    <Compile Include="LoaderInternals\InternalAssembly.cs" />
+    <Compile Include="LoaderInternals\InternalModule.cs" />
     <Compile Include="LoaderInternals\LazyType.cs" />
     <Compile Include="LoaderInternals\SignatureResolver.cs" />
     <Compile Include="LoaderInternals\Tables\AssemblyRefTable.cs" />

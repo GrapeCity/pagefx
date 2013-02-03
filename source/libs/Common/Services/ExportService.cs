@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.Common.Services
 
         public static bool CanWriteCore(IType type)
         {
-            if (type.IsCompilerGenerated)
+            if (type.IsCompilerGenerated())
                 return false;
 
             if (type.IsSpecialName)

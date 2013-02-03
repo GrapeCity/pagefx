@@ -42,7 +42,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 	    private List<string> _references = new List<string>();
 		private readonly List<IAssembly> _refs = new List<IAssembly>();
-		private readonly IAssembly _assembly;
+		private readonly AssemblyImpl _assembly;
 		private IAssembly _corlib;
 		private TypeFactory _typeFactory;
 
@@ -380,7 +380,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             _refs.Add(assembly);
 
-			if (assembly.IsCorlib)
+			if (assembly.IsCorlib())
 			{
 				_corlib = assembly;
 			}
@@ -391,19 +391,19 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         #endregion
 
         #region Entry Points
-        public IAssembly FromFile(string path)
+        public AssemblyImpl FromFile(string path)
         {
 			var abc = new AbcFile(path);
 	        return FromAbcFile(abc, path);
         }
 
-        public IAssembly FromStream(Stream input)
+		public AssemblyImpl FromStream(Stream input)
         {
             var abc = new AbcFile(input);
 	        return FromAbcFile(abc, null);
         }
 
-		private IAssembly FromAbcFile(AbcFile abc, string path)
+		private AssemblyImpl FromAbcFile(AbcFile abc, string path)
 		{
 			_abcFiles.Add(abc);
 			_abcCache = new AbcCache();
@@ -421,7 +421,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 			return _assembly;
 		}
 
-        public IAssembly FromSwc(string path)
+		public AssemblyImpl FromSwc(string path)
         {
             _assembly.Location = path;
             _assembly.Name = Path.GetFileName(path);
@@ -1115,10 +1115,14 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
             type.Members.Add(method);
 
-            if (method.IsAbstract)
-                type.IsAbstract = true;
+			if (method.IsAbstract)
+			{
+				var t = type as TypeImpl;
+				if (t != null)
+					t.IsAbstract = true;
+			}
 
-            var assoc = method.Association;
+			var assoc = method.Association;
             if (assoc != null && assoc.DeclaringType == null)
                 type.Members.Add(assoc);
         }

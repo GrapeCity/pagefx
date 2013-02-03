@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using DataDynamics.PageFX.Common.CodeModel;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -11,8 +9,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public class AssemblyReference : CustomAttributeProvider, IAssemblyReference
     {
-        #region Constructors
-        public AssemblyReference()
+	    public AssemblyReference()
             : this("Temp", new Version(0, 0, 0, 0), null, null)
         {
         }
@@ -51,9 +48,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             PublicKeyToken = r.PublicKeyToken;
             Culture = r.Culture;
         }
-        #endregion
-
-        #region IAssemblyReference Members
 
 	    /// <summary>
 	    /// Assembly Name
@@ -91,29 +85,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public string FullName
         {
-            get
-            {
-                var s = new StringBuilder();
-                s.Append(Name);
-                s.Append(',');
-                s.Append(" Version=");
-                s.Append(Version.Major);
-                s.Append('.');
-                s.Append(Version.Minor);
-                s.Append('.');
-                s.Append(Version.Build);
-                s.Append('.');
-                s.Append(Version.Revision);
-                s.Append(", Culture=");
-            	s.Append(ReferenceEquals(Culture, CultureInfo.InvariantCulture) ? "neutral" : Culture.Name);
-            	if (PublicKeyToken != null && PublicKeyToken.Length > 0)
-                {
-                    s.Append(", PublicKeyToken=");
-                    for (int i = 0; i < PublicKeyToken.Length; i++)
-                        s.Append(PublicKeyToken[i].ToString("x2"));
-                }
-                return s.ToString();
-            }
+            get { return this.BuildFullName(); }
             set
             {
                 if (value == null)
@@ -155,88 +127,115 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 }
             }
         }
-        #endregion
 
-        #region Object Override Members
-        /// <summary>
+	    /// <summary>
         /// RTFM
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj)) return true;
+            if (ReferenceEquals(this, obj))
+				return true;
+
             var r = obj as IAssemblyReference;
-            if (r == null) 
-                return false;
+            if (r == null) return false;
 
-            if (Name != r.Name) 
-                return false;
-
-            if (Culture != r.Culture) 
-                return false;
-
-            if (!Equals(Version, r.Version)) 
-                return false;
-
-            if (PublicKeyToken == null)
-                return r.PublicKeyToken == null || r.PublicKeyToken.Length == 0;
-
-            int n = PublicKeyToken.Length;
-            if (r.PublicKeyToken == null)
-                return n == 0;
-
-            if (n != r.PublicKeyToken.Length)
-                return false;
-
-            for (int i = 0; i < n; i++)
-                if (r.PublicKeyToken[i] != PublicKeyToken[i])
-                    return false;
-
-            return true;
+		    return this.EqualsTo(r);
         }
 
         public override int GetHashCode()
         {
-            int hash = Name.GetHashCode();
-            hash ^= Version.GetHashCode();
-            if (Culture != null)
-                hash ^= Culture.GetHashCode();
-            if (PublicKeyToken != null)
-            {
-                int n = PublicKeyToken.Length;
-                hash ^= n;
-                for (int i = 0; i < n; i++)
-                    hash ^= PublicKeyToken[i];
-            }
-            return hash;
+	        return this.EvalHashCode();
         }
 
         public override string ToString()
         {
             return FullName;
         }
-        #endregion
 
-        #region ICodeNode Members
-
-	    public virtual IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return null; }
-        }
-
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Data { get; set; }
-
-    	#endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+	    public string ToString(string format, IFormatProvider formatProvider)
         {
             return FullName;
         }
-        #endregion
     }
+
+	public static class AssemblyRefExtensions
+	{
+		public static bool EqualsTo(this IAssemblyReference x, IAssemblyReference y)
+		{
+			if (ReferenceEquals(x, y))
+				return true;
+
+			if (x.Name != y.Name)
+				return false;
+
+			if (x.Culture != y.Culture)
+				return false;
+
+			if (!Equals(x.Version, y.Version))
+				return false;
+
+			if (x.PublicKeyToken == null || x.PublicKeyToken.Length == 0)
+				return y.PublicKeyToken == null || y.PublicKeyToken.Length == 0;
+
+			if (y.PublicKeyToken == null || x.PublicKeyToken.Length == 0)
+				return false;
+
+			int n = x.PublicKeyToken.Length;
+			if (n != y.PublicKeyToken.Length)
+				return false;
+
+			for (int i = 0; i < n; i++)
+			{
+				if (x.PublicKeyToken[i] != y.PublicKeyToken[i])
+					return false;
+			}
+
+			return true;
+		}
+
+		public static int EvalHashCode(this IAssemblyReference r)
+		{
+			int hash = r.Name.GetHashCode();
+			hash ^= r.Version.GetHashCode();
+
+			if (r.Culture != null)
+				hash ^= r.Culture.GetHashCode();
+
+			if (r.PublicKeyToken != null)
+			{
+				int n = r.PublicKeyToken.Length;
+				hash ^= n;
+				for (int i = 0; i < n; i++)
+					hash ^= r.PublicKeyToken[i];
+			}
+
+			return hash;
+		}
+
+		public static string BuildFullName(this IAssemblyReference r)
+		{
+			var s = new StringBuilder();
+			s.Append(r.Name);
+			s.Append(',');
+			s.Append(" Version=");
+			s.Append(r.Version.Major);
+			s.Append('.');
+			s.Append(r.Version.Minor);
+			s.Append('.');
+			s.Append(r.Version.Build);
+			s.Append('.');
+			s.Append(r.Version.Revision);
+			s.Append(", Culture=");
+			s.Append(ReferenceEquals(r.Culture, CultureInfo.InvariantCulture) ? "neutral" : r.Culture.Name);
+			if (r.PublicKeyToken != null && r.PublicKeyToken.Length > 0)
+			{
+				s.Append(", PublicKeyToken=");
+				for (int i = 0; i < r.PublicKeyToken.Length; i++)
+					s.Append(r.PublicKeyToken[i].ToString("x2"));
+			}
+			return s.ToString();
+		}
+	}
 }

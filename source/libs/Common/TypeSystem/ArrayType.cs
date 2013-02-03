@@ -38,7 +38,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public override IType BaseType
         {
             get { return ElementType.SystemType(SystemTypeCode.Array); }
-            set { throw new NotSupportedException(); }
         }
 
         private IType ImplType

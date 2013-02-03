@@ -173,16 +173,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 
 		private static bool ReviewAttribute(ICustomAttribute attr)
 		{
-			var type = attr.Owner as IType;
-			if (type != null)
-			{
-				if (attr.Type.FullName == "System.Runtime.CompilerServices.CompilerGeneratedAttribute")
-				{
-					type.IsCompilerGenerated = true;
-				}
-				return true;
-			}
-
 			var param = attr.Owner as IParameter;
 			if (param != null)
 			{

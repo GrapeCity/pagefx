@@ -94,7 +94,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 
 		private long NextId()
 		{
-			var corlib = _loader.Corlib;
+			var corlib = _loader.CorlibLoader;
 			return ++corlib.GenericParameters._id;
 		}
 

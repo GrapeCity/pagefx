@@ -1,53 +1,52 @@
 using System;
 using System.Globalization;
-using DataDynamics.PageFX.Common.CodeModel;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
 	/// <summary>
-	/// Contains info about assembly name.
+	/// Defines info about assembly.
 	/// </summary>
-	public interface IAssemblyReference : ICodeNode
+	public interface IAssemblyReference
 	{
 		/// <summary>
-		/// Gets or sets assembly name.
+		/// Gets assembly name.
 		/// </summary>
-		string Name { get; set; }
+		string Name { get; }
 
 		/// <summary>
-		/// Gets or sets assembly version.
+		/// Gets assembly version.
 		/// </summary>
-		Version Version { get; set; }
+		Version Version { get; }
 
 		/// <summary>
-		/// Gets or sets assembly flags.
+		/// Gets assembly flags.
 		/// </summary>
-		AssemblyFlags Flags { get; set; }
+		AssemblyFlags Flags { get; }
 
 		/// <summary>
-		/// Gets or sets the culture supported by the assembly.
+		/// Gets the culture supported by the assembly.
 		/// </summary>
-		CultureInfo Culture { get; set; }
+		CultureInfo Culture { get; }
 
 		/// <summary>
-		/// Gets or sets public key used to sign assembly.
+		/// Gets public key used to sign assembly.
 		/// </summary>
-		byte[] PublicKey { get; set; }
+		byte[] PublicKey { get; }
 
 		/// <summary>
-		/// Gets or sets public key token used to sign the assembly.
+		/// Gets public key token used to sign the assembly.
 		/// </summary>
-		byte[] PublicKeyToken { get; set; }
+		byte[] PublicKeyToken { get; }
 
 		/// <summary>
-		/// Gets or sets hash value used to sign the assembly.
+		/// Gets hash value used to sign the assembly.
 		/// </summary>
-		byte[] HashValue { get; set; }
+		byte[] HashValue { get; }
 
 		/// <summary>
-		/// Gets or sets hash algorithm calculated when assembly was being signed.
+		/// Gets hash algorithm calculated when assembly was being signed.
 		/// </summary>
-		HashAlgorithmId HashAlgorithm { get; set; }
+		HashAlgorithmId HashAlgorithm { get; }
 
 		/// <summary>
 		/// Gets the full name of the assembly.

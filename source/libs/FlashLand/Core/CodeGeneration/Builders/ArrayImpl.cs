@@ -456,7 +456,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				case CLRNames.Types.IEnumerableT:
 					{
 						var elemType = type.GetTypeArgument(0);
-						elemType.HasIEnumerableInstance = true;
 						GetEnumeratorImpl(elemType);
 					}
 					break;

@@ -132,7 +132,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 			public int MetadataToken
 			{
 				get { return _parameter.MetadataToken; }
-				set { _parameter.MetadataToken = value; }
 			}
 
 			public ICustomAttributeCollection CustomAttributes

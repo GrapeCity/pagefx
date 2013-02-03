@@ -650,13 +650,6 @@ namespace DataDynamics.PageFX.Common.Syntax
             if (!ExportService.CanWrite(type))
                 return;
 
-            string src = type.SourceCode;
-            if (!string.IsNullOrEmpty(src))
-            {
-                WriteCustomCode(src);
-                return;
-            }
-
             bool full = Mode == FormatMode.Full;
 
             if (full && _assembly == null)
@@ -724,7 +717,6 @@ namespace DataDynamics.PageFX.Common.Syntax
                     _doubleEOL = true;
                     WriteKids(type);
                     _doubleEOL = old;
-                    WriteCustomCode(type.CustomMembers);
                     EndType(type);
                 }
             }

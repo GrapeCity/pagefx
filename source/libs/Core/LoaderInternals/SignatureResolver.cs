@@ -16,12 +16,12 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		private TypeFactory TypeFactory
 		{
-			get { return _loader.CorlibAssembly.TypeFactory; }
+			get { return _loader.TypeFactory; }
 		}
 
 		private SystemTypes SystemTypes
 		{
-			get { return _loader.CorlibAssembly.SystemTypes; }
+			get { return _loader.SystemTypes; }
 		}
 
 		public IType ResolveType(TypeSignature sig, Context context)

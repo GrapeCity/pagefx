@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
@@ -10,27 +8,24 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	/// <summary>
     /// Implementation of <see cref="IAssembly"/>.
     /// </summary>
-    public sealed class AssemblyImpl : AssemblyReference, IAssembly, ITypeCollection
+    public sealed class AssemblyImpl : AssemblyReference, IAssembly
     {
 		private IModule _mainModule;
-		private readonly ModuleCollection _modules;
+		private readonly ModuleCollection _modules = new ModuleCollection();
 	    private IMethod _entryPoint;
 		private SystemTypes _systemTypes;
 		private TypeFactory _typeFactory;
+		private ITypeCollection _types;
 
-        public AssemblyImpl()
-        {
-            _modules = new ModuleCollection(this);
-        }
+		/// <summary>
+		/// Gets or sets user defined data assotiated with this object.
+		/// </summary>
+		public object Data { get; set; }
 
-	    public override IEnumerable<ICodeNode> ChildNodes
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return _modules.Cast<ICodeNode>(); }
         }
-
-        #region IAssembly Members
-
-        public bool IsCorlib { get; set;  }
 
 		/// <summary>
         /// Gets or sets path to this assembly
@@ -66,12 +61,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private SystemTypes ResolveSystemTypes()
 		{
-			return IsCorlib ? new SystemTypes(this) : this.Corlib().SystemTypes;
+			return this.IsCorlib() ? new SystemTypes(this) : this.Corlib().SystemTypes;
 		}
 
 		private TypeFactory ResolveTypeFactory()
 		{
-			return IsCorlib ? new TypeFactory() : this.Corlib().TypeFactory;
+			return this.IsCorlib() ? new TypeFactory() : this.Corlib().TypeFactory;
 		}
 
 		private IMethod ResolveEntryPoint()
@@ -95,105 +90,43 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 {
 	                _mainModule = _modules.Cast<Module>().FirstOrDefault(x => x.IsMain);
                 }
+
                 if (_mainModule == null)
                 {
-	                var mod = new Module {Name = "Main", IsMain = true};
+	                var mod = new Module
+		                {
+			                Assembly = this,
+			                Name = "Main",
+			                IsMain = true
+		                };
+
                     _mainModule = mod;
+
                     Modules.Add(mod);
                 }
+
                 return _mainModule;
             }
         }
         
 		public IType FindType(string fullname)
         {
-        	return _modules.Select(module => module.Types.FindType(fullname)).FirstOrDefault(type => type != null);
+        	return Types.FindType(fullname);
         }
 
-	    #endregion
-
-        #region ITypeContainer Members
-        public ITypeCollection Types
+		public ITypeCollection Types
         {
-            get { return this; }
-        }
-        #endregion
-
-        #region ITypeCollection Members
-
-        int IReadOnlyList<IType>.Count
-        {
-            get { return _modules.Sum(module => module.Types.Count); }
+            get { return _types ?? (_types = new AssemblyTypeCollection(this)); }
         }
 
-		IType IReadOnlyList<IType>.this[int index]
+		public override bool Equals(object obj)
         {
-            get
-            {
-                if (index < 0) return null;
-                foreach (var module in _modules)
-                {
-                    int n = module.Types.Count;
-                    if (index < n)
-                        return module.Types[index];
-                    index -= n;
-                }
-                return null;
-            }
-        }
-
-		bool ITypeCollection.Contains(IType type)
-        {
-            return type != null && FindType(type.FullName) != null;
-        }
-
-        void ITypeCollection.Add(IType type)
-        {
-            var mod = MainModule;
-            if (mod == null)
-                throw new InvalidOperationException();
-            mod.Types.Add(type);
-        }
-
-	    #endregion
-
-	    IEnumerator<IType> IEnumerable<IType>.GetEnumerator()
-        {
-        	return _modules.SelectMany(module => module.Types).GetEnumerator();
-        }
-
-	    IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable<IType>)this).GetEnumerator();
-        }
-
-	    public override bool Equals(object obj)
-        {
-            var asm = obj as IAssembly;
-            if (asm == null) return false;
-            //if (asm.Location != _location) return false;
-            if (!base.Equals(obj)) return false;
-            return true;
-        }
-
-        public override int GetHashCode()
-        {
-            int h = base.GetHashCode();
-            //if (_location != null)
-            //    h ^= _location.GetHashCode();
-            return h;
+            var other = obj as IAssembly;
+            return other != null && base.Equals(obj);
         }
     }
 
     public sealed class AssemblyCollection : List<IAssembly>, IAssemblyCollection
     {
-        #region IAssemblyCollection Members
-
-	    public IAssembly ResolveAssembly(IAssemblyReference reference)
-	    {
-		    return Find(reference.Equals);
-	    }
-
-	    #endregion
     }
 }

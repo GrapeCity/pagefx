@@ -8,7 +8,6 @@ using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Core.IL;
 using DataDynamics.PageFX.Core.LoaderInternals;
-using DataDynamics.PageFX.Core.LoaderInternals.Collections;
 using DataDynamics.PageFX.Core.LoaderInternals.Tables;
 using DataDynamics.PageFX.Core.Metadata;
 using DataDynamics.PageFX.Core.Pdb;
@@ -24,10 +23,24 @@ namespace DataDynamics.PageFX.Core
     {
 	    private readonly TypeSpecTable _typeSpec;
 	    private readonly MethodSpecTable _methodSpec;
+	    private readonly AssemblyTable _assemblyTable;
 		private readonly SignatureResolver _signatureResolver;
 
-	    internal IAssembly Assembly { get; private set; }
+		internal string Location { get; private set; }
+
+	    internal IAssembly Assembly
+	    {
+		    get
+		    {
+				if (_assemblyTable.Count != 1)
+					throw new BadMetadataException("The Assembly table shall contain zero or one row");
+
+			    return _assemblyTable[0];
+		    }
+	    }
+
 	    internal IModule MainModule { get { return Assembly.MainModule; } }
+
 	    internal MetadataReader Metadata { get; private set; }
 
 	    internal AssemblyRefTable AssemblyRefs { get; private set; }
@@ -46,19 +59,28 @@ namespace DataDynamics.PageFX.Core
 	    internal TypeRefTable TypeRefs { get; private set; }
 	    internal MemberRefTable MemberRefs { get; private set; }
 
-	    internal AssemblyLoader Corlib { get; private set; }
-
-	    internal IAssembly CorlibAssembly
+	    internal AssemblyLoader CorlibLoader
 	    {
-			get { return Corlib.Assembly; }
+		    get { return _corlibLoader ?? (_corlibLoader = ResolveCorlibLoader()); }
+	    }
+		private AssemblyLoader _corlibLoader;
+
+	    internal IAssembly Corlib
+	    {
+			get { return CorlibLoader.Assembly; }
 	    }
 
 	    internal SystemTypes SystemTypes
 	    {
-			get { return CorlibAssembly.SystemTypes; }
+			get { return Corlib.SystemTypes; }
 	    }
 
-		public static IAssembly Load(string path)
+	    internal TypeFactory TypeFactory
+	    {
+		    get { return Corlib.TypeFactory; }
+	    }
+
+	    public static IAssembly Load(string path)
 		{
 			if (path == null)
 				throw new ArgumentNullException("path");
@@ -77,48 +99,33 @@ namespace DataDynamics.PageFX.Core
 	    private IAssembly LoadFromFile(string path)
         {
             Metadata = new MetadataReader(path);
-            //_mdb.Dump(@"c:\mdb.xml");
-		    Assembly = new AssemblyImpl
-			    {
-					Loader = this,
-				    Location = path
-			    };
+		    Location = path;
+
             LoadCore();
+
             return Assembly;
         }
 
 		private IAssembly LoadFromStream(Stream s)
         {
             Metadata = new MetadataReader(s);
-			Assembly = new AssemblyImpl {Loader = this};
-            LoadCore();
+
+			LoadCore();
+
             return Assembly;
         }
 
-#if PERF
-        public static int TotalTime;
-#endif
-
         private void LoadCore()
         {
-            if (LoadAssemblyTable()) return;
-
-#if PERF
-            int start = Environment.TickCount;
-#endif
-
-            LoadTables();
-
-#if PERF
-            int time = Environment.TickCount - start;
-            Console.WriteLine("AssemblyLoader: {0} loaded in {1}ms", _assembly.Name, time);
-            TotalTime += time;
-#endif
+	        //To avoid circular references assembly is added to cache
+	        AssemblyResolver.AddToCache(Assembly);
         }
 
 		public AssemblyLoader()
 		{
 			_signatureResolver = new SignatureResolver(this);
+
+			_assemblyTable = new AssemblyTable(this);
 
 			Const = new ConstantTable(this);
 			Files = new FileTable(this);
@@ -144,73 +151,9 @@ namespace DataDynamics.PageFX.Core
 			Types = new TypeTable(this);
 		}
 
-		public bool IsCorlib
-		{
-			get { return Assembly.IsCorlib; }
-		}
-
-        private void LoadTables()
-        {
-            //To avoid circular references assembly is added to cache
-            AssemblyResolver.AddToCache(Assembly);
-
-			// load modules
-			foreach (var mod in Modules)
-	        {
-		        Assembly.Modules.Add(mod);
-	        }
-
-	        LoadCorlib();
-
-	        //TODO: eliminate SystemTypes
-	        //Types.Load();
-        }
-
-	    #region LoadAssemblyTable
-
-        private bool LoadAssemblyTable()
-        {
-	        int n = Metadata.GetRowCount(TableId.Assembly);
-	        if (n > 1)
-		        throw new BadMetadataException("The Assembly table shall contain zero or one row");
-
-	        var table = new AssemblyTable(this);
-	        var asmref = table[0];
-
-	        var asm = AssemblyResolver.GetFromCache(asmref);
-	        if (asm != null)
-	        {
-		        Assembly = asm;
-		        return true;
-	        }
-
-	        Assembly.Name = asmref.Name;
-	        Assembly.Version = asmref.Version;
-	        Assembly.Flags = asmref.Flags;
-			Assembly.HashAlgorithm = asmref.HashAlgorithm;
-	        Assembly.PublicKey = asmref.PublicKey;
-	        Assembly.PublicKeyToken = asmref.PublicKeyToken;
-	        Assembly.Culture = asmref.Culture;
-
-			var token = SimpleIndex.MakeToken(TableId.Assembly, 1);
-	        Assembly.MetadataToken = token;
-			
-	        ((CustomAttributeProvider)Assembly).CustomAttributes = new CustomAttributes(this, Assembly);
-
-	        return false;
-        }
-
-	    #endregion
-
-        #region Assembly Refs
-        internal IAssembly ResolveAssembly(IAssemblyReference r)
+		internal IAssembly ResolveAssembly(IAssemblyReference r)
         {
             return AssemblyResolver.ResolveAssembly(r, Assembly.Location);
-        }
-
-	    public void ResolveAssemblyReferences()
-	    {
-		    AssemblyRefs.Load();
         }
 
 	    public IMethod ResolveEntryPoint()
@@ -232,23 +175,19 @@ namespace DataDynamics.PageFX.Core
 				TypeLoaded(this, new TypeEventArgs(type));
 		}
 
-	    private void LoadCorlib()
+	    private AssemblyLoader ResolveCorlibLoader()
         {
             int n = AssemblyRefs.Count;
             if (n == 0)
             {
-                Assembly.IsCorlib = true;
-	            Corlib = this;
+	            return this;
             }
-            else
-            {
-	            var corasm = AssemblyRefs.FirstOrDefault(x => x.IsCorlib);
-				if (corasm == null)
-					throw new InvalidOperationException();
-				Corlib = (AssemblyLoader)((AssemblyImpl)corasm).Loader;
-            }
+
+		    var assembly = AssemblyRefs.FirstOrDefault(x => x.IsCorlib());
+		    if (assembly == null)
+			    throw new InvalidOperationException();
+		    return (AssemblyLoader)assembly.Loader;
         }
-        #endregion
 
 	    internal IType ResolveDeclType(ITypeMember member)
 		{
@@ -295,7 +234,7 @@ namespace DataDynamics.PageFX.Core
             switch (i.Table)
             {
                 case TableId.TypeDef:
-                    if (index < 0) return CorlibAssembly.SystemTypes.Object;
+                    if (index < 0) return SystemTypes.Object;
                     return Types[index];
 
                 case TableId.TypeRef:
@@ -415,6 +354,7 @@ namespace DataDynamics.PageFX.Core
         {
             if (!GlobalSettings.EmitDebugInfo) return null;
 
+			//TODO: add option to enable emit debug info for framework libs
             //NOTE: Since we provide .NET framework libs in binary form it is not needed to emit debug info for them.
             if (IsFrameworkLib) return null;
 

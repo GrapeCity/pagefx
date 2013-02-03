@@ -217,8 +217,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		SpecialName = 0x8000,
 		RuntimeSpecialName = 0x10000,
 		EntryPoint = 0x20000,
-		CompilerGenerated = 0x40000,
-		ExplicitImplementation = 0x80000,
+		ExplicitImplementation = 0x40000,
 		PInvoke = 0x100000,
 		Partial = 0x200000,
 	}

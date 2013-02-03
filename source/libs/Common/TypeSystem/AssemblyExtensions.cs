@@ -7,7 +7,23 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public static class AssemblyExtensions
     {
-        public static IEnumerable<IAssembly> GetReferences(this IAssembly root, bool excludeRoot)
+		/// <summary>
+		/// Determines whether this assembly is corlib.
+		/// </summary>
+		public static bool IsCorlib(this IAssembly assembly)
+		{
+			return assembly != null && string.Equals(assembly.Name, "mscorlib", StringComparison.OrdinalIgnoreCase);
+		}
+
+		public static IAssembly ResolveAssembly(this IEnumerable<IAssembly> collection, IAssemblyReference reference)
+		{
+			if (reference == null)
+				throw new ArgumentNullException("reference");
+
+			return collection.FirstOrDefault(x => reference.Equals(x));
+		}
+
+	    public static IEnumerable<IAssembly> GetReferences(this IAssembly root, bool excludeRoot)
         {
             if (root == null)
                 throw new ArgumentNullException("root");
@@ -50,9 +66,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		public static IAssembly Corlib(this IAssembly assembly)
 		{
-			if (assembly.IsCorlib)
-				return assembly;
-			return assembly.GetReferences(true).FirstOrDefault(x => x.IsCorlib);
+			if (assembly.IsCorlib()) return assembly;
+			return assembly.GetReferences(true).FirstOrDefault(x => x.IsCorlib());
 		}
 
 	    public static IType ResolveType(this IAssembly assembly, Type type)

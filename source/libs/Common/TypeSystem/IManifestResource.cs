@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using DataDynamics.PageFX.Common.Collections;
 
@@ -31,7 +30,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         bool ContainsMetadata { get; set; }
     }
 
-    public interface IManifestFileCollection : IList<IManifestFile>
+    public interface IManifestFileCollection : IReadOnlyList<IManifestFile>
     {
         IManifestFile this[string name] { get; }
     }

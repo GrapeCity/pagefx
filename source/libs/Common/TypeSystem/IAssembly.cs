@@ -1,3 +1,4 @@
+using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
@@ -5,17 +6,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	/// <summary>
     /// Represents an assembly.
     /// </summary>
-    public interface IAssembly : IAssemblyReference, ICustomAttributeProvider, ITypeContainer
+    public interface IAssembly : IAssemblyReference, ICustomAttributeProvider, ITypeContainer, ICodeNode
     {
 		/// <summary>
-		/// Specifies whether this assembly is corlib.
-		/// </summary>
-        bool IsCorlib { get; set; }
-
-        /// <summary>
         /// Gets or sets path to this assembly
         /// </summary>
-        string Location { get; set; }
+        string Location { get; }
 
 		/// <summary>
         /// Gets the entry point in this assembly.
@@ -65,8 +61,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public interface IAssemblyCollection : IReadOnlyList<IAssembly>
     {
-	    IAssembly ResolveAssembly(IAssemblyReference reference);
-
 	    void Add(IAssembly assembly);
     }
 }

@@ -275,7 +275,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
 		private void LinkNativeType(IType type)
 		{
-			if (!Assembly.IsCorlib) return;
+			if (!Assembly.IsCorlib()) return;
 
 			if (type.HasAttribute(Attrs.Native))
 			{
