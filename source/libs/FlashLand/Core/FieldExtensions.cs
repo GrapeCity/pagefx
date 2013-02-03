@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.FlashLand.Core
 			var dt = field.DeclaringType;
 			if (!dt.IsEnum) return;
 			if (field.IsStatic) return;
-			field.Name = Const.Boxing.Value;
+			((TypeMember)field).Name = Const.Boxing.Value;
 		}
 	}
 }

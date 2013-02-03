@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// <summary>
         /// Gets the module in which the member is defined. 
         /// </summary>
-        IModule Module { get; set; }
+        IModule Module { get; }
 
         /// <summary>
         /// Gets the kind of this member.
@@ -25,9 +25,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         MemberType MemberType { get; }
 
         /// <summary>
-        /// Gets or sets the name of type member.
+        /// Gets the name of type member.
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
 
         /// <summary>
         /// Gets the fullname of the member.
@@ -42,25 +42,25 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// <summary>
         /// Gets or sets type that declares this member.
         /// </summary>
-        IType DeclaringType { get; set; }
+		IType DeclaringType { get; set; }
 
         /// <summary>
-        /// Gets or sets the type of this member (for methods it's return type)
+        /// Gets the type of this member (for methods it's return type)
         /// </summary>
-        IType Type { get; set; }
+		IType Type { get; set; }
 
         /// <summary>
         /// Gets visibility of this member.
         /// </summary>
-        Visibility Visibility { get; set; }
+        Visibility Visibility { get; }
         
         bool IsVisible { get; }
 
-        bool IsStatic { get; set; }
+        bool IsStatic { get; }
 
-        bool IsSpecialName { get; set; }
+        bool IsSpecialName { get; }
 
-        bool IsRuntimeSpecialName { get; set; }
+        bool IsRuntimeSpecialName { get; }
     }
 
     /// <summary>

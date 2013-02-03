@@ -81,7 +81,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IModule Module
         {
             get { return _event.Module; }
-            set { throw new NotSupportedException(); }
         }
 
         public MemberType MemberType
@@ -92,7 +91,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public string Name
         {
             get { return _event.Name; }
-            set { throw new NotSupportedException(); }
         }
 
         public string FullName
@@ -116,7 +114,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public Visibility Visibility
         {
             get { return _event.Visibility; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsVisible
@@ -127,19 +124,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public bool IsStatic
         {
             get { return _event.IsStatic; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsSpecialName
         {
             get { return _event.IsSpecialName; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsRuntimeSpecialName
         {
             get { return _event.IsRuntimeSpecialName; }
-            set { throw new NotSupportedException(); }
         }
 
         /// <summary>

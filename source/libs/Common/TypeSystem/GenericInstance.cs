@@ -315,7 +315,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         IType ITypeMember.Type
         {
             get { return Type; }
-            set { Type = value as IGenericType; }
+			set { Type = value as IGenericType; }
         }
 
         /// <summary>
@@ -324,11 +324,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public Visibility Visibility
         {
             get { return Type != null ? Type.Visibility : Visibility.Public; }
-        	set
-            {
-                if (Type != null)
-                    Type.Visibility = value;
-            }
         }
 
         public bool IsVisible
@@ -344,40 +339,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public bool IsStatic
         {
             get { return Type != null && Type.IsStatic; }
-        	set
-            {
-                if (Type != null)
-                    Type.IsStatic = value;
-            }
         }
 
         public bool IsSpecialName
         {
             get { return Type != null && Type.IsSpecialName; }
-        	set
-            {
-                if (Type != null)
-                    Type.IsSpecialName = value;
-            }
         }
 
         public bool IsRuntimeSpecialName
         {
             get { return Type != null && Type.IsRuntimeSpecialName; }
-        	set
-            {
-                if (Type != null)
-                    Type.IsRuntimeSpecialName = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets value that identifies a metadata element. 
-        /// </summary>
-        public int MetadataToken
-        {
-            get { return -1; }
-            set { throw new NotSupportedException(); }
         }
 
         #endregion

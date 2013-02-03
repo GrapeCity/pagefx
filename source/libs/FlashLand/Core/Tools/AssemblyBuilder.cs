@@ -896,7 +896,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return elem == null ? null : elem.InnerText;
         }
 
-		private void RegisterType(IType type)
+		private void RegisterType(TypeImpl type)
         {
             var mod = _assembly.MainModule;
             type.Module = mod;
@@ -938,7 +938,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         				typeEvent = CopyEvent(e);
         				type.Members.Add(typeEvent);
         			}
-					typeEvent.Visibility = Visibility.Public;
+					((TypeMember)typeEvent).Visibility = Visibility.Public;
         		}
         	}
         }
@@ -1587,7 +1587,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 			string newname = ReplaceBadChars(method.Name);
 			if (newname != method.Name && newname != declType.Name)
 			{
-				method.Name = newname;
+				((TypeMember)method).Name = newname;
 			}
 		}
 
@@ -1697,7 +1697,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 	    private static void BuildProperty(IType declType, IMethod method, AbcTrait trait, string summary)
         {
             string name = method.Name;
-            method.Name = (trait.IsGetter ? "get_" : "set_") + name;
+            ((TypeMember)method).Name = (trait.IsGetter ? "get_" : "set_") + name;
             var prop = FindProperty(trait.Owner.Traits, trait.Name.NameString);
             if (prop == null)
             {
@@ -2272,7 +2272,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return false;
         }
 
-		private static void InitTypeMember(ITypeMember m, AbcTrait trait)
+		private static void InitTypeMember(TypeMember m, AbcTrait trait)
         {
             m.IsStatic = trait.IsStatic;
             m.Visibility = trait.Visibility;

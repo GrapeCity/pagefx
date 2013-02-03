@@ -233,11 +233,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public Visibility Visibility
         {
             get { return ElementType != null ? ElementType.Visibility : Visibility.Private; }
-        	set
-            {
-                if (ElementType != null)
-                    ElementType.Visibility = value;
-            }
         }
 
         public bool IsVisible
@@ -248,23 +243,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public bool IsStatic
         {
             get { return ElementType != null && ElementType.IsStatic; }
-        	set
-            {
-                if (ElementType != null)
-                    ElementType.IsStatic = value;
-            }
         }
 
         public bool IsSpecialName
         {
             get { return ElementType != null && ElementType.IsSpecialName; }
-        	set { throw new NotSupportedException(); }
         }
 
         public bool IsRuntimeSpecialName
         {
             get { return ElementType != null && ElementType.IsRuntimeSpecialName; }
-        	set { throw new NotSupportedException(); }
         }
 
         /// <summary>
