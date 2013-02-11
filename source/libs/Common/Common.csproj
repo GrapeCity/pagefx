@@ -115,6 +115,7 @@
     <Compile Include="TypeSystem\ClassSemantics.cs" />
     <Compile Include="TypeSystem\CustomAttributeCollection.cs" />
     <Compile Include="TypeSystem\CustomAttributeProvider.cs" />
+    <Compile Include="TypeSystem\EventExtensions.cs" />
     <Compile Include="TypeSystem\IAssemblyLoader.cs" />
     <Compile Include="TypeSystem\IAssemblyReference.cs" />
     <Compile Include="TypeSystem\MethodAttributes.cs" />

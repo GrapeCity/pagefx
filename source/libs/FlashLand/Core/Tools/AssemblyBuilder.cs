@@ -948,7 +948,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             var copy = new Event
                          {
                              Name = e.Name,
-                             IsFlash = e.IsFlash,
                              Visibility = e.Visibility,
                              IsStatic = e.IsStatic,
                              Type = e.Type
@@ -1012,7 +1011,6 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             {
                 var e = new Event
                         	{
-                        		IsFlash = true,
                         		Name = eventName,
                         		IsStatic = false,
                         		Visibility = Visibility.Public,

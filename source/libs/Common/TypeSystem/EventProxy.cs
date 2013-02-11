@@ -71,9 +71,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			set { _raiser = value; }
         }
 
-        public bool IsFlash { get; set; }
-
-	    public IAssembly Assembly
+        public IAssembly Assembly
         {
             get { return _event.Assembly; }
         }

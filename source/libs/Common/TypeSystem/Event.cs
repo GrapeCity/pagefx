@@ -10,9 +10,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return MemberType.Event; }
         }
 
-        public bool IsFlash { get; set; }
-
-	    public IMethod Adder { get; set; }
+        public IMethod Adder { get; set; }
 
         public IMethod Remover { get; set; }
 

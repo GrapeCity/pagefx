@@ -1778,7 +1778,7 @@ namespace DataDynamics.PageFX.Common.Syntax
 
             WriteID(e.Name);
 
-            if (e.IsFlash && !isIface)
+            if (e.IsFlashEvent() && !isIface)
             {
                 BeginBlock();
 

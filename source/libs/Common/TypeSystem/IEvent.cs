@@ -22,8 +22,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// Gets method used to raise the event.
         /// </summary>
 		IMethod Raiser { get; set; }
-
-        bool IsFlash { get; set; }
     }
 
     /// <summary>
