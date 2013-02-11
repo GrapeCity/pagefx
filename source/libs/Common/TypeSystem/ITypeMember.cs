@@ -53,10 +53,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// Gets visibility of this member.
         /// </summary>
         Visibility Visibility { get; }
-        
-        bool IsVisible { get; }
 
-        bool IsStatic { get; }
+	    bool IsStatic { get; }
 
         bool IsSpecialName { get; }
 

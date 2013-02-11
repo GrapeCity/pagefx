@@ -326,17 +326,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return Type != null ? Type.Visibility : Visibility.Public; }
         }
 
-        public bool IsVisible
-        {
-            get
-            {
-                if (DeclaringType != null && !DeclaringType.IsVisible)
-                    return false;
-                return Type == null || Type.IsVisible;
-            }
-        }
-
-        public bool IsStatic
+	    public bool IsStatic
         {
             get { return Type != null && Type.IsStatic; }
         }

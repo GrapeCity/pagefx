@@ -399,12 +399,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { throw new NotSupportedException(); }
         }
 
-        public bool IsVisible
-        {
-            get { return _method.IsVisible; }
-        }
-
-        public bool IsStatic
+		public bool IsStatic
         {
             get { return _method.IsStatic; }
             set { throw new NotSupportedException(); }

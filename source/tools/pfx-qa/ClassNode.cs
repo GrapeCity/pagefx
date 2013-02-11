@@ -34,7 +34,7 @@ namespace DataDynamics.PageFX
 
         public static bool TypeFilter(IType type)
         {
-            if (!type.IsVisible) return false;
+            if (!type.IsVisible()) return false;
             if (type.IsEnum) return false;
             if (type.TypeKind == TypeKind.Delegate) return false;
             if (type.IsInterface) return false;
@@ -107,7 +107,7 @@ namespace DataDynamics.PageFX
 
             foreach (var method in Type.Methods)
             {
-                if (!method.IsVisible) continue;
+                if (!method.IsVisible()) continue;
                 var mn = new MethodNode(method);
                 Add(mn);
                 mn.CalcStat();

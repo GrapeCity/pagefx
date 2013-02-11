@@ -85,7 +85,7 @@ namespace DataDynamics.PageFX.Common.Services
         public static bool TypeFilter(IType type)
         {
             if (type == null) return false;
-            if (!type.IsVisible) return false;
+            if (!type.IsVisible()) return false;
             //if (type.IsEnum) return false;
             if (ExcludeGenerics && type is IGenericType) return false;
 
@@ -255,7 +255,7 @@ namespace DataDynamics.PageFX.Common.Services
             #region WriteInterfaces
             static bool FilterInterface(IType iface)
             {
-                if (!iface.IsVisible) return false;
+                if (!iface.IsVisible()) return false;
                 //In silverlight System.ICloneable is internal
                 if (iface.FullName == "System.ICloneable") return false;
                 return true;
@@ -528,7 +528,7 @@ namespace DataDynamics.PageFX.Common.Services
                 var types = type.Types;
                 if (types == null) return;
                 if (types.Count <= 0) return;
-                var list = types.Where(nt => nt.IsVisible).ToList();
+                var list = types.Where(nt => nt.IsVisible()).ToList();
             	if (list.Count > 0)
                 {
                     list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
@@ -543,7 +543,7 @@ namespace DataDynamics.PageFX.Common.Services
 	{
 		internal static IEnumerable<IType> GetVisibleTypes(this ITypeContainer assembly)
 		{
-			return assembly.Types.Where(type => type.DeclaringType == null && type.IsVisible).ToArray();
+			return assembly.Types.Where(type => type.DeclaringType == null && type.IsVisible()).ToArray();
 		}
 
 		private static T[] GetVisibleMembers<T>(this IEnumerable<T> set)

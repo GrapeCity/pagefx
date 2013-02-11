@@ -4,6 +4,42 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
 	public static class TypeMemberExtensions
 	{
+		public static bool IsVisible(this ITypeMember member)
+		{
+			var genericParameter = member as IGenericParameter;
+			if (genericParameter != null)
+			{
+				return true;
+			}
+
+			var compoundType = member as ICompoundType;
+			if (compoundType != null)
+			{
+				return compoundType.ElementType.IsVisible();
+			}
+
+			var declType = member.DeclaringType;
+			if (declType != null && !declType.IsVisible())
+			{
+				return false;
+			}
+
+			var genericInstance = member as IGenericInstance;
+			if (genericInstance != null)
+			{
+				return genericInstance.Type == null || genericInstance.Type.IsVisible();
+			}
+			
+			switch (member.Visibility)
+			{
+				case Visibility.Public:
+				case Visibility.NestedPublic:
+					return true;
+			}
+
+			return false;
+		}
+
 		public static bool IsExposed(this ITypeMember member)
 		{
 			if (member == null) return false;

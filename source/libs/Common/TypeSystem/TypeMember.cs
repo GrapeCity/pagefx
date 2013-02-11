@@ -105,26 +105,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public virtual Visibility Visibility { get; set; }
 
-        public bool IsVisible
-        {
-            get
-            {
-                if (DeclaringType != null)
-                {
-                    if (!DeclaringType.IsVisible)
-                        return false;
-                }
-                switch(Visibility)
-                {
-                    case Visibility.Public:
-                    case Visibility.NestedPublic:
-                        return true;
-                }
-                return false;
-            }
-        }
-
-	    internal Modifiers Modifiers { get; set; }
+		internal Modifiers Modifiers { get; set; }
 
 	    internal bool GetModifier(Modifiers mod)
         {

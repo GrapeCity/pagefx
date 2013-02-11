@@ -114,12 +114,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _event.Visibility; }
         }
 
-        public bool IsVisible
-        {
-            get { return _event.IsVisible; }
-        }
-
-        public bool IsStatic
+	    public bool IsStatic
         {
             get { return _event.IsStatic; }
         }
