@@ -11,21 +11,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     {
         private readonly Dictionary<string, IType> _cache = new Dictionary<string, IType>();
         private readonly List<IType> _list = new List<IType>();
-        private readonly IType _owner;
 
-        #region Constructors
-        public TypeCollection()
-        {
-        }
-
-        internal TypeCollection(IType owner)
-        {
-            _owner = owner;
-        }
-        #endregion
-
-        #region ITypeCollection Members
-        public int Count
+	    public int Count
         {
             get { return _list.Count; }
         }
@@ -69,16 +56,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             return GetEnumerator();
         }
-        #endregion
 
-        private void AddToCache(IType type)
+	    private void AddToCache(IType type)
         {
-            if (_owner != null)
-            {
-                type.DeclaringType = _owner;
-				// this is needed to resolve subclass refs
-				AddToCache(type.Name, type);
-            }
             AddToCache(type.FullName, type);
         }
 
@@ -96,8 +76,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 Add(type);
         }
 
-        #region ICodeNode Members
-
 	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return _list.Cast<ICodeNode>(); }
@@ -108,8 +86,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     	/// </summary>
     	public object Data { get; set; }
 
-    	#endregion
-
 	    public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
@@ -119,7 +95,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private sealed class EmptyImpl : ITypeCollection
 		{
-			#region Impl
 			public int Count
 			{
 				get { return 0; }
@@ -165,7 +140,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			{
 				return "";
 			}
-			#endregion
 		}
     }
 

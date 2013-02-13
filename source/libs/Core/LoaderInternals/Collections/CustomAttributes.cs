@@ -54,14 +54,14 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 
 		public object Data { get; set; }
 
-		public ICustomAttribute[] this[IType type]
+		public ICustomAttribute[] Find(IType type)
 		{
-			get { return this.Where(x => ReferenceEquals(x.Type, type)).ToArray(); }
+			return this.Where(x => ReferenceEquals(x.Type, type)).ToArray();
 		}
 
-		public ICustomAttribute[] this[string typeFullName]
+		public ICustomAttribute[] Find(string typeFullName)
 		{
-			get { return this.Where(x => x.Type.FullName == typeFullName).ToArray(); }
+			return this.Where(x => x.Type.FullName == typeFullName).ToArray();
 		}
 
 		public void Add(ICustomAttribute attribute)

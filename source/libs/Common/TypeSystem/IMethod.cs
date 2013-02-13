@@ -5,6 +5,9 @@ using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
+	/// <summary>
+	/// Represents the type member with parameters (method or property).
+	/// </summary>
     public interface IParameterizedMember : ITypeMember
     {
         /// <summary>
@@ -101,19 +104,19 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         ICustomAttributeCollection ReturnCustomAttributes { get; }
 
         /// <summary>
-        /// Gets or sets the type member (property or event) assotiated with the meber.
+        /// Gets the type member (property or event) assotiated with the method.
         /// </summary>
-        ITypeMember Association { get; set; }
+        ITypeMember Association { get; }
 
 		/// <summary>
-        /// Gets or sets boolean flag indicating whether the method is explicit implementation of some interface method.
+        /// Indicates whether the method is explicit implementation of some interface method.
         /// </summary>
-        bool IsExplicitImplementation { get; set; }
+        bool IsExplicitImplementation { get; }
 
 		/// <summary>
-        /// Gets or sets methods implemented by this method.
+        /// Gets methods implemented by this method.
         /// </summary>
-        IReadOnlyList<IMethod> Implements { get; set; }
+        IReadOnlyList<IMethod> Implements { get; }
 
         /// <summary>
         /// Gets or sets method body.

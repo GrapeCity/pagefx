@@ -51,9 +51,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public interface ICustomAttributeCollection : IReadOnlyList<ICustomAttribute>, ICodeNode
     {
-        ICustomAttribute[] this[IType type] { get; }
+	    ICustomAttribute[] Find(IType type);
 
-        ICustomAttribute[] this[string typeFullName] { get; }
+	    ICustomAttribute[] Find(string typeFullName);
 
 	    void Add(ICustomAttribute attribute);
     }

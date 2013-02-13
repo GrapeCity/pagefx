@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    public TypeImpl()
         {
-            _members = new TypeMemberCollection(this);
+            _members = new TypeMemberCollection();
         }
 
         public TypeImpl(TypeKind kind) : this()
@@ -243,7 +243,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public ITypeCollection Types
         {
-            get { return _types ?? (_types = new TypeCollection(this)); }
+            get { return _types ?? (_types = new TypeCollection()); }
 			set { _types = value; }
         }
 

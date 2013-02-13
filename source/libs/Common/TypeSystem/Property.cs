@@ -39,8 +39,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
         }
 
-        #region IProperty Members
-        public bool HasDefault
+	    public bool HasDefault
         {
             get { return GetModifier(Modifiers.HasDefault); }
             set { SetModifier(value, Modifiers.HasDefault); }
@@ -160,18 +159,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public override bool IsStatic
         {
-            get
-            {
-                if (_getter != null)
-                    return _getter.IsStatic;
-                if (_setter != null)
-                    return _setter.IsStatic;
-                return false;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return _getter != null ? _getter.IsStatic : _setter != null && _setter.IsStatic; }
         }
 
         public IParameterCollection Parameters
@@ -213,8 +201,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
         }
         private IMethod _setter;
-
-	    #endregion
 
 	    public object Value { get; set; }
 

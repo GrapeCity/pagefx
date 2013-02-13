@@ -118,6 +118,7 @@
     <Compile Include="TypeSystem\EventExtensions.cs" />
     <Compile Include="TypeSystem\IAssemblyLoader.cs" />
     <Compile Include="TypeSystem\IAssemblyReference.cs" />
+    <Compile Include="TypeSystem\IMetadataTokenResolver.cs" />
     <Compile Include="TypeSystem\MethodAttributes.cs" />
     <Compile Include="TypeSystem\MethodImplAttributes.cs" />
     <Compile Include="TypeSystem\ModuleCollection.cs" />

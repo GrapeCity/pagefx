@@ -94,8 +94,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 							throw new ArgumentOutOfRangeException();
 					}
 
-					e.ResolveType();
-
 					return e;
 
 				default:

@@ -44,7 +44,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			_events = new EventList(this);
 			_methods = new MethodList(this);
 
-	        _members = new TypeMemberCollection(this)
+	        _members = new TypeMemberCollection()
 		        {
 			        Fields = _fields,
 			        Properties = _properties,
@@ -315,7 +315,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         IType ITypeMember.Type
         {
             get { return Type; }
-			set { Type = value as IGenericType; }
         }
 
         /// <summary>

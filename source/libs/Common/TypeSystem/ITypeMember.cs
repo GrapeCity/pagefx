@@ -29,10 +29,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         string Name { get; }
 
+		//TODO: FullName could be made as computable extension method, but there is problem with performance for generic types
+
         /// <summary>
         /// Gets the fullname of the member.
         /// </summary>
         string FullName { get; }
+
+		//TODO: remove DisplayName, make it computable
 
         /// <summary>
         /// Gets the display name of this member.
@@ -40,24 +44,33 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         string DisplayName { get; }
 
         /// <summary>
-        /// Gets or sets type that declares this member.
+        /// Gets the type that declares this member.
         /// </summary>
-		IType DeclaringType { get; set; }
+		IType DeclaringType { get; }
 
         /// <summary>
-        /// Gets the type of this member (for methods it's return type)
+        /// Gets the type of this member (for methods it's return type).
         /// </summary>
-		IType Type { get; set; }
+		IType Type { get; }
 
         /// <summary>
         /// Gets visibility of this member.
         /// </summary>
         Visibility Visibility { get; }
 
+		/// <summary>
+		/// Specifies whether member is static.
+		/// </summary>
 	    bool IsStatic { get; }
 
-        bool IsSpecialName { get; }
+		/// <summary>
+		/// Specifies whether the member has special name.
+		/// </summary>
+		bool IsSpecialName { get; }
 
+		/// <summary>
+		/// Specifies whether the member has runtime special name.
+		/// </summary>
         bool IsRuntimeSpecialName { get; }
     }
 
@@ -69,8 +82,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// <summary>
         /// Adds member to collection.
         /// </summary>
-        /// <param name="m">member to add</param>
-        void Add(ITypeMember m);
+        /// <param name="member">The member to add</param>
+        void Add(ITypeMember member);
     }
 
 	public enum MemberType

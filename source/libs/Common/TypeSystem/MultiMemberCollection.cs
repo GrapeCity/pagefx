@@ -1,24 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
+using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public class MultiMemberCollection<T> : IReadOnlyList<T>
+    public class MultiMemberCollection<T> : IReadOnlyList<T>, ICodeNode
         where T: ITypeMember
     {
         private readonly List<T> _list = new List<T>();
 		private readonly Hashtable _cache = new Hashtable();
-		private readonly IType _owner;
 
-        public MultiMemberCollection(IType owner)
-        {
-            _owner = owner;
-        }
-
-    	public IEnumerator<T> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
@@ -28,8 +24,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return GetEnumerator();
         }
 
-    	#region ISimpleList Members
-        public int Count
+	    public int Count
         {
             get { return _list.Count; }
         }
@@ -38,20 +33,25 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return _list[index]; }
         }
-        #endregion
 
-        public void Add(T member)
+	    public void Add(T member)
         {
-            member.DeclaringType = _owner;
+			if (member == null)
+				throw new ArgumentNullException("member");
+
             _list.Add(member);
+
             string name = member.Name;
-            var l = _cache[name] as List<T>;
-            if (l == null)
+
+            var list = _cache[name] as List<T>;
+            if (list == null)
             {
-                l = new List<T>();
-                _cache[name] = l;
+                list = new List<T>();
+                _cache[name] = list;
             }
-            l.Add(member);
+
+            list.Add(member);
+
             OnAdd(member);
         }
 
@@ -65,9 +65,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     		return result ?? Enumerable.Empty<T>();
     	}
 
-    	public IEnumerable<ICodeNode> ChildNodes
+		public object Data { get; set; }
+
+	    public IEnumerable<ICodeNode> ChildNodes
         {
             get { return _list.Cast<ICodeNode>(); }
         }
+
+	    public string ToString(string format, IFormatProvider formatProvider)
+	    {
+		    return SyntaxFormatter.Format(this, format, formatProvider);
+	    }
     }
 }

@@ -153,7 +153,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #region Runtime Methods
         public IMethodCollection Constructors
         {
-            get { return _ctors ?? (_ctors = new MethodCollection(this)); }
+            get { return _ctors ?? (_ctors = new MethodCollection()); }
         }
         private MethodCollection _ctors;
 

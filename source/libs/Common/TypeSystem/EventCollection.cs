@@ -9,20 +9,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class EventCollection : IEventCollection
     {
-	    private readonly IType _owner;
 	    private readonly IList<IEvent> _list = new List<IEvent>();
-
-	    public EventCollection(IType owner)
-        {
-	        _owner = owner;
-        }
 
 	    public void Add(IEvent item)
 	    {
 		    if (item == null)
 				throw new ArgumentNullException("item");
 
-		    item.DeclaringType = _owner;
 			_list.Add(item);
 	    }
 

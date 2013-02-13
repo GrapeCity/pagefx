@@ -1,29 +1,32 @@
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
+	/// <summary>
+	/// Base interface for polymorphic members (method or property).
+	/// </summary>
     public interface IPolymorphicMember : ITypeMember
     {
         /// <summary>
-        /// Gets or sets the flag indicating whether the member is abtract.
+        /// Idicates whether the member is abtract.
         /// </summary>
-        bool IsAbstract { get; set; }
+        bool IsAbstract { get; }
 
         /// <summary>
-        /// Gets or sets the flag indicating whether the member is virtual (overridable)
+        /// Indicates whether the member is virtual (overridable)
         /// </summary>
-        bool IsVirtual { get; set; }
+        bool IsVirtual { get; }
 
         /// <summary>
-        /// Gets or sets the flag indicating whether the member is final (can not be overriden)
+        /// Indicates whether the member is final (can not be overriden)
         /// </summary>
-        bool IsFinal { get; set; }
+        bool IsFinal { get; }
 
         /// <summary>
-        /// Gets or sets the flag indicating whether member overrides implementation and return type.
+        /// Indicates whether member overrides implementation and return type.
         /// </summary>
-        bool IsNewSlot { get; set; }
+        bool IsNewSlot { get; }
 
         /// <summary>
-        /// Gets the flag indicating whether the member overrides implementation of base type.
+        /// Indicates whether the member overrides implementation of base type.
         /// </summary>
         bool IsOverride { get; }
     }

@@ -5,17 +5,20 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public interface IProperty : IPolymorphicMember, IConstantProvider, IParameterizedMember
     {
-        bool HasDefault { get; set; }
+		/// <summary>
+		/// Indicates whether the property has default value.
+		/// </summary>
+        bool HasDefault { get; }
 
         /// <summary>
-        /// Gets or sets getter for this property.
+        /// Gets getter for the property.
         /// </summary>
-        IMethod Getter { get; set; }
+        IMethod Getter { get; }
 
         /// <summary>
-        /// Gerts or sets setter for this property.
+        /// Gerts setter for the property.
         /// </summary>
-        IMethod Setter { get; set; }
+        IMethod Setter { get; }
     }
 
     /// <summary>

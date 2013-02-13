@@ -10,9 +10,4 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         int MetadataToken { get; }
     }
-
-    public interface IMetadataTokenResolver
-    {
-        object ResolveMetadataToken(IMethod method, int token);
-    }
 }

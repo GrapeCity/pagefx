@@ -16,7 +16,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			foreach (var parameter in parameters)
 			{
 				GenericParameters.Add(parameter);
-				parameter.DeclaringType = this;
 			}
 		}
 

@@ -617,19 +617,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         	}
         }
 
-		public static void ResolveType(this IEvent e)
-		{
-			if (e.Type != null) return;
-
-			foreach (var method in new[]{e.Adder, e.Remover})
-			{
-				if (method == null) return;
-				e.Type = method.Parameters[0].Type;
-				break;
-			}
-		}
-
-        public static bool IsVoid(this IMethod method)
+		public static bool IsVoid(this IMethod method)
         {
 	        return method.Type == null
 	               || method.IsConstructor

@@ -11,12 +11,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public sealed class FieldCollection : IFieldCollection
     {
     	private readonly HashList<string, IField> _list = new HashList<string, IField>(x => x.Name);
-		private readonly IType _owner;
-
-        public FieldCollection(IType owner)
-        {
-            _owner = owner;
-        }
 
         public int Count
         {
@@ -30,9 +24,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public void Add(IField field)
         {
-    		if (field == null) throw new ArgumentNullException("field");
+    		if (field == null)
+				throw new ArgumentNullException("field");
 
-    		field.DeclaringType = _owner;
             _list.Add(field);
         }
 

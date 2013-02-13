@@ -9,23 +9,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class TypeMemberCollection : ITypeMemberCollection
     {
-		private IFieldCollection _fields;
-		private IMethodCollection _methods;
-		private IPropertyCollection _properties;
-		private IEventCollection _events;
-		private readonly IType _owner;
-
-	    public TypeMemberCollection(IType owner)
-        {
-		    if (owner == null)
-				throw new ArgumentNullException("owner");
-
-		    _owner = owner;
-            _fields = new FieldCollection(owner);
-            _methods = new MethodCollection(owner);
-            _properties = new PropertyCollection(owner);
-            _events = new EventCollection(owner);
-        }
+		private IFieldCollection _fields = new FieldCollection();
+		private IMethodCollection _methods = new MethodCollection();
+		private IPropertyCollection _properties = new PropertyCollection();
+		private IEventCollection _events = new EventCollection();
 
 	    public IFieldCollection Fields
         {
@@ -50,13 +37,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _events; }
 			set { _events = value; }
         }
-
-	    #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-        #endregion
 
 	    public int Count
         {
@@ -92,35 +72,35 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
         }
 
-        public void Add(ITypeMember m)
+        public void Add(ITypeMember member)
         {
-            if (ReferenceEquals(m.DeclaringType, _owner))
-                return;
+	        if (member == null)
+				throw new ArgumentNullException("member");
 
-            m.DeclaringType = _owner;
+	        //TODO: avoid duplicates
 
-            switch (m.MemberType)
+	        switch (member.MemberType)
             {
                 case MemberType.Field:
-                    _fields.Add((IField)m);
+                    _fields.Add((IField)member);
                     break;
 
                 case MemberType.Method:
                 case MemberType.Constructor:
-                    _methods.Add((IMethod)m);
+                    _methods.Add((IMethod)member);
                     break;
 
                 case MemberType.Property:
-                    _properties.Add((IProperty)m);
+                    _properties.Add((IProperty)member);
                     break;
 
                 case MemberType.Event:
-                    _events.Add((IEvent)m);
+                    _events.Add((IEvent)member);
                     break;
             }
         }
 
-        public IEnumerator<ITypeMember> GetEnumerator()
+	    public IEnumerator<ITypeMember> GetEnumerator()
         {
             foreach (var m in _fields)
                 yield return m;
@@ -131,6 +111,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             foreach (var m in _events)
                 yield return m;
         }
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 
 	    public IEnumerable<ICodeNode> ChildNodes
         {

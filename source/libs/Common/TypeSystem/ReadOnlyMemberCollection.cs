@@ -27,7 +27,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _members[index]; }
         }
 
-        public void Add(ITypeMember m)
+        public void Add(ITypeMember member)
         {
             throw new NotSupportedException();
         }

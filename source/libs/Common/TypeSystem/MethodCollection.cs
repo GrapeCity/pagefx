@@ -3,17 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
 	public class MethodCollection : MultiMemberCollection<IMethod>, IMethodCollection
     {
-        public MethodCollection(IType owner) : base(owner)
-        {
-        }
-
-    	protected override void OnAdd(IMethod method)
+        protected override void OnAdd(IMethod method)
         {
             if (method.IsConstructor)
             {
@@ -31,14 +26,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public IMethod StaticConstructor { get; private set; }
 
-		public object Data { get; set; }
-
-    	public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return SyntaxFormatter.Format(this, format, formatProvider);
-        }
-
-    	public override string ToString()
+		public override string ToString()
         {
             return ToString(null, null);
         }
