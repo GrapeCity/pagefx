@@ -590,34 +590,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return type;
         }
 
-        public static void ResolveTypeAndParameters(this IProperty prop)
-        {
-        	if (prop.Type != null) return;
-
-        	var m = prop.Getter;
-        	if (m != null)
-        	{
-        		prop.Type = m.Type;
-        		foreach (var p in m.Parameters)
-        		{
-        			prop.Parameters.Add(p);
-        		}
-        		return;
-        	}
-
-        	m = prop.Setter;
-        	if (m != null)
-        	{
-        		int n = m.Parameters.Count;
-        		prop.Type = m.Parameters[n - 1].Type;
-        		for (int i = 0; i < n - 1; ++i)
-        		{
-        			prop.Parameters.Add(m.Parameters[i]);
-        		}
-        	}
-        }
-
-		public static bool IsVoid(this IMethod method)
+        public static bool IsVoid(this IMethod method)
         {
 	        return method.Type == null
 	               || method.IsConstructor

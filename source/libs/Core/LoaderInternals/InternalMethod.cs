@@ -57,28 +57,13 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			{
 				case TableId.Property:
 					var property = _loader.Properties[index];
-
-					Association = property;
-					switch (sem)
-					{
-						case MethodSemanticsAttributes.Getter:
-							property.Getter = this;
-							break;
-						case MethodSemanticsAttributes.Setter:
-							property.Setter = this;
-							break;
-						default:
-							throw new ArgumentOutOfRangeException();
-					}
-
-					property.ResolveTypeAndParameters();
-						
 					return property;
 
 				case TableId.Event:
 					var e = _loader.Events[index];
 
 					Association = e;
+
 					switch (sem)
 					{
 						case MethodSemanticsAttributes.AddOn:
@@ -160,6 +145,8 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			}
 		}
 
+		//TODO: make FindExplicitImpl faster
+
 		private IMethod FindExplicitImpl()
 		{
 			var declType = DeclaringType;
@@ -176,18 +163,17 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 				if (impl == null)
 					throw new InvalidOperationException();
 
-				var iface = _loader.GetMethodDefOrRef(declIdx, new Context(declType, impl));
-				if (iface == null)
+				var decl = _loader.GetMethodDefOrRef(declIdx, new Context(declType, impl));
+				if (decl == null)
 					throw new InvalidOperationException();
 
-				impl.IsExplicitImplementation = true;
+				//TODO: remove this assignment, should be resolved in InternalMethod
+				((InternalMethod)impl).IsExplicitImplementation = true;
 
 				if (impl == this)
 				{
-					return iface;
+					return decl;
 				}
-
-				impl.Implements = new[] {iface}.AsReadOnlyList();
 			}
 
 			return null;

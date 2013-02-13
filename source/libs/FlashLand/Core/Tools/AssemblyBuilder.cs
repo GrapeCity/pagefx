@@ -1708,9 +1708,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 trait.Property = prop;
 				declType.Properties.Add(prop);
             }
-            if (trait.IsGetter) prop.Getter = method;
-            else prop.Setter = method;
-            prop.ResolveTypeAndParameters();
+//            if (trait.IsGetter) prop.Getter = method;
+//            else prop.Setter = method;
         }
 
 	    private Parameter CreateRestParam(AbcMethod m, int paramNum, int i)

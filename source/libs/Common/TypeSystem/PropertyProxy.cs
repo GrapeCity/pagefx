@@ -13,7 +13,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		private IMethod _getter;
 		private IMethod _setter;
 		private IType _type;
-		private ParameterCollection _params;
+		private IParameterCollection _parameters;
 
         public PropertyProxy(IGenericInstance instance, IProperty property)
         {
@@ -26,23 +26,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			get { return _property; }
 	    }
 
-		#region IProperty Members
-        public bool HasDefault
+	    public bool HasDefault
         {
             get { return _property.HasDefault; }
-            set { throw new NotSupportedException(); }
         }
 
         public IParameterCollection Parameters
         {
-            get
-            {
-				if (_params == null)
-				{
-					ResolveSignature();
-				}
-	            return _params;
-            }
+            get { return _parameters ?? (_parameters = new PropertyParameterCollection(this)); }
         }
 
         public IMethod Getter
@@ -57,41 +48,32 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			set { _setter = value; }
         }
 
-	    #endregion
-
-        #region IOverridableMember Members
-        public bool IsAbstract
+	    public bool IsAbstract
         {
             get { return _property.IsAbstract; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsVirtual
         {
             get { return _property.IsVirtual; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsFinal
         {
             get { return _property.IsFinal; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsNewSlot
         {
             get { return _property.IsNewSlot; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsOverride
         {
             get { return _property.IsOverride; }
         }
-        #endregion
 
-        #region ITypeMember Members
-        public IAssembly Assembly
+	    public IAssembly Assembly
         {
             get { return _property.Assembly; }
         }
@@ -99,7 +81,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IModule Module
         {
             get { return _property.Module; }
-            set { throw new NotSupportedException(); }
         }
 
         public MemberType MemberType
@@ -110,7 +91,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public string Name
         {
             get { return _property.Name; }
-            set { throw new NotSupportedException(); }
         }
 
         public string FullName
@@ -126,44 +106,31 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IType DeclaringType
         {
             get { return _instance; }
-            set { }
         }
 
         public IType Type
         {
-            get
-            {
-	            if (_type == null)
-	            {
-		            ResolveSignature();
-	            }
-	            return _type;
-            }
-            set { throw new NotSupportedException(); }
+            get { return _type ?? (_type = ResolveType()); }
         }
 
         public Visibility Visibility
         {
             get { return _property.Visibility; }
-            set { throw new NotSupportedException(); }
         }
 
 	    public bool IsStatic
         {
             get { return _property.IsStatic; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsSpecialName
         {
             get { return _property.IsSpecialName; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsRuntimeSpecialName
         {
             get { return _property.IsRuntimeSpecialName; }
-            set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -172,18 +139,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public int MetadataToken
         {
             get { return _property.MetadataToken; }
-            set { throw new NotSupportedException(); }
         }
-        #endregion
 
-        #region ICustomAttributeProvider Members
-        public ICustomAttributeCollection CustomAttributes
+	    public ICustomAttributeCollection CustomAttributes
         {
             get { return _property.CustomAttributes; }
         }
-        #endregion
-
-        #region ICodeNode Members
 
 	    public IEnumerable<ICodeNode> ChildNodes
         {
@@ -191,89 +152,64 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
 
         public object Data { get; set; }
-        #endregion
 
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return SyntaxFormatter.Format(this, format, formatProvider);
-        }
-        #endregion
-
-        #region IDocumentationProvider Members
-        public string Documentation
+	    public string Documentation
         {
             get { return _property.Documentation; }
             set { throw new NotSupportedException(); }
         }
-        #endregion
 
-        #region IConstantProvider Members
-        public object Value
+	    public object Value
         {
             get { return _property.Value; }
             set { throw new NotSupportedException(); }
         }
-        #endregion
 
-        public override string ToString()
-        {
-            return ToString(null, null);
-        }
-
-		private IMethod ResolveGetter()
+	    private IMethod ResolveGetter()
 		{
 			if (_property.Getter == null)
 				return null;
 
 			_getter =  _instance.Methods.First(x => x.ProxyOf == _property.Getter);
 
-			_getter.Association = this;
-
 			return _getter;
 		}
 
-		private IMethod ResolveSetter()
+	    private IMethod ResolveSetter()
 		{
 			if (_property.Setter == null)
 				return null;
 
 			_setter = _instance.Methods.First(x => x.ProxyOf == _property.Setter);
 
-			_setter.Association = this;
-
 			return _setter;
 		}
 
-	    private void ResolveSignature()
+	    private IType ResolveType()
 	    {
-		    if (_property.Getter != null)
-			    ResolveSignatureByGetter(Getter);
-		    else
-			    ResolveSignatureBySetter(Setter);
+		    var getter = _property.Getter;
+		    if (getter != null)
+		    {
+			    return getter.Type;
+		    }
+
+		    var setter = _property.Setter;
+			if (setter != null)
+			{
+				return setter.Parameters[setter.Parameters.Count - 1].Type;
+			}
+
+		    return null;
 	    }
 
-	    private void ResolveSignatureByGetter(IMethod getter)
-		{
-			_type = getter.Type;
-			_params = new ParameterCollection();
-			foreach (var p in getter.Parameters)
-			{
-				_params.Add(new Parameter(p.Type, p.Name, p.Index));
-			}
-		}
+	    public string ToString(string format, IFormatProvider formatProvider)
+	    {
+		    return SyntaxFormatter.Format(this, format, formatProvider);
+	    }
 
-		private void ResolveSignatureBySetter(IMethod setter)
-		{
-			int n = setter.Parameters.Count;
-
-			_type = setter.Parameters[n - 1].Type;
-
-			_params = new ParameterCollection();
-			for (int i = 0; i < n - 1; ++i)
-			{
-				_params.Add(setter.Parameters[i]);
-			}
-		}
+	    public override string ToString()
+	    {
+		    return ToString(null, null);
+	    }
     }
 }

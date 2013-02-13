@@ -88,8 +88,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 			{
 				var field = _loader.Fields[i];
 
-				field.DeclaringType = _owner;
-
 				yield return field;
 			}
 		}

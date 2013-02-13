@@ -141,8 +141,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 			{
 				var method = _loader.Methods[i];
 
-				method.DeclaringType = _owner;
-
 				yield return method;
 			}
 		}

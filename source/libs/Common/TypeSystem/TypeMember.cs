@@ -152,28 +152,20 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	#endregion
 
-        #region IFormattable Members
-        public virtual string ToString(string format, IFormatProvider formatProvider)
-        {
-            return SyntaxFormatter.Format(this, format, formatProvider);
-        }
-        #endregion
-
-        #region IDocumentationProvider Members
-
-    	/// <summary>
+		/// <summary>
     	/// Gets or sets documentation of this member
     	/// </summary>
     	public string Documentation { get; set; }
 
-    	#endregion
+		public virtual string ToString(string format, IFormatProvider formatProvider)
+		{
+			return SyntaxFormatter.Format(this, format, formatProvider);
+		}
 
-        #region Object Override Members
-        public override string ToString()
+		public override string ToString()
         {
             return ToString(null, null);
         }
-        #endregion
     }
 
 	[Flags]

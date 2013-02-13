@@ -30,7 +30,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 					{
 						int index = row[Schema.NestedClass.Class].Index - 1;
 						var type = _loader.Types[index];
-						type.DeclaringType = _owner;
 						return type;
 					});
 		}

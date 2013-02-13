@@ -1,5 +1,4 @@
 ﻿using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Core.LoaderInternals.Collections;
 using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
@@ -18,24 +17,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 
 		protected override IProperty ParseRow(MetadataRow row, int index)
 		{
-			var flags = (PropertyAttributes)row[Schema.Property.Flags].Value;
-			var name = row[Schema.Property.Name].String;
-			var token = SimpleIndex.MakeToken(TableId.Property, index + 1);
-			var value = Loader.Const[token];
-
-			var property = new Property
-				{
-					MetadataToken = token,
-					Name = name,
-					IsSpecialName = ((flags & PropertyAttributes.SpecialName) != 0),
-					IsRuntimeSpecialName = ((flags & PropertyAttributes.RTSpecialName) != 0),
-					HasDefault = ((flags & PropertyAttributes.HasDefault) != 0),
-					Value = value
-				};
-
-			property.CustomAttributes = new CustomAttributes(Loader, property);
-
-			return property;
+			return new PropertyImpl(Loader, row, index);
 		}
 	}
 }

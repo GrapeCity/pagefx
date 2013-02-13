@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -7,6 +8,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public sealed class Property : TypeMember, IProperty
     {
+		private IParameterCollection _parameters;
+
         /// <summary>
         /// Gets the kind of this member.
         /// </summary>
@@ -19,19 +22,21 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get
             {
-                if (_getter != null)
+	            var getter = Getter;
+	            var setter = Setter;
+				
+                if (getter != null)
                 {
-                    if (_setter != null)
+                    if (setter != null)
                     {
-                        var gv = _getter.Visibility;
-                        var sv = _setter.Visibility;
+                        var gv = getter.Visibility;
+                        var sv = setter.Visibility;
                         return gv > sv ? gv : sv;
                     }
-                    return _getter.Visibility;
+                    return getter.Visibility;
                 }
-                if (_setter != null) 
-                    return _setter.Visibility;
-                return base.Visibility;
+
+                return setter != null ? setter.Visibility : base.Visibility;
             }
             set
             {
@@ -45,27 +50,19 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { SetModifier(value, Modifiers.HasDefault); }
         }
 
+		private bool IsFlag(Func<IMethod, bool> get)
+		{
+			return new[] {Getter, Setter}
+				.Where(x => x != null)
+				.Any(get);
+		}
+
         /// <summary>
         /// Gets or sets the flag indicating whether the property is abtract.
         /// </summary>
         public bool IsAbstract
         {
-            get
-            {
-                if (_getter != null)
-                {
-                    if (_setter != null)
-                        return _getter.IsAbstract || _setter.IsAbstract;
-                    return _getter.IsAbstract;
-                }
-                if (_setter != null)
-                    return _setter.IsAbstract;
-                return false;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return IsFlag(x => x.IsAbstract); }
         }
 
         /// <summary>
@@ -73,23 +70,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public bool IsVirtual
         {
-            get
-            {
-                if (_getter != null)
-                {
-                    if (_setter != null)
-                        return _getter.IsVirtual || _setter.IsVirtual;
-                    return _getter.IsVirtual;
-                }
-                if (_setter != null)
-                    return _setter.IsVirtual;
-                return false;
-                
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return IsFlag(x => x.IsVirtual); }
         }
 
         /// <summary>
@@ -97,22 +78,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public bool IsFinal
         {
-            get
-            {
-                if (_getter != null)
-                {
-                    if (_setter != null)
-                        return _getter.IsFinal || _setter.IsFinal;
-                    return _getter.IsFinal;
-                }
-                if (_setter != null)
-                    return _setter.IsFinal;
-                return false;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return IsFlag(x => x.IsFinal); }
         }
 
         /// <summary>
@@ -120,22 +86,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public bool IsNewSlot
         {
-            get
-            {
-                if (_getter != null)
-                {
-                    if (_setter != null)
-                        return _getter.IsNewSlot || _setter.IsNewSlot;
-                    return _getter.IsNewSlot;
-                }
-                if (_setter != null)
-                    return _setter.IsNewSlot;
-                return false;
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return IsFlag(x => x.IsNewSlot); }
         }
 
         /// <summary>
@@ -143,66 +94,61 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public bool IsOverride
         {
-            get
-            {
-                if (_getter != null)
-                {
-                    if (_setter != null)
-                        return _getter.IsOverride || _setter.IsOverride;
-                    return _getter.IsOverride;
-                }
-                if (_setter != null)
-                    return _setter.IsOverride;
-                return false;
-            }
+            get { return IsFlag(x => x.IsOverride); }
         }
 
         public override bool IsStatic
         {
-            get { return _getter != null ? _getter.IsStatic : _setter != null && _setter.IsStatic; }
+            get { return IsFlag(x => x.IsStatic); }
         }
 
         public IParameterCollection Parameters
         {
-            get { return _parameters; }
+            get { return _parameters ?? (_parameters = new PropertyParameterCollection(this)); }
         }
-        readonly ParameterCollection _parameters = new ParameterCollection();
-
+        
         public IMethod Getter
         {
-            get { return _getter; }
-            set
-            {
-                if (value != _getter)
-                {
-                    if (_getter != null)
-                        _getter.Association = null;
-                    _getter = value;
-                    if (_getter != null)
-                        _getter.Association = this;
-                }
-            }
+            get { return _getter ?? (_getter = ResolveGetter()); }
+            set { _getter = value; }
         }
         private IMethod _getter;
 
         public IMethod Setter
         {
-            get { return _setter; }
-            set
-            {
-                if (value != _setter)
-                {
-                    if (_setter != null)
-                        _setter.Association = null;
-                    _setter = value;
-                    if (_setter != null)
-                        _setter.Association = this;
-                }
-            }
+            get { return _setter ?? (_setter = ResolveSetter()); }
+            set { _setter = value; }
         }
         private IMethod _setter;
 
 	    public object Value { get; set; }
+
+		private IMethod ResolveGetter()
+		{
+			var declType = DeclaringType;
+			return declType != null ? declType.Methods.FirstOrDefault(x => x.Association == this && !x.IsVoid()) : null;
+		}
+
+		private IMethod ResolveSetter()
+		{
+			var declType = DeclaringType;
+			return declType != null ? declType.Methods.FirstOrDefault(x => x.Association == this && x.IsVoid()) : null;
+		}
+
+		protected override IType ResolveType()
+		{
+			if (_getter != null)
+			{
+				return _getter.Type;
+			}
+
+			if (_setter != null)
+			{
+				return _setter.Parameters[_setter.Parameters.Count - 1].Type;
+			}
+
+			return null;
+		}
 
 		protected override IType ResolveDeclaringType()
 		{
