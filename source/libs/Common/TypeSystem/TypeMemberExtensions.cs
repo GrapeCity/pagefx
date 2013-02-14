@@ -4,6 +4,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
 	public static class TypeMemberExtensions
 	{
+		public static string BuildFullName(this ITypeMember member)
+		{
+			var declType = member.DeclaringType;
+			return declType != null ? declType.FullName + "." + member.Name : member.Name;
+		}
+
 		public static bool IsVisible(this ITypeMember member)
 		{
 			var genericParameter = member as IGenericParameter;

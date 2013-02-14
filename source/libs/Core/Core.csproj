@@ -163,6 +163,7 @@
     <Compile Include="LoaderInternals\Collections\ParamList.cs" />
     <Compile Include="LoaderInternals\Collections\PropertyList.cs" />
     <Compile Include="LoaderInternals\Context.cs" />
+    <Compile Include="LoaderInternals\EventImpl.cs" />
     <Compile Include="LoaderInternals\Extensions.cs" />
     <Compile Include="LoaderInternals\InternalAssembly.cs" />
     <Compile Include="LoaderInternals\InternalModule.cs" />

@@ -11,17 +11,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// <summary>
         /// Gets method used to add event handlers.
         /// </summary>
-		IMethod Adder { get; set; }
+		IMethod Adder { get; }
 
         /// <summary>
         /// Gets method used to remove event handlers.
         /// </summary>
-		IMethod Remover { get; set; }
+		IMethod Remover { get; }
 
         /// <summary>
         /// Gets method used to raise the event.
         /// </summary>
-		IMethod Raiser { get; set; }
+		IMethod Raiser { get; }
     }
 
     /// <summary>
@@ -29,13 +29,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public interface IEventCollection : IReadOnlyList<IEvent>, ICodeNode
     {
-	    void Add(IEvent item);
-
-        /// <summary>
+	    /// <summary>
         /// Finds event with given name.
         /// </summary>
         /// <param name="name">name of event to find.</param>
         /// <returns>event with given name or null</returns>
         IEvent this[string name] { get; }
+
+	    void Add(IEvent item);
     }
 }

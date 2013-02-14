@@ -9,27 +9,22 @@ using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals
 {
-	internal sealed class PropertyImpl : IProperty
+	internal sealed class EventImpl : IEvent
 	{
-		private readonly PropertyAttributes _flags;
+		private readonly EventAttributes _flags;
 		private readonly AssemblyLoader _loader;
+		private IMethod _adder;
 		private ICustomAttributeCollection _customAttributes;
-		private IMethod _getter;
-		private IParameterCollection _parameters;
-		private IMethod _setter;
+		private IMethod _raiser;
+		private IMethod _remover;
 
-		public PropertyImpl(AssemblyLoader loader, MetadataRow row, int index)
+		public EventImpl(AssemblyLoader loader, MetadataRow row, int index)
 		{
 			_loader = loader;
 
-			var token = SimpleIndex.MakeToken(TableId.Property, index + 1);
-			MetadataToken = token;
-
-			_flags = (PropertyAttributes) row[Schema.Property.Flags].Value;
-
-			Name = row[Schema.Property.Name].String;
-
-			Value = loader.Const[token];
+			MetadataToken = SimpleIndex.MakeToken(TableId.Event, index + 1);
+			Name = row[Schema.Event.Name].String;
+			_flags = (EventAttributes) row[Schema.Event.EventFlags].Value;
 		}
 
 		public int MetadataToken { get; private set; }
@@ -60,7 +55,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public MemberType MemberType
 		{
-			get { return MemberType.Property; }
+			get { return MemberType.Event; }
 		}
 
 		public string Name { get; private set; }
@@ -84,19 +79,8 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		{
 			get
 			{
-				var getter = Getter;
-				if (getter != null)
-				{
-					return getter.Type;
-				}
-
-				var setter = Setter;
-				if (setter != null)
-				{
-					return setter.Parameters[setter.Parameters.Count - 1].Type;
-				}
-
-				return null;
+				var m = GetMethods().FirstOrDefault(x => x != null && x.Parameters.Count > 0);
+				return m == null ? null : m.Parameters[0].Type;
 			}
 		}
 
@@ -104,72 +88,40 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		{
 			get
 			{
-				return new[] { Visibility.Private }
+				return new[] {Visibility.Private}
 					.Concat(GetMethods().Select(x => x.Visibility))
 					.Max();
 			}
 		}
 
+		public bool IsStatic
+		{
+			get { return GetMethods().Any(x => x.IsStatic); }
+		}
+
 		public bool IsSpecialName
 		{
-			get { return (_flags & PropertyAttributes.SpecialName) != 0; }
+			get { return (_flags & EventAttributes.SpecialName) != 0; }
 		}
 
 		public bool IsRuntimeSpecialName
 		{
-			get { return (_flags & PropertyAttributes.RTSpecialName) != 0; }
+			get { return (_flags & EventAttributes.RTSpecialName) != 0; }
 		}
 
-		public bool IsStatic
+		public IMethod Adder
 		{
-			get { return IsFlag(x => x.IsStatic); }
+			get { return _adder ?? (_adder = ResolveMethod(MethodSemanticsAttributes.AddOn)); }
 		}
 
-		public bool IsAbstract
+		public IMethod Remover
 		{
-			get { return IsFlag(x => x.IsAbstract); }
+			get { return _remover ?? (_remover = ResolveMethod(MethodSemanticsAttributes.RemoveOn)); }
 		}
 
-		public bool IsVirtual
+		public IMethod Raiser
 		{
-			get { return IsFlag(x => x.IsVirtual); }
-		}
-
-		public bool IsFinal
-		{
-			get { return IsFlag(x => x.IsFinal); }
-		}
-
-		public bool IsNewSlot
-		{
-			get { return IsFlag(x => x.IsNewSlot); }
-		}
-
-		public bool IsOverride
-		{
-			get { return IsFlag(x => x.IsOverride); }
-		}
-
-		public object Value { get; set; }
-
-		public IParameterCollection Parameters
-		{
-			get { return _parameters ?? (_parameters = new PropertyParameterCollection(this)); }
-		}
-
-		public bool HasDefault
-		{
-			get { return (_flags & PropertyAttributes.HasDefault) != 0; }
-		}
-
-		public IMethod Getter
-		{
-			get { return _getter ?? (_getter = ResolveGetter()); }
-		}
-
-		public IMethod Setter
-		{
-			get { return _setter ?? (_setter = ResolveSetter()); }
+			get { return _raiser ?? (_raiser = ResolveMethod(MethodSemanticsAttributes.Fire)); }
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
@@ -177,19 +129,17 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			return SyntaxFormatter.Format(this, format, formatProvider);
 		}
 
-		private bool IsFlag(Func<IMethod, bool> get)
+		private IEnumerable<IMethod> GetMethods()
 		{
-			return GetMethods().Where(x => x != null).Any(get);
+			yield return Adder;
+			yield return Remover;
+			yield return Raiser;
 		}
 
-		private IMethod ResolveGetter()
+		private T FromMethod<T>(Func<IMethod, T> eval)
 		{
-			return ResolveMethod(MethodSemanticsAttributes.Getter);
-		}
-
-		private IMethod ResolveSetter()
-		{
-			return ResolveMethod(MethodSemanticsAttributes.Setter);
+			var m = GetMethods().FirstOrDefault(x => x != null);
+			return m != null ? eval(m) : default(T);
 		}
 
 		private IMethod ResolveMethod(MethodSemanticsAttributes sem)
@@ -207,18 +157,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 			var methodIndex = row[Schema.MethodSemantics.Method].Index - 1;
 			return _loader.Methods[methodIndex];
-		}
-
-		private IEnumerable<IMethod> GetMethods()
-		{
-			yield return Getter;
-			yield return Setter;
-		}
-
-		private T FromMethod<T>(Func<IMethod, T> eval)
-		{
-			var m = GetMethods().FirstOrDefault(x => x != null);
-			return m != null ? eval(m) : default(T);
 		}
 
 		public override string ToString()

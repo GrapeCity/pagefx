@@ -924,26 +924,23 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             ImplementEvents(type);
         }
 
-		private static void ImplementEvents(IType type)
-        {
-        	if (type.Interfaces == null) return;
+	    private static void ImplementEvents(IType type)
+	    {
+		    if (type.Interfaces == null) return;
 
-        	foreach (var iface in type.Interfaces)
-        	{
-        		foreach (var e in iface.Events)
-        		{
-        			var typeEvent = FindMember(type, e.Name);
-        			if (typeEvent == null)
-        			{
-        				typeEvent = CopyEvent(e);
-        				type.Members.Add(typeEvent);
-        			}
-					((TypeMember)typeEvent).Visibility = Visibility.Public;
-        		}
-        	}
-        }
+		    var events = from iface in type.Interfaces
+		                 from e in iface.Events
+		                 let typeEvent = FindMember(type, e.Name)
+		                 where typeEvent == null
+		                 select CopyEvent(e);
 
-		private static Event CopyEvent(IEvent e)
+		    foreach (var e in events)
+		    {
+			    type.Members.Add(e);
+		    }
+	    }
+
+	    private static IEvent CopyEvent(IEvent e)
         {
             var copy = new Event
                          {
@@ -957,16 +954,15 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         }
 
 		private static void CopyAttrs(ICustomAttributeProvider from, ICustomAttributeProvider to)
-        {
-            foreach (var attr in from.CustomAttributes)
-            {
-                var attr2 = (ICustomAttribute)attr.Clone();
-                attr2.Owner = to;
-                to.CustomAttributes.Add(attr2);
-            }
-        }
+		{
+			foreach (var attribute in from.CustomAttributes.Select(x => (ICustomAttribute)x.Clone()))
+			{
+				attribute.Owner = to;
+				to.CustomAttributes.Add(attribute);
+			}
+		}
 
-		private static ITypeMember FindMember(IType type, string name)
+	    private static ITypeMember FindMember(IType type, string name)
 		{
 			return type.Members.FirstOrDefault(m => m.Name == name);
 		}

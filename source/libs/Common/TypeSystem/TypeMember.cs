@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Syntax;
 
@@ -10,9 +11,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		private IType _type;
 	    private IType _declType;
 
-	    #region ITypeMember Members
-
-        /// <summary>
+		/// <summary>
         /// Gets the assembly in which the member is declared.
         /// </summary>
         public IAssembly Assembly
@@ -58,13 +57,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public virtual string FullName
         {
-            get 
-            {
-                var dt = DeclaringType;
-                if (dt != null)
-                    return dt.FullName + "." + Name;
-                return Name;
-            }
+            get { return this.BuildFullName(); }
         }
 
         public virtual string DisplayName
@@ -136,21 +129,15 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { SetModifier(value, Modifiers.RuntimeSpecialName); }
         }
 
-        #endregion
-
-        #region ICodeNode Members
-
-	    public virtual IEnumerable<ICodeNode> ChildNodes
+		public virtual IEnumerable<ICodeNode> ChildNodes
         {
-            get { return null; }
+            get { return Enumerable.Empty<ICodeNode>(); }
         }
 
     	/// <summary>
     	/// Gets or sets user defined data assotiated with this object.
     	/// </summary>
     	public object Data { get; set; }
-
-    	#endregion
 
 		/// <summary>
     	/// Gets or sets documentation of this member

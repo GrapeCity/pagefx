@@ -49,8 +49,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			var row = _loader.Metadata.LookupRow(TableId.MethodSemantics, Schema.MethodSemantics.Method, token.Index - 1, true);
 			if (row == null) return null;
 				
-			var sem = (MethodSemanticsAttributes)row[Schema.MethodSemantics.Semantics].Value;
-
 			SimpleIndex assoc = row[Schema.MethodSemantics.Association].Value;
 			var index = assoc.Index - 1;
 			switch (assoc.Table)
@@ -60,26 +58,8 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 					return property;
 
 				case TableId.Event:
-					var e = _loader.Events[index];
-
-					Association = e;
-
-					switch (sem)
-					{
-						case MethodSemanticsAttributes.AddOn:
-							e.Adder = this;
-							break;
-						case MethodSemanticsAttributes.RemoveOn:
-							e.Remover = this;
-							break;
-						case MethodSemanticsAttributes.Fire:
-							e.Raiser = this;
-							break;
-						default:
-							throw new ArgumentOutOfRangeException();
-					}
-
-					return e;
+					var @event = _loader.Events[index];
+					return @event;
 
 				default:
 					throw new ArgumentOutOfRangeException();

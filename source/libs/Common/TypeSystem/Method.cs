@@ -28,9 +28,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return IsConstructor ? MemberType.Constructor : MemberType.Method; }
         }
 
-        #region IMethod Members
-
-	    public string GetSigName(Runtime runtime)
+		public string GetSigName(Runtime runtime)
 	    {
 		    return _sigNames[(int)runtime] ?? (_sigNames[(int)runtime] = this.BuildSigName(runtime));
 	    }
@@ -46,7 +44,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return IsSpecialName && IsCtorName(Name); }
         }
 
-        static bool IsCtorName(string name)
+        private static bool IsCtorName(string name)
         {
             return name == CLRNames.Constructor || name == CLRNames.StaticConstructor || name == "<init>";
         }
@@ -92,9 +90,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { SetModifier(value, Modifiers.PInvoke); }
         }
 
-	    #region Impl Flags
-
-	    public MethodImplAttributes ImplFlags { get; set; }
+		public MethodImplAttributes ImplFlags { get; set; }
 
 	    /// <summary>
         /// Gets or sets value indicating what kind of implementation is provided for this method.
@@ -224,9 +220,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 else ImplFlags &= ~MethodImplAttributes.NoInlining;
             }
         }
-        #endregion
 
-    	IGenericParameterCollection IMethod.GenericParameters
+		IGenericParameterCollection IMethod.GenericParameters
         {
             get { return _genericParams; }
         }
@@ -321,10 +316,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return null; }
         }
 
-        #endregion
-
-        #region ICodeNode Members
-        public override IEnumerable<ICodeNode> ChildNodes
+		public override IEnumerable<ICodeNode> ChildNodes
         {
             get
             {
@@ -333,9 +325,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 return null;
             }
         }
-        #endregion
 
-	    private static IMethod ResolveBaseMethod(IMethod method)
+		private static IMethod ResolveBaseMethod(IMethod method)
         {
 			if (method.IsStatic
 				|| method.IsAbstract
