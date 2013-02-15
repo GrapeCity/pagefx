@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -240,7 +239,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public IGenericParameterCollection GenericParameters
 		{
-			get { return _genericParameters ?? (_genericParameters = new GenericParamList(this)); }
+			get { return _genericParameters ?? (_genericParameters = new GenericParamList(_loader, this)); }
 		}
 
 		public IType[] GenericArguments
@@ -473,65 +472,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		public override string ToString()
 		{
 			return ToString(null, null);
-		}
-
-		private sealed class GenericParamList : IGenericParameterCollection
-		{
-			private readonly IList<IGenericParameter> _list;
-
-			public GenericParamList(InternalMethod method)
-			{
-				_list = new List<IGenericParameter>();
-
-				var genericParams = method._loader.GenericParameters.Find(method.MetadataToken);
-				foreach (var genericParameter in genericParams)
-				{
-					genericParameter.DeclaringMethod = method;
-					_list.Add(genericParameter);
-				}
-			}
-
-			public IEnumerator<IGenericParameter> GetEnumerator()
-			{
-				return _list.GetEnumerator();
-			}
-
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-
-			public int Count
-			{
-				get { return _list.Count; }
-			}
-
-			public IGenericParameter this[int index]
-			{
-				get { return _list[index]; }
-			}
-
-			public IEnumerable<ICodeNode> ChildNodes
-			{
-				get { return this.Cast<ICodeNode>(); }
-			}
-
-			public object Data { get; set; }
-
-			public IGenericParameter this[string name]
-			{
-				get { return _list.FirstOrDefault(x => x.Name == name); }
-			}
-
-			public string ToString(string format, IFormatProvider formatProvider)
-			{
-				return SyntaxFormatter.Format(this, format, formatProvider);
-			}
-
-			public override string ToString()
-			{
-				return ToString(null, null);
-			}
 		}
 	}
 }

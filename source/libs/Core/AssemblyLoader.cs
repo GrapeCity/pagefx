@@ -246,6 +246,22 @@ namespace DataDynamics.PageFX.Core
             }
         }
 
+		internal ITypeMember GetTypeOrMethodDef(SimpleIndex i)
+		{
+			int index = i.Index - 1;
+			switch (i.Table)
+			{
+				case TableId.TypeDef:
+					return Types[index];
+
+				case TableId.MethodDef:
+					return Methods[index];
+
+				default:
+					throw new ArgumentOutOfRangeException("i");
+			}
+		}
+
 	    internal IType ResolveType(TypeSignature sig, Context context)
         {
             return _signatureResolver.ResolveType(sig, context);

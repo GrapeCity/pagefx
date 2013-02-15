@@ -26,12 +26,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public IMethod StaticConstructor { get; private set; }
 
-		public override string ToString()
-        {
-            return ToString(null, null);
-        }
-
-    	public static readonly IMethodCollection Empty = new EmptyMethodCollection();
+		public static readonly IMethodCollection Empty = new EmptyMethodCollection();
 
 		private sealed class EmptyMethodCollection : IMethodCollection
 		{

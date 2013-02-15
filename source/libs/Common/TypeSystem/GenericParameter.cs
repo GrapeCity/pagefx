@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -11,10 +10,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		IType BaseType { get; }
 	}
 
+	/// <summary>
+	/// Mutable <see cref="IGenericParameter"/> implementation.
+	/// </summary>
     public sealed class GenericParameter : CustomAttributeProvider, IGenericParameter
     {
-        #region ITypeMember Members
-        /// <summary>
+	    /// <summary>
         /// Gets the kind of this member.
         /// </summary>
         public MemberType MemberType
@@ -56,10 +57,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { }
         }
 
-		#endregion
-
-        #region IGenericParameter Members
-        public IType DeclaringType { get; set; }
+	    public IType DeclaringType { get; set; }
 
         public int Position { get; set; }
 
@@ -67,12 +65,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public GenericParameterSpecialConstraints SpecialConstraints { get; set; }
 
-        public long ID { get; set; }
-        #endregion
+        public long Id { get; set; }
 
-        #region IType Members
-
-        /// <summary>
+	    /// <summary>
         /// Gets the assembly in which the type is declared.
         /// </summary>
         public IAssembly Assembly
@@ -99,16 +94,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                     return DeclaringMethod.Module;
                 return null;
             }
-            set
-            {
-                throw new NotSupportedException();
-            }
         }
 
         public string Namespace
         {
             get { return string.Empty; }
-            set { throw new NotSupportedException(); }
         }
 
         public string FullName
@@ -119,61 +109,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public TypeKind TypeKind
         {
             get { return TypeKind.GenericParameter; }
-            set { throw new NotSupportedException(); }
         }
 
-        public bool IsAbstract
-        {
-            get { return false; }
-            set { }
-        }
-
-        public bool IsSealed
-        {
-            get { return false; }
-            set { }
-        }
-
-	    public bool IsPartial
-	    {
-			get { return false; }
-		    set { throw new NotSupportedException(); }
-	    }
-
-	    public bool IsBeforeFieldInit
-        {
-            get { return false; }
-            set { }
-        }
-
-        /// <summary>
-        /// Determines whether this type is interface.
-        /// </summary>
-        public bool IsInterface
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// Determines whether this type is class.
-        /// </summary>
-        public bool IsClass
-        {
-            get { return false; }
-        }
-
-        public bool IsArray
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// Determines whether this type is enum type.
-        /// </summary>
-        public bool IsEnum
-        {
-            get { return false; }
-        }
+        public bool IsAbstract { get { return false; } }
+		public bool IsSealed { get { return false; } }
+		public bool IsPartial { get { return false; } }
+		public bool IsBeforeFieldInit { get { return false; } }
+		public bool IsInterface { get { return false; } }
+		public bool IsClass { get { return false; } }
+		public bool IsArray { get { return false; } }
+		public bool IsEnum { get { return false; } }
 
         public IMethod DeclaringMethod { get; set; }
 
@@ -182,7 +127,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    public IType BaseType
 	    {
 		    get { return Constraints != null ? Constraints.BaseType : null; }
-		    set { throw new NotSupportedException(); }
 	    }
 
 		public ITypeCollection Interfaces
@@ -207,17 +151,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public IPropertyCollection Properties
         {
-            get { return null; }
+            get { return PropertyCollection.Empty; }
         }
 
         public IEventCollection Events
         {
-            get { return null; }
+            get { return EventCollection.Empty; }
         }
 
         public ITypeMemberCollection Members
         {
-            get { return null; }
+            get { return TypeMemberCollection.Empty; }
         }
 
         public IType ValueType
@@ -228,13 +172,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IType Type
         {
             get { return null; }
-            set { throw new NotSupportedException(); }
         }
 
         public ClassLayout Layout
         {
             get { return null; }
-            set { throw new NotSupportedException(); }
         }
 
 	    /// <summary>
@@ -242,9 +184,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public string Key
         {
-            get { return _key ?? (_key = Name + ID); }
+            get { return this.BuildKey(); }
         }
-        private string _key;
 
         /// <summary>
         /// Gets name of the type used in signatures.
@@ -262,13 +203,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return Name; }
         }
 
-        #endregion
-
-        #region ICodeNode Members
-
 	    public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return null; }
+            get { return Enumerable.Empty<ICodeNode>(); }
         }
 
     	/// <summary>
@@ -276,26 +213,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     	/// </summary>
     	public object Data { get; set; }
 
-    	#endregion
-
-        #region IFormatable Members
-        public string ToString(string format, IFormatProvider formatProvider)
+	    public string ToString(string format, IFormatProvider formatProvider)
         {
             return Name;
         }
-        #endregion
 
-        #region IDocumentationProvider Members
-
-    	/// <summary>
+	    /// <summary>
     	/// Gets or sets documentation of this member
     	/// </summary>
     	public string Documentation { get; set; }
 
-    	#endregion
-
-        #region Object Override Members
-        public override bool Equals(object obj)
+	    public override bool Equals(object obj)
         {
             return this.IsEqual(obj as IType);
         }
@@ -309,46 +237,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             return ToString(null, null);
         }
-        #endregion
     }
 
-    public sealed class GenericParameterCollection : List<IGenericParameter>, IGenericParameterCollection
-    {
-        #region IGenericParameterCollection Members
-
-        public IGenericParameter this[string name]
-        {
-            get { return Find(p => p.Name == name); }
-        }
-
-        #endregion
-
-        #region ICodeNode Members
-
-	    public IEnumerable<ICodeNode> ChildNodes
-        {
-            get { return this.Cast<ICodeNode>(); }
-        }
-
-    	/// <summary>
-    	/// Gets or sets user defined data assotiated with this object.
-    	/// </summary>
-    	public object Data { get; set; }
-
-    	#endregion
-
-        #region IFormattable Members
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return SyntaxFormatter.Format(this, format, formatProvider);
-        }
-        #endregion
-
-        #region Object Override Members
-        public override string ToString()
-        {
-            return ToString(null, null);
-        }
-        #endregion
-    }
+	public static class GenericParameterExtensions
+	{
+		public static string BuildKey(this IGenericParameter parameter)
+		{
+			return parameter.Name + parameter.Id;
+		}
+	}
 }

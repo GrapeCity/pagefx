@@ -53,12 +53,24 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         bool IsEnum { get; }
 
-		IMethod DeclaringMethod { get; set; }
+		/// <summary>
+		/// Gets declaring method.
+		/// </summary>
+		IMethod DeclaringMethod { get; }
 
+		/// <summary>
+		/// Gets base type.
+		/// </summary>
         IType BaseType { get; }
 
+		/// <summary>
+		/// Gets implemented interfaces.
+		/// </summary>
         ITypeCollection Interfaces { get; }
 
+		/// <summary>
+		/// Gets underlying value type.
+		/// </summary>
         IType ValueType { get; }
 
         /// <summary>
@@ -86,6 +98,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         ITypeMemberCollection Members { get; }
 
+		/// <summary>
+		/// Gets class layout.
+		/// </summary>
         ClassLayout Layout { get; }
 
 		/// <summary>

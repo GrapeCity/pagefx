@@ -9,6 +9,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class TypeMemberCollection : ITypeMemberCollection
     {
+		public static readonly ITypeMemberCollection Empty = new EmptyImpl();
+
 		private IFieldCollection _fields = new FieldCollection();
 		private IMethodCollection _methods = new MethodCollection();
 		private IPropertyCollection _properties = new PropertyCollection();
@@ -133,5 +135,50 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             return ToString(null, null);
         }
+
+		private sealed class EmptyImpl : ITypeMemberCollection
+		{
+			public IEnumerator<ITypeMember> GetEnumerator()
+			{
+				return Enumerable.Empty<ITypeMember>().GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			public int Count
+			{
+				get { return 0; }
+			}
+
+			public ITypeMember this[int index]
+			{
+				get { throw new ArgumentOutOfRangeException(); }
+			}
+
+			public IEnumerable<ICodeNode> ChildNodes
+			{
+				get { return Enumerable.Empty<ICodeNode>(); }
+			}
+
+			public object Data { get; set; }
+
+			public void Add(ITypeMember member)
+			{
+				throw new NotSupportedException();
+			}
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				return SyntaxFormatter.Format(this, format, formatProvider);
+			}
+
+			public override string ToString()
+			{
+				return ToString(null, null);
+			}
+		}
     }
 }

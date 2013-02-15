@@ -76,5 +76,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    {
 		    return SyntaxFormatter.Format(this, format, formatProvider);
 	    }
+
+		public override string ToString()
+		{
+			return ToString(null, null);
+		}
     }
 }

@@ -222,9 +222,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 			public object Data { get; set; }
 
-			public IGenericParameter this[string name]
+			public IGenericParameter Find(string name)
 			{
-				get { return null; }
+				return null;
 			}
 		}
 

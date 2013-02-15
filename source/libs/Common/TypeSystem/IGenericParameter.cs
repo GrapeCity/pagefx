@@ -6,18 +6,18 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public interface IGenericParameter : IType
     {
-        int Position { get; set; }
+		long Id { get; }
 
-        GenericParameterVariance Variance { get; set; }
+        int Position { get; }
 
-        GenericParameterSpecialConstraints SpecialConstraints { get; set; }
+        GenericParameterVariance Variance { get; }
 
-        long ID { get; set; }
+        GenericParameterSpecialConstraints SpecialConstraints { get; }
     }
 
     public interface IGenericParameterCollection : IReadOnlyList<IGenericParameter>, ICodeNode
     {
-        IGenericParameter this[string name] { get; }
+	    IGenericParameter Find(string name);
     }
 
 	public enum GenericParameterVariance : byte

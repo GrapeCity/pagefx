@@ -9,6 +9,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class EventCollection : IEventCollection
     {
+		public static readonly IEventCollection Empty = new EmptyImpl();
+
 	    private readonly IList<IEvent> _list = new List<IEvent>();
 
 	    public void Add(IEvent item)
@@ -55,5 +57,50 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    }
 
 	    public object Data { get; set; }
+
+		private sealed class EmptyImpl : IEventCollection
+		{
+			public IEnumerator<IEvent> GetEnumerator()
+			{
+				return Enumerable.Empty<IEvent>().GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			public int Count
+			{
+				get { return 0; }
+			}
+
+			public IEvent this[int index]
+			{
+				get { throw new ArgumentOutOfRangeException("index"); }
+			}
+
+			public IEnumerable<ICodeNode> ChildNodes
+			{
+				get { return Enumerable.Empty<ICodeNode>(); }
+			}
+
+			public object Data { get; set; }
+
+			public IEvent this[string name]
+			{
+				get { return null; }
+			}
+
+			public void Add(IEvent item)
+			{
+				throw new NotSupportedException();
+			}
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				return "";
+			}
+		}
     }
 }
