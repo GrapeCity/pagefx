@@ -17,6 +17,7 @@ using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
 using DataDynamics.PageFX.FlashLand.Swc;
 using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.FlashLand.TypeSystem;
 using Ionic.Zip;
 
 namespace DataDynamics.PageFX.FlashLand.Core.Tools
@@ -932,7 +933,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 		                 from e in iface.Events
 		                 let typeEvent = FindMember(type, e.Name)
 		                 where typeEvent == null
-		                 select CopyEvent(e);
+		                 select CopyEvent(e, type);
 
 		    foreach (var e in events)
 		    {
@@ -940,14 +941,12 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 		    }
 	    }
 
-	    private static IEvent CopyEvent(IEvent e)
+	    private static IEvent CopyEvent(IEvent e, IType declType)
         {
-            var copy = new Event
+            var copy = new FlashEvent(e.Name, declType, e.Type)
                          {
-                             Name = e.Name,
                              Visibility = e.Visibility,
                              IsStatic = e.IsStatic,
-                             Type = e.Type
                          };
             CopyAttrs(e, copy);
             return copy;
@@ -991,7 +990,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 			var be = FindBaseEvent(type, eventName);
 			if (be != null)
 			{
-				IEvent e = CopyEvent(be);
+				var e = CopyEvent(be, type);
 				type.Members.Add(e);
 				return;
 			}
@@ -1005,12 +1004,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
 
         	if (handlerType != null)
             {
-                var e = new Event
+                var e = new FlashEvent(eventName, type, handlerType)
                         	{
-                        		Name = eventName,
                         		IsStatic = false,
                         		Visibility = Visibility.Public,
-                        		Type = handlerType
                         	};
             	DefineAttribute(e, Attrs.Event, "name", name);
                 type.Members.Add(e);
@@ -1704,8 +1701,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 trait.Property = prop;
 				declType.Properties.Add(prop);
             }
-//            if (trait.IsGetter) prop.Getter = method;
-//            else prop.Setter = method;
+
+		    ((Method)method).Association = prop;
         }
 
 	    private Parameter CreateRestParam(AbcMethod m, int paramNum, int i)

@@ -194,12 +194,10 @@ namespace DataDynamics.PageFX.Core
 			return Types.ResolveDeclType(member);
 		}
 
-	    public MethodBody LoadMethodBody(IMethod method, uint rva)
+	    public IClrMethodBody LoadMethodBody(IMethod method, uint rva)
         {
             var reader = Metadata.MoveToVirtualAddress(rva);
-            var body = new MethodBody(method, this, reader);
-            method.Body = body;
-            return body;
+            return new MethodBody(method, this, reader);
         }
 
 	    internal IMethod GetMethodDefOrRef(SimpleIndex i, Context context)

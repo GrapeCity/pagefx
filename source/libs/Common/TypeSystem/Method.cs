@@ -97,19 +97,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public MethodCodeType CodeType
         {
-            get
-            {
-                switch (ImplFlags & MethodImplAttributes.CodeTypeMask)
-                {
-                    case MethodImplAttributes.Native:
-                        return MethodCodeType.Native;
-                    case MethodImplAttributes.OPTIL:
-                        return MethodCodeType.OPTIL;
-                    case MethodImplAttributes.Runtime:
-                        return MethodCodeType.Runtime;
-                }
-                return MethodCodeType.IL;
-            }
+            get { return ImplFlags.CodeType(); }
             set
             {
                 if (value != CodeType)
@@ -326,7 +314,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
         }
 
-		private static IMethod ResolveBaseMethod(IMethod method)
+		public static IMethod ResolveBaseMethod(IMethod method)
         {
 			if (method.IsStatic
 				|| method.IsAbstract

@@ -408,6 +408,7 @@
     <Compile Include="Tests\FunctionTests.cs" />
     <Compile Include="Tests\InstructionsTest.cs" />
     <Compile Include="Tests\MiscTests.cs" />
+    <Compile Include="TypeSystem\FlashEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\fp9.abc" />

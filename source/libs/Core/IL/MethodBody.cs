@@ -50,7 +50,6 @@ namespace DataDynamics.PageFX.Core.IL
 				throw new ArgumentNullException("reader");
 
 	        _method = method;
-            _method.Body = this;
 
             int lsb = reader.ReadUInt8();
             var flags = (MethodBodyFlags)lsb;

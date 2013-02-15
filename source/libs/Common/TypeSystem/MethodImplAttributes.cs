@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -75,5 +76,22 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// Specifies that the method can not be inlined.
 		/// </summary>
 		NoInlining = 0x0008,
+	}
+
+	public static class MethodImplAttributesExtensions
+	{
+		public static MethodCodeType CodeType(this MethodImplAttributes value)
+		{
+			switch (value & MethodImplAttributes.CodeTypeMask)
+			{
+				case MethodImplAttributes.Native:
+					return MethodCodeType.Native;
+				case MethodImplAttributes.OPTIL:
+					return MethodCodeType.OPTIL;
+				case MethodImplAttributes.Runtime:
+					return MethodCodeType.Runtime;
+			}
+			return MethodCodeType.IL;
+		}
 	}
 }

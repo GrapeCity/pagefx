@@ -21,9 +21,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private ICustomAttributeCollection _customAttributes;
 		private IMethod _getter;
-		private IParameterCollection _parameters;
 		private IMethod _setter;
+		private IParameterCollection _parameters;
 		private PropertyFlags _flags;
+		private IType _declType;
 
 		public IAssembly Assembly
 		{
@@ -57,7 +58,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		public IType DeclaringType
 		{
-			get { return FromMethod(x => x.DeclaringType); }
+			get { return _declType ?? (_declType = FromMethod(x => x.DeclaringType)); }
+			set { _declType = value; }
 		}
 
 		public IType Type

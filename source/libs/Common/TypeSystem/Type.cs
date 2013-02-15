@@ -12,6 +12,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public class TypeImpl : TypeMember, IType
     {
+		public static readonly IType[] EmptyTypes = new IType[0];
+
 		private ClassLayout _layout;
 		private string _namespace;
 		private string _fullName;

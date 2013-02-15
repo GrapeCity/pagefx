@@ -4,18 +4,16 @@ using DataDynamics.PageFX.Common.CodeModel.Statements;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public class MethodBody : IMethodBody
+    public sealed class MethodBody : IMethodBody
     {
         public MethodBody(IMethod method)
         {
             _method = method;
-            method.Body = this;
             _statements = new StatementCollection();
         }
         readonly IMethod _method;
 
-        #region IMethodBody Members
-        public IMethod Method
+	    public IMethod Method
         {
             get { return _method; }
         }
@@ -26,13 +24,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return _vars; }
         }
-        readonly VariableCollection _vars = new VariableCollection();
+        private readonly VariableCollection _vars = new VariableCollection();
 
         public IStatementCollection Statements
         {
             get { return _statements; }
         }
-        readonly StatementCollection _statements;
+        private readonly StatementCollection _statements;
 
         /// <summary>
         /// Provides translator that can be used to translate this method body using specific <see cref="ICodeProvider"/>.
@@ -51,7 +49,5 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             return null;
         }
-
-	    #endregion
     }
 }

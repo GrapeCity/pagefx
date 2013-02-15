@@ -95,7 +95,6 @@
     <Compile Include="IL\ILStream.cs" />
     <Compile Include="IL\IMethodContext.cs" />
     <Compile Include="IL\Instruction.cs" />
-    <Compile Include="IL\LateMethodBody.cs" />
     <Compile Include="IL\MethodBody.cs" />
     <Compile Include="IL\InstructionCode.cs" />
     <Compile Include="IL\Block.cs" />
