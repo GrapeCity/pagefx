@@ -165,6 +165,7 @@
     <Compile Include="LoaderInternals\EventImpl.cs" />
     <Compile Include="LoaderInternals\Extensions.cs" />
     <Compile Include="LoaderInternals\InternalAssembly.cs" />
+    <Compile Include="LoaderInternals\InternalGenericType.cs" />
     <Compile Include="LoaderInternals\InternalModule.cs" />
     <Compile Include="LoaderInternals\LazyType.cs" />
     <Compile Include="LoaderInternals\PropertyImpl.cs" />

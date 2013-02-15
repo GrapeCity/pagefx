@@ -31,7 +31,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		private readonly uint _rva;
 		private IMethodBody _body;
 		private IReadOnlyList<IMethod> _impls;
-		private IMethod[] _explicitImpl;
+		private bool _isExplicitImpl;
 
 		public InternalMethod(AssemblyLoader loader, MetadataRow row, int index)
 		{
@@ -274,18 +274,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public bool IsExplicitImplementation
 		{
-			get
-			{
-				if (NoImpls(this)) return false;
-
-				if (_explicitImpl == null)
-				{
-					var iface = FindExplicitImpl();
-					_explicitImpl = iface != null ? new[] {iface} : new IMethod[0];
-				}
-
-				return _explicitImpl.Length == 1;
-			}
+			get { return Implements.Count == 1 && _isExplicitImpl; }
 		}
 
 		public IReadOnlyList<IMethod> Implements
@@ -296,11 +285,22 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 				{
 					return EmptyReadOnlyList.Create<IMethod>();
 				}
-				if (IsExplicitImplementation)
+
+				if (_impls == null)
 				{
-					return _impls ?? (_impls = _explicitImpl.AsReadOnlyList());
+					var iface = FindExplicitImpl();
+					if (iface != null)
+					{
+						_isExplicitImpl = true;
+						_impls = new[] {iface}.AsReadOnlyList();
+					}
+					else
+					{
+						_impls = ResolveImpls();
+					}
 				}
-				return _impls ?? (_impls = ResolveImpls());
+
+				return _impls;
 			}
 		}
 
