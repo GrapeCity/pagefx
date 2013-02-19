@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.FlashLand.Abc;
@@ -580,15 +581,11 @@ namespace DataDynamics.PageFX.FlashLand.Core
 
 		public static bool IsOverride(this IMethod method)
 		{
-			if (method.IsStatic
-			    || method.IsAbstract
-			    || method.IsConstructor)
+			if (method.IsStatic || method.IsAbstract || method.IsConstructor)
 				return false;
 
 			if (method.IsExplicitImplementation)
-			{
 				return method.HasBaseExplicitImpl();
-			}
 
 			if (method.IsPrivate())
 				return false;

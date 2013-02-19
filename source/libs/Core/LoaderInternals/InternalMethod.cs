@@ -25,7 +25,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		private ITypeMember _association;
 		private ICustomAttributeCollection _customAttributes;
 		private IMethod _baseMethod;
-		private bool _resolveBaseMethod;
+		private bool _resolveBaseMethod = true;
 		private IGenericParameterCollection _genericParameters;
 		private readonly uint _rva;
 		private IMethodBody _body;
