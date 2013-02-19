@@ -111,6 +111,8 @@
     <Compile Include="Syntax\Keyword.cs" />
     <Compile Include="Syntax\Punctuator.cs" />
     <Compile Include="TypeSystem\ArgumentCollection.cs" />
+    <Compile Include="TypeSystem\ArrayDimension.cs" />
+    <Compile Include="TypeSystem\ArrayDimensionCollection.cs" />
     <Compile Include="TypeSystem\AssemblyTypeCollection.cs" />
     <Compile Include="TypeSystem\ClassSemantics.cs" />
     <Compile Include="TypeSystem\CustomAttributeCollection.cs" />

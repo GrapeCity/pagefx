@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using DataDynamics.PageFX.Common.Collections;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -12,11 +12,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     public interface IArrayDimension : IFormattable
     {
-        int LowerBound { get; set; }
-        int UpperBound { get; set; }
+        int LowerBound { get; }
+        int UpperBound { get; }
     }
 
-    public interface IArrayDimensionCollection : IList<IArrayDimension>, IFormattable
+    public interface IArrayDimensionCollection : IReadOnlyList<IArrayDimension>, IFormattable
     {
     }
 }

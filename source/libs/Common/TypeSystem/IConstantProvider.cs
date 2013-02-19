@@ -6,8 +6,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public interface IConstantProvider
     {
         /// <summary>
-        /// Gets or sets the value.
+        /// Gets the item value.
         /// </summary>
-        object Value { get; set; }
+        object Value { get; }
     }
 }

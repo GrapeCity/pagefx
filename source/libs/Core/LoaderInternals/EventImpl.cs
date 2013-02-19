@@ -1,73 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Core.LoaderInternals.Collections;
 using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals
 {
-	internal sealed class EventImpl : IEvent
+	internal sealed class EventImpl : MemberBase, IEvent
 	{
 		private readonly EventAttributes _flags;
-		private readonly AssemblyLoader _loader;
 		private IMethod _adder;
-		private ICustomAttributeCollection _customAttributes;
 		private IMethod _raiser;
 		private IMethod _remover;
 
 		public EventImpl(AssemblyLoader loader, MetadataRow row, int index)
+			: base(loader, TableId.Event, index)
 		{
-			_loader = loader;
-
-			MetadataToken = SimpleIndex.MakeToken(TableId.Event, index + 1);
 			Name = row[Schema.Event.Name].String;
 			_flags = (EventAttributes) row[Schema.Event.EventFlags].Value;
 		}
 
-		public int MetadataToken { get; private set; }
-
-		public ICustomAttributeCollection CustomAttributes
-		{
-			get { return _customAttributes ?? (_customAttributes = new CustomAttributes(_loader, this)); }
-		}
-
-		public IEnumerable<ICodeNode> ChildNodes
-		{
-			get { return Enumerable.Empty<ICodeNode>(); }
-		}
-
-		public object Data { get; set; }
-
 		public string Documentation { get; set; }
-
-		public IAssembly Assembly
-		{
-			get { return _loader.Assembly; }
-		}
-
-		public IModule Module
-		{
-			get { return _loader.MainModule; }
-		}
 
 		public MemberType MemberType
 		{
 			get { return MemberType.Event; }
 		}
 
-		public string Name { get; private set; }
-
 		public string FullName
 		{
 			get { return this.BuildFullName(); }
-		}
-
-		public string DisplayName
-		{
-			get { return Name; }
 		}
 
 		public IType DeclaringType
@@ -124,11 +86,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return _raiser ?? (_raiser = ResolveMethod(MethodSemanticsAttributes.Fire)); }
 		}
 
-		public string ToString(string format, IFormatProvider formatProvider)
-		{
-			return SyntaxFormatter.Format(this, format, formatProvider);
-		}
-
 		private IEnumerable<IMethod> GetMethods()
 		{
 			yield return Adder;
@@ -144,7 +101,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		private IMethod ResolveMethod(MethodSemanticsAttributes sem)
 		{
-			var rows = _loader.Metadata
+			var rows = Loader.Metadata
 			                  .LookupRows(TableId.MethodSemantics, Schema.MethodSemantics.Association, this.RowIndex(), true)
 			                  .ToList();
 			if (rows.Count == 0)
@@ -156,12 +113,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 				return null;
 
 			var methodIndex = row[Schema.MethodSemantics.Method].Index - 1;
-			return _loader.Methods[methodIndex];
-		}
-
-		public override string ToString()
-		{
-			return ToString(null, null);
+			return Loader.Methods[methodIndex];
 		}
 	}
 }

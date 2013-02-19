@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.PageFX.Common.CodeModel;
-using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Core.LoaderInternals.Collections;
 using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
@@ -46,33 +40,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			var row = _loader.Metadata.GetRow(TableId.GenericParam, index);
 
 			return new GenericParameterImpl(_loader, row, index, NextId());
-		}
-
-		private static GenericParameterVariance ToVariance(GenericParamAttributes flags)
-		{
-			var variance = flags & GenericParamAttributes.VarianceMask;
-			switch (variance)
-			{
-				case GenericParamAttributes.Covariant:
-					return GenericParameterVariance.Covariant;
-
-				case GenericParamAttributes.Contravariant:
-					return GenericParameterVariance.Contravariant;
-			}
-			return GenericParameterVariance.NonVariant;
-		}
-
-		private static GenericParameterSpecialConstraints ToSpecConstraints(GenericParamAttributes flags)
-		{
-			var v = GenericParameterSpecialConstraints.None;
-			var sc = flags & GenericParamAttributes.SpecialConstraintMask;
-			if ((sc & GenericParamAttributes.DefaultConstructorConstraint) != 0)
-				v |= GenericParameterSpecialConstraints.DefaultConstructor;
-			if ((sc & GenericParamAttributes.ReferenceTypeConstraint) != 0)
-				v |= GenericParameterSpecialConstraints.ReferenceType;
-			if ((sc & GenericParamAttributes.NotNullableValueTypeConstraint) != 0)
-				v |= GenericParameterSpecialConstraints.ValueType;
-			return v;
 		}
 
 		internal long NextId()

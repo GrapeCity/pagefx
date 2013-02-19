@@ -60,13 +60,9 @@ namespace DataDynamics.PageFX.Core.Metadata
 			var dim = new ArrayDimensionCollection();
 			for (int i = 0; i < n; ++i)
 			{
-				var d = new ArrayDimension
-					{
-						LowerBound = GetLowBound(i),
-						UpperBound = GetUpperBound(i)
-					};
-				dim.Add(d);
+				dim.Add(new ArrayDimension(GetLowBound(i), GetUpperBound(i)));
 			}
+
 			return dim;
 		}
 	}

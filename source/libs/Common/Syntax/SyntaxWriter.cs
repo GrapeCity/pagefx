@@ -1148,7 +1148,8 @@ namespace DataDynamics.PageFX.Common.Syntax
         {
             WriteCustomAttributeCollection(p.CustomAttributes);
 
-            if (p.HasParams)
+			var hasParams = p.HasParams();
+			if (hasParams)
             {
                 Write("params ");
             }
@@ -1160,7 +1161,7 @@ namespace DataDynamics.PageFX.Common.Syntax
             }
             else
             {
-            	Write(p.HasParams ? "object[] " : "object ");
+            	Write(hasParams ? "object[] " : "object ");
             }
             Write(p.Name);
         }

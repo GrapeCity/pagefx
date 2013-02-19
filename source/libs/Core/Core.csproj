@@ -170,6 +170,8 @@
     <Compile Include="LoaderInternals\InternalGenericType.cs" />
     <Compile Include="LoaderInternals\InternalModule.cs" />
     <Compile Include="LoaderInternals\LazyType.cs" />
+    <Compile Include="LoaderInternals\MemberBase.cs" />
+    <Compile Include="LoaderInternals\ParameterImpl.cs" />
     <Compile Include="LoaderInternals\PropertyImpl.cs" />
     <Compile Include="LoaderInternals\SignatureResolver.cs" />
     <Compile Include="LoaderInternals\Tables\AssemblyRefTable.cs" />

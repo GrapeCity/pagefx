@@ -142,7 +142,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 			public object Value
 			{
 				get { return _parameter.Value; }
-				set { _parameter.Value = value; }
 			}
 
 			public IEnumerable<ICodeNode> ChildNodes
@@ -170,19 +169,16 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 			public int Index
 			{
 				get { return _parameter.Index; }
-				set { _parameter.Index = value; }
 			}
 
 			public string Name
 			{
 				get { return _parameter.Name; }
-				set { _parameter.Name = value; }
 			}
 
 			public IType Type
 			{
 				get { return _type.Value; }
-				set { throw new NotSupportedException(); }
 			}
 
 			public bool IsIn
@@ -193,12 +189,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 			public bool IsOut
 			{
 				get { return _parameter.IsOut; }
-			}
-
-			public bool HasParams
-			{
-				get { return _parameter.HasParams; }
-				set { _parameter.HasParams = value; }
 			}
 
 			public bool IsAddressed

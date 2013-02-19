@@ -10,31 +10,25 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public interface IParameter : ICustomAttributeProvider, IConstantProvider, ICodeNode, IDocumentationProvider, ICloneable
     {
         /// <summary>
-        /// Gets or sets index of the paramater.
+        /// Gets index of the paramater.
         /// </summary>
-        int Index { get; set; }
+        int Index { get; }
 
         /// <summary>
-        /// Gets or sets name of the parameter.
+        /// Gets name of the parameter.
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
 
         /// <summary>
-        /// Gets or sets type of the paramater.
+        /// Gets type of the paramater.
         /// </summary>
-        IType Type { get; set; }
+        IType Type { get; }
 
 		bool IsIn { get; }
 
         bool IsOut { get; }
 
-		//TODO: remove make it computable by CustomAttributes
-        /// <summary>
-        /// Gets or sets flags indicating whether the method parameter that takes an argument where the number of arguments is variable.
-        /// </summary>
-        bool HasParams { get; set; }
-
-        /// <summary>
+		/// <summary>
         /// Gets or sets flag indicating whether address of this parameter used onto the evaluation stack.
         /// </summary>
         bool IsAddressed { get; set; }

@@ -5,25 +5,22 @@ using System.Runtime.CompilerServices;
 using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Core.LoaderInternals.Collections;
 using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals
 {
-	internal sealed class InternalMethod : IMethod
+	internal sealed class InternalMethod : MemberBase, IMethod
 	{
 		private readonly string[] _sigNames = new string[2];
 		private readonly MethodAttributes _flags;
 		private readonly MethodImplAttributes _implFlags;
-		private readonly AssemblyLoader _loader;
 		private readonly MethodSignature _signature;
 		private bool _associationResolved;
 		private IType _declType;
 		private IType _type;
 		private ITypeMember _association;
-		private ICustomAttributeCollection _customAttributes;
 		private IMethod _baseMethod;
 		private bool _resolveBaseMethod = true;
 		private IGenericParameterCollection _genericParameters;
@@ -33,11 +30,8 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		private bool _isExplicitImpl;
 
 		public InternalMethod(AssemblyLoader loader, MetadataRow row, int index)
+			: base(loader, TableId.MethodDef, index)
 		{
-			_loader = loader;
-
-			MetadataToken = SimpleIndex.MakeToken(TableId.MethodDef, index + 1);
-
 			Name = row[Schema.MethodDef.Name].String;
 
 			_implFlags = (MethodImplAttributes)row[Schema.MethodDef.ImplFlags].Value;
@@ -51,31 +45,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			_rva = row[Schema.MethodDef.RVA].Value;
 		}
 
-		public int MetadataToken { get; private set; }
-
-		public ICustomAttributeCollection CustomAttributes
-		{
-			get { return _customAttributes ?? (_customAttributes = new CustomAttributes(_loader, this)); }
-		}
-
-		public IEnumerable<ICodeNode> ChildNodes
-		{
-			get { return Enumerable.Empty<ICodeNode>(); }
-		}
-
-		public object Data { get; set; }
-
 		public string Documentation { get; set; }
-
-		public IAssembly Assembly
-		{
-			get { return _loader.Assembly; }
-		}
-
-		public IModule Module
-		{
-			get { return Assembly.MainModule; }
-		}
 
 		public MemberType MemberType
 		{
@@ -176,7 +146,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		{
 			get
 			{
-				var entryPoint = _loader.Metadata.EntryPointToken;
+				var entryPoint = Loader.Metadata.EntryPointToken;
 				return entryPoint.Table == TableId.MethodDef && entryPoint.Index - 1 == this.RowIndex();
 			}
 		}
@@ -239,7 +209,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public IGenericParameterCollection GenericParameters
 		{
-			get { return _genericParameters ?? (_genericParameters = new GenericParamList(_loader, this)); }
+			get { return _genericParameters ?? (_genericParameters = new GenericParamList(Loader, this)); }
 		}
 
 		public IType[] GenericArguments
@@ -310,7 +280,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 				if (IsAbstract || _rva == 0)
 					return null;
 
-				return _body ?? (_body = _loader.LoadMethodBody(this, _rva));
+				return _body ?? (_body = Loader.LoadMethodBody(this, _rva));
 			}
 		}
 
@@ -347,12 +317,12 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			int from = row[Schema.MethodDef.ParamList].Index - 1;
 			if (from < 0) return ParameterCollection.Empty;
 
-			return new ParamList(_loader, this, from, _signature);
+			return new ParamList(Loader, this, from, _signature);
 		}
 
 		private IType ResolveDeclaringType()
 		{
-			var type = _loader.ResolveDeclType(this);
+			var type = Loader.ResolveDeclType(this);
 			if (type == null)
 				throw new InvalidOperationException();
 			return type;
@@ -362,7 +332,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		{
 			var context = new Context(DeclaringType, this);
 
-			var type = _loader.ResolveType(_signature.Type, context);
+			var type = Loader.ResolveType(_signature.Type, context);
 			if (type == null)
 				throw new InvalidOperationException();
 
@@ -377,7 +347,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 			SimpleIndex token = MetadataToken;
 
-			var row = _loader.Metadata.LookupRow(TableId.MethodSemantics, Schema.MethodSemantics.Method, token.Index - 1, true);
+			var row = Loader.Metadata.LookupRow(TableId.MethodSemantics, Schema.MethodSemantics.Method, token.Index - 1, true);
 			if (row == null) return null;
 
 			SimpleIndex assoc = row[Schema.MethodSemantics.Association].Value;
@@ -385,11 +355,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			switch (assoc.Table)
 			{
 				case TableId.Property:
-					var property = _loader.Properties[index];
+					var property = Loader.Properties[index];
 					return property;
 
 				case TableId.Event:
-					var @event = _loader.Events[index];
+					var @event = Loader.Events[index];
 					return @event;
 
 				default:
@@ -449,7 +419,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		private IMethod FindExplicitImpl()
 		{
-			var row = _loader.Metadata.LookupRow(TableId.MethodImpl, Schema.MethodImpl.MethodBody, this.RowIndex(), true);
+			var row = Loader.Metadata.LookupRow(TableId.MethodImpl, Schema.MethodImpl.MethodBody, this.RowIndex(), true);
 			if (row == null)
 			{
 				return null;
@@ -457,21 +427,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 			SimpleIndex declIdx = row[Schema.MethodImpl.MethodDeclaration].Value;
 
-			var decl = _loader.GetMethodDefOrRef(declIdx, new Context(DeclaringType, this));
+			var decl = Loader.GetMethodDefOrRef(declIdx, new Context(DeclaringType, this));
 			if (decl == null)
 				throw new InvalidOperationException();
 
 			return decl;
-		}
-
-		public string ToString(string format, IFormatProvider formatProvider)
-		{
-			return SyntaxFormatter.Format(this, format, formatProvider);
-		}
-
-		public override string ToString()
-		{
-			return ToString(null, null);
 		}
 	}
 }

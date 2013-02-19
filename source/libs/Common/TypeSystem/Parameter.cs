@@ -5,6 +5,9 @@ using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
+	/// <summary>
+	/// Mutable parameter implementation.
+	/// </summary>
     public sealed class Parameter : CustomAttributeProvider, IParameter
     {
 	    public Parameter()
@@ -57,11 +60,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
 
         /// <summary>
-        /// Gets or sets flags indicating whether the method parameter that takes an argument where the number of arguments is variable.
-        /// </summary>
-        public bool HasParams { get; set; }
-
-        /// <summary>
         /// Gets or sets flag indicating whether address of this parameter used onto the evaluation stack.
         /// </summary>
         public bool IsAddressed { get; set; }
@@ -94,7 +92,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			    {
 				    Documentation = Documentation,
 				    Flags = Flags,
-				    HasParams = HasParams,
 				    Value = Clone(Value),
 				    IsAddressed = IsAddressed
 			    };

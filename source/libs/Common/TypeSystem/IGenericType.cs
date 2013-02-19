@@ -7,7 +7,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     public interface IGenericInstance : IType
     {
-        new IGenericType Type { get; set; }
+        new IGenericType Type { get; }
         ITypeCollection GenericArguments { get; }
     }
 }

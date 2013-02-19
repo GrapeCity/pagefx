@@ -84,12 +84,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			get { return _parameter.IsOut; }
 		}
 
-		public bool HasParams
-		{
-			get { return _parameter.HasParams; }
-			set { throw new NotSupportedException(); }
-		}
-
 		public bool IsAddressed { get; set; }
 
 		public IInstruction Instruction { get; set; }

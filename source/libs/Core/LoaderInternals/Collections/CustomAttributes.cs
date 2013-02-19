@@ -86,7 +86,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 			        let ctor = GetCustomAttributeConstructor(ctorIndex, context)
 			        where ctor != null
 					select CreateAttribute(row, ctor, ctor.DeclaringType) into attr
-			        where ReviewAttribute(attr)
 			        select attr).Cast<ICustomAttribute>();
 		}
 
@@ -169,21 +168,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 			{
 				return null;
 			}
-		}
-
-		private static bool ReviewAttribute(ICustomAttribute attr)
-		{
-			var param = attr.Owner as IParameter;
-			if (param != null)
-			{
-				if (attr.Type.FullName == "System.ParamArrayAttribute")
-				{
-					param.HasParams = true;
-					return false;
-				}
-			}
-
-			return true;
 		}
 	}
 }

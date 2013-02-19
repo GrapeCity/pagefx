@@ -6,27 +6,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public abstract class CompoundType : ICompoundType
     {
-        #region Constructors
-
-    	protected CompoundType()
-        {
-        }
-
-    	protected CompoundType(IType elementType)
+	    protected CompoundType(IType elementType)
         {
             ElementType = elementType;
         }
 
-        #endregion
+	    public IType ElementType { get; private set; }
 
-        #region ICompoundType Members
-
-    	public IType ElementType { get; set; }
-
-    	#endregion
-
-        #region IType Members
-        public string Namespace
+	    public string Namespace
         {
             get { return ElementType != null ? ElementType.Namespace : null; }
         }
@@ -87,8 +74,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public IMethod DeclaringMethod
         {
-            get { return ElementType != null ? ElementType.DeclaringMethod : null; }
-	        set { throw new NotSupportedException(); }
+            get { return null; }
         }
 
         public virtual IType BaseType
@@ -169,10 +155,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return ElementType.NestedName + NameSuffix; }
         }
-        #endregion
 
-        #region ITypeMember Members
-        /// <summary>
+	    /// <summary>
         /// Gets the assembly in which the type is declared.
         /// </summary>
         public IAssembly Assembly
@@ -186,7 +170,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IModule Module
         {
             get { return ElementType != null ? ElementType.Module : null; }
-        	set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -205,7 +188,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public string Name
         {
             get { return _name ?? (_name = ElementType.Name + NameSuffix); }
-        	set { throw new NotSupportedException(); }
         }
         private string _name;
 
@@ -218,13 +200,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IType DeclaringType
         {
             get { return null; }
-            set { throw new NotSupportedException(); }
         }
 
         public IType Type
         {
             get { return null; }
-            set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -256,20 +236,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public int MetadataToken
         {
             get { return -1; }
-            set { throw new NotSupportedException(); }
         }
-        #endregion
 
-        #region ICustomAttributeProvider Members
-
-        public ICustomAttributeCollection CustomAttributes
+	    public ICustomAttributeCollection CustomAttributes
         {
             get { return ElementType != null ? ElementType.CustomAttributes : null; }
         }
-
-        #endregion
-
-        #region ICodeNode Members
 
 	    public IEnumerable<ICodeNode> ChildNodes
         {
@@ -281,29 +253,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     	/// </summary>
     	public object Data { get; set; }
 
-    	#endregion
-
-        #region IFormattable Members
-
-        public virtual string ToString(string format, IFormatProvider formatProvider)
+	    public virtual string ToString(string format, IFormatProvider formatProvider)
         {
             return FullName;
         }
 
-        #endregion
-
-        #region IDocumentationProvider Members
-
-    	/// <summary>
+	    /// <summary>
     	/// Gets or sets documentation of this member
     	/// </summary>
     	public string Documentation { get; set; }
 
-    	#endregion
-
-        #region Object Override Members
-
-        public override bool Equals(object obj)
+	    public override bool Equals(object obj)
         {
             return this.IsEqual(obj as IType);
         }
@@ -317,8 +277,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             return ToString(null, null);
         }
-
-        #endregion
     }
 
     public sealed class PointerType : CompoundType
