@@ -15,22 +15,25 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A54D800D-621B-491A-BE70-59D46BA70523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A54D800D-621B-491A-BE70-59D46BA70523}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A54D800D-621B-491A-BE70-59D46BA70523}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A54D800D-621B-491A-BE70-59D46BA70523}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24A39436-A110-4C67-BF29-7A4FAA399CAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24A39436-A110-4C67-BF29-7A4FAA399CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24A39436-A110-4C67-BF29-7A4FAA399CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24A39436-A110-4C67-BF29-7A4FAA399CAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C215B55-8587-4A60-8CAA-91FE412B9013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A54D800D-621B-491A-BE70-59D46BA70523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A54D800D-621B-491A-BE70-59D46BA70523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A54D800D-621B-491A-BE70-59D46BA70523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A54D800D-621B-491A-BE70-59D46BA70523}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = pfc.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
