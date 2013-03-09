@@ -246,7 +246,7 @@ namespace DataDynamics.PageFX.Core.IL
             {
                 var member = Value as ITypeMember;
                 if (member == null) return false;
-                return GenericType.IsGenericContext(member);
+                return member.IsGenericContext();
             }
         }
 

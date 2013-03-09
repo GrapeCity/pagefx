@@ -480,7 +480,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				return true;
 			return
 				method.Parameters.Any(
-					p => p.IsByRef() || p.Type.TypeKind == TypeKind.Pointer || GenericType.HasGenericParams(p.Type));
+					p => p.IsByRef() || p.Type.TypeKind == TypeKind.Pointer || p.Type.HasGenericParams());
 		}
 
 		private AbcMethod DefineMethodsInitializer(AbcInstance instance, IType type, bool ctor)

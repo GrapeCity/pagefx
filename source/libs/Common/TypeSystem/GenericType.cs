@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -90,73 +89,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region Utils
-        public static bool HasGenericParams(IEnumerable<IType> set)
-        {
-        	return set != null && set.Any(HasGenericParams);
-        }
 
-    	public static bool HasGenericParams(IType type)
-        {
-            if (type == null) return false;
-            
-    		if (type.GenericParameters.Count > 0)
-    			return true;
-
-            switch (type.TypeKind)
-            {
-                case TypeKind.GenericParameter:
-                    return true;
-
-                case TypeKind.Array:
-                case TypeKind.Pointer:
-                case TypeKind.Reference:
-                    return HasGenericParams(((ICompoundType)type).ElementType);
-            }
-
-            var gi = type as IGenericInstance;
-            if (gi != null)
-            {
-            	return gi.GenericArguments.Any(HasGenericParams);
-            }
-
-            return false;
-        }
-
-        public static bool IsGenericContext(ITypeMember member)
-        {
-            var method = member as IMethod;
-            if (method != null)
-            {
-                if (method.IsGeneric)
-                    return true;
-                if (method.IsGenericInstance)
-                {
-                    if (HasGenericParams(method.GenericArguments))
-                        return true;
-                }
-                if (method.Parameters.Any(p => HasGenericParams(p.Type)))
-                {
-                	return true;
-                }
-            }
-
-            var type = member as IType;
-            if (type != null)
-            {
-                if (HasGenericParams(type))
-                    return true;
-            }
-
-            if (HasGenericParams(member.DeclaringType))
-                return true;
-
-            if (HasGenericParams(member.Type))
-                return true;
-
-            return false;
-        }
-
-        public static IMethod FindMethodProxy(IType type, IMethod m)
+	    public static IMethod FindMethodProxy(IType type, IMethod m)
         {
             foreach (var method in type.Methods)
             {
@@ -179,6 +113,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
             return null;
         }
+
         #endregion
 
         #region Generic Methods
@@ -188,7 +123,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             if (t == null)
                 throw new InvalidOperationException(
                     string.Format("Unable to resolve type {0}", type));
-            if (HasGenericParams(t))
+            if (t.HasGenericParams())
                 throw new InvalidOperationException(
                     string.Format("type {0} is not completely instatiated", t));
             return t;
@@ -261,105 +196,5 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return gmi;
         }
         #endregion
-
-        #region DisplayName
-        public override string DisplayName
-        {
-            get
-            {
-            	return _displayName ?? (_displayName = ToDisplayName(FullName)
-            	                                       + Format(_genericParams, TypeNameKind.DisplayName, false));
-            }
-        }
-        private string _displayName;
-
-        internal static string ToDisplayName(string name)
-        {
-            return ToDisplayName(name, false);
-        }
-
-        internal static string ToDisplayName(string name, bool sig)
-        {
-            if (name == null) return null;
-            int n = name.Length;
-            if (n <= 2)
-            {
-                return name;
-            }
-
-            var sb = new StringBuilder();
-            for (int i = 0; i < n; ++i)
-            {
-                char c = name[i];
-                if (c == '`')
-                {
-                    int j = i + 1;
-                    for (; j < n; ++j)
-                    {
-                        if (!char.IsDigit(name[j]))
-                            break;
-                    }
-                    if (j == i + 1)
-                        sb.Append(c);
-                    else
-                        i = j - 1;
-                }
-                else
-                {
-                    if (sig)
-                    {
-                        switch (c)
-                        {
-                            case '.':
-                                sb.Append('_');
-                                continue;
-                        }
-                    }
-
-                    sb.Append(c);
-                }
-            }
-
-            return sb.ToString();
-        }
-        #endregion
-
-        static readonly string SigPrefix = ((int)'[').ToString("X2");
-        static readonly string SigSuffix = ((int)']').ToString("X2");
-
-        internal static string Format(IEnumerable<IType> args, TypeNameKind kind, bool clr)
-        {
-            bool sig = kind == TypeNameKind.SigName;
-            string prefix, suffix, sep;
-            if (sig)
-            {
-                prefix = SigPrefix;
-                suffix = SigSuffix;
-                sep = "_";
-            }
-            else
-            {
-                prefix = clr ? "[" : "<";
-                suffix = clr ? "]" : ">";
-                sep = ",";
-            }
-            return Format(args, t => GetName(t, kind), prefix, suffix, sep);
-        }
-
-        internal static string Format(IEnumerable<IGenericParameter> args, TypeNameKind kind, bool clr)
-        {
-            return Format(args.Cast<IType>(), kind, clr);
-        }
-
-        public override string Key
-        {
-            get
-            {
-                if (_key == null)
-                    _key = FullNameBase + Format(_genericParams, TypeNameKind.Key, true);
-                return base.Key;
-            }
-        }
-        private string _key;
     }
 }

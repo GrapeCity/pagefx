@@ -24,7 +24,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public string Name { get; protected set; }
 
-		public string DisplayName
+		public virtual string DisplayName
 		{
 			get { return Name; }
 		}

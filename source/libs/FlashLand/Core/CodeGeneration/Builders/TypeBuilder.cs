@@ -230,7 +230,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (type.IsGeneric())
                 return null;
 
-            if (GenericType.HasGenericParams(type))
+            if (type.HasGenericParams())
                 throw new InvalidOperationException();
 
             AbcMultiname superName;
@@ -557,7 +557,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (declType.IsEnum) return true;
             if (field.IsConstant) return false;
             if (field.HasEmbedAttribute()) return true;
-            if (GenericType.HasGenericParams(field.Type)) return false;
+            if (field.Type.HasGenericParams()) return false;
             if (field.IsExposed()) return true;
 			if (_generator.Mode == AbcGenerationMode.Full) return true;
             if (field.IsStatic) return false;
@@ -579,7 +579,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             foreach (var method in new List<IMethod>(type.Methods))
             {
                 if (method.IsInternalCall) continue;
-                if (GenericType.IsGenericContext(method)) continue;
+                if (method.IsGenericContext()) continue;
 				if (_generator.Mode == AbcGenerationMode.Full || method.IsExposed())
 					_generator.MethodBuilder.Build(method);
             }

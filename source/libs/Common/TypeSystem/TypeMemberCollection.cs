@@ -11,33 +11,50 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     {
 		public static readonly ITypeMemberCollection Empty = new EmptyImpl();
 
-		private IFieldCollection _fields = new FieldCollection();
-		private IMethodCollection _methods = new MethodCollection();
-		private IPropertyCollection _properties = new PropertyCollection();
-		private IEventCollection _events = new EventCollection();
+		private readonly IFieldCollection _fields;
+		private readonly IMethodCollection _methods;
+		private readonly IPropertyCollection _properties;
+		private readonly IEventCollection _events;
+
+	    public TypeMemberCollection()
+	    {
+		    _fields = new FieldCollection();
+		    _methods = new MethodCollection();
+		    _properties = new PropertyCollection();
+		    _events = new EventCollection();
+	    }
+
+	    public TypeMemberCollection(IFieldCollection fields, IMethodCollection methods, IPropertyCollection properties, IEventCollection events)
+		{
+			if (fields == null) throw new ArgumentNullException("fields");
+			if (methods == null) throw new ArgumentNullException("methods");
+			if (properties == null) throw new ArgumentNullException("properties");
+			if (events == null) throw new ArgumentNullException("events");
+
+			_fields = fields;
+			_methods = methods;
+			_properties = properties;
+			_events = events;
+		}
 
 	    public IFieldCollection Fields
         {
             get { return _fields; }
-			set { _fields = value; }
         }
 		
         public IMethodCollection Methods
         {
             get { return _methods; }
-			set { _methods = value; }
         }
 
         public IPropertyCollection Properties
         {
             get { return _properties; }
-			set { _properties = value; }
         }
 
         public IEventCollection Events
         {
             get { return _events; }
-			set { _events = value; }
         }
 
 	    public int Count

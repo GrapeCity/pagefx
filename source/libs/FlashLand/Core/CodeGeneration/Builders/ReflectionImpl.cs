@@ -59,7 +59,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (type.IsModuleType())
                 return -1;
 
-            if (GenericType.HasGenericParams(type))
+            if (type.HasGenericParams())
                 throw new NotSupportedException();
 
             if (type.TypeKind == TypeKind.Pointer)

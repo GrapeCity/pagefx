@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Syntax;
 
@@ -16,7 +15,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private ClassLayout _layout;
 		private string _namespace;
-		private string _fullName;
 		private IType _baseType;
 		private ITypeCollection _interfaces;
 		private readonly TypeMemberCollection _members;
@@ -48,7 +46,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    /// <summary>
 	    /// Gets kind of the type.
 	    /// </summary>
-	    public virtual TypeKind TypeKind { get; set; }
+	    public TypeKind TypeKind { get; set; }
 
 	    /// <summary>
         /// Gets or sets flag specifing that this type is abstract.
@@ -138,26 +136,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public override string FullName
         {
-            get { return _fullName ?? (_fullName = FullNameBase + FullNameSuffix); }
-        }
-        
-        protected virtual string FullNameBase
-        {
-            get { return GetName(this, true); }
+            get { return this.BuildFullName(); }
         }
 
-        protected virtual string FullNameSuffix
+	    public override string DisplayName
         {
-            get { return ""; }
-        }
-
-        public override string DisplayName
-        {
-            get
-            {
-                string k = this.CSharpKeyword();
-                return !string.IsNullOrEmpty(k) ? k : FullName;
-            }
+            get { return this.BuildDisplayName(); }
         }
 
         /// <summary>
@@ -220,19 +204,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public IType ValueType
         {
-            get
-            {
-                if (TypeKind == TypeKind.Enum)
-                {
-                    if (_valueType == null)
-                    {
-	                    _valueType = Fields.Where(field => field.IsSpecialName).Select(x => x.Type).FirstOrDefault();
-                    }
-                }
-                return _valueType;
-            }
+            get { return this.ResolveValueType(); }
         }
-        private IType _valueType;
 
 	    public virtual ClassLayout Layout
 	    {
@@ -287,7 +260,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    /// <summary>
         /// Gets unique key of this type. Used for <see cref="TypeFactory"/>.
         /// </summary>
-        public virtual string Key
+        public string Key
         {
             get { return FullName; }
         }
@@ -295,112 +268,21 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// <summary>
         /// Gets name of the type used in signatures.
         /// </summary>
-        public virtual string SigName
+        public string SigName
         {
-            get
-            {
-                if (_sigName == null)
-                {
-                	string k = this.CSharpKeyword();
-                	_sigName = !string.IsNullOrEmpty(k) ? k : GenericType.ToDisplayName(FullName, true);
-                }
-            	return _sigName;
-            }
+            get { return this.BuildSigName(); }
         }
-        private string _sigName;
 
         /// <summary>
         /// Name with names of enclosing types.
         /// </summary>
-        public virtual string NestedName
+        public string NestedName
         {
-            get { return _nestedName ?? (_nestedName = GetName(this, false)); }
+            get { return this.BuildNestedName(); }
         }
-        private string _nestedName;
 	    
 	    #region XmlSerialization
 
 	    #endregion
-
-        #region Name Utils
-        public static string GetName(IType type, TypeNameKind kind)
-        {
-            switch (kind)
-            {
-                case TypeNameKind.DisplayName:
-                    return type.DisplayName;
-                case TypeNameKind.FullName:
-                    return type.FullName;
-                case TypeNameKind.Key:
-                    return type.Key;
-                case TypeNameKind.Name:
-                    return type.Name;
-                case TypeNameKind.NestedName:
-                    return type.NestedName;
-                case TypeNameKind.SigName:
-                    return type.SigName;
-                case TypeNameKind.CSharpKeyword:
-                    return type.CSharpKeyword();
-            }
-            return type.FullName;
-        }
-
-        public static string Format(StringBuilder sb, IEnumerable<IType> types, Converter<IType, string> getName,
-            string prefix, string suffix, string sep)
-        {
-            if (prefix != null)
-                sb.Append(prefix);
-            bool s = false;
-            foreach (var type in types)
-            {
-                if (s) sb.Append(sep);
-                sb.Append(getName(type));
-                s = true;
-            }
-            if (suffix != null)
-                sb.Append(suffix);
-            return sb.ToString();
-        }
-
-        public static string Format(IEnumerable<IType> types, Converter<IType, string> getName, string prefix, string suffix, string sep)
-        {
-            var sb = new StringBuilder();
-            Format(sb, types, getName, prefix, suffix, sep);
-            return sb.ToString();
-        }
-
-        public static string Format(IEnumerable<IType> types, Converter<IType, string> getName, string sep)
-        {
-            return Format(types, getName, null, null, sep);
-        }
-
-	    public static string GetName(IType type, bool withNamespace)
-        {
-            var dt = type.DeclaringType;
-            if (dt == null)
-            {
-                if (withNamespace)
-                {
-                    string ns = type.Namespace;
-                    if (!string.IsNullOrEmpty(ns))
-                        return ns + "." + type.Name;
-                }
-                return type.Name;
-            }
-            return GetName(dt, withNamespace) + "+" + type.Name;
-        }
-
-        public static string GetKeyword(string lang, IType type)
-        {
-            var st = type.SystemType();
-            if (st != null)
-            {
-                string name = st.Code.EnumString(lang);
-                if (!string.IsNullOrEmpty(name))
-                    return name;
-            }
-            return "";
-        }
-        #endregion
     }
 }

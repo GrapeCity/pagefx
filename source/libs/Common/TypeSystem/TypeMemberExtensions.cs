@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			var type = member as IType;
 			if (type != null)
 			{
-				if (GenericType.HasGenericParams(type))
+				if (type.HasGenericParams())
 					return false;
 
 				if (type.IsTestFixture())

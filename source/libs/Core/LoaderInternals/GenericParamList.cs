@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public GenericParamList(AssemblyLoader loader, IMetadataElement owner)
 		{
-			_list = loader.GenericParameters.Find(owner.MetadataToken).ToList();
+			_list = loader.GenericParameters.Find(owner.MetadataToken);
 		}
 
 		public IEnumerator<IGenericParameter> GetEnumerator()

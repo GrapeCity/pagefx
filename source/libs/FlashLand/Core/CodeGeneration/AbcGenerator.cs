@@ -445,7 +445,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
             var list = new List<IType>(AppAssembly.Types);
             foreach (var type in list)
             {
-                if (GenericType.HasGenericParams(type)) continue;
+                if (type.HasGenericParams()) continue;
 				TypeBuilder.Build(type);
             }
         }

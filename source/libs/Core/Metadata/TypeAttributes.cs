@@ -8,7 +8,6 @@ namespace DataDynamics.PageFX.Core.Metadata
 	[Flags]
 	internal enum TypeAttributes
 	{
-		#region Visibility attributes
 		/// <summary>
 		/// Type visibility mask
 		/// </summary>
@@ -53,9 +52,7 @@ namespace DataDynamics.PageFX.Core.Metadata
 		/// Class is nested with family or assembly visibility.
 		/// </summary>
 		NestedFamORAssem = 0x00000007,
-		#endregion
 
-		#region Class layout attributes
 		/// <summary>
 		/// Use this mask to retrieve class layout informaiton
 		/// </summary>
@@ -75,9 +72,7 @@ namespace DataDynamics.PageFX.Core.Metadata
 		/// Layout is supplied explicitly
 		/// </summary>
 		ExplicitLayout = 0x00000010,
-		#endregion
 
-		#region Class semantics attributes
 		/// <summary>
 		/// Use this mask to distinguish a type declaration as a Class, ValueType or Interface
 		/// </summary>
@@ -108,9 +103,7 @@ namespace DataDynamics.PageFX.Core.Metadata
 		/// Class name is special.  Name describes how.
 		/// </summary>
 		SpecialName = 0x00000400,
-		#endregion
 
-		#region Implementation attributes
 		/// <summary>
 		/// Class / interface is imported
 		/// </summary>
@@ -120,9 +113,7 @@ namespace DataDynamics.PageFX.Core.Metadata
 		/// The class is Serializable.
 		/// </summary>
 		Serializable = 0x00002000,
-		#endregion
 
-		#region String formatting Attributes
 		/// <summary>
 		/// Use StringFormatMask to retrieve string information for native interop
 		/// </summary>
@@ -153,16 +144,12 @@ namespace DataDynamics.PageFX.Core.Metadata
 		/// The meaning of the values of these 2 bits is unspecified.
 		/// </summary>
 		CustomStringFormatMask = 0x00C00000,
-		#endregion
 
-		#region Class Initialization Attributes
 		/// <summary>
 		/// Initialize the class any time before first static field access.
 		/// </summary>
 		BeforeFieldInit = 0x00100000,
-		#endregion
 
-		#region Additional Flags
 		/// <summary>
 		/// Flags reserved for runtime use.
 		/// </summary>
@@ -177,6 +164,5 @@ namespace DataDynamics.PageFX.Core.Metadata
 		/// Class has security associate with it.
 		/// </summary>
 		HasSecurity = 0x00040000,
-		#endregion
 	}
 }

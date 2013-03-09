@@ -43,14 +43,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			_properties = new PropertyList(this);
 			_events = new EventList(this);
 			_methods = new MethodList(this);
-
-	        _members = new TypeMemberCollection()
-		        {
-			        Fields = _fields,
-			        Properties = _properties,
-			        Events = _events,
-			        Methods = _methods
-		        };
+	        _members = new TypeMemberCollection(_fields, _methods, _properties, _events);
         }
 
     	public IType Type { get; set; }
@@ -212,12 +205,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         #region Names
 
-	    string EvalNameBase(TypeNameKind kind)
+	    private string EvalNameBase(TypeNameKind kind)
         {
             switch (kind)
             {
                 case TypeNameKind.DisplayName:
-                    return GenericType.ToDisplayName(Type.FullName);
+                    return TypeNameExtensions.ToDisplayName(Type.FullName);
                 case TypeNameKind.FullName:
                     return Type.FullName;
                 case TypeNameKind.SigName:
@@ -232,14 +225,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return Type.FullName;
         }
 
-		string EvalName(TypeNameKind kind, TypeNameKind argKind)
+		private string EvalName(TypeNameKind kind, TypeNameKind argKind)
 		{
 			return EvalName(kind, argKind, true);
 		}
 
-        string EvalName(TypeNameKind kind, TypeNameKind argKind, bool clr)
+		private string EvalName(TypeNameKind kind, TypeNameKind argKind, bool clr)
         {
-            return EvalNameBase(kind) + GenericType.Format(_args, argKind, clr);
+            return EvalNameBase(kind) + _args.BuildString(argKind, clr);
         }
 
         /// <summary>

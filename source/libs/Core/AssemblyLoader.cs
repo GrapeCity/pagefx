@@ -290,7 +290,7 @@ namespace DataDynamics.PageFX.Core
 		        var typeSig = TypeSignature.Decode(reader);
 		        var type = ResolveType(typeSig, context);
 
-		        if (!hasGenericVars && GenericType.IsGenericContext(type))
+		        if (!hasGenericVars && type.IsGenericContext())
 			        hasGenericVars = true;
 
 		        var v = new Variable

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DataDynamics.PageFX.Common.TypeSystem;
+using DataDynamics.PageFX.Core.LoaderInternals.Collections;
 using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals
 {
-	internal sealed class InternalType : TypeImpl
+	internal sealed class InternalType : MemberBase, IType
 	{
-		private const TypeKind TypeKindNone = (TypeKind)0xFE;
-
 		private static readonly Dictionary<string, TypeKind> TypeKindByBase =
 			new Dictionary<string, TypeKind>
 				{
@@ -18,103 +16,286 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 					{"System.MulticastDelegate", TypeKind.Delegate},
 				};
 
-		private readonly AssemblyLoader _loader;
+		private string _namespace;
+		private readonly TypeAttributes _flags;
+		private readonly TypeMemberCollection _members;
+		private IType _baseType;
+		private IType _declaringType;
+		private IGenericParameterCollection _genericParams;
+		private ITypeCollection _interfaces;
+		private ClassLayout _layout;
+		private ITypeCollection _nestedTypes;
 		private bool _baseTypeResolved;
-
-		public InternalType(AssemblyLoader loader)
+		
+		public InternalType(AssemblyLoader loader, MetadataRow row, int index)
+			: base(loader, TableId.TypeDef, index)
 		{
-			_loader = loader;
+			_flags = (TypeAttributes)row[Schema.TypeDef.Flags].Value;
 
-			TypeKind = TypeKindNone;
+			Namespace = row[Schema.TypeDef.TypeNamespace].String;
+			Name = row[Schema.TypeDef.TypeName].String;
+
+			var typeTable = Loader.Types;
+			var nextRow = index + 1 < typeTable.Count ? Loader.Metadata.GetRow(TableId.TypeDef, index + 1) : null;
+			var fields = typeTable.GetFields(row, nextRow, this);
+			var methods = typeTable.GetMethods(row, nextRow, this);
+
+			_members = new TypeMemberCollection(fields, methods, new PropertyList(this), new EventList(this));
 		}
 
-		public override IModule Module
+		public MemberType MemberType
 		{
-			get { return _loader.MainModule; }
-			set { throw new NotSupportedException(); }
+			get { return MemberType.Type; }
 		}
 
-		public override TypeKind TypeKind
+		public string Namespace
 		{
 			get
 			{
-				var kind = base.TypeKind;
-				if (kind == TypeKindNone)
-				{
-					kind = ResolveTypeKind(this);
-					base.TypeKind = kind;
-				}
-				return kind;
+				if (DeclaringType != null)
+					return DeclaringType.Namespace;
+				return _namespace;
 			}
-			set { base.TypeKind = value; }
+			private set { _namespace = value; }
 		}
 
-		public static TypeKind ResolveTypeKind(IType type)
+		public string FullName
 		{
-			var sysType = type.SystemType();
-			if (sysType != null) return sysType.Kind;
-
-			var baseType = type.BaseType;
-			if (baseType != null)
-			{
-				TypeKind kind;
-				if (TypeKindByBase.TryGetValue(baseType.FullName, out kind))
-				{
-					return kind;
-				}
-			}
-
-			return TypeKind.Class;
+			get { return this.BuildFullName(); }
 		}
 
-		protected override IType ResolveBaseType()
+		public override string DisplayName
+		{
+			get { return this.BuildDisplayName(); }
+		}
+
+		public string Key
+		{
+			get { return FullName; }
+		}
+
+		public string SigName
+		{
+			get { return this.BuildSigName(); }
+		}
+
+		public string NestedName
+		{
+			get { return this.BuildNestedName(); }
+		}
+
+		public IType DeclaringType
+		{
+			get { return _declaringType ?? (_declaringType = ResolveDeclaringType()); }
+		}
+
+		public IType Type
+		{
+			get { return null; }
+		}
+
+		public Visibility Visibility
+		{
+			get
+			{
+				var v = _flags & TypeAttributes.VisibilityMask;
+				switch (v)
+				{
+					case TypeAttributes.Public:
+						return Visibility.Public;
+					case TypeAttributes.NestedFamily:
+						return Visibility.NestedProtected;
+					case TypeAttributes.NestedAssembly:
+						return Visibility.NestedInternal;
+					case TypeAttributes.NestedFamORAssem:
+					case TypeAttributes.NestedFamANDAssem:
+						return Visibility.NestedProtectedInternal;
+					case TypeAttributes.NestedPrivate:
+						return Visibility.NestedPrivate;
+				}
+				return Visibility.Internal;
+			}
+		}
+
+		public TypeKind TypeKind
+		{
+			get
+			{
+				if ((_flags & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface)
+				{
+					return TypeKind.Interface;
+				}
+
+				var sysType = this.SystemType();
+				if (sysType != null)
+					return sysType.Kind;
+
+				var baseType = BaseType;
+				if (baseType != null)
+				{
+					TypeKind kind;
+					if (TypeKindByBase.TryGetValue(baseType.FullName, out kind))
+					{
+						return kind;
+					}
+				}
+
+				return TypeKind.Class;
+			}
+		}
+
+		public bool IsStatic
+		{
+			get { return false; }
+		}
+
+		public bool IsAbstract
+		{
+			get { return (_flags & TypeAttributes.Abstract) != 0; }
+		}
+
+		public bool IsSealed
+		{
+			get { return (_flags & TypeAttributes.Sealed) != 0; }
+		}
+
+		public bool IsBeforeFieldInit
+		{
+			get { return (_flags & TypeAttributes.BeforeFieldInit) != 0; }
+		}
+
+		public bool IsSpecialName
+		{
+			get { return (_flags & TypeAttributes.SpecialName) != 0; }
+		}
+
+		public bool IsRuntimeSpecialName
+		{
+			get { return (_flags & TypeAttributes.RTSpecialName) != 0; }
+		}
+
+		public bool IsPartial
+		{
+			get { return false; }
+		}
+
+		public bool IsInterface
+		{
+			get { return TypeKind == TypeKind.Interface; }
+		}
+
+		public bool IsClass
+		{
+			get { return TypeKind == TypeKind.Class; }
+		}
+
+		public bool IsArray
+		{
+			get { return false; }
+		}
+
+		public bool IsEnum
+		{
+			get { return TypeKind == TypeKind.Enum; }
+		}
+
+		public IMethod DeclaringMethod
+		{
+			get { return null; }
+		}
+
+		public IType BaseType
+		{
+			get { return _baseType ?? (_baseType = ResolveBaseType()); }
+		}
+
+		public ITypeCollection Interfaces
+		{
+			get { return _interfaces ?? (_interfaces = new InterfaceImpl(Loader, this)); }
+		}
+
+		public IType ValueType
+		{
+			get { return this.ResolveValueType(); }
+		}
+
+		public IGenericParameterCollection GenericParameters
+		{
+			get { return _genericParams ?? (_genericParams = new GenericParamList(Loader, this)); }
+		}
+
+		public IFieldCollection Fields
+		{
+			get { return _members.Fields; }
+		}
+
+		public IMethodCollection Methods
+		{
+			get { return _members.Methods; }
+		}
+
+		public IPropertyCollection Properties
+		{
+			get { return _members.Properties; }
+		}
+
+		public IEventCollection Events
+		{
+			get { return _members.Events; }
+		}
+
+		public ITypeMemberCollection Members
+		{
+			get { return _members; }
+		}
+
+		public ClassLayout Layout
+		{
+			get { return _layout ?? (_layout = ResolveLayout()); }
+		}
+
+		public string Documentation { get; set; }
+
+		public ITypeCollection Types
+		{
+			get { return _nestedTypes ?? (_nestedTypes = new NestedTypeList(Loader, this)); }
+		}
+
+		private IType ResolveBaseType()
 		{
 			if (_baseTypeResolved) return null;
 
 			_baseTypeResolved = true;
 
-			return ResolveBaseType(_loader, this);
+			if (this.Is(SystemTypeCode.Object)) return null;
+
+			var row = Loader.Metadata.GetRow(TableId.TypeDef, this.RowIndex());
+
+			SimpleIndex baseIndex = row[Schema.TypeDef.Extends].Value;
+
+			return Loader.GetTypeDefOrRef(baseIndex, new Context(this));
 		}
 
-		protected override IType ResolveDeclaringType()
+		private IType ResolveDeclaringType()
 		{
-			return ResolveDeclaringType(_loader, this.RowIndex());
+			var row = Loader.Metadata.LookupRow(TableId.NestedClass, Schema.NestedClass.Class, this.RowIndex(), true);
+			if (row == null) return null;
+
+			int enclosingIndex = row[Schema.NestedClass.EnclosingClass].Index - 1;
+			return Loader.Types[enclosingIndex];
 		}
 
-		protected override ClassLayout ResolveLayout()
+		private ClassLayout ResolveLayout()
 		{
-			return ResolveLayout(_loader, this.RowIndex());
-		}
-
-		public static ClassLayout ResolveLayout(AssemblyLoader loader, int typeIndex)
-		{
-			var row = loader.Metadata.LookupRow(TableId.ClassLayout, Schema.ClassLayout.Parent, typeIndex, true);
-			if (row == null)
+			if ((_flags & TypeAttributes.LayoutMask) != TypeAttributes.ExplicitLayout)
 				return null;
+
+			var row = Loader.Metadata.LookupRow(TableId.ClassLayout, Schema.ClassLayout.Parent, this.RowIndex(), true);
+			if (row == null) return null;
 
 			var size = (int)row[Schema.ClassLayout.ClassSize].Value;
 			var pack = (int)row[Schema.ClassLayout.PackingSize].Value;
 			return new ClassLayout(size, pack);
-		}
-
-		public static IType ResolveBaseType(AssemblyLoader loader, IType type)
-		{
-			if (type.Is(SystemTypeCode.Object)) return null;
-
-			var row = loader.Metadata.GetRow(TableId.TypeDef, type.RowIndex());
-
-			SimpleIndex baseIndex = row[Schema.TypeDef.Extends].Value;
-
-			return loader.GetTypeDefOrRef(baseIndex, new Context(type));
-		}
-
-		public static IType ResolveDeclaringType(AssemblyLoader loader, int index)
-		{
-			var row = loader.Metadata.LookupRow(TableId.NestedClass, Schema.NestedClass.Class, index, true);
-			if (row == null) return null;
-
-			int enclosingIndex = row[Schema.NestedClass.EnclosingClass].Index - 1;
-			return loader.Types[enclosingIndex];
 		}
 	}
 }

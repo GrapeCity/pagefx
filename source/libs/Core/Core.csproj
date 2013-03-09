@@ -167,7 +167,6 @@
     <Compile Include="LoaderInternals\GenericParameterImpl.cs" />
     <Compile Include="LoaderInternals\GenericParamList.cs" />
     <Compile Include="LoaderInternals\InternalAssembly.cs" />
-    <Compile Include="LoaderInternals\InternalGenericType.cs" />
     <Compile Include="LoaderInternals\InternalModule.cs" />
     <Compile Include="LoaderInternals\LazyType.cs" />
     <Compile Include="LoaderInternals\MemberBase.cs" />

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -69,17 +69,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private static string BuildKey(IType type, IEnumerable<IType> args)
 		{
-			var sb = new StringBuilder();
-			sb.Append(type.FullName);
-			sb.Append('<');
-			foreach (var arg in args)
-			{
-				sb.Append(arg.Key);
-				sb.Append(',');
-			}
-			sb.Length -= 1;
-			sb.Append('>');
-			return sb.ToString();
+			return type.FullName + args.Join("<", ">", ",", x => x.Key);
 		}
     }
 }

@@ -118,6 +118,7 @@
     <Compile Include="TypeSystem\CustomAttributeProvider.cs" />
     <Compile Include="TypeSystem\EventExtensions.cs" />
     <Compile Include="TypeSystem\GenericParameterCollection.cs" />
+    <Compile Include="TypeSystem\GenericExtensions.cs" />
     <Compile Include="TypeSystem\IAssemblyLoader.cs" />
     <Compile Include="TypeSystem\IAssemblyReference.cs" />
     <Compile Include="TypeSystem\IMetadataTokenResolver.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="TypeSystem\SystemTypeExtensions.cs" />
     <Compile Include="TypeSystem\TypeFactory.cs" />
     <Compile Include="TypeSystem\TypeMemberExtensions.cs" />
+    <Compile Include="TypeSystem\TypeNameExtensions.cs" />
     <Compile Include="Utilities\Tricks.cs" />
     <Compile Include="Tests\BitReaderTest.cs" />
     <Compile Include="Tests\BitWriterTest.cs" />

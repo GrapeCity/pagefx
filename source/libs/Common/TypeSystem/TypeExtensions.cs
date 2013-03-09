@@ -9,6 +9,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public static class TypeExtensions
     {
+		public static IType ResolveValueType(this IType type)
+		{
+			if (type == null) return null;
+			if (type.IsEnum)
+			{
+				return type.Fields.Where(field => field.IsSpecialName).Select(x => x.Type).FirstOrDefault();
+			}
+			return null;
+		}
+
 		/// <summary>
 		/// Indicates whether the type has generic parameters.
 		/// </summary>

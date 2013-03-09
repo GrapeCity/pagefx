@@ -97,12 +97,12 @@ namespace DataDynamics.PageFX.Common.Extensions
 
 		#region Join
 
-		public static string Join<T>(this IEnumerable<T> seq, string prefix, string suffix, string separator, Converter<T, string> tostr)
+		public static string Join<T>(this IEnumerable<T> seq, string prefix, string suffix, string separator, Func<T, string> tostr)
         {
 			if (seq == null) return "";
             var sb = new StringBuilder();
             bool f = false;
-			if (!String.IsNullOrEmpty(prefix))
+			if (!string.IsNullOrEmpty(prefix))
 			{
 				sb.Append(prefix);
 			}
@@ -112,7 +112,7 @@ namespace DataDynamics.PageFX.Common.Extensions
                 sb.Append(tostr(item));
                 f = true;
             }
-			if (!String.IsNullOrEmpty(suffix))
+			if (!string.IsNullOrEmpty(suffix))
 			{
 				sb.Append(suffix);
 			}

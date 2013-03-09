@@ -115,7 +115,7 @@ namespace DataDynamics.PageFX.Core.Translation
         {
             var member = instruction.Member;
             if (member == null) return;
-            if (!GenericType.IsGenericContext(member)) return;
+            if (!member.IsGenericContext()) return;
 
             switch (member.MemberType)
             {
@@ -223,7 +223,7 @@ namespace DataDynamics.PageFX.Core.Translation
 
 	    private static void CheckInstantiation(IType t, Instruction instr)
         {
-            if (GenericType.HasGenericParams(t))
+            if (t.HasGenericParams())
             {
                 //NOTE: Ldtoken can has any metadata token including generic types.
                 if (instr != null && instr.Code == InstructionCode.Ldtoken)

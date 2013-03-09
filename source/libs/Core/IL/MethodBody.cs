@@ -450,7 +450,7 @@ namespace DataDynamics.PageFX.Core.IL
                         int token = block.Value;
 
 	                    var type = context.ResolveType(method, token);
-                        if (!HasGenericExceptions && GenericType.IsGenericContext(type))
+                        if (!HasGenericExceptions && type.IsGenericContext())
                             _genericFlags |= GenericFlags.HasGenericExceptions;
 
                         var h = new HandlerBlock(BlockType.Catch)

@@ -693,7 +693,7 @@ namespace DataDynamics.PageFX.Common.Services
 			string name = method.Name;
 			if (method.GenericParameters.Count > 0)
 			{
-				name += GenericType.Format(method.GenericParameters, TypeNameKind.DisplayName, false);
+				name += method.GenericParameters.BuildString(TypeNameKind.DisplayName, false);
 			}
 			string parms = method.Parameters.GetSignature(displayName);
 			return String.Format("{0}({1})", name, parms);

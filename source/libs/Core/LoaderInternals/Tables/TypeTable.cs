@@ -154,37 +154,15 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 
 		protected override IType ParseRow(MetadataRow row, int index)
 		{
-			var flags = (TypeAttributes)row[Schema.TypeDef.Flags].Value;
-			string name = row[Schema.TypeDef.TypeName].String;
-			string ns = row[Schema.TypeDef.TypeNamespace].String;
-
-			var token = SimpleIndex.MakeToken(TableId.TypeDef, index + 1);
-			var genericParams = Loader.GenericParameters.Find(token);
-
-			var type = genericParams != null && genericParams.Count > 0
-				           ? new InternalGenericType(Loader, genericParams)
-				           : (TypeImpl)new InternalType(Loader);
-
-			type.Namespace = ns;
-			type.Name = name;
-			SetTypeFlags(type, flags);
+			var type = new InternalType(Loader, row, index);
 
 			// to avoid problems with self refs in fields/methods,etc
 			this[index] = type;
-
-			type.MetadataToken = token;
-			type.CustomAttributes = new CustomAttributes(Loader, type);
 
 			if (!IsNestedType(index))
 			{
 				_cache[type.FullName] = type;
 			}
-
-			var nextRow = index + 1 < Count ? Metadata.GetRow(TableId.TypeDef, index + 1) : null;
-			SetMembers(row, nextRow, type);
-
-			type.Interfaces = new InterfaceImpl(Loader, type);
-			type.Types = new NestedTypeList(Loader, type);
 
 			return type;
 		}
@@ -229,19 +207,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			sb.Append(name);
 		}
 		
-		private void SetMembers(MetadataRow row, MetadataRow nextRow, IType type)
-		{
-			var fields = GetFields(row, nextRow, type);
-			var methods = GetMethods(row, nextRow, type);
-
-			var members = (TypeMemberCollection)type.Members;
-			members.Fields = fields;			
-			members.Methods = methods;
-			members.Properties = new PropertyList(type);
-			members.Events = new EventList(type);
-		}
-
-		private IFieldCollection GetFields(MetadataRow row, MetadataRow nextRow, IType type)
+		internal IFieldCollection GetFields(MetadataRow row, MetadataRow nextRow, IType type)
 		{
 			var range = GetFieldRange(row, nextRow);
 			if (range == null) return FieldCollection.Empty;
@@ -251,7 +217,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			return new FieldList(Loader, type, range[0], range[1]);
 		}
 
-		private IMethodCollection GetMethods(MetadataRow row, MetadataRow nextRow, IType type)
+		internal IMethodCollection GetMethods(MetadataRow row, MetadataRow nextRow, IType type)
 		{
 			var range = GetMethodRange(row, nextRow);
 			if (range == null) return MethodCollection.Empty;
@@ -287,41 +253,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 			}
 
 			return from == to ? null : new[] { from, to };
-		}
-
-		private static void SetTypeFlags(TypeImpl type, TypeAttributes flags)
-		{
-			type.Visibility = ToVisibility(flags);
-			type.IsAbstract = (flags & TypeAttributes.Abstract) != 0;
-			type.IsSealed = (flags & TypeAttributes.Sealed) != 0;
-			type.IsBeforeFieldInit = (flags & TypeAttributes.BeforeFieldInit) != 0;
-			type.IsSpecialName = (flags & TypeAttributes.SpecialName) != 0;
-			type.IsRuntimeSpecialName = (flags & TypeAttributes.RTSpecialName) != 0;
-
-			if ((flags & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface)
-			{
-				type.TypeKind = TypeKind.Interface;
-			}
-		}
-
-		private static Visibility ToVisibility(TypeAttributes f)
-		{
-			var v = f & TypeAttributes.VisibilityMask;
-			switch (v)
-			{
-				case TypeAttributes.Public:
-					return Visibility.Public;
-				case TypeAttributes.NestedFamily:
-					return Visibility.NestedProtected;
-				case TypeAttributes.NestedAssembly:
-					return Visibility.NestedInternal;
-				case TypeAttributes.NestedFamORAssem:
-				case TypeAttributes.NestedFamANDAssem:
-					return Visibility.NestedProtectedInternal;
-				case TypeAttributes.NestedPrivate:
-					return Visibility.NestedPrivate;
-			}
-			return Visibility.Internal;
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)

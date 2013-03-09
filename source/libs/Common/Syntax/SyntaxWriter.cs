@@ -497,7 +497,7 @@ namespace DataDynamics.PageFX.Common.Syntax
 
                 default:
                     {
-                        string k = TypeImpl.GetKeyword(Language, type);
+                        string k = type.GetKeyword(Language);
                         if (!string.IsNullOrEmpty(k))
                             return k;
                         return GetFullName(type);

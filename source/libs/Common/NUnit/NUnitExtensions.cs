@@ -36,7 +36,7 @@ namespace DataDynamics.PageFX.Common.NUnit
 
 		public static bool IsTestFixture(this IType type)
 		{
-			if (GenericType.HasGenericParams(type))
+			if (type.HasGenericParams())
 				return false;
 
 			if (type.HasAttribute(Attrs.TestFixture))
@@ -102,7 +102,7 @@ namespace DataDynamics.PageFX.Common.NUnit
 			//I'm not shure about static methods, need to check
 			if (method.IsStatic) return false;
 			if (method.Parameters.Count > 0) return false;
-			if (GenericType.IsGenericContext(method)) return false;
+			if (method.IsGenericContext()) return false;
 			if (IsIgnored(method)) return false;
 			if (method.HasAttribute(NotTestAttrs)) return false;
 
