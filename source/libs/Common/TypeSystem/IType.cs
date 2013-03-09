@@ -73,6 +73,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// </summary>
         IType ValueType { get; }
 
+		/// <summary>
+		/// Gets generic parameters.
+		/// </summary>
+		IGenericParameterCollection GenericParameters { get; }
+
         /// <summary>
         /// Gets the fields declared in this type.
         /// </summary>

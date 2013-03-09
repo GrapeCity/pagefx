@@ -18,6 +18,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public interface IGenericParameterCollection : IReadOnlyList<IGenericParameter>, ICodeNode
     {
 	    IGenericParameter Find(string name);
+
+	    void Add(IGenericParameter parameter);
     }
 
 	public enum GenericParameterVariance : byte

@@ -56,7 +56,7 @@ namespace DataDynamics.PageFX.Core.Translation
 
 		private TranslatorResult TranslateCore(TranslationContext context)
         {
-            if (context.Method.DeclaringType is IGenericType)
+            if (context.Method.DeclaringType.IsGeneric())
                 throw new ILTranslatorException("Not supported");
 
 #if DEBUG

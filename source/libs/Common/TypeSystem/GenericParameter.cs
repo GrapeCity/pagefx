@@ -48,13 +48,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public bool IsSpecialName
         {
             get { return false; }
-            set { }
         }
 
         public bool IsRuntimeSpecialName
         {
             get { return false; }
-            set { }
         }
 
 	    public IType DeclaringType { get; set; }
@@ -139,7 +137,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return TypeCollection.Empty; }
         }
 
-        public IFieldCollection Fields
+		public IGenericParameterCollection GenericParameters
+		{
+			get { return GenericParameterCollection.Empty; }
+		}
+
+		public IFieldCollection Fields
         {
             get { return FieldCollection.Empty; }
         }

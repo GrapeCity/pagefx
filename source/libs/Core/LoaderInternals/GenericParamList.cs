@@ -49,6 +49,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			return _list.FirstOrDefault(x => x.Name == name);
 		}
 
+		public void Add(IGenericParameter parameter)
+		{
+			throw new NotSupportedException("Cannot modify readonly collection!");
+		}
+
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
 			return SyntaxFormatter.Format(this, format, formatProvider);

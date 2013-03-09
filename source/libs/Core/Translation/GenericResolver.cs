@@ -208,7 +208,7 @@ namespace DataDynamics.PageFX.Core.Translation
             if (instr != null && instr.Code == InstructionCode.Ldtoken)
             {
                 //NOTE: Ldtoken can has any metadata token including generic types.
-                if (type is IGenericType)
+                if (type.IsGeneric())
                     return type;
             }
 

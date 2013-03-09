@@ -192,8 +192,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return _members; }
         }
-        
-        public IFieldCollection Fields
+
+	    public virtual IGenericParameterCollection GenericParameters
+	    {
+			get { return GenericParameterCollection.Empty; }
+	    }
+
+	    public IFieldCollection Fields
         {
             get { return _members.Fields; }
         }

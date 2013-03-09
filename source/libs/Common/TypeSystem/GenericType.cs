@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public class GenericType : TypeImpl, IGenericType
+    public class GenericType : TypeImpl
     {
 		public GenericType()
 		{
@@ -15,16 +15,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		{
 			foreach (var parameter in parameters)
 			{
-				GenericParameters.Add(parameter);
+				_genericParams.Add(parameter);
 			}
 		}
 
-    	IGenericParameterCollection IGenericType.GenericParameters
-    	{
-			get { return _genericParams; }
-    	}
-
-		public GenericParameterCollection GenericParameters
+    	public override IGenericParameterCollection GenericParameters
         {
             get { return _genericParams; }
         }
@@ -103,7 +98,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     	public static bool HasGenericParams(IType type)
         {
             if (type == null) return false;
-            if (type is IGenericType) return true;
+            
+    		if (type.GenericParameters.Count > 0)
+    			return true;
 
             switch (type.TypeKind)
             {

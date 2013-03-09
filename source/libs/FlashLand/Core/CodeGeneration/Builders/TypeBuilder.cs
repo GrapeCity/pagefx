@@ -227,7 +227,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                 return type.Data;
 
             //NOTE: can be used only in typeof operations
-            if (type is IGenericType)
+            if (type.IsGeneric())
                 return null;
 
             if (GenericType.HasGenericParams(type))

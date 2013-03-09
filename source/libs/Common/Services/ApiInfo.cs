@@ -87,7 +87,7 @@ namespace DataDynamics.PageFX.Common.Services
             if (type == null) return false;
             if (!type.IsVisible()) return false;
             //if (type.IsEnum) return false;
-            if (ExcludeGenerics && type is IGenericType) return false;
+            if (ExcludeGenerics && type.IsGeneric()) return false;
 
             if (IsExcludedSystemType(type)) return false;
             if (type.IsPfxSpecific()) return false;

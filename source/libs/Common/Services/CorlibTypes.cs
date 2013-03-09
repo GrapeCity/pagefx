@@ -105,12 +105,12 @@ namespace DataDynamics.PageFX.Common.Services
 			}
 		}
 
-		public IGenericType this[GenericTypeId c]
+		public IType this[GenericTypeId c]
 		{
 			get
 			{
 				var i = (int)c;
-				return (IGenericType)_generics[i].Value;
+				return _generics[i].Value;
 			}
 		}
 
@@ -122,9 +122,9 @@ namespace DataDynamics.PageFX.Common.Services
 			return type;
 		}
 
-		private IGenericType FindGenericType(string fullname)
+		private IType FindGenericType(string fullname)
 		{
-			var type = FindType(fullname) as IGenericType;
+			var type = FindType(fullname);
 			if (type == null)
 				throw new InvalidOperationException(string.Format("Unable to find {0}. Invalid corlib.", fullname));
 			return type;

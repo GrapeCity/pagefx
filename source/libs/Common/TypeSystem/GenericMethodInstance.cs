@@ -183,50 +183,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public IGenericParameterCollection GenericParameters
         {
-			get { return EmptyGenericParameterCollection.Instance; }
+			get { return GenericParameterCollection.Empty; }
         }
 
-		private sealed class EmptyGenericParameterCollection : IGenericParameterCollection
-		{
-			public static readonly IGenericParameterCollection Instance = new EmptyGenericParameterCollection();
-
-			public IEnumerator<IGenericParameter> GetEnumerator()
-			{
-				yield break;
-			}
-
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-
-			public int Count
-			{
-				get { return 0; }
-			}
-
-			public IGenericParameter this[int index]
-			{
-				get { return null; }
-			}
-
-			public string ToString(string format, IFormatProvider formatProvider)
-			{
-				return "";
-			}
-
-			public IEnumerable<ICodeNode> ChildNodes
-			{
-				get { return Enumerable.Empty<ICodeNode>(); }
-			}
-
-			public object Data { get; set; }
-
-			public IGenericParameter Find(string name)
-			{
-				return null;
-			}
-		}
+		
 
         public IType[] GenericArguments
         {

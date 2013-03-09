@@ -50,14 +50,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	        return Make(key, () => new ReferenceType(type));
         }
 
-        public IType MakeGenericType(IGenericType type, IEnumerable<IType> args)
+        public IType MakeGenericType(IType type, IEnumerable<IType> args)
         {
 	        var list = args.ToList();
             string key = BuildKey(type, list);
 	        return Make(key, () => new GenericInstance(type, list) {Key = key});
         }
 
-	    public IType MakeGenericType(IGenericType type, IType arg)
+	    public IType MakeGenericType(IType type, IType arg)
         {
 	        return MakeGenericType(type, new[] {arg});
         }
@@ -67,7 +67,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return type.Key + suffix;
 		}
 
-		private static string BuildKey(IGenericType type, IEnumerable<IType> args)
+		private static string BuildKey(IType type, IEnumerable<IType> args)
 		{
 			var sb = new StringBuilder();
 			sb.Append(type.FullName);

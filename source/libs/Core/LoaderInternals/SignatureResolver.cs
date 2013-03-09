@@ -98,7 +98,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 				case ElementType.GenericInstantiation:
 					{
-						var type = ResolveType(sig.Type, context) as IGenericType;
+						var type = ResolveType(sig.Type, context);
 						if (type == null)
 							throw BadTypeSig(sig);
 
@@ -109,12 +109,12 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 				case ElementType.Var:
 					{
 						int index = sig.GenericParamNumber;
-						var gt = context.Type as IGenericType;
-						if (gt != null)
-							return gt.GenericParameters[index];
 						var gi = context.Type as IGenericInstance;
 						if (gi != null)
 							return gi.GenericArguments[index];
+						var gt = context.Type;
+						if (gt != null)
+							return gt.GenericParameters[index];
 						throw BadTypeSig(sig);
 					}
 

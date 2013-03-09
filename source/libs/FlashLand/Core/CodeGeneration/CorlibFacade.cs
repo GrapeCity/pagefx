@@ -37,7 +37,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
 			return Types[id];
 		}
 
-		public IGenericType GetType(GenericTypeId id)
+		public IType GetType(GenericTypeId id)
 		{
 			return Types[id];
 		}

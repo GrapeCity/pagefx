@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
@@ -31,6 +32,53 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		public override string ToString()
 		{
 			return ToString(null, null);
+		}
+
+		public static readonly IGenericParameterCollection Empty = new EmptyImpl();
+
+		private sealed class EmptyImpl : IGenericParameterCollection
+		{
+			public IEnumerator<IGenericParameter> GetEnumerator()
+			{
+				yield break;
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			public int Count
+			{
+				get { return 0; }
+			}
+
+			public IGenericParameter this[int index]
+			{
+				get { return null; }
+			}
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				return "";
+			}
+
+			public IEnumerable<ICodeNode> ChildNodes
+			{
+				get { return Enumerable.Empty<ICodeNode>(); }
+			}
+
+			public object Data { get; set; }
+
+			public IGenericParameter Find(string name)
+			{
+				return null;
+			}
+
+			public void Add(IGenericParameter parameter)
+			{
+				throw new NotSupportedException();
+			}
 		}
 	}
 }

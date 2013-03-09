@@ -156,6 +156,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return null; }
 		}
 
+		public IGenericParameterCollection GenericParameters
+		{
+			get { return GenericParameterCollection.Empty; }
+		}
+
 		public IFieldCollection Fields
 		{
 			get { return FieldCollection.Empty; }

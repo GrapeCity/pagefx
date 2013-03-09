@@ -705,7 +705,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             return TypeFactory.MakeGenericType(vector, paramType);
         }
 
-        private IGenericType GetGenericVector()
+        private IType GetGenericVector()
         {
             if (_genericVector != null) return _genericVector;
 
@@ -733,7 +733,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
         	return _genericVector;
         }
 
-		private IGenericType _genericVector;
+		private IType _genericVector;
         #endregion
 
         #region BuildType

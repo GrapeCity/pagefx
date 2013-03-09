@@ -17,7 +17,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		private IPropertyCollection _properties;
 		private IEventCollection _events;
 
-    	public GenericInstance(IGenericType type, IEnumerable<IType> args)
+    	public GenericInstance(IType type, IEnumerable<IType> args)
         {
     		if (type == null) throw new ArgumentNullException("type");
     		if (args == null) throw new ArgumentNullException("args");
@@ -30,7 +30,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             Type = type;
         }
 
-        public GenericInstance(IGenericType type, params IType[] args)
+        public GenericInstance(IType type, params IType[] args)
             : this(type, (IEnumerable<IType>)args)
         {
         }
@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		        };
         }
 
-    	public IGenericType Type { get; set; }
+    	public IType Type { get; set; }
 
     	public ITypeCollection GenericArguments
         {
@@ -152,7 +152,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return Type != null ? Type.ValueType : null; }
         }
 
-        public IFieldCollection Fields
+	    public IGenericParameterCollection GenericParameters
+	    {
+			get { return GenericParameterCollection.Empty; }
+	    }
+
+	    public IFieldCollection Fields
         {
             get
             {
