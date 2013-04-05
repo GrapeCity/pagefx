@@ -127,11 +127,11 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			if (Type.IsInt64())
 			{
 				writer.WriteLine("{0} = function(hi, lo) {{", name);
-				writer.IncreaseIndent();
+				writer.Indent();
 				writer.WriteLine("this.m_hi = hi ? hi : 0;");
 				writer.WriteLine("this.m_lo = lo ? lo : 0;");
 				writer.WriteLine("return this;");
-				writer.DecreaseIndent();
+				writer.Unindent();
 				writer.WriteLine("};"); // end of function
 				return;
 			}
@@ -140,10 +140,10 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			{
 				var valueType = Type.IsEnum ? Type.ValueType : Type;
 				writer.WriteLine("{0} = function(v) {{", name);
-				writer.IncreaseIndent();
+				writer.Indent();
 				writer.WriteLine("this.{0} = v !== undefined ? v : {1};", SpecialFields.BoxValue, valueType.InitialValue().ToJsString());
 				writer.WriteLine("return this;");
-				writer.DecreaseIndent();
+				writer.Unindent();
 				writer.WriteLine("};"); // end of function
 				return;
 			}
@@ -151,14 +151,14 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			if (Type.IsNullableInstance())
 			{
 				writer.WriteLine("{0} = function(v) {{", name);
-				writer.IncreaseIndent();
+				writer.Indent();
 
 				var valueType = Type.GetTypeArgument(0);
 				writer.WriteLine("this.{0} = v !== undefined ? v : {1};", SpecialFields.BoxValue, valueType.InitialValue().ToJsString());
 				writer.WriteLine("this.{0} = v !== undefined;", Type.GetHasValueField().JsName());
 				writer.WriteLine("return this;");
 
-				writer.DecreaseIndent();
+				writer.Unindent();
 				writer.WriteLine("};"); // end of function
 				return;
 			}
@@ -166,7 +166,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			writer.WriteLine("{0} = function() {{", name);
 			if (_instanceFields.Count > 0 || baseName != null)
 			{
-				writer.IncreaseIndent();
+				writer.Indent();
 
 				if (baseName != null)
 				{
@@ -180,7 +180,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 				}
 
 				writer.WriteLine("return this;");
-				writer.DecreaseIndent();
+				writer.Unindent();
 			}
 			writer.WriteLine("};"); // end of function
 		}
@@ -190,7 +190,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			if (_instanceFields.Count > 0)
 			{
 				writer.WriteLine("{0}.prototype.$fields = function() {{", name);
-				writer.IncreaseIndent();
+				writer.Indent();
 
 				var f = new JsArray(_instanceFields.Select(x => (object)x.Field.JsName()));
 
@@ -206,7 +206,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 					writer.WriteLine();
 				}
 
-				writer.DecreaseIndent();
+				writer.Unindent();
 				writer.WriteLine("};"); // end of $fields
 			}
 		}
@@ -216,10 +216,10 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			if (_staticFields.Count > 0)
 			{
 				writer.WriteLine("{0}.$init_fields = function() {{", name);
-				writer.IncreaseIndent();
+				writer.Indent();
 				writer.Write(_staticFields, "\n");
 				writer.WriteLine();
-				writer.DecreaseIndent();
+				writer.Unindent();
 				writer.WriteLine("};"); // end of static fields initializer
 			}
 		}

@@ -307,7 +307,6 @@
     <Compile Include="Utilities\FrameworkInfo.cs" />
     <Compile Include="Utilities\Hex.cs" />
     <Compile Include="Utilities\IEEEFloat.cs" />
-    <Compile Include="Utilities\Indent.cs" />
     <Compile Include="Utilities\LazyValue.cs" />
     <Compile Include="Utilities\NameAttribute.cs" />
     <Compile Include="Extensions\NameExtensions.cs" />

@@ -46,7 +46,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			if (NewLine)
 			{
 				writer.WriteLine();
-				writer.IncreaseIndent();
+				writer.Indent();
 			}
 
 			bool sep = false;
@@ -78,7 +78,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			if (NewLine)
 			{
 				writer.WriteLine();
-				writer.DecreaseIndent();
+				writer.Unindent();
 			}
 
 			writer.Write("}");

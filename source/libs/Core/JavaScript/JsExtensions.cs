@@ -19,10 +19,10 @@ namespace DataDynamics.PageFX.Core.JavaScript
 //			}
 
 			writer.WriteLine("{");
-			writer.IncreaseIndent();
+			writer.Indent();
 			writer.Write(seq, separator);
 			writer.WriteLine();
-			writer.DecreaseIndent();
+			writer.Unindent();
 			writer.Write("}");
 		}
 

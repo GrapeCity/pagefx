@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.FlashLand.Avm;
 using DataDynamics.PageFX.FlashLand.Core;
 using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
@@ -850,16 +849,16 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 
         public void Dump(TextWriter writer, bool withNamespace)
         {
-            var tab = new Indent();
+            var tab = "";
             if (withNamespace)
             {
                 writer.WriteLine("namespace {0}", NamespaceString);
                 writer.WriteLine("{");
-                tab++;
+                tab += "\t";
             }
 
             #region def
-            writer.Write(tab.Value);
+            writer.Write(tab);
             writer.Write("public ");
             if ((Flags & AbcClassFlags.Final) != 0)
                 writer.Write("final ");
@@ -886,15 +885,15 @@ namespace DataDynamics.PageFX.FlashLand.Abc
             writer.WriteLine();
             #endregion
 
-            writer.WriteLine("{0}{{", tab.Value);
+            writer.WriteLine("{0}{{", tab);
 
-            tab++;
+			tab += "\t";
             DumpMembers(writer, _traits, tab, false);
             if (_class != null)
                 DumpMembers(writer, _class.Traits, tab, true);
-            --tab;
 
-            writer.WriteLine("{0}}}", tab);
+			tab = tab.Substring(0, tab.Length - 1);
+			writer.WriteLine("{0}}}", tab);
 
             if (withNamespace)
                 writer.WriteLine("}");

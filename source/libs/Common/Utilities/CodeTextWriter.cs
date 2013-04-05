@@ -6,44 +6,51 @@ namespace DataDynamics.PageFX.Common.Utilities
 {
     public class CodeTextWriter : TextWriter
     {
-        private readonly Encoding _encoding = Encoding.UTF8;
 		private readonly TextWriter _writer;
-		private Indent _indent = new Indent();
+	    private string _indentChars = "\t";
+		private string _indent = "";
 	    private bool _doindent;
 
-        public CodeTextWriter(TextWriter baseWriter, Encoding encoding)
+        public CodeTextWriter(TextWriter baseWriter)
         {
             if (baseWriter == null)
                 throw new ArgumentNullException("baseWriter");
+
             _writer = baseWriter;
-            if (encoding != null)
-                _encoding = encoding;
         }
 
-        public CodeTextWriter(TextWriter baseWriter)
-            : this(baseWriter, null)
+        public CodeTextWriter() : this(new StringWriter())
         {
         }
 
-        public CodeTextWriter()
-            : this(new StringWriter())
-        {
-        }
+	    public string IndentChars
+	    {
+			get { return _indentChars; }
+			set { _indentChars = string.IsNullOrEmpty(value) ? "\t" : value; }
+	    }
 
         public override Encoding Encoding
         {
-            get { return _encoding; }
+            get { return _writer.Encoding; }
         }
 
-        public void IncreaseIndent()
+		/// <summary>
+		/// Increases the current indent level by one.
+		/// </summary>
+		public void Indent()
         {
-            ++_indent;
+			_indent += _indentChars;
 	        _doindent = true;
         }
 
-        public void DecreaseIndent()
+		/// <summary>
+		/// Decreases the current indent level by one.
+		/// </summary>
+        public void Unindent()
         {
-			--_indent;
+	        _indent = _indent.Length - _indentChars.Length > 0
+		                  ? _indent.Substring(0, _indent.Length - _indentChars.Length)
+		                  : "";
 			_doindent = true;
         }
 
@@ -107,13 +114,7 @@ namespace DataDynamics.PageFX.Common.Utilities
 		    _doindent = true;
         }
 
-        public void EndBlock()
-        {
-            DecreaseIndent();
-            WriteLine("}");
-        }
-
-        public override string ToString()
+	    public override string ToString()
         {
             var sw = _writer as StringWriter;
             if (sw != null)

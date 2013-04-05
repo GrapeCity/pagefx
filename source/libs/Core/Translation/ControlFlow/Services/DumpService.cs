@@ -1,7 +1,6 @@
 #if DEBUG
 using System.Collections.Generic;
 using System.IO;
-using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.Core.IL;
 
 namespace DataDynamics.PageFX.Core.Translation.ControlFlow.Services
@@ -27,10 +26,10 @@ namespace DataDynamics.PageFX.Core.Translation.ControlFlow.Services
             if (handler != null)
                 return GetBlockIndent(handler.Owner);
 
-            var tab = new Indent();
+            var tab = "";
             while (block.Parent != null)
             {
-                ++tab;
+                tab += "\t";
                 block = block.Parent;
             }
             return tab;

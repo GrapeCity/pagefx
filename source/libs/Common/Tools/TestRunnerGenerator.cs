@@ -105,24 +105,26 @@ namespace DataDynamics.PageFX.Common.Tools
 
 			writer.WriteLine("class Program");
 			writer.WriteLine("{");
-			writer.IncreaseIndent();
+			writer.Indent();
 		}
 
 		private static void EndProgram(CodeTextWriter writer)
 		{
-			writer.EndBlock();
+			writer.Unindent();
+			writer.WriteLine("}");
 		}
 
 		private static void BeginMethod(CodeTextWriter writer, string name)
 		{
 			writer.WriteLine("static void {0}()", name);
 			writer.WriteLine("{");
-			writer.IncreaseIndent();
+			writer.Indent();
 		}
 
 		private static void EndMethod(CodeTextWriter writer)
 		{
-			writer.EndBlock();
+			writer.Unindent();
+			writer.WriteLine("}");
 		}
 
 		private static void BeginMain(CodeTextWriter writer)
@@ -163,7 +165,7 @@ namespace DataDynamics.PageFX.Common.Tools
 			{
 				writer.WriteLine("try");
 				writer.WriteLine("{");
-				writer.IncreaseIndent();
+				writer.Indent();
 			}
 
 			CallMethod(writer, test);
@@ -176,7 +178,7 @@ namespace DataDynamics.PageFX.Common.Tools
 
 			if (hasTry)
 			{
-				writer.DecreaseIndent();
+				writer.Unindent();
 				writer.WriteLine("}"); //end of try
 			}
 
@@ -185,9 +187,9 @@ namespace DataDynamics.PageFX.Common.Tools
 				//catch for expected exception
 				writer.WriteLine("catch ({0})", expectedException);
 				writer.WriteLine("{");
-				writer.IncreaseIndent();
+				writer.Indent();
 				writer.WriteLine("fail = false;");
-				writer.DecreaseIndent();
+				writer.Unindent();
 				writer.WriteLine("}");
 			}
 
@@ -195,10 +197,10 @@ namespace DataDynamics.PageFX.Common.Tools
 			{
 				writer.WriteLine("catch (Exception e)");
 				writer.WriteLine("{");
-				writer.IncreaseIndent();
+				writer.Indent();
 				writer.WriteLine("fail = true;");
 				writer.WriteLine("Console.WriteLine(\"Unexpected exception: \" + e);");
-				writer.DecreaseIndent();
+				writer.Unindent();
 				writer.WriteLine("}");
 			}
 
