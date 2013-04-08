@@ -1,4 +1,3 @@
-using System;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 
@@ -7,7 +6,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// <summary>
     /// Represents method or property parameter.
     /// </summary>
-    public interface IParameter : ICustomAttributeProvider, IConstantProvider, ICodeNode, IDocumentationProvider, ICloneable
+    public interface IParameter : ICustomAttributeProvider, IConstantProvider, ICodeNode, IDocumentationProvider
     {
         /// <summary>
         /// Gets index of the paramater.

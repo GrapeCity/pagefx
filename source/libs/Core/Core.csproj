@@ -210,6 +210,7 @@
     <Compile Include="Metadata\MetadataColumnCollection.cs" />
     <Compile Include="Metadata\MethodSemanticsAttributes.cs" />
     <Compile Include="Metadata\MethodSignature.cs" />
+    <Compile Include="Metadata\ParamAttributes.cs" />
     <Compile Include="Metadata\PInvokeAttributes.cs" />
     <Compile Include="Metadata\PropertyAttributes.cs" />
     <Compile Include="Metadata\StringHeap.cs" />

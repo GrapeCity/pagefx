@@ -21,11 +21,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public string Documentation { get; set; }
 
-		public object Clone()
-		{
-			return this;
-		}
-
 		public int Index { get; private set; }
 
 		public IType Type

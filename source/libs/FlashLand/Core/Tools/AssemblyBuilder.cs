@@ -1284,7 +1284,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
             {
                 if (IsDate(method.Instance))
                 {
-                    var p = new Parameter {Type = SystemTypes.Int32, Name = "value"};
+                    var p = new Parameter(SystemTypes.Int32, "value");
                     parameters.Add(p);
                     return;
                 }
@@ -1761,7 +1761,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.Tools
                 n = paramNum;
             for (int i = 0; i < n; ++i)
             {
-                var p = (IParameter)m.Parameters[i].Clone();
+                var p = new Parameter(m.Parameters[i]);
                 //NOTE: Overloads will have not doc.
                 p.Documentation = null;
                 method.Parameters.Add(p);

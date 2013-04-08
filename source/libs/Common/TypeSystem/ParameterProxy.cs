@@ -51,11 +51,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			set { throw new NotSupportedException(); }
 		}
 
-		public object Clone()
-		{
-			return new ParameterProxy(_parameter, _type);
-		}
-
 		public int Index
 		{
 			get { return _parameter.Index; }

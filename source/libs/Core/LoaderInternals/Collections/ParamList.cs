@@ -161,11 +161,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 				set { _parameter.Documentation = value; }
 			}
 
-			public object Clone()
-			{
-				return new TypedParameter((IParameter)_parameter.Clone(), _type);
-			}
-
 			public int Index
 			{
 				get { return _parameter.Index; }
