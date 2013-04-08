@@ -11,12 +11,15 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public sealed class GenericInstance : CustomAttributeProvider, IGenericInstance
     {
 		private readonly ITypeCollection _args;
+		private string _fullName;
+		private IType _baseType;
+		private ITypeCollection _ifaces;
 		private ITypeMemberCollection _members;
 		private IFieldCollection _fields;
 		private IMethodCollection _methods;
 		private IPropertyCollection _properties;
 		private IEventCollection _events;
-
+		
     	public GenericInstance(IType type, IEnumerable<IType> args)
         {
     		if (type == null) throw new ArgumentNullException("type");
@@ -53,8 +56,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _args; }
         }
 
-    	#region IType Members
-        public string Namespace
+	    public string Namespace
         {
             get
             {
@@ -68,7 +70,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return _fullName ?? (_fullName = EvalName(TypeNameKind.FullName, TypeNameKind.FullName)); }
         }
-        private string _fullName;
 
         public TypeKind TypeKind
         {
@@ -132,13 +133,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return _baseType ?? (_baseType = GenericType.Resolve(this, Type.BaseType)); }
         	set { throw new NotSupportedException(); }
         }
-        private IType _baseType;
-
+        
         public ITypeCollection Interfaces
         {
 			get { return _ifaces ?? (_ifaces = new InterfaceList(this)); }
         }
-        private ITypeCollection _ifaces;
+		
+	    public IType ElementType
+	    {
+			get { return null; }
+	    }
 
         public IType ValueType
         {
@@ -201,9 +205,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         	set { throw new NotSupportedException(); }
         }
 
-	    #endregion
-
-        #region Names
+	    #region Names
 
 	    private string EvalNameBase(TypeNameKind kind)
         {

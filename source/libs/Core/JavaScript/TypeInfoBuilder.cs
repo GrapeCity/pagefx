@@ -93,11 +93,10 @@ namespace DataDynamics.PageFX.Core.JavaScript
 					{"$hierarchy", hierarchy},
 					{"$new", newFunc},
 				};
-			
-			var compoundType = type as ICompoundType;
-			if (compoundType != null)
+
+			if (type.ElementType != null)
 			{
-				list.Add("$elemType", compoundType.ElementType.FullName);
+				list.Add("$elemType", type.ElementType.FullName);
 			}
 
 			if (type.ValueType != null)

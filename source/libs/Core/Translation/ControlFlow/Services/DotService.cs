@@ -22,43 +22,55 @@ namespace DataDynamics.PageFX.Core.Translation.ControlFlow.Services
         {
             switch(type.TypeKind)
             {
-                case TypeKind.Array:
-                    {
-                        var arr = (IArrayType)type;
-                        return GetShortTypeName(arr.ElementType) + arr.Dimensions.Count;
-                    }
+	            case TypeKind.Array:
+		            {
+			            var arr = (IArrayType)type;
+			            return GetShortTypeName(arr.ElementType) + arr.Dimensions.Count;
+		            }
 
-                case TypeKind.Pointer:
-                case TypeKind.Reference:
-                    {
-                        var ct = (ICompoundType)type;
-                        return GetShortTypeName(ct.ElementType) + "&";
-                    }
+	            case TypeKind.Pointer:
+	            case TypeKind.Reference:
+		            return GetShortTypeName(type.ElementType) + "&";
 
-                default:
-                    var st = type.SystemType();
-                    if (st != null)
-                    {
-                        switch (st.Code)
-                        {
-                            case SystemTypeCode.Boolean: return "b";
-                            case SystemTypeCode.Int8: return "i8";
-                            case SystemTypeCode.UInt8: return "u8";
-                            case SystemTypeCode.Int16: return "i16";
-                            case SystemTypeCode.UInt16: return "u16";
-                            case SystemTypeCode.Int32: return "i32";
-                            case SystemTypeCode.UInt32: return "u32";
-                            case SystemTypeCode.Int64: return "i64";
-                            case SystemTypeCode.UInt64: return "u64";
-                            case SystemTypeCode.Single: return "f32";
-                            case SystemTypeCode.Double: return "f64";
-                            case SystemTypeCode.Decimal: return "d";
-                            case SystemTypeCode.Char: return "c";
-                            case SystemTypeCode.String: return "s";
-                            case SystemTypeCode.Object: return "o";
-                        }
-                    }
-                    return type.Name;
+	            default:
+		            var st = type.SystemType();
+		            if (st != null)
+		            {
+			            switch (st.Code)
+			            {
+				            case SystemTypeCode.Boolean:
+					            return "b";
+				            case SystemTypeCode.Int8:
+					            return "i8";
+				            case SystemTypeCode.UInt8:
+					            return "u8";
+				            case SystemTypeCode.Int16:
+					            return "i16";
+				            case SystemTypeCode.UInt16:
+					            return "u16";
+				            case SystemTypeCode.Int32:
+					            return "i32";
+				            case SystemTypeCode.UInt32:
+					            return "u32";
+				            case SystemTypeCode.Int64:
+					            return "i64";
+				            case SystemTypeCode.UInt64:
+					            return "u64";
+				            case SystemTypeCode.Single:
+					            return "f32";
+				            case SystemTypeCode.Double:
+					            return "f64";
+				            case SystemTypeCode.Decimal:
+					            return "d";
+				            case SystemTypeCode.Char:
+					            return "c";
+				            case SystemTypeCode.String:
+					            return "s";
+				            case SystemTypeCode.Object:
+					            return "o";
+			            }
+		            }
+		            return type.Name;
             }
         }
 

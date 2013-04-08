@@ -210,8 +210,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
                 case TypeKind.Reference:
                     {
-                        var ctype = (ICompoundType)type;
-                        Build(ctype.ElementType);
+	                    Build(type.ElementType);
                         return Abc.BuiltinTypes.Object;
                     }
             }

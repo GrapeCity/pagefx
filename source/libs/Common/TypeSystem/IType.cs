@@ -69,10 +69,15 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         ITypeCollection Interfaces { get; }
 
 		/// <summary>
+		/// Gets element type.
+		/// </summary>
+		IType ElementType { get; }
+
+		/// <summary>
 		/// Gets underlying value type.
 		/// </summary>
         IType ValueType { get; }
-
+		
 		/// <summary>
 		/// Gets generic parameters.
 		/// </summary>

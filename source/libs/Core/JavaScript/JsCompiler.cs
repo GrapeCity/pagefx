@@ -710,7 +710,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 		{
 			var type = i.InputTypes[0];
 
-			if (type is ICompoundType)
+			if (type.ElementType != null)
 			{
 				throw new NotImplementedException();
 			}
@@ -728,7 +728,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			var valueType = i.InputTypes[0];
 			var ptrType = i.OutputType;
 
-			if (valueType is ICompoundType)
+			if (valueType.ElementType != null)
 			{
 				throw new NotImplementedException();
 			}
@@ -1236,7 +1236,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 
 		private static bool ExcludeInitClass(IType type)
 		{
-			if (type.IsInterface || type is ICompoundType)
+			if (type.IsInterface || type.ElementType != null)
 				return true;
 			if (type.Is(SystemTypeCode.Type) || type.Is(SystemTypeCode.Array))
 				return true;
@@ -1247,7 +1247,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 		{
 			if (type == null) throw new ArgumentNullException("type");
 
-			if (type is ICompoundType || type.IsInterface) return;
+			if (type.ElementType != null || type.IsInterface) return;
 
 			if (!CompileFieldsFor(type)) return;
 

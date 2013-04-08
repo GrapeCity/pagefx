@@ -33,7 +33,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 			var type = member as IType;
 			if (type != null)
 			{
-				return !type.IsInterface && !(type is ICompoundType);
+				return !type.IsInterface && type.ElementType == null;
 			}
 
 			var field = member as IField;

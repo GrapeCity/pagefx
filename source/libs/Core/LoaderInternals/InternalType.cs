@@ -214,6 +214,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return _interfaces ?? (_interfaces = new InterfaceImpl(Loader, this)); }
 		}
 
+		public IType ElementType
+		{
+			get { return null; }
+		}
+
 		public IType ValueType
 		{
 			get { return this.ResolveValueType(); }

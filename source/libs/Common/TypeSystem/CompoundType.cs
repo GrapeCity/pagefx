@@ -4,7 +4,7 @@ using DataDynamics.PageFX.Common.CodeModel;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public abstract class CompoundType : ICompoundType
+    public abstract class CompoundType : IType
     {
 	    protected CompoundType(IType elementType)
         {

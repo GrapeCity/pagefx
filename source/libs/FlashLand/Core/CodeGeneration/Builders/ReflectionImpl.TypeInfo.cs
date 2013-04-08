@@ -750,10 +750,9 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 				code.SetProperty(Const.Type.Rank);
 			}
 
-			var compoundType = type as ICompoundType;
-			if (compoundType != null)
+			if (type.ElementType != null)
 			{
-				var elemType = compoundType.ElementType;
+				var elemType = type.ElementType;
 				int elemTypeIndex = GetTypeId(elemType);
 				if (elemTypeIndex < 0)
 					throw new InvalidOperationException();

@@ -601,12 +601,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public static IType UnwrapRef(this IType type)
         {
-            while (type != null)
-            {
-                if (type.TypeKind != TypeKind.Reference) break;
-                type = ((ICompoundType)type).ElementType;
-            }
-            return type;
+	        while (type != null && type.TypeKind == TypeKind.Reference)
+		        type = type.ElementType;
+	        return type;
         }
 
         public static bool IsVoid(this IMethod method)
@@ -725,9 +722,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public static IType GetElementType(this IType type)
     	{
-    		var compoundType = type as ICompoundType;
-    		if (compoundType == null) throw new ArgumentException("type");
-    		return compoundType.ElementType;
+    		return type != null ? type.ElementType : null;
     	}
 
 	    public static IMethod FindMethod(this IType type, string name, int argc, Func<IParameterCollection, bool> args)

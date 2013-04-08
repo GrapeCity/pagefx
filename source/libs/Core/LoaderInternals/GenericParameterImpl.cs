@@ -151,6 +151,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return _constraints; }
 		}
 
+		public IType ElementType
+		{
+			get { return null; }
+		}
+
 		public IType ValueType
 		{
 			get { return null; }

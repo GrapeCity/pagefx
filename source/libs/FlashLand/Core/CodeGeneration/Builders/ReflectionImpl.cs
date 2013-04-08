@@ -78,7 +78,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             if (_typeIndex.TryGetValue(type, out index))
                 return index;
 
-            GetTypeId(type.BaseType);
+			if (type.BaseType != null)
+				GetTypeId(type.BaseType);
 
             if (type.Interfaces != null)
             {
@@ -86,13 +87,10 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                     GetTypeId(ifaceType);
             }
 
-            var ct = type as ICompoundType;
-            if (ct != null)
-            {
-                GetTypeId(ct.ElementType);
-            }
+	        if (type.ElementType != null)
+		        GetTypeId(type.ElementType);
 
-            index = _typeIndex.Count;
+	        index = _typeIndex.Count;
             _typeIndex[type] = index;
             _id2type[index] = type;
             _initTypes.Add(type);

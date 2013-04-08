@@ -477,31 +477,25 @@ namespace DataDynamics.PageFX.Common.Syntax
             var kind = type.TypeKind;
             switch (kind)
             {
-                case TypeKind.Array:
-                    {
-                        var arr = (IArrayType)type;
-                        return GetReferenceName(arr.ElementType) + arr.Dimensions;
-                    }
+	            case TypeKind.Array:
+		            {
+			            var arr = (IArrayType)type;
+			            return GetReferenceName(arr.ElementType) + arr.Dimensions;
+		            }
 
-                case TypeKind.Pointer:
-                    {
-                        var ctype = (ICompoundType)type;
-                        return GetReferenceName(ctype.ElementType) + "*";
-                    }
+	            case TypeKind.Pointer:
+		            return GetReferenceName(type.ElementType) + "*";
 
-                case TypeKind.Reference:
-                    {
-                        var ctype = (ICompoundType)type;
-                        return "ref " + GetReferenceName(ctype.ElementType);
-                    }
+	            case TypeKind.Reference:
+		            return "ref " + GetReferenceName(type.ElementType);
 
-                default:
-                    {
-                        string k = type.GetKeyword(Language);
-                        if (!string.IsNullOrEmpty(k))
-                            return k;
-                        return GetFullName(type);
-                    }
+	            default:
+		            {
+			            string k = type.GetKeyword(Language);
+			            if (!string.IsNullOrEmpty(k))
+				            return k;
+			            return GetFullName(type);
+		            }
             }
         }
 

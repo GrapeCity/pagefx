@@ -18,8 +18,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 				return true;
 			}
 
-			var compoundType = member as ICompoundType;
-			if (compoundType != null)
+			var compoundType = member as IType;
+			if (compoundType != null && compoundType.ElementType != null)
 			{
 				return compoundType.ElementType.IsVisible();
 			}

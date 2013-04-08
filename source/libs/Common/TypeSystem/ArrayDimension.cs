@@ -2,28 +2,24 @@ using System;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-	public sealed class ArrayDimension : IArrayDimension
+	public struct ArrayDimension : IFormattable
 	{
+		public readonly int LowerBound;
+		public readonly int UpperBound;
+
 		public ArrayDimension(int lower, int upper)
 		{
 			LowerBound = lower;
 			UpperBound = upper;
 		}
 
-		public int LowerBound { get; private set; }
-		public int UpperBound { get; private set; }
-
 		public override bool Equals(object obj)
 		{
-			if (ReferenceEquals(obj, null)) return false;
-			if (ReferenceEquals(obj, this)) return true;
 			return obj is ArrayDimension && Equals((ArrayDimension)obj);
 		}
 
 		public bool Equals(ArrayDimension other)
 		{
-			if (ReferenceEquals(other, null)) return false;
-			if (ReferenceEquals(other, this)) return true;
 			return other.LowerBound == LowerBound && other.UpperBound == UpperBound;
 		}
 

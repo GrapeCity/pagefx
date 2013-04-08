@@ -202,7 +202,6 @@
     <Compile Include="TypeSystem\IAssembly.cs" />
     <Compile Include="CodeModel\ICodeNode.cs" />
     <Compile Include="CodeModel\ICodeProvider.cs" />
-    <Compile Include="TypeSystem\ICompoundType.cs" />
     <Compile Include="TypeSystem\IConstantProvider.cs" />
     <Compile Include="TypeSystem\ICustomAttributeProvider.cs" />
     <Compile Include="TypeSystem\IDocumentationProvider.cs" />

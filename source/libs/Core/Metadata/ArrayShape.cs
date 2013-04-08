@@ -57,13 +57,13 @@ namespace DataDynamics.PageFX.Core.Metadata
 			int n = Rank;
 			if (n <= 0) return ArrayDimensionCollection.Single;
 
-			var dim = new ArrayDimensionCollection();
+			var dimensions = new ArrayDimension[n];
 			for (int i = 0; i < n; ++i)
 			{
-				dim.Add(new ArrayDimension(GetLowBound(i), GetUpperBound(i)));
+				dimensions[i] = new ArrayDimension(GetLowBound(i), GetUpperBound(i));
 			}
 
-			return dim;
+			return new ArrayDimensionCollection(dimensions);
 		}
 	}
 }

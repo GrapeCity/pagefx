@@ -1,14 +1,43 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-	public sealed class ArrayDimensionCollection : List<IArrayDimension>, IArrayDimensionCollection
+	public sealed class ArrayDimensionCollection : IReadOnlyList<ArrayDimension>, IFormattable
 	{
-		public static readonly ArrayDimensionCollection Single = new ArrayDimensionCollection();
+		private readonly IList<ArrayDimension> _list;
+
+		public static readonly ArrayDimensionCollection Single = new ArrayDimensionCollection(null);
+
+		public ArrayDimensionCollection(IEnumerable<ArrayDimension> dimensions)
+		{
+			_list = (dimensions ?? Enumerable.Empty<ArrayDimension>()).ToList().AsReadOnly();
+		}
+
+		public int Count
+		{
+			get { return _list.Count; }
+		}
+
+		public ArrayDimension this[int index]
+		{
+			get { return _list[index]; }
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public IEnumerator<ArrayDimension> GetEnumerator()
+		{
+			return _list.GetEnumerator();
+		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
@@ -26,8 +55,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		public override bool Equals(object obj)
 		{
-			if (obj == this) return false;
-			var c = obj as IArrayDimensionCollection;
+			if (ReferenceEquals(obj, null)) return true;
+			if (ReferenceEquals(obj, this)) return true;
+			var c = obj as ArrayDimensionCollection;
 			if (c == null) return false;
 			return this.EqualsTo(c);
 		}
@@ -47,7 +77,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return Format(this, sig);
 		}
 
-		private static bool AllDefaults(IReadOnlyList<IArrayDimension> dims)
+		private static bool AllDefaults(IReadOnlyList<ArrayDimension> dims)
 		{
 			int n = dims.Count;
 			for (int i = 0; i < n; ++i)
@@ -59,7 +89,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return true;
 		}
 
-		public static string Format(IArrayDimensionCollection dims, bool sig)
+		public static string Format(ArrayDimensionCollection dims, bool sig)
 		{
 			var sb = new StringBuilder();
 			int n = dims.Count;

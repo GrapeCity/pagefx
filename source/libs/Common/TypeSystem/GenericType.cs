@@ -49,18 +49,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
                 case TypeKind.Pointer:
                     {
-                        var ct = (ICompoundType)type;
-                        var elemType = Resolve(contextType, contextMethod, ct.ElementType);
-                        if (!ReferenceEquals(elemType, ct.ElementType))
+	                    var elemType = Resolve(contextType, contextMethod, type.ElementType);
+                        if (!ReferenceEquals(elemType, type.ElementType))
                             return typeFactory.MakePointerType(elemType);
                         return type;
                     }
 
                 case TypeKind.Reference:
                     {
-                        var ct = (ICompoundType)type;
-                        var elemType = Resolve(contextType, contextMethod, ct.ElementType);
-                        if (!ReferenceEquals(elemType, ct.ElementType))
+	                    var elemType = Resolve(contextType, contextMethod, type.ElementType);
+                        if (!ReferenceEquals(elemType, type.ElementType))
                             return typeFactory.MakeReferenceType(elemType);
                         return type;
                     }

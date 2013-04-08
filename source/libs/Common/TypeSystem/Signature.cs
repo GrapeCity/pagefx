@@ -60,43 +60,39 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
             switch (type1.TypeKind)
             {
-                case TypeKind.Array:
-                    {
-                        var arr1 = (IArrayType)type1;
-                        var arr2 = (IArrayType)type2;
-                        if (!Equals(arr1.Dimensions, arr2.Dimensions))
-                            return false;
-                        return TypeEquals(arr1.ElementType, arr2.ElementType);
-                    }
+	            case TypeKind.Array:
+		            {
+			            var arr1 = (IArrayType)type1;
+			            var arr2 = (IArrayType)type2;
+			            if (!Equals(arr1.Dimensions, arr2.Dimensions))
+				            return false;
+			            return TypeEquals(arr1.ElementType, arr2.ElementType);
+		            }
 
-                case TypeKind.Pointer:
-                case TypeKind.Reference:
-                    {
-                        var ct1 = (ICompoundType)type1;
-                        var ct2 = (ICompoundType)type2;
-                        return TypeEquals(ct1.ElementType, ct2.ElementType);
-                    }
+	            case TypeKind.Pointer:
+	            case TypeKind.Reference:
+		            return TypeEquals(type1.ElementType, type2.ElementType);
 
-                case TypeKind.GenericParameter:
-                    {
-                        var gp1 = (IGenericParameter)type1;
-                        var gp2 = (IGenericParameter)type2;
-                        if (gp1.DeclaringMethod != null)
-                        {
-                            if (gp2.DeclaringMethod == null)
-                                return false;
-                        }
-                        else if (gp2.DeclaringMethod != null)
-                            return false;
-                        //return type1 == type2;
-                        return gp1.Position == gp2.Position;
-                    }
+	            case TypeKind.GenericParameter:
+		            {
+			            var gp1 = (IGenericParameter)type1;
+			            var gp2 = (IGenericParameter)type2;
+			            if (gp1.DeclaringMethod != null)
+			            {
+				            if (gp2.DeclaringMethod == null)
+					            return false;
+			            }
+			            else if (gp2.DeclaringMethod != null)
+				            return false;
+			            //return type1 == type2;
+			            return gp1.Position == gp2.Position;
+		            }
 
-                case TypeKind.Enum:
-                    return ReferenceEquals(type1, type2);
+	            case TypeKind.Enum:
+		            return ReferenceEquals(type1, type2);
             }
 
-            var gi1 = type1 as IGenericInstance;
+	        var gi1 = type1 as IGenericInstance;
             if (gi1 != null)
             {
                 var gi2 = type2 as IGenericInstance;

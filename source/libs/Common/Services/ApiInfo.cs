@@ -605,18 +605,9 @@ namespace DataDynamics.PageFX.Common.Services
 			return p.IsByRef() ? (p.IsOut ? "out" : "ref") : "in";
 		}
 
-		private static IType UnwrapRef(this IType type)
-		{
-			while (type.TypeKind == TypeKind.Reference)
-			{
-				type = ((ICompoundType)type).ElementType;
-			}
-			return type;
-		}
-
 		private static string GetArgTypeName(this IType type, bool displayName)
 		{
-			type = UnwrapRef(type);
+			type = type.UnwrapRef();
 			return displayName ? type.DisplayName : type.FullName.Replace('<', '[').Replace('>', ']');
 		}
 

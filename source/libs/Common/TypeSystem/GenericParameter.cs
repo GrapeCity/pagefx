@@ -132,7 +132,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return Constraints ?? TypeCollection.Empty; }
         }
 
-        public ITypeCollection Types
+		public IType ElementType
+		{
+			get { return null; }
+		}
+
+		public ITypeCollection Types
         {
             get { return TypeCollection.Empty; }
         }

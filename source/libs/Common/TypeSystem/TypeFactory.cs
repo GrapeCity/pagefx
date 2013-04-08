@@ -22,7 +22,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return result;
 		}
 
-        public IType MakeArray(IType type, IArrayDimensionCollection dim)
+        public IType MakeArray(IType type, ArrayDimensionCollection dim)
         {
             if (dim == null)
                 dim = ArrayDimensionCollection.Single;

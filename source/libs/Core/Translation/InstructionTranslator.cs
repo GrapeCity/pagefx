@@ -1716,21 +1716,13 @@ namespace DataDynamics.PageFX.Core.Translation
 			code.GetArrayLength();
         }
 
-		private static IType GetElemType(IType type)
-        {
-            var ct = type as ICompoundType;
-            if (ct == null)
-                throw new ArgumentException();
-            return ct.ElementType;
-        }
-
 		private void OpLdelem(Code code, Instruction currentInstruction)
         {
             var index = _context.Pop(currentInstruction);
             var arr = _context.Pop(currentInstruction);
             arr.ItShouldBeArray();
 
-            var elemType = GetElemType(arr.Type);
+            var elemType = arr.Type.ElementType;
 
 			currentInstruction.InputTypes = new[] {elemType};
 			currentInstruction.OutputType = elemType;
@@ -1747,7 +1739,7 @@ namespace DataDynamics.PageFX.Core.Translation
             var arr = _context.Pop(currentInstruction);
             arr.ItShouldBeArray();
 
-            var elemType = GetElemType(arr.Type);
+            var elemType = arr.Type.ElementType;
 
             //cast index to int
 			code.Cast(index.Type, SystemTypes.Int32);
@@ -1778,7 +1770,7 @@ namespace DataDynamics.PageFX.Core.Translation
 
 			currentInstruction.InputTypes = new[] {value.Type};
 
-            var elemType = GetElemType(arr.Type);
+            var elemType = arr.Type.ElementType;
 
             BeforeStoreValue(code, value, elemType);
             code.SetArrayElem(elemType);

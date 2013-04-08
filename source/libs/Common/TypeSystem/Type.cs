@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Syntax;
 
@@ -201,6 +200,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return _members.Events; }
         }
+
+		public IType ElementType
+		{
+			get { return null; }
+		}
 
         public IType ValueType
         {

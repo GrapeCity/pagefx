@@ -7,13 +7,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     {
         public ArrayType(IType elementType) : base(elementType)
         {
-            _dim = ArrayDimensionCollection.Single;
+            Dimensions = ArrayDimensionCollection.Single;
         }
 
-        public ArrayType(IType elementType, IArrayDimensionCollection dim)
+        public ArrayType(IType elementType, ArrayDimensionCollection dim)
             : base(elementType)
         {
-            _dim = dim;
+            Dimensions = dim;
         }
 
         public override TypeKind TypeKind
@@ -23,12 +23,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public override string NameSuffix
         {
-            get { return _dim.ToString(); }
+            get { return Dimensions.ToString(); }
         }
 
         protected override string SigSuffix
         {
-            get { return ArrayDimensionCollection.Format(_dim, true); }
+            get { return ArrayDimensionCollection.Format(Dimensions, true); }
         }
 
         public override IType BaseType
@@ -135,14 +135,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    public int Rank
         {
-            get { return _dim.Count + 1; }
+            get { return Dimensions.Count + 1; }
         }
 
-        public IArrayDimensionCollection Dimensions
-        {
-            get { return _dim; }
-        }
-        private readonly IArrayDimensionCollection _dim;
+	    public ArrayDimensionCollection Dimensions { get; private set; }
 
 	    public IMethodCollection Constructors
         {
