@@ -50,6 +50,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return elementType != null ? elementType.Assembly.TypeFactory.MakeArray(elementType) : null;
 		}
 
+		public static int ArrayRank(this IType type)
+		{
+			return type.IsArray ? type.ArrayDimensions.Count + 1 : -1;
+		}
+
 		public static IType GetPointerType(this IType type)
 		{
 			return type != null ? type.Assembly.TypeFactory.MakePointerType(type) : null;
@@ -242,7 +247,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         	return genericInstance.GenericArguments[arg];
         }
 
-        public static bool IsImplicitCast(this IType source, IType target)
+		public static bool IsImplicitCast(this IType source, IType target)
         {
             if (ReferenceEquals(source, target)) return true;
             if (source == null) return true;
@@ -263,11 +268,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                     {
                         if (source.IsArray)
                         {
-                            var from = (IArrayType)source;
-                            var to = (IArrayType)target;
-                            if (from.Rank != to.Rank)
+	                        if (source.ArrayRank() != target.ArrayRank())
                                 return false;
-                            if (from.ElementType.IsImplicitCast(to.ElementType))
+                            if (source.ElementType.IsImplicitCast(target.ElementType))
                                 return true;
                         }
                     }
@@ -351,11 +354,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
             if (type.IsArray)
             {
-                var elemType = (IArrayType)type;
-                if (iface.IsGenericArrayInterface())
+	            if (iface.IsGenericArrayInterface())
                 {
                     var arg = iface.GetTypeArgument(0);
-                    return elemType.IsImplicitCast(arg);
+                    return type.IsImplicitCast(arg);
                 }
             }
 

@@ -203,7 +203,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
                     return BuildUserType(type);
 
                 case TypeKind.Array:
-                    return BuildArrayType((IArrayType)type);
+                    return BuildArrayType(type);
 
                 case TypeKind.Pointer:
                     throw new NotSupportedException();
@@ -487,7 +487,7 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
             }
         }
 
-		private object BuildArrayType(IArrayType type)
+		private object BuildArrayType(IType type)
         {
             var arr = Build(SystemTypes.Array);
             var elemType = type.ElementType;

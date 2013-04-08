@@ -61,13 +61,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             switch (type1.TypeKind)
             {
 	            case TypeKind.Array:
-		            {
-			            var arr1 = (IArrayType)type1;
-			            var arr2 = (IArrayType)type2;
-			            if (!Equals(arr1.Dimensions, arr2.Dimensions))
-				            return false;
-			            return TypeEquals(arr1.ElementType, arr2.ElementType);
-		            }
+		            return Equals(type1.ArrayDimensions, type2.ArrayDimensions)
+		                   && TypeEquals(type1.ElementType, type2.ElementType);
 
 	            case TypeKind.Pointer:
 	            case TypeKind.Reference:

@@ -3,17 +3,20 @@ using System.Linq;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public sealed class ArrayType : CompoundType, IArrayType
+    public sealed class ArrayType : CompoundType
     {
+		private readonly ArrayDimensionCollection _arrayDimensions;
+		private MethodCollection _ctors;
+		
         public ArrayType(IType elementType) : base(elementType)
         {
-            Dimensions = ArrayDimensionCollection.Single;
+			_arrayDimensions = ArrayDimensionCollection.Single;
         }
 
         public ArrayType(IType elementType, ArrayDimensionCollection dim)
             : base(elementType)
         {
-            Dimensions = dim;
+			_arrayDimensions = dim;
         }
 
         public override TypeKind TypeKind
@@ -23,12 +26,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public override string NameSuffix
         {
-            get { return Dimensions.ToString(); }
+            get { return ArrayDimensions.ToString(); }
         }
 
         protected override string SigSuffix
         {
-            get { return ArrayDimensionCollection.Format(Dimensions, true); }
+            get { return ArrayDimensionCollection.Format(ArrayDimensions, true); }
         }
 
         public override IType BaseType
@@ -36,16 +39,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return ElementType.SystemType(SystemTypeCode.Array); }
         }
 
-        private IType ImplType
-        {
-			get { return ElementType.SystemType(SystemTypeCode.Array); }
-        }
-
-        public override ITypeCollection Interfaces
+	    public override ITypeCollection Interfaces
         {
             get
             {
-                var impl = ImplType;
+                var impl = BaseType;
                 if (impl != null)
                     return impl.Interfaces;
                 return TypeCollection.Empty;
@@ -56,7 +54,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get
             {
-                var impl = ImplType;
+                var impl = BaseType;
                 if (impl != null)
                     return impl.Events;
                 return null;
@@ -67,7 +65,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get
             {
-                var impl = ImplType;
+                var impl = BaseType;
                 if (impl != null)
                     return impl.Fields;
                 return null;
@@ -78,7 +76,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get
             {
-                var impl = ImplType;
+                var impl = BaseType;
                 if (impl != null)
                     return impl.Properties;
                 return null;
@@ -89,7 +87,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get
             {
-                var impl = ImplType;
+                var impl = BaseType;
                 if (impl != null)
                     return impl.Methods;
                 return null;
@@ -100,7 +98,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get
             {
-                var impl = ImplType;
+                var impl = BaseType;
                 if (impl != null)
                     return impl.Members;
                 return null;
@@ -111,7 +109,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get
             {
-                var impl = ImplType;
+                var impl = BaseType;
                 if (impl != null)
                     return impl.Types;
                 return null;
@@ -122,7 +120,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get
             {
-                var impl = ImplType;
+                var impl = BaseType;
                 if (impl != null)
                     return impl.Layout;
                 return null;
@@ -133,20 +131,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
         }
 
-	    public int Rank
-        {
-            get { return Dimensions.Count + 1; }
-        }
-
-	    public ArrayDimensionCollection Dimensions { get; private set; }
+	    public override ArrayDimensionCollection ArrayDimensions
+	    {
+		    get { return _arrayDimensions; }
+	    }
 
 	    public IMethodCollection Constructors
         {
             get { return _ctors ?? (_ctors = new MethodCollection()); }
         }
-        private MethodCollection _ctors;
-
-        public IMethod FindConstructor(IType[] types)
+        
+	    public IMethod FindConstructor(IType[] types)
         {
             return Constructors.FirstOrDefault(ctor => Signature.Equals(ctor.Parameters, types));
         }

@@ -284,9 +284,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return this.BuildNestedName(); }
         }
-	    
-	    #region XmlSerialization
 
-	    #endregion
+	    public ArrayDimensionCollection ArrayDimensions
+	    {
+			get { return null; }
+	    }
     }
 }

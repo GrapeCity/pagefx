@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -32,13 +31,7 @@ namespace DataDynamics.PageFX.Common.CodeModel.Expressions
 
     	public override IType ResultType
         {
-            get
-            {
-                if (Array == null) return null;
-                var type = Array.ResultType as IArrayType;
-                if (type == null) return null;
-                return type.ElementType;
-            }
+            get { return Array == null ? null : Array.ResultType.GetElementType(); }
         }
 
     	public override bool Equals(object obj)

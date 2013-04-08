@@ -343,14 +343,13 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Collections
 				return ReadValue(reader, type.ValueType);
 			}
 
-			var arrType = type as IArrayType;
-			if (arrType != null)
+			if (type.IsArray)
 			{
 				int numElem = reader.ReadInt32();
 				Array arr = null;
 				for (int i = 0; i < numElem; ++i)
 				{
-					var val = ReadValue(reader, arrType.ElementType);
+					var val = ReadValue(reader, type.ElementType);
 					if (arr == null)
 						arr = Array.CreateInstance(val.GetType(), numElem);
 					arr.SetValue(val, i);

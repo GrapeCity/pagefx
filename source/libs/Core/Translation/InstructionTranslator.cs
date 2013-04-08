@@ -1619,8 +1619,7 @@ namespace DataDynamics.PageFX.Core.Translation
             var token = _context.Pop(currentInstruction);
             var f = token.Instruction.Field;
             var arr = _context.Pop(currentInstruction);
-            var arrType = (IArrayType)arr.Type;
-            var elemType = arrType.ElementType;
+			var elemType = arr.Type.ElementType;
             var vals = CLR.ReadArrayValues(f, elemType.SystemType().Code);
 
             int n = vals.Count;

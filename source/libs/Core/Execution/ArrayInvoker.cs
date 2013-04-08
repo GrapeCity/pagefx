@@ -19,7 +19,7 @@ namespace DataDynamics.PageFX.Core.Execution
 			{
 				int[] lengths = Array.ConvertAll<object, int>(args, Convert.ToInt32);
 
-				var arrayType = (IArrayType)method.DeclaringType;
+				var arrayType = method.DeclaringType;
 				return _engine.NewArray(arrayType.ElementType, lengths);
 			}
 

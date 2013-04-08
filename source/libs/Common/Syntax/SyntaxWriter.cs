@@ -478,10 +478,7 @@ namespace DataDynamics.PageFX.Common.Syntax
             switch (kind)
             {
 	            case TypeKind.Array:
-		            {
-			            var arr = (IArrayType)type;
-			            return GetReferenceName(arr.ElementType) + arr.Dimensions;
-		            }
+		            return GetReferenceName(type.ElementType) + type.ArrayDimensions;
 
 	            case TypeKind.Pointer:
 		            return GetReferenceName(type.ElementType) + "*";

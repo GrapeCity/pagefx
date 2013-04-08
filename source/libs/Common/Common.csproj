@@ -198,7 +198,6 @@
     <Compile Include="TypeSystem\GenericParameter.cs" />
     <Compile Include="TypeSystem\GenericType.cs" />
     <Compile Include="TypeSystem\IArgument.cs" />
-    <Compile Include="TypeSystem\IArrayType.cs" />
     <Compile Include="TypeSystem\IAssembly.cs" />
     <Compile Include="CodeModel\ICodeNode.cs" />
     <Compile Include="CodeModel\ICodeProvider.cs" />

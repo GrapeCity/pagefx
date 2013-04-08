@@ -211,7 +211,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return Name; }
         }
 
-	    public IEnumerable<ICodeNode> ChildNodes
+		public ArrayDimensionCollection ArrayDimensions
+		{
+			get { return null; }
+		}
+
+		public IEnumerable<ICodeNode> ChildNodes
         {
             get { return Enumerable.Empty<ICodeNode>(); }
         }

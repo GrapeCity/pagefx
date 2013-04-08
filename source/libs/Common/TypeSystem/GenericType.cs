@@ -40,10 +40,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             {
                 case TypeKind.Array:
                     {
-                        var arrayType = (IArrayType)type;
-                        var elemType = Resolve(contextType, contextMethod, arrayType.ElementType);
-                        if (!ReferenceEquals(elemType, arrayType.ElementType))
-                            return typeFactory.MakeArray(elemType, arrayType.Dimensions);
+	                    var elemType = Resolve(contextType, contextMethod, type.ElementType);
+                        if (!ReferenceEquals(elemType, type.ElementType))
+                            return typeFactory.MakeArray(elemType, type.ArrayDimensions);
                         return type;
                     }
 

@@ -211,6 +211,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return Name; }
 		}
 
+		public ArrayDimensionCollection ArrayDimensions
+		{
+			get { return null; }
+		}
+
 		public long Id { get; private set; }
 
 		public int Position { get; private set; }

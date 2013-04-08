@@ -161,6 +161,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return ElementType.NestedName + NameSuffix; }
         }
 
+	    public virtual ArrayDimensionCollection ArrayDimensions
+	    {
+			get { return null; }
+	    }
+
 	    /// <summary>
         /// Gets the assembly in which the type is declared.
         /// </summary>

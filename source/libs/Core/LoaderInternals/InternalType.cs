@@ -84,6 +84,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return this.BuildNestedName(); }
 		}
 
+		public ArrayDimensionCollection ArrayDimensions
+		{
+			get { return null; }
+		}
+
 		public IType DeclaringType
 		{
 			get { return _declaringType ?? (_declaringType = ResolveDeclaringType()); }

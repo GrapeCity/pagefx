@@ -23,10 +23,7 @@ namespace DataDynamics.PageFX.Core.Translation.ControlFlow.Services
             switch(type.TypeKind)
             {
 	            case TypeKind.Array:
-		            {
-			            var arr = (IArrayType)type;
-			            return GetShortTypeName(arr.ElementType) + arr.Dimensions.Count;
-		            }
+		            return GetShortTypeName(type.ElementType) + type.ArrayDimensions.Count;
 
 	            case TypeKind.Pointer:
 	            case TypeKind.Reference:

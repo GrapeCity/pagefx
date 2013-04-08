@@ -263,7 +263,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         {
             get { return _nestedName ?? (_nestedName = EvalName(TypeNameKind.NestedName, TypeNameKind.FullName)); }
         }
-        private string _nestedName;
+		private string _nestedName;
+
+	    public ArrayDimensionCollection ArrayDimensions
+	    {
+			get { return null; }
+	    }
 
         #endregion
 

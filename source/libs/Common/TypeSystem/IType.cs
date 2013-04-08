@@ -127,6 +127,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// Name with names of enclosing types.
         /// </summary>
         string NestedName { get; }
+
+		/// <summary>
+		/// Gets array dimensions. Null for non-array types.
+		/// </summary>
+		ArrayDimensionCollection ArrayDimensions { get; }
     }
 
 	public interface ITypeCollection : IReadOnlyList<IType>, ICodeNode

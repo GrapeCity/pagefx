@@ -742,11 +742,8 @@ namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
 
 			if (type.IsArray)
 			{
-				var arrayType = type as IArrayType;
-				if (arrayType == null)
-					throw new InvalidOperationException();
 				code.GetLocal(varType);
-				code.PushInt(arrayType.Dimensions.Count + 1);
+				code.PushInt(type.ArrayDimensions.Count + 1);
 				code.SetProperty(Const.Type.Rank);
 			}
 
