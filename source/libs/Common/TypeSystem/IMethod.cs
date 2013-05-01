@@ -84,7 +84,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         bool NoInlining { get; }
 
-	    IGenericParameterCollection GenericParameters { get; }
+		ITypeCollection GenericParameters { get; }
 
         IType[] GenericArguments { get; }
 

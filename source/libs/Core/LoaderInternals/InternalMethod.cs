@@ -23,7 +23,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		private ITypeMember _association;
 		private IMethod _baseMethod;
 		private bool _resolveBaseMethod = true;
-		private IGenericParameterCollection _genericParameters;
+		private ITypeCollection _genericParameters;
 		private readonly uint _rva;
 		private IMethodBody _body;
 		private IReadOnlyList<IMethod> _impls;
@@ -207,7 +207,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public IParameterCollection Parameters { get; private set; }
 
-		public IGenericParameterCollection GenericParameters
+		public ITypeCollection GenericParameters
 		{
 			get { return _genericParameters ?? (_genericParameters = new GenericParamList(Loader, this)); }
 		}

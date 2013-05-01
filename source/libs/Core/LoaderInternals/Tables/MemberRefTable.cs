@@ -335,12 +335,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 
 		private static IType FixContextType(IType type)
 		{
-			var gp = type as IGenericParameter;
-			if (gp != null)
+			if (type.IsGenericParameter())
 			{
-				if (gp.DeclaringMethod != null)
-					return gp.DeclaringMethod.DeclaringType;
-				return gp.DeclaringType;
+				if (type.DeclaringMethod != null)
+					return type.DeclaringMethod.DeclaringType;
+				return type.DeclaringType;
 			}
 			return type;
 		}

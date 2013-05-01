@@ -81,7 +81,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// <summary>
 		/// Gets generic parameters.
 		/// </summary>
-		IGenericParameterCollection GenericParameters { get; }
+		ITypeCollection GenericParameters { get; }
 
         /// <summary>
         /// Gets the fields declared in this type.
@@ -132,6 +132,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// Gets array dimensions. Null for non-array types.
 		/// </summary>
 		ArrayDimensionCollection ArrayDimensions { get; }
+
+		/// <summary>
+		/// Gets additional information about generic parameter.
+		/// </summary>
+		GenericParameterInfo GetGenericParameterInfo();
     }
 
 	public interface ITypeCollection : IReadOnlyList<IType>, ICodeNode

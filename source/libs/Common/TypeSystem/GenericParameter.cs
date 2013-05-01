@@ -11,11 +11,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	}
 
 	/// <summary>
-	/// Mutable <see cref="IGenericParameter"/> implementation.
+	/// Mutable generic parameter implementation.
 	/// </summary>
-    public sealed class GenericParameter : CustomAttributeProvider, IGenericParameter
+    public sealed class GenericParameter : CustomAttributeProvider, IType
     {
-	    /// <summary>
+		/// <summary>
         /// Gets the kind of this member.
         /// </summary>
         public MemberType MemberType
@@ -36,13 +36,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public Visibility Visibility
         {
             get { return Visibility.Public; }
-            set { }
         }
 
 	    public bool IsStatic
         {
             get { return false; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsSpecialName
@@ -142,9 +140,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return TypeCollection.Empty; }
         }
 
-		public IGenericParameterCollection GenericParameters
+		public ITypeCollection GenericParameters
 		{
-			get { return GenericParameterCollection.Empty; }
+			get { return TypeCollection.Empty; }
 		}
 
 		public IFieldCollection Fields
@@ -192,7 +190,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public string Key
         {
-            get { return this.BuildKey(); }
+            get { return Name + Id; }
         }
 
         /// <summary>
@@ -214,6 +212,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		public ArrayDimensionCollection ArrayDimensions
 		{
 			get { return null; }
+		}
+
+		public GenericParameterInfo GetGenericParameterInfo()
+		{
+			return new GenericParameterInfo(Position, Variance, SpecialConstraints);
 		}
 
 		public IEnumerable<ICodeNode> ChildNodes
@@ -251,12 +254,4 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             return ToString(null, null);
         }
     }
-
-	public static class GenericParameterExtensions
-	{
-		public static string BuildKey(this IGenericParameter parameter)
-		{
-			return parameter.Name + parameter.Id;
-		}
-	}
 }

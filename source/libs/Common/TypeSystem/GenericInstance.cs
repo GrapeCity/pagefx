@@ -149,9 +149,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return Type != null ? Type.ValueType : null; }
         }
 
-	    public IGenericParameterCollection GenericParameters
+	    public ITypeCollection GenericParameters
 	    {
-			get { return GenericParameterCollection.Empty; }
+			get { return TypeCollection.Empty; }
 	    }
 
 	    public IFieldCollection Fields
@@ -270,7 +270,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			get { return null; }
 	    }
 
-        #endregion
+	    public GenericParameterInfo GetGenericParameterInfo()
+	    {
+		    return null;
+	    }
+
+	    #endregion
 
         #region ITypeMember Members
         /// <summary>

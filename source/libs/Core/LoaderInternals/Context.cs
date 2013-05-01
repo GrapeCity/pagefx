@@ -5,25 +5,6 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 {
 	internal sealed class Context
 	{
-		public Context(IGenericParameter gparam)
-		{
-			var type = gparam.DeclaringType;
-			if (type != null)
-			{
-				Type = type;
-				Method = type.DeclaringMethod;
-				return;
-			}
-
-			Method = gparam.DeclaringMethod;
-			if (Method == null || Method.DeclaringType == null)
-			{
-				throw new InvalidOperationException("Invalid context!");
-			}
-
-			Type = Method.DeclaringType;
-		}
-
 		public Context(IType type) : this(type, false){}
 
 		public Context(IType type, bool generic)
@@ -52,11 +33,9 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public Context(IType type, IMethod method)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
-			if (method == null)
-				throw new ArgumentNullException("method");
-
+			if (type == null && method == null)
+				throw new ArgumentException("type or method is null");
+			
 			Type = type;
 			Method = method;
 		}

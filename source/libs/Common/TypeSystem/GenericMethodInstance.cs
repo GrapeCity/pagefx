@@ -181,13 +181,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         }
         #endregion
 
-        public IGenericParameterCollection GenericParameters
+        public ITypeCollection GenericParameters
         {
-			get { return GenericParameterCollection.Empty; }
+			get { return TypeCollection.Empty; }
         }
-
 		
-
         public IType[] GenericArguments
         {
             get { return _args; }

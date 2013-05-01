@@ -117,8 +117,8 @@
     <Compile Include="TypeSystem\CustomAttributeCollection.cs" />
     <Compile Include="TypeSystem\CustomAttributeProvider.cs" />
     <Compile Include="TypeSystem\EventExtensions.cs" />
-    <Compile Include="TypeSystem\GenericParameterCollection.cs" />
     <Compile Include="TypeSystem\GenericExtensions.cs" />
+    <Compile Include="TypeSystem\GenericParameterCollection.cs" />
     <Compile Include="TypeSystem\IAssemblyLoader.cs" />
     <Compile Include="TypeSystem\IAssemblyReference.cs" />
     <Compile Include="TypeSystem\IMetadataTokenResolver.cs" />
@@ -207,7 +207,7 @@
     <Compile Include="TypeSystem\IEvent.cs" />
     <Compile Include="CodeModel\IExceptionHandler.cs" />
     <Compile Include="TypeSystem\IField.cs" />
-    <Compile Include="TypeSystem\IGenericParameter.cs" />
+    <Compile Include="TypeSystem\GenericParameterInfo.cs" />
     <Compile Include="TypeSystem\IGenericType.cs" />
     <Compile Include="CodeModel\IInstruction.cs" />
     <Compile Include="ILanguageInfrastructure.cs" />

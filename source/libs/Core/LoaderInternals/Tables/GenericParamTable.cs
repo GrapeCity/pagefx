@@ -9,33 +9,33 @@ namespace DataDynamics.PageFX.Core.LoaderInternals.Tables
 	{
 		private readonly AssemblyLoader _loader;
 		private long _id;
-		private IGenericParameter[] _array;
+		private IType[] _array;
 
 		public GenericParamTable(AssemblyLoader loader)
 		{
 			_loader = loader;
 		}
 
-		public IGenericParameter this[int index]
+		public IType this[int index]
 		{
 			get
 			{
 				if (_array == null)
 				{
 					int n = _loader.Metadata.GetRowCount(TableId.GenericParam);
-					_array = new IGenericParameter[n];
+					_array = new IType[n];
 				}
 				return _array[index] ?? (_array[index] = Create(index));
 			}
 		}
 
-		public IList<IGenericParameter> Find(SimpleIndex target)
+		public IList<IType> Find(SimpleIndex target)
 		{
 			var rows = _loader.Metadata.LookupRows(TableId.GenericParam, Schema.GenericParam.Owner, target, false);
 			return rows.Select(x => this[x.Index]).ToList().AsReadOnly();
 		}
 
-		private IGenericParameter Create(int index)
+		private IType Create(int index)
 		{
 			var row = _loader.Metadata.GetRow(TableId.GenericParam, index);
 

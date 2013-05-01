@@ -209,11 +209,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             }
         }
 
-		IGenericParameterCollection IMethod.GenericParameters
-        {
-            get { return _genericParams; }
-        }
-		public GenericParameterCollection GenericParameters
+		public ITypeCollection GenericParameters
 		{
 			get { return _genericParams; }
 		}

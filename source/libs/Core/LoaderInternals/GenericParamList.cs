@@ -8,16 +8,16 @@ using DataDynamics.PageFX.Common.TypeSystem;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals
 {
-	internal sealed class GenericParamList : IGenericParameterCollection
+	internal sealed class GenericParamList : ITypeCollection
 	{
-		private readonly IList<IGenericParameter> _list;
+		private readonly IList<IType> _list;
 
 		public GenericParamList(AssemblyLoader loader, IMetadataElement owner)
 		{
 			_list = loader.GenericParameters.Find(owner.MetadataToken);
 		}
 
-		public IEnumerator<IGenericParameter> GetEnumerator()
+		public IEnumerator<IType> GetEnumerator()
 		{
 			return _list.GetEnumerator();
 		}
@@ -32,7 +32,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return _list.Count; }
 		}
 
-		public IGenericParameter this[int index]
+		public IType this[int index]
 		{
 			get { return _list[index]; }
 		}
@@ -44,14 +44,19 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public object Data { get; set; }
 
-		public IGenericParameter Find(string name)
+		public IType FindType(string fullname)
 		{
-			return _list.FirstOrDefault(x => x.Name == name);
+			return _list.FirstOrDefault(x => x.Name == fullname);
 		}
 
-		public void Add(IGenericParameter parameter)
+		public void Add(IType parameter)
 		{
 			throw new NotSupportedException("Cannot modify readonly collection!");
+		}
+
+		public bool Contains(IType type)
+		{
+			return _list.Contains(type);
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)

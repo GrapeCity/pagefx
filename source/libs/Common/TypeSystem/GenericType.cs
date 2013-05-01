@@ -6,11 +6,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public class GenericType : TypeImpl
     {
+		private readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
+
 		public GenericType()
 		{
 		}
 
-		public GenericType(IEnumerable<IGenericParameter> parameters)
+		public GenericType(IEnumerable<IType> parameters)
 		{
 			foreach (var parameter in parameters)
 			{
@@ -18,12 +20,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			}
 		}
 
-    	public override IGenericParameterCollection GenericParameters
+    	public override ITypeCollection GenericParameters
         {
             get { return _genericParams; }
         }
-        private readonly GenericParameterCollection _genericParams = new GenericParameterCollection();
-
+        
     	#region Resolver
         public static IType Resolve(IType contextType, IType type)
         {
@@ -63,16 +64,15 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                     }
             }
 
-            var gp = type as IGenericParameter;
-            if (gp != null)
+	        if (type.IsGenericParameter())
             {
-                if (gp.DeclaringMethod != null)
+                if (type.DeclaringMethod != null)
                 {
                     if (contextMethod.IsGenericInstance)
-                        return contextMethod.GenericArguments[gp.Position];
-                    return gp;
+                        return contextMethod.GenericArguments[type.GetGenericParameterInfo().Position];
+                    return type;
                 }
-                return ((IGenericInstance)contextType).GenericArguments[gp.Position];
+				return ((IGenericInstance)contextType).GenericArguments[type.GetGenericParameterInfo().Position];
             }
 
             var gt = type as IGenericInstance;
@@ -81,6 +81,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                 var args = gt.GenericArguments.Select(p => Resolve(contextType, contextMethod, p)).ToList();
             	return typeFactory.MakeGenericType(gt.Type, args);
             }
+
             return type;
         }
         #endregion

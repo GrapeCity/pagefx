@@ -21,7 +21,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		private readonly TypeMemberCollection _members;
 		private IType _baseType;
 		private IType _declaringType;
-		private IGenericParameterCollection _genericParams;
+		private ITypeCollection _genericParams;
 		private ITypeCollection _interfaces;
 		private ClassLayout _layout;
 		private ITypeCollection _nestedTypes;
@@ -87,6 +87,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 		public ArrayDimensionCollection ArrayDimensions
 		{
 			get { return null; }
+		}
+
+		public GenericParameterInfo GetGenericParameterInfo()
+		{
+			return null;
 		}
 
 		public IType DeclaringType
@@ -229,7 +234,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return this.ResolveValueType(); }
 		}
 
-		public IGenericParameterCollection GenericParameters
+		public ITypeCollection GenericParameters
 		{
 			get { return _genericParams ?? (_genericParams = new GenericParamList(Loader, this)); }
 		}

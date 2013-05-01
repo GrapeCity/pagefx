@@ -70,17 +70,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	            case TypeKind.GenericParameter:
 		            {
-			            var gp1 = (IGenericParameter)type1;
-			            var gp2 = (IGenericParameter)type2;
-			            if (gp1.DeclaringMethod != null)
+			            if (type1.DeclaringMethod != null)
 			            {
-				            if (gp2.DeclaringMethod == null)
+				            if (type2.DeclaringMethod == null)
 					            return false;
 			            }
-			            else if (gp2.DeclaringMethod != null)
+			            else if (type2.DeclaringMethod != null)
 				            return false;
-			            //return type1 == type2;
-			            return gp1.Position == gp2.Position;
+						return type1.GetGenericParameterInfo().Position == type2.GetGenericParameterInfo().Position;
 		            }
 
 	            case TypeKind.Enum:

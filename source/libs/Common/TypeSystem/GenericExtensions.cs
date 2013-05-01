@@ -14,7 +14,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		{
 			if (type == null) return false;
             
-			if (type.GenericParameters.Count > 0 || type is IGenericParameter)
+			if (type.GenericParameters.Count > 0 || type.IsGenericParameter())
 				return true;
 
 			if (type.ElementType != null)

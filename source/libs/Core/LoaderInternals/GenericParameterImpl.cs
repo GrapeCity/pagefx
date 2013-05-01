@@ -11,13 +11,14 @@ using DataDynamics.PageFX.Core.Metadata;
 
 namespace DataDynamics.PageFX.Core.LoaderInternals
 {
-	internal sealed class GenericParameterImpl : IGenericParameter
+	internal sealed class GenericParameterImpl : IType
 	{
 		private readonly AssemblyLoader _loader;
 		private readonly GenericParamAttributes _flags;
 		private ICustomAttributeCollection _customAttributes;
 		private readonly ConstraintsImpl _constraints;
 		private readonly SimpleIndex _owner;
+		private readonly GenericParameterInfo _info;
 
 		public GenericParameterImpl(AssemblyLoader loader, MetadataRow row, int index, long id)
 		{
@@ -27,11 +28,13 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 			Name = row[Schema.GenericParam.Name].String;
 			Id = id;
-			Position = (int)row[Schema.GenericParam.Number].Value;
+			var position = (int)row[Schema.GenericParam.Number].Value;
 
 			_flags = (GenericParamAttributes)row[Schema.GenericParam.Flags].Value;
 			_owner = row[Schema.GenericParam.Owner].Value;
 			_constraints = new ConstraintsImpl(this);
+
+			_info = new GenericParameterInfo(position, Variance, SpecialConstraints);
 		}
 
 		public int MetadataToken { get; private set; }
@@ -161,9 +164,9 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return null; }
 		}
 
-		public IGenericParameterCollection GenericParameters
+		public ITypeCollection GenericParameters
 		{
-			get { return GenericParameterCollection.Empty; }
+			get { return TypeCollection.Empty; }
 		}
 
 		public IFieldCollection Fields
@@ -198,7 +201,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 
 		public string Key
 		{
-			get { return this.BuildKey(); }
+			get { return Name + Id; }
 		}
 
 		public string SigName
@@ -216,9 +219,12 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return null; }
 		}
 
-		public long Id { get; private set; }
+		public GenericParameterInfo GetGenericParameterInfo()
+		{
+			return _info;
+		}
 
-		public int Position { get; private set; }
+		public long Id { get; private set; }
 
 		public GenericParameterVariance Variance
 		{
@@ -353,7 +359,7 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 				{
 					SimpleIndex cid = row[Schema.GenericParamConstraint.Constraint].Value;
 
-					var constraint = _owner._loader.GetTypeDefOrRef(cid, new Context(_owner));
+					var constraint = _owner._loader.GetTypeDefOrRef(cid, CreateContext());
 					if (constraint == null)
 						throw new BadMetadataException(string.Format("Invalid constraint index {0}", cid));
 
@@ -367,6 +373,23 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 							_baseType = constraint;
 					}
 				}
+			}
+
+			private Context CreateContext()
+			{
+				var type = _owner.DeclaringType;
+				if (type != null)
+				{
+					return new Context(type);
+				}
+
+				var method = _owner.DeclaringMethod;
+				if (method == null || method.DeclaringType == null)
+				{
+					throw new InvalidOperationException("Invalid context!");
+				}
+
+				return new Context(method.DeclaringType, method);
 			}
 		}
 	}

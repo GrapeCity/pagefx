@@ -93,7 +93,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             set { throw new NotSupportedException(); }
         }
 
-        public IGenericParameterCollection GenericParameters
+        public ITypeCollection GenericParameters
         {
             get { return _method.GenericParameters; }
         }

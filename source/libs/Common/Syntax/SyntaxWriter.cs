@@ -1583,7 +1583,7 @@ namespace DataDynamics.PageFX.Common.Syntax
             }
         }
 
-		private void WriteGenericParams(IEnumerable<IGenericParameter> parameters)
+		private void WriteGenericParams(IEnumerable<IType> parameters)
         {
             if (parameters == null) return;
             bool begin = false;

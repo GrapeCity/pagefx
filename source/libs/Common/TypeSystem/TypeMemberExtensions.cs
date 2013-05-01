@@ -12,12 +12,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		public static bool IsVisible(this ITypeMember member)
 		{
-			var genericParameter = member as IGenericParameter;
-			if (genericParameter != null)
-			{
-				return true;
-			}
-
 			var compoundType = member as IType;
 			if (compoundType != null && compoundType.ElementType != null)
 			{

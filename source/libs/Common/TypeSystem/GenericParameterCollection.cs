@@ -7,12 +7,9 @@ using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-	public sealed class GenericParameterCollection : List<IGenericParameter>, IGenericParameterCollection
+	public sealed class GenericParameterCollection : ITypeCollection
 	{
-		public IGenericParameter Find(string name)
-		{
-			return Find(p => p.Name == name);
-		}
+		private readonly List<IType> _list = new List<IType>();
 
 		public IEnumerable<ICodeNode> ChildNodes
 		{
@@ -34,51 +31,43 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			return ToString(null, null);
 		}
 
-		public static readonly IGenericParameterCollection Empty = new EmptyImpl();
-
-		private sealed class EmptyImpl : IGenericParameterCollection
+		public IEnumerator<IType> GetEnumerator()
 		{
-			public IEnumerator<IGenericParameter> GetEnumerator()
-			{
-				yield break;
-			}
+			return _list.GetEnumerator();
+		}
 
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 
-			public int Count
-			{
-				get { return 0; }
-			}
+		public int Count
+		{
+			get { return _list.Count; }
+		}
 
-			public IGenericParameter this[int index]
-			{
-				get { return null; }
-			}
+		public IType this[int index]
+		{
+			get { return _list[index]; }
+		}
 
-			public string ToString(string format, IFormatProvider formatProvider)
-			{
-				return "";
-			}
+		public IType FindType(string fullname)
+		{
+			return _list.Find(x => x.Name == fullname);
+		}
 
-			public IEnumerable<ICodeNode> ChildNodes
-			{
-				get { return Enumerable.Empty<ICodeNode>(); }
-			}
+		public void Add(IType type)
+		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			if (type.TypeKind != TypeKind.GenericParameter)
+				throw new ArgumentException("The generic parameter expected");
+			_list.Add(type);
+		}
 
-			public object Data { get; set; }
-
-			public IGenericParameter Find(string name)
-			{
-				return null;
-			}
-
-			public void Add(IGenericParameter parameter)
-			{
-				throw new NotSupportedException();
-			}
+		public bool Contains(IType type)
+		{
+			return _list.Contains(type);
 		}
 	}
 }

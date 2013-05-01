@@ -20,6 +20,14 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		}
 
 		/// <summary>
+		/// Indicates whether the type is generic parameter.
+		/// </summary>
+		public static bool IsGenericParameter(this IType type)
+		{
+			return type != null && type.TypeKind == TypeKind.GenericParameter;
+		}
+
+		/// <summary>
 		/// Indicates whether the type has generic parameters.
 		/// </summary>
 		/// <param name="type">The type to check.</param>

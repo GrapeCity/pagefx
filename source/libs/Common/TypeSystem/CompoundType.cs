@@ -92,9 +92,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             get { return ElementType != null ? ElementType.Types : null; }
         }
 
-	    public IGenericParameterCollection GenericParameters
+	    public ITypeCollection GenericParameters
 	    {
-			get { return GenericParameterCollection.Empty; }
+			get { return TypeCollection.Empty; }
 	    }
 
 	    public virtual IFieldCollection Fields
@@ -164,6 +164,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    public virtual ArrayDimensionCollection ArrayDimensions
 	    {
 			get { return null; }
+	    }
+
+	    public GenericParameterInfo GetGenericParameterInfo()
+	    {
+		    return null;
 	    }
 
 	    /// <summary>
