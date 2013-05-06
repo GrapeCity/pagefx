@@ -233,6 +233,11 @@
     <Compile Include="CommonLanguageInfrastructure.cs" />
     <Compile Include="AssemblyResolver.cs" />
     <Compile Include="Metadata\UserStringHeap.cs" />
+    <Compile Include="Mono\MdbSymbolLoader.cs" />
+    <Compile Include="Mono\Mono.CompilerServices.SymbolWriter\MonoSymbolFile.cs" />
+    <Compile Include="Mono\Mono.CompilerServices.SymbolWriter\MonoSymbolTable.cs" />
+    <Compile Include="Mono\Mono.CompilerServices.SymbolWriter\MonoSymbolWriter.cs" />
+    <Compile Include="Mono\Mono.CompilerServices.SymbolWriter\SymbolWriterImpl.cs" />
     <Compile Include="Pdb\Internal\BitAccess.cs" />
     <Compile Include="Pdb\Internal\BitSet.cs" />
     <Compile Include="Pdb\Internal\CvInfo.cs" />
@@ -258,10 +263,11 @@
     <Compile Include="Pdb\Internal\PdbSource.cs" />
     <Compile Include="Pdb\Internal\PdbTokenLine.cs" />
     <Compile Include="Pdb\Internal\SourceLocationProvider.cs" />
-    <Compile Include="Pdb\ISymbolLoader.cs" />
-    <Compile Include="Pdb\SymbolLoader.cs" />
+    <Compile Include="ISymbolLoader.cs" />
+    <Compile Include="Pdb\PdbSymbolLoader.cs" />
     <Compile Include="Metadata\Image.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SymbolProvider.cs" />
     <Compile Include="Tools\MetadataHtmlExport.cs" />
     <Compile Include="Tools\MetadataXmlExport.cs" />
     <Compile Include="Tools\StrongNameTools.cs" />

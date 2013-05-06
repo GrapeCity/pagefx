@@ -10,7 +10,6 @@ using DataDynamics.PageFX.Core.IL;
 using DataDynamics.PageFX.Core.LoaderInternals;
 using DataDynamics.PageFX.Core.LoaderInternals.Tables;
 using DataDynamics.PageFX.Core.Metadata;
-using DataDynamics.PageFX.Core.Pdb;
 using MethodBody = DataDynamics.PageFX.Core.IL.MethodBody;
 
 namespace DataDynamics.PageFX.Core
@@ -352,7 +351,7 @@ namespace DataDynamics.PageFX.Core
 
         #region DebugInfo
 		private bool _initDebugInfo = true;
-		private ISymbolLoader _pdbReader;
+		private ISymbolLoader _symbolReader;
 
         private bool IsFrameworkLib
         {
@@ -364,7 +363,7 @@ namespace DataDynamics.PageFX.Core
             }
         }
 
-	    private ISymbolLoader CreatePdbReader()
+	    private ISymbolLoader CreateSymbolLoader()
         {
             if (!GlobalSettings.EmitDebugInfo) return null;
 
@@ -375,7 +374,7 @@ namespace DataDynamics.PageFX.Core
             string path = Assembly.Location;
             if (string.IsNullOrEmpty(path)) return null; //from stream?
             
-            return SymbolLoader.Create(path);
+            return SymbolProvider.CreateLoader(path);
         }
 
         public void LinkDebugInfo(IMethodBody body)
@@ -386,12 +385,12 @@ namespace DataDynamics.PageFX.Core
             if (_initDebugInfo)
             {
                 _initDebugInfo = false;
-                _pdbReader = CreatePdbReader();
+                _symbolReader = CreateSymbolLoader();
             }
 
-            if (_pdbReader == null) return;
+            if (_symbolReader == null) return;
 
-			if (_pdbReader.LoadSymbols(clrBody))
+			if (_symbolReader.LoadSymbols(clrBody))
 			{
 				clrBody.LocalVariables.UnifyAndNormalizeNames();
 			}
@@ -400,10 +399,10 @@ namespace DataDynamics.PageFX.Core
 
 	    public void Dispose()
         {
-			if (_pdbReader != null)
+			if (_symbolReader != null)
 			{
-				_pdbReader.Dispose();
-				_pdbReader = null;
+				_symbolReader.Dispose();
+				_symbolReader = null;
 			}
 
 			if (Metadata != null)

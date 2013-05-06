@@ -9,11 +9,11 @@ using DataDynamics.PageFX.Core.Pdb.Internal;
 
 namespace DataDynamics.PageFX.Core.Pdb
 {
-	internal sealed class SymbolLoader : ISymbolLoader
+	internal sealed class PdbSymbolLoader : ISymbolLoader
 	{
 		private IDictionary<uint, PdbFunction> _functions;
 
-		private SymbolLoader(IDictionary<uint, PdbFunction> functions)
+		private PdbSymbolLoader(IDictionary<uint, PdbFunction> functions)
 		{
 			_functions = functions;
 		}
@@ -53,7 +53,7 @@ namespace DataDynamics.PageFX.Core.Pdb
 
 				var funcs = PdbFile.LoadFunctions(stream, out tokenToSourceMapping, out sourceServerData, out age, out guid);
 
-				return new SymbolLoader(funcs.ToDictionary(x => x.token, x => x));
+				return new PdbSymbolLoader(funcs.ToDictionary(x => x.token, x => x));
 			}
 			catch (Exception e)
 			{
