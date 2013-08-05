@@ -36,6 +36,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// <returns>event with given name or null</returns>
         IEvent this[string name] { get; }
 
+		// TODO try to remove this method at least from this interface, provide explicit method for event registration where it is needed
+
 	    void Add(IEvent item);
     }
 }

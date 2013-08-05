@@ -26,6 +26,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public interface IPropertyCollection : IParameterizedMemberCollection<IProperty>
     {
+		// TODO try to remove this method at least from this interface, provide explicit method for property registration where it is needed
+
         void Add(IProperty property);
     }
 }

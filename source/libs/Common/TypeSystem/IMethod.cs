@@ -143,6 +143,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
 	public interface IMethodCollection : IParameterizedMemberCollection<IMethod>
     {
+		// TODO try to remove this method at least from this interface, provide explicit method for method registration where it is needed
+		// NOTE it seems this is still needed for generic method instances
+
         void Add(IMethod method);
 
     	IEnumerable<IMethod> Constructors { get; }

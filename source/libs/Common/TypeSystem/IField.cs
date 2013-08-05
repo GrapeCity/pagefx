@@ -28,6 +28,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public interface IFieldCollection : IReadOnlyList<IField>, ICodeNode
     {
+		// TODO try to remove this method at least from this interface, provide explicit method for field registration where it is needed
+
         void Add(IField field);
 
         /// <summary>

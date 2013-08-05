@@ -148,8 +148,10 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     {
 		IType FindType(string fullname);
 
-		void Add(IType type);
+		// TODO try to remove this method at least from this interface, provide RegisterType where it is needed
 
+		void Add(IType type);
+		
         bool Contains(IType type);
     }
 

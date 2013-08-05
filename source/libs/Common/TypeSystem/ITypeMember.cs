@@ -79,6 +79,8 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     /// </summary>
     public interface ITypeMemberCollection : IReadOnlyList<ITypeMember>, ICodeNode
     {
+		// TODO try to remove this method at least from this interface, provide explicit method for member registration where it is needed
+
         /// <summary>
         /// Adds member to collection.
         /// </summary>
