@@ -57,7 +57,7 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\libs\FlashLand\Core\CodeProvider\DebugUtils.cs">
+    <Compile Include="..\..\libs\Flash\Core\CodeProvider\DebugUtils.cs">
       <Link>Utils\DebugUtils.cs</Link>
     </Compile>
     <Compile Include="Engine\Const.cs" />

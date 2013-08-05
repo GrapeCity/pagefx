@@ -22,7 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "libs\Core\Core.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "libs\Common\Common.csproj", "{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashLand", "libs\FlashLand\FlashLand.csproj", "{A54D800D-621B-491A-BE70-59D46BA70523}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashLand", "libs\Flash\Flash.csproj", "{A54D800D-621B-491A-BE70-59D46BA70523}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRunner", "..\tests\TestRunner\TestRunner.csproj", "{D5099CF9-A243-4364-B9C7-6397917E3EFB}"
 EndProject

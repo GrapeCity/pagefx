@@ -82,7 +82,7 @@
       <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\libs\FlashLand\FlashLand.csproj">
+    <ProjectReference Include="..\libs\Flash\Flash.csproj">
       <Project>{A54D800D-621B-491A-BE70-59D46BA70523}</Project>
       <Name>FlashLand</Name>
     </ProjectReference>
