@@ -1,7 +1,7 @@
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core;
 
-namespace DataDynamics.PageFX.FlashLand.Avm
+namespace DataDynamics.PageFX.Flash.Avm
 {
 	internal enum AvmTypeCode
 	{

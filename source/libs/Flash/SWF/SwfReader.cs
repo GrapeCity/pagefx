@@ -5,10 +5,10 @@ using System.IO;
 using System.Text;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Swf.Tags.Shapes;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
     //TODO: Rewrite ReadDouble without using BinaryReader
 

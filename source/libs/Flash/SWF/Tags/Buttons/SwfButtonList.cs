@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Buttons
 {
 	public sealed class SwfButtonList : List<SwfButton>
 	{

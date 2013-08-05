@@ -4,11 +4,11 @@ using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.CodeProvider;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.CodeProvider;
+using DataDynamics.PageFX.Flash.Core.Tools;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
+namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
 {
 	/// <summary>
 	/// Implements generation of <see cref="AbcMethod"/> from <see cref="IMethod"/>.

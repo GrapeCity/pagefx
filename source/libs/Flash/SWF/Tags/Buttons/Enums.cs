@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Buttons
 {
     [Flags]
     public enum SwfButtonState

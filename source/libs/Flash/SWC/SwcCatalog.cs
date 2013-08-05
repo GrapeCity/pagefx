@@ -42,7 +42,7 @@
 //</swc>
 #endregion
 
-namespace DataDynamics.PageFX.FlashLand.Swc
+namespace DataDynamics.PageFX.Flash.Swc
 {
     class SwcCatalog
     {

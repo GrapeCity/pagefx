@@ -4,10 +4,10 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text;
 using DataDynamics.PageFX.Common.IO;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Swf.Tags.Shapes;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
     /// <summary>
     /// Represents SWF writer that provides functionality to write basic data types defined in SWF format.

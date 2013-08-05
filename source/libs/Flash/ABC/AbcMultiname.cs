@@ -5,10 +5,10 @@ using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Avm;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	/// <summary>
     /// Represents multiname - a combination of an unqualified name and one or more namespaces.

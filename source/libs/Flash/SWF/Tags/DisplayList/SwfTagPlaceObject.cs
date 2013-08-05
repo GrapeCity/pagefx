@@ -1,7 +1,7 @@
 using System.Drawing.Drawing2D;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList
+namespace DataDynamics.PageFX.Flash.Swf.Tags.DisplayList
 {
     //NOTE: PlaceObject is rarely used in SWF 3 and later versions; it is superseded by PlaceObject2 and PlaceObject3.
 

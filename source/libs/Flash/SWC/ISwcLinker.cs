@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.FlashLand.Swc
+namespace DataDynamics.PageFX.Flash.Swc
 {
     public interface ISwcLinker
     {

@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList
+namespace DataDynamics.PageFX.Flash.Swf.Tags.DisplayList
 {
     /// <summary>
     /// Removes the character at the specified depth from the display list.

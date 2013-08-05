@@ -2,11 +2,11 @@ using System;
 using System.Linq;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Swf;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Swf;
+using DataDynamics.PageFX.Flash.Swf.Tags.Control;
 
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.Flash.Core
 {
     internal sealed class Embed
     {

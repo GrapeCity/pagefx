@@ -5,7 +5,7 @@ using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
+using DataDynamics.PageFX.Flash.Core.Tools;
 
 namespace DataDynamics.PageFX.TestRunner.Tools
 {

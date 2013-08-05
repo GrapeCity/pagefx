@@ -2,10 +2,9 @@ using System;
 using System.Drawing;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
+using DataDynamics.PageFX.Flash.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
+namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
 {
     internal sealed class EmbeddedAssetBuilder
     {

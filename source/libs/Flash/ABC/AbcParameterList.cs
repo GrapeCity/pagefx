@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	/// <summary>
 	/// List of <see cref="AbcParameter"/> objects.

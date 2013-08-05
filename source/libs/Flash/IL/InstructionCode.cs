@@ -2,7 +2,7 @@
 // WARNING: Automatically generated file. DO NOT EDIT
 //
 
-namespace DataDynamics.PageFX.FlashLand.IL
+namespace DataDynamics.PageFX.Flash.IL
 {
     /// <summary>
     /// Enumerates AVM2 instruction codes

@@ -6,14 +6,14 @@ using System.Linq;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.NUnit;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers;
-using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration.Pointers;
+using DataDynamics.PageFX.Flash.Core.SwfGeneration;
+using DataDynamics.PageFX.Flash.Core.Tools;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.Flash.Core.CodeGeneration
 {
     /// <summary>
 	/// Implements <see cref="AbcFile"/> generation.

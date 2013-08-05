@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.Flash.Core
 {
     internal static class MetadataTags
     {

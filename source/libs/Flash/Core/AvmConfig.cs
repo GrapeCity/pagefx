@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.Flash.Core
 {
     internal static class AvmConfig
     {

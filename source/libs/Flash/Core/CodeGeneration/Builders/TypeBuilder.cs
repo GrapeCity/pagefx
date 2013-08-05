@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.SpecialTypes;
+using DataDynamics.PageFX.Flash.Core.Tools;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
+namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
 {
 	//TODO: make static
 

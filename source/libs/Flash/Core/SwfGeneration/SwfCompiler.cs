@@ -8,13 +8,13 @@ using System.Reflection;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
-using DataDynamics.PageFX.FlashLand.IL;
-using DataDynamics.PageFX.FlashLand.Swf;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Actions;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration;
+using DataDynamics.PageFX.Flash.Core.Tools;
+using DataDynamics.PageFX.Flash.IL;
+using DataDynamics.PageFX.Flash.Swf;
+using DataDynamics.PageFX.Flash.Swf.Tags.Actions;
+using DataDynamics.PageFX.Flash.Swf.Tags.Control;
 
 #region SWF Structure
 //FileAttributes
@@ -48,7 +48,7 @@ using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
 //catalog.xml
 #endregion
 
-namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
+namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
 {
     internal partial class SwfCompiler : IDisposable
     {

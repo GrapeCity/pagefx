@@ -2,10 +2,10 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using DataDynamics.PageFX.Common.Graphics;
-using DataDynamics.PageFX.FlashLand.Swf.Tags;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes;
+using DataDynamics.PageFX.Flash.Swf.Tags;
+using DataDynamics.PageFX.Flash.Swf.Tags.Shapes;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
     public sealed class SwfGraphics
     {

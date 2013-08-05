@@ -1,9 +1,9 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Avm;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Pointers
+namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Pointers
 {
 	internal sealed class PtrManager
 	{

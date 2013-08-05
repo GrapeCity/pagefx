@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Swc;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Swc;
+using DataDynamics.PageFX.Flash.Swf.Tags.Control;
 using Ionic.Zip;
 
-namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
+namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
 {
     internal partial class SwfCompiler
     {

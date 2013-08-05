@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
 	public sealed class SwfFocalGradient : SwfGradient
 	{

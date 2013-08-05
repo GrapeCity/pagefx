@@ -5,9 +5,9 @@ using System.IO;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Graphics;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
+namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
 {
 	//TODO: use reflection to parse options by metadata
 

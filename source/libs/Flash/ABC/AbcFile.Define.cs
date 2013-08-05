@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.Avm;
+using DataDynamics.PageFX.Flash.Core;
+using DataDynamics.PageFX.Flash.Core.SpecialTypes;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	//contains Define API
     public partial class AbcFile

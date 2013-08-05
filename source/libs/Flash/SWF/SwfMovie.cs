@@ -12,15 +12,15 @@ using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Graphics;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Swc;
-using DataDynamics.PageFX.FlashLand.Swf.Tags;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Actions;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.DisplayList;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Swc;
+using DataDynamics.PageFX.Flash.Swf.Tags;
+using DataDynamics.PageFX.Flash.Swf.Tags.Actions;
+using DataDynamics.PageFX.Flash.Swf.Tags.Bitmaps;
+using DataDynamics.PageFX.Flash.Swf.Tags.Control;
+using DataDynamics.PageFX.Flash.Swf.Tags.DisplayList;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
     /// <summary>
     /// Represents flash movie (SWF file).

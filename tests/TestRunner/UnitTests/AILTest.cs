@@ -1,4 +1,4 @@
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.IL;
 using NUnit.Framework;
 
 namespace DataDynamics.PageFX.TestRunner.UnitTests

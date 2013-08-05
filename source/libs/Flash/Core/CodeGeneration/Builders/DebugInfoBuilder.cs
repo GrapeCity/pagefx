@@ -2,11 +2,11 @@
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Avm;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration.Corlib;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
+namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
 {
     internal static class DebugInfoBuilder
     {

@@ -4,10 +4,10 @@ using System.IO;
 using System.Xml;
 using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Core;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     #region Enums
     /*

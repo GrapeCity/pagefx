@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	public sealed class AbcScriptCollection : AbcAtomList<AbcScript>
 	{

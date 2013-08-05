@@ -5,7 +5,7 @@ using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.IO;
 using Ionic.Zip;
 
-namespace DataDynamics.PageFX.FlashLand.Core.ResourceBundles
+namespace DataDynamics.PageFX.Flash.Core.ResourceBundles
 {
 	internal static class ResourceBundles
     {

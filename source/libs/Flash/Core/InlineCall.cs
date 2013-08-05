@@ -1,10 +1,10 @@
 ﻿using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.Inlining;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.Inlining;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.Flash.Core
 {
 	internal sealed class InlineCall : IMethodCall
 	{

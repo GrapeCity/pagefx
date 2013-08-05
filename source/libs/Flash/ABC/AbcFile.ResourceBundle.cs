@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Core.ResourceBundles;
-using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.Avm;
+using DataDynamics.PageFX.Flash.Core;
+using DataDynamics.PageFX.Flash.Core.ResourceBundles;
+using DataDynamics.PageFX.Flash.Core.SwfGeneration;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     public partial class AbcFile
     {

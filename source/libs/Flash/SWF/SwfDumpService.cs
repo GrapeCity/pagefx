@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Graphics;
-using DataDynamics.PageFX.FlashLand.Swc;
+using DataDynamics.PageFX.Flash.Swc;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
     public static class SwfDumpService
     {

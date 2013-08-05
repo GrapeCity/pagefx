@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags
+namespace DataDynamics.PageFX.Flash.Swf.Tags
 {
     public abstract class SwfTag : ISwfTag, ICloneable, ISupportXmlDump
     {

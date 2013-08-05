@@ -4,10 +4,10 @@ using System.Diagnostics;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.Core;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	//ABC Import API
     public partial class AbcFile

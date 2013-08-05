@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.Tools;
 
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.Flash.Core
 {
 	//TODO: lazy caching of types/instances
 

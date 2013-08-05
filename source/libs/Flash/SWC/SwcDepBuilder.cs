@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.Flash.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Swc
+namespace DataDynamics.PageFX.Flash.Swc
 {
     class SwcDepBuilder
     {

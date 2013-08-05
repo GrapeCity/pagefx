@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags
+namespace DataDynamics.PageFX.Flash.Swf.Tags
 {
     /// <summary>
     /// The DefineBinaryData tag is used to save any arbitrary user defined binary data in an SWF movie. The Flash player itself ignores that data. The size of the data is not specifically limited.

@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Filters
+namespace DataDynamics.PageFX.Flash.Swf.Filters
 {
     public sealed class SwfGradientBevelFilter : SwfFilter
     {

@@ -11,7 +11,7 @@ using DataDynamics.PageFX.Common.Tools;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.Core;
-using DataDynamics.PageFX.FlashLand;
+using DataDynamics.PageFX.Flash;
 
 namespace DataDynamics.PageFX.NUnit
 {

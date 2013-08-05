@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Services;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Avm;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
+namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
 {
     //Contains generation of MX preloading frame where flex environment is initialized.
 	internal sealed class SystemManagerBuilder

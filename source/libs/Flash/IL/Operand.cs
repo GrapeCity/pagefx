@@ -2,10 +2,10 @@ using System;
 using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.IL
+namespace DataDynamics.PageFX.Flash.IL
 {
     #region enum OperandType
     /// <summary>

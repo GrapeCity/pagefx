@@ -9,8 +9,8 @@ using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 using DataDynamics.PageFX.Core;
 using DataDynamics.PageFX.Core.Tools;
-using DataDynamics.PageFX.FlashLand;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash;
+using DataDynamics.PageFX.Flash.Swf;
 using DataDynamics.PageFX.TestRunner.Framework;
 using DataDynamics.PageFX.TestRunner.UI;
 

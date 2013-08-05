@@ -1,7 +1,7 @@
 using System;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Filters
+namespace DataDynamics.PageFX.Flash.Swf.Filters
 {
     public enum SwfFilterKind : byte 
     {

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
-using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Avm;
+using DataDynamics.PageFX.Flash.Core.SpecialTypes;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
+namespace DataDynamics.PageFX.Flash.Core.CodeProvider
 {
     partial class CodeProviderImpl
     {

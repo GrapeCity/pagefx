@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using DataDynamics.PageFX.Common.Extensions;
 
-namespace DataDynamics.PageFX.FlashLand.IL
+namespace DataDynamics.PageFX.Flash.IL
 {
     public static class Instructions
     {

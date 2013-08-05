@@ -1,6 +1,6 @@
-﻿using DataDynamics.PageFX.FlashLand.Abc;
+﻿using DataDynamics.PageFX.Flash.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.SwfGeneration
+namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
 {
 	internal sealed class FlexTypes
 	{

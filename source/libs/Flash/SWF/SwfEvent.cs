@@ -1,7 +1,7 @@
 using System;
-using DataDynamics.PageFX.FlashLand.Swf.Actions;
+using DataDynamics.PageFX.Flash.Swf.Actions;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
     public sealed class SwfEvent
     {

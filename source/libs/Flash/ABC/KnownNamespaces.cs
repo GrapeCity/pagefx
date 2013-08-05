@@ -1,7 +1,7 @@
 ﻿using System;
-using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.Flash.Core;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	internal sealed class KnownNamespaces
 	{

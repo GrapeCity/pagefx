@@ -1,7 +1,7 @@
 using System;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Flv
+namespace DataDynamics.PageFX.Flash.Flv
 {
     public abstract class FlvTag
     {

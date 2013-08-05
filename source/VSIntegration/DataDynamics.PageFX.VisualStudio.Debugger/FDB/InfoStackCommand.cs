@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using DataDynamics.PageFX.FlashLand.Core.CodeProvider;
+using DataDynamics.PageFX.Flash.Core.CodeProvider;
 
 namespace DataDynamics.PageFX.VisualStudio.Debugger
 {

@@ -4,7 +4,7 @@ using System.Reflection;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags
+namespace DataDynamics.PageFX.Flash.Swf.Tags
 {
 	/// <summary>
 	/// Factory to create <cref name="SwfTag"/> instances.

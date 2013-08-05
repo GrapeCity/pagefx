@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
 	public sealed class SwfEventList : List<SwfEvent>
 	{

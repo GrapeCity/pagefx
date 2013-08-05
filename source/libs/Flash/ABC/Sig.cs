@@ -1,8 +1,8 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Avm;
+using DataDynamics.PageFX.Flash.Avm;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	/// <summary>
 	/// Defines method signature.

@@ -7,10 +7,10 @@ using System.Xml;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Services;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.IL
+namespace DataDynamics.PageFX.Flash.IL
 {
     /// <summary>
     /// Represents AVM+ instruction.

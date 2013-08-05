@@ -1,6 +1,6 @@
-﻿using DataDynamics.PageFX.FlashLand.IL;
+﻿using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.Inlining
+namespace DataDynamics.PageFX.Flash.Core.Inlining
 {
 	internal sealed class AvmStringInlines : InlineCodeProvider
 	{

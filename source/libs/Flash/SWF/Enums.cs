@@ -1,7 +1,7 @@
 using System;
-using DataDynamics.PageFX.FlashLand.Swf.Tags;
+using DataDynamics.PageFX.Flash.Swf.Tags;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
     [Flags]
     public enum SwfTagDecodeOptions

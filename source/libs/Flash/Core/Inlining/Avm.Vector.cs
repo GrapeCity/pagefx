@@ -1,10 +1,10 @@
 ﻿using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.SpecialTypes;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.Inlining
+namespace DataDynamics.PageFX.Flash.Core.Inlining
 {
 	internal sealed class AvmVectorInlines : InlineCodeProvider
 	{

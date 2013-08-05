@@ -1,11 +1,10 @@
 #if NUNIT
 using System;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Avm;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FlashLand.Tests
+namespace DataDynamics.PageFX.Flash.Tests
 {
     [TestFixture]
     public class AbcFileTest

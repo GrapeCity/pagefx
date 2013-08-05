@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Control
 {
     /// <summary>
     /// Names a frame or anchor. This frame can later be referenced using this name.

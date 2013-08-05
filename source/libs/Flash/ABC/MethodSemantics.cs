@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	[Flags]
 	public enum MethodSemantics

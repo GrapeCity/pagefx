@@ -4,12 +4,12 @@ using DataDynamics.PageFX.Common;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
-using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
-using DataDynamics.PageFX.FlashLand.Core.Tools;
+using DataDynamics.PageFX.Flash.Core;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration;
+using DataDynamics.PageFX.Flash.Core.SwfGeneration;
+using DataDynamics.PageFX.Flash.Core.Tools;
 
-namespace DataDynamics.PageFX.FlashLand
+namespace DataDynamics.PageFX.Flash
 {
     /// <summary>
     /// Facade to Flash Language Infrastructure

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration.Corlib;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders
+namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
 {
 	internal static class ArrayICollectionImpl
 	{

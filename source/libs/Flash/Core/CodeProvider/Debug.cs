@@ -2,9 +2,9 @@
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.IL;
+using DataDynamics.PageFX.Flash.IL;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
+namespace DataDynamics.PageFX.Flash.Core.CodeProvider
 {
     internal partial class CodeProviderImpl
     {

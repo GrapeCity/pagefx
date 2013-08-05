@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.Extensions;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     /// <summary>
     /// Represents namespace set

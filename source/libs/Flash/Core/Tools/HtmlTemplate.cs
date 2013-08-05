@@ -3,9 +3,9 @@ using System.Globalization;
 using System.IO;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
-using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
+using DataDynamics.PageFX.Flash.Core.SwfGeneration;
 
-namespace DataDynamics.PageFX.FlashLand.Core.Tools
+namespace DataDynamics.PageFX.Flash.Core.Tools
 {
     internal sealed class HtmlTemplate
     {

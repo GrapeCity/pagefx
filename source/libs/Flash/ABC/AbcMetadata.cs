@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	public sealed class AbcMetadata : IReadOnlyList<AbcMetaEntry>, ISwfAtom, ISupportXmlDump
     {

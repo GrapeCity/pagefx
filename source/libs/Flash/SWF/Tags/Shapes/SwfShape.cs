@@ -5,7 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Xml;
 using DataDynamics.PageFX.Common.Graphics;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Shapes
 {
     //NOTE: All shape records are byte aligned and begin with a TypeFlag.
     //If the TypeFlag is zero, the shape record is a non-edge record, and a further five bits of flag information follow.

@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	internal static class AbcExtensions
 	{

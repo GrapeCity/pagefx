@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags
+namespace DataDynamics.PageFX.Flash.Swf.Tags
 {
     /// <summary>
     /// Represents SWF tag that has not data. It is usefull for simple and control tags like ShowFrame.

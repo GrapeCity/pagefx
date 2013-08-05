@@ -1,7 +1,7 @@
 using System.Text;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     /// <summary>
     /// Represents method paramater.

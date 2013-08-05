@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     /// <summary>
     /// Represents collection of <see cref="AbcMultiname"/> objects.

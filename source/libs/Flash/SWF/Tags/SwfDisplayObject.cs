@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags
+namespace DataDynamics.PageFX.Flash.Swf.Tags
 {
     public abstract class SwfDisplayObject : SwfCharacter, ISwfDisplayObject
     {

@@ -7,11 +7,11 @@ using System.Xml;
 using System.Linq;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Swc;
-using DataDynamics.PageFX.FlashLand.Swf;
-using DataDynamics.PageFX.FlashLand.Swf.Tags;
-using DataDynamics.PageFX.FlashLand.Swf.Tags.Control;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Swc;
+using DataDynamics.PageFX.Flash.Swf;
+using DataDynamics.PageFX.Flash.Swf.Tags;
+using DataDynamics.PageFX.Flash.Swf.Tags.Control;
 
 namespace DataDynamics.PageFX
 {

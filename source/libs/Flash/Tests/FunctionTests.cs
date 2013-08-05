@@ -1,9 +1,9 @@
 ﻿#if NUNIT
 using System.Globalization;
-using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.Flash.Core;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FlashLand.Tests
+namespace DataDynamics.PageFX.Flash.Tests
 {
     [TestFixture]
     public class FunctionTests

@@ -1,8 +1,8 @@
 using System.Drawing.Drawing2D;
 using System.Xml;
-using DataDynamics.PageFX.FlashLand.Swf.Filters;
+using DataDynamics.PageFX.Flash.Swf.Filters;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Buttons
 {
     public sealed class SwfButton
     {

@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand
+namespace DataDynamics.PageFX.Flash
 {
     public interface ISupportXmlDump
     {

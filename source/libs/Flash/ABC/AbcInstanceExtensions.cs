@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	public static class AbcInstanceExtensions
 	{

@@ -1,12 +1,11 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
-using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration.Corlib;
+using DataDynamics.PageFX.Flash.Core.SpecialTypes;
 
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.Flash.Core
 {
 	internal static class InternalMethodExtensions
 	{

@@ -1,11 +1,11 @@
 ﻿using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
-using TypeImpl = DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib.TypeImpl;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration.Corlib;
+using TypeImpl = DataDynamics.PageFX.Flash.Core.CodeGeneration.Corlib.TypeImpl;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration
+namespace DataDynamics.PageFX.Flash.Core.CodeGeneration
 {
 	internal sealed class CorlibFacade
 	{

@@ -1,6 +1,6 @@
 using System;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Shapes
 {
     public enum SwfCapStyle
     {

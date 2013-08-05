@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Bitmaps
 {
     [TODO]
     [SwfTag(SwfTagCode.DefineBitsJPEG)]

@@ -1,9 +1,9 @@
 using System;
 using System.Xml;
-using DataDynamics.PageFX.FlashLand.IL;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.IL;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     #region Short Description of Format
     // A MethodBody describes the method implementation.  

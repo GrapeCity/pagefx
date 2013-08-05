@@ -2,7 +2,7 @@
 using System.Text;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeProvider
+namespace DataDynamics.PageFX.Flash.Core.CodeProvider
 {
     internal class DebugUtils
     {

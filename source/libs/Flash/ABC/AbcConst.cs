@@ -1,9 +1,9 @@
 using System;
 using System.Text;
 using System.Xml;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     public sealed class AbcConst<T> : IAbcConst
     {

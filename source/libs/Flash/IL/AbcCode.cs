@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Builders;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Avm;
+using DataDynamics.PageFX.Flash.Core;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration.Corlib;
 
-namespace DataDynamics.PageFX.FlashLand.IL
+namespace DataDynamics.PageFX.Flash.IL
 {
     /// <summary>
     /// This the main apparatus (API) to generate ABC code.

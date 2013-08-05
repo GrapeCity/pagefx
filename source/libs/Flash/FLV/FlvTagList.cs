@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Flv
+namespace DataDynamics.PageFX.Flash.Flv
 {
 	public sealed class FlvTagList : List<FlvTag>
 	{

@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	public sealed class AbcExceptionHandlerCollection : AbcAtomList<AbcExceptionHandler>
 	{

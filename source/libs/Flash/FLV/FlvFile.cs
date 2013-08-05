@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Flv
+namespace DataDynamics.PageFX.Flash.Flv
 {
     //FLV files, unlike SWF files, store multibyte integers in big-endian byte order. This means
     //that, for example, the number 300 (0x12C) as a UI16 in SWF file format is represented

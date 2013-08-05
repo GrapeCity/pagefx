@@ -1,7 +1,7 @@
 ﻿#if NUNIT
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FlashLand.Tests
+namespace DataDynamics.PageFX.Flash.Tests
 {
 	public class MiscTests
 	{

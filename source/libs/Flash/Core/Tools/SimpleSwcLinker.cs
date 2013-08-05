@@ -1,8 +1,8 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Swc;
+using DataDynamics.PageFX.Flash.Swc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.Tools
+namespace DataDynamics.PageFX.Flash.Core.Tools
 {
     internal sealed class SimpleSwcLinker : ISwcLinker
     {

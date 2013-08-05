@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using DataDynamics.PageFX.Common.Extensions;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
 	internal static class EnumReflector
 	{

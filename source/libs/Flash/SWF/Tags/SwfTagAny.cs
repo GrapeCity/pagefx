@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags
+namespace DataDynamics.PageFX.Flash.Swf.Tags
 {
     public sealed class SwfTagAny : SwfTag
     {

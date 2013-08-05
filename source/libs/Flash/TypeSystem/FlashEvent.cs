@@ -5,7 +5,7 @@ using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Syntax;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.FlashLand.TypeSystem
+namespace DataDynamics.PageFX.Flash.TypeSystem
 {
 	internal sealed class FlashEvent : IEvent
 	{

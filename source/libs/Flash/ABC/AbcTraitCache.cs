@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Core;
+using DataDynamics.PageFX.Flash.Core;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     internal sealed class AbcTraitCache
     {

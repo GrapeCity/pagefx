@@ -1,7 +1,7 @@
 using System;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Control
 {
     /// <summary>
     /// The FileAttributes tag defines characteristics of the SWF file. This tag is required for SWF 8

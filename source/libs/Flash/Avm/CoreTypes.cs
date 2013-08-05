@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DataDynamics.PageFX.FlashLand.Avm
+namespace DataDynamics.PageFX.Flash.Avm
 {
 	//TODO: provide caching of AbcInstance for global type like it was done for system types
 

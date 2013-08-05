@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Actions
+namespace DataDynamics.PageFX.Flash.Swf.Actions
 {
     [SwfAction(SwfActionCode.If)]
     public sealed class SwfActionIf : SwfAction

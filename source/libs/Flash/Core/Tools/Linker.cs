@@ -1,13 +1,12 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
-using DataDynamics.PageFX.FlashLand.IL;
-using DataDynamics.PageFX.FlashLand.Swc;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core.SpecialTypes;
+using DataDynamics.PageFX.Flash.IL;
+using DataDynamics.PageFX.Flash.Swc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.Tools
+namespace DataDynamics.PageFX.Flash.Core.Tools
 {
     /// <summary>
     /// Links abc/swc resources inside assembly.

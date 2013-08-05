@@ -7,7 +7,7 @@ using System.Text;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.Flash.Core
 {
     internal sealed class Function
     {

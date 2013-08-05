@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.Flash.Core
 {
     public static class HashExtensions
     {

@@ -1,7 +1,7 @@
 using System.IO;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	public sealed class AbcMethodCollection : AbcAtomList<AbcMethod>
 	{

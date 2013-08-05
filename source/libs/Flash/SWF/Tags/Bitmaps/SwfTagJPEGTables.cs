@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Bitmaps
 {
     /// <summary>
     /// This tag defines the JPEG encoding table (the Tables/Misc segment) for all JPEG images

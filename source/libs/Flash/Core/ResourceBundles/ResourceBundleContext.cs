@@ -1,6 +1,6 @@
-using DataDynamics.PageFX.FlashLand.Swc;
+using DataDynamics.PageFX.Flash.Swc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.ResourceBundles
+namespace DataDynamics.PageFX.Flash.Core.ResourceBundles
 {
 	public sealed class ResourceBundleContext
 	{

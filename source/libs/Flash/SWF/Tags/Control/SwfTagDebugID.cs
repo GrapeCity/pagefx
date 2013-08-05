@@ -1,7 +1,7 @@
 using System;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Control
 {
     /// <summary>
     /// The DebugID tag is used to match a debug file (.swd) with a Flash animation (.swf).

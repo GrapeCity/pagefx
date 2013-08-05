@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Bitmaps
 {
 	[SwfTag(SwfTagCode.DefineBitsLossless2)]
 	public sealed class SwfTagDefineBitsLossless2 : SwfTagDefineBitsLossless

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Filters
+namespace DataDynamics.PageFX.Flash.Swf.Filters
 {
 	public sealed class SwfFilterList : List<SwfFilter>
 	{

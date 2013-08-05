@@ -1,10 +1,10 @@
 #if NUNIT
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FlashLand.Tests
+namespace DataDynamics.PageFX.Flash.Tests
 {
     [TestFixture]
     public class SwfIOTest

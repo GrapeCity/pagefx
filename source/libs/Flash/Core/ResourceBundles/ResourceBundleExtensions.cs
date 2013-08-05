@@ -1,8 +1,8 @@
 using System.IO;
 using DataDynamics.PageFX.Common.Extensions;
-using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.Flash.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.ResourceBundles
+namespace DataDynamics.PageFX.Flash.Core.ResourceBundles
 {
 	internal static class ResourceBundleExtensions
 	{

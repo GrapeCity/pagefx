@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DataDynamics.PageFX.Common.Collections;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags
+namespace DataDynamics.PageFX.Flash.Swf.Tags
 {
     public sealed class SwfRefList : IReadOnlyList<int>
     {

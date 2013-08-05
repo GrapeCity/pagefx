@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.Extensions;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	public sealed class AbcNamespacePool : AbcConstList<AbcNamespace>
 	{

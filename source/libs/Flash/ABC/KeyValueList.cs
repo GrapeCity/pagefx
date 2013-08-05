@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
-	using Pair = KeyValuePair<AbcConst<string>, AbcConst<string>>;
-
-	public sealed class KeyValueList : ISwfAtom, IReadOnlyList<Pair>
+	public sealed class KeyValueList : ISwfAtom, IReadOnlyList<KeyValuePair<AbcConst<string>, AbcConst<string>>>
 	{
 		private readonly List<AbcConst<string>> _keys = new List<AbcConst<string>>();
 		private readonly List<AbcConst<string>> _values = new List<AbcConst<string>>();
@@ -19,9 +17,9 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			get { return _keys.Count; }
 		}
 
-		public Pair this[int index]
+		public KeyValuePair<AbcConst<string>, AbcConst<string>> this[int index]
 		{
-			get { return new Pair(_keys[index], _values[index]); }
+			get { return new KeyValuePair<AbcConst<string>, AbcConst<string>>(_keys[index], _values[index]); }
 		}
 
 		public AbcConst<string> GetKey(int index)
@@ -91,7 +89,7 @@ namespace DataDynamics.PageFX.FlashLand.Abc
 			}
 		}
 
-		public IEnumerator<Pair> GetEnumerator()
+		public IEnumerator<KeyValuePair<AbcConst<string>, AbcConst<string>>> GetEnumerator()
 		{
 			for (int i = 0; i < Count; ++i)
 				yield return this[i];

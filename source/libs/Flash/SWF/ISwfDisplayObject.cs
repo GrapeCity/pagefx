@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
 	public interface ISwfDisplayObject : ISwfCharacter
 	{

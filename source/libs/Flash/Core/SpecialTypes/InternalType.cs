@@ -1,7 +1,7 @@
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.Flash.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
+namespace DataDynamics.PageFX.Flash.Core.SpecialTypes
 {
     internal sealed class InternalType : ITypeData, ISpecialType
     {

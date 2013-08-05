@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     internal enum NamespaceKind : byte
 	{

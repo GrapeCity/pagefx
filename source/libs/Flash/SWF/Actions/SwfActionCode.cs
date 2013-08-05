@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Swf.Actions
+namespace DataDynamics.PageFX.Flash.Swf.Actions
 {
     /// <summary>
     /// Enumerates SWF action codes

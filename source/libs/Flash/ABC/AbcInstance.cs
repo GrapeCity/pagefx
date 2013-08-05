@@ -5,14 +5,14 @@ using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
-using DataDynamics.PageFX.FlashLand.IL;
-using DataDynamics.PageFX.FlashLand.Swc;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Avm;
+using DataDynamics.PageFX.Flash.Core;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration;
+using DataDynamics.PageFX.Flash.IL;
+using DataDynamics.PageFX.Flash.Swc;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     #region enum AbcClassFlags
     [Flags]

@@ -12,15 +12,15 @@ using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Avm;
-using DataDynamics.PageFX.FlashLand.Core.SpecialTypes;
-using DataDynamics.PageFX.FlashLand.Swc;
-using DataDynamics.PageFX.FlashLand.Swf;
-using DataDynamics.PageFX.FlashLand.TypeSystem;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Avm;
+using DataDynamics.PageFX.Flash.Core.SpecialTypes;
+using DataDynamics.PageFX.Flash.Swc;
+using DataDynamics.PageFX.Flash.Swf;
+using DataDynamics.PageFX.Flash.TypeSystem;
 using Ionic.Zip;
 
-namespace DataDynamics.PageFX.FlashLand.Core.Tools
+namespace DataDynamics.PageFX.Flash.Core.Tools
 {
     /// <summary>
     /// Builds assembly from abc or swc file.

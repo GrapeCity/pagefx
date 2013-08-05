@@ -1,6 +1,6 @@
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Buttons
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Buttons
 {
     [TODO]
     [SwfTag(SwfTagCode.DefineButton2)]

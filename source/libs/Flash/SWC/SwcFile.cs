@@ -10,13 +10,13 @@ using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.IO;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Abc;
-using DataDynamics.PageFX.FlashLand.Core;
-using DataDynamics.PageFX.FlashLand.Core.ResourceBundles;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Abc;
+using DataDynamics.PageFX.Flash.Core;
+using DataDynamics.PageFX.Flash.Core.ResourceBundles;
+using DataDynamics.PageFX.Flash.Swf;
 using Ionic.Zip;
 
-namespace DataDynamics.PageFX.FlashLand.Swc
+namespace DataDynamics.PageFX.Flash.Swc
 {
     public sealed class SwcFile
     {

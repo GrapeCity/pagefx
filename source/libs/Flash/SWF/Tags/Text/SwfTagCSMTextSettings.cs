@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Text
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Text
 {
     [TODO]
     [SwfTag(SwfTagCode.CSMTextSettings)]

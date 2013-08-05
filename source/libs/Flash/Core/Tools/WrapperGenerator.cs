@@ -7,7 +7,7 @@ using DataDynamics.PageFX.Common.Services;
 using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Core.Tools
+namespace DataDynamics.PageFX.Flash.Core.Tools
 {
     public static class WrapperGenerator
     {

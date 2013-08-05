@@ -1,8 +1,8 @@
 ﻿using System;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.Flash.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core
+namespace DataDynamics.PageFX.Flash.Core
 {
 	/// <summary>
 	/// Defines common contract for units that present <see cref="IMethod"/>.

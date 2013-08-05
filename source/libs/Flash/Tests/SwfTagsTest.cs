@@ -1,11 +1,11 @@
 #if NUNIT
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.IO;
-using DataDynamics.PageFX.FlashLand.Swf;
-using DataDynamics.PageFX.FlashLand.Swf.Tags;
+using DataDynamics.PageFX.Flash.Swf;
+using DataDynamics.PageFX.Flash.Swf.Tags;
 using NUnit.Framework;
 
-namespace DataDynamics.PageFX.FlashLand.Tests
+namespace DataDynamics.PageFX.Flash.Tests
 {
     [TestFixture]
     public class SwfTagsTest

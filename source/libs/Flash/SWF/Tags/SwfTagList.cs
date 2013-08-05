@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags
+namespace DataDynamics.PageFX.Flash.Swf.Tags
 {
     public sealed class SwfTagList : IReadOnlyList<SwfTag>, ISupportXmlDump
     {

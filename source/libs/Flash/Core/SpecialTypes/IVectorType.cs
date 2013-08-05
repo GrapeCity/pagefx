@@ -1,6 +1,6 @@
 using DataDynamics.PageFX.Common.TypeSystem;
 
-namespace DataDynamics.PageFX.FlashLand.Core.SpecialTypes
+namespace DataDynamics.PageFX.Flash.Core.SpecialTypes
 {
     internal interface IVectorType : ITypeData
     {

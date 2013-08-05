@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Sounds
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Sounds
 {
     [TODO]
     [SwfTag(SwfTagCode.SoundStreamHead2)]

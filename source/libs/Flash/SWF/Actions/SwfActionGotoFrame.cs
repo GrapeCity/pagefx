@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Actions
+namespace DataDynamics.PageFX.Flash.Swf.Actions
 {
     [SwfAction(SwfActionCode.GotoFrame)]
     public sealed class SwfActionGotoFrame : SwfAction

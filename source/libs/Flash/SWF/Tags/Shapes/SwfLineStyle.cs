@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Shapes
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Shapes
 {
     //NOTE: Before the introduction of LINESTYLE2 in SWF 8, all lines in the SWF file format have
     //rounded joins and round caps. Different join styles and end styles can be simulated with

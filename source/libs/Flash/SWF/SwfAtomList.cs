@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
     public class SwfAtomList<T> : List<T>, ISwfAtom, ISupportXmlDump
         where T:ISwfAtom, ISupportXmlDump,new()

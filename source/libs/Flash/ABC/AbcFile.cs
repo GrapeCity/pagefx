@@ -8,13 +8,13 @@ using DataDynamics.PageFX.Common.Collections;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.TypeSystem;
-using DataDynamics.PageFX.FlashLand.Core.CodeGeneration;
-using DataDynamics.PageFX.FlashLand.Core.SwfGeneration;
-using DataDynamics.PageFX.FlashLand.IL;
-using DataDynamics.PageFX.FlashLand.Swc;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Core.CodeGeneration;
+using DataDynamics.PageFX.Flash.Core.SwfGeneration;
+using DataDynamics.PageFX.Flash.IL;
+using DataDynamics.PageFX.Flash.Swc;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	/// <summary>
     /// Represents ABC file that can be played by AVM+

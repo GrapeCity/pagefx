@@ -1,4 +1,4 @@
-namespace DataDynamics.PageFX.FlashLand.Core.ResourceBundles
+namespace DataDynamics.PageFX.Flash.Core.ResourceBundles
 {
 	internal sealed class ResourceBundle
 	{

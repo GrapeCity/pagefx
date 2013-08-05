@@ -1,7 +1,7 @@
 using System;
 using DataDynamics.PageFX.Common.Utilities;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Video
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Video
 {
     /// <summary>
     /// The VideoFrame tag is used to render one frame. It includes the data of the video to be drawn.

@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Bitmaps
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Bitmaps
 {
     [SwfTag(SwfTagCode.DefineBitsJPEG2)]
     public sealed class SwfTagDefineBitsJPEG2 : SwfCharacter, ISwfImageCharacter

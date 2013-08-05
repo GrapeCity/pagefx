@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using DataDynamics.PageFX.Common.Collections;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
 	public class AbcAtomList<T> : IReadOnlyList<T>, ISupportXmlDump
 		where T:class, ISupportXmlDump, ISwfIndexedAtom, new()

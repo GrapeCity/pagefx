@@ -1,7 +1,7 @@
 using System;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Tags.Control
+namespace DataDynamics.PageFX.Flash.Swf.Tags.Control
 {
     public sealed class SwfAsset : ISupportXmlDump
     {

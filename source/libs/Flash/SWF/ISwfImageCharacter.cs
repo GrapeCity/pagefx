@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
 	public interface ISwfImageCharacter : ISwfCharacter
 	{

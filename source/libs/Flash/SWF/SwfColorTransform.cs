@@ -1,7 +1,7 @@
 using System;
 using System.Xml;
 
-namespace DataDynamics.PageFX.FlashLand.Swf
+namespace DataDynamics.PageFX.Flash.Swf
 {
     //NOTE: The CXFORM record must be byte aligned.
     //The factors are saved as 8.8 fixed values (divide by 256 to obtain a proper floating point value).

@@ -1,8 +1,8 @@
 ﻿using DataDynamics.PageFX.Common.TypeSystem;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Abc;
+using DataDynamics.PageFX.Flash.Abc;
 
-namespace DataDynamics.PageFX.FlashLand.Core.CodeGeneration.Corlib
+namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Corlib
 {
 	internal sealed class ObjectTypeImpl
 	{

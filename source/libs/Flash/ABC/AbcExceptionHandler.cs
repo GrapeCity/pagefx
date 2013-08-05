@@ -1,8 +1,8 @@
 using System.Text;
 using System.Xml;
-using DataDynamics.PageFX.FlashLand.Swf;
+using DataDynamics.PageFX.Flash.Swf;
 
-namespace DataDynamics.PageFX.FlashLand.Abc
+namespace DataDynamics.PageFX.Flash.Abc
 {
     /// <summary>
     /// Represents info about exception handler in <see cref="AbcMethodBody"/>

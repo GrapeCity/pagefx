@@ -3,9 +3,9 @@ using System.Collections;
 using System.Reflection;
 using DataDynamics.PageFX.Common.Extensions;
 using DataDynamics.PageFX.Common.Utilities;
-using DataDynamics.PageFX.FlashLand.Swf.Tags;
+using DataDynamics.PageFX.Flash.Swf.Tags;
 
-namespace DataDynamics.PageFX.FlashLand.Swf.Actions
+namespace DataDynamics.PageFX.Flash.Swf.Actions
 {
 	/// <summary>
 	/// Factory to create <cref name="SwfAction"/> instances.
