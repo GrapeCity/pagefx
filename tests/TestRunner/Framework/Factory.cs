@@ -1,3 +1,4 @@
+using System.Configuration;
 using System.IO;
 
 namespace DataDynamics.PageFX.TestRunner.Framework
@@ -6,7 +7,7 @@ namespace DataDynamics.PageFX.TestRunner.Framework
 	{
 		internal static string RootDir
 		{
-			get { return @"c:\projects\pfx\tests"; }
+			get { return ConfigurationManager.AppSettings.Get("TestFilesBaseDir"); }
 		}
 
 		internal static string GetFullName(string path)
