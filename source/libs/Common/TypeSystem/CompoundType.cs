@@ -1,21 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
+	// TODO consider to rename to ConstructedType
+
     public abstract class CompoundType : IType
     {
 	    protected CompoundType(IType elementType)
-        {
-            ElementType = elementType;
-        }
+	    {
+		    if (elementType == null) throw new ArgumentNullException("elementType");
+
+		    ElementType = elementType;
+	    }
 
 	    public IType ElementType { get; private set; }
 
 	    public string Namespace
         {
-            get { return ElementType != null ? ElementType.Namespace : null; }
+            get { return ElementType.Namespace; }
         }
 
         public string FullName
@@ -28,12 +33,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public bool IsAbstract
         {
-            get { return ElementType != null && ElementType.IsAbstract; }
+            get { return ElementType.IsAbstract; }
         }
 
         public bool IsSealed
         {
-            get { return ElementType != null && ElementType.IsSealed; }
+            get { return ElementType.IsSealed; }
         }
 
 	    public bool IsPartial
@@ -43,7 +48,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    public bool IsBeforeFieldInit
         {
-            get { return ElementType != null && ElementType.IsBeforeFieldInit; }
+            get { return ElementType.IsBeforeFieldInit; }
         }
 
 	    public bool IsInterface
@@ -79,17 +84,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
         public virtual IType BaseType
         {
-            get { return ElementType != null ? ElementType.BaseType : null; }
+            get { return ElementType.BaseType; }
         }
 
         public virtual ITypeCollection Interfaces
         {
-            get { return ElementType != null ? ElementType.Interfaces : TypeCollection.Empty; }
+            get { return ElementType.Interfaces; }
         }
 
         public virtual ITypeCollection Types
         {
-            get { return ElementType != null ? ElementType.Types : null; }
+            get { return ElementType.Types; }
         }
 
 	    public ITypeCollection GenericParameters
@@ -97,40 +102,44 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			get { return TypeCollection.Empty; }
 	    }
 
+	    public ITypeCollection GenericArguments
+	    {
+			get { return ElementType.GenericArguments; }
+	    }
+
 	    public virtual IFieldCollection Fields
         {
-            get { return ElementType != null ? ElementType.Fields : null; }
+            get { return ElementType.Fields; }
         }
 
         public virtual IMethodCollection Methods
         {
-            get { return ElementType != null ? ElementType.Methods : null; }
+            get { return ElementType.Methods; }
         }
 
         public virtual IPropertyCollection Properties
         {
-            get { return ElementType != null ? ElementType.Properties : null; }
+            get { return ElementType.Properties; }
         }
 
         public virtual IEventCollection Events
         {
-            get { return ElementType != null ? ElementType.Events : null; }
+            get { return ElementType.Events; }
         }
 
         public virtual ITypeMemberCollection Members
         {
-            get { return ElementType != null ? ElementType.Members : null; }
+            get { return ElementType.Members; }
         }
 
         public IType ValueType
         {
-            get { return ElementType != null ? ElementType.ValueType : null; }
+            get { return ElementType.ValueType; }
         }
 
         public virtual ClassLayout Layout
         {
-            get { return ElementType != null ? ElementType.Layout : null; }
-        	set { throw new NotSupportedException(); }
+            get { return ElementType.Layout; }
         }
 
 	    /// <summary>
@@ -176,7 +185,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public IAssembly Assembly
         {
-            get { return ElementType != null ? ElementType.Assembly : null; }
+            get { return ElementType.Assembly; }
         }
 
         /// <summary>
@@ -184,7 +193,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public IModule Module
         {
-            get { return ElementType != null ? ElementType.Module : null; }
+            get { return ElementType.Module; }
         }
 
         /// <summary>
@@ -227,22 +236,22 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         /// </summary>
         public Visibility Visibility
         {
-            get { return ElementType != null ? ElementType.Visibility : Visibility.Private; }
+            get { return ElementType.Visibility; }
         }
 
 	    public bool IsStatic
         {
-            get { return ElementType != null && ElementType.IsStatic; }
+            get { return ElementType.IsStatic; }
         }
 
         public bool IsSpecialName
         {
-            get { return ElementType != null && ElementType.IsSpecialName; }
+            get { return ElementType.IsSpecialName; }
         }
 
         public bool IsRuntimeSpecialName
         {
-            get { return ElementType != null && ElementType.IsRuntimeSpecialName; }
+            get { return ElementType.IsRuntimeSpecialName; }
         }
 
         /// <summary>
@@ -255,12 +264,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    public ICustomAttributeCollection CustomAttributes
         {
-            get { return ElementType != null ? ElementType.CustomAttributes : null; }
+            get { return ElementType.CustomAttributes; }
         }
 
 	    public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[] {ElementType}; }
+            get { return Enumerable.Empty<ICodeNode>(); }
         }
 
     	/// <summary>

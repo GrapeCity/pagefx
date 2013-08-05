@@ -72,14 +72,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                         return contextMethod.GenericArguments[type.GetGenericParameterInfo().Position];
                     return type;
                 }
-				return ((IGenericInstance)contextType).GenericArguments[type.GetGenericParameterInfo().Position];
+				return contextType.GenericArguments[type.GetGenericParameterInfo().Position];
             }
 
-            var gt = type as IGenericInstance;
-            if (gt != null)
+            if (type.IsGenericInstance())
             {
-                var args = gt.GenericArguments.Select(p => Resolve(contextType, contextMethod, p)).ToList();
-            	return typeFactory.MakeGenericType(gt.Type, args);
+                var args = type.GenericArguments.Select(p => Resolve(contextType, contextMethod, p)).ToList();
+            	return typeFactory.MakeGenericType(type.Type, args);
             }
 
             return type;
@@ -151,8 +150,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
             var declType = method.DeclaringType;
             declType = ResolveChecked(contextType, contextMethod, declType);
 
-            var gi = declType as IGenericInstance;
-            if (gi != null)
+            if (declType.IsGenericInstance())
             {
                 var proxy = FindMethodProxy(declType, method);
                 if (proxy != null)

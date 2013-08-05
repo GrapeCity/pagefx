@@ -83,6 +83,11 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		/// </summary>
 		ITypeCollection GenericParameters { get; }
 
+		/// <summary>
+		/// Gets type arguments of generic instance.
+		/// </summary>
+		ITypeCollection GenericArguments { get; }
+
         /// <summary>
         /// Gets the fields declared in this type.
         /// </summary>

@@ -3551,7 +3551,7 @@ namespace DataDynamics.PageFX.Flash.IL
             if (!type.IsNullableInstance())
                 throw new ArgumentException("type is not nullable");
 
-            var typeArg = ((IGenericInstance)type).GenericArguments[0];
+            var typeArg = type.GenericArguments[0];
 
             NewObject(
                 type, 1,

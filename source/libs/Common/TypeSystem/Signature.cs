@@ -84,18 +84,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		            return ReferenceEquals(type1, type2);
             }
 
-	        var gi1 = type1 as IGenericInstance;
-            if (gi1 != null)
+	        if (type1.IsGenericInstance())
             {
-                var gi2 = type2 as IGenericInstance;
-                if (gi2 == null) return false;
-                if (gi1.Type != gi2.Type) return false;
-                int n = gi1.GenericArguments.Count;
-                if (gi2.GenericArguments.Count != n) return false;
+	            if (!type2.IsGenericInstance()) return false;
+				if (!ReferenceEquals(type1.Type, type2.Type)) return false;
+                int n = type1.GenericArguments.Count;
+                if (type2.GenericArguments.Count != n) return false;
                 for (int i = 0; i < n; ++i)
                 {
-                    var t1 = gi1.GenericArguments[i];
-                    var t2 = gi2.GenericArguments[i];
+                    var t1 = type1.GenericArguments[i];
+                    var t2 = type2.GenericArguments[i];
                     if (!TypeEquals(t1, t2))
                         return false;
                 }

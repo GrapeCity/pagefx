@@ -170,8 +170,7 @@ namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
 		        Sig.@static(name, typeName, AvmTypeCode.Object, "value"),
 		        code =>
 			        {
-				        var gi = (IGenericInstance)type;
-				        var elemType = gi.GenericArguments[0];
+				        var elemType = type.GenericArguments[0];
 
 				        const int value = 1;
 

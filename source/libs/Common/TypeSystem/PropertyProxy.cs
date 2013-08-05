@@ -8,16 +8,19 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class PropertyProxy : IProperty
     {
-        private readonly IGenericInstance _instance;
+        private readonly IType _instance;
 		private readonly IProperty _property;
 		private IMethod _getter;
 		private IMethod _setter;
 		private IType _type;
 		private IParameterCollection _parameters;
 
-        public PropertyProxy(IGenericInstance instance, IProperty property)
+        public PropertyProxy(IType instance, IProperty property)
         {
-            _instance = instance;
+	        if (instance == null) throw new ArgumentNullException("instance");
+	        if (property == null) throw new ArgumentNullException("property");
+
+	        _instance = instance;
             _property = property;
         }
 
@@ -162,7 +165,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    public object Value
         {
             get { return _property.Value; }
-            set { throw new NotSupportedException(); }
         }
 
 	    private IMethod ResolveGetter()

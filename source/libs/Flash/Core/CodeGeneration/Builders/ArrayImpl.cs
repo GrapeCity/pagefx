@@ -446,11 +446,10 @@ namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
 			if (type == null) return;
 			if (!type.IsInterface) return;
 			//if (!TypeService.IsGenericArrayInterface(type)) return;
-			var gi = type as IGenericInstance;
-			if (gi == null) return;
-			if (gi.GenericArguments.Count != 1) return;
+			if (!type.IsGenericInstance()) return;
+			if (type.GenericArguments.Count != 1) return;
 
-			string fn = gi.Type.FullName;
+			string fn = type.Type.FullName;
 			switch (fn)
 			{
 				case CLRNames.Types.IEnumerableT:

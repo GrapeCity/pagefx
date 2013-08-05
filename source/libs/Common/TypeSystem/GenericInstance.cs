@@ -8,7 +8,7 @@ using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public sealed class GenericInstance : CustomAttributeProvider, IGenericInstance
+    public sealed class GenericInstance : CustomAttributeProvider, IType
     {
 		private readonly ITypeCollection _args;
 		private string _fullName;

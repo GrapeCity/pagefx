@@ -125,10 +125,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
                     return impl.Layout;
                 return null;
             }
-            set
-            {
-                base.Layout = value;
-            }
         }
 
 	    public override ArrayDimensionCollection ArrayDimensions

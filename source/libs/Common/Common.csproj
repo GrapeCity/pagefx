@@ -208,7 +208,6 @@
     <Compile Include="CodeModel\IExceptionHandler.cs" />
     <Compile Include="TypeSystem\IField.cs" />
     <Compile Include="TypeSystem\GenericParameterInfo.cs" />
-    <Compile Include="TypeSystem\IGenericType.cs" />
     <Compile Include="CodeModel\IInstruction.cs" />
     <Compile Include="ILanguageInfrastructure.cs" />
     <Compile Include="TypeSystem\IManifestResource.cs" />

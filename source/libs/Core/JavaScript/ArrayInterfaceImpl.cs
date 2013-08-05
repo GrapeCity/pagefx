@@ -25,7 +25,7 @@ namespace DataDynamics.PageFX.Core.JavaScript
 		private void GetEnumeratorImpl(IMethod method)
 		{
 			var type = method.DeclaringType;
-			if (type is IGenericInstance)
+			if (type.IsGenericInstance())
 			{
 				var elemType = type.GetTypeArgument(0);
 

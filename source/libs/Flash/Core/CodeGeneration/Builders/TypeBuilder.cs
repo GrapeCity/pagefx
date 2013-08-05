@@ -696,13 +696,12 @@ namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
 
         private bool LinkVectorInstance(IType type)
         {
-            var instance = type as IGenericInstance;
-            if (instance == null) return false;
+	        if (!type.IsGenericInstance()) return false;
 
-            if (!instance.Type.HasAttribute(Attrs.GenericVector))
+            if (!type.Type.HasAttribute(Attrs.GenericVector))
                 return false;
 
-            BuildRange(instance.GenericArguments);
+            BuildRange(type.GenericArguments);
 
             _generator.SetData(type, new VectorInstance(Abc, type));
 

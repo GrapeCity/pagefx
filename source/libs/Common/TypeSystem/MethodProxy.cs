@@ -11,7 +11,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     public sealed class MethodProxy : IMethod
     {
 		private readonly string[] _sigNames = new string[2];
-	    private readonly IGenericInstance _instance;
+	    private readonly IType _instance;
         private readonly IMethod _method;
         private IType _type;
         private readonly IParameterCollection _parameters;
@@ -21,9 +21,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    private ITypeMember _association;
 	    private bool _resolveAssociation = true;
 
-	    public MethodProxy(IGenericInstance instance, IMethod method)
+	    public MethodProxy(IType instance, IMethod method)
         {
-            _instance = instance;
+		    if (instance == null) throw new ArgumentNullException("instance");
+		    if (method == null) throw new ArgumentNullException("method");
+
+		    _instance = instance;
             _method = method;
 			_parameters = new ParameterProxyCollection(_method.Parameters, _instance, _method);
         }
@@ -48,49 +51,41 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public bool PInvoke
         {
             get { return _method.PInvoke; }
-            set { throw new NotSupportedException(); }
         }
 
 	    public MethodCodeType CodeType
         {
             get { return _method.CodeType; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsManaged
         {
             get { return _method.IsManaged; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsForwardRef
         {
             get { return _method.IsForwardRef; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsPreserveSig
         {
             get { return _method.IsPreserveSig; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsInternalCall
         {
             get { return _method.IsInternalCall; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsSynchronized
         {
             get { return _method.IsSynchronized; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool NoInlining
         {
             get { return _method.NoInlining; }
-            set { throw new NotSupportedException(); }
         }
 
         public ITypeCollection GenericParameters
@@ -137,14 +132,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			    }
 			    return _association;
 		    }
-		    set
-		    {
-				if (value == null)
-					throw new ArgumentNullException("value");
-
-			    _association = value;
-			    _resolveAssociation = false;
-		    }
 	    }
 
 	    private ITypeMember ResolveAssociation()
@@ -187,14 +174,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    public bool IsExplicitImplementation
         {
             get { return _method.IsExplicitImplementation; }
-            set { throw new NotSupportedException(); }
         }
 
         private IMethod ResolveMethod(IMethod method)
         {
             if (method == null) return null;
             var declType = GenericType.Resolve(_instance, this, method.DeclaringType);
-            if (declType is IGenericInstance)
+            if (declType.IsGenericInstance())
             {
                 var m = GenericType.FindMethodProxy(declType, method);
                 if (m == null)
@@ -213,12 +199,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	            return _impls ?? (_impls = PopulateImpls().Memoize());
             }
-            set 
-            { 
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                _impls = value;
-            }
         }
 
 		private IEnumerable<IMethod> PopulateImpls()
@@ -232,7 +212,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IMethodBody Body
         {
             get { return _method.Body; }
-            set { throw new NotSupportedException(); }
         }
 
         public string ReturnDocumentation
@@ -267,37 +246,36 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         #endregion
 
         #region IOverridableMember Members
+
         public bool IsAbstract
         {
             get { return _method.IsAbstract; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsVirtual
         {
             get { return _method.IsVirtual; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsFinal
         {
             get { return _method.IsFinal; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsNewSlot
         {
             get { return _method.IsNewSlot; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsOverride
         {
             get { return _method.IsOverride; }
         }
+
         #endregion
 
         #region ITypeMember Members
+
         public IAssembly Assembly
         {
             get { return _method.Assembly; }
@@ -306,7 +284,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IModule Module
         {
             get { return _method.Module; }
-            set { throw new NotSupportedException(); }
         }
 
         public MemberType MemberType
@@ -317,7 +294,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public string Name
         {
             get { return _method.Name; }
-            set { throw new NotSupportedException(); }
         }
 
         public string FullName
@@ -333,41 +309,31 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IType DeclaringType
         {
             get { return _instance; }
-            set 
-            {
-                if (!ReferenceEquals(value, _instance))
-                    throw new InvalidOperationException();
-            }
         }
 
         public IType Type
         {
             get { return _type ?? (_type = GenericType.Resolve(_instance, _method, _method.Type)); }
-	        set { throw new NotSupportedException(); }
         }
 
         public Visibility Visibility
         {
             get { return _method.Visibility; }
-            set { throw new NotSupportedException(); }
         }
 
 	    public bool IsStatic
         {
             get { return _method.IsStatic; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsSpecialName
         {
             get { return _method.IsSpecialName; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsRuntimeSpecialName
         {
             get { return _method.IsRuntimeSpecialName; }
-            set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -376,15 +342,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public int MetadataToken
         {
             get { return _method.MetadataToken; }
-            set { throw new NotSupportedException(); }
         }
+
         #endregion
 
         #region ICustomAttributeProvider Members
+
         public ICustomAttributeCollection CustomAttributes
         {
             get { return _method.CustomAttributes; }
         }
+
         #endregion
 
         #region ICodeNode Members
@@ -399,18 +367,22 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     	#endregion
 
         #region IFormattable Members
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
+
         #endregion
 
         #region IDocumentationProvider Members
+
         public string Documentation
         {
             get { return _method.Documentation; }
             set { throw new NotSupportedException(); }
         }
+
         #endregion
 
         public override string ToString()

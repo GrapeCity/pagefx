@@ -152,7 +152,7 @@ namespace DataDynamics.PageFX.Core.Translation
 		private static bool IsGenericContext(TranslationContext context)
 		{
 			var method = context.Method;
-			return method.DeclaringType is IGenericInstance || method.IsGenericInstance;
+			return method.DeclaringType.IsGenericInstance() || method.IsGenericInstance;
 		}
     }
 }

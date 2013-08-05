@@ -11,19 +11,18 @@ namespace DataDynamics.PageFX.Flash.Core.SpecialTypes
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            var instance = type as IGenericInstance;
-            if (instance == null)
+		    if (!type.IsGenericInstance())
                 throw new ArgumentException(string.Format("Type {0} is not generic instance", type));
 
-            if (instance.GenericArguments.Count != 1)
+            if (type.GenericArguments.Count != 1)
                 throw new ArgumentException("Invalid vector instance");
 
-            Type = instance;
-            Parameter = instance.GenericArguments[0];
+            Type = type;
+            Parameter = type.GenericArguments[0];
 		    Name = DefineName(abc);
         }
 
-	    public IGenericInstance Type { get; private set; }
+	    public IType Type { get; private set; }
 
 	    IType ITypeData.Type
 	    {

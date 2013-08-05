@@ -1,5 +1,7 @@
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
+	// TODO consider to rename to IValueProvider
+
     /// <summary>
     /// Item with constant value.
     /// </summary>

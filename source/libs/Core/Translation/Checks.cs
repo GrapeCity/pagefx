@@ -70,9 +70,9 @@ namespace DataDynamics.PageFX.Core.Translation
 
 		public const int MaxGenericNesting = 100;
 
-		private static void CalcGenericNesting(IGenericInstance instance, ref int depth)
+		private static void CalcGenericNesting(IType instance, ref int depth)
 		{
-			foreach (var arg in instance.GenericArguments.OfType<IGenericInstance>())
+			foreach (var arg in instance.GenericArguments.Where(x => x.IsGenericInstance()))
 			{
 				++depth;
 				CalcGenericNesting(arg, ref depth);
@@ -81,10 +81,10 @@ namespace DataDynamics.PageFX.Core.Translation
 
 		public static bool IsGenericNestingExceeds(TranslationContext context)
 		{
-			var gi = context.Method.DeclaringType as IGenericInstance;
-			if (gi == null) return false;
+			var declType = context.Method.DeclaringType;
+			if (!declType.IsGenericInstance()) return false;
 			int depth = 1;
-			CalcGenericNesting(gi, ref depth);
+			CalcGenericNesting(declType, ref depth);
 			return depth > MaxGenericNesting;
 		}
 	}

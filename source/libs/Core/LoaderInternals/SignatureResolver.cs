@@ -109,8 +109,8 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 				case ElementType.Var:
 					{
 						int index = sig.GenericParamNumber;
-						var gi = context.Type as IGenericInstance;
-						if (gi != null)
+						var gi = context.Type;
+						if (gi.IsGenericInstance())
 							return gi.GenericArguments[index];
 						var gt = context.Type;
 						if (gt != null)

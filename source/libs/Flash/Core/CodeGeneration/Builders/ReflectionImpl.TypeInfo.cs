@@ -770,8 +770,7 @@ namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
 			}
 			else if (type.IsNullableInstance())
 			{
-				var gi = (IGenericInstance)type;
-				var utype = gi.GenericArguments[0];
+				var utype = type.GenericArguments[0];
 				if (utype.IsEnum)
 					utype = utype.ValueType;
 				SetUnderlyingType(code, utype);

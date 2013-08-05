@@ -154,11 +154,10 @@ namespace DataDynamics.PageFX.Core.Translation
             if (declType.IsArray && method.IsInternalCall)
                 return ArrayType.ResolveMethod(declType, method);
 
-            var gi = declType as IGenericInstance;
-            if (gi == null)
+            if (!declType.IsGenericInstance())
                 throw new ILTranslatorException("declType is not generic instance");
 
-            var proxy = GenericType.FindMethodProxy(gi, method);
+            var proxy = GenericType.FindMethodProxy(declType, method);
             if (proxy != null)
                 return proxy;
 
@@ -183,10 +182,9 @@ namespace DataDynamics.PageFX.Core.Translation
 
             CheckInstantiation(declType, instr);
 
-            var gi = declType as IGenericInstance;
-            if (gi != null)
+            if (declType.IsGenericInstance())
             {
-                var proxy = GenericType.FindFieldProxy(gi, field);
+                var proxy = GenericType.FindFieldProxy(declType, field);
                 if (proxy != null)
                     return proxy;
             }

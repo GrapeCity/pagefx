@@ -20,8 +20,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			if (type.ElementType != null)
 				return type.ElementType.HasGenericParams();
 
-			var instance = type as IGenericInstance;
-			return instance != null && instance.GenericArguments.Any(HasGenericParams);
+			return type.GenericArguments.Any(HasGenericParams);
 		}
 
 		public static bool IsGenericContext(this ITypeMember member)

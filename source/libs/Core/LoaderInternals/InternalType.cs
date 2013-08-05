@@ -239,6 +239,11 @@ namespace DataDynamics.PageFX.Core.LoaderInternals
 			get { return _genericParams ?? (_genericParams = new GenericParamList(Loader, this)); }
 		}
 
+		public ITypeCollection GenericArguments
+		{
+			get { return TypeCollection.Empty; }
+		}
+
 		public IFieldCollection Fields
 		{
 			get { return _members.Fields; }

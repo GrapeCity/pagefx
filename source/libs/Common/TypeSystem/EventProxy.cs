@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 {
     public sealed class EventProxy : IEvent
     {
-        private readonly IGenericInstance _instance;
+        private readonly IType _instance;
         private readonly IEvent _event;
         private IMethod _adder;
         private IMethod _remover;
@@ -17,9 +17,12 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	    private bool _resolveRemover = true;
 	    private bool _resolveRaiser = true;
 
-	    public EventProxy(IGenericInstance instance, IEvent e)
+	    public EventProxy(IType instance, IEvent e)
         {
-            _instance = instance;
+		    if (instance == null) throw new ArgumentNullException("instance");
+		    if (e == null) throw new ArgumentNullException("e");
+
+		    _instance = instance;
             _event = e;
         }
 
@@ -135,7 +138,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public int MetadataToken
         {
             get { return _event.MetadataToken; }
-            set { throw new NotSupportedException(); }
         }
 
 	    public ICustomAttributeCollection CustomAttributes

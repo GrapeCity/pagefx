@@ -1,32 +1,32 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DataDynamics.PageFX.Common.CodeModel;
 using DataDynamics.PageFX.Common.Syntax;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
-    public class FieldProxy : IField
+    public sealed class FieldProxy : IField
     {
-        readonly IGenericInstance _instance;
-        readonly IField _field;
-        readonly IType _type;
+        private readonly IType _instance;
+		private readonly IField _field;
+		private readonly IType _type;
 
-        public FieldProxy(IGenericInstance instance, IField field)
+        public FieldProxy(IType instance, IField field)
         {
-            if (instance == null)
-                throw new ArgumentNullException("instance");
-            if (field == null)
-                throw new ArgumentNullException("field");
+            if (instance == null) throw new ArgumentNullException("instance");
+            if (field == null) throw new ArgumentNullException("field");
+
             _instance = instance;
             _field = field;
             _type = GenericType.Resolve(instance, field.Type);
         }
 
         #region IField Members
+
         public int Offset
         {
             get { return _field.Offset; }
-            set { throw new NotSupportedException(); }
         }
 
 		public int Slot
@@ -38,22 +38,22 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public bool IsConstant
         {
             get { return _field.IsConstant; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsReadOnly
         {
             get { return _field.IsReadOnly; }
-            set { throw new NotSupportedException(); }
         }
 
 	    public IField ProxyOf
         {
             get { return _field; }
         }
+
         #endregion
 
         #region ITypeMember Members
+
         public IAssembly Assembly
         {
             get { return _field.Assembly; }
@@ -62,7 +62,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IModule Module
         {
             get { return _field.Module; }
-            set { throw new NotSupportedException(); }
         }
 
         public MemberType MemberType
@@ -73,7 +72,6 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public string Name
         {
             get { return _field.Name; }
-            set { throw new NotSupportedException(); }
         }
 
         public string FullName
@@ -89,37 +87,31 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public IType DeclaringType
         {
             get { return _instance; }
-            set { }
         }
 
         public IType Type
         {
             get { return _type; }
-            set { throw new NotSupportedException(); }
         }
 
         public Visibility Visibility
         {
             get { return _field.Visibility; }
-            set { throw new NotSupportedException(); }
         }
 
 	    public bool IsStatic
         {
             get { return _field.IsStatic; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsSpecialName
         {
             get { return _field.IsSpecialName; }
-            set { throw new NotSupportedException(); }
         }
 
         public bool IsRuntimeSpecialName
         {
             get { return _field.IsRuntimeSpecialName; }
-            set { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -128,22 +120,24 @@ namespace DataDynamics.PageFX.Common.TypeSystem
         public int MetadataToken
         {
             get { return _field.MetadataToken; }
-            set { throw new NotSupportedException(); }
         }
+
         #endregion
 
         #region ICustomAttributeProvider Members
+
         public ICustomAttributeCollection CustomAttributes
         {
             get { return _field.CustomAttributes; }
         }
+
         #endregion
 
         #region ICodeNode Members
 
 	    public IEnumerable<ICodeNode> ChildNodes
         {
-            get { return new ICodeNode[0]; }
+            get { return Enumerable.Empty<ICodeNode>(); }
         }
 
     	public object Data { get; set; }
@@ -151,26 +145,31 @@ namespace DataDynamics.PageFX.Common.TypeSystem
     	#endregion
 
         #region IFormattable Members
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return SyntaxFormatter.Format(this, format, formatProvider);
         }
+
         #endregion
 
         #region IDocumentationProvider Members
+
         public string Documentation
         {
             get { return _field.Documentation; }
             set { throw new NotSupportedException(); }
         }
+
         #endregion
 
         #region IConstantProvider Members
+
         public object Value
         {
             get { return _field.Value; }
-            set { throw new NotSupportedException(); }
         }
+
         #endregion
 
         public override string ToString()
