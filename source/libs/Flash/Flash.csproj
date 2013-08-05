@@ -1,0 +1,464 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A54D800D-621B-491A-BE70-59D46BA70523}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataDynamics.PageFX.FlashLand</RootNamespace>
+    <AssemblyName>pfx.flashland</AssemblyName>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\pfx.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NUNIT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\..\..\libs\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\libs\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Abc\AbcAtomList.cs" />
+    <Compile Include="Abc\AbcCache.cs" />
+    <Compile Include="Abc\AbcClassCollection.cs" />
+    <Compile Include="Abc\AbcConst.cs" />
+    <Compile Include="Abc\AbcConstKind.cs" />
+    <Compile Include="Abc\AbcConstList.cs" />
+    <Compile Include="Abc\AbcExceptionHandlerCollection.cs" />
+    <Compile Include="Abc\AbcExtensions.cs" />
+    <Compile Include="Abc\AbcFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Abc\AbcFile.ResourceBundle.cs" />
+    <Compile Include="Abc\AbcFile.Test.cs" />
+    <Compile Include="Abc\AbcInstanceCollection.cs" />
+    <Compile Include="Abc\AbcInstanceExtensions.cs" />
+    <Compile Include="Abc\AbcMetaEntry.cs" />
+    <Compile Include="Abc\AbcMethodBodyCollection.cs" />
+    <Compile Include="Abc\AbcMethodCollection.cs" />
+    <Compile Include="Abc\KnownNamespaces.cs" />
+    <Compile Include="Abc\MemberKey.cs" />
+    <Compile Include="Abc\Sig.cs" />
+    <Compile Include="Abc\MethodSemantics.cs" />
+    <Compile Include="Abc\AbcMultinamePool.cs" />
+    <Compile Include="Abc\AbcNamespacePool.cs" />
+    <Compile Include="Abc\AbcNssetPool.cs" />
+    <Compile Include="Abc\AbcParameterList.cs" />
+    <Compile Include="Abc\AbcScriptCollection.cs" />
+    <Compile Include="Abc\AbcTraitCache.cs" />
+    <Compile Include="Abc\AbcTraitCollection.cs" />
+    <Compile Include="Abc\AbcFile.Define.cs" />
+    <Compile Include="Abc\AbcFile.Import.cs" />
+    <Compile Include="Abc\AbcTryBlock.cs" />
+    <Compile Include="Abc\IAbcConstPool.cs" />
+    <Compile Include="Abc\IAbcTraitProvider.cs" />
+    <Compile Include="Abc\IImportable.cs" />
+    <Compile Include="Abc\IOExtensions.cs" />
+    <Compile Include="Abc\AbcLateMethodCollection.cs" />
+    <Compile Include="Abc\AbcMerger.cs" />
+    <Compile Include="Abc\AbcParameter.cs" />
+    <Compile Include="Abc\AbcDumpService.cs" />
+    <Compile Include="Abc\AbcExceptionHandler.cs" />
+    <Compile Include="Abc\IAbcConst.cs" />
+    <Compile Include="Abc\AbcNamespaceSet.cs" />
+    <Compile Include="Abc\AbcProperty.cs" />
+    <Compile Include="Abc\KeyValueList.cs" />
+    <Compile Include="Avm\AvmTypeCode.cs" />
+    <Compile Include="Avm\CoreTypes.cs" />
+    <Compile Include="Core\AbcFileExtensions.cs" />
+    <Compile Include="Core\AbcGenConfig.cs" />
+    <Compile Include="Core\AssemblyIndex.cs" />
+    <Compile Include="Core\AssemblyCustomData.cs" />
+    <Compile Include="Core\Attrs.cs" />
+    <Compile Include="Avm\BuiltinTypes.cs" />
+    <Compile Include="Core\AvmConfig.cs" />
+    <Compile Include="Core\AvmResolver.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ArrayICollectionImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ArrayIListImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ArrayImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\BoxingImpl.cs" />
+    <Compile Include="Core\CodeGeneration\CallResolver.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\CastImpl.cs" />
+    <Compile Include="Core\CodeGeneration\CorlibFacade.cs" />
+    <Compile Include="Core\CodeGeneration\Corlib\ArrayTypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Corlib\AssemblyTypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Corlib\CompilerTypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Corlib\ConsoleTypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Corlib\ConvertTypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Corlib\EnvironmentTypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Corlib\ObjectTypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Corlib\TypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\DelegatesImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\EmbeddedAssetBuilder.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\FieldBuilder.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\Initializers.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\CopyImpl.cs" />
+    <Compile Include="Core\CodeGeneration\AbcGenerator.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\MethodBuilder.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\FlexAppBuilder.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\NUnitRunner.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\HashCodeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ObjectPrototypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\OperatorBuilder.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\ElemPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\FuncPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\GlobalPropertyPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\PropertyPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\SlotPointers.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\StaticFieldPtr.cs" />
+    <Compile Include="Core\CodeGeneration\Pointers\PtrManager.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ReflectionImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ReflectionImpl.TypeInfo.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\RootSpriteImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\RuntimeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\ScriptBuilder.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\StaticCtorsImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\StringPrototypeImpl.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\TypeBuilder.cs" />
+    <Compile Include="Core\CodeGeneration\Builders\DebugInfoBuilder.cs" />
+    <Compile Include="Core\CodeProvider\Arrays.cs" />
+    <Compile Include="Core\CodeProvider\Branching.cs" />
+    <Compile Include="Core\CodeProvider\Calling.cs" />
+    <Compile Include="Core\CodeProvider\Computing.cs" />
+    <Compile Include="Core\CodeProvider\DataFlow.cs" />
+    <Compile Include="Core\CodeProvider\Debug.cs" />
+    <Compile Include="Core\CodeProvider\DebugUtils.cs" />
+    <Compile Include="Core\CodeProvider\ExceptionHandling.cs" />
+    <Compile Include="Core\CodeProvider\LocalOptimizer.cs" />
+    <Compile Include="Core\CodeProvider\Main.cs" />
+    <Compile Include="Core\CodeProvider\Pointers.cs" />
+    <Compile Include="Core\CodeProvider\Reflection.cs" />
+    <Compile Include="Core\CodeProvider\TypeConversion.cs" />
+    <Compile Include="Core\CodeProvider\ValueType.cs" />
+    <Compile Include="Core\Const.cs" />
+    <Compile Include="Core\Embed.cs" />
+    <Compile Include="Core\Enums.cs" />
+    <Compile Include="Core\FieldExtensions.cs" />
+    <Compile Include="Core\Function.cs" />
+    <Compile Include="Core\HashExtensions.cs" />
+    <Compile Include="Core\IMethodCall.cs" />
+    <Compile Include="Core\InlineCall.cs" />
+    <Compile Include="Core\Inlining\Avm.Array.cs" />
+    <Compile Include="Core\Inlining\Avm.Class.cs" />
+    <Compile Include="Core\Inlining\Avm.cs" />
+    <Compile Include="Core\Inlining\Avm.Object.cs" />
+    <Compile Include="Core\Inlining\Avm.String.cs" />
+    <Compile Include="Core\Inlining\Avm.Vector.cs" />
+    <Compile Include="Core\Inlining\Avm.XML.cs" />
+    <Compile Include="Core\Inlining\Avm.Function.cs" />
+    <Compile Include="Core\Inlining\System.Delegate.cs" />
+    <Compile Include="Core\Inlining\DateInlines.cs" />
+    <Compile Include="Core\Inlining\flash.utils.ByteArray.cs" />
+    <Compile Include="Core\Inlining\InlineCodeGenerator.cs" />
+    <Compile Include="Core\Inlining\InlineCodeProvider.cs" />
+    <Compile Include="Core\Inlining\InlineMethodExtensions.cs" />
+    <Compile Include="Core\Inlining\InlineMethodInfo.cs" />
+    <Compile Include="Core\Inlining\System.Diagnostics.Debugger.cs" />
+    <Compile Include="Core\Inlining\System.Object.cs" />
+    <Compile Include="Core\Inlining\System.String.cs" />
+    <Compile Include="Core\InternalAssemblyExtensions.cs" />
+    <Compile Include="Core\InternalMethodExtensions.cs" />
+    <Compile Include="Core\InternalTypeExtensions.cs" />
+    <Compile Include="Core\ITypeData.cs" />
+    <Compile Include="Core\LocaleExtensions.cs" />
+    <Compile Include="Core\MetadataTags.cs" />
+    <Compile Include="Core\MimeTypes.cs" />
+    <Compile Include="Core\NameExtensions.cs" />
+    <Compile Include="Core\ResourceBundles\ResourceBundle.cs" />
+    <Compile Include="Core\ResourceBundles\ResourceBundleContext.cs" />
+    <Compile Include="Core\ResourceBundles\ResourceBundleExtensions.cs" />
+    <Compile Include="Core\RSL.cs" />
+    <Compile Include="Core\SpecialTypes\GlobalFunctionsContainer.cs" />
+    <Compile Include="Core\SpecialTypes\InternalType.cs" />
+    <Compile Include="Core\SpecialTypes\ISpecialType.cs" />
+    <Compile Include="Core\SpecialTypes\IVectorType.cs" />
+    <Compile Include="Core\SpecialTypes\NativeType.cs" />
+    <Compile Include="Core\SpecialTypes\VectorInstance.cs" />
+    <Compile Include="Core\SpecialTypes\VectorType.cs" />
+    <Compile Include="Core\SwfGeneration\AssetCompiler.cs" />
+    <Compile Include="Core\SwfGeneration\FlexInitImpl.cs" />
+    <Compile Include="Core\SwfGeneration\FlexTypes.cs" />
+    <Compile Include="Core\SwfGeneration\SwfCompiler.cs" />
+    <Compile Include="Core\SwfGeneration\MixinManager.cs" />
+    <Compile Include="Core\SwfGeneration\SystemManagerBuilder.cs" />
+    <Compile Include="Core\SwfGeneration\SwfCompilerOptions.cs" />
+    <Compile Include="Core\SwfGeneration\SwcCatalog.cs" />
+    <Compile Include="Core\SwfGeneration\SwcScripts.cs" />
+    <Compile Include="Core\Tools\AssemblyBuilder.cs" />
+    <Compile Include="Core\Tools\DebugService.cs" />
+    <Compile Include="Core\Tools\HtmlTemplate.cs" />
+    <Compile Include="Core\Tools\Linker.cs" />
+    <Compile Include="Core\Tools\SimpleSwcLinker.cs" />
+    <Compile Include="Core\Tools\WrapperGenerator.cs" />
+    <Compile Include="FlashLanguageInfrastructure.cs" />
+    <Compile Include="Flv\FlvTagList.cs" />
+    <Compile Include="ISupportXmlDump.cs" />
+    <Compile Include="Abc\QName.cs" />
+    <Compile Include="Core\ResourceBundles\ResourceBundles.cs" />
+    <Compile Include="Flv\Enums.cs" />
+    <Compile Include="Flv\FlvAudioTag.cs" />
+    <Compile Include="Flv\FlvFile.cs" />
+    <Compile Include="Flv\FlvTag.cs" />
+    <Compile Include="Flv\FlvVideoTag.cs" />
+    <Compile Include="IL\AbcCode.cs" />
+    <Compile Include="IL\ILStream.cs" />
+    <Compile Include="IL\InstructionCode.cs" />
+    <Compile Include="Abc\AbcClass.cs" />
+    <Compile Include="Abc\AbcConstPool.cs" />
+    <Compile Include="Abc\AbcTraitOwner.cs" />
+    <Compile Include="Abc\AbcInstance.cs" />
+    <Compile Include="IL\Instruction.cs" />
+    <Compile Include="Abc\AbcMetadata.cs" />
+    <Compile Include="Abc\AbcMethodBody.cs" />
+    <Compile Include="Abc\AbcMethod.cs" />
+    <Compile Include="Abc\AbcMultiname.cs" />
+    <Compile Include="Abc\AbcNamespace.cs" />
+    <Compile Include="Abc\AbcScript.cs" />
+    <Compile Include="Abc\AbcTrait.cs" />
+    <Compile Include="IL\Instructions.cs" />
+    <Compile Include="IL\Operand.cs" />
+    <Compile Include="Swf\Actions\SwfActionList.cs" />
+    <Compile Include="Swf\Filters\SwfFilterList.cs" />
+    <Compile Include="Swf\ISwfAtom.cs" />
+    <Compile Include="Swf\ISwfCharacter.cs" />
+    <Compile Include="Swf\ISwfDisplayObject.cs" />
+    <Compile Include="Swf\ISwfImageCharacter.cs" />
+    <Compile Include="Swf\ISwfTag.cs" />
+    <Compile Include="Swf\SwfEventList.cs" />
+    <Compile Include="Swf\SwfFocalGradient.cs" />
+    <Compile Include="Swf\Tags\Bitmaps\SwfTagDefineBitsLossless2.cs" />
+    <Compile Include="Swf\Tags\Buttons\SwfButtonList.cs" />
+    <Compile Include="Swf\Tags\Control\ISwfAssetContainer.cs" />
+    <Compile Include="Swf\Tags\Control\SwfAssetCollection.cs" />
+    <Compile Include="Tests\ABCDefineTest.cs" />
+    <Compile Include="Tests\AbcFileTest.cs" />
+    <Compile Include="Tests\ABCImportTest.cs" />
+    <Compile Include="Tests\SwfIOTest.cs" />
+    <Compile Include="Tests\SwfMovieTest.cs" />
+    <Compile Include="Tests\SwfTagsTest.cs" />
+    <Compile Include="Swc\ISwcLinker.cs" />
+    <Compile Include="Swc\SwcCatalog.cs" />
+    <Compile Include="Swc\SwcDepBuilder.cs" />
+    <Compile Include="Swc\SwcDepFile.cs" />
+    <Compile Include="Swc\SwcFile.cs" />
+    <Compile Include="Swc\Extensions.cs" />
+    <Compile Include="Swf\Actions\SwfActionGotoFrame.cs" />
+    <Compile Include="Swf\Actions\SwfActionGotoLabel.cs" />
+    <Compile Include="Swf\Actions\SwfActionIf.cs" />
+    <Compile Include="Swf\Actions\SwfActionJump.cs" />
+    <Compile Include="Swf\Actions\SwfSimpleAction.cs" />
+    <Compile Include="Swf\Actions\SwfUnknownAction.cs" />
+    <Compile Include="Swf\Attributes.cs" />
+    <Compile Include="Swf\Actions\SwfAction.cs" />
+    <Compile Include="Swf\Actions\SwfActionCode.cs" />
+    <Compile Include="Swf\Actions\SwfActionFactory.cs" />
+    <Compile Include="Swf\EnumReflector.cs" />
+    <Compile Include="Swf\Enums.cs" />
+    <Compile Include="Swf\Filters\SwfBevelFilter.cs" />
+    <Compile Include="Swf\Filters\SwfBlurFilter.cs" />
+    <Compile Include="Swf\Filters\SwfColorMatrixFilter.cs" />
+    <Compile Include="Swf\Filters\SwfConvolutionFilter.cs" />
+    <Compile Include="Swf\Filters\SwfDropShadowFilter.cs" />
+    <Compile Include="Swf\Filters\SwfGlowFilter.cs" />
+    <Compile Include="Swf\Filters\SwfGradientBevelFilter.cs" />
+    <Compile Include="Swf\Filters\SwfGradientGlowFilter.cs" />
+    <Compile Include="NumericExtensions.cs" />
+    <Compile Include="Swf\SwfColorTransform.cs" />
+    <Compile Include="Swf\SwfDumpService.cs" />
+    <Compile Include="Swf\SwfEvent.cs" />
+    <Compile Include="Swf\SwfGradient.cs" />
+    <Compile Include="Swf\SwfGraphics.cs" />
+    <Compile Include="Swf\Tags\Bitmaps\SwfTagDefineBitsJPEG3.cs" />
+    <Compile Include="Swf\Tags\Bitmaps\SwfTagDefineBitsJPEG2.cs" />
+    <Compile Include="Swf\Tags\Bitmaps\SwfTagDefineBitsJPEG.cs" />
+    <Compile Include="Swf\Tags\Bitmaps\SwfTagDefineBitsLossless.cs" />
+    <Compile Include="Swf\Tags\Bitmaps\SwfTagJPEGTables.cs" />
+    <Compile Include="Swf\Tags\Buttons\Enums.cs" />
+    <Compile Include="Swf\Tags\Buttons\SwfButton.cs" />
+    <Compile Include="Swf\Tags\Buttons\SwfTagDefineButton2.cs" />
+    <Compile Include="Swf\Tags\Buttons\SwfTagDefineButtonSound.cs" />
+    <Compile Include="Swf\Tags\Buttons\SwfTagDefineButtonCxform.cs" />
+    <Compile Include="Swf\Tags\Buttons\SwfTagDefineButton.cs" />
+    <Compile Include="Swf\Filters\SwfFilter.cs" />
+    <Compile Include="Swf\Tags\Control\SwfAsset.cs" />
+    <Compile Include="Swf\SwfAtomList.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagDefineScalingGrid.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagDefineSceneAndFrameLabelData.cs" />
+    <Compile Include="Swf\Tags\DisplayList\SwfTagPlaceObject2.cs" />
+    <Compile Include="Swf\Tags\DisplayList\SwfTagPlaceObject3.cs" />
+    <Compile Include="Swf\Tags\DisplayList\SwfTagRemoveObject.cs" />
+    <Compile Include="Swf\Tags\DisplayList\SwfTagRemoveObject2.cs" />
+    <Compile Include="Swf\Tags\SwfRefList.cs" />
+    <Compile Include="Swf\Tags\Shapes\Enums.cs" />
+    <Compile Include="Swf\Tags\Shapes\SwfFillStyle.cs" />
+    <Compile Include="Swf\Tags\Shapes\SwfLineStyle.cs" />
+    <Compile Include="Swf\Tags\Shapes\SwfShape.cs" />
+    <Compile Include="Swf\Tags\Shapes\SwfStyles.cs" />
+    <Compile Include="Swf\Tags\Shapes\SwfTagDefineMorphShape.cs" />
+    <Compile Include="Swf\Tags\Shapes\SwfTagDefineShape.cs" />
+    <Compile Include="Swf\Tags\Sounds\SwfTagSoundStreamBlock.cs" />
+    <Compile Include="Swf\Tags\Sounds\SwfTagSoundStreamHead2.cs" />
+    <Compile Include="Swf\Tags\Sounds\SwfTagSoundStreamHead.cs" />
+    <Compile Include="Swf\Tags\Sounds\SwfTagStartSound.cs" />
+    <Compile Include="Swf\Tags\Sounds\SwfTagDefineSound.cs" />
+    <Compile Include="Swf\Tags\SwfCharacterAny.cs" />
+    <Compile Include="Swf\Tags\SwfDisplayObject.cs" />
+    <Compile Include="Swf\Tags\SwfSprite.cs" />
+    <Compile Include="Swf\Tags\SwfCharacter.cs" />
+    <Compile Include="Swf\Tags\SwfTagDefineBinaryData.cs" />
+    <Compile Include="Swf\Tags\SwfTagFactory.cs" />
+    <Compile Include="Swf\Tags\Actions\SwfTagDoAction.cs" />
+    <Compile Include="Swf\Tags\DisplayList\SwfTagPlaceObject.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagSetBackgroundColor.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagFrameLabel.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagProductInfo.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagExportAssets.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagImportAssets.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagEnableDebugger.cs" />
+    <Compile Include="Swf\Tags\Actions\SwfTagDoInitAction.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagEnableDebugger2.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagScriptLimits.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagFileAttributes.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagImportAssets2.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagMetadata.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagDebugID.cs" />
+    <Compile Include="Swf\Tags\Actions\SwfTagDoAbc2.cs" />
+    <Compile Include="Swf\Tags\Actions\SwfTagDoAbc.cs" />
+    <Compile Include="Swf\SwfMovie.cs" />
+    <Compile Include="Swf\SwfReader.cs" />
+    <Compile Include="Swf\Tags\SwfTag.cs" />
+    <Compile Include="Swf\Tags\SwfTagCode.cs" />
+    <Compile Include="Swf\Extensions.cs" />
+    <Compile Include="Swf\SwfWriter.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagSetTabIndex.cs" />
+    <Compile Include="Swf\Tags\Control\SwfTagSymbolClass.cs" />
+    <Compile Include="Swf\Tags\SwfTagHandler.cs" />
+    <Compile Include="Swf\Tags\SwfTagList.cs" />
+    <Compile Include="Swf\Tags\SwfTagEmpty.cs" />
+    <Compile Include="Swf\Tags\SwfTagAny.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Swf\Tags\Text\SwfTagCSMTextSettings.cs" />
+    <Compile Include="Swf\Tags\Text\SwfTagDefineEditText.cs" />
+    <Compile Include="Swf\Tags\Text\SwfTagDefineText.cs" />
+    <Compile Include="Swf\Tags\Text\SwfTagDefineFontAlignZones.cs" />
+    <Compile Include="Swf\Tags\Text\SwfTagDefineFont3.cs" />
+    <Compile Include="Swf\Tags\Text\SwfTagDefineFont2.cs" />
+    <Compile Include="Swf\Tags\Text\SwfTagDefineFontInfo2.cs" />
+    <Compile Include="Swf\Tags\Text\SwfTagDefineFont.cs" />
+    <Compile Include="Swf\Tags\Text\SwfTagDefineFontInfo.cs" />
+    <Compile Include="Swf\Tags\Video\SwfTagVideoFrame.cs" />
+    <Compile Include="Swf\Tags\Video\SwfTagDefineVideoStream.cs" />
+    <Compile Include="Tests\FunctionTests.cs" />
+    <Compile Include="Tests\InstructionsTest.cs" />
+    <Compile Include="Tests\MiscTests.cs" />
+    <Compile Include="TypeSystem\FlashEvent.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\fp9.abc" />
+    <EmbeddedResource Include="Resources\apidoc.zip" />
+    <EmbeddedResource Include="Resources\mixins.swc" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Abc\abcFormat.txt" />
+    <EmbeddedResource Include="Abc\abcFormat470.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="IL\il.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="IL\opcodes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\pfc.rdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\mixins.dep" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
