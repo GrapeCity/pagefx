@@ -75,7 +75,7 @@ namespace DataDynamics.PageFX.Core.Metadata
 			ushort subsystem, dll_characteristics;
 			ReadOptionalHeaders(reader, out subsystem, out dll_characteristics, out cli);
 
-			Kind = GetModuleKind(characteristics, subsystem);
+			Kind = ResolveModuleKind(characteristics, subsystem);
 			Characteristics = (ModuleCharacteristics)dll_characteristics;
 
 			ReadSections(reader, numberOfSections);
@@ -90,7 +90,7 @@ namespace DataDynamics.PageFX.Core.Metadata
 			return target;
 		}
 
-		private void ReadOptionalHeaders(BufferedBinaryReader reader, out ushort subsystem, out ushort dll_characteristics, out DataDirectory cli)
+		private static void ReadOptionalHeaders(BufferedBinaryReader reader, out ushort subsystem, out ushort dll_characteristics, out DataDirectory cli)
 		{
 			// - PEOptionalHeader
 			//   - StandardFieldsHeader
@@ -177,11 +177,10 @@ namespace DataDynamics.PageFX.Core.Metadata
 
 			for (int i = 0; i < count; i++)
 			{
-				var section = new Section();
-
-				// Name
-				var name = reader.ReadZeroTerminatedString(8);
-				section.Name = name;
+				var section = new Section
+					{
+						Name = reader.ReadZeroTerminatedString(8)
+					};
 
 				// VirtualSize		4
 				reader.Advance(4);
@@ -240,7 +239,7 @@ namespace DataDynamics.PageFX.Core.Metadata
 			reader.Position = ResolveVirtualAddress(directory.VirtualAddress);
 		}
 
-		private static ModuleKind GetModuleKind(ushort characteristics, ushort subsystem)
+		private static ModuleKind ResolveModuleKind(ushort characteristics, ushort subsystem)
 		{
 			if ((characteristics & 0x2000) != 0) // ImageCharacteristics.Dll
 				return ModuleKind.Dll;
