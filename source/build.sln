@@ -1,6 +1,15 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared Items", "Shared Items", "{C6142C3D-9C9C-4CC4-911A-740DAD86D70B}"
+	ProjectSection(SolutionItems) = preProject
+		build.nant = build.nant
+		common.nant = common.nant
+		qa.nant = qa.nant
+		starteam.nant = starteam.nant
+		surround.nant = surround.nant
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.Shared", "libs\DataDynamics.PageFX.Shared\DataDynamics.PageFX.Shared.csproj", "{4647C4D2-0C86-4E61-8393-6FA64C88E86A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.CLI", "libs\DataDynamics.PageFX.CLI\DataDynamics.PageFX.CLI.csproj", "{3C215B55-8587-4A60-8CAA-91FE412B9013}"
@@ -12,15 +21,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.QA", "tests\DataDynamics.PageFX.QA\DataDynamics.PageFX.QA.csproj", "{D5099CF9-A243-4364-B9C7-6397917E3EFB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pfc", "products\pfc\pfc.csproj", "{24A39436-A110-4C67-BF29-7A4FAA399CAA}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared Items", "Shared Items", "{C6142C3D-9C9C-4CC4-911A-740DAD86D70B}"
-	ProjectSection(SolutionItems) = preProject
-		build.nant = build.nant
-		common.nant = common.nant
-		qa.nant = qa.nant
-		starteam.nant = starteam.nant
-		surround.nant = surround.nant
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pfx-nunit-console", "products\pfx-nunit-console\pfx-nunit-console.csproj", "{C34B2BA6-4B40-4909-AFD8-A41DCCA33D7C}"
 EndProject
