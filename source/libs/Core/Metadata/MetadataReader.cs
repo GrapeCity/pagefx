@@ -218,22 +218,28 @@ namespace DataDynamics.PageFX.Core.Metadata
 					        })
 				.ToList();
 
-			var creators = new Dictionary<string, Action<long, long>>
+			headers.ForEach(h =>
 				{
-					{"#-", CreateTables},
-					{"#~", CreateTables},
-					{"#Strings", CreateStringHeap},
-					{"#US", CreateUserStringHeap},
-					{"#GUID", CreateGuidHeap},
-					{"#Blob", CreateBlobHeap}
-				};
-
-			headers.ForEach(header =>
-				{
-					Action<long, long> create;
-					if (!creators.TryGetValue(header.Name, out create))
-						throw new BadMetadataException(string.Format("Unknown meta-data stream '{0}'.", header.Name));
-					create(header.Offset, header.Size);
+					switch (h.Name)
+					{
+						case "#-":
+						case "#~":
+							_reader.Position = h.Offset;
+							CreateTables();
+							break;
+						case "#Strings":
+							_strings = new StringHeap(_reader.Slice(h.Offset, h.Size));
+							break;
+						case "#US":
+							_userStrings = new UserStringHeap(_reader.Slice(h.Offset, h.Size));
+							break;
+						case "#GUID":
+							_guids = new GuidHeap(_reader.Slice(h.Offset, h.Size));
+							break;
+						case "#Blob":
+							_blob = new BlobHeap(_reader.Slice(h.Offset, h.Size));
+							break;
+					}
 				});
 		}
 
@@ -252,11 +258,10 @@ namespace DataDynamics.PageFX.Core.Metadata
 			get { return (_heapSizes & 4) == 0 ? 2 : 4; }
 		}
 
-		private void CreateTables(long offset, long heapSize)
+		private void CreateTables()
 		{
 			if (_tables != null)
 				throw new BadMetadataException("Multiple table heaps.");
-			_reader.Position = offset;
 
 			_reader.Advance(4); //reserved: 4, always 0
 
@@ -312,19 +317,9 @@ namespace DataDynamics.PageFX.Core.Metadata
 
 		#region Heaps
 
-		private void CreateStringHeap(long offset, long size)
-		{
-			_strings = new StringHeap(_reader.Slice(offset, size));
-		}
-
 		internal string FetchString(uint offset)
 		{
 			return _strings.Fetch(offset);
-		}
-
-		private void CreateUserStringHeap(long offset, long size)
-		{
-			_userStrings = new UserStringHeap(_reader.Slice(offset, size));
 		}
 
 		public string GetUserString(uint offset)
@@ -332,20 +327,10 @@ namespace DataDynamics.PageFX.Core.Metadata
 			return _userStrings.Fetch(offset);
 		}
 
-		private void CreateGuidHeap(long offset, long size)
-		{
-			_guids = new GuidHeap(_reader.Slice(offset, size));
-		}
-
 		internal Guid FetchGuid(uint index)
 		{
 			//guid index is 1 based
 			return index == 0 ? Guid.Empty : _guids.Fetch((int)(index - 1));
-		}
-
-		private void CreateBlobHeap(long offset, long size)
-		{
-			_blob = new BlobHeap(_reader.Slice(offset, size));
 		}
 
 		internal BufferedBinaryReader FetchBlob(uint offset)
