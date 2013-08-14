@@ -1,1 +1,0 @@
-nant -buildfile:vs.nant install.templates.vs

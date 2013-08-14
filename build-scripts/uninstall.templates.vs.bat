@@ -1,1 +1,0 @@
-nant -buildfile:vs.nant uninstall.templates.vs
