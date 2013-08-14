@@ -21,7 +21,8 @@ tests/**/[Oo]bj
 
 source/**/[Bb]in
 source/**/[Oo]bj
-source/**/.client
+source/.nuget
+source/packages
 source/**/*.log
 source/*.log
 source/Artifacts/

@@ -84,7 +84,7 @@
     </ProjectReference>
     <ProjectReference Include="..\libs\Flash\Flash.csproj">
       <Project>{A54D800D-621B-491A-BE70-59D46BA70523}</Project>
-      <Name>FlashLand</Name>
+      <Name>Flash</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
