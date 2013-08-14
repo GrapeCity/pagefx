@@ -22,7 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "libs\Core\Core.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "libs\Common\Common.csproj", "{3E823DFF-8429-499F-A3F0-3CD3E7B27A37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashLand", "libs\Flash\Flash.csproj", "{A54D800D-621B-491A-BE70-59D46BA70523}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flash", "libs\Flash\Flash.csproj", "{A54D800D-621B-491A-BE70-59D46BA70523}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRunner", "..\tests\TestRunner\TestRunner.csproj", "{D5099CF9-A243-4364-B9C7-6397917E3EFB}"
 EndProject
@@ -59,14 +59,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rv", "tools\rv\rv.csproj", "{AB6A2823-2D15-4226-85E3-9DCE5D9787ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xools", "tools\xools\xools.csproj", "{EB22E3A8-E5C0-449C-AC04-201A8D0CD6C3}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VS Integration", "VS Integration", "{665EC82B-31C4-4CE2-9D06-196EA08D48E7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.VisualStudio.Debugger", "VSIntegration\DataDynamics.PageFX.VisualStudio.Debugger\DataDynamics.PageFX.VisualStudio.Debugger.csproj", "{1832E66D-B3AB-429C-A1C8-9F8D2B2AA36D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.VisualStudio.Addin", "VSIntegration\DataDynamics.PageFX.VisualStudio.Addin\DataDynamics.PageFX.VisualStudio.Addin.csproj", "{1712B974-5EE0-42D1-A9BE-1AC884EEED79}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDynamics.PageFX.Build", "VSIntegration\DataDynamics.PageFX.Build\DataDynamics.PageFX.Build.csproj", "{EA4DDA5B-D108-4CBC-918A-86E36198FDFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -154,18 +146,6 @@ Global
 		{EB22E3A8-E5C0-449C-AC04-201A8D0CD6C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB22E3A8-E5C0-449C-AC04-201A8D0CD6C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB22E3A8-E5C0-449C-AC04-201A8D0CD6C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1832E66D-B3AB-429C-A1C8-9F8D2B2AA36D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1832E66D-B3AB-429C-A1C8-9F8D2B2AA36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1832E66D-B3AB-429C-A1C8-9F8D2B2AA36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1832E66D-B3AB-429C-A1C8-9F8D2B2AA36D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1712B974-5EE0-42D1-A9BE-1AC884EEED79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1712B974-5EE0-42D1-A9BE-1AC884EEED79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1712B974-5EE0-42D1-A9BE-1AC884EEED79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1712B974-5EE0-42D1-A9BE-1AC884EEED79}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA4DDA5B-D108-4CBC-918A-86E36198FDFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA4DDA5B-D108-4CBC-918A-86E36198FDFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA4DDA5B-D108-4CBC-918A-86E36198FDFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA4DDA5B-D108-4CBC-918A-86E36198FDFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -184,8 +164,5 @@ Global
 		{65F560E4-9641-4543-850C-ED6F146881E5} = {9A47A289-691D-499F-8457-8CCB0C32C554}
 		{AB6A2823-2D15-4226-85E3-9DCE5D9787ED} = {9A47A289-691D-499F-8457-8CCB0C32C554}
 		{EB22E3A8-E5C0-449C-AC04-201A8D0CD6C3} = {9A47A289-691D-499F-8457-8CCB0C32C554}
-		{1832E66D-B3AB-429C-A1C8-9F8D2B2AA36D} = {665EC82B-31C4-4CE2-9D06-196EA08D48E7}
-		{1712B974-5EE0-42D1-A9BE-1AC884EEED79} = {665EC82B-31C4-4CE2-9D06-196EA08D48E7}
-		{EA4DDA5B-D108-4CBC-918A-86E36198FDFF} = {665EC82B-31C4-4CE2-9D06-196EA08D48E7}
 	EndGlobalSection
 EndGlobal

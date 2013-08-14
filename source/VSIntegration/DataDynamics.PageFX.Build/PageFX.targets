@@ -1,9 +1,0 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <UsingTask
-     TaskName="DataDynamics.PageFX.Build.Pfc"
-     AssemblyFile="$(PFXHOME)\bin\DataDynamics.PageFX.Build.dll"/>
-  <Target Name="RunPfc"
-          DependsOnTargets="$(CoreBuildDependsOn)">
-    <Pfc AssemblyPath="$(OutputPath)$(TargetName)$(TargetExt)"/>
-  </Target>
-</Project>
