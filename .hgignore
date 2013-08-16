@@ -9,12 +9,16 @@ _ReSharper*
 *.suo
 *.user
 
+tests/**/[Bb]in
+tests/**/[Oo]bj
 source/**/[Bb]in
 source/**/[Oo]bj
 source/**/.client
 source/**/*.log
 source/*.log
 source/Artifacts/
+source/.nuget
+source/packages
 
 # ignore patterns via regexp syntax
 syntax: regexp
