@@ -8,7 +8,7 @@ namespace DataDynamics.PageFX.Flash.Core.CodeProvider
 {
     internal partial class CodeProviderImpl
     {
-        static string FormatDebugFile(string file)
+        private static string FormatDebugFile(string file)
         {
             if (GlobalSettings.EncodeDebugFile)
             {
@@ -46,17 +46,18 @@ namespace DataDynamics.PageFX.Flash.Core.CodeProvider
             return code;
         }
 
-        bool IsEmitDebugInfo
+		private bool IsEmitDebugInfo
         {
             get { return GlobalSettings.EmitDebugInfo && _hasDebugFile; }
         }
-        bool _hasDebugFile;
+		private bool _hasDebugFile;
 
-        void EmitLocalsDebugInfo(AbcCode code)
+		private void EmitLocalsDebugInfo(AbcCode code)
         {
             if (!IsEmitDebugInfo) return;
 
             const int regShift = -1;
+	        var firstLine = DebugFirstLine;
 
             //if (HasActivationVar)
             //{
@@ -65,7 +66,7 @@ namespace DataDynamics.PageFX.Flash.Core.CodeProvider
 
             if (HasPseudoThis)
             {
-                code.DebugLocalInfo(0, "pfx$pseudo_this", 0);
+                code.DebugLocalInfo(0, "pfx$pseudo_this", firstLine);
             }
 
             int n = _method.Parameters.Count;
@@ -73,12 +74,12 @@ namespace DataDynamics.PageFX.Flash.Core.CodeProvider
             {
                 IParameter p = _method.Parameters[i];
                 int slot = GetArgIndex(p);
-                code.DebugLocalInfo(slot + regShift, p.Name, 0);
+                code.DebugLocalInfo(slot + regShift, p.Name, firstLine);
             }
 
             if (HasActivationVar)
             {
-                code.DebugLocalInfo(_activationVar + regShift, ThisTraitName + "$0", 0);
+                code.DebugLocalInfo(_activationVar + regShift, ThisTraitName + "$0", firstLine);
             }
 
             if (HasLocalVariables)
@@ -89,7 +90,7 @@ namespace DataDynamics.PageFX.Flash.Core.CodeProvider
                     var v = GetVar(i);
                     if (v.IsAddressed) continue;
                     int slot = GetVarIndex(i);
-                    code.DebugLocalInfo(slot + regShift, v.Name, 0);
+                    code.DebugLocalInfo(slot + regShift, v.Name, firstLine);
                 }
             }
         }
