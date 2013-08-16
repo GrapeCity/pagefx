@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scripts", "{C6142C3D-9C9C-4CC4-911A-740DAD86D70B}"
 	ProjectSection(SolutionItems) = preProject
-		..\build-scripts\build.nant = ..\build-scripts\build.nant
 		..\build-scripts\common.build = ..\build-scripts\common.build
-		..\build-scripts\common.nant = ..\build-scripts\common.nant
 		..\build-scripts\core.build = ..\build-scripts\core.build
 		..\flash\flash.build = ..\flash\flash.build
 		..\build-scripts\flashland.build = ..\build-scripts\flashland.build
@@ -13,7 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scri
 		..\build-scripts\main.build = ..\build-scripts\main.build
 		..\build-scripts\nant.xsd = ..\build-scripts\nant.xsd
 		..\build-scripts\pfc.build = ..\build-scripts\pfc.build
-		..\build-scripts\qa.nant = ..\build-scripts\qa.nant
 		..\build-scripts\testrunner.build = ..\build-scripts\testrunner.build
 		..\build-scripts\tools.build = ..\build-scripts\tools.build
 	EndProjectSection
