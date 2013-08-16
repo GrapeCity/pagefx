@@ -1,1 +1,0 @@
-pfc /nohtml /out:IssueVision.swf .\bin\Debug\IssueVision.dll
