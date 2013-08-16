@@ -67,17 +67,19 @@ namespace DataDynamics.PageFX.FLI
                 code.DebugLocalInfo(0, "pfx$pseudo_this", 0);
             }
 
+	        var firstLine = DebugFirstLine;
+
             int n = _method.Parameters.Count;
             for (int i = 0; i < n; ++i)
             {
                 IParameter p = _method.Parameters[i];
                 int slot = GetArgIndex(p);
-                code.DebugLocalInfo(slot + regShift, p.Name, 0);
+                code.DebugLocalInfo(slot + regShift, p.Name, firstLine);
             }
 
             if (HasActivationVar)
             {
-                code.DebugLocalInfo(_activationVar + regShift, ThisTraitName + "$0", 0);
+				code.DebugLocalInfo(_activationVar + regShift, ThisTraitName + "$0", firstLine);
             }
 
             if (HasLocalVariables)
@@ -88,7 +90,7 @@ namespace DataDynamics.PageFX.FLI
                     var v = GetVar(i);
                     if (v.IsAddressed) continue;
                     int slot = GetVarIndex(i);
-                    code.DebugLocalInfo(slot + regShift, v.Name, 0);
+					code.DebugLocalInfo(slot + regShift, v.Name, firstLine);
                 }
             }
         }

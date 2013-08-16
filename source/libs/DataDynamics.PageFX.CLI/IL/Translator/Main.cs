@@ -301,14 +301,14 @@ namespace DataDynamics.PageFX.CLI.IL
 
             _outcode = new List<IInstruction>();
 
+			if (_debugFile != null)
+			{
+				var il = _provider.DebugFile(_debugFile);
+				Emit(il);
+			}
+
             _beginCode = _provider.Begin();
             _endCode = _provider.End();
-
-            if (_debugFile != null)
-            {
-                var il = _provider.DebugFile(_debugFile);
-                Emit(il);
-            }
 
             Emit(_beginCode);
             DeclareVariables();
