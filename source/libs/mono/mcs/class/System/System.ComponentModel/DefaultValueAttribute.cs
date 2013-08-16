@@ -91,15 +91,16 @@ namespace System.ComponentModel
 			DefaultValue = value;
 		}
 
-#if NOT_PFX
+
 		public DefaultValueAttribute (Type type, string value)
 		{
+#if NOT_PFX
 			try {
 				TypeConverter converter = TypeDescriptor.GetConverter (type);
 				DefaultValue = converter.ConvertFromString (null, CultureInfo.InvariantCulture, value);
 			} catch { }
-		}
 #endif
+		}
 
 #if NET_2_0
 		public virtual object Value {
