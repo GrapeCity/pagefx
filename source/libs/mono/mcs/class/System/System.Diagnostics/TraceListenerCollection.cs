@@ -39,12 +39,7 @@ using System.Globalization;
 
 namespace System.Diagnostics {
 
-#if NOT_PFX
-	public 
-#else
-    internal 
-#endif
-        class TraceListenerCollection : IList, ICollection, IEnumerable {
+	public class TraceListenerCollection : IList, ICollection, IEnumerable {
 
 		private ArrayList listeners = ArrayList.Synchronized (new ArrayList (1));
 

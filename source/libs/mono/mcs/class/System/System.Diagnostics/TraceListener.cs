@@ -41,12 +41,7 @@ using System.Diagnostics;
 
 namespace System.Diagnostics {
 
-#if NOT_PFX	
-    public 
-#else
-    internal
-#endif
-        abstract class TraceListener :
+	public abstract class TraceListener :
 #if NOT_PFX
          MarshalByRefObject, 
 #endif

@@ -60,11 +60,9 @@ namespace System.Diagnostics
             set { TraceImpl.IndentSize = value; }
         }
 
-#if NOT_PFX
         public static TraceListenerCollection Listeners {
 			get {return TraceImpl.Listeners;}
 		}
-#endif
 
         [Conditional("DEBUG")]
         public static void Assert(bool condition)
