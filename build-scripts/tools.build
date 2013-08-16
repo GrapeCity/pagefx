@@ -132,4 +132,7 @@
 		</if>
 	</target>
 
+	<target name="runtests">
+	</target>
+
 </project>

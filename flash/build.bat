@@ -1,1 +1,1 @@
-nant -buildfile:flash.build -logfile:build.log
+nant -buildfile:flashapi.build -logfile:build.log

@@ -5,12 +5,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scri
 	ProjectSection(SolutionItems) = preProject
 		..\build-scripts\common.build = ..\build-scripts\common.build
 		..\build-scripts\core.build = ..\build-scripts\core.build
-		..\flash\flash.build = ..\flash\flash.build
-		..\build-scripts\flashland.build = ..\build-scripts\flashland.build
+		..\build-scripts\flash.build = ..\build-scripts\flash.build
+		..\flash\flashapi.build = ..\flash\flashapi.build
 		..\flex\flex.build = ..\flex\flex.build
-		..\build-scripts\main.build = ..\build-scripts\main.build
 		..\build-scripts\nant.xsd = ..\build-scripts\nant.xsd
 		..\build-scripts\pfc.build = ..\build-scripts\pfc.build
+		..\build-scripts\pfx.build = ..\build-scripts\pfx.build
 		..\build-scripts\testrunner.build = ..\build-scripts\testrunner.build
 		..\build-scripts\tools.build = ..\build-scripts\tools.build
 	EndProjectSection

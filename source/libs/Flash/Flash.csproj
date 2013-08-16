@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DataDynamics.PageFX.Flash</RootNamespace>
-    <AssemblyName>pfx.flashland</AssemblyName>
+    <AssemblyName>pfx.flash</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\pfx.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>

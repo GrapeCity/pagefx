@@ -6,7 +6,7 @@
 	<property name="debug" value="true" unless="${property::exists('debug')}"/>
 	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
 	<property name="outdir" value="c:\pfx\bin" unless="${property::exists('outdir')}"/>
-	<property name="assembly" value="pfx.flashland"/>
+	<property name="assembly" value="pfx.flash"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
 		<property name="define" value="DEBUG;NUNIT"/>

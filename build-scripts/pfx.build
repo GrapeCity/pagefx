@@ -10,27 +10,20 @@
 	<if test="${runtime == 'mono'}">
 		<property name="nant.settings.currentframework" value="mono-3.5" />
 	</if>
+
+	<property name="script-list" value="common, core, flash, pfc, testrunner, tools"/>
 	
 	<target name="build">
 		<property name="target" value="build"/>
-		<call target="delegate"/>
+		<call target="runscripts"/>
 	</target>
 
 	<target name="clean">
 		<property name="target" value="clean"/>
-		<call target="delegate"/>
+		<call target="runscripts"/>
 	</target>
 	
 	<target name="rebuild" depends="clean, build"/>
-
-	<target name="delegate">
-		<nant buildfile="common.build" target="${target}"/>	
-		<nant buildfile="core.build" target="${target}"/>
-		<nant buildfile="flashland.build" target="${target}"/>
-		<nant buildfile="pfc.build" target="${target}"/>
-		<nant buildfile="testrunner.build" target="${target}"/>
-		<nant buildfile="tools.build" target="${target}" unless="${target == 'runtests'}"/>
-	</target>
 
 	<property name="pfx.bindir" value="c:/pfx/bin"/>
 	<property name="pfx.common.dll" value="${pfx.bindir}/pfx.common.dll"/>
@@ -39,6 +32,11 @@
 	<property name="pfx.testrunner.exe" value="c:/pfx/qa/bin/pfx.testrunner.exe"/>
 	
 	<target name="runtests">
+		<!-- TODO use -->
+		<!--
+		<property name="target" value="runtests"/>
+		<call target="runscripts"/>
+		-->
 		<nunit2>
 			<formatter type="Xml" usefile="true" extension=".xml" outputdir="c:/pfx/qa/nunit-reports"/>
 			<formatter type="Plain"/>
@@ -49,6 +47,12 @@
 		</nunit2>
 		
 		<!-- TODO: generate unit tests for test files and compile to separate assembly, and then run these unit tests  -->
+	</target>
+
+	<target name="runscripts">
+		<foreach item="String" in="${script-list}" property="script" delim="," trim="Both">
+			<nant buildfile="${script}.build" target="${target}"/>
+		</foreach>
 	</target>
 
 </project>
