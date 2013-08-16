@@ -35,7 +35,8 @@
 				<include name="System.Drawing.dll"/>
 				<include name="System.Xml.dll"/>
 				<include name="${pfx.common.dll}"/>
-				<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
+				<include name="${dir.libs}/nunit/nunit.framework.dll"/>
+				<include name="${dir.libs}/json/Newtonsoft.Json.dll"/>
 				<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/>
 			</references>
 			<sources basedir="${dir.src}">

@@ -21,7 +21,7 @@
 	<property name="dir.root" value="${project.dir}/.."/>
 	<property name="dir.libs" value="${dir.root}/libs"/>
 	<property name="dir.srcroot" value="${dir.root}/source"/>
-	<property name="dir.src" value="${dir.srcroot}/libs/FlashLand"/>
+	<property name="dir.src" value="${dir.srcroot}/libs/Flash"/>
 
 	<property name="pfx.common.dll" value="${outdir}/pfx.common.dll"/>
 	

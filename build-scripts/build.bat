@@ -1,1 +1,1 @@
-nant -buildfile:main.build -logfile:build.log -verbose
+nant -buildfile:pfx.build -logfile:build.log -verbose

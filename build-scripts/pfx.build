@@ -13,14 +13,18 @@
 
 	<property name="script-list" value="common, core, flash, pfc, testrunner, tools"/>
 	
-	<target name="build">
+	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+	<property name="dir.root" value="${project.dir}/.."/>
+	<property name="dir.libs" value="${dir.root}/libs"/>
+	
+	<target name="build" depends="__loaddeps">
 		<property name="target" value="build"/>
-		<call target="runscripts"/>
+		<call target="__runscripts"/>
 	</target>
 
 	<target name="clean">
 		<property name="target" value="clean"/>
-		<call target="runscripts"/>
+		<call target="__runscripts"/>
 	</target>
 	
 	<target name="rebuild" depends="clean, build"/>
@@ -32,7 +36,7 @@
 	<property name="pfx.testrunner.exe" value="c:/pfx/qa/bin/pfx.testrunner.exe"/>
 	
 	<target name="runtests">
-		<!-- TODO use -->
+		<!-- TODO use runscripts -->
 		<!--
 		<property name="target" value="runtests"/>
 		<call target="runscripts"/>
@@ -49,10 +53,37 @@
 		<!-- TODO: generate unit tests for test files and compile to separate assembly, and then run these unit tests  -->
 	</target>
 
-	<target name="runscripts">
+	<target name="__runscripts">
 		<foreach item="String" in="${script-list}" property="script" delim="," trim="Both">
 			<nant buildfile="${script}.build" target="${target}"/>
 		</foreach>
+	</target>
+	
+	<target name="__loaddeps" depends="__getnuget">
+		<property name="package" value="NUnit"/>
+		<call target="nuget-install"/>
+		
+		<property name="package" value="Newtonsoft.Json"/>
+		<call target="nuget-install"/>
+		
+		<mkdir dir="${dir.libs}/nunit"/>
+		<copy file="${project.dir}/NUnit.2.6.2/lib/nunit.framework.dll" todir="${dir.libs}/nunit"/>
+		<delete dir="${project.dir}/NUnit.2.6.2"/>
+	
+		<mkdir dir="${dir.libs}/json"/>
+		<copy file="${project.dir}/Newtonsoft.Json.5.0.6/lib/net35/Newtonsoft.Json.dll" todir="${dir.libs}/json"/>
+		<delete dir="${project.dir}/Newtonsoft.Json.5.0.6"/>
+	</target>
+	
+	<target name="__getnuget">
+		<get src="http://az320820.vo.msecnd.net/downloads/nuget.exe" dest="${project.dir}\nuget.exe"/>
+	</target>
+	
+	<target name="nuget-install">
+		<exec program="nuget.exe" basedir="${project.dir}" workingdir="${project.dir}" verbose="true">
+			<arg value="install"/>
+			<arg value="${package}"/>
+		</exec>
 	</target>
 
 </project>
