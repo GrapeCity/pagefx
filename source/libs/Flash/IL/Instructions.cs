@@ -111,6 +111,9 @@ namespace DataDynamics.PageFX.Flash.IL
             _list = new List<Instruction>();
 
             var rs = typeof(Instructions).GetResourceStream("opcodes.txt");
+			if (rs == null)
+				throw new BadImageFormatException("This assembly has no 'opcodes.txt' embedded resource.");
+
             using (var reader = new StreamReader(rs))
             {
                 bool deprecated = false;
@@ -136,6 +139,9 @@ namespace DataDynamics.PageFX.Flash.IL
             }
 
             rs = typeof(Instructions).GetResourceStream("il.xml");
+			if (rs == null)
+				throw new BadImageFormatException("This assembly has no 'il.xml' embedded resource.");
+
             var doc = XDocument.Load(XmlReader.Create(rs));
 
             foreach (var catElem in doc.Root.Elements("cat"))
