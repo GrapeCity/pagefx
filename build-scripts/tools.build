@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <project xmlns="http://nant.sf.net" name="Builds PFX Tools" default="rebuild">
 
+	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+
 	<!-- input properties -->
 	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
 	<property name="debug" value="true" unless="${property::exists('debug')}"/>
 	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
-	<property name="outdir" value="c:/pfx/tools" unless="${property::exists('outdir')}"/>
+	<property name="outdir" value="${project.dir}/build/tools" unless="${property::exists('outdir')}"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
 		<property name="define" value="DEBUG;NUNIT"/>
@@ -16,18 +18,17 @@
 		<property name="nant.settings.currentframework" value="mono-3.5" />
 	</if>
 
-	<property name="pfx.bindir" value="c:/pfx/bin"/>
+	<property name="pfx.bindir" value="${project.dir}/build/bin"/>
 	<property name="pfx.common.dll" value="${pfx.bindir}/pfx.common.dll"/>
 	<property name="pfx.core.dll" value="${pfx.bindir}/pfx.core.dll"/>
-	<property name="pfx.flashland.dll" value="${pfx.bindir}/pfx.flashland.dll"/>
+	<property name="pfx.flash.dll" value="${pfx.bindir}/pfx.flash.dll"/>
 	<property name="pfx.testrunner.exe" value="c:/pfx/qa/bin/pfx.testrunner.exe"/>
 	
-	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
 	<property name="dir.root" value="${project.dir}/.."/>
 	<property name="dir.libs" value="${dir.root}/libs"/>
 	<property name="dir.srcroot" value="${dir.root}/source"/>
 	<property name="dir.src" value="${dir.srcroot}/tools"/>
-	<property name="tools" value="as2xdoc;mono-test-adaptor;pfx-api-info;pfx-bench;pfx-bench-report;pfx-nunit-info;pfx-qa;pfx-wix;rv;xools"/>
+	<property name="tools" value="abc;as2xdoc;mono-test-adaptor;pfx-api-info;pfx-qa;rv"/>
 
 	<fileset id="refs">
 		<include name="System.dll"/>
@@ -37,13 +38,23 @@
 		<include name="System.Xml.Linq.dll"/>
 		<include name="${pfx.common.dll}"/>
 		<include name="${pfx.core.dll}"/>
-		<include name="${pfx.flashland.dll}"/>
+		<include name="${pfx.flash.dll}"/>
 		<include name="${pfx.testrunner.exe}"/>
 		<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
 		<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/> 
 	</fileset>
 	
 	<target name="build">
+
+		<copy todir="${outdir}" flatten="true">
+			<fileset>
+				<include name="${pfx.common.dll}"/>
+				<include name="${pfx.core.dll}"/>
+				<include name="${pfx.flash.dll}"/>
+				<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
+				<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/>
+			</fileset>
+		</copy>
 
 		<csc target="exe" output="${outdir}/api-diff.exe"
 				 debug="${debug}" unsafe="true" define="${define}"
@@ -132,7 +143,7 @@
 		</if>
 	</target>
 
-	<target name="runtests">
+	<target name="test">
 	</target>
 
 </project>

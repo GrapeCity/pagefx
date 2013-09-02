@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <project xmlns="http://nant.sf.net" name="Builds Core Assembly" default="rebuild">
 
+	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+
 	<!-- input properties -->
 	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
 	<property name="debug" value="true" unless="${property::exists('debug')}"/>
 	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
-	<property name="outdir" value="c:\pfx\bin" unless="${property::exists('outdir')}"/>
+	<property name="outdir" value="${project.dir}/build/bin" unless="${property::exists('outdir')}"/>
 	<property name="assembly" value="pfx.core"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
@@ -17,7 +19,6 @@
 		<property name="nant.settings.currentframework" value="mono-3.5" />
 	</if>
 	
-	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
 	<property name="dir.root" value="${project.dir}/.."/>
 	<property name="dir.libs" value="${dir.root}/libs"/>
 	<property name="dir.srcroot" value="${dir.root}/source"/>
@@ -62,7 +63,7 @@
 	
 	<target name="rebuild" depends="clean, build"/>
 
-	<target name="runtests">
+	<target name="test">
 		<nunit2>
 			<formatter type="Xml" usefile="true" extension=".xml" outputdir="${outdir}"/>
 			<formatter type="Plain"/>

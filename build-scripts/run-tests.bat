@@ -1,1 +1,1 @@
-nant -buildfile:main.build -logfile:run-tests.log -verbose runtests
+nant -buildfile:pfx.build -logfile:run-tests.log -verbose test

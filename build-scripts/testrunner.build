@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <project xmlns="http://nant.sf.net" name="Builds Common Assembly" default="rebuild">
 
+	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+
 	<!-- input properties -->
 	<property name="debug" value="true"/>
 	<property name="delaysign" value="false"/>
-	<property name="outdir" value="c:\pfx\qa\bin"/>
+	<property name="outdir" value="${project.dir}/build/bin"/>
 	<property name="assembly" value="pfx.testrunner"/>
 	<property name="define" value="IMPL64;NET_2_0;NUNIT"/>
 	<if test="${debug}">
@@ -13,12 +15,11 @@
 	
 	<property name="nant.settings.currentframework" value="net-3.5" />
 
-	<property name="pfx.bindir" value="c:/pfx/bin"/>
+	<property name="pfx.bindir" value="${outdir}"/>
 	<property name="pfx.common.dll" value="${pfx.bindir}/pfx.common.dll"/>
 	<property name="pfx.core.dll" value="${pfx.bindir}/pfx.core.dll"/>
-	<property name="pfx.flashland.dll" value="${pfx.bindir}/pfx.flashland.dll"/>
+	<property name="pfx.flash.dll" value="${pfx.bindir}/pfx.flash.dll"/>
 	
-	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
 	<property name="dir.root" value="${project.dir}/.."/>
 	<property name="dir.libs" value="${dir.root}/libs"/>
 	<property name="dir.src" value="${dir.root}/tests/testrunner"/>
@@ -35,7 +36,7 @@
 				<include name="System.Xml.Linq.dll"/>
 				<include name="${pfx.common.dll}"/>
 				<include name="${pfx.core.dll}"/>
-				<include name="${pfx.flashland.dll}"/>
+				<include name="${pfx.flash.dll}"/>
 				<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
 				<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/>
 				<include name="${dir.libs}/FireFX/Fireball.CodeEditor.dll"/>
@@ -72,7 +73,7 @@
 	
 	<target name="rebuild" depends="clean, build"/>
 
-	<target name="runtests">
+	<target name="test">
 		<nunit2>
 			<formatter type="Xml" usefile="true" extension=".xml" outputdir="${outdir}"/>
 			<formatter type="Plain"/>

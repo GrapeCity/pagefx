@@ -4,7 +4,8 @@
 	<!-- input properties -->
 	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
 	<property name="debug" value="true" unless="${property::exists('debug')}"/>
-	<property name="outdir" value="c:/pfx/framework" unless="${property::exists('outdir')}"/>
+	<property name="pfxdir" value="c:/pfx" unless="${property::exists('pfxdir')}"/>
+	<property name="outdir" value="${pfxdir}/framework" unless="${property::exists('outdir')}"/>
 
 	<property name="nant.settings.currentframework" value="net-3.5" />
 	<if test="${runtime == 'mono'}">
@@ -20,14 +21,14 @@
 
 			<!-- convert playerglobal.swc to flash.abc -->
 			<property name="workingdir" value="${curdir}/${ver}"/>
-			<exec program="c:/pfx/tools/abc.exe" workingdir="${workingdir}">
+			<exec program="${pfxdir}/tools/abc.exe" workingdir="${workingdir}">
 				<arg value="/merge"/>
 				<arg value="/out:flash.abc"/>
 				<arg value="playerglobal.swc"/>
 			</exec>
 
 			<!-- generate c# files -->
-			<exec program="c:/pfx/bin/pfc.exe" workingdir="${workingdir}">
+			<exec program="${pfxdir}/bin/pfc.exe" workingdir="${workingdir}">
 				<arg value="/wrap"/>
 				<arg value="/nocsc"/>
 				<arg value="/dir:src"/>
@@ -91,5 +92,8 @@
 	</target>
 
 	<target name="rebuild" depends="clean, build"/>
+
+	<target name="test">
+	</target>
 
 </project>

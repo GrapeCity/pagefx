@@ -4,14 +4,15 @@
 	<!-- input properties -->
 	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
 	<property name="debug" value="true" unless="${property::exists('debug')}"/>
-	<property name="outdir" value="c:/pfx/framework" unless="${property::exists('outdir')}"/>
+	<property name="pfxdir" value="c:/pfx" unless="${property::exists('pfxdir')}"/>
+	<property name="outdir" value="${pfxdir}/framework" unless="${property::exists('outdir')}"/>
 
 	<property name="nant.settings.currentframework" value="net-3.5" />
 	<if test="${runtime == 'mono'}">
 		<property name="nant.settings.currentframework" value="mono-3.5" />
 	</if>
 
-	<property name="fxdir" value="c:/pfx/framework"/>
+	<property name="fxdir" value="${pfxdir}/framework"/>
 	<property name="curdir" value="${project::get-base-directory()}"/>
 	<property name="ref1" value=""/>
 	<property name="ref2" value=""/>
@@ -75,7 +76,7 @@
 		<property name="dir" value="${curdir}/${ver}"/>
 
 		<!-- generate c# files -->
-		<exec program="c:/pfx/bin/pfc.exe" workingdir="${dir}">
+		<exec program="${pfxdir}/bin/pfc.exe" workingdir="${dir}">
 			<arg value="/wrap"/>
 			<arg value="/FP:${fp}"/>
 			<arg value="/r:${fxdir}/flash.v${fp}.dll"/>
