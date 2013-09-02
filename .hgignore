@@ -12,6 +12,8 @@ _ReSharper*
 Artifacts/
 build-scripts/*.log
 
+libs/json
+libs/NUnit
 flash/**/[Bb]in
 flash/**/[Oo]bj
 mono/**/[Bb]in
