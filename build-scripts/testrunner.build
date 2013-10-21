@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <project xmlns="http://nant.sf.net" name="Builds Common Assembly" default="rebuild">
 
-	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+	<property name="project_dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
 
 	<!-- input properties -->
 	<property name="debug" value="true"/>
 	<property name="delaysign" value="false"/>
-	<property name="outdir" value="${project.dir}/build/bin"/>
+	<property name="outdir" value="${project_dir}/build/bin"/>
 	<property name="assembly" value="pfx.testrunner"/>
 	<property name="define" value="IMPL64;NET_2_0;NUNIT"/>
 	<if test="${debug}">
@@ -20,14 +20,14 @@
 	<property name="pfx.core.dll" value="${pfx.bindir}/pfx.core.dll"/>
 	<property name="pfx.flash.dll" value="${pfx.bindir}/pfx.flash.dll"/>
 	
-	<property name="dir.root" value="${project.dir}/.."/>
-	<property name="dir.libs" value="${dir.root}/libs"/>
-	<property name="dir.src" value="${dir.root}/tests/testrunner"/>
+	<property name="root_dir" value="${project_dir}/.."/>
+	<property name="libs_dir" value="${root_dir}/libs"/>
+	<property name="src_dir" value="${root_dir}/tests/testrunner"/>
 	
 	<target name="build">
 		<csc target="exe" output="${outdir}/${assembly}.exe"
 			 debug="${debug}" unsafe="true" define="${define}"
-			 keyfile="${dir.root}/source/pfx.snk" delaysign="${delaysign}">
+			 keyfile="${root_dir}/source/pfx.snk" delaysign="${delaysign}">
 			<references>
 				<include name="System.dll"/>
 				<include name="System.Core.dll"/>
@@ -37,24 +37,24 @@
 				<include name="${pfx.common.dll}"/>
 				<include name="${pfx.core.dll}"/>
 				<include name="${pfx.flash.dll}"/>
-				<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
-				<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/>
-				<include name="${dir.libs}/FireFX/Fireball.CodeEditor.dll"/>
-				<include name="${dir.libs}/FireFX/Fireball.CodeEditor.SyntaxFiles.dll"/>
-				<include name="${dir.libs}/FireFX/Fireball.Core.dll"/>
-				<include name="${dir.libs}/FireFX/Fireball.SyntaxDocument.dll"/>
-				<include name="${dir.libs}/FireFX/Fireball.Win32.dll"/>
-				<include name="${dir.libs}/FireFX/Fireball.Windows.Forms.dll"/>
+				<include name="${libs_dir}/NUnit/nunit.framework.dll"/>
+				<include name="${libs_dir}/Ionic.Zip.Reduced.dll"/>
+				<include name="${libs_dir}/FireFX/Fireball.CodeEditor.dll"/>
+				<include name="${libs_dir}/FireFX/Fireball.CodeEditor.SyntaxFiles.dll"/>
+				<include name="${libs_dir}/FireFX/Fireball.Core.dll"/>
+				<include name="${libs_dir}/FireFX/Fireball.SyntaxDocument.dll"/>
+				<include name="${libs_dir}/FireFX/Fireball.Win32.dll"/>
+				<include name="${libs_dir}/FireFX/Fireball.Windows.Forms.dll"/>
 			</references>
-			<sources basedir="${dir.src}">
+			<sources basedir="${src_dir}">
 				<include name="**/*.cs"/>
-				<include name="${dir.root}/source/CommonAssemblyInfo.cs"/>
-				<include name="${dir.root}/mono/mcs/class/corlib/System/Int64.cs"/>
-				<include name="${dir.root}/mono/mcs/class/corlib/System/UInt64.cs"/>
-				<include name="${dir.root}/mono/mcs/class/corlib/System/IntParser.cs"/>
+				<include name="${root_dir}/source/CommonAssemblyInfo.cs"/>
+				<include name="${root_dir}/mono/mcs/class/corlib/System/Int64.cs"/>
+				<include name="${root_dir}/mono/mcs/class/corlib/System/UInt64.cs"/>
+				<include name="${root_dir}/mono/mcs/class/corlib/System/IntParser.cs"/>
 				<exclude name="Resources/**"/>
 			</sources>
-			<resources basedir="${dir.src}/Resources"
+			<resources basedir="${src_dir}/Resources"
 					   prefix="${assembly}" dynamicprefix="true" failonempty="false">
 				<include name="**/*.*"/>
 			</resources>
@@ -62,8 +62,8 @@
 	</target>
 
 	<target name="clean">
-		<delete dir="${dir.src}\obj" failonerror="false"/>
-		<delete dir="${dir.src}\bin" failonerror="false"/>
+		<delete dir="${src_dir}\obj" failonerror="false"/>
+		<delete dir="${src_dir}\bin" failonerror="false"/>
 		<delete failonerror="false">
 			<fileset basedir="${outdir}">
 				<include name="${assembly}.*"/>

@@ -195,43 +195,46 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private bool IsFlag(Func<IMethod, bool> get)
 		{
-			return GetMethods().Where(x => x != null).Any(get);
+			return GetMethods().Any(get);
 		}
 
 		private IMethod ResolveGetter()
 		{
 			var declType = DeclaringType;
-			return declType != null ? declType.Methods.FirstOrDefault(x => x.Association == this && !x.IsVoid()) : null;
+			return declType != null ? declType.Methods.FirstOrDefault(x => ReferenceEquals(x.Association, this) && !x.IsVoid()) : null;
 		}
 
 		private IMethod ResolveSetter()
 		{
 			var declType = DeclaringType;
-			return declType != null ? declType.Methods.FirstOrDefault(x => x.Association == this && x.IsVoid()) : null;
+			return declType != null ? declType.Methods.FirstOrDefault(x => ReferenceEquals(x.Association, this) && x.IsVoid()) : null;
 		}
 
 		private IEnumerable<IMethod> GetMethods()
 		{
-			yield return Getter;
-			yield return Setter;
+			return from m in new[] {Getter, Setter}
+				where m != null
+				select m;
 		}
 
 		private T FromMethod<T>(Func<IMethod, T> eval)
 		{
-			var m = GetMethods().FirstOrDefault(x => x != null);
+			var m = GetMethods().FirstOrDefault();
 			return m != null ? eval(m) : default(T);
 		}
 
 		private IType ResolveType()
 		{
-			if (_getter != null)
+			var getter = Getter;
+			if (getter != null)
 			{
-				return _getter.Type;
+				return getter.Type;
 			}
 
-			if (_setter != null)
+			var setter = Setter;
+			if (setter != null)
 			{
-				return _setter.Parameters[_setter.Parameters.Count - 1].Type;
+				return setter.Parameters[setter.Parameters.Count - 1].Type;
 			}
 
 			return null;

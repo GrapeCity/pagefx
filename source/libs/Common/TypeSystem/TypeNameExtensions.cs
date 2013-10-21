@@ -10,17 +10,19 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 	{
 		public static string BuildDisplayName(this IType type)
 		{
-			string k = type.CSharpKeyword();
-			if (!String.IsNullOrEmpty(k)) return k;
-			return ToDisplayName(type.FullName)
-			       + type.GenericParameters.BuildString(TypeNameKind.DisplayName, false);
+			string keyword = type.CSharpKeyword();
+			if (!string.IsNullOrEmpty(keyword)) return keyword;
+			var fullName = ToDisplayName(type.FullName);
+			return type.IsGeneric()
+				? fullName + type.GenericParameters.BuildString(TypeNameKind.DisplayName, false)
+				: fullName;
 		}
 
 		public static string BuildSigName(this IType type)
 		{
 			//TODO: support IGenericInstance
 			string k = type.CSharpKeyword();
-			return String.IsNullOrEmpty(k) ? ToDisplayName(type.FullName, true) : k;
+			return string.IsNullOrEmpty(k) ? ToDisplayName(type.FullName, true) : k;
 		}
 
 		public static string BuildKey(this IType type)
@@ -60,7 +62,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			var declaringType = type.DeclaringType;
 			if (declaringType == null)
 			{
-				return String.IsNullOrEmpty(type.Namespace) ? type.Name : type.Namespace + "." + type.Name;
+				return string.IsNullOrEmpty(type.Namespace) ? type.Name : type.Namespace + "." + type.Name;
 			}
 			return declaringType.BuildFullName() + "+" + type.Name;
 		}

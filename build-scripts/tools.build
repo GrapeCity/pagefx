@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <project xmlns="http://nant.sf.net" name="Builds PFX Tools" default="rebuild">
 
-	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+	<property name="project_dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
 
 	<!-- input properties -->
 	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
 	<property name="debug" value="true" unless="${property::exists('debug')}"/>
 	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
-	<property name="outdir" value="${project.dir}/build/tools" unless="${property::exists('outdir')}"/>
+	<property name="outdir" value="${project_dir}/build/tools" unless="${property::exists('outdir')}"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
 		<property name="define" value="DEBUG;NUNIT"/>
@@ -18,16 +18,16 @@
 		<property name="nant.settings.currentframework" value="mono-3.5" />
 	</if>
 
-	<property name="pfx.bindir" value="${project.dir}/build/bin"/>
+	<property name="pfx.bindir" value="${project_dir}/build/bin"/>
 	<property name="pfx.common.dll" value="${pfx.bindir}/pfx.common.dll"/>
 	<property name="pfx.core.dll" value="${pfx.bindir}/pfx.core.dll"/>
 	<property name="pfx.flash.dll" value="${pfx.bindir}/pfx.flash.dll"/>
 	<property name="pfx.testrunner.exe" value="c:/pfx/qa/bin/pfx.testrunner.exe"/>
 	
-	<property name="dir.root" value="${project.dir}/.."/>
-	<property name="dir.libs" value="${dir.root}/libs"/>
-	<property name="dir.srcroot" value="${dir.root}/source"/>
-	<property name="dir.src" value="${dir.srcroot}/tools"/>
+	<property name="root_dir" value="${project_dir}/.."/>
+	<property name="libs_dir" value="${root_dir}/libs"/>
+	<property name="src_root" value="${root_dir}/source"/>
+	<property name="src_dir" value="${src_root}/tools"/>
 	<property name="tools" value="abc;as2xdoc;mono-test-adaptor;pfx-api-info;pfx-qa;rv"/>
 
 	<fileset id="refs">
@@ -40,8 +40,8 @@
 		<include name="${pfx.core.dll}"/>
 		<include name="${pfx.flash.dll}"/>
 		<include name="${pfx.testrunner.exe}"/>
-		<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
-		<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/> 
+		<include name="${libs_dir}/NUnit/nunit.framework.dll"/>
+		<include name="${libs_dir}/Ionic.Zip.Reduced.dll"/> 
 	</fileset>
 	
 	<target name="build">
@@ -51,16 +51,16 @@
 				<include name="${pfx.common.dll}"/>
 				<include name="${pfx.core.dll}"/>
 				<include name="${pfx.flash.dll}"/>
-				<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
-				<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/>
+				<include name="${libs_dir}/NUnit/nunit.framework.dll"/>
+				<include name="${libs_dir}/Ionic.Zip.Reduced.dll"/>
 			</fileset>
 		</copy>
 
 		<csc target="exe" output="${outdir}/api-diff.exe"
 				 debug="${debug}" unsafe="true" define="${define}"
-				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+				 keyfile="${src_root}\pfx.snk" delaysign="${delaysign}">
 			<references refid="refs"/>
-			<sources basedir="${dir.src}/mono/corcompare">
+			<sources basedir="${src_dir}/mono/corcompare">
 				<include name="**/*.cs"/>
 				<include name="{dir.srcroot}/CommonAssemblyInfo.cs"/>
 				<exclude name="mono-api-info.cs"/>
@@ -71,9 +71,9 @@
 		
 		<csc target="exe" output="${outdir}/api-info.exe"
 				 debug="${debug}" unsafe="true" define="${define}"
-				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+				 keyfile="${src_root}\pfx.snk" delaysign="${delaysign}">
 			<references refid="refs"/>
-			<sources basedir="${dir.src}/mono/corcompare">
+			<sources basedir="${src_dir}/mono/corcompare">
 				<include name="**/*.cs"/>
 				<include name="{dir.srcroot}/CommonAssemblyInfo.cs"/>
 				<exclude name="mono-api-diff.cs"/>
@@ -84,12 +84,12 @@
 		
 		<csc target="exe" output="${outdir}/pfx-nunit-console.exe"
 				 debug="${debug}" unsafe="true" define="${define}"
-				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+				 keyfile="${src_root}\pfx.snk" delaysign="${delaysign}">
 			<references refid="refs"/>
-			<sources basedir="${dir.src}/pfx-nunit-console">
+			<sources basedir="${src_dir}/pfx-nunit-console">
 				<include name="**/*.cs"/>
-				<include name="${dir.srcroot}/CommonAssemblyInfo.cs"/>
-				<include name="${dir.srcroot}/libs/NUnit/src/NUnit.Framework/PageFX/*.cs"/>
+				<include name="${src_root}/CommonAssemblyInfo.cs"/>
+				<include name="${src_root}/libs/NUnit/src/NUnit.Framework/PageFX/*.cs"/>
 			</sources>
 		</csc>
 		
@@ -97,7 +97,7 @@
 			<call target="__get_tooldir"/>
 			<csc target="exe" output="${outdir}/${tool}.exe"
 				 debug="${debug}" unsafe="true" define="${define}"
-				 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+				 keyfile="${src_root}\pfx.snk" delaysign="${delaysign}">
 				<references refid="refs"/>
 				<sources basedir="${tooldir}">
 					<include name="**/*.cs"/>
@@ -114,8 +114,8 @@
 
 	<target name="clean">
 		<foreach item="String" in="mono/api-diff;mono/api-info;pfx-unit-console" delim=";" property="dir">
-			<delete dir="${dir.src}/${dir}/obj" failonerror="false"/>
-			<delete dir="${dir.src}/${dir}/bin" failonerror="false"/>
+			<delete dir="${src_dir}/${dir}/obj" failonerror="false"/>
+			<delete dir="${src_dir}/${dir}/bin" failonerror="false"/>
 		</foreach>
 		<foreach item="String" in="${tools}" delim=";" property="tool">
 			<call target="__get_tooldir"/>
@@ -133,11 +133,11 @@
 
 	<target name="__get_tooldir">
 		<property name="dirs" value="mono;fli"/>
-		<property name="tooldir" value="${dir.src}/${tool}"/>
+		<property name="tooldir" value="${src_dir}/${tool}"/>
 		<if test="${not directory::exists(tooldir)}">
 			<foreach item="String" in="${dirs}" delim=";" property="dir">
 				<if test="${not directory::exists(tooldir)}">
-					<property name="tooldir" value="${dir.src}/${dir}/${tool}"/>
+					<property name="tooldir" value="${src_dir}/${dir}/${tool}"/>
 				</if>
 			</foreach>
 		</if>

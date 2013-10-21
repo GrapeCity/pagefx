@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <project xmlns="http://nant.sf.net" name="Builds Flash Backend Assembly" default="rebuild">
 
-	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+	<property name="project_dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
 
 	<!-- input properties -->
 	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
 	<property name="debug" value="true" unless="${property::exists('debug')}"/>
 	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
-	<property name="outdir" value="${project.dir}/build/bin" unless="${property::exists('outdir')}"/>
+	<property name="outdir" value="${project_dir}/build/bin" unless="${property::exists('outdir')}"/>
 	<property name="assembly" value="pfx.flash"/>
 	<property name="define" value=""/>
 	<if test="${debug}">
@@ -19,17 +19,17 @@
 		<property name="nant.settings.currentframework" value="mono-3.5" />
 	</if>
 	
-	<property name="dir.root" value="${project.dir}/.."/>
-	<property name="dir.libs" value="${dir.root}/libs"/>
-	<property name="dir.srcroot" value="${dir.root}/source"/>
-	<property name="dir.src" value="${dir.srcroot}/libs/Flash"/>
+	<property name="root_dir" value="${project_dir}/.."/>
+	<property name="libs_dir" value="${root_dir}/libs"/>
+	<property name="src_root" value="${root_dir}/source"/>
+	<property name="src_dir" value="${src_root}/libs/Flash"/>
 
 	<property name="pfx.common.dll" value="${outdir}/pfx.common.dll"/>
 	
 	<target name="build">
 		<csc target="library" output="${outdir}/${assembly}.dll"
 			 debug="${debug}" unsafe="true" define="${define}"
-			 keyfile="${dir.srcroot}\pfx.snk" delaysign="${delaysign}">
+			 keyfile="${src_root}\pfx.snk" delaysign="${delaysign}">
 			<references>
 				<include name="System.dll"/>
 				<include name="System.Core.dll"/>
@@ -37,15 +37,15 @@
 				<include name="System.Xml.dll"/>
 				<include name="System.Xml.Linq.dll"/>
 				<include name="${pfx.common.dll}"/>
-				<include name="${dir.libs}/NUnit/nunit.framework.dll"/>
-				<include name="${dir.libs}/Ionic.Zip.Reduced.dll"/>
+				<include name="${libs_dir}/NUnit/nunit.framework.dll"/>
+				<include name="${libs_dir}/Ionic.Zip.Reduced.dll"/>
 			</references>
-			<sources basedir="${dir.src}">
+			<sources basedir="${src_dir}">
 				<include name="**/*.cs"/>
 				<include name="{dir.srcroot}/CommonAssemblyInfo.cs"/>
 				<exclude name="Resources/**"/>
 			</sources>
-			<resources basedir="${dir.src}"
+			<resources basedir="${src_dir}"
 					   prefix="${assembly}" dynamicprefix="true" failonempty="true">
 				<include name="Resources/**/*.*"/>
 				<include name="IL/il.xml"/>
@@ -55,8 +55,8 @@
 	</target>
 
 	<target name="clean">
-		<delete dir="${dir.src}\obj" failonerror="false"/>
-		<delete dir="${dir.src}\bin" failonerror="false"/>
+		<delete dir="${src_dir}\obj" failonerror="false"/>
+		<delete dir="${src_dir}\bin" failonerror="false"/>
 		<delete failonerror="false">
 			<fileset basedir="${outdir}">
 				<include name="${assembly}.*"/>

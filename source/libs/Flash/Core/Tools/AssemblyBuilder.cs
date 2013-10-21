@@ -1078,33 +1078,28 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
 
 	    #region BuildMembers
 		private void BuildFields(IType type, IEnumerable<AbcTrait> traits)
-        {
-            foreach (var trait in traits)
-            {
-                if (IsVisible(trait) && trait.IsField)
-                {
-                    BuildField(type, trait);
-                }
-            }
-        }
+		{
+			foreach (var trait in traits.Where(t => IsVisible(t) && t.IsField))
+			{
+				BuildField(type, trait);
+			}
+		}
 
-		private void BuildMethods(IType type, IEnumerable<AbcTrait> traits)
-        {
-            //build methods and properties
-            foreach (var trait in traits)
-            {
-                if (IsVisible(trait) && trait.IsMethod)
-                {
-                    BuildMethod(type, trait);
-                }
-            }
-        }
+	    private void BuildMethods(IType type, IEnumerable<AbcTrait> traits)
+		{
+			//build methods and properties
+			foreach (var trait in traits.Where(t => IsVisible(t) && t.IsMethod))
+			{
+				BuildMethod(type, trait);
+			}
+		}
 
-		private static void AddMethod(IType type, IMethod method)
+	    private static void AddMethod(IType type, IMethod method)
         {
             if (method == null) return;
 
             type.Members.Add(method);
+		    ((Method)method).DeclaringType = type;
 
 			if (method.IsAbstract)
 			{
@@ -1118,7 +1113,7 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
                 type.Members.Add(assoc);
         }
 
-		private static void AddMethod2(IType type, IMethod method)
+		private static void AddMethodIfNullDeclType(IType type, IMethod method)
         {
             if (method.DeclaringType == null)
                 AddMethod(type, method);
@@ -1633,11 +1628,11 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
                 if (abcMethod.NeedRest)
                 {
                     //TODO:
-                    AddMethod2(declType, method);
+                    AddMethodIfNullDeclType(declType, method);
                 }
                 else
                 {
-                    AddMethod2(declType, method);
+                    AddMethodIfNullDeclType(declType, method);
                 }
                 return;
             }
@@ -1647,7 +1642,7 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
             int paramNum = method.Parameters.Count;
             if (abcMethod.NeedRest)
             {
-                AddMethod2(declType, method);
+                AddMethodIfNullDeclType(declType, method);
                 
                 int n = MaxRestCount;
                 if (IsVectorMethod(abcMethod))
@@ -1666,7 +1661,7 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
             }
             else
             {
-                AddMethod2(declType, method);
+                AddMethodIfNullDeclType(declType, method);
             }
 
             if (!abcMethod.IsOverride && abcMethod.HasOptionalParams)

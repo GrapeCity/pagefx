@@ -467,7 +467,7 @@ namespace DataDynamics.PageFX.Common.Syntax
             return tns;
         }
 
-		private string GetFullName(IType type)
+		private static string GetFullName(IType type)
         {
             return type.DisplayName;
         }

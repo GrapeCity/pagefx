@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <project xmlns="http://nant.sf.net" name="Builds Common Assembly" default="rebuild">
 
-	<property name="project.dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
-	<property name="dir.root" value="${project.dir}/.."/>
-	<property name="dir.libs" value="${dir.root}/libs"/>
+	<property name="project_dir" value="${project::get-base-directory()}" unless="${property::exists('project_dir')}"/>
+	<property name="root_dir" value="${project_dir}/.."/>
+	<property name="libs_dir" value="${root_dir}/libs"/>
 
 	<!-- input properties -->
 	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
@@ -29,12 +29,6 @@
 	
 	<target name="rebuild" depends="clean, build"/>
 
-	<property name="pfx.bindir" value="c:/pfx/bin"/>
-	<property name="pfx.common.dll" value="${pfx.bindir}/pfx.common.dll"/>
-	<property name="pfx.core.dll" value="${pfx.bindir}/pfx.core.dll"/>
-	<property name="pfx.flashland.dll" value="${pfx.bindir}/pfx.flashland.dll"/>
-	<property name="pfx.testrunner.exe" value="c:/pfx/qa/bin/pfx.testrunner.exe"/>
-	
 	<target name="test">
 		<property name="target" value="test"/>
 		<call target="__runscripts"/>
@@ -45,36 +39,55 @@
 		<foreach item="String" in="${script-list}" property="script" delim="," trim="Both">
 			<nant buildfile="${script}.build" target="${target}">
 				<properties>
-					<property name="pfxdir" value="${project.dir}/build"/>
+					<property name="pfxdir" value="${project_dir}/build"/>
 				</properties>
 			</nant>
 		</foreach>
 	</target>
 	
 	<target name="__loaddeps" depends="__getnuget">
-		<property name="package" value="NUnit"/>
-		<call target="nuget-install"/>
 		
-		<property name="package" value="Newtonsoft.Json"/>
-		<call target="nuget-install"/>
-		
-		<mkdir dir="${dir.libs}/nunit"/>
-		<copy file="${project.dir}/NUnit.2.6.2/lib/nunit.framework.dll" todir="${dir.libs}/nunit" failonerror="false"/>
-		<delete dir="${project.dir}/NUnit.2.6.2" failonerror="false"/>
+		<foreach property="package" item="String" in="Newtonsoft.Json;NUnit" delim=";" trim="Both">
+			<xmlpeek file="${project_dir}/packages.config" xpath="/packages/package[@id='${package}']/@version" property="package_version"/>
+			<call target="nuget-install"/>
+
+			<property name="pack_dir" value="${project_dir}/build/${package}.${package_version}"/>
+			<property name="target_dir" value="${libs_dir}/${package}"/>
+			
+			<if test="${package == 'Newtonsoft.Json'}">
+				<property name="target_dir" value="${libs_dir}/json"/>
+			</if>
+			
+			<mkdir dir="${target_dir}"/>
+			
+			<copy todir="${target_dir}" failonerror="false">
+				<fileset basedir="${pack_dir}/lib/net35">
+					<include name="*.dll"/>
+				</fileset>
+			</copy>
+			<copy todir="${target_dir}" failonerror="false">
+				<fileset basedir="${pack_dir}/lib">
+					<include name="*.dll"/>
+				</fileset>
+			</copy>
+				
+			<delete dir="${pack_dir}" failonerror="false"/>
+		</foreach>
 	
-		<mkdir dir="${dir.libs}/json"/>
-		<copy file="${project.dir}/Newtonsoft.Json.5.0.6/lib/net35/Newtonsoft.Json.dll" todir="${dir.libs}/json" failonerror="false"/>
-		<delete dir="${project.dir}/Newtonsoft.Json.5.0.6" failonerror="false"/>
 	</target>
 	
 	<target name="__getnuget">
-		<get src="http://az320820.vo.msecnd.net/downloads/nuget.exe" dest="${project.dir}\nuget.exe" failonerror="false"/>
+		<if test="${not file::exists(project_dir + '\nuget.exe')}">
+			<get src="http://az320820.vo.msecnd.net/downloads/nuget.exe" dest="${project_dir}\nuget.exe" failonerror="false"/>
+		</if>
 	</target>
 	
 	<target name="nuget-install">
-		<exec program="nuget.exe" basedir="${project.dir}" workingdir="${project.dir}" verbose="true" failonerror="false">
+		<exec program="nuget.exe" basedir="${project_dir}" workingdir="${project_dir}" verbose="true" failonerror="false">
 			<arg value="install"/>
 			<arg value="${package}"/>
+			<arg value="-OutputDirectory"/>
+			<arg value="build"/>
 		</exec>
 	</target>
 

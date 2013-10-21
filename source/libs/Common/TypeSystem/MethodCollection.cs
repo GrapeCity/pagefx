@@ -26,9 +26,9 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
     	public IMethod StaticConstructor { get; private set; }
 
-		public static readonly IMethodCollection Empty = new EmptyMethodCollection();
+		public static readonly IMethodCollection Empty = new EmptyImpl();
 
-		private sealed class EmptyMethodCollection : IMethodCollection
+		private sealed class EmptyImpl : IMethodCollection
 		{
 			public int Count
 			{
