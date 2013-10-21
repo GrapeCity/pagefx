@@ -58,7 +58,7 @@
 			<!-- compile assembly -->
 			<csc target="library" output="${outdir}/flash.v${ver}.dll"
 				 debug="true" unsafe="false" nostdlib="true"
-				 keyfile="${curdir}/../mono/mcs/class/msfinal.pub" delaysign="true">
+				 keyfile="${curdir}/../../mono/mcs/class/msfinal.pub" delaysign="true">
 				<references>
 					<include name="c:/pfx/framework/mscorlib.dll"/>
 				</references>

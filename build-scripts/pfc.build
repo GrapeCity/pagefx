@@ -29,6 +29,12 @@
 	<property name="pfx.flash.dll" value="${outdir}/pfx.flash.dll"/>
 	
 	<target name="build">
+		<copy todir="${outdir}" flatten="true">
+			<fileset>
+				<include name="${libs_dir}/NUnit/nunit.framework.dll"/>
+				<include name="${libs_dir}/Ionic.Zip.Reduced.dll"/>
+			</fileset>
+		</copy>
 		<csc target="exe" output="${outdir}/${assembly}.exe"
 			 debug="${debug}" unsafe="true" define="${define}"
 			 keyfile="${src_root}\pfx.snk" delaysign="${delaysign}">
