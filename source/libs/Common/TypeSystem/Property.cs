@@ -201,13 +201,13 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		private IMethod ResolveGetter()
 		{
 			var declType = DeclaringType;
-			return declType != null ? declType.Methods.FirstOrDefault(x => ReferenceEquals(x.Association, this) && !x.IsVoid()) : null;
+			return declType != null ? declType.Methods.FirstOrDefault(x => x != _setter && ReferenceEquals(x.Association, this) && !x.IsVoid()) : null;
 		}
 
 		private IMethod ResolveSetter()
 		{
 			var declType = DeclaringType;
-			return declType != null ? declType.Methods.FirstOrDefault(x => ReferenceEquals(x.Association, this) && x.IsVoid()) : null;
+			return declType != null ? declType.Methods.FirstOrDefault(x => x != _getter && ReferenceEquals(x.Association, this) && x.IsVoid()) : null;
 		}
 
 		private IEnumerable<IMethod> GetMethods()

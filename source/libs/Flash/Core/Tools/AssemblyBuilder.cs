@@ -1109,8 +1109,10 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
 			}
 
 			var assoc = method.Association;
-            if (assoc != null && assoc.DeclaringType == null)
-                type.Members.Add(assoc);
+		    if (assoc != null && assoc.DeclaringType == null)
+		    {
+				type.Members.Add(assoc);
+		    }
         }
 
 		private static void AddMethodIfNullDeclType(IType type, IMethod method)
@@ -1684,14 +1686,17 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
         {
             string name = method.Name;
             ((TypeMember)method).Name = (trait.IsGetter ? "get_" : "set_") + name;
-            var prop = FindProperty(trait.Owner.Traits, trait.Name.NameString);
+
+		    var prop = FindProperty(trait.Owner.Traits, trait.Name.NameString);
             if (prop == null)
             {
                 prop = new Property
                            {
                                Documentation = summary,
                                Name = name,
-							   DeclaringType = declType
+							   DeclaringType = declType,
+							   Getter = trait.IsGetter ? method : null,
+							   Setter = trait.IsSetter ? method : null
                            };
                 trait.Property = prop;
 				declType.Properties.Add(prop);
@@ -1786,6 +1791,11 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
                 return SystemTypes.Int32;
             }
 
+	        if (m.IsSetter)
+	        {
+		        return SystemTypes.Void;
+	        }
+
             var type = BuildVectorReturnType(m);
             if (type != null)
                 return type;
@@ -1806,15 +1816,11 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
             if (traits == null) return null;
             //can be two traits (getter and setter) with the same property
             int n = 0;
-            foreach (var trait in traits)
+            foreach (var prop in from t in traits where t.IsAccessor && t.Name.NameString == name select t.Property)
             {
-                if (trait.IsAccessor && trait.Name.NameString == name)
-                {
-                    var prop = trait.Property;
-                    if (prop != null) return prop;
-                    if (n == 1) return null;
-                    ++n;
-                }
+	            if (prop != null) return prop;
+	            if (n == 1) return null;
+	            ++n;
             }
             return null;
         }
