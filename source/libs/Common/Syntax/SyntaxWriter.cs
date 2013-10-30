@@ -1396,7 +1396,8 @@ namespace DataDynamics.PageFX.Common.Syntax
 		//TODO: use existing method extension
         private static bool IsNew(IMethod method)
         {
-            if (method == null) return false;
+            if (method == null || method.IsStatic || method.IsConstructor)
+				return false;
 
             var type = method.DeclaringType;
             var baseType = type.BaseType;

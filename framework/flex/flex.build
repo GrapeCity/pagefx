@@ -25,10 +25,6 @@
 	
 	<!-- flex 3.3.0 -->
 	<target name="build.v3.0.0">
-		<property name="ref1" value=""/>
-		<property name="ref2" value=""/>
-		<property name="ref3" value=""/>
-		
 		<property name="ver" value="3.3.0"/>
 		<property name="fp" value="10.0"/>
 		<echo message="Building assemblies for flex v${ver} with linkage to flash player v${fp} API."/>
@@ -43,10 +39,6 @@
 	
 	<!-- flex 4.5.1 -->
 	<target name="build.v4.5.1">
-		<property name="ref1" value=""/>
-		<property name="ref2" value=""/>
-		<property name="ref3" value=""/>
-
 		<property name="ver" value="4.5.1"/>
 		<property name="fp" value="10.2"/>
 		<echo message="Building assemblies for flex v${ver} with linkage to flash player v${fp} API."/>
@@ -111,7 +103,7 @@
 		<property name="assembly" value="flex.${file}.v${ver}"/>
 		<csc target="library" output="${outdir}/${assembly}.dll"
 			 debug="true" unsafe="false" nostdlib="true"
-			 keyfile="${curdir}/../source/pfx.snk">
+			 keyfile="${curdir}/../../source/pfx.snk">
 			<references>
 				<include name="${fxdir}/mscorlib.dll"/>
 				<include name="${fxdir}/flash.v${fp}.dll"/>
@@ -136,6 +128,9 @@
 		<!-- cleanup -->
 		<delete dir="${srcdir}" includeemptydirs="true" failonerror="false"/>
 		<delete file="${dir}/${file}.swcdep" failonerror="false"/>
+		<property name="ref1" value=""/>
+		<property name="ref2" value=""/>
+		<property name="ref3" value=""/>
 	</target>
 
 	<target name="clean">

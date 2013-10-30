@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net" name="builds mono libs" default="rebuild">
+
+	<property name="project_dir" value="${project::get-base-directory()}" unless="${property::exists('project.dir')}"/>
+
+	<!-- input properties -->
+	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
+	<property name="debug" value="true" unless="${property::exists('debug')}"/>
+	<property name="delaysign" value="false" unless="${property::exists('delaysign')}"/>
+	<property name="outdir" value="${project_dir}/build/framework/" unless="${property::exists('outdir')}"/>
+	<property name="define" value="NET_1_1;NET_2_0;PFX;AVM;PTR32"/>
+	<property name="build-config" value="Release"/>
+	<if test="${debug}">
+		<property name="define" value="${define};DEBUG;NUNIT"/>
+		<property name="build-config" value="Debug"/>
+	</if>
+
+	<property name="nant.settings.currentframework" value="net-3.5" />
+	<if test="${runtime == 'mono'}">
+		<property name="nant.settings.currentframework" value="mono-3.5" />
+	</if>
+
+	<property name="msbuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe"/>
+
+	<property name="root_dir" value="${project_dir}/.."/>
+	<property name="src_root" value="${root_dir}/source"/>
+	<property name="lib_root" value="${root_dir}/mono/mcs/class"/>
+
+	<target name="build">
+		<property name="lib" value="mscorlib"/>
+		<property name="libdir" value="${lib_root}/corlib"/>
+		<call target="msbuild"/>
+
+		<property name="lib" value="System"/>
+		<property name="libdir" value="${lib_root}/${lib}"/>
+		<call target="msbuild"/>
+
+		<property name="lib" value="System.Core"/>
+		<property name="libdir" value="${lib_root}/${lib}"/>
+		<call target="msbuild"/>
+
+		<property name="lib" value="System.Xml"/>
+		<property name="libdir" value="${lib_root}/${lib}"/>
+		<call target="msbuild"/>
+
+		<property name="lib" value="System.Data"/>
+		<property name="libdir" value="${lib_root}/${lib}"/>
+		<call target="msbuild"/>
+
+		<property name="lib" value="System.Drawing"/>
+		<property name="libdir" value="${lib_root}/${lib}"/>
+		<call target="msbuild"/>
+
+		<property name="lib" value="Microsoft.VisualBasic"/>
+		<property name="libdir" value="${lib_root}/${lib}"/>
+		<call target="msbuild"/>
+
+		<property name="lib" value="NUnit.Framework"/>
+		<property name="libdir" value="${src_root}/libs/NUnit/src/${lib}"/>
+		<call target="msbuild"/>
+	</target>
+
+	<target name="msbuild">
+		<exec program="${msbuild.exe}">
+			<arg value="${libdir}/${lib}.csproj" />
+			<arg value="/t:Build"/>
+			<arg value="/p:Configuration=${build-config}" />
+			<arg value='/p:OutDir=${outdir}' />
+			<environment>
+				<variable name="PFX_HOME" value="${project_dir}/build" />
+			</environment>
+		</exec>
+	</target>
+
+	<target name="clean">
+		<delete failonerror="false">
+			<fileset basedir="${lib_root}">
+				<include name="**/bin/**"/>
+				<include name="**/obj/**"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="rebuild" depends="clean, build"/>
+
+	<target name="test">
+	</target>
+
+</project>

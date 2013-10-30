@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scri
 		..\build-scripts\flash.build = ..\build-scripts\flash.build
 		..\framework\flash\flashapi.build = ..\framework\flash\flashapi.build
 		..\framework\flex\flex.build = ..\framework\flex\flex.build
+		..\build-scripts\mono.build = ..\build-scripts\mono.build
 		..\build-scripts\nant.xsd = ..\build-scripts\nant.xsd
 		..\build-scripts\pfc.build = ..\build-scripts\pfc.build
 		..\build-scripts\pfx.build = ..\build-scripts\pfx.build

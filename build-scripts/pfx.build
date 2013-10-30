@@ -15,7 +15,7 @@
 		<property name="nant.settings.currentframework" value="mono-3.5" />
 	</if>
 
-	<property name="script-list" value="common, core, flash, pfc, testrunner, tools, ../framework/flash/flashapi, ../framework/flex/flex"/>
+	<property name="script-list" value="common, core, flash, pfc, testrunner, tools, ../framework/flash/flashapi, mono, ../framework/flex/flex"/>
 	
 	<target name="build" depends="__loaddeps">
 		<property name="target" value="build"/>
