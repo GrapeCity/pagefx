@@ -60,7 +60,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 		{
 			get
 			{
-				var m = GetMethods().FirstOrDefault(x => x != null && x.Parameters.Count > 0);
+				var m = GetMethods().FirstOrDefault(x => x.Parameters.Count > 0);
 				return m == null ? null : m.Parameters[0].Type;
 			}
 		}
@@ -130,14 +130,17 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 		private IEnumerable<IMethod> GetMethods()
 		{
-			yield return Adder;
-			yield return Remover;
-			yield return Raiser;
+			return new[]
+			{
+				Adder,
+				Remover,
+				Raiser
+			}.Where(x => x != null);
 		}
 
 		private T FromMethod<T>(Func<IMethod, T> eval)
 		{
-			var m = GetMethods().FirstOrDefault(x => x != null);
+			var m = GetMethods().FirstOrDefault();
 			return m != null ? eval(m) : default(T);
 		}
 
