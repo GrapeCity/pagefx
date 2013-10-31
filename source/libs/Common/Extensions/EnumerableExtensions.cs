@@ -8,6 +8,11 @@ namespace DataDynamics.PageFX.Common.Extensions
 {
     public static class EnumerableExtensions
 	{
+	    public static TR IfNotNull<T, TR>(this T x, Func<T, TR> f)
+	    {
+		    return Equals(x, default(T)) ? default(TR) : f(x);
+	    }
+
 		#region AsContinuous
 
 		public static IEnumerable<T> AsContinuous<T>(this IList<T> list)

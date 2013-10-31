@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DataDynamics.PageFX.Common.Extensions;
 
 namespace DataDynamics.PageFX.Common.TypeSystem
 {
@@ -13,8 +14,7 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 			_arrayDimensions = ArrayDimensionCollection.Single;
         }
 
-        public ArrayType(IType elementType, ArrayDimensionCollection dim)
-            : base(elementType)
+        public ArrayType(IType elementType, ArrayDimensionCollection dim) : base(elementType)
         {
 			_arrayDimensions = dim;
         }
@@ -41,90 +41,42 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    public override ITypeCollection Interfaces
         {
-            get
-            {
-                var impl = BaseType;
-                if (impl != null)
-                    return impl.Interfaces;
-                return TypeCollection.Empty;
-            }
+            get { return BaseType.IfNotNull(x => x.Interfaces); }
         }
 
         public override IEventCollection Events
         {
-            get
-            {
-                var impl = BaseType;
-                if (impl != null)
-                    return impl.Events;
-                return null;
-            }
+            get { return BaseType.IfNotNull(x => x.Events); }
         }
 
         public override IFieldCollection Fields
         {
-            get
-            {
-                var impl = BaseType;
-                if (impl != null)
-                    return impl.Fields;
-                return null;
-            }
+            get { return BaseType.IfNotNull(x => x.Fields); }
         }
 
         public override IPropertyCollection Properties
         {
-            get
-            {
-                var impl = BaseType;
-                if (impl != null)
-                    return impl.Properties;
-                return null;
-            }
+            get { return BaseType.IfNotNull(x => x.Properties); }
         }
 
         public override IMethodCollection Methods
         {
-            get
-            {
-                var impl = BaseType;
-                if (impl != null)
-                    return impl.Methods;
-                return null;
-            }
+            get { return BaseType.IfNotNull(x => x.Methods); }
         }
 
         public override ITypeMemberCollection Members
         {
-            get
-            {
-                var impl = BaseType;
-                if (impl != null)
-                    return impl.Members;
-                return null;
-            }
+            get { return BaseType.IfNotNull(x => x.Members); }
         }
 
         public override ITypeCollection Types
         {
-            get
-            {
-                var impl = BaseType;
-                if (impl != null)
-                    return impl.Types;
-                return null;
-            }
+            get { return BaseType.IfNotNull(x => x.Types); }
         }
 
         public override ClassLayout Layout
         {
-            get
-            {
-                var impl = BaseType;
-                if (impl != null)
-                    return impl.Layout;
-                return null;
-            }
+            get { return BaseType.IfNotNull(x => x.Layout); }
         }
 
 	    public override ArrayDimensionCollection ArrayDimensions

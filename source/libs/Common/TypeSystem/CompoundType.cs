@@ -104,7 +104,16 @@ namespace DataDynamics.PageFX.Common.TypeSystem
 
 	    public ITypeCollection GenericArguments
 	    {
-			get { return ElementType.GenericArguments; }
+		    get
+		    {
+			    switch (TypeKind)
+			    {
+				    case TypeKind.Array:
+						return TypeCollection.Empty;
+					default:
+						return ElementType.GenericArguments;
+			    }
+		    }
 	    }
 
 	    public virtual IFieldCollection Fields
