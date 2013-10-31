@@ -975,6 +975,7 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
         {
             string name = me["name"];
             string eventType = me["type"];
+
             if (string.IsNullOrEmpty(name))
             {
                 Console.WriteLine("WARN: Event has no name");
@@ -982,6 +983,14 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
             }
 
             string eventName = name;
+
+			// event name could be a field reference (found in flash 11.x playerglobal.swc)
+			var dot = eventName.LastIndexOf('.');
+			if (dot >= 0)
+			{
+				eventName = eventName.Substring(dot + 1);
+			}
+
             if (HasMember(type, name))
             {
                 eventName = "On" + name.ToPascalCase();

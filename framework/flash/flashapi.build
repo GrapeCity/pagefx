@@ -16,7 +16,7 @@
 
 	<target name="build">
 
-		<foreach item="String" in="9.0;10.0;10.2" delim=";" property="ver">
+		<foreach item="String" in="9.0;10.0;10.2;11.0;11.4;11.9" delim=";" property="ver">
 			<echo message="Building assembly for Flash Player ${ver} API"/>
 
 			<!-- convert playerglobal.swc to flash.abc -->
