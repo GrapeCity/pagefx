@@ -5,6 +5,7 @@
 	<property name="runtime" value="clr" unless="${property::exists('runtime')}"/>
 	<property name="debug" value="true" unless="${property::exists('debug')}"/>
 	<property name="pfxdir" value="c:/pfx" unless="${property::exists('pfxdir')}"/>
+	<property name="fxdir" value="${pfxdir}/framework"/>
 	<property name="outdir" value="${pfxdir}/framework"/>
 
 	<property name="nant.settings.currentframework" value="net-3.5" />
@@ -16,24 +17,27 @@
 
 	<target name="build">
 
-		<foreach item="String" in="9.0;10.0;10.2;11.0;11.4;11.9" delim=";" property="ver">
-			<echo message="Building assembly for Flash Player ${ver} API"/>
+		<property name="fp" value="11.4"/>
 
-			<!-- convert playerglobal.swc to flash.abc -->
+		<foreach item="String" in="1.4.1" delim=";" property="ver">
+			<echo message="Building assembly for starling ${ver} API"/>
+
+			<!-- convert starling.swc to starling.abc -->
 			<property name="workingdir" value="${curdir}/${ver}"/>
 			<exec program="${pfxdir}/tools/abc.exe" workingdir="${workingdir}">
 				<arg value="/merge"/>
-				<arg value="/out:flash.abc"/>
-				<arg value="playerglobal.swc"/>
+				<arg value="/out:starling.abc"/>
+				<arg value="starling.swc"/>
 			</exec>
 
 			<!-- generate c# files -->
 			<exec program="${pfxdir}/bin/pfc.exe" workingdir="${workingdir}">
 				<arg value="/wrap"/>
+				<arg value="/FP:${fp}"/>
+				<arg value="/r:${fxdir}/flash.v${fp}.dll"/>
 				<arg value="/nocsc"/>
 				<arg value="/dir:src"/>
-				<arg value="/FP:${ver}"/>
-				<arg value="flash.abc"/>
+				<arg value="starling.abc"/>
 			</exec>
 
 			<!-- generated assemblyinfo.cs -->
@@ -44,30 +48,31 @@
 					<import namespace="System.Reflection" />
 				</imports>
 				<attributes>
-					<attribute type="AssemblyTitleAttribute" value="Flash Player ${ver} API"/>
+					<attribute type="AssemblyTitleAttribute" value="Starling ${ver} API"/>
 					<attribute type="AssemblyCompanyAttribute" value="Data Dynamics"/>
 					<attribute type="AssemblyProductAttribute" value="PageFX"/>
 					<attribute type="AssemblyCopyrightAttribute" value="Copyright © Data Dynamics 2013"/>
 					<attribute type="AssemblyTrademarkAttribute" value=""/>
 					<attribute type="AssemblyCultureAttribute" value=""/>
-					<attribute type="AssemblyVersionAttribute" value="${ver}.0.0"/>
-					<attribute type="AssemblyFileVersionAttribute" value="${ver}.0.0"/>
+					<attribute type="AssemblyVersionAttribute" value="${ver}.0"/>
+					<attribute type="AssemblyFileVersionAttribute" value="${ver}.0"/>
 				</attributes>
 			</asminfo>
 
 			<!-- compile assembly -->
-			<csc target="library" output="${outdir}/flash.v${ver}.dll"
+			<csc target="library" output="${outdir}/starling.v${ver}.dll"
 				 debug="true" unsafe="false" nostdlib="true"
 				 keyfile="${curdir}/../../mono/mcs/class/msfinal.pub" delaysign="true">
 				<references>
-					<include name="${outdir}/mscorlib.dll"/>
+					<include name="${fxdir}/mscorlib.dll"/>
+					<include name="${fxdir}/flash.v${fp}.dll"/>
 				</references>
 				<sources basedir="${srcdir}">
 					<include name="**/*.cs"/>
 					<include name="${curdir}/api/**/*.cs"/>
 				</sources>
 				<resources basedir="${workingdir}" prefix="" dynamicprefix="false" failonempty="true">
-					<include name="flash.abc"/>
+					<include name="starling.abc"/>
 				</resources>
 			</csc>
 
@@ -75,7 +80,7 @@
 			<delete dir="${srcdir}" includeemptydirs="true"/>
 			<delete>
 				<fileset basedir="${workingdir}">
-					<include name="flash.abc"/>
+					<include name="starling.abc"/>
 				</fileset>
 			</delete>
 
@@ -85,8 +90,8 @@
 	<target name="clean">
 		<delete>
 			<fileset basedir="${outdir}">
-				<include name="flash.v*.dll"/>
-				<include name="flash.v*.pdb"/>
+				<include name="starling.v*.dll"/>
+				<include name="starling.v*.pdb"/>
 			</fileset>
 		</delete>
 	</target>

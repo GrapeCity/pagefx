@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Scripts", "Build Scri
 		..\build-scripts\nant.xsd = ..\build-scripts\nant.xsd
 		..\build-scripts\pfc.build = ..\build-scripts\pfc.build
 		..\build-scripts\pfx.build = ..\build-scripts\pfx.build
+		..\framework\starling\starling.build = ..\framework\starling\starling.build
 		..\build-scripts\testrunner.build = ..\build-scripts\testrunner.build
 		..\build-scripts\tools.build = ..\build-scripts\tools.build
 	EndProjectSection

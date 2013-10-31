@@ -15,7 +15,8 @@
 		<property name="nant.settings.currentframework" value="mono-3.5" />
 	</if>
 
-	<property name="script-list" value="common, core, flash, pfc, testrunner, tools, ../framework/flash/flashapi, mono, ../framework/flex/flex"/>
+	<property name="main-scripts" value="common, core, flash, pfc, testrunner, tools, mono"/>
+	<property name="fx-scripts" value="../framework/flash/flashapi, mono, ../framework/starling/starling, ../framework/flex/flex"/>
 	
 	<target name="build" depends="__loaddeps">
 		<property name="target" value="build"/>
@@ -36,10 +37,19 @@
 	</target>
 
 	<target name="__runscripts">
-		<foreach item="String" in="${script-list}" property="script" delim="," trim="Both">
+		<foreach item="String" in="${main-scripts}" property="script" delim="," trim="Both">
 			<nant buildfile="${script}.build" target="${target}">
 				<properties>
 					<property name="pfxdir" value="${project_dir}/build"/>
+					<property name="libset" value="1"/>
+				</properties>
+			</nant>
+		</foreach>
+		<foreach item="String" in="${fx-scripts}" property="script" delim="," trim="Both">
+			<nant buildfile="${script}.build" target="${target}">
+				<properties>
+					<property name="pfxdir" value="${project_dir}/build"/>
+					<property name="libset" value="2"/>
 				</properties>
 			</nant>
 		</foreach>

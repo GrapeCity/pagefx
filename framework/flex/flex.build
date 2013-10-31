@@ -94,8 +94,8 @@
 				<attribute type="AssemblyCopyrightAttribute" value="Copyright © Data Dynamics 2013"/>
 				<attribute type="AssemblyTrademarkAttribute" value=""/>
 				<attribute type="AssemblyCultureAttribute" value=""/>
-				<attribute type="AssemblyVersionAttribute" value="1.0.0.0"/>
-				<attribute type="AssemblyFileVersionAttribute" value="1.0.0.0"/>
+				<attribute type="AssemblyVersionAttribute" value="${ver}.0"/>
+				<attribute type="AssemblyFileVersionAttribute" value="${ver}.0"/>
 			</attributes>
 		</asminfo>
 

@@ -25,8 +25,14 @@
 	<property name="root_dir" value="${project_dir}/.."/>
 	<property name="src_root" value="${root_dir}/source"/>
 	<property name="lib_root" value="${root_dir}/mono/mcs/class"/>
+	<property name="libset" value="1" unless="${property::exists('libset')}"/>
 
 	<target name="build">
+		<call target="build1" if="${libset == '1'}"/>
+		<call target="build2" if="${libset == '2'}"/>
+	</target>
+
+	<target name="build1">
 		<property name="lib" value="mscorlib"/>
 		<property name="libdir" value="${lib_root}/corlib"/>
 		<call target="msbuild"/>
@@ -47,16 +53,18 @@
 		<property name="libdir" value="${lib_root}/${lib}"/>
 		<call target="msbuild"/>
 
-		<property name="lib" value="System.Drawing"/>
-		<property name="libdir" value="${lib_root}/${lib}"/>
-		<call target="msbuild"/>
-
 		<property name="lib" value="Microsoft.VisualBasic"/>
 		<property name="libdir" value="${lib_root}/${lib}"/>
 		<call target="msbuild"/>
 
 		<property name="lib" value="NUnit.Framework"/>
 		<property name="libdir" value="${src_root}/libs/NUnit/src/${lib}"/>
+		<call target="msbuild"/>
+	</target>
+
+	<target name="build2">
+		<property name="lib" value="System.Drawing"/>
+		<property name="libdir" value="${lib_root}/${lib}"/>
 		<call target="msbuild"/>
 	</target>
 

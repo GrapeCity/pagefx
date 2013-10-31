@@ -1586,6 +1586,13 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
 			{
 				((TypeMember)method).Name = newname;
 			}
+
+			// fix for case when the instance and static methods have the same name
+			var sameMethod = declType.Methods.Find(method.Name, method.Parameters.Select(x => x.Type).ToArray());
+			if (sameMethod != null && sameMethod.IsStatic != method.IsStatic)
+			{
+				((TypeMember)method).Name = (method.IsStatic ? "__" : "_") + method.Name;
+			}
 		}
 
         private void BuildMethod(IType declType, AbcTrait trait)
@@ -1694,6 +1701,14 @@ namespace DataDynamics.PageFX.Flash.Core.Tools
 	    private static void BuildProperty(IType declType, IMethod method, AbcTrait trait, string summary)
         {
             string name = method.Name;
+
+			// fix for case when instance and static property has the same name
+		    var sameProperty = declType.Properties.Find(name).FirstOrDefault();
+		    if (sameProperty != null && sameProperty.IsStatic != method.IsStatic)
+		    {
+			    name = (method.IsStatic ? "__" : "_") + name;
+		    }
+
             ((TypeMember)method).Name = (trait.IsGetter ? "get_" : "set_") + name;
 
 		    var prop = FindProperty(trait.Owner.Traits, trait.Name.NameString);
