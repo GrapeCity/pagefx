@@ -98,6 +98,56 @@
   <ItemGroup>
     <Compile Include="src\scenes\TextureScene.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.cs" />
+    <Compile Include="EmbeddedAssets.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\audio\wing_flap.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\fonts\1x\desyrel.fnt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\fonts\1x\desyrel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\fonts\2x\desyrel.fnt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\fonts\2x\desyrel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\textures\1x\atlas.png" />
+    <EmbeddedResource Include="assets\textures\1x\atlas.xml" />
+    <EmbeddedResource Include="assets\textures\2x\atlas.png" />
+    <EmbeddedResource Include="assets\textures\2x\atlas.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\textures\1x\compressed_texture.atf" />
+    <EmbeddedResource Include="assets\textures\2x\compressed_texture.atf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\fonts\Ubuntu-R.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\fonts\Ubuntu-License.txt" />
+    <EmbeddedResource Include="system\Default%402x.png" />
+    <EmbeddedResource Include="system\Default-Portrait.png" />
+    <EmbeddedResource Include="system\Default.png" />
+    <EmbeddedResource Include="system\icon114.png" />
+    <EmbeddedResource Include="system\icon144.png" />
+    <EmbeddedResource Include="system\icon57.png" />
+    <EmbeddedResource Include="system\icon72.png" />
+    <EmbeddedResource Include="system\startup.jpg" />
+    <EmbeddedResource Include="system\startupHD.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="system\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
