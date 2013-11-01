@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.Graphics;
@@ -156,19 +157,16 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
         void SetFlashVersion(CommandLine cl)
         {
             string s = cl.GetOption(PFCOptions.FlashVersion);
-            if (!string.IsNullOrEmpty(s))
-            {
-                int v;
-                if (int.TryParse(s.Trim(), out v))
-                {
-                    if (v <= 8 || v > 10)
-                    {
-                        //TODO: As Warning!
-                        throw Errors.SWF.InvalidVersion.CreateException(v);
-                    }
-                    FlashVersion = v;
-                }
-            }
+	        if (string.IsNullOrEmpty(s)) return;
+
+	        float v;
+	        if (!float.TryParse(s.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out v) && v <= 8)
+	        {
+				//TODO: As Warning!
+				throw Errors.SWF.InvalidVersion.CreateException(v);
+	        }
+
+			FlashVersion = v;
         }
         #endregion
 

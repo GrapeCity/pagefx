@@ -51,7 +51,9 @@ using DataDynamics.PageFX.Flash.Swf.Tags.Control;
 namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
 {
     internal partial class SwfCompiler : IDisposable
-    {
+	{
+		private readonly SwfCompilerOptions _options;
+
 	    public SwfCompiler(SwfCompilerOptions options)
         {
 	        if (options == null)
@@ -61,8 +63,7 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
         }
 
 	    #region Options
-        readonly SwfCompilerOptions _options;
-
+        
         public SwfCompilerOptions Options
         {
             get { return _options; }
