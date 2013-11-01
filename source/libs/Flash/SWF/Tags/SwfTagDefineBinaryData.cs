@@ -11,6 +11,9 @@ namespace DataDynamics.PageFX.Flash.Swf.Tags
     [SwfTag(SwfTagCode.DefineBinaryData)]
     public sealed class SwfTagDefineBinaryData : SwfCharacter
     {
+		// default ctor is required since SwfTagFactory creates tags using reflection
+		public SwfTagDefineBinaryData(){}
+
 	    public SwfTagDefineBinaryData(int id, Stream stream) : base(id)
 	    {
 		    if (stream == null) throw new ArgumentNullException("stream");
