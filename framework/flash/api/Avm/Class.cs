@@ -5,7 +5,6 @@ namespace Avm
 {
 	public partial class Class : Avm.Object
 	{
-
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public static extern Class Find(string ns, string name);
 
@@ -29,5 +28,8 @@ namespace Avm
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		public extern object CreateInstance(object arg1, object arg2, object arg3, object arg4, object arg5);
+
+		[MethodImpl(MethodImplOptions.InternalCall)]
+		public static extern implicit operator Class(Type type);
 	}
 }

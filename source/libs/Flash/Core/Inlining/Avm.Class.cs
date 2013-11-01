@@ -28,5 +28,11 @@ namespace DataDynamics.PageFX.Flash.Core.Inlining
 		{
 			code.Construct(method.Parameters.Count);
 		}
+
+		[InlineImpl]
+		public static void op_Implicit(AbcCode code)
+		{
+			code.GetProperty("Class");
+		}
 	}
 }
