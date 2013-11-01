@@ -138,16 +138,9 @@ namespace DataDynamics.PageFX.Flash.Core
         private static string GetMimeType(Function f, string defval)
         {
             var mt = f.Find("mimeType", true);
-            if (mt != null)
-            {
-                string s = mt.Value as string;
-                if (!String.IsNullOrEmpty(s))
-                {
-                    if (MimeTypes.IsSupported(s))
-                        return s;
-                }
-            }
-            return defval;
+	        if (mt == null) return defval;
+			var s = mt.Value as string;
+	        return !string.IsNullOrEmpty(s) && MimeTypes.IsSupported(s) ? s : defval;
         }
 
 	    public static Embed FromCustomAttribute(ICustomAttribute attr)

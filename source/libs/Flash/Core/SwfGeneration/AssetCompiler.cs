@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using DataDynamics.PageFX.Common.CompilerServices;
 using DataDynamics.PageFX.Common.TypeSystem;
@@ -30,15 +31,20 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
 			get { return _compiler.Swf; }
 	    }
 
+		private Stream ResolveResoucre(string source)
+		{
+			var res = _compiler.AppAssembly.FindResource(source);
+			if (res == null)
+				throw Errors.SWF.UnableToFindImageResource.CreateException(source);
+			return res.Data;
+		}
+
 	    private Image ResolveImageResoucre(string source)
         {
-            var res = _compiler.AppAssembly.FindResource(source);
-            if (res == null)
-                throw Errors.SWF.UnableToFindImageResource.CreateException(source);
+            var data = ResolveResoucre(source);
 
             try
             {
-                var data = res.Data;
                 return Image.FromStream(data);
             }
             catch (Exception exc)
@@ -91,6 +97,14 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
                 DefineBitmapAsset(image, instance);
         }
 
+	    public void DefineByteArrayAsset(string source, AbcInstance instance)
+	    {
+			// TODO cache binary resources using source cache key
+		    var resource = ResolveResoucre(source);
+		    var c = Swf.CreateBinaryDataTag(resource);
+			AddSymbol(c, instance);
+	    }
+
 	    /// <summary>
         /// Imports embedded asset.
         /// </summary>
@@ -118,13 +132,13 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
             return ImportCore(embed);
         }
 
-        private SwfAsset ImportCore(Embed embed)
+	    private SwfAsset ImportCore(Embed embed)
         {
             var c = ImportCharacter(embed.Movie, embed.Asset);
             return AddSymbol(c, embed.Instance);
         }
 
-        private ISwfCharacter ImportCharacter(SwfMovie from, SwfAsset asset)
+	    private ISwfCharacter ImportCharacter(SwfMovie from, SwfAsset asset)
         {
             var c = _charCache[asset.Name] as ISwfCharacter;
             if (c != null) return c;
@@ -144,7 +158,7 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
             return c;
         }
 
-        private static readonly string[] LateAssetNames =
+	    private static readonly string[] LateAssetNames =
             {
                 //"mx.controls.RichTextEditor__embed_mxml_assets_icon_align_left_png_1838390231",
                 //"mx.controls.RichTextEditor__embed_mxml_assets_icon_align_right_png_1943059559",
@@ -156,10 +170,10 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
                 //"mx.controls.RichTextEditor__embed_mxml_assets_icon_style_bold_png_1670544607",
             };
 
-        private readonly List<Embed> _lateAssets = new List<Embed>();
-        private static readonly bool DeferredAssetImport = true;
+	    private readonly List<Embed> _lateAssets = new List<Embed>();
+		private static readonly bool DeferredAssetImport = true;
 
-        public void ImportLateAssets()
+	    public void ImportLateAssets()
         {
             if (_lateAssets.Count > 0)
             {
@@ -186,7 +200,7 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
             }
         }
 
-        private static void CheckCharacter(SwfTag tag)
+	    private static void CheckCharacter(SwfTag tag)
         {
             if (tag == null)
                 throw new ArgumentNullException("tag");
@@ -215,8 +229,9 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
             return asset;
         }
 
-        //NOTE: assets should be defined before ABC file.
-        public void FlushAssets(SwfTagSymbolClass table)
+	    //NOTE: assets should be defined before ABC file.
+
+	    public void FlushAssets(SwfTagSymbolClass table)
         {
             if (_exports.Count > 0)
             {

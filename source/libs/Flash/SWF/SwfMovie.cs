@@ -253,7 +253,15 @@ namespace DataDynamics.PageFX.Flash.Swf
         #endregion
 
         #region Define Tags
-        public SwfCharacter CreateBitmapTag(Image image)
+
+	    public SwfCharacter CreateBinaryDataTag(Stream stream)
+	    {
+		    if (stream == null) throw new ArgumentNullException("stream");
+			ushort id = NewCharacterID();
+			return new SwfTagDefineBinaryData(id, stream);
+	    }
+
+	    public SwfCharacter CreateBitmapTag(Image image)
         {
             ushort id = NewCharacterID();
             if (Version >= 3)

@@ -292,10 +292,14 @@ public sealed class EmbedAttribute : Attribute
 
     //TODO: Add scale grid params
 
+	public EmbedAttribute()
+	{
+	}
+
     public EmbedAttribute(string source)
     {
         Source = source;
-        //TODO: auto detect mime type
+		// mime type is determined by compiler
     }
 
     public EmbedAttribute(string source, string mimeType)
@@ -326,5 +330,14 @@ public sealed class NoRootNamespaceAttribute : Attribute
     | AttributeTargets.Method)]
 public sealed class ExposeAttribute : Attribute
 {
+}
+
+[AttributeUsage(AttributeTargets.Class)]
+public sealed class SwfAttribute : Attribute
+{
+	public int Width;
+	public int Height;
+	public int FrameRate;
+	public string BackgroundColor;
 }
 #endregion

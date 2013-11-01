@@ -45,6 +45,13 @@ namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
                 return;
             }
 
+		    if (string.Equals(type, MimeTypes.Application.OctetStream, StringComparison.OrdinalIgnoreCase))
+		    {
+				var instance = BuildByteArrayAsset(trait);
+				_generator.SwfCompiler.Assets.DefineByteArrayAsset(embed.Source, instance);
+				return;
+		    }
+
             //TODO: Support other mime-types
             throw Errors.RBC.NotSupportedMimeType.CreateException(embed.Source, embed.MimeType);
         }
@@ -57,9 +64,12 @@ namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
         }
 
 	    private AbcMultiname GetBitmapAssetSuperName()
-        {
-            //TODO: For flash application it can flash.display.Bitmap
-            return Abc.DefineName(QName.Package("mx.core", "BitmapAsset"));
+	    {
+			// for flash application we use flash.display.Bitmap
+		    var qname = _generator.IsFlexApplication
+			    ? QName.Package("mx.core", "BitmapAsset")
+			    : QName.Package("flash.display", "Bitmap");
+		    return Abc.DefineName(qname);
         }
 
 	    public AbcInstance BuildBitmapAsset(AbcMultiname name, Image image, bool jpeg)
@@ -73,6 +83,14 @@ namespace DataDynamics.PageFX.Flash.Core.CodeGeneration.Builders
         {
             return BuildAssetInstance(trait, GetBitmapAssetSuperName());
         }
+
+		private AbcInstance BuildByteArrayAsset(AbcTrait trait)
+		{
+			var qname = _generator.IsFlexApplication
+				? QName.Package("mx.core", "ByteArrayAsset")
+				: QName.Package("flash.utils", "ByteArray");
+			return BuildAssetInstance(trait, Abc.DefineName(qname));
+		}
         
         private AbcInstance BuildAssetInstance(AbcTrait trait, AbcMultiname superName)
         {

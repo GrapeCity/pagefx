@@ -1,4 +1,7 @@
+using System;
+using System.IO;
 using System.Xml;
+using DataDynamics.PageFX.Common.IO;
 
 namespace DataDynamics.PageFX.Flash.Swf.Tags
 {
@@ -8,6 +11,12 @@ namespace DataDynamics.PageFX.Flash.Swf.Tags
     [SwfTag(SwfTagCode.DefineBinaryData)]
     public sealed class SwfTagDefineBinaryData : SwfCharacter
     {
+	    public SwfTagDefineBinaryData(int id, Stream stream) : base(id)
+	    {
+		    if (stream == null) throw new ArgumentNullException("stream");
+			Data = stream.ToByteArray();
+	    }
+
 	    public byte[] Data { get; set; }
 
 	    public override int GetDataSize()
