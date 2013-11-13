@@ -332,15 +332,16 @@ namespace DataDynamics.PageFX.Flash.Core.SwfGeneration
         #endregion
 
         #region Header
-        void SetupHeader()
+        private void SetupHeader()
         {
-            Swf.Version = (int)_options.FlashVersion;
+            Swf.Version = SwfVersion.FromFlashVersion(_options.FlashVersion);
             Swf.FrameSize = _options.FrameSize;
             Swf.FrameRate = _options.FrameRate;
             Swf.AllowCompression = _options.Compressed;
             Swf.AutoFrameCount = false;
         }
-        #endregion
+
+	    #endregion
 
         #region File Attributes
         void SetFileAttributes()
