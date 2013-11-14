@@ -451,9 +451,9 @@ namespace DataDynamics.PageFX.Flash.Swf
         	var reader = new SwfReader(input) {TagDecodeOptions = options};
 
         	//File Header
-            string sig = reader.ReadASCII(3);
+            var sig = reader.ReadASCII(3);
             // "FWS" or "CWS" for ZLIB compressed files (v6.0 or later)
-            if (sig != "FWS" && sig != "CWS")
+            if (sig != "FWS" && sig != "CWS" && sig != "ZWS")
             {
                 throw new BadImageFormatException("Not a valid SWF (Flash) file signature");
             }
@@ -464,10 +464,17 @@ namespace DataDynamics.PageFX.Flash.Swf
             //Debug.WriteLine(string.Format("SWF File Length = {0}", fileLength));
 
             // If the file is compressed, this is where the ZLIB decompression ("inflate") begins
-            if (sig[0] == 'C')
-                reader.Stream = Zip.Uncompress(input);
+	        if (sig[0] == 'C')
+	        {
+		        reader.Stream = Zip.Uncompress(input);
+	        }
+			else if (sig[0] == 'Z') // LZMA since v13
+			{
+				// reader.Stream = new MemoryStream(Compression.Lzma.Decompress(input));
+				throw new NotImplementedException();
+			}
 
-            //Movie Header
+	        //Movie Header
             var frameSize = reader.ReadRect();
             _frameSize.Width = frameSize.Width.FromTwips();
             _frameSize.Height = frameSize.Height.FromTwips();
