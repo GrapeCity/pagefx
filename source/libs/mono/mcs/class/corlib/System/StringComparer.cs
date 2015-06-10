@@ -168,7 +168,11 @@ namespace System
 	
         public override int GetHashCode (string s)
 		{
-            return base.GetHashCode((object) s);
+	        if (s == null)
+	        {
+		        throw new ArgumentNullException("s");
+	        }
+	        return s.GetHashCode();
 #if NOT_PFX	
 			if (s == null)
 				throw new ArgumentNullException("s");
@@ -177,7 +181,7 @@ namespace System
 				CompareOptions.None;
 			return _compareInfo.GetSortKey (s, co).GetHashCode ();
 #endif
-        }
+		}
 	}
 
 	[Serializable]
