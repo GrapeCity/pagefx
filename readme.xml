@@ -693,7 +693,7 @@ style='mso-ansi-language:EN-US'> [.NET compiler options] [options]
 style='mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoListParagraph style='margin-left:71.4pt;text-indent:-18.0pt'><span
-lang=EN-US style='font-family:Symbol;mso-ansi-language:EN-US'>·</span><span
+lang=EN-US style='font-family:Symbol;mso-ansi-language:EN-US'>Â·</span><span
 lang=EN-US style='font-size:7.0pt;line-height:115%;font-family:"Times New Roman","serif";
 mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
 lang=EN-US style='mso-ansi-language:EN-US'>&lt;input-files&gt; - managed
@@ -703,7 +703,7 @@ assembly (.dll;.exe) files or source code files</span></p>
 style='mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoListParagraph style='margin-left:71.4pt;text-indent:-18.0pt'><span
-lang=EN-US style='font-family:Symbol;mso-ansi-language:EN-US'>·</span><span
+lang=EN-US style='font-family:Symbol;mso-ansi-language:EN-US'>Â·</span><span
 lang=EN-US style='font-size:7.0pt;line-height:115%;font-family:"Times New Roman","serif";
 mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
 lang=EN-US style='mso-ansi-language:EN-US'>[.NET compiler options] - valid .NET
@@ -893,7 +893,7 @@ style='font-size:7.0pt;line-height:150%;font-family:"Times New Roman","serif";
 mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
 lang=EN-US style='mso-ansi-language:EN-US'>Click <strong><span
 style='font-family:"Calibri","sans-serif"'>File -&gt; New -&gt; Project</span></strong>
-…</span></p>
+Â…</span></p>
 
 <p class=MsoListParagraph style='text-indent:-18.0pt;line-height:150%'><span
 lang=EN-US style='mso-ansi-language:EN-US'>2)</span><span lang=EN-US
@@ -907,18 +907,18 @@ lang=EN-US style='mso-ansi-language:EN-US'>3)</span><span lang=EN-US
 style='font-size:7.0pt;line-height:150%;font-family:"Times New Roman","serif";
 mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
 lang=EN-US style='mso-ansi-language:EN-US'>Choose </span><strong><span
-style='font-family:"Calibri","sans-serif"'>“Flas</span></strong><strong><span
+style='font-family:"Calibri","sans-serif"'>Â“Flas</span></strong><strong><span
 lang=EN-US style='font-family:"Calibri","sans-serif";mso-ansi-language:EN-US'>h</span></strong><strong><span
-style='font-family:"Calibri","sans-serif"'> application”</span></strong><span
+style='font-family:"Calibri","sans-serif"'> applicationÂ”</span></strong><span
 lang=EN-US style='mso-ansi-language:EN-US'> or </span><strong><span
-style='font-family:"Calibri","sans-serif"'>“Flex application”</span></strong></p>
+style='font-family:"Calibri","sans-serif"'>Â“Flex applicationÂ”</span></strong></p>
 
 <p class=MsoListParagraph style='text-indent:-18.0pt;line-height:150%'><span
 lang=EN-US style='mso-ansi-language:EN-US'>4)</span><span lang=EN-US
 style='font-size:7.0pt;line-height:150%;font-family:"Times New Roman","serif";
 mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
 lang=EN-US style='mso-ansi-language:EN-US'>Enter the name of your project and
-press </span><strong><span style='font-family:"Calibri","sans-serif"'>“Ok”</span></strong><span
+press </span><strong><span style='font-family:"Calibri","sans-serif"'>Â“OkÂ”</span></strong><span
 lang=EN-US style='mso-ansi-language:EN-US'> button.</span></p>
 
 <h2><span lang=EN-US style='mso-fareast-font-family:"Times New Roman";
