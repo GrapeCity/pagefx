@@ -1,10 +1,19 @@
-# pagefx
+# PageFX
 
 Compiler from [.NET CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language) to [Flash](https://www.adobe.com/content/dam/acom/en/devnet/pdf/avm2overview.pdf) byte code successfully used in [ActiveReports](https://www.grapecity.com/activereports) to build [Flash Viewer](http://help.grapecity.com/activereports/webhelp/Legacy/ActiveReports6/topic124.html) (now legacy component)
 
-It was implemented in 2008
+It was implemented in 2008. See [this story](https://tsvbits.com/flash-viewer-story/) from major developer.
 
-# contents
+## Contributors
+
+- Ferhat Buyukkokten
+- Scott Willeke
+- Sergey Todyshev
+- Yuriy Kashnikov
+- Oleg Zaimkin
+- Sergey Pomadin
+
+## Contents
 
 This repo includes
 
