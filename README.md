@@ -6,6 +6,7 @@ It was implemented in 2008. See [this story](https://tsvbits.com/flash-viewer-st
 
 ## Contributors
 
+- Scott Willeke
 - Sergey Todyshev
 - Yuriy Kashnikov
 - Oleg Zaimkin
